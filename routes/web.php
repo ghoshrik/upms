@@ -6,7 +6,7 @@ use App\Http\Controllers\Security\RolePermission;
 use App\Http\Controllers\Security\RoleController;
 use App\Http\Controllers\Security\PermissionController;
 use App\Http\Controllers\UserController;
-use App\Http\Livewire\Designation\Designation;
+use App\Http\Livewire\Estimate\EstimatePrepare;
 use Illuminate\Support\Facades\Artisan;
 // Packages
 use Illuminate\Support\Facades\Route;
@@ -30,6 +30,26 @@ Route::get('/storage', function () {
 
 //UI Pages Routs
 Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
+        // Route::get('designation', Designation::class)->name('designation');
+        // Route::get('department', Department::class)->name("department");
+        // Route::get('office', Office::class)->name('office');
+        // Route::get('user-management', UserManagement::class)->name("user-management");
+        // Route::get('user-type', UserType::class)->name("user-type");
+        // Route::get('access-manager', AccessManager::class)->name("access-manager");
+        // Route::get('access-type', AccessType::class)->name("access-type");
+        // Route::get('roles',RolesManagement::class)->name("roles");
+        // Route::get('menu',Menus::class)->name('menu');
+        // Route::get('menu-permission',MenuPermission::class)->name('menu-permission');
+        // Route::get('sor-category',SORCategory::class)->name('sor-category');
+        // // Route::get('estimate-master',[EstimatePrepareController::class,'index'])->name('estimate-master.index');
+        // Route::get('sor',Sor::class)->name('sor');
+        // Route::get('userslist',[UsersController::class,'index'])->name('userslist.index');
+        // Route::get('estimate-recommender',EstimateRecomender::class)->name('estimate-recommender');
+        // Route::get('estimate-recommender/{id}',Test::class);
+        // Route::get('estimate-project',EstimateProject::class)->name('estimate-project');
+        // Route::get('sor-master',SorMaster::class)->name('sor-master');
+        // Route::get('estimate-prepare',EstimatePrepar::class)->name("estimate-prepare");
+Route::get('estimate-prepare',EstimatePrepare::class)->name('estimate-prepare');
 
 Route::group(['middleware' => 'auth'], function () {
     // Permission Module
@@ -42,9 +62,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Users Module
     Route::resource('users', UserController::class);
-    Route::get('designation',Designation::class)->name('designation');
-
-
 });
 
 //App Details Page => 'Dashboard'], function() {
@@ -123,5 +140,3 @@ Route::group(['prefix' => 'icons'], function() {
 //Extra Page Routs
 // Route::get('privacy-policy', [HomeController::class, 'privacypolicy'])->name('pages.privacy-policy');
 // Route::get('terms-of-use', [HomeController::class, 'termsofuse'])->name('pages.term-of-use');
-
-// Route::get('desi')

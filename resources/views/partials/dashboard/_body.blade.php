@@ -9,7 +9,8 @@
     </div>
 
     <div class="conatiner-fluid content-inner mt-n5 py-0">
-    {{ $slot }}
+    {{-- {{ $slot }} --}}
+        @yield('content')
     </div>
 
     @include('partials.dashboard._body_footer')

@@ -5,6 +5,7 @@
                 <div class="d-flex justify-content-between align-items-center flex-wrap">
                     <div>
                         <h1>{{__('Hello UPMS')}}</h1>
+                        {{-- <p>We are on a mission to help developers like you build successful projects for FREE.</p> --}}
                     </div>
                     <div>
                         <a href="" class="btn btn-link btn-soft-light">
