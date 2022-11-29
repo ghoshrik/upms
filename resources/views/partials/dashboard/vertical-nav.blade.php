@@ -5,7 +5,7 @@
             <span class="mini-icon">-</span>
         </a>
     </li>
-    <li class="nav-item">
+    {{-- <li class="nav-item">
         <a class="nav-link {{activeRoute(route('dashboard'))}}" aria-current="page" href="{{route('dashboard')}}">
             <i class="icon">
                 <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -15,7 +15,7 @@
             </i>
             <span class="item-name">Dashboard</span>
         </a>
-    </li>
+    </li> --}}
 
 
     <li><hr class="hr-horizontal"></li>

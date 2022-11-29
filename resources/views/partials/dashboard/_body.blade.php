@@ -2,7 +2,7 @@
     @include('partials.dashboard._body_loader')
 </div>
 @include('partials.dashboard._body_sidebar')
-<main class="main-content">
+<main x-data="{formOpen:false}" class="main-content">
     <div class="position-relative">
     @include('partials.dashboard._body_header')
     @include('partials.dashboard.sub-header')
@@ -10,7 +10,6 @@
 
     <div class="conatiner-fluid content-inner mt-n5 py-0">
     {{ $slot }}
-        {{-- @yield('content') --}}
     </div>
 
     @include('partials.dashboard._body_footer')

@@ -1,11 +1,11 @@
 <?php
 return [
     'cancel_btn'=>'Cancel',
-    'cancel_btn_color'=>'btn btn-danger text-white',
+    'cancel_btn_color'=>'btn btn-danger rounded-pill text-white',
     'data_store_btn'=>'Create',
-    'data_store_btn_color'=>'btn btn-success text-white',
+    'data_store_btn_color'=>'btn btn-success rounded-pill text-white',
     'update_btn'=>'Update',
-    'update_btn_color'=>'btn btn-warning text-white',
+    'update_btn_color'=>'btn btn-warning rounded-pill text-white',
     'add_btn'=>'Add',
     'add_btn_color'=>'btn btn-success-soft',
     'edit_btn'=>'Edit',

@@ -11,7 +11,7 @@ class AppLayout extends Component
     public function __construct($layout = '', $dir=false, $assets = [])
     {
         $this->layout = $layout;
-        // $this->dir = $dir;
+        $this->dir = $dir;
         $this->assets = $assets;
     }
 

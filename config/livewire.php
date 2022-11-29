@@ -1,5 +1,7 @@
 <?php
 
+use App\View\Components\AppLayout;
+
 return [
 
     /*
@@ -39,7 +41,7 @@ return [
     |
     */
 
-    'layout' => 'layouts.app',
+    'layout' => \App\View\Components\AppLayout::class,
 
     /*
     |--------------------------------------------------------------------------
