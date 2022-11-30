@@ -2,22 +2,13 @@
 
 namespace App\Models;
 
-use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Department extends Model
 {
-    use HasFactory,Sluggable;
+    use HasFactory;
     protected $fillable = [
-        'department_name','slug'
+        'department_name'
     ];
-    public function sluggable(): array
-    {
-        return [
-            'slug' => [
-                'source' => 'department_name'
-            ]
-        ];
-    }
 }
