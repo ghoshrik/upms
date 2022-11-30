@@ -6,6 +6,8 @@ use App\Http\Controllers\Security\RolePermission;
 use App\Http\Controllers\Security\RoleController;
 use App\Http\Controllers\Security\PermissionController;
 use App\Http\Controllers\UserController;
+use App\Http\Livewire\Designation\CreateDesignation;
+use App\Http\Livewire\Designation\Designation;
 use App\Http\Livewire\Estimate\EstimatePrepare;
 use Illuminate\Support\Facades\Artisan;
 // Packages
@@ -49,7 +51,7 @@ Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
         // Route::get('estimate-project',EstimateProject::class)->name('estimate-project');
         // Route::get('sor-master',SorMaster::class)->name('sor-master');
         // Route::get('estimate-prepare',EstimatePrepar::class)->name("estimate-prepare");
-Route::get('estimate-prepare',EstimatePrepare::class)->name('estimate-prepare');
+
 
 Route::group(['middleware' => 'auth'], function () {
     // Permission Module
@@ -62,6 +64,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Users Module
     Route::resource('users', UserController::class);
+
+    Route::get('estimate-prepare',EstimatePrepare::class)->name('estimate-prepare');
+    Route::get('designation',CreateDesignation::class)->name('designation');
+
 });
 
 //App Details Page => 'Dashboard'], function() {
