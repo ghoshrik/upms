@@ -2,7 +2,6 @@
     <div x-show="formOpen" class="row">
         <div class="col-sm-12 col-lg-12">
             <div class="card">
-
                 <div class="card-body">
                     <div class="row">
                         <form>
@@ -14,13 +13,20 @@
                                 </div>
                                 <div class="col col-md-4 col-lg-4 mb-2">
                                     <div class="form-group">
-                                        <x-select label="{{ trans('cruds.estimate.fields.category') }}"
-                                            placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
-                                            :options="[['name' => 'SOR', 'id' => 1], ['name' => 'Others', 'id' => 2]]" option-label="name" option-value="id"
-                                            wire:model.defer="model" wire:model.defer="model" />
+                                        <x-select label="{{ trans('cruds.estimate.fields.category') }}" wire:model.defer="item_name"
+                                            placeholder="Select {{ trans('cruds.estimate.fields.category') }}" wire:change="$emit('changeCategory',$event.target.value)">
+                                            @foreach($getCategory as $category)
+                                                <x-select.option label="{{ $category['item_name'] }}" value="{{ $category['id'] }}" />
+                                            @endforeach
+                                        </x-select>
                                     </div>
                                 </div>
                             </div>
+                            {{$categoriesList}}
+
+                            @if ($categoriesList == 1)
+
+                            @endif
                             <div class="row" x-data="{ open: @entangle('isLoading').defer }">
                                 <div class="col">
                                     @php
