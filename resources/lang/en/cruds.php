@@ -167,6 +167,7 @@ return [
             'description_helper'=>'',
             'quantity'=>'Quantity',
             'unit_price'=>'Unit Price(RS.)',
+            'remarks' =>'Remarks',
             'status'=>'Status',
             'cost'=>'Cost(RS.)',
             'action'=>'Actions',
