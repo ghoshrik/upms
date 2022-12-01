@@ -6,9 +6,12 @@ use Livewire\Component;
 use App\Http\Requests\Designation;
 use App\Models\Designation as ModelsDesignation;
 use Illuminate\Http\Request;
+use WireUi\Traits\Actions;
 
 class CreateDesignation extends Component
 {
+    use Actions;
+
     public $designation_name;
     protected $rules = [
         'designation_name' => 'required|string|unique:designations,designation_name|max:255',
@@ -18,7 +21,7 @@ class CreateDesignation extends Component
         'designation_name.required'=>'this field is required',
         'designation_name.string'=>'this field must be string',
     ];
-    public function store()
+    public function store():void
     {
         $validatedData = $this->validate();
         try {
@@ -28,6 +31,9 @@ class CreateDesignation extends Component
             //     'type' => 'success',
             //     'message' => 'Designation Created Successfully'
             // ]);
+            $this->notification()->success(
+                $title = 'Designation Created Successfully'
+            );
 
         } catch (\Throwable $th) {
             session()->flash('serverError', $th->getMessage());

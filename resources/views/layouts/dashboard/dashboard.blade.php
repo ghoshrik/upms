@@ -16,7 +16,8 @@
 </head>
 
 <body class="">
-    <x-notifications />
+    {{-- <x-notifications /> --}}
+
     @include('partials.dashboard._body')
     @livewireScripts
 </body>

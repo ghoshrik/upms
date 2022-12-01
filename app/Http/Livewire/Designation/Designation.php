@@ -6,6 +6,7 @@ use Livewire\Component;
 
 class Designation extends Component
 {
+    public $updateMode = false;
     public function render()
     {
         $assets = ['chart', 'animation'];

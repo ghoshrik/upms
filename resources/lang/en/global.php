@@ -7,7 +7,7 @@ return [
     'update_btn'=>'Update',
     'update_btn_color'=>'btn btn-warning rounded-pill text-white',
     'add_btn'=>'Add',
-    'add_btn_color'=>'btn btn-success-soft',
+    'add_btn_color'=>'btn btn-success',
     'edit_btn'=>'Edit',
     'edit_btn_color'=>'text-warning',
     'delete_btn'=>'Delete',
