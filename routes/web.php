@@ -66,7 +66,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('users', UserController::class);
 
     Route::get('estimate-prepare',EstimatePrepare::class)->name('estimate-prepare');
-    Route::get('designation',CreateDesignation::class)->name('designation');
+    Route::get('designation',Designation::class)->name('designation');
+
+    Route::view('/powergrid', 'powergrid-demo');
 
 });
 
@@ -143,6 +145,7 @@ Route::group(['prefix' => 'icons'], function() {
     Route::get('dualtone', [HomeController::class, 'dualtone'])->name('icons.dualtone');
     Route::get('colored', [HomeController::class, 'colored'])->name('icons.colored');
 });
+
 //Extra Page Routs
 // Route::get('privacy-policy', [HomeController::class, 'privacypolicy'])->name('pages.privacy-policy');
 // Route::get('terms-of-use', [HomeController::class, 'termsofuse'])->name('pages.term-of-use');

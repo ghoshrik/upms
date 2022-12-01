@@ -8,7 +8,8 @@
             </div>
          </div>
          <div class="card-body p-0">
-<livewire:user-table />
+{{-- <livewire:user-table /> --}}
+
             {{-- <div class="table-responsive mt-4">
                <table id="basic-table" class="table table-striped mb-0" role="grid">
                   <thead>
@@ -208,4 +209,5 @@
       </div>
    </div>
 </div>
+<livewire:designation-table />
 </x-app-layout>
