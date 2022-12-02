@@ -1,4 +1,4 @@
-<div>
+    <div>
     <div x-show="formOpen" class="row" x-transition.duration.500ms>
         <div class="col-sm-12 col-lg-12">
             <div class="card">
@@ -173,18 +173,17 @@
                                 <div class="col">
                                     <div class="form-group float-right">
                                         <button @click="formOpen=false" type="button"
-                                            class="btn btn-soft-danger rounded-pill ">{{ trans('global.cancel_btn') }}</button>
+                                            class="{{ trans('global.cancel_btn_color') }}">{{ trans('global.cancel_btn') }}</button>
                                         <button type="button" wire:click='addEstimate'
-                                            class="btn btn-soft-success rounded-pill">
-                                            <span class="btn-inner">
+                                            class="{{trans('global.add_btn_color') }}">
+                                            {{-- <span class="btn-inner"> --}}
                                                 <x-lucide-plus class="w-4 h-4 text-gray-500" />
-                                            </span>{{ trans('global.add_btn') }}
+                                            {{-- </span> --}}
+                                            {{ trans('global.add_btn') }}
                                         </button>
                                     </div>
                                 </div>
-
                             </div>
-
                         </form>
                     </div>
                 </div>
