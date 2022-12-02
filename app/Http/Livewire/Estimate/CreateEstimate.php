@@ -13,10 +13,10 @@ class CreateEstimate extends Component
 {
     public $estimateData = [], $getCategory = [],$fatchDropdownData = [];
     public $kword = null,$selectedSORKey,$selectedCategoryId,$showTableOne=false;
-    public $addedEstimates = [];
+    public $addedEstimate = [];
     public function changeCategory($value)
     {
-        $this->resetExcept(['addedEstimates','selectedCategoryId','showTableOne']);
+        $this->resetExcept(['addedEstimate','selectedCategoryId','showTableOne']);
         $value = $value['_x_bindings']['value'];
         $this->estimateData['item_name'] = $value;
         if ($this->estimateData['item_name'] == 'SOR') {
@@ -92,26 +92,20 @@ class CreateEstimate extends Component
 
     public function addEstimate()
     {
+        $this->reset('addedEstimate');
         $this->showTableOne = !$this->showTableOne;
-        $index = count($this->addedEstimates)+1;
-        $this->addedEstimates[$index]['array_id'] = $index;
-        // $this->addedEstimates[$index]['arrayIndex'] = $arrayIndex;
-        $this->addedEstimates[$index]['dept_id'] =$this->estimateData['dept_id'];
-        $this->addedEstimates[$index]['category_id'] = $this->estimateData['dept_category_id'];
-        $this->addedEstimates[$index]['sor_item_number'] = $this->estimateData['item_number'];
-        $this->addedEstimates[$index]['item_name'] = $this->estimateData['item_name'];
-        $this->addedEstimates[$index]['other_name'] = $this->estimateData['other_name'];
-        $this->addedEstimates[$index]['description'] = $this->estimateData['description'];
-        $this->addedEstimates[$index]['qty'] = $this->estimateData['qty'];
-        $this->addedEstimates[$index]['rate'] = $this->estimateData['rate'];
-        $this->addedEstimates[$index]['total_amount'] = $this->estimateData['total_amount'];
-        // $this->addedEstimates[$index]['operation'] = $operation;
-        $this->addedEstimates[$index]['version'] = $this->estimateData['version'];
-        // $this->addedEstimates[$this->indexCount]['perRate'] = $perRate;
-        // $this->addedEstimates[$this->indexCount]['AddRemarks'] = $AddRemarks;
-        // dd($this->addedEstimates);
-        $this->resetExcept(['addedEstimates','showTableOne']);
-
+        $this->addedEstimate['array_id'] = 0;
+        $this->addedEstimate['dept_id'] =$this->estimateData['dept_id'];
+        $this->addedEstimate['category_id'] = $this->estimateData['dept_category_id'];
+        $this->addedEstimate['sor_item_number'] = $this->estimateData['item_number'];
+        $this->addedEstimate['item_name'] = $this->estimateData['item_name'];
+        $this->addedEstimate['other_name'] = $this->estimateData['other_name'];
+        $this->addedEstimate['description'] = $this->estimateData['description'];
+        $this->addedEstimate['qty'] = $this->estimateData['qty'];
+        $this->addedEstimate['rate'] = $this->estimateData['rate'];
+        $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
+        $this->addedEstimate['version'] = $this->estimateData['version'];
+        $this->resetExcept(['addedEstimate','showTableOne']);
     }
 
     public function render()

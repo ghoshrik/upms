@@ -189,12 +189,13 @@
                 </div>
             </div>
         </div>
-        @if ($showTableOne && $addedEstimates != null)
-            <livewire:estimate.added-estimate-list :addedEstimatesData="$addedEstimates" />
+        @if ($showTableOne && $addedEstimate != null)
+            <livewire:estimate.added-estimate-list :addedEstimateData="$addedEstimate" :key="1" />
         @endif
-        @if (!$showTableOne && $addedEstimates != null)
-            <livewire:estimate.added-estimate-list :addedEstimatesData="$addedEstimates" />
+        @if (!$showTableOne && $addedEstimate != null)
+            <livewire:estimate.added-estimate-list :addedEstimateData="$addedEstimate" :key="2"/>
         @endif
+
 
     </div>
 

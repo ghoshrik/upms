@@ -1,6 +1,6 @@
 <div>
     <livewire:estimate.create-estimate />
-    <div class="row">
+    <div x-show="!formOpen" class="row">
         <div class="col-md-6 col-sm-3 col-lg-12 ml-auto mr-auto">
             <div class="card">
                 <div class="card-header">
@@ -48,5 +48,4 @@
             </div>
         </div>
     </div>
-
 </div>

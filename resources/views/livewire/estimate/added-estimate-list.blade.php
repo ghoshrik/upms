@@ -8,14 +8,11 @@
         <div>
             <div class="row m-2">
                 <div class="col col-md-9 col-lg-9 mb-2">
-                    {{-- <button class="btn btn-soft-info rounded-pill ">
-                        {{ trans('cruds.estimate.fields.total_on_selected') }}
-                    </button> --}}
                     <div class="row m-2">
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-                            <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-                            <button type="button" class="btn btn-soft-primary">Success</button>
+                            <input type="text" wire:model="expression" class="form-control" placeholder="{{ trans('cruds.estimate.fields.operation') }}" aria-label="{{ trans('cruds.estimate.fields.operation') }}" aria-describedby="basic-addon1">
+                            <input type="text" wire:model="remarks" class="form-control" placeholder="{{ trans('cruds.estimate.fields.remarks') }}" aria-label="{{ trans('cruds.estimate.fields.remarks') }}" aria-describedby="basic-addon1">
+                            <button type="button" wire:click="expCalc" class="btn btn-soft-primary">Calculate</button>
                         </div>
                     </div>
                 </div>
@@ -29,12 +26,6 @@
                             </span>
                             {{ trans('cruds.estimate.fields.export_word') }}</button>
                     </div>
-                    {{-- <button class="btn btn-soft-primary rounded-pill float-right">
-                        <span class="btn-inner">
-                            <x-lucide-sheet class="w-4 h-4 text-gray-500" />
-                        </span>
-                        {{ trans('cruds.estimate.fields.export_word') }}
-                    </button> --}}
                 </div>
             </div>
         </div>
@@ -54,11 +45,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($addedEstimatesData as $key => $addedEstimate)
+                        {{-- @dd($allAddedEstimatesData) --}}
+                        @foreach ($allAddedEstimatesData as $key => $addedEstimate)
                             <tr>
                                 <td>
                                     <x-checkbox id="checkbox" wire:model="level"
-                                        value="{{ $addedEstimate['array_id'] }}" />
+                                        value="" />
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center">
@@ -75,6 +67,8 @@
                                 <td>
                                     @if ($addedEstimate['sor_item_number'])
                                         {{ $addedEstimate['description'] }}
+                                    @elseif ($addedEstimate['arrayIndex'])
+                                        {{ $addedEstimate['arrayIndex'].' ( '.$addedEstimate['remarks'].' ) ' }}
                                     @else
                                         {{ $addedEstimate['other_name'] }}
                                     @endif
@@ -103,6 +97,8 @@
             </div>
         </div>
         <div class="card-body">
+            <button type="button" wire:click='resetSession'
+                class="btn btn-soft-danger rounded-pill float-right">Reset</button>
             <button type="button" wire:click='addEstimate'
                 class="btn btn-success rounded-pill float-right">Save</button>
         </div>

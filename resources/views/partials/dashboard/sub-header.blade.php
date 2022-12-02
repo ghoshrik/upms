@@ -8,9 +8,6 @@
                         {{-- <p>We are on a mission to help developers like you build successful projects for FREE.</p> --}}
                     </div>
                     <div>
-                        {{-- <button @click="formOpen = true" href="#" class="btn btn-link btn-soft-light">
-                             &nbsp Forward
-                        </button> --}}
                         <button @click="formOpen = true" class="btn btn-primary rounded-pill ">
                             <span class="btn-inner">
                                 <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
