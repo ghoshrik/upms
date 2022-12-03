@@ -5,10 +5,6 @@
         <x-form-section submit="store">
             <x-slot name="form">
                 <x-input wire:model="designation_name" label="{{trans('cruds.designation.title')}}" placeholder="{{trans('cruds.designation.title')}}" />
-
-
-
-
                 <div class="row">
                     <div class="col mt-2">
                         <div class="form-group float-right">
