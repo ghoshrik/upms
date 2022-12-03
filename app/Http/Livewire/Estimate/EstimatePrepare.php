@@ -17,9 +17,12 @@ class EstimatePrepare extends Component
     public function formOCControl()
     {
         $this->formOpen = !$this->formOpen;
+        $this->emit('changeSubTitel', ($this->formOpen)?'Create new':'List');
     }
+   
     public function render()
     {
+        $this->emit('changeTitel', 'Estimate Prepare');
         $assets = ['chart', 'animation'];
         return view('livewire.estimate.estimate-prepare',compact('assets'));
     }

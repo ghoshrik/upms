@@ -4,8 +4,8 @@
             <div class="col-md-12">
                 <div class="d-flex justify-content-between align-items-center flex-wrap">
                     <div>
-                        <h1>{{__('Hello UPMS')}}</h1>
-                        {{-- <p>We are on a mission to help developers like you build successful projects for FREE.</p> --}}
+                        <h1>{{__($titel)}}</h1>
+                        <p>{{$subTitel}}</p>
                     </div>
                     <div x-data="{ createButtonOn: @entangle('createButtonOn') }">
                         <button x-show="!createButtonOn" wire:click="$emit('openForm')" class="btn btn-primary rounded-pill " x-transition:enter.duration.600ms
@@ -20,11 +20,6 @@
                                 <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
                             </span>
                         </button>
-                        {{-- <button @click="formOpen = true" class="btn btn-primary rounded-pill ">
-                            <span class="btn-inner">
-                                <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
-                            </span>
-                        </button> --}}
                     </div>
 
                 </div>
