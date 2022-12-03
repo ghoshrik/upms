@@ -1,4 +1,4 @@
-<div>
+<div x-data="{ formOpen: @entangle('formOpen') }" >
     <livewire:estimate.create-estimate />
     <div x-show="!formOpen" class="row">
         <div class="col-md-6 col-sm-3 col-lg-12 ml-auto mr-auto">

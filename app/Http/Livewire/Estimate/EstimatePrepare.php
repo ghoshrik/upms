@@ -12,10 +12,12 @@ use Livewire\Component;
 class EstimatePrepare extends Component
 {
 
-    // protected $listeners = [
-    //     'changeCategory'
-    // ];
-
+    public $formOpen=false;
+    protected $listeners = ['openForm' => 'formOCControl'];
+    public function formOCControl()
+    {
+        $this->formOpen = !$this->formOpen;
+    }
     public function render()
     {
         $assets = ['chart', 'animation'];

@@ -2,7 +2,7 @@
     @include('partials.dashboard._body_loader')
 </div>
 @include('partials.dashboard._body_sidebar')
-<main x-data="{formOpen:false}" class="main-content">
+<main class="main-content">
     <div class="position-relative">
     @include('partials.dashboard._body_header')
     @include('partials.dashboard.sub-header')
