@@ -8,15 +8,24 @@ use App\Models\SORCategory;
 use App\Models\SorCategoryType;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class CreateEstimate extends Component
 {
+    use Actions;
     public $estimateData = [], $getCategory = [],$fatchDropdownData = [];
-    public $kword = null,$selectedSORKey,$selectedCategoryId,$showTableOne=false;
+    // TODO:: remove $showTableOne if not use
+    public $kword = null,$selectedSORKey,$selectedCategoryId,$showTableOne=false,$addedEstimateUpdateTrack;
     public $addedEstimate = [];
+    public function mount()
+    {
+        if(Session()->has('addedEstimateData')){
+            $this->addedEstimateUpdateTrack = rand(1, 1000);
+        }
+    }
     public function changeCategory($value)
     {
-        $this->resetExcept(['addedEstimate','selectedCategoryId','showTableOne']);
+        $this->resetExcept(['addedEstimate','selectedCategoryId','addedEstimateUpdateTrack']);
         $value = $value['_x_bindings']['value'];
         $this->estimateData['item_name'] = $value;
         if ($this->estimateData['item_name'] == 'SOR') {
@@ -42,7 +51,7 @@ class CreateEstimate extends Component
             $this->estimateData['total_amount'] ='';
         }
     }
-
+ 
     public function getDeptCategory()
     {
         $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
@@ -67,7 +76,6 @@ class CreateEstimate extends Component
 
     public function getItemDetails()
     {
-        // dd($this->fatchDropdownData);
         $this->estimateData['description'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['description'];
         $this->estimateData['qty'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['unit'];
         $this->estimateData['rate'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['cost'];
@@ -104,7 +112,8 @@ class CreateEstimate extends Component
         $this->addedEstimate['rate'] = $this->estimateData['rate'];
         $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
         $this->addedEstimate['version'] = $this->estimateData['version'];
-        $this->resetExcept(['addedEstimate','showTableOne']);
+        $this->addedEstimateUpdateTrack = rand(1, 1000);
+        $this->resetExcept(['addedEstimate','showTableOne','addedEstimateUpdateTrack']);
     }
 
     public function render()
