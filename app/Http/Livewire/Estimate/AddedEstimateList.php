@@ -13,12 +13,9 @@ class AddedEstimateList extends Component
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $expression, $remarks;
-    public function booted()
+
+    public function mount()
     {
-        // $this->resetSession();
-        if ($this->addedEstimateData == null) {
-            return;
-        }
         $this->setEstimateDataToSession();
     }
     public function resetSession()
@@ -86,34 +83,37 @@ class AddedEstimateList extends Component
     }
     public function setEstimateDataToSession()
     {
+
         $this->reset('allAddedEstimatesData');
         if (Session()->has('addedEstimateData')) {
             $this->allAddedEstimatesData = Session()->get('addedEstimateData');
         }
-        $index = count($this->allAddedEstimatesData) + 1;
-        if (!array_key_exists("operation", $this->addedEstimateData)) {
-            $this->addedEstimateData['operation'] = '';
+        if ($this->addedEstimateData != null) {
+            $index = count($this->allAddedEstimatesData) + 1;
+            if (!array_key_exists("operation", $this->addedEstimateData)) {
+                $this->addedEstimateData['operation'] = '';
+            }
+            if (!array_key_exists("array_id", $this->addedEstimateData)) {
+                $this->addedEstimateData['array_id'] = $index;
+            }
+            if (!array_key_exists("arrayIndex", $this->addedEstimateData)) {
+                $this->addedEstimateData['arrayIndex'] = '';
+            }
+            foreach ($this->addedEstimateData as $key => $estimate) {
+                $this->allAddedEstimatesData[$index][$key] = $estimate;
+            }
+            Session()->put('addedEstimateData', $this->allAddedEstimatesData);
+            $this->reset('addedEstimateData');
         }
-        if (!array_key_exists("array_id", $this->addedEstimateData)) {
-            $this->addedEstimateData['array_id'] = $index;
-        }
-        if (!array_key_exists("arrayIndex", $this->addedEstimateData)) {
-            $this->addedEstimateData['arrayIndex'] = '';
-        }
-        foreach ($this->addedEstimateData as $key => $estimate) {
-            $this->allAddedEstimatesData[$index][$key] = $estimate;
-        }
-        Session()->put('addedEstimateData', $this->allAddedEstimatesData);
-        $this->reset('addedEstimateData');
     }
     public function render()
     {
         return view('livewire.estimate.added-estimate-list');
     }
-    public function logView($data,$of)
+    public function logView($data, $of)
     {
-        Log::alert('-----------------[Start OF'.$of.']');
+        Log::alert('-----------------[Start OF' . $of . ']');
         Log::info(json_encode($data));
-        Log::alert('-----------------[END OF'.$of.']');
+        Log::alert('-----------------[END OF' . $of . ']');
     }
 }

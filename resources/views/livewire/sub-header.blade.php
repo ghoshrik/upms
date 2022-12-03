@@ -9,12 +9,12 @@
                     </div>
                     <div x-data="{ createButtonOn: @entangle('createButtonOn') }">
                         <button x-show="!createButtonOn" wire:click="$emit('openForm')" class="btn btn-primary rounded-pill " x-transition:enter.duration.600ms
-                        x-transition:leave.duration.50ms>
+                        x-transition:leave.duration.10ms>
                             <span class="btn-inner">
                                 <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
                             </span>
                         </button>
-                        <button x-show="createButtonOn" wire:click="$emit('openForm')" class="btn btn-danger rounded-pill " x-transition:enter.duration.1000ms
+                        <button x-show="createButtonOn" wire:click="$emit('openForm')" class="btn btn-danger rounded-pill " x-transition:enter.duration.100ms
                         x-transition:leave.duration.100ms>
                             <span class="btn-inner">
                                 <x-lucide-x class="w-4 h-4 text-gray-500" /> Close

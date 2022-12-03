@@ -1,6 +1,10 @@
 <div x-data="{ formOpen: @entangle('formOpen') }" >
-    <livewire:estimate.create-estimate />
-    <div x-show="!formOpen" class="row">
+    <div x-show="formOpen" x-transition.duration.00ms>
+        @if ($formOpen)
+            <livewire:estimate.create-estimate />
+        @endif
+    </div>
+    <div x-show="!formOpen" class="row" x-transition.duration.500ms>
         <div class="col-md-6 col-sm-3 col-lg-12 ml-auto mr-auto">
             <div class="card">
                 <div class="card-header">
