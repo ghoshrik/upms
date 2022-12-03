@@ -49,11 +49,11 @@
                         @foreach ($allAddedEstimatesData as $key => $addedEstimate)
                             <tr>
                                 <td>
-                                    <x-checkbox id="checkbox" wire:model="level"
+                                    <x-checkbox :key="$key.'checkbox'" id="checkbox" wire:model="level"
                                         value="" />
                                 </td>
                                 <td>
-                                    <div class="d-flex align-items-center">
+                                    <div :key="$key.'iNo'" class="d-flex align-items-center">
                                         {{ chr($key + 64) }}
                                     </div>
                                 </td>
