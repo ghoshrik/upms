@@ -18,7 +18,7 @@
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0">
         </div>
-
+        {{-- .p-4 | svg h-10|tesxt-center| was remove due to hope css conflict --}}
         <div class="w-full transition-all p-4 sm:max-w-lg"
             x-show="show"
             x-transition:enter="ease-out duration-300"
@@ -29,7 +29,7 @@
             x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             x-on:mouseenter="pauseTimeout"
             x-on:mouseleave="resumeTimeout">
-            <div class="relative shadow-md bg-white dark:bg-secondary-800 rounded-xl overflow-hidden space-y-4 p-4"
+            <div class="relative shadow-md bg-white dark:bg-secondary-800 rounded-xl overflow-hidden space-y-4"
                 :class="{
                     'sm:p-5 sm:pt-7': style === 'center',
                     'sm:p-0':         style === 'inline',
@@ -61,13 +61,13 @@
                     </div>
 
                     <div class="mt-4 w-full" :class="{ 'sm:mt-5': style === 'center' }">
-                        <h3 class="text-lg leading-6 font-medium text-secondary-900 dark:text-secondary-400 text-center"
+                        <h3 class="text-lg leading-6 font-medium text-secondary-900 dark:text-secondary-400"
                             :class="{ 'sm:text-left': style === 'inline' }"
                             @unless($title) x-ref="title" @endunless>
                             {{ $title }}
                         </h3>
 
-                        <p class="mt-2 text-sm text-secondary-500 text-center"
+                        <p class="mt-2 text-sm text-secondary-500"
                             :class="{ 'sm:text-left': style === 'inline' }"
                             @unless($description) x-ref="description" @endunless>
                             {{ $description }}
