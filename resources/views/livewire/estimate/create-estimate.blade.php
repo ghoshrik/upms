@@ -9,12 +9,12 @@
                     <div class="row">
                         <form>
                             <div class="row">
-                                <div class="col col-md-8 col-lg-8 mb-2">
+                                <div class="col col-md-8 col-lg-8 col-sm-12 col-xs-12 mb-2">
                                     <x-textarea wire:model="comment" rows="2"
                                         label="{{ trans('cruds.estimate.fields.description') }}"
                                         placeholder="Your project {{ trans('cruds.estimate.fields.description') }}" />
                                 </div>
-                                <div class="col col-md-4 col-lg-4 mb-2">
+                                <div class="col col-md-4 col-lg-4 col-sm-12 col-xs-12 mb-2">
                                     <div class="form-group">
                                         <x-select label="{{ trans('cruds.estimate.fields.category') }}"
                                             placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
