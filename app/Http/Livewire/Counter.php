@@ -16,9 +16,23 @@ class Counter extends Component
     public function alert(): void
     {
         // use a simple syntax: success | error | warning | info
-        $this->notification()->success(
-            $title = 'Profile saved',
-            $description = 'Your profile was successfull saved'
-        );
+        // $this->notification()->success(
+        //     $title = 'Profile saved',
+        //     $description = 'Your profile was successfull saved'
+        // );
+        $this->dialog()->confirm([
+            'title'       => 'Are you Sure?',
+            'description' => 'Save the information?',
+            'icon'        => 'success',
+            'accept'      => [
+                'label'  => 'Yes, save it',
+                'method' => 'save',
+                'params' => 'Saved',
+            ],
+            'reject' => [
+                'label'  => 'No, cancel',
+                'method' => 'cancel',
+            ],
+        ]);
     }
 }
