@@ -24,7 +24,7 @@ class AddedEstimateList extends Component
     public function resetSession()
     {
         Session()->forget('addedEstimateData');
-        dd(Session()->get('addedEstimateData'));
+        $this->reset();
     }
     public function expCalc()
     {
@@ -33,16 +33,21 @@ class AddedEstimateList extends Component
         $stringCalc = new StringCalc();
         try {
             if ($this->expression) {
+                // dd($this->expression,'if');
+                // dd(str_split($this->expression),'str_s');
                 $amtTot = 0;
                 $c = 1;
                 foreach (str_split($this->expression) as $key => $info) {
                     $count0 = count($this->allAddedEstimatesData);
+                    // dd(ctype_alpha($info),'ctpe');
                     if (ctype_alpha($info)) {
                         $alphabet = strtoupper($info);
                         $alp_id = ord($alphabet) - 64;
+                        // dd($alp_id,'alp');
                         if ($alp_id <= $count0) {
                             if ($this->allAddedEstimatesData[$alp_id]['array_id']) {
                                 $this->expression = str_replace($info, $this->allAddedEstimatesData[$alp_id]['total_amount'], $this->expression, $key);
+                                // dd($this->expression);
                             }
                         } else {
                             $this->dispatchBrowserEvent('alert', [
@@ -70,6 +75,7 @@ class AddedEstimateList extends Component
             $this->addedEstimateData['version'] = '';
             $this->addedEstimateData['remarks'] = $this->remarks;
             $this->setEstimateDataToSession();
+            $this->resetExcept('allAddedEstimatesData');
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->dispatchBrowserEvent('alert', [
@@ -80,37 +86,25 @@ class AddedEstimateList extends Component
     }
     public function setEstimateDataToSession()
     {
-        // dd(Session()->get('addedEstimateData'));
         $this->reset('allAddedEstimatesData');
-        $this->logView(Session()->get('addedEstimateData'),'sseion-top');
-        $this->logView($this->addedEstimateData,'addedEstimateData');
         if (Session()->has('addedEstimateData')) {
             $this->allAddedEstimatesData = Session()->get('addedEstimateData');
         }
-        // dd(Session()->get('addedEstimateData'));
         $index = count($this->allAddedEstimatesData) + 1;
-        $this->logView($index,'index');
         if (!array_key_exists("operation", $this->addedEstimateData)) {
             $this->addedEstimateData['operation'] = '';
-            $this->logView($this->addedEstimateData,'addedEstimateData-oparation');
         }
         if (!array_key_exists("array_id", $this->addedEstimateData)) {
-            $this->addedEstimateData['array_id'] = '';
-            $this->logView($this->addedEstimateData,'addedEstimateData-array_id');
+            $this->addedEstimateData['array_id'] = $index;
         }
         if (!array_key_exists("arrayIndex", $this->addedEstimateData)) {
             $this->addedEstimateData['arrayIndex'] = '';
-            $this->logView($this->addedEstimateData,'addedEstimateData-arr_in');
         }
         foreach ($this->addedEstimateData as $key => $estimate) {
             $this->allAddedEstimatesData[$index][$key] = $estimate;
         }
-        $this->logView($this->allAddedEstimatesData,'$this->allAddedEstimatesData');
-        $this->logView(Session()->get('addedEstimateData'),'sseion-buttom');
         Session()->put('addedEstimateData', $this->allAddedEstimatesData);
-        // dd(Session()->get('addedEstimateData'));
         $this->reset('addedEstimateData');
-        // dd($this->allAddedEstimatesData);
     }
     public function render()
     {

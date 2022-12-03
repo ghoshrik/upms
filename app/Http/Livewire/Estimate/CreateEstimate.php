@@ -94,7 +94,6 @@ class CreateEstimate extends Component
     {
         $this->reset('addedEstimate');
         $this->showTableOne = !$this->showTableOne;
-        $this->addedEstimate['array_id'] = 0;
         $this->addedEstimate['dept_id'] =$this->estimateData['dept_id'];
         $this->addedEstimate['category_id'] = $this->estimateData['dept_category_id'];
         $this->addedEstimate['sor_item_number'] = $this->estimateData['item_number'];
