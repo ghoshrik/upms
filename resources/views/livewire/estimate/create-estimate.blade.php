@@ -2,10 +2,10 @@
     <div x-show="formOpen" class="row" x-transition.duration.500ms>
         <div class="col-sm-12 col-lg-12">
             <div class="card">
-                <div wire:loading>
+                <div wire:loading.delay.long>
                     <div class="spinner-border text-primary loader-position" role="status"></div>
                 </div>
-                <div wire:loading.class="loading" class="card-body">
+                <div wire:loading.delay.long.class="loading" class="card-body">
                     <div class="row">
                         <form>
                             <div class="row">
