@@ -7,9 +7,12 @@ use Livewire\Component;
 use ChrisKonnertz\StringCalc\StringCalc;
 use ChrisKonnertz\StringCalc\Exceptions\StringCalcException;
 use Illuminate\Http\Request;
+use WireUi\Traits\Actions;
 
 class AddedEstimateList extends Component
 {
+    use Actions;
+    
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $expression, $remarks;
@@ -47,10 +50,10 @@ class AddedEstimateList extends Component
                                 // dd($this->expression);
                             }
                         } else {
-                            $this->dispatchBrowserEvent('alert', [
-                                'type' => 'error',
-                                'message' => $alphabet . ' is a invalid input'
-                            ]);
+                            $this->notification()->error(
+                                $title = 'Error !!!',
+                                $description =  $alphabet . ' is a invalid input'
+                            );
                         }
                     } elseif (htmlspecialchars($info) == "%") {
                         $this->expression = str_replace($info, "/100*", $this->expression, $key);
