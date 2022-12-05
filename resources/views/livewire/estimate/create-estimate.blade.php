@@ -111,7 +111,7 @@
                                     <div class="form-group">
                                         <x-input wire:key="sor_rate"
                                             label="{{ trans('cruds.estimate.fields.per_unit_cost') }}"
-                                            placeholder="{{ trans('cruds.estimate.fields.per_unit_cost') }}" readonly
+                                            placeholder="{{ trans('cruds.estimate.fields.per_unit_cost') }}" disabled
                                             wire:model.defer="estimateData.rate" />
                                     </div>
                                 </div>
