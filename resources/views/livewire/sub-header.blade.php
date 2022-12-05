@@ -4,7 +4,7 @@
             <div class="col-md-12">
                 <div class="d-flex justify-content-between align-items-center flex-wrap">
                     <div>
-                        <h1>{{__($titel)}}</h1>
+                        <h1>{{$titel}}</h1>
                         <p>{{$subTitel}}</p>
                     </div>
                     <div x-data="{ createButtonOn: @entangle('createButtonOn') }">

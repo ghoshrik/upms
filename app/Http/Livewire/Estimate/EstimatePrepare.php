@@ -19,7 +19,6 @@ class EstimatePrepare extends Component
         $this->formOpen = !$this->formOpen;
         $this->emit('changeSubTitel', ($this->formOpen)?'Create new':'List');
     }
-   
     public function render()
     {
         $this->emit('changeTitel', 'Estimate Prepare');

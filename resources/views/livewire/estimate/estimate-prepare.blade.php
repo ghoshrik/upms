@@ -1,4 +1,4 @@
-<div x-data="{ formOpen: @entangle('formOpen') }" >
+<div x-data="{ formOpen: @entangle('formOpen') }">
     <div x-show="formOpen" x-transition.duration.00ms>
         @if ($formOpen)
             <livewire:estimate.create-estimate />
@@ -17,7 +17,8 @@
                             </button>
                             <button class="nav-link align-items-center active flex-sm-fill rounded-pill"
                                 id="nav-profile-tab " data-bs-toggle="tab" data-bs-target="#nav-profile" type="button"
-                                role="tab" aria-controls="nav-profile" aria-selected="true">Profile <span class="badge bg-secondary">0</span></button>
+                                role="tab" aria-controls="nav-profile" aria-selected="true">Profile <span
+                                    class="badge bg-secondary">0</span></button>
                             <button class="nav-link align-items-center rounded-pill flex-sm-fill" id="nav-contact-tab "
                                 data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab"
                                 aria-controls="nav-contact" aria-selected="false">Contact
@@ -52,4 +53,18 @@
             </div>
         </div>
     </div>
+    <x-modal wire:model.defer="simpleModal">
+        <x-card title="Consent Terms">
+            <p class="text-gray-600">
+                Lorem Ipsum...
+            </p>
+
+            <x-slot name="footer">
+                <div class="flex justify-end gap-x-4">
+                    <x-button flat label="Cancel" x-on:click="close" />
+                    <x-button primary label="I Agree" />
+                </div>
+            </x-slot>
+        </x-card>
+    </x-modal>
 </div>

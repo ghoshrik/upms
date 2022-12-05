@@ -16850,7 +16850,7 @@ body.offcanvas-active {
 }
 
 .h-10 {
-  height: 10rem;
+  height: auto;
 }
 
 .avatar {

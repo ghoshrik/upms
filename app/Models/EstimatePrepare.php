@@ -23,7 +23,6 @@ class EstimatePrepare extends Model
         'qty',
         'rate',
         'total_amount',
-        'percentage_rate',
         'operation',
         'created_by',
         'comments'

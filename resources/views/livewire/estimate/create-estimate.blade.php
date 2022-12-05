@@ -7,10 +7,10 @@
                 </div>
                 <div wire:loading.delay.long.class="loading" class="card-body">
                     <div class="row">
-                        <form>
+                        {{-- <form> --}}
                             <div class="row">
                                 <div class="col col-md-8 col-lg-8 col-sm-12 col-xs-12 mb-2">
-                                    <x-textarea wire:model="comment" rows="2"
+                                    <x-textarea wire:model="sorMasterDesc" rows="2"
                                         label="{{ trans('cruds.estimate.fields.description') }}"
                                         placeholder="Your project {{ trans('cruds.estimate.fields.description') }}" />
                                 </div>
@@ -173,7 +173,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                        {{-- </form> --}}
                     </div>
                 </div>
             </div>
@@ -186,7 +186,7 @@
         @endif --}}
         @if ($addedEstimate != null || Session::has('addedEstimateData'))
         <div x-transition.duration.500ms>
-            <livewire:estimate.added-estimate-list :addedEstimateData="$addedEstimate"
+            <livewire:estimate.added-estimate-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
                 :wire:key="$addedEstimateUpdateTrack" />
         </div>
         @endif

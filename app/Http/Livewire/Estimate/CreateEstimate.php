@@ -13,7 +13,7 @@ use WireUi\Traits\Actions;
 class CreateEstimate extends Component
 {
     use Actions;
-    public $estimateData = [], $getCategory = [],$fatchDropdownData = [];
+    public $estimateData = [], $getCategory = [],$fatchDropdownData = [],$sorMasterDesc;
     // TODO:: remove $showTableOne if not use
     public $kword = null,$selectedSORKey,$selectedCategoryId,$showTableOne=false,$addedEstimateUpdateTrack;
     public $addedEstimate = [];
@@ -25,7 +25,7 @@ class CreateEstimate extends Component
     }
     public function changeCategory($value)
     {
-        $this->resetExcept(['addedEstimate','selectedCategoryId','addedEstimateUpdateTrack']);
+        $this->resetExcept(['addedEstimate','selectedCategoryId','addedEstimateUpdateTrack','sorMasterDesc']);
         $value = $value['_x_bindings']['value'];
         $this->estimateData['item_name'] = $value;
         if ($this->estimateData['item_name'] == 'SOR') {
@@ -51,7 +51,7 @@ class CreateEstimate extends Component
             $this->estimateData['total_amount'] ='';
         }
     }
- 
+
     public function getDeptCategory()
     {
         $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
@@ -113,7 +113,9 @@ class CreateEstimate extends Component
         $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
         $this->addedEstimate['version'] = $this->estimateData['version'];
         $this->addedEstimateUpdateTrack = rand(1, 1000);
-        $this->resetExcept(['addedEstimate','showTableOne','addedEstimateUpdateTrack']);
+        // dd($this->sorMasterDesc);
+
+        $this->resetExcept(['addedEstimate','showTableOne','addedEstimateUpdateTrack','sorMasterDesc']);
     }
 
     public function render()
