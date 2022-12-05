@@ -1,5 +1,5 @@
 <div x-data="{ formOpen: @entangle('formOpen') }" >
-    <div x-show="formOpen" x-transition.duration.00ms>
+    <div x-show="formOpen" x-transition.duration.900ms>
         @if ($formOpen)
             <livewire:estimate.create-estimate />
         @endif
