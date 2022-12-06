@@ -27,12 +27,10 @@
                         </div>
                         <div class="col col-md-6 col-lg-6 mb-2">
                             <div class="btn-group float-right" role="group" aria-label="Basic example">
-                                @if ($openTotalButton)
-                                    <button type="button" class="btn btn-soft-primary"
-                                        wire:click="totalOnSelected">{{ trans('cruds.estimate.fields.total_on_selected') }}
-                                    </button>
-                                @endif
-                                <button type="button" class="btn btn-soft-info">
+                                <button type="button" class="btn btn-soft-primary" wire:click="totalOnSelected"
+                                    @if ($openTotalButton) {{ '' }}@else {{ 'disabled' }} @endif>{{ trans('cruds.estimate.fields.total_on_selected') }}
+                                </button>
+                                <button type="button" class="btn btn-soft-info" wire:click="exportWord">
                                     <span class="btn-inner">
                                         <x-lucide-sheet class="w-4 h-4 text-gray-500" />
                                     </span>
@@ -62,7 +60,7 @@
                                     <tr>
                                         <td>
                                             <x-checkbox wire:key="{{ $key . 'checkbox' }}" id="checkbox"
-                                                wire:model="level" value="{{ $addedEstimate['array_id'] }}"
+                                                wire:model.defer="level" value="{{ $addedEstimate['array_id'] }}"
                                                 wire:click="showTotalButton" />
                                         </td>
                                         <td>
@@ -84,7 +82,7 @@
                                                 @if ($addedEstimate['remarks'])
                                                     {{ $addedEstimate['arrayIndex'] . ' ( ' . $addedEstimate['remarks'] . ' ) ' }}
                                                 @elseif ($addedEstimate['operation'] == 'Total')
-                                                    {{ 'Total of '.$addedEstimate['arrayIndex'] }}
+                                                    {{ 'Total of ' . $addedEstimate['arrayIndex'] }}
                                                 @else
                                                     {{ $addedEstimate['arrayIndex'] }}
                                                 @endif
@@ -104,7 +102,7 @@
                                         </td>
                                         <td>
                                             @if ($arrayRow == $key)
-                                                <x-button wire:click="openModal({{ $addedEstimate['array_id'] }})"
+                                                <x-button wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
                                                     type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete

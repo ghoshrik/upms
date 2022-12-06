@@ -12,5 +12,8 @@ class SorMaster extends Model
     protected $fillable = [
         'estimate_id','sorMasterDesc','status','is_verified'
     ];
-    
+    // public function estimatelist()
+    // {
+    //     $this->belongsTo(EstimatePrepare::class,'estimate_id','estimate_id');
+    // }
 }
