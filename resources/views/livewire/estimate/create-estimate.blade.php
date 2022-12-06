@@ -178,12 +178,6 @@
                 </div>
             </div>
         </div>
-        {{-- @if ($showTableOne && $addedEstimate != null)
-        <livewire:estimate.added-estimate-list :addedEstimateData="$addedEstimate" :key="1" />
-        @endif
-        @if (!$showTableOne && $addedEstimate != null)
-        <livewire:estimate.added-estimate-list :addedEstimateData="$addedEstimate" :key="2" />
-        @endif --}}
         @if ($addedEstimate != null || Session::has('addedEstimateData'))
         <div x-transition.duration.500ms>
             <livewire:estimate.added-estimate-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
