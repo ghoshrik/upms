@@ -16,7 +16,7 @@
                                 </div>
                                 <div class="col col-md-4 col-lg-4 col-sm-12 col-xs-12 mb-2">
                                     <div class="form-group">
-                                        <x-select label="{{ trans('cruds.estimate.fields.category') }}"
+                                        <x-select wire:key="categoryType" label="{{ trans('cruds.estimate.fields.category') }}"
                                             placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
                                             wire:model.defer="selectedCategoryId"
                                             x-on:select="$wire.changeCategory($event.target)">
@@ -79,7 +79,7 @@
                                     <div class="form-group">
                                         <x-select wire:key="sor" label="Select {{ trans('cruds.estimate.fields.sor') }}"
                                             placeholder="Select {{ trans('cruds.estimate.fields.sor') }}"
-                                            wire:model.defer="selectedSORKey" x-on:select="$wire.getItemDetails()">
+                                            wire:model.defer="selectedSORKey" x-on:select="$wire.getItemDetails()" dynamicSearch=true>
                                             @isset($this->fatchDropdownData['items_number'])
                                             @foreach ($this->fatchDropdownData['items_number'] as $key => $item)
                                             <x-select.option label="{{ $item['Item_details'] }}" value="{{ $key }}" />

@@ -4,53 +4,89 @@
             <livewire:estimate.create-estimate />
         @endif
     </div>
-    <div x-show="!formOpen" class="row" x-transition.duration.500ms>
-        <div class="col-md-6 col-sm-3 col-lg-12 ml-auto mr-auto">
-            <div class="card">
-                <div class="card-header">
-                    <nav>
-                        <div class="mb-3 nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
-                            <button class="nav-link align-items-center rounded-pill flex-sm-fill" id="nav-home-tab"
-                                data-bs-toggle="tab" data-bs-target="#nav-home " type="button" role="tab"
-                                aria-controls="nav-home" aria-selected="false">
-                                Home <span class="badge bg-secondary">0</span>
-                            </button>
-                            <button class="nav-link align-items-center active flex-sm-fill rounded-pill"
-                                id="nav-profile-tab " data-bs-toggle="tab" data-bs-target="#nav-profile" type="button"
-                                role="tab" aria-controls="nav-profile" aria-selected="true">Profile <span
-                                    class="badge bg-secondary">0</span></button>
-                            <button class="nav-link align-items-center rounded-pill flex-sm-fill" id="nav-contact-tab "
-                                data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab"
-                                aria-controls="nav-contact" aria-selected="false">Contact
-                                <span class="badge bg-secondary">0</span>
-                            </button>
-                        </div>
-                    </nav>
-                </div>
-                <div class="card-body">
-                    <div class="tab-content" id="nav-tabContent">
-                        <div class="tab-pane fade" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                            <p><strong>This is some placeholder content the Home tab's associated content.</strong>
-                                Clicking another tab will toggle the visibility of this one for the next. The tab
-                                JavaScript swaps classes to control the content visibility and styling. You can use it
-                                with tabs, pills, and any other <code>.nav</code>-powered navigation.</p>
-                        </div>
-                        <div class="tab-pane fade active show" id="nav-profile" role="tabpanel"
-                            aria-labelledby="nav-profile-tab">
-                            <p><strong>This is some placeholder content the Profile tab's associated content.</strong>
-                                Clicking another tab will toggle the visibility of this one for the next. The tab
-                                JavaScript swaps classes to control the content visibility and styling. You can use it
-                                with tabs, pills, and any other <code>.nav</code>-powered navigation.</p>
-                        </div>
-                        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-                            <p><strong>This is some placeholder content the Contact tab's associated content.</strong>
-                                Clicking another tab will toggle the visibility of this one for the next. The tab
-                                JavaScript swaps classes to control the content visibility and styling. You can use it
-                                with tabs, pills, and any other <code>.nav</code>-powered navigation.</p>
+
+
+    <div x-show="!formOpen" x-transition.duration.500ms>
+        <div class="row">
+
+
+                <div class="col-md-4 col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="progress-widget">
+
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="5" rx="2"></rect><path d="M4 9v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"></path><path d="M10 13h4"></path></svg>
+                                <div class="progress-detail">
+                                   <p  class="mb-2">
+                                    Draft
+                                   </p>
+                                   <h4 class="counter" style="visibility: visible;">0</h4>
+                                </div>
+                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+                <div class="col-md-4 col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="progress-widget">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 17 20 12 15 7"></polyline><path d="M4 18v-2a4 4 0 0 1 4-4h12"></path></svg>
+                                <div class="progress-detail">
+                                   <p  class="mb-2">Forwared</p>
+                                   <h4 class="counter" style="visibility: visible;">1</h4>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="progress-widget">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>
+                                <div class="progress-detail">
+                                   <p  class="mb-2">Reverted</p>
+                                   <h4 class="counter" style="visibility: visible;">2</h4>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <x-cards title="">
+                    <x-slot name="table">
+                        <livewire:estimate.estimated-data-table />
+                    </x-slot>
+                </x-cards>
+
+
+                <div class="col-md-12 col-lg-12 col-sm-3">
+                   <div class="card">
+                        {{-- <div class="card-body"><button wire:click="testButton">
+button
+</button>
+{{ $parammm }}
+                            <livewire:designation-table value="{{ $parammm }}" :wire:key="$key"/>
+                        </div> --}}
+                        {{-- <livewire:estimate-prepare /> --}}
+                   </div>
+                </div>
+                <div class="col-md-12 col-lg-12 col-sm-3">
+                    <div class="card">
+                         <div class="card-body">
+                            forwarded
+                         </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-12 col-sm-3">
+                    <div class="card">
+                         <div class="card-body">
+                            reverted
+                         </div>
+                    </div>
+                </div>
         </div>
     </div>
     <x-modal wire:model.defer="simpleModal">

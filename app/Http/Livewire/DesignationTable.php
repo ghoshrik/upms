@@ -11,6 +11,7 @@ use Rappasoft\LaravelLivewireTables\Views\Columns\ButtonGroupColumn;
 class DesignationTable extends DataTableComponent
 {
     protected $model = Designation::class;
+    public string $value;
 
     public function configure(): void
     {
@@ -25,7 +26,7 @@ class DesignationTable extends DataTableComponent
             ->sortable()
             ->setSortingPillTitle('Key')
             ->setSortingPillDirections('0-9', '9-0'),
-            Column::make("Designation name", "designation_name")
+            Column::make($this->value, "designation_name")
                 ->sortable()
                 ->searchable()
                 ->collapseOnMobile(),
