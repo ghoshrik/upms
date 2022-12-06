@@ -7,6 +7,9 @@ use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Columns\LinkColumn;
 use Rappasoft\LaravelLivewireTables\Views\Columns\ButtonGroupColumn;
 use App\Models\EstimatePrepare;
+use App\Models\SorMaster;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class EstimatedDataTable extends DataTableComponent
 {
@@ -24,11 +27,11 @@ class EstimatedDataTable extends DataTableComponent
                 ->sortable(),
             Column::make("Estimate no", "estimate_id")
                 ->sortable(),
-            Column::make("Estimate Total","total_amount")
-            ->sortable(),
-            // Column::make("Row index", "row_index")
-            //     ->sortable(),
-            // Column::make("Sor item number", "sor_item_number")
+            Column::make("DESCRIPTION", "sorMasterDesc")
+                ->sortable(),
+            Column::make("status", "status")
+                ->sortable(),
+            // Column::make("ESTIMATE TOTAL", "estimatelist.total_amount")
             //     ->sortable(),
             // Column::make("Estimate no", "estimate_no")
             //     ->sortable(),
@@ -72,5 +75,17 @@ class EstimatedDataTable extends DataTableComponent
                         }),
                 ]),
         ];
+    }
+    public function builder(): Builder
+    {
+        $result = SorMaster::query()
+            ->join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
+            ->join('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
+            ->where('estimate_prepares.operation', 'Total')
+            ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
+            ->where('estimate_user_assign_records.estimate_user_type', '=', 2)
+            ->where('sor_masters.status', '=', 1);
+            // dd($result->toSql());
+        return $result;
     }
 }
