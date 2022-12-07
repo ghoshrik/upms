@@ -12,6 +12,7 @@ use App\Models\EstimateUserAssignRecord;
 use ChrisKonnertz\StringCalc\Exceptions\StringCalcException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use WireUi\Traits\Actions;
 
 class AddedEstimateList extends Component
@@ -66,10 +67,9 @@ class AddedEstimateList extends Component
                                 $this->expression = str_replace($info, $this->allAddedEstimatesData[$alp_id]['total_amount'], $this->expression, $key);
                             }
                         } else {
-                            $this->dispatchBrowserEvent('alert', [
-                                'type' => 'error',
-                                'message' => $alphabet . ' is a invalid input'
-                            ]);
+                            $this->notification()->error(
+                                $title = $alphabet . ' is a invalid input'
+                            );
                         }
                     } elseif (htmlspecialchars($info) == "%") {
                         $this->expression = str_replace($info, "/100*", $this->expression, $key);
@@ -80,10 +80,9 @@ class AddedEstimateList extends Component
             $this->insertAddEstimate($tempIndex, '', '', '', '', '', '', '', '', $result, 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
-            $this->dispatchBrowserEvent('alert', [
-                'type' => 'error',
-                'message' => $exception->getMessage()
-            ]);
+            $this->notification()->error(
+                $title = $exception->getMessage()
+            );
         }
     }
     public function showTotalButton()
@@ -231,13 +230,12 @@ class AddedEstimateList extends Component
     {
         try {
             if ($this->allAddedEstimatesData) {
-                dd('test validation');
                 $intId = random_int(100000, 999999);
                 if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
                     foreach ($this->allAddedEstimatesData as $key => $value) {
                         $insert = [
                             'estimate_id' => $intId,
-                            'dept_id' => $value['dept_id'],
+                            'dept_id' => 'aaaaa',
                             'category_id' => $value['category_id'],
                             'row_id' => $value['array_id'],
                             'row_index' => $value['arrayIndex'],
@@ -251,6 +249,16 @@ class AddedEstimateList extends Component
                             'created_by' => Auth::user()->id,
                             'comments' => $value['remarks'],
                         ];
+                        $validateData = Validator::make($insert,[
+                            'estimate_id' => 'required|integer',
+                            'dept_id' => 'required|integer',
+                            'category_id' => 'required|integer',
+                            'row_id' => 'required|integer',
+                        ]);
+                        if($validateData->fails())
+                        {
+                            // dd($validateData->messages());
+                        }
                         EstimatePrepare::create($insert);
                     }
                     $data = [
