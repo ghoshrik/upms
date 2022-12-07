@@ -231,48 +231,49 @@ class AddedEstimateList extends Component
     {
         try {
             if ($this->allAddedEstimatesData) {
+                dd('test validation');
                 $intId = random_int(100000, 999999);
-                foreach ($this->allAddedEstimatesData as $key => $value) {
-                    $insert = [
+                if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
+                    foreach ($this->allAddedEstimatesData as $key => $value) {
+                        $insert = [
+                            'estimate_id' => $intId,
+                            'dept_id' => $value['dept_id'],
+                            'category_id' => $value['category_id'],
+                            'row_id' => $value['array_id'],
+                            'row_index' => $value['arrayIndex'],
+                            'sor_item_number' => $value['sor_item_number'],
+                            'item_name' => $value['item_name'],
+                            'other_name' => $value['other_name'],
+                            'qty' => $value['qty'],
+                            'rate' => $value['rate'],
+                            'total_amount' => $value['total_amount'],
+                            'operation' => $value['operation'],
+                            'created_by' => Auth::user()->id,
+                            'comments' => $value['remarks'],
+                        ];
+                        EstimatePrepare::create($insert);
+                    }
+                    $data = [
                         'estimate_id' => $intId,
-                        'dept_id' => $value['dept_id'],
-                        'category_id' => $value['category_id'],
-                        'row_id' => $value['array_id'],
-                        'row_index' => $value['arrayIndex'],
-                        'sor_item_number' => $value['sor_item_number'],
-                        'item_name' => $value['item_name'],
-                        'other_name' => $value['other_name'],
-                        'qty' => $value['qty'],
-                        'rate' => $value['rate'],
-                        'total_amount' => $value['total_amount'],
-                        'operation' => $value['operation'],
-                        'created_by' => Auth::user()->id,
-                        'comments' => $value['remarks'],
+                        'estimate_user_type' => 2,
+                        'estimate_user_id' => Auth::user()->id,
                     ];
-                    EstimatePrepare::create($insert);
+                    EstimateUserAssignRecord::create($data);
+
+                    $this->notification()->success(
+                        $title = 'Estimate Prepare Created Successfully!!'
+                    );
+                    $this->resetSession();
+                    $this->emit('openForm');
                 }
-                ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1]);
-                $data = [
-                    'estimate_id' => $intId,
-                    'estimate_user_type' => 2,
-                    'estimate_user_id' => Auth::user()->id,
-                ];
-                EstimateUserAssignRecord::create($data);
-
-                $this->notification()->success(
-                    $title = 'Estimate Prepare Created Successfully!!'
-                );
-                $this->resetSession();
-                $this->emit('openForm');
-
             } else {
-
                 $this->notification()->error(
                     $title = 'please insert at list one item !!'
                 );
             }
         } catch (\Throwable $th) {
-            session()->flash('serverError', $th->getMessage());
+            // session()->flash('serverError', $th->getMessage());
+            $this->emit('showError', $th->getMessage());
         }
     }
     public function render()

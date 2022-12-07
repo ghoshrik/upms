@@ -52,26 +52,10 @@
                         </div>
                     </div>
                 </div>
-
-
-
-                {{-- <x-cards title="">
-                    <x-slot name="table">
-                        <livewire:estimate.estimated-data-table />
-                    </x-slot>
-                </x-cards> --}}
-
                 <div class="col-md-12 col-lg-12 col-sm-3">
                     <div class="card">
                          <div class="card-body">
-                            <livewire:estimate.estimated-data-table />
-                         </div>
-                    </div>
-                </div>
-                <div class="col-md-12 col-lg-12 col-sm-3">
-                    <div class="card">
-                         <div class="card-body">
-                            reverted
+                           <livewire:estimate.estimated-data-table />
                          </div>
                     </div>
                 </div>

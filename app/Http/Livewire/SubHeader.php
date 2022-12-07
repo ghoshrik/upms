@@ -8,7 +8,8 @@ class SubHeader extends Component
 {
     public $createButtonOn = false;
     public $titel = 'UPMS',$subTitel;
-    protected $listeners = ['openForm' => 'CCButtonControl','changeTitel'=>'setTitel','changeSubTitel'=>'setSubTitel'];
+    protected $listeners = ['openForm' => 'CCButtonControl','changeTitel'=>'setTitel','changeSubTitel'=>'setSubTitel','showError'=>'setErrorAlert'];
+    public $errorMessage;
 
     public function CCButtonControl()
     {
@@ -21,6 +22,10 @@ class SubHeader extends Component
     public function setSubTitel($subTitel)
     {
         $this->subTitel = $subTitel;
+    }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
     }
     public function render()
     {

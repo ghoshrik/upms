@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class EstimatedDataTable extends DataTableComponent
 {
-    protected $model = EstimatePrepare::class;
+    protected $model = SorMaster::class;
 
     public function configure(): void
     {
@@ -22,17 +22,20 @@ class EstimatedDataTable extends DataTableComponent
 
     public function columns(): array
     {
+
         return [
             Column::make("Id", "id")
                 ->sortable(),
             Column::make("Estimate no", "estimate_id")
                 ->sortable(),
-            Column::make("DESCRIPTION", "sorMasterDesc")
-                ->sortable(),
+            Column::make("DESCRIPTION", "sorMasterDesc"),
+
+            Column::make("ESTIMATE TOTAL", "estimate_id")
+                ->format(
+                    fn ($value, $row, Column $column) => view('es')->withValue($value)
+                ),
             Column::make("status", "status")
                 ->sortable(),
-            // Column::make("ESTIMATE TOTAL", "estimatelist.total_amount")
-            //     ->sortable(),
             // Column::make("Estimate no", "estimate_no")
             //     ->sortable(),
             // Column::make("Item name", "item_name")
