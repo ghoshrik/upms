@@ -85,7 +85,7 @@ class EstimatedDataTable extends DataTableComponent
             ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 2)
             ->where('sor_masters.status', '=', 1);
-            // dd($result->toSql());
+            // dd($result->get());
         return $result;
     }
 }
