@@ -8,8 +8,6 @@
 
     <div x-show="!formOpen" x-transition.duration.500ms>
         <div class="row">
-
-
                 <div class="col-md-4 col-lg-4">
                     <div class="card">
                         <div class="card-body">
@@ -52,38 +50,10 @@
                         </div>
                     </div>
                 </div>
-
-
-
-                <x-cards title="">
-                    <x-slot name="table">
-                        <livewire:estimate.estimated-data-table />
-                    </x-slot>
-                </x-cards>
-
-
-                <div class="col-md-12 col-lg-12 col-sm-3">
-                   <div class="card">
-                        {{-- <div class="card-body"><button wire:click="testButton">
-button
-</button>
-{{ $parammm }}
-                            <livewire:designation-table value="{{ $parammm }}" :wire:key="$key"/>
-                        </div> --}}
-                        {{-- <livewire:estimate-prepare /> --}}
-                   </div>
-                </div>
                 <div class="col-md-12 col-lg-12 col-sm-3">
                     <div class="card">
                          <div class="card-body">
-                            forwarded
-                         </div>
-                    </div>
-                </div>
-                <div class="col-md-12 col-lg-12 col-sm-3">
-                    <div class="card">
-                         <div class="card-body">
-                            reverted
+                           <livewire:estimate.estimated-data-table />
                          </div>
                     </div>
                 </div>

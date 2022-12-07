@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class EstimatedDataTable extends DataTableComponent
 {
-    protected $model = EstimatePrepare::class;
+    protected $model = SorMaster::class;
 
     public function configure(): void
     {
@@ -22,17 +22,20 @@ class EstimatedDataTable extends DataTableComponent
 
     public function columns(): array
     {
+
         return [
             Column::make("Id", "id")
                 ->sortable(),
             Column::make("Estimate no", "estimate_id")
                 ->sortable(),
-            Column::make("DESCRIPTION", "sorMasterDesc")
-                ->sortable(),
+            Column::make("DESCRIPTION", "sorMasterDesc"),
+
+            Column::make("ESTIMATE TOTAL", "estimate_id")
+                ->format(
+                    fn ($value, $row, Column $column) => view('es')->withValue($value)
+                ),
             Column::make("status", "status")
                 ->sortable(),
-            // Column::make("ESTIMATE TOTAL", "estimatelist.total_amount")
-            //     ->sortable(),
             // Column::make("Estimate no", "estimate_no")
             //     ->sortable(),
             // Column::make("Item name", "item_name")
@@ -75,17 +78,5 @@ class EstimatedDataTable extends DataTableComponent
                         }),
                 ]),
         ];
-    }
-    public function builder(): Builder
-    {
-        $result = SorMaster::query()
-            ->join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-            ->join('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
-            ->where('estimate_prepares.operation', 'Total')
-            ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
-            ->where('estimate_user_assign_records.estimate_user_type', '=', 2)
-            ->where('sor_masters.status', '=', 1);
-            // dd($result->toSql());
-        return $result;
     }
 }
