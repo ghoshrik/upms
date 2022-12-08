@@ -10,6 +10,7 @@ use App\Models\EstimatePrepare;
 use App\Models\SorMaster;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Rappasoft\LaravelLivewireTables\Views\Filter;
 
 class EstimatedDataTable extends DataTableComponent
 {
@@ -17,7 +18,8 @@ class EstimatedDataTable extends DataTableComponent
 
     public function configure(): void
     {
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey('estimate_id');
+        $this->setDebugStatus(true);
     }
 
     public function columns(): array
@@ -34,6 +36,7 @@ class EstimatedDataTable extends DataTableComponent
                 ->format(
                     fn ($value, $row, Column $column) => view('es')->withValue($value)
                 ),
+            // Column::make("ESTIMATE TOTAL", "estimatelist.total_amount"),
             Column::make("status", "status")
                 ->sortable(),
             // Column::make("Estimate no", "estimate_no")
@@ -78,5 +81,24 @@ class EstimatedDataTable extends DataTableComponent
                         }),
                 ]),
         ];
+    }
+    public function builder(): Builder
+    {
+        $result = SorMaster::query()
+            ->join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
+            ->join('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
+            ->where('estimate_prepares.operation', 'Total')
+            ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
+            ->where('estimate_user_assign_records.estimate_user_type', '=', 2)
+            ->where('sor_masters.status', '=', 1);
+            // ->select('sor_masters.id as id', 'sor_masters.estimate_id as estimate_id',
+                // 'sor_masters.sorMasterDesc as sorMasterDesc', 'sor_masters.estimate_id as estimate_id', 'sor_masters.status as status','estimate_user_assign_records.estimate_user_id as estimate_user_id');
+            // dd($result->get());
+        // $result = SorMaster::
+        // join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
+        // ->join('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
+        // ->where('estimate_prepares.operation', 'Total');
+        // dd($result->get());
+        return $result;
     }
 }
