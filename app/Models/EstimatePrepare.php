@@ -29,6 +29,10 @@ class EstimatePrepare extends Model
     ];
     public function sorNumber()
     {
-        return $this->belongsTo(SOR::class,'sor_item_number');
+        return $this->belongsTo(SOR::class,'sor_item_number','id');
+    }
+    public function SOR()
+    {
+        return $this->belongsTo(SorMaster::class,'estimate_id','estimate_id');
     }
 }

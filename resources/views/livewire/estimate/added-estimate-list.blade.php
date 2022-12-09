@@ -69,11 +69,13 @@
                                             </div>
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['sor_item_number'])
+                                            {{ $addedEstimate['sor_item_number'] ?  $addedEstimate['sor_item_number'] : '---'}}
+
+                                            {{-- @if ($addedEstimate['sor_item_number'])
                                                 {{ $addedEstimate['sor_item_number'] }}
                                             @else
                                                 --
-                                            @endif
+                                            @endif --}}
                                         </td>
                                         <td>
                                             @if ($addedEstimate['sor_item_number'])

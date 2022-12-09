@@ -7,6 +7,7 @@ use App\Models\EstimatePrepare;
 use App\Models\SOR;
 use App\Models\SORCategory;
 use App\Models\SorCategoryType;
+use App\Models\SorMaster;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -17,17 +18,23 @@ class EditEstimate extends Component
     // TODO:: remove $showTableOne if not use
     public $kword = null,$selectedSORKey,$selectedCategoryId,$showTableOne=false,$addedEstimateUpdateTrack;
     public $addedEstimate = [];
-    //set estimate value for testing edit
-    public $estimate_id = 471446;
+    public $estimate_id;
+    protected $listeners = ['editEstimateRow' => 'editEstimate'];
+    public function editEstimate($estimateId = 0)
+    {
+        // dd($estimateId);
+       $this->estimate_id = $estimateId;
+       $this->addedEstimate = EstimatePrepare::with('sorNumber')->where('estimate_id',$this->estimate_id)->get();
+    //    dd($this->addedEstimate);
+       $this->sorMasterDesc = SorMaster::select('sorMasterDesc')->where('estimate_id',$this->estimate_id)->first();
+
+    }
     public function mount()
     {
         if(Session()->has('addedEstimateData')){
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
-        if($this->estimate_id)
-        {
-            $this->addedEstimate = EstimatePrepare::where('estimate_id',$this->estimate_id)->get();
-        }
+
     }
     public function changeCategory($value)
     {
@@ -74,7 +81,7 @@ class EditEstimate extends Component
     {
         $keyword = $keyword['_x_bindings']['value'];
         $this->kword = $keyword;
-        $this->fatchDropdownData['items_number'] = SORR::where('department_id', $this->estimateData['dept_id'])
+        $this->fatchDropdownData['items_number'] = SOR::where('department_id', $this->estimateData['dept_id'])
             ->where('dept_category_id', $this->estimateData['dept_category_id'])
             ->where('version', $this->estimateData['version'])
             ->where('Item_details', 'like', '%' . $keyword . '%')->get();

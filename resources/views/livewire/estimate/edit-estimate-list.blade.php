@@ -57,6 +57,10 @@
                             <tbody>
                                 {{-- @dd($allAddedEstimatesData) --}}
                                 @foreach ($allAddedEstimatesData as $key => $addedEstimate)
+                                {{-- @dd($addedEstimate) --}}
+                                @php
+                                    // $sorDesc = \App\Models\
+                                @endphp
                                     <tr>
                                         <td>
                                             <x-checkbox wire:key="{{ $key . 'checkbox' }}" id="checkbox"
@@ -70,14 +74,14 @@
                                         </td>
                                         <td>
                                             @if ($addedEstimate['sor_item_number'])
-                                                {{ $addedEstimate['sor_item_number'] }}
+                                                {{ $addedEstimate->sorNumber->Item_details }}
                                             @else
                                                 --
                                             @endif
                                         </td>
                                         <td>
                                             @if ($addedEstimate['sor_item_number'])
-                                                {{ $addedEstimate['description'] }}
+                                                {{ $addedEstimate->sorNumber->description}}
                                             @elseif ($addedEstimate['row_index'])
                                                 @if ($addedEstimate['remarks'])
                                                     {{ $addedEstimate['row_index'] . ' ( ' . $addedEstimate['remarks'] . ' ) ' }}
@@ -101,8 +105,18 @@
                                             {{ $addedEstimate['total_amount'] }}
                                         </td>
                                         <td>
+                                            @if ($addedEstimate['row_index'] == null)
+                                                <x-button
+                                                    wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
+                                                    type="button" class="btn btn-soft-primary btn-sm">
+                                                    <span class="btn-inner">
+                                                        <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
+                                                    </span>
+                                                </x-button>
+                                            @endif
                                             @if ($arrayRow == $addedEstimate['row_id'])
-                                                <x-button wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
+                                                <x-button
+                                                    wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
                                                     type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete

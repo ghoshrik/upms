@@ -14,12 +14,11 @@ use Rappasoft\LaravelLivewireTables\Views\Filter;
 
 class EstimatedDataTable extends DataTableComponent
 {
-    protected $model = SorMaster::class;
+    // protected $model = EstimatePrepare::class;
 
     public function configure(): void
     {
         $this->setPrimaryKey('estimate_id');
-        $this->setDebugStatus(true);
     }
 
     public function columns(): array
@@ -30,75 +29,23 @@ class EstimatedDataTable extends DataTableComponent
                 ->sortable(),
             Column::make("Estimate no", "estimate_id")
                 ->sortable(),
-            Column::make("DESCRIPTION", "sorMasterDesc"),
+            Column::make("DESCRIPTION", "SOR.sorMasterDesc")
+            ->sortable(),
+            Column::make("TOTAL AMOUNT", "total_amount")
+            ->sortable(),
 
-            Column::make("ESTIMATE TOTAL", "estimate_id")
-                ->format(
-                    fn ($value, $row, Column $column) => view('es')->withValue($value)
-                ),
-            // Column::make("ESTIMATE TOTAL", "estimatelist.total_amount"),
-            Column::make("status", "status")
-                ->sortable(),
-            // Column::make("Estimate no", "estimate_no")
-            //     ->sortable(),
-            // Column::make("Item name", "item_name")
-            //     ->sortable(),
-            // Column::make("Other name", "other_name")
-            //     ->sortable(),
-            // Column::make("Qty", "qty")
-            //     ->sortable(),
-            // Column::make("Rate", "rate")
-            //     ->sortable(),
-            // Column::make("Total amount", "total_amount")
-            //     ->sortable(),
-            // Column::make("Percentage rate", "percentage_rate")
-            //     ->sortable(),
-            // Column::make("Operation", "operation")
-            //     ->sortable(),
-            // Column::make("Created by", "created_by")
-            //     ->sortable(),
-            // Column::make("Comments", "comments")
-            //     ->sortable(),
-            // Column::make("Created at", "created_at")
-            //     ->sortable(),
-            // Column::make("Updated at", "updated_at")
-            //     ->sortable(),
-            ButtonGroupColumn::make('Actions')
-                ->attributes(function ($row) {
-                    return [
-                        'class' => 'space-x-2',
-                    ];
-                })
-                ->buttons([
-                    LinkColumn::make('Edit') // make() has no effect in this case but needs to be set anyway
-                        ->title(fn ($row) => 'Edit ' . $row->name)
-                        ->location(fn ($row) => route('designation', $row))
-                        ->attributes(function ($row) {
-                            return [
-                                'target' => '_blank',
-                                'class' => 'btn btn-soft-warning'
-                            ];
-                        }),
-                ]),
+            Column::make("Actions", "estimate_id")->view('components.data-table-components.buttons.edit'),
         ];
+    }
+
+    public function edit($id)
+    {
+        $this->emit('openForm',true,$id);
     }
     public function builder(): Builder
     {
-        $result = SorMaster::query()
-            ->join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-            ->join('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
-            ->where('estimate_prepares.operation', 'Total')
-            ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
-            ->where('estimate_user_assign_records.estimate_user_type', '=', 2)
-            ->where('sor_masters.status', '=', 1);
-            // ->select('sor_masters.id as id', 'sor_masters.estimate_id as estimate_id',
-                // 'sor_masters.sorMasterDesc as sorMasterDesc', 'sor_masters.estimate_id as estimate_id', 'sor_masters.status as status','estimate_user_assign_records.estimate_user_id as estimate_user_id');
-            // dd($result->get());
-        // $result = SorMaster::
-        // join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-        // ->join('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
-        // ->where('estimate_prepares.operation', 'Total');
-        // dd($result->get());
-        return $result;
+        return EstimatePrepare::query()
+        ->where('operation','Total');
+        // ->groupBy('estimate_id.estimate_id');
     }
 }

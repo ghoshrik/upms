@@ -138,7 +138,7 @@ class CreateEstimate extends Component
         $this->estimateData['description'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['description'];
         $this->estimateData['qty'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['unit'];
         $this->estimateData['rate'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['cost'];
-        $this->estimateData['item_number'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['Item_details'];
+        $this->estimateData['item_number'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['id'];
         $this->calculateValue();
     }
 
@@ -159,7 +159,6 @@ class CreateEstimate extends Component
     {
         $validatee = $this->validate();
         $this->reset('addedEstimate');
-
         $this->showTableOne = !$this->showTableOne;
         $this->addedEstimate['dept_id'] = $this->estimateData['dept_id'];
         $this->addedEstimate['category_id'] = $this->estimateData['dept_category_id'];
@@ -173,7 +172,7 @@ class CreateEstimate extends Component
         $this->addedEstimate['version'] = $this->estimateData['version'];
         $this->addedEstimateUpdateTrack = rand(1, 1000);
         // dd($this->sorMasterDesc);
-
+        dd($this->addedEstimate);
         $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc']);
     }
 

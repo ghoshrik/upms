@@ -12,6 +12,7 @@ use WireUi\Traits\Actions;
 class EditEstimateList extends Component
 {
     use Actions;
+    public $eid = 0;
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc;

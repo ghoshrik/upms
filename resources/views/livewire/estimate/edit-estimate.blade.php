@@ -11,8 +11,8 @@
                             <div class="row">
                                 <div class="col col-md-8 col-lg-8 col-sm-12 col-xs-12 mb-2">
                                     <x-textarea wire:model="sorMasterDesc" rows="2"
-                                        label="{{ trans('cruds.estimate.fields.description') }}"
-                                        placeholder="Your project {{ trans('cruds.estimate.fields.description') }}" />
+                                        label="{{ trans('cruds.estimate.fields.description') }}" value="{{ $sorMasterDesc }}"
+                                        placeholder="Your project {{ trans('cruds.estimate.fields.description') }}"/>
                                 </div>
                                 <div class="col col-md-4 col-lg-4 col-sm-12 col-xs-12 mb-2">
                                     <div class="form-group">
