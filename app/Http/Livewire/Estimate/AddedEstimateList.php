@@ -231,7 +231,6 @@ class AddedEstimateList extends Component
     {
         try {
             if ($this->allAddedEstimatesData) {
-                dd('test validation');
                 $intId = random_int(100000, 999999);
                 if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
                     foreach ($this->allAddedEstimatesData as $key => $value) {
