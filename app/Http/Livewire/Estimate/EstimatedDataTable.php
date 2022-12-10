@@ -13,28 +13,31 @@ use Illuminate\Support\Facades\Auth;
 
 class EstimatedDataTable extends DataTableComponent
 {
-    protected $model = SorMaster::class;
+    protected $model = EstimatePrepare::class;
 
     public function configure(): void
     {
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey('estimate_id');
+        $this->setDebugEnabled();
     }
 
     public function columns(): array
     {
-
+        
         return [
-            Column::make("Id", "id")
-                ->sortable(),
-            Column::make("Estimate no", "estimate_id")
-                ->sortable(),
-            Column::make("DESCRIPTION", "sorMasterDesc"),
+            // Column::make("Id", "id")
+            //     ->sortable(),
+            // Column::make("Estimate no", "estimate_id")
+            //     ->sortable(),
+            // Column::make("DESCRIPTION", "sorMasterDesc"),
 
-            Column::make("ESTIMATE TOTAL", "estimate_id")
-                ->format(
-                    fn ($value, $row, Column $column) => view('es')->withValue($value)
-                ),
-            Column::make("status", "status")
+            // Column::make("ESTIMATE TOTAL", "estimate_id")
+            //     ->format(
+            //         fn ($value, $row, Column $column) => view('es')->withValue($value)
+            //     ),
+            Column::make("ESTIMATE TOTAL", "total_amount"),
+               
+            Column::make("status", "SOR.status")
                 ->sortable(),
             // Column::make("Estimate no", "estimate_no")
             //     ->sortable(),
@@ -79,16 +82,28 @@ class EstimatedDataTable extends DataTableComponent
                 ]),
         ];
     }
-    public function builder(): Builder
-    {
-        $result = SorMaster::query()
-            ->join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-            ->join('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
-            ->where('estimate_prepares.operation', 'Total')
-            ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
-            ->where('estimate_user_assign_records.estimate_user_type', '=', 2)
-            ->where('sor_masters.status', '=', 1);
-            // dd($result->get());
-        return $result;
-    }
+    // public function builder(): Builder
+    // {
+    //     // $result = SorMaster::query()
+    //     //     ->join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
+    //     //     ->join('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
+    //     //     ->where('estimate_prepares.operation', 'Total')
+    //     //     ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
+    //     //     ->where('estimate_user_assign_records.estimate_user_type', '=', 2)
+    //     //     ->where('sor_masters.status', '=', 1);
+    //     $result = SorMaster::query()
+    //             ->with('estimate')
+    //         // ->join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
+    //         // ->join('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
+    //         // ->where('estimate_prepares.operation', 'Total')
+    //         // ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
+    //         // ->where('estimate_user_assign_records.estimate_user_type', '=', 2)
+    //         ->where('sor_masters.status', '=', 1);
+    //     // dd($result->get());
+    //     return $result;
+    // }
+    // public function builder(): Builder
+    // {
+    //     return EstimatePrepare::query()->where('status',1);
+    // }
 }
