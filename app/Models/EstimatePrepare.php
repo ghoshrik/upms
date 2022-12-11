@@ -29,6 +29,6 @@ class EstimatePrepare extends Model
     ];
     public function SOR()
     {
-       return $this->belongsTo(SorMaster::class,'estimate_id','estimate_id');
+       return $this->hasOne(SorMaster::class,'estimate_id','estimate_id');
     }
 }
