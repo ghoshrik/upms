@@ -15,8 +15,7 @@ class DesignationTable extends DataTableComponent
 
     public function configure(): void
     {
-        $this->setPrimaryKey('id')
-        ;
+        $this->setPrimaryKey('id');
     }
 
     public function columns(): array
@@ -26,7 +25,7 @@ class DesignationTable extends DataTableComponent
             ->sortable()
             ->setSortingPillTitle('Key')
             ->setSortingPillDirections('0-9', '9-0'),
-            Column::make($this->value, "designation_name")
+            Column::make("Designation", "designation_name")
                 ->sortable()
                 ->searchable()
                 ->collapseOnMobile(),

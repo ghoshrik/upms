@@ -10,10 +10,11 @@ use App\Models\EstimatePrepare;
 use App\Models\SorMaster;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Rappasoft\LaravelLivewireTables\Views\Filter;
 
 class EstimatedDataTable extends DataTableComponent
 {
-    protected $model = SorMaster::class;
+    // protected $model = EstimatePrepare::class;
 
     public function configure(): void
     {
@@ -23,7 +24,7 @@ class EstimatedDataTable extends DataTableComponent
 
     public function columns(): array
     {
-        
+
         return [
             // Column::make("Id", "id")
             //     ->sortable(),

@@ -3,65 +3,21 @@
 namespace App\Http\Livewire\Designation;
 
 use Livewire\Component;
-use App\Http\Requests\Designation;
-use App\Models\Designation as ModelsDesignation;
-use Illuminate\Http\Request;
 use WireUi\Traits\Actions;
-
-
-abstract class CreateDesignation extends Component
+use App\Models\Designation as ModelsDesignation;
+class CreateDesignation extends Component
 {
     use Actions;
 
     public $designation_name;
     protected $rules = [
-        'designation_name' => 'required|string|unique:designations,designation_name|max:255',
+        'designation_name' => 'required|string|regex:/(^([a-zA-z]+)(\d+)?$)/u|unique:designations,designation_name|max:255',
     ];
     protected $messages =
     [
-        'designation_name.required'=>'this field is required',
-        'designation_name.string'=>'this field must be string',
+        'designation_name.required'=>'This field is required',
+        'designation_name.string'=>'This field must be string',
     ];
-
-    abstract public function query();
-    public function mount()
-    {
-        $this->showDropdown = false;
-        $this->results = collect();
-    }
-
-    //testing
-
-    public function updatedSelected()
-    {
-        $this->emitSelf('valueSelected', $this->selected);
-    }
-
-    public function updatedSearch()
-    {
-        if (strlen($this->search) < 2) {
-            $this->results = collect();
-            $this->showDropdown = false;
-            return;
-        }
-
-        if ($this->query()) {
-            $this->results = $this->query()->get();
-        } else {
-            $this->results = collect();
-        }
-
-        $this->selected = '';
-        $this->showDropdown = true;
-    }
-
-
-    //testing
-
-
-
-
-
 
     public function store()
     {
@@ -69,20 +25,18 @@ abstract class CreateDesignation extends Component
         try {
             ModelsDesignation::create($validatedData);
             $this->reset();
-            // $this->dispatchBrowserEvent('alert', [
-            //     'type' => 'success',
-            //     'message' => 'Designation Created Successfully'
-            // ]);
             $this->notification()->success(
                 $title = 'Designation Created Successfully'
             );
+            // $this->emit('openForm');
 
         } catch (\Throwable $th) {
-            session()->flash('serverError', $th->getMessage());
+            $this->emit('showError', $th->getMessage());
         }
     }
     public function render()
     {
+
         $assets = ['chart', 'animation'];
         return view('livewire.designation.create-designation',compact('assets'));
     }

@@ -4,7 +4,7 @@
             <div class="card overflow-hidden">
                 <div class="card-header d-flex justify-content-between flex-wrap">
                     <div class="header-title">
-                        <h4 class="card-title mb-2">Added Estimates List</h4>
+                        <h4 class="card-title mb-2">Edit Estimates List</h4>
                     </div>
                 </div>
                 <div>
@@ -57,36 +57,38 @@
                             <tbody>
                                 {{-- @dd($allAddedEstimatesData) --}}
                                 @foreach ($allAddedEstimatesData as $key => $addedEstimate)
+                                {{-- @dd($addedEstimate) --}}
+                                @php
+                                    // $sorDesc = \App\Models\
+                                @endphp
                                     <tr>
                                         <td>
                                             <x-checkbox wire:key="{{ $key . 'checkbox' }}" id="checkbox"
-                                                wire:model.defer="level" value="{{ $addedEstimate['array_id'] }}"
+                                                wire:model.defer="level" value="{{ $addedEstimate['row_id'] }}"
                                                 wire:click="showTotalButton" />
                                         </td>
                                         <td>
                                             <div wire:key="{{ $key . 'iNo' }}" class="d-flex align-items-center">
-                                                {{ chr($key + 64) }}
+                                                {{ chr($addedEstimate['row_id'] + 64) }}
                                             </div>
                                         </td>
                                         <td>
-                                            {{ $addedEstimate['sor_item_number'] ?  $addedEstimate['sor_item_number'] : '---'}}
-
-                                            {{-- @if ($addedEstimate['sor_item_number'])
-                                                {{ $addedEstimate['sor_item_number'] }}
+                                            @if ($addedEstimate['sor_item_number'])
+                                                {{ $addedEstimate->sorNumber->Item_details }}
                                             @else
                                                 --
-                                            @endif --}}
+                                            @endif
                                         </td>
                                         <td>
                                             @if ($addedEstimate['sor_item_number'])
-                                                {{ $addedEstimate['description'] }}
-                                            @elseif ($addedEstimate['arrayIndex'])
+                                                {{ $addedEstimate->sorNumber->description}}
+                                            @elseif ($addedEstimate['row_index'])
                                                 @if ($addedEstimate['remarks'])
-                                                    {{ $addedEstimate['arrayIndex'] . ' ( ' . $addedEstimate['remarks'] . ' ) ' }}
+                                                    {{ $addedEstimate['row_index'] . ' ( ' . $addedEstimate['remarks'] . ' ) ' }}
                                                 @elseif ($addedEstimate['operation'] == 'Total')
-                                                    {{ 'Total of ' . $addedEstimate['arrayIndex'] }}
+                                                    {{ 'Total of ' . $addedEstimate['row_index'] }}
                                                 @else
-                                                    {{ $addedEstimate['arrayIndex'] }}
+                                                    {{ $addedEstimate['row_index'] }}
                                                 @endif
                                             @else
                                                 {{ $addedEstimate['other_name'] }}
@@ -103,8 +105,18 @@
                                             {{ $addedEstimate['total_amount'] }}
                                         </td>
                                         <td>
-                                            @if ($arrayRow == $key)
-                                                <x-button wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
+                                            @if ($addedEstimate['row_index'] == null)
+                                                <x-button
+                                                    wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
+                                                    type="button" class="btn btn-soft-primary btn-sm">
+                                                    <span class="btn-inner">
+                                                        <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
+                                                    </span>
+                                                </x-button>
+                                            @endif
+                                            @if ($arrayRow == $addedEstimate['row_id'])
+                                                <x-button
+                                                    wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
                                                     type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete

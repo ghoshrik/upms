@@ -2,29 +2,25 @@
 
 namespace App\Http\Livewire\Estimate;
 
-use App\Models\EstimatePrepare;
-use Illuminate\Support\Facades\Log;
-use Livewire\Component;
-use ChrisKonnertz\StringCalc\StringCalc;
-use App\Models\SORMaster as ModelsSORMaster;
-use Illuminate\Support\Facades\Auth;
 use App\Models\EstimateUserAssignRecord;
-use ChrisKonnertz\StringCalc\Exceptions\StringCalcException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use App\Models\SORMaster as ModelsSORMaster;
+use ChrisKonnertz\StringCalc\StringCalc;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 use WireUi\Traits\Actions;
 
-class AddedEstimateList extends Component
+class EditEstimateList extends Component
 {
     use Actions;
+    public $eid = 0;
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc;
 
     public function mount()
     {
-        $this->setEstimateDataToSession();
+        // $this->setEstimateDataToSession();
+        $this->allAddedEstimatesData = $this->addedEstimateData;
     }
     public function resetSession()
     {
@@ -81,9 +77,10 @@ class AddedEstimateList extends Component
             $this->insertAddEstimate($tempIndex, '', '', '', '', '', '', '', '', $result, 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
-            $this->notification()->error(
-                $title = $exception->getMessage()
-            );
+            $this->dispatchBrowserEvent('alert', [
+                'type' => 'error',
+                'message' => $exception->getMessage()
+            ]);
         }
     }
     public function showTotalButton()
@@ -231,12 +228,13 @@ class AddedEstimateList extends Component
     {
         try {
             if ($this->allAddedEstimatesData) {
+                dd('test validation');
                 $intId = random_int(100000, 999999);
                 if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
                     foreach ($this->allAddedEstimatesData as $key => $value) {
                         $insert = [
                             'estimate_id' => $intId,
-                            'dept_id' => 'aaaaa',
+                            'dept_id' => $value['dept_id'],
                             'category_id' => $value['category_id'],
                             'row_id' => $value['array_id'],
                             'row_index' => $value['arrayIndex'],
@@ -250,16 +248,6 @@ class AddedEstimateList extends Component
                             'created_by' => Auth::user()->id,
                             'comments' => $value['remarks'],
                         ];
-                        $validateData = Validator::make($insert,[
-                            'estimate_id' => 'required|integer',
-                            'dept_id' => 'required|integer',
-                            'category_id' => 'required|integer',
-                            'row_id' => 'required|integer',
-                        ]);
-                        if($validateData->fails())
-                        {
-                            // dd($validateData->messages());
-                        }
                         EstimatePrepare::create($insert);
                     }
                     $data = [
@@ -288,12 +276,6 @@ class AddedEstimateList extends Component
     public function render()
     {
         $this->arrayRow = count($this->allAddedEstimatesData);
-        return view('livewire.estimate.added-estimate-list');
-    }
-    public function logView($data, $of)
-    {
-        Log::alert('-----------------[Start OF' . $of . ']');
-        Log::info(json_encode($data));
-        Log::alert('-----------------[END OF' . $of . ']');
+        return view('livewire.estimate.edit-estimate-list');
     }
 }
