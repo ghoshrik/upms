@@ -172,7 +172,7 @@ class CreateEstimate extends Component
         $this->addedEstimate['version'] = $this->estimateData['version'];
         $this->addedEstimateUpdateTrack = rand(1, 1000);
         // dd($this->sorMasterDesc);
-        dd($this->addedEstimate);
+        // dd($this->addedEstimate);
         $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc']);
     }
 
