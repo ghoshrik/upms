@@ -11,8 +11,10 @@ use App\Http\Livewire\Designation\Designation;
 use App\Http\Livewire\Estimate\EstimatePrepare;
 use App\Models\Menu;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 // Packages
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,9 +30,16 @@ use Illuminate\Support\Facades\Route;
 require __DIR__.'/auth.php';
 Route::get('test',function(){
     // $menu = Menu::where('title','User Management');
-    $menu = Menu::find(5);
-    $menu->givePermissionTo('create user');
-    dd($menu->hasPermissionTo('create user'));
+    // $role=Role::where('name','stateAdmin')->first();
+    // $role->syncPermissions(['create user', 'edit user']);
+    // dd($role->hasPermissionTo('edit user'));
+
+    Auth::user()->assignRole('stateAdmin');
+    // $role->givePermissionTo('edit articles');
+    // dd(Auth::user());
+    // $menu = Menu::find(5);
+    // $menu->givePermissionTo('create user');
+    // dd($menu->hasPermissionTo('create user'));
 });
 Route::get('/storage', function () {
     Artisan::call('storage:link');
