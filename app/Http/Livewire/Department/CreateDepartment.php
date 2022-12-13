@@ -4,7 +4,6 @@ namespace App\Http\Livewire\Department;
 
 use App\Models\Department;
 use Livewire\Component;
-use PhpParser\Node\Expr\Throw_;
 use WireUi\Traits\Actions;
 
 class CreateDepartment extends Component

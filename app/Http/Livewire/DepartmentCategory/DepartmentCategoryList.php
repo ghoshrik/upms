@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Livewire\Designation;
+namespace App\Http\Livewire\DepartmentCategory;
 
 use Livewire\Component;
 
-class Designation extends Component
+class DepartmentCategoryList extends Component
 {
-    public $updateMode = false;
     public $formOpen=false;
     protected $listeners = ['openForm' => 'formOCControl'];
     public function formOCControl()
@@ -18,6 +17,6 @@ class Designation extends Component
     {
         $assets = ['chart', 'animation'];
         $this->emit('changeTitle', 'Designation');
-        return view('livewire.designation.designation',compact('assets'));
+        return view('livewire.department-category.department-category-list',compact('assets'));
     }
 }

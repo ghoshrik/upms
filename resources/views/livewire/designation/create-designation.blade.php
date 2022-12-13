@@ -1,7 +1,14 @@
 <div>
-    @section("webtitle",'Designations')
-    <div x-show="formOpen" class="row" x-transition.duration.500ms>
-        {{-- <x-errors /> --}}
+    <div class="row">
+        <div class="col-sm-12 col-lg-12">
+            <div class="card">
+                <div wire:loading.delay.longest>
+                    <div class="spinner-border text-primary loader-position" role="status"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" wire:loading.delay.longest.class="loading">
         <x-form-section submit="store">
             <x-slot name="form">
                 <x-input wire:model="designation_name" label="{{trans('cruds.designation.title')}}" placeholder="{{trans('cruds.designation.title')}}" />
@@ -14,6 +21,5 @@
                 </div>
             </x-slot>
         </x-form-section>
-        {{-- <x-notifications position="bottom-center" /> --}}
     </div>
 </div>
