@@ -19092,3 +19092,14 @@ pre[class*=language-] {
     bottom: 50%;
     z-index: 1;
 }
+.mutipal-add-row{
+  background-color: #f1f3f8;
+  padding-top: 15px;
+  padding-bottom: 10px;
+  border-radius: 7px;
+  margin-top: 10px;
+}
+.mutipal-row-add-button{
+  position: absolute;
+  bottom: 93px;
+}
