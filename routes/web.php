@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Livewire\Designation\CreateDesignation;
 use App\Http\Livewire\Designation\Designation;
 use App\Http\Livewire\Estimate\EstimatePrepare;
+use App\Models\Menu;
 use Illuminate\Support\Facades\Artisan;
 // Packages
 use Illuminate\Support\Facades\Route;
@@ -25,7 +26,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 require __DIR__.'/auth.php';
-
+Route::get('test',function(){
+    // $menu = Menu::where('title','User Management');
+    $menu = Menu::find(5);
+    $menu->givePermissionTo('create user');
+    dd($menu->hasPermissionTo('create user'));
+});
 Route::get('/storage', function () {
     Artisan::call('storage:link');
 });
