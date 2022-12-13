@@ -42,6 +42,7 @@ class CreateOffice extends Component
         }
         if ($this->selectedOption['In_area'] == 2) {
             $this->fetchDropdownData['urban_body'] = Urban_body::select('urban_body_code', 'urban_body_name')->where('district_code', $this->selectedOption['dist_code'])->get();
+            return;
         }
     }
     public function changeRuralBlock()

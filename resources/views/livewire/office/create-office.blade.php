@@ -71,7 +71,7 @@
                                         <x-select wire:key="urban_code"
                                             label="Select {{ trans('cruds.office.fields.urban_body_name') }}"
                                             placeholder="Select {{ trans('cruds.office.fields.urban_body_name') }}"
-                                            wire:model.defer="selectedOption.urban_body_code"
+                                            wire:model.defer="selectedOption.urban_code"
                                             x-on:select="$wire.changeUrbanBody()">
                                             @isset($fetchDropdownData['urban_body'])
                                                 @foreach ($fetchDropdownData['urban_body'] as $body)
