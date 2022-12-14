@@ -18,13 +18,13 @@ class SorDataTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            Column::make("Id", "id")
+            // Column::make("Id", "id")
+            //     ->sortable(),
+            Column::make("Item Number", "item_details")
                 ->sortable(),
-            Column::make("Item details", "item_details")
+            Column::make("Department Name", "getDepartmentName.department_name")
                 ->sortable(),
-            Column::make("Department id", "department_id")
-                ->sortable(),
-            Column::make("Dept category id", "dept_category_id")
+            Column::make("Dept Category", "getDeptCategoryName.dept_category_name")
                 ->sortable(),
             Column::make("Description", "description")
                 ->sortable(),
@@ -40,10 +40,15 @@ class SorDataTable extends DataTableComponent
                 ->sortable(),
             Column::make("IsActive", "IsActive")
                 ->sortable(),
-            Column::make("Created at", "created_at")
-                ->sortable(),
-            Column::make("Updated at", "updated_at")
-                ->sortable(),
+            Column::make("Actions", "id")->view('components.data-table-components.buttons.edit'),
+            // Column::make("Created at", "created_at")
+            //     ->sortable(),
+            // Column::make("Updated at", "updated_at")
+            //     ->sortable(),
         ];
+    }
+    public function edit($id)
+    {
+        $this->emit('openForm',true,$id);
     }
 }

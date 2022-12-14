@@ -8,6 +8,7 @@ use App\Models\SOR;
 use App\Models\SORCategory;
 use App\Models\SorCategoryType;
 use App\Models\SorMaster;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
