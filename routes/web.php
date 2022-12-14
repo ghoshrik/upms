@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Livewire\Designation\CreateDesignation;
 use App\Http\Livewire\Designation\Designation;
 use App\Http\Livewire\Estimate\EstimatePrepare;
+use App\Http\Livewire\UserManagement\UserManagement;
 use App\Models\Menu;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -82,7 +83,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('estimate-prepare',EstimatePrepare::class)->name('estimate-prepare');
     Route::get('designation',Designation::class)->name('designation');
-
+    Route::get('user-management',UserManagement::class)->name('user-mnagement');
     Route::view('/powergrid', 'powergrid-demo');
 
 });
