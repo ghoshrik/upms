@@ -1,4 +1,7 @@
 <?php
+
+use App\Models\SorMaster;
+
 function removeSession($session){
     if(\Session::has($session)){
         \Session::forget($session);
@@ -97,4 +100,14 @@ function getFileExistsCheck($media)
         }
     }
     return $mediaCondition;
+}
+
+function getEstimateDescription($estimate_no)
+{
+    if($estimate_no)
+    {
+        $estimateDescription = SorMaster::select('sorMasterDesc')->where('estimate_id',$estimate_no)->first();
+    }
+    return $estimateDescription = $estimateDescription['sorMasterDesc'];
+
 }

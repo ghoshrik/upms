@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Estimate;
+namespace App\Http\Livewire\EstimateProject;
 
 use App\Models\EstimatePrepare;
 use Illuminate\Support\Facades\Log;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use WireUi\Traits\Actions;
 
-class AddedEstimateList extends Component
+class AddedEstimateProjectList extends Component
 {
     use Actions;
     public $addedEstimateData = [];
@@ -294,17 +294,9 @@ class AddedEstimateList extends Component
             $this->emit('showError', $th->getMessage());
         }
     }
-
     public function render()
     {
         $this->arrayRow = count($this->allAddedEstimatesData);
-        return view('livewire.estimate.added-estimate-list');
-    }
-
-    public function logView($data, $of)
-    {
-        Log::alert('-----------------[Start OF' . $of . ']');
-        Log::info(json_encode($data));
-        Log::alert('-----------------[END OF' . $of . ']');
+        return view('livewire.estimate-project.added-estimate-project-list');
     }
 }

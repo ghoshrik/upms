@@ -13,6 +13,7 @@ class CreateSor extends Component
 {
     use Actions;
     public $inputsData = [], $fetchDropDownData = [];
+
     public function mount()
     {
         $this->inputsData = [
@@ -29,6 +30,7 @@ class CreateSor extends Component
         ];
         $this->fetchDropDownData['departmentCategory'] = SorCategoryType::where('department_id', Auth::user()->department_id)->get();
     }
+
     public function addNewRow()
     {
         $this->inputsData[] =
@@ -43,6 +45,7 @@ class CreateSor extends Component
                 'effect_from' => '',
             ];
     }
+
     public function store()
     {
         try {
@@ -58,6 +61,7 @@ class CreateSor extends Component
             $this->emit('showError', $th->getMessage());
         }
     }
+
     public function removeRow($index)
     {
         if (count($this->inputsData) > 1) {
@@ -66,6 +70,7 @@ class CreateSor extends Component
             return;
         }
     }
+
     public function render()
     {
         return view('livewire.sor.create-sor');
