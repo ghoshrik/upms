@@ -14,7 +14,7 @@ class CreateDepartment extends Component
         'department_name' => 'required|string'
     ];
     protected $messages = [
-        'department_name.required' => 'This Name Field is Required',
+        'department_name.required' => 'This Field is Required',
         'department_name.string' => 'Invalid Input'
     ];
     public function updated($param)
@@ -23,15 +23,15 @@ class CreateDepartment extends Component
     }
     public function store()
     {
+        $validateData = $this->validate();
         try{
-            if($this->validate()){
-                Department::create(['department_name' => $this->department_name]);
+            Department::create($validateData,['department_name' => $this->department_name]);
                 $this->notification()->success(
                     $title = 'Department Created Successfully!!'
                 );
             $this->reset();
             $this->emit('openForm');
-            }
+
         }catch (\Throwable $th) {
             $this->emit('showError', $th->getMessage());
         }

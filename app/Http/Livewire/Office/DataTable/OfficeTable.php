@@ -38,10 +38,10 @@ class OfficeTable extends DataTableComponent
                 ->sortable(),
             Column::make("Office address", "office_address")
                 ->sortable(),
-            Column::make("Created at", "created_at")
-                ->sortable(),
-            Column::make("Updated at", "updated_at")
-                ->sortable(),
+            // Column::make("Created at", "created_at")
+            //     ->sortable(),
+            // Column::make("Updated at", "updated_at")
+            //     ->sortable(),
         ];
     }
 }

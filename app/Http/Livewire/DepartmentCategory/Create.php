@@ -22,9 +22,9 @@ class Create extends Component
 
     public function store()
     {
-        $this->validate();
+        $validateData = $this->validate();
         try {
-            SorCategoryType::create([
+            SorCategoryType::create($validateData,[
                 'department_id'=> Auth::user()->department_id,
                 'dept_category_name'=>$this->dept_category_name
             ]);
@@ -32,6 +32,8 @@ class Create extends Component
                 $title = 'Created Successfully'
             );
             $this->reset();
+            $this->emit('openForm');
+
         } catch (\Throwable $th) {
             $this->emit('showError', $th->getMessage());
         }

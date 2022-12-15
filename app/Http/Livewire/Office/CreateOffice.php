@@ -34,6 +34,18 @@ class CreateOffice extends Component
             'department_id'=> Auth::user()->department_id
         ];
     }
+
+    protected $rules = [
+        'office_address'=>'required|string|max:255',
+        'office_name'=>'required|string|regex:/(^([a-zA-Z]+)(\d+)?$)/u',
+        'department_id'=>'required|integer'
+    ];
+    protected $message = [
+        'office_address.required'=>'This field is required',
+        'office_address.string'=>'This is not valid input',
+        'office_name.required'=>'This field is required',
+        'office_name.integer'=>'invalid Format'
+    ];
     public function areaChangeEvent()
     {
         if ($this->selectedOption['In_area'] == 1) {
@@ -55,16 +67,18 @@ class CreateOffice extends Component
     }
     public function store()
     {
+        // $validateData = $this->validate();
 
         try {
             $insert = array_merge($this->selectedOption, $this->officeData);
+            // dd($insert);
             Office::create($insert);
             $this->notification()->success(
                 $title = 'Office Created Successfully!!'
             );
+            $this->reset();
             $this->emit('openForm');
-            // TODO: RESET DID NOT WORKING FIXED IT LATER
-            // $this->reset();
+
         } catch (\Throwable $th) {
             $this->emit('showError', $th->getMessage());
         }
