@@ -14,7 +14,7 @@ class Menu extends Model
     use HasFactory;
     protected $table ="menus";
     protected $guard_name = 'web';
-    protected $fillable = ["title","parent_id","icon","slug","link","link_type","access_types_id"];
+    protected $fillable = ["title","parent_id","icon","slug","link","link_type","access_types_id","permission"];
 
     public function childs() {
         return $this->hasMany(Menu::class,'parent_id','id') ;
