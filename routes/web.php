@@ -6,9 +6,11 @@ use App\Http\Controllers\Security\RolePermission;
 use App\Http\Controllers\Security\RoleController;
 use App\Http\Controllers\Security\PermissionController;
 use App\Http\Controllers\UserController;
+use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\Designation\CreateDesignation;
 use App\Http\Livewire\Designation\Designation;
 use App\Http\Livewire\Estimate\EstimatePrepare;
+use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Models\Menu;
 use Illuminate\Support\Facades\Artisan;
@@ -84,6 +86,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('estimate-prepare',EstimatePrepare::class)->name('estimate-prepare');
     Route::get('designation',Designation::class)->name('designation');
     Route::get('user-management',UserManagement::class)->name('user-mnagement');
+    Route::get('access-manager',AccessManager::class)->name('access-manager');
+    Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
     Route::view('/powergrid', 'powergrid-demo');
 
 });
