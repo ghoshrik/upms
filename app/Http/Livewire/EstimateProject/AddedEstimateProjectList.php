@@ -29,7 +29,7 @@ class AddedEstimateProjectList extends Component
 
     public function resetSession()
     {
-        Session()->forget('addedEstimateData');
+        Session()->forget('addedProjectEstimateData');
         $this->reset();
     }
 
@@ -119,8 +119,8 @@ class AddedEstimateProjectList extends Component
     public function setEstimateDataToSession()
     {
         $this->reset('allAddedEstimatesData');
-        if (Session()->has('addedEstimateData')) {
-            $this->allAddedEstimatesData = Session()->get('addedEstimateData');
+        if (Session()->has('addedProjectEstimateData')) {
+            $this->allAddedEstimatesData = Session()->get('addedProjectEstimateData');
         }
         if ($this->addedEstimateData != null) {
             $index = count($this->allAddedEstimatesData) + 1;
@@ -139,7 +139,7 @@ class AddedEstimateProjectList extends Component
             foreach ($this->addedEstimateData as $key => $estimate) {
                 $this->allAddedEstimatesData[$index][$key] = $estimate;
             }
-            Session()->put('addedEstimateData', $this->allAddedEstimatesData);
+            Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
             $this->reset('addedEstimateData');
         }
     }
@@ -164,8 +164,8 @@ class AddedEstimateProjectList extends Component
     public function deleteEstimate($value)
     {
         unset($this->allAddedEstimatesData[$value]);
-        Session()->forget('addedEstimateData');
-        Session()->put('addedEstimateData', $this->allAddedEstimatesData);
+        Session()->forget('addedProjectEstimateData');
+        Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
         $this->level = [];
         $this->notification()->error(
             $title = 'Row Deleted Successfully'

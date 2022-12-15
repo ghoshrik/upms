@@ -257,7 +257,7 @@
         @if (!$showTableOne && $addedEstimate != null)
         <livewire:estimate.added-estimate-list :addedEstimateData="$addedEstimate" :key="2" />
         @endif --}}
-        @if ($addedEstimate != null || Session::has('addedEstimateData'))
+        @if ($addedEstimate != null || Session::has('addedProjectEstimateData'))
             <div x-transition.duration.500ms>
                 <livewire:estimate-project.added-estimate-project-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
                     :wire:key="$addedEstimateUpdateTrack" />
