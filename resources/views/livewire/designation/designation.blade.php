@@ -12,7 +12,7 @@
         <div x-show="!formOpen" x-transition.duration.500ms>
             <x-cards title="{{ trans('cruds.designation.title') }}">
                 <x-slot name="table">
-                    <livewire:designation-table />
+                    <livewire:designation.designation-table />
                 </x-slot>
             </x-cards>
         </div>

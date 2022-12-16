@@ -22,7 +22,13 @@ class DepartmentDatatable extends DataTableComponent
                 ->sortable(),
             Column::make("Department name", "department_name")
                 ->sortable(),
+            Column::make("Actions", "id")
+                ->view('components.data-table-components.buttons.edit'),
 
         ];
+    }
+    public function edit($Id)
+    {
+        return $this->emit('openForm',true,$Id);
     }
 }

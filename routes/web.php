@@ -7,6 +7,7 @@ use App\Http\Controllers\Security\RoleController;
 use App\Http\Controllers\Security\PermissionController;
 use App\Http\Controllers\UserController;
 use App\Http\Livewire\Department\Department;
+use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
 use App\Http\Livewire\Designation\CreateDesignation;
 use App\Http\Livewire\Designation\Designation;
 use App\Http\Livewire\Estimate\EstimatePrepare;
@@ -75,6 +76,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('designation',Designation::class)->name('designation');
     Route::get('user-type', UserType::class)->name("user-type");
     Route::get('department', Department::class)->name("department");
+    Route::get('department-category',DepartmentCategoryList::class)->name('department-category');
     Route::get('office', Office::class)->name('office');
     Route::get('sor',Sor::class)->name('sor');
     Route::view('/powergrid', 'powergrid-demo');

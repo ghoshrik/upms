@@ -19,6 +19,10 @@ class CreateDesignation extends Component
         'designation_name.string'=>'This field must be string',
     ];
 
+    public function updated($param)
+    {
+        $this->validateOnly($param);
+    }
     public function store()
     {
         $validatedData = $this->validate();
@@ -28,7 +32,7 @@ class CreateDesignation extends Component
             $this->notification()->success(
                 $title = 'Designation Created Successfully'
             );
-            // $this->emit('openForm');
+            $this->emit('openForm');
 
         } catch (\Throwable $th) {
             $this->emit('showError', $th->getMessage());

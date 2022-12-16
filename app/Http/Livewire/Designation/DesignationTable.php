@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Http\Livewire\Designation;
 
 use App\Models\Designation;
 use Rappasoft\LaravelLivewireTables\Views\Column;
@@ -30,23 +30,24 @@ class DesignationTable extends DataTableComponent
                 ->searchable()
                 ->collapseOnMobile(),
             // Column::blank(),
-            ButtonGroupColumn::make('Actions')
-                ->attributes(function ($row) {
-                    return [
-                        'class' => 'space-x-2',
-                    ];
-                })
-                ->buttons([
-                    LinkColumn::make('Edit') // make() has no effect in this case but needs to be set anyway
-                        ->title(fn ($row) => 'Edit ' . $row->name)
-                        ->location(fn ($row) => route('designation', $row))
-                        ->attributes(function ($row) {
-                            return [
-                                'target' => '_blank',
-                                'class' => 'btn btn-soft-warning'
-                            ];
-                        }),
-                ]),
+            Column::make("Actions", "id")->view('components.data-table-components.buttons.edit'),
+            // ButtonGroupColumn::make('Actions')
+            //     ->attributes(function ($row) {
+            //         return [
+            //             'class' => 'space-x-2',
+            //         ];
+            //     })
+            //     ->buttons([
+            //         LinkColumn::make('Edit') // make() has no effect in this case but needs to be set anyway
+            //             ->title(fn ($row) => 'Edit ' . $row->name)
+            //             ->location(fn ($row) => route('designation', $row))
+            //             ->attributes(function ($row) {
+            //                 return [
+            //                     'target' => '_blank',
+            //                     'class' => 'btn btn-soft-warning'
+            //                 ];
+            //             }),
+            //     ]),
 
         ];
     }
@@ -55,6 +56,10 @@ class DesignationTable extends DataTableComponent
         foreach ($items as $item) {
             Designation::find((int)$item['id'])->update(['sort' => (int)$item['id']]);
         }
+    }
+    public function edit($id)
+    {
+        $this->emit('openForm',true,$id);
     }
     public function rowView(): string
     {

@@ -5,21 +5,24 @@
                 <div wire:loading.delay.longest>
                     <div class="spinner-border text-primary loader-position" role="status"></div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="row" wire:loading.delay.longest.class="loading">
-        <x-form-section submit="store">
-            <x-slot name="form">
-                <x-input wire:model="designation_name" label="{{trans('cruds.designation.title')}}" placeholder="{{trans('cruds.designation.title')}}" />
-                <div class="row">
-                    <div class="col mt-2">
-                        <div class="form-group float-right">
-                            <x-button type="submit" class="{{ trans('global.data_store_btn_color') }}">{{ trans('global.data_store_btn') }}</x-button>
+                <div wire:loading.delay.longest.class="loading" class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-6 col-lg-12">
+                            <div class="form-group">
+                                <x-input label="{{ trans('cruds.designation.title') }}"
+                                    placeholder="{{ trans('cruds.designation.title') }}"
+                                    wire:model.defer="designation_name" />
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12"><button type="submit" wire:click='store'
+                                        class="btn btn-success rounded-pill float-right">Save</button></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </x-slot>
-        </x-form-section>
+            </div>
+        </div>
     </div>
 </div>
