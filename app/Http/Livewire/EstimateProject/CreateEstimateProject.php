@@ -16,9 +16,11 @@ class CreateEstimateProject extends Component
 {
     use Actions;
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc;
-    // TODO:: remove $showTableOne if not use
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
+    // TODO:: remove $showTableOne if not use
+    // TODO::pop up modal view estimate and project estimate
+    // TODO::forward revert draft modify
 
     protected $rules = [
         'sorMasterDesc' => 'required|string',
@@ -184,7 +186,6 @@ class CreateEstimateProject extends Component
         $this->fatchDropdownData['estimateDetails'] = EstimatePrepare::join('sor_masters','estimate_prepares.estimate_id','sor_masters.estimate_id')
                                                         ->where('estimate_prepares.estimate_id',$this->estimateData['estimate_no'])
                                                         ->where('estimate_prepares.operation','Total')->first();
-        // dd($this->fatchDropdownData['estimateDetails']);
         $this->estimateData['total_amount'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
         $this->estimateData['estimate_desc'] = $this->fatchDropdownData['estimateDetails']['sorMasterDesc'];
     }
@@ -205,13 +206,10 @@ class CreateEstimateProject extends Component
         $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
         $this->addedEstimate['version'] = $this->estimateData['version'];
         $this->addedEstimateUpdateTrack = rand(1, 1000);
-        // dd($this->sorMasterDesc);
-        // dd($this->addedEstimate);
         $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc']);
     }
     public function render()
     {
-        // $this->getCategory = SORCategory::select('item_name', 'id')->get();
         return view('livewire.estimate-project.create-estimate-project');
     }
 }

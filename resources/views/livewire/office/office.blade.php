@@ -12,7 +12,7 @@
             <div class="col-md-12 col-lg-12 col-sm-3">
                 <div class="card">
                     <div class="card-body">
-                        <livewire:office.data-table.office-table />
+                        <livewire:office.data-table.office-table :wire:key="$addedOfficeUpdateTrack"/>
                     </div>
                 </div>
             </div>

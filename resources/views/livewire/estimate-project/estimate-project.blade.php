@@ -77,7 +77,7 @@
                 <div class="col-md-12 col-lg-12 col-sm-3">
                     <div class="card">
                         <div class="card-body">
-                            <livewire:estimate.estimated-data-table />
+                            <livewire:estimate-project.data-table.estimate-project-table />
                         </div>
                     </div>
                 </div>

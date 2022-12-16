@@ -7,7 +7,6 @@
                 </div>
                 <div wire:loading.delay.longest.class="loading" class="card-body">
                     <div class="row">
-                        {{-- <form> --}}
                         <div class="row">
                             <div class="col col-md-8 col-lg-8 col-sm-12 col-xs-12 mb-2">
                                 <x-textarea wire:model="sorMasterDesc" rows="2"
@@ -16,15 +15,6 @@
                             </div>
                             <div class="col col-md-4 col-lg-4 col-sm-12 col-xs-12 mb-2">
                                 <div class="form-group">
-                                    {{-- <x-select wire:key="categoryType" label="{{ trans('cruds.estimate.fields.category') }}"
-                                            placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
-                                            wire:model.defer="selectedCategoryId"
-                                            x-on:select="$wire.changeCategory($event.target)">
-                                            @foreach ($getCategory as $category)
-                                            <x-select.option label="{{ $category['item_name'] }}"
-                                                value="{{ $category['id'] }}" />
-                                            @endforeach
-                                        </x-select> --}}
                                     <x-select wire:key="categoryType"
                                         label="{{ trans('cruds.estimate.fields.category') }}"
                                         placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
@@ -207,7 +197,7 @@
                                             </x-select>
                                         </div>
                                     </div>
-                                    @isset ($fatchDropdownData['estimateDetails'])
+                                    @isset($fatchDropdownData['estimateDetails'])
                                         <div class="col">
                                             <div class="form-group">
                                                 <x-textarea rows="2" wire:key="other_rate"
@@ -222,8 +212,7 @@
                                             <div class="form-group">
                                                 <x-input wire:key="total_amount"
                                                     wire:model.defer="estimateData.total_amount"
-                                                    label="{{ trans('cruds.estimate.fields.estimate_total') }}"
-                                                    disabled
+                                                    label="{{ trans('cruds.estimate.fields.estimate_total') }}" disabled
                                                     placeholder="{{ trans('cruds.estimate.fields.estimate_total') }}" />
                                             </div>
                                         </div>
@@ -237,16 +226,12 @@
                                 <div class="form-group float-right">
                                     <button type="button" wire:click='addEstimate'
                                         class="{{ trans('global.add_btn_color') }}">
-                                        {{-- <span class="btn-inner"> --}}
                                         <x-lucide-list-plus class="w-4 h-4 text-gray-500" />
-                                        {{--
-                                            </span> --}}
                                         {{ trans('global.add_btn') }}
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        {{-- </form> --}}
                     </div>
                 </div>
             </div>

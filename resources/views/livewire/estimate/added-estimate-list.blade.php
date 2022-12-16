@@ -69,7 +69,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            {{ $addedEstimate['sor_item_number'] ?  $addedEstimate['sor_item_number'] : '---'}}
+                                            {{ $addedEstimate['sor_item_number'] ?  getSorItemNumber($addedEstimate['sor_item_number']) : '---'}}
 
                                             {{-- @if ($addedEstimate['sor_item_number'])
                                                 {{ $addedEstimate['sor_item_number'] }}

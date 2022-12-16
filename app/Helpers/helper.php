@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\SOR;
 use App\Models\SorMaster;
 
 function removeSession($session){
@@ -110,4 +111,13 @@ function getEstimateDescription($estimate_no)
     }
     return $estimateDescription = $estimateDescription['sorMasterDesc'];
 
+}
+
+function getSorItemNumber($sor_item_number)
+{
+    if($sor_item_number)
+    {
+        $sorItemNo = SOR::select('Item_details')->where('id',$sor_item_number)->first();
+    }
+    return $sorItemNo = $sorItemNo['Item_details'];
 }

@@ -72,7 +72,7 @@
                                             {{-- {{ $addedEstimate['sor_item_number'] ?  $addedEstimate['sor_item_number'] : '---'}} --}}
 
                                             @if ($addedEstimate['sor_item_number'])
-                                                {{ $addedEstimate['sor_item_number'] }}
+                                                {{ getSorItemNumber($addedEstimate['sor_item_number']) }}
                                             @elseif ($addedEstimate['estimate_no'])
                                                 {{ $addedEstimate['estimate_no'] }}
                                             @else
@@ -108,8 +108,18 @@
                                             {{ $addedEstimate['total_amount'] }}
                                         </td>
                                         <td>
+                                            @if ($addedEstimate['estimate_no'])
+                                                <x-button
+                                                    wire:click=""
+                                                    type="button" class="btn btn-soft-primary btn-sm">
+                                                    <span class="btn-inner">
+                                                        <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
+                                                    </span>
+                                                </x-button>
+                                            @endif
                                             @if ($arrayRow == $key)
-                                                <x-button wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
+                                                <x-button
+                                                    wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
                                                     type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete

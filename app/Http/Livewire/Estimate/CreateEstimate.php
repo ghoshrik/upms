@@ -43,8 +43,8 @@ class CreateEstimate extends Component
         'estimateData.qty.numeric' => 'This field is must be numeric',
         'estimateData.rate.required' => 'This field is not empty',
         'estimateData.rate.numeric' => 'This field is must be numeric',
-        'estimateData.qty.total_amount' => 'This field is not empty',
-        'estimateData.qty.total_amount' => 'This field is must be numeric',
+        'estimateData.total_amount.required' => 'This field is not empty',
+        'estimateData.total_amount.numeric' => 'This field is must be numeric',
 
     ];
     public function booted()

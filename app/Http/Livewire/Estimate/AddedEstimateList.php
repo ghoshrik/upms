@@ -245,7 +245,7 @@ class AddedEstimateList extends Component
                     foreach ($this->allAddedEstimatesData as $key => $value) {
                         $insert = [
                             'estimate_id' => $intId,
-                            'dept_id' => 'aaaaa',
+                            'dept_id' => $value['dept_id'],
                             'category_id' => $value['category_id'],
                             'row_id' => $value['array_id'],
                             'row_index' => $value['arrayIndex'],

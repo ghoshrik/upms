@@ -27,6 +27,7 @@ class EstimatePrepare extends Model
         'created_by',
         'comments'
     ];
+
     public function sorNumber()
     {
         return $this->belongsTo(SOR::class,'sor_item_number','id');

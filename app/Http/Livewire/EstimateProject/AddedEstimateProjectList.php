@@ -136,6 +136,9 @@ class AddedEstimateProjectList extends Component
             if (!array_key_exists("remarks", $this->addedEstimateData)) {
                 $this->addedEstimateData['remarks'] = '';
             }
+            if (!array_key_exists("estimate_no", $this->addedEstimateData)) {
+                $this->addedEstimateData['estimate_no'] = '';
+            }
             foreach ($this->addedEstimateData as $key => $estimate) {
                 $this->allAddedEstimatesData[$index][$key] = $estimate;
             }
@@ -171,11 +174,10 @@ class AddedEstimateProjectList extends Component
             $title = 'Row Deleted Successfully'
         );
     }
-
+// TODO::export word on project estimate
     public function exportWord()
     {
         $exportDatas = array_values($this->allAddedEstimatesData);
-        // dd($exportDatas);
         $date = date('Y-m-d');
         $pw = new \PhpOffice\PhpWord\PhpWord();
         $section = $pw->addSection();
@@ -245,7 +247,8 @@ class AddedEstimateProjectList extends Component
                     foreach ($this->allAddedEstimatesData as $key => $value) {
                         $insert = [
                             'estimate_id' => $intId,
-                            'dept_id' => 'aaaaa',
+                            'estimate_no' => $value['estimate_no'],
+                            'dept_id' => $value['dept_id'],
                             'category_id' => $value['category_id'],
                             'row_id' => $value['array_id'],
                             'row_index' => $value['arrayIndex'],
@@ -273,13 +276,13 @@ class AddedEstimateProjectList extends Component
                     }
                     $data = [
                         'estimate_id' => $intId,
-                        'estimate_user_type' => 2,
+                        'estimate_user_type' => 3,
                         'estimate_user_id' => Auth::user()->id,
                     ];
                     EstimateUserAssignRecord::create($data);
 
                     $this->notification()->success(
-                        $title = 'Estimate Prepare Created Successfully!!'
+                        $title = 'Project Estimate Created Successfully!!'
                     );
                     $this->resetSession();
                     $this->emit('openForm');
