@@ -1,6 +1,6 @@
 
 <p align="center">
-  <a href="https://hopeui.iqonic.design/?utm_source=github&utm_medium=github-description&utm_campaign=open_source_github" target="__blank" title="Hope UI">
+  <a href="https://hopeui.iqonic.design/?utm_source=github&utm_medium=github-description&utm_campaign=open_source_github" target="__blank" title="UPMS">
     <img src="https://assets.iqonic.design/hope-ui/github/logo.png" />
   </a>
 </p>
@@ -12,7 +12,7 @@
 <a href="https://github.com/iqonicdesignofficial/hope-ui-design-system/blob/main/LICENSE" target="__blank"><img src="https://img.shields.io/github/license/iqonicdesignofficial/hope-ui-design-system" /> </a>
 <a href="https://twitter.com/iqonicdesign" target="__blank"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Fiqonicdesign" /></a>
 </p>
-<h3 align="center">Free Open Source Bootstrap 5 Design System.</h3>
+<h3 align="center">UPMS.</h3>
 <p align="center">
   <a href="https://templates.iqonic.design/hope-ui/html/dist" title="Hope UI"><strong>Live Demo</strong></a>
   <span>|</span>
@@ -30,7 +30,7 @@
 ------------
 
 <a href="https://templates.iqonic.design/hope-ui/html/dist" target="__blank" title="Hope UI Dashboard">
-  <img src="https://assets.iqonic.design/hope-ui/github/rtl-mode-min.png" alt="Hope UI Dashboard" />
+  <img src="https://assets.iqonic.design/hope-ui/github/rtl-mode-min.png" alt="UPMS Dashboard" />
 </a>
 
 Hope UI – free open source Bootstrap Design System is a gorgeously built UI kit based on bootstrap 5. The best free Bootstrap 5 design system is fully responsive and user-friendly, allowing Hope UI users to work effortlessly.
