@@ -2,16 +2,17 @@
 
 namespace App\Http\Livewire\Office;
 
-use App\Models\District;
 use App\Models\GP;
-use App\Models\Office;
 use App\Models\Role;
+use App\Models\Office;
 use App\Models\Taluka;
+use Livewire\Component;
+use App\Models\District;
 use App\Models\Urban_body;
+use WireUi\Traits\Actions;
+use Illuminate\Support\Arr;
 use App\Models\Urban_body_Name;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Component;
-use WireUi\Traits\Actions;
 
 class CreateOffice extends Component
 {
@@ -36,16 +37,48 @@ class CreateOffice extends Component
     }
 
     protected $rules = [
-        'office_address'=>'required|string|max:255',
-        'office_name'=>'required|string|regex:/(^([a-zA-Z]+)(\d+)?$)/u',
-        'department_id'=>'required|integer'
+        'officeData.office_address'=>'required|string|max:255',
+        'officeData.office_name'=>'required|string',
+        'selectedOption.dist_code'=>'required|integer',
+        'selectedOption.In_area'=>'required|integer',
     ];
-    protected $message = [
-        'office_address.required'=>'This field is required',
-        'office_address.string'=>'This is not valid input',
-        'office_name.required'=>'This field is required',
-        'office_name.integer'=>'invalid Format'
+    protected $messages = [
+        'officeData.office_address.required'=>'This field is required',
+        'officeData.office_address.string'=>'This is not valid input',
+        'officeData.office_name.required'=>'This field is required',
+        'officeData.office_name.string'=>'invalid Format',
+        'selectedOption.dist_code.required'=>'This field is required',
+        'selectedOption.dist_code.integer'=>'Invalid field',
+        'selectedOption.In_area.required'=>'This field is required',
+        'selectedOption.In_area.required'=>'Invalid format',
+        "selectedOption.gp_code.required"=>"This field is required",
+        'selectedOption.rural_block_code.required'=>'This field is required',
+        'selectedOption.rural_block_code.integer'=>'Invalid format',
+        'selectedOption.urban_code.required'=>'This field is required',
+        'selectedOption.ward_code.integer'=>'Invalid format'
     ];
+    public function updated($param)
+    {
+        $this->validateOnly($param);
+    }
+    public function booted()
+    {
+        if ($this->selectedOption['In_area'] == 1)
+        {
+            $this->rules =  Arr::collapse([$this->rules, [
+                'selectedOption.rural_block_code' =>'required|integer',
+                'selectedOption.gp_code' =>'required|integer'
+            ]]);
+        }
+        if ($this->selectedOption['In_area'] == 2)
+        {
+            $this->rules =  Arr::collapse([$this->rules, [
+                'selectedOption.urban_code'=>'required|integer',
+                'selectedOption.ward_code'=>'required|integer',
+            ]]);
+        }
+
+    }
     public function areaChangeEvent()
     {
         if ($this->selectedOption['In_area'] == 1) {
@@ -67,16 +100,29 @@ class CreateOffice extends Component
     }
     public function store()
     {
-        // $validateData = $this->validate();
-
+        $this->validate();
+        // dd($this->selectedOption,$this->officeData);
         try {
             $insert = array_merge($this->selectedOption, $this->officeData);
             // dd($insert);
             Office::create($insert);
+            // $insert = [
+            //     'In_area'=>$this->selectedOption['In_area'],
+            //     'department_id'=>$this->officeData['department_id'],
+            //     'office_name'=>$this->officeData['office_name'],
+            //     'office_address'=>$this->officeData['office_address'],
+            //     'dist_code'=>$this->selectedOption['dist_code'],
+            //     'rural_block_code'=>$this->selectedOption['dist_code'],
+            //     'gp_code'=>$this->selectedOption['dist_code'],
+            //     'urban_code'=>$this->selectedOption['urban_code'],
+            //     'ward_code'=>$this->selectedOption['ward_code']
+            // ];
+            // Office::create($insert);
+            // dd($insert);
             $this->notification()->success(
                 $title = 'Office Created Successfully!!'
             );
-            $this->reset();
+            // $this->reset();
             $this->emit('openForm');
 
         } catch (\Throwable $th) {
