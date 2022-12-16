@@ -238,4 +238,16 @@ return [
             'actions'=>'Actions',
         ],
     ],
+    'milestone'=>[
+        'title'=>'MileStone',
+        'title_singular'=>'Milestones',
+        'fields'=>[
+            'id'=>'ID',
+            'id_helper'=>'#',
+            'project_id'=>'Project Id',
+            'm_id'=>'Milestone name',
+            'm_parent_id'=>'parent Milestone name',
+            'param'=>'Param'
+        ],
+    ],
 ];

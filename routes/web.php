@@ -11,6 +11,7 @@ use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
 use App\Http\Livewire\Designation\CreateDesignation;
 use App\Http\Livewire\Designation\Designation;
 use App\Http\Livewire\Estimate\EstimatePrepare;
+use App\Http\Livewire\Milestone\MilestoneLists;
 use App\Http\Livewire\Office\Office;
 use App\Http\Livewire\Sor\Sor;
 use App\Http\Livewire\UserType\UserType;
@@ -78,6 +79,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('office', Office::class)->name('office');
     Route::get('sor',Sor::class)->name('sor');
     Route::view('/powergrid', 'powergrid-demo');
+
+    Route::get('milestones',MilestoneLists::class)->name('milestones');
 
 });
 

@@ -68,7 +68,6 @@ class CreateEstimate extends Component
                 'estimateData.qty' => 'required|numeric',
                 'estimateData.rate' => 'required|numeric',
                 'estimateData.total_amount' => 'required|numeric'
-
             ]]);
         }
     }
