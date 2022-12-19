@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Livewire\DataTables;
+namespace App\Http\Livewire\DepartmentCategory;
 
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\SorCategoryType;
 
-class SorCategoryTypeTable extends DataTableComponent
+class DeptCategoryTable extends DataTableComponent
 {
     protected $model = SorCategoryType::class;
 
@@ -20,14 +20,20 @@ class SorCategoryTypeTable extends DataTableComponent
         return [
             Column::make("Id", "id")
                 ->sortable(),
-            Column::make("Department id", "department_id")
+            Column::make("Department id", "department.department_name")
                 ->sortable(),
             Column::make("Dept category name", "dept_category_name")
                 ->sortable(),
-            Column::make("Created at", "created_at")
-                ->sortable(),
-            Column::make("Updated at", "updated_at")
-                ->sortable(),
+            Column::make("Actions", "id")->view('components.data-table-components.buttons.edit'),
+            // Column::make("Created at", "created_at")
+            //     ->sortable(),
+            // Column::make("Updated at", "updated_at")
+            //     ->sortable(),
         ];
     }
+    public function edit($Id)
+    {
+        return $this->emit('openForm',true,$Id);
+    }
+
 }

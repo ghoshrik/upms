@@ -11,4 +11,8 @@ class Department extends Model
     protected $fillable = [
         'department_name'
     ];
+    public function SORCategory()
+    {
+       return $this->hasOne(SorCategoryType::class);
+    }
 }

@@ -1,4 +1,8 @@
 <?php
+
+use App\Models\SOR;
+use App\Models\SorMaster;
+
 function removeSession($session){
     if(\Session::has($session)){
         \Session::forget($session);
@@ -97,4 +101,23 @@ function getFileExistsCheck($media)
         }
     }
     return $mediaCondition;
+}
+
+function getEstimateDescription($estimate_no)
+{
+    if($estimate_no)
+    {
+        $estimateDescription = SorMaster::select('sorMasterDesc')->where('estimate_id',$estimate_no)->first();
+    }
+    return $estimateDescription = $estimateDescription['sorMasterDesc'];
+
+}
+
+function getSorItemNumber($sor_item_number)
+{
+    if($sor_item_number)
+    {
+        $sorItemNo = SOR::select('Item_details')->where('id',$sor_item_number)->first();
+    }
+    return $sorItemNo = $sorItemNo['Item_details'];
 }

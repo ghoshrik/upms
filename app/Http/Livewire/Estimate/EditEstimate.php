@@ -8,6 +8,7 @@ use App\Models\SOR;
 use App\Models\SORCategory;
 use App\Models\SorCategoryType;
 use App\Models\SorMaster;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -20,22 +21,21 @@ class EditEstimate extends Component
     public $addedEstimate = [];
     public $estimate_id;
     protected $listeners = ['editEstimateRow' => 'editEstimate'];
+
     public function editEstimate($estimateId = 0)
     {
-        // dd($estimateId);
        $this->estimate_id = $estimateId;
        $this->addedEstimate = EstimatePrepare::with('sorNumber')->where('estimate_id',$this->estimate_id)->get();
-    //    dd($this->addedEstimate);
        $this->sorMasterDesc = SorMaster::select('sorMasterDesc')->where('estimate_id',$this->estimate_id)->first();
-
     }
+
     public function mount()
     {
         if(Session()->has('addedEstimateData')){
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
-
     }
+
     public function changeCategory($value)
     {
         $this->resetExcept(['addedEstimate','selectedCategoryId','addedEstimateUpdateTrack','sorMasterDesc']);
@@ -64,7 +64,6 @@ class EditEstimate extends Component
             $this->estimateData['total_amount'] ='';
         }
     }
-
     public function getDeptCategory()
     {
         $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
@@ -130,6 +129,7 @@ class EditEstimate extends Component
 
         $this->resetExcept(['addedEstimate','showTableOne','addedEstimateUpdateTrack','sorMasterDesc']);
     }
+
     public function render()
     {
         $this->getCategory = SORCategory::select('item_name', 'id')->get();

@@ -27,6 +27,11 @@ class EstimatePrepare extends Model
         'created_by',
         'comments'
     ];
+
+    public function sorNumber()
+    {
+        return $this->belongsTo(SOR::class,'sor_item_number','id');
+    }
     public function SOR()
     {
        return $this->hasOne(SorMaster::class,'estimate_id','estimate_id');

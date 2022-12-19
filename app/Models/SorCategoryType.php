@@ -12,7 +12,7 @@ class SorCategoryType extends Model
     protected $fillable = [
         'department_id','dept_category_name'
     ];
-    public function GetDepartmentName()
+    public function department()
     {
         return  $this->belongsTo(Department::class,'department_id');
     }

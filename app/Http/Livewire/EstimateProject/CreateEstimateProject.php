@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Livewire\Estimate;
+namespace App\Http\Livewire\EstimateProject;
 
 use App\Models\Department;
+use App\Models\EstimatePrepare;
 use App\Models\SOR;
 use App\Models\SORCategory;
 use App\Models\SorCategoryType;
@@ -11,13 +12,15 @@ use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
-class CreateEstimate extends Component
+class CreateEstimateProject extends Component
 {
     use Actions;
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc;
-    // TODO:: remove $showTableOne if not use
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
+    // TODO:: remove $showTableOne if not use
+    // TODO::pop up modal view estimate and project estimate
+    // TODO::forward revert draft modify
 
     protected $rules = [
         'sorMasterDesc' => 'required|string',
@@ -43,8 +46,8 @@ class CreateEstimate extends Component
         'estimateData.qty.numeric' => 'This field is must be numeric',
         'estimateData.rate.required' => 'This field is not empty',
         'estimateData.rate.numeric' => 'This field is must be numeric',
-        'estimateData.total_amount.required' => 'This field is not empty',
-        'estimateData.total_amount.numeric' => 'This field is must be numeric',
+        'estimateData.qty.total_amount' => 'This field is not empty',
+        'estimateData.qty.total_amount' => 'This field is must be numeric',
 
     ];
     public function booted()
@@ -89,6 +92,7 @@ class CreateEstimate extends Component
         $this->estimateData['item_name'] = $value;
         if ($this->estimateData['item_name'] == 'SOR') {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+            $this->estimateData['estimate_no'] = '';
             $this->estimateData['dept_id'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
@@ -98,7 +102,21 @@ class CreateEstimate extends Component
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
-        } else {
+        } elseif($this->estimateData['item_name'] == 'Other') {
+            $this->estimateData['estimate_no'] = '';
+            $this->estimateData['dept_id'] = '';
+            $this->estimateData['dept_category_id'] = '';
+            $this->estimateData['version'] = '';
+            $this->estimateData['item_number'] = '';
+            $this->estimateData['description'] = '';
+            $this->estimateData['other_name'] = '';
+            $this->estimateData['qty'] = '';
+            $this->estimateData['rate'] = '';
+            $this->estimateData['total_amount'] = '';
+        }elseif($this->estimateData['item_name'] == 'Estimate'){
+            $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+            $this->estimateData['estimate_no'] = '';
+            $this->estimateData['estimate_desc'] = '';
             $this->estimateData['dept_id'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
@@ -155,11 +173,28 @@ class CreateEstimate extends Component
         }
     }
 
+    public function getDeptEstimates()
+    {
+        $this->fatchDropdownData['estimatesList'] = '';
+        $this->fatchDropdownData['estimatesList'] = EstimatePrepare::where('dept_id',$this->estimateData['dept_id'])->get();
+    }
+
+    public function getEstimateDetails()
+    {
+        $this->estimateData['total_amount'] = '';
+        $this->estimateData['estimate_desc'] = '';
+        $this->fatchDropdownData['estimateDetails'] = EstimatePrepare::join('sor_masters','estimate_prepares.estimate_id','sor_masters.estimate_id')
+                                                        ->where('estimate_prepares.estimate_id',$this->estimateData['estimate_no'])
+                                                        ->where('estimate_prepares.operation','Total')->first();
+        $this->estimateData['total_amount'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
+        $this->estimateData['estimate_desc'] = $this->fatchDropdownData['estimateDetails']['sorMasterDesc'];
+    }
     public function addEstimate()
     {
         $validatee = $this->validate();
         $this->reset('addedEstimate');
         $this->showTableOne = !$this->showTableOne;
+        $this->addedEstimate['estimate_no'] = $this->estimateData['estimate_no'];
         $this->addedEstimate['dept_id'] = $this->estimateData['dept_id'];
         $this->addedEstimate['category_id'] = $this->estimateData['dept_category_id'];
         $this->addedEstimate['sor_item_number'] = $this->estimateData['item_number'];
@@ -171,14 +206,10 @@ class CreateEstimate extends Component
         $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
         $this->addedEstimate['version'] = $this->estimateData['version'];
         $this->addedEstimateUpdateTrack = rand(1, 1000);
-        // dd($this->sorMasterDesc);
-        // dd($this->addedEstimate);
         $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc']);
     }
-
     public function render()
     {
-        $this->getCategory = SORCategory::select('item_name', 'id')->get();
-        return view('livewire.estimate.create-estimate');
+        return view('livewire.estimate-project.create-estimate-project');
     }
 }

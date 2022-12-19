@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Estimate;
+namespace App\Http\Livewire\EstimateProject;
 
 use App\Models\EstimatePrepare;
 use Illuminate\Support\Facades\Log;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use WireUi\Traits\Actions;
 
-class AddedEstimateList extends Component
+class AddedEstimateProjectList extends Component
 {
     use Actions;
     public $addedEstimateData = [];
@@ -29,7 +29,7 @@ class AddedEstimateList extends Component
 
     public function resetSession()
     {
-        Session()->forget('addedEstimateData');
+        Session()->forget('addedProjectEstimateData');
         $this->reset();
     }
 
@@ -71,8 +71,7 @@ class AddedEstimateList extends Component
                             }
                         } else {
                             $this->notification()->error(
-                                $title = 'Error !!!',
-                                $description =  $alphabet . ' is a invalid input'
+                                $title = $alphabet . ' is a invalid input'
                             );
                         }
                     } elseif (htmlspecialchars($info) == "%") {
@@ -120,8 +119,8 @@ class AddedEstimateList extends Component
     public function setEstimateDataToSession()
     {
         $this->reset('allAddedEstimatesData');
-        if (Session()->has('addedEstimateData')) {
-            $this->allAddedEstimatesData = Session()->get('addedEstimateData');
+        if (Session()->has('addedProjectEstimateData')) {
+            $this->allAddedEstimatesData = Session()->get('addedProjectEstimateData');
         }
         if ($this->addedEstimateData != null) {
             $index = count($this->allAddedEstimatesData) + 1;
@@ -137,10 +136,13 @@ class AddedEstimateList extends Component
             if (!array_key_exists("remarks", $this->addedEstimateData)) {
                 $this->addedEstimateData['remarks'] = '';
             }
+            if (!array_key_exists("estimate_no", $this->addedEstimateData)) {
+                $this->addedEstimateData['estimate_no'] = '';
+            }
             foreach ($this->addedEstimateData as $key => $estimate) {
                 $this->allAddedEstimatesData[$index][$key] = $estimate;
             }
-            Session()->put('addedEstimateData', $this->allAddedEstimatesData);
+            Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
             $this->reset('addedEstimateData');
         }
     }
@@ -165,18 +167,17 @@ class AddedEstimateList extends Component
     public function deleteEstimate($value)
     {
         unset($this->allAddedEstimatesData[$value]);
-        Session()->forget('addedEstimateData');
-        Session()->put('addedEstimateData', $this->allAddedEstimatesData);
+        Session()->forget('addedProjectEstimateData');
+        Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
         $this->level = [];
         $this->notification()->error(
             $title = 'Row Deleted Successfully'
         );
     }
-
+// TODO::export word on project estimate
     public function exportWord()
     {
         $exportDatas = array_values($this->allAddedEstimatesData);
-        // dd($exportDatas);
         $date = date('Y-m-d');
         $pw = new \PhpOffice\PhpWord\PhpWord();
         $section = $pw->addSection();
@@ -246,6 +247,7 @@ class AddedEstimateList extends Component
                     foreach ($this->allAddedEstimatesData as $key => $value) {
                         $insert = [
                             'estimate_id' => $intId,
+                            'estimate_no' => $value['estimate_no'],
                             'dept_id' => $value['dept_id'],
                             'category_id' => $value['category_id'],
                             'row_id' => $value['array_id'],
@@ -274,13 +276,13 @@ class AddedEstimateList extends Component
                     }
                     $data = [
                         'estimate_id' => $intId,
-                        'estimate_user_type' => 2,
+                        'estimate_user_type' => 3,
                         'estimate_user_id' => Auth::user()->id,
                     ];
                     EstimateUserAssignRecord::create($data);
 
                     $this->notification()->success(
-                        $title = 'Estimate Prepare Created Successfully!!'
+                        $title = 'Project Estimate Created Successfully!!'
                     );
                     $this->resetSession();
                     $this->emit('openForm');
@@ -295,17 +297,9 @@ class AddedEstimateList extends Component
             $this->emit('showError', $th->getMessage());
         }
     }
-
     public function render()
     {
         $this->arrayRow = count($this->allAddedEstimatesData);
-        return view('livewire.estimate.added-estimate-list');
-    }
-
-    public function logView($data, $of)
-    {
-        Log::alert('-----------------[Start OF' . $of . ']');
-        Log::info(json_encode($data));
-        Log::alert('-----------------[END OF' . $of . ']');
+        return view('livewire.estimate-project.added-estimate-project-list');
     }
 }

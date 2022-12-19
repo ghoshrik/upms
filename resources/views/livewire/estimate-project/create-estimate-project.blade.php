@@ -19,12 +19,12 @@
                                         label="{{ trans('cruds.estimate.fields.category') }}"
                                         placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
                                         wire:model.defer="selectedCategoryId"
-                                        x-on:select="$wire.changeCategory($event.target)">
-                                        @foreach ($getCategory as $category)
-                                            <x-select.option label="{{ $category['item_name'] }}"
-                                                value="{{ $category['id'] }}" />
-                                        @endforeach
-                                    </x-select>
+                                        x-on:select="$wire.changeCategory($event.target)" :options="[
+                                            ['name' => 'SOR', 'id' => 1],
+                                            ['name' => 'Other', 'id' => 2],
+                                            ['name' => 'Estimate', 'id' => 3],
+                                        ]"
+                                        option-label="name" option-value="id" />
                                 </div>
                             </div>
                         </div>
@@ -164,6 +164,62 @@
                                     </div>
                                 </div>
                             @endif
+                            @if ($estimateData['item_name'] == 'Estimate')
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="dept"
+                                                label="{{ trans('cruds.estimate.fields.dept') }}"
+                                                placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
+                                                wire:model.defer="estimateData.dept_id"
+                                                x-on:select="$wire.getDeptEstimates()">
+                                                @isset($fatchDropdownData['departments'])
+                                                    @foreach ($fatchDropdownData['departments'] as $department)
+                                                        <x-select.option label="{{ $department['department_name'] }}"
+                                                            value="{{ $department['id'] }}" />
+                                                    @endforeach
+                                                @endisset
+                                            </x-select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="estimate_no" label="{{ __('Select Estimate') }}"
+                                                placeholder="Select {{ __('Estimate') }}"
+                                                wire:model.defer="estimateData.estimate_no"
+                                                x-on:select="$wire.getEstimateDetails()">
+                                                @isset($fatchDropdownData['estimatesList'])
+                                                    @foreach ($fatchDropdownData['estimatesList'] as $estimate)
+                                                        <x-select.option label="{{ $estimate['estimate_id'] }}"
+                                                            value="{{ $estimate['estimate_id'] }}" />
+                                                    @endforeach
+                                                @endisset
+                                            </x-select>
+                                        </div>
+                                    </div>
+                                    @isset($fatchDropdownData['estimateDetails'])
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <x-textarea rows="2" wire:key="other_rate"
+                                                    wire:model.defer="estimateData.estimate_desc"
+                                                    wire:keyup="calculateValue"
+                                                    label="Estimate {{ trans('cruds.estimate.fields.description') }}"
+                                                    placeholder="Estimate {{ trans('cruds.estimate.fields.description') }}"
+                                                    disabled />
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <x-input wire:key="total_amount"
+                                                    wire:model.defer="estimateData.total_amount"
+                                                    label="{{ trans('cruds.estimate.fields.estimate_total') }}" disabled
+                                                    placeholder="{{ trans('cruds.estimate.fields.estimate_total') }}" />
+                                            </div>
+                                        </div>
+                                    @endisset
+
+                                </div>
+                            @endif
                         @endif
                         <div class="row">
                             <div class="col">
@@ -180,9 +236,15 @@
                 </div>
             </div>
         </div>
-        @if ($addedEstimate != null || Session::has('addedEstimateData'))
+        {{-- @if ($showTableOne && $addedEstimate != null)
+        <livewire:estimate.added-estimate-list :addedEstimateData="$addedEstimate" :key="1" />
+        @endif
+        @if (!$showTableOne && $addedEstimate != null)
+        <livewire:estimate.added-estimate-list :addedEstimateData="$addedEstimate" :key="2" />
+        @endif --}}
+        @if ($addedEstimate != null || Session::has('addedProjectEstimateData'))
             <div x-transition.duration.500ms>
-                <livewire:estimate.added-estimate-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
+                <livewire:estimate-project.added-estimate-project-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
                     :wire:key="$addedEstimateUpdateTrack" />
             </div>
         @endif
