@@ -62,6 +62,7 @@ class CreateUser extends Component
     }
     public function store()
     {
+        // TODO::INSERT THE DEPT. ID NAD OFFICE ID .
         unset($this->newUserData['confirm_password']);
         $userType =  UserType::where('parent_id', Auth::user()->user_type)->first();
         if (isset($userType)) {

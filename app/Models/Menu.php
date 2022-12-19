@@ -29,4 +29,9 @@ class Menu extends Model
         ];
     }
 
+    // public function getChield(Type $var = null)
+    // {
+    //     # code...
+    // }
+
 }
