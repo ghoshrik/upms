@@ -36,7 +36,9 @@ class EstimatedDataTable extends DataTableComponent
             Column::make("TOTAL AMOUNT", "total_amount")
                 ->format(fn ($row) => round($row, 10, 2))
                 ->sortable(),
-            Column::make("Actions", "estimate_id")->view('components.data-table-components.buttons.edit'),
+            Column::make("Actions", "estimate_id")
+            ->format(
+                fn($value, $row, Column $column) => view('livewire.action-components.estimate-prepare.action-buttons')->withValue($value))
         ];
     }
 
@@ -44,10 +46,19 @@ class EstimatedDataTable extends DataTableComponent
     {
         $this->emit('openForm', true, $id);
     }
+    public function view($estimate_id)
+    {
+        $this->emit('openModal', $estimate_id);
+    }
+    public function forward($estimate_id)
+    {
+        $this->emit('openForwardModal',$estimate_id);
+    }
     public function builder(): Builder
     {
         return EstimatePrepare::query()
             ->where('operation', 'Total');
+            // ->where('created_by',Auth::user()->id);
         // ->groupBy('estimate_id.estimate_id');
     }
 }

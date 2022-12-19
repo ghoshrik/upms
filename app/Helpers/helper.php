@@ -121,3 +121,12 @@ function getSorItemNumber($sor_item_number)
     }
     return $sorItemNo = $sorItemNo['Item_details'];
 }
+
+function getSorItemNumberDesc($sor_item_number)
+{
+    if($sor_item_number)
+    {
+        $sorItemDesc = SOR::select('description')->where('id',$sor_item_number)->first();
+    }
+    return $sorItemDesc = $sorItemDesc['description'];
+}
