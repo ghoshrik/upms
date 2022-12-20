@@ -1,25 +1,13 @@
 <?php
 
-namespace App\Http\Livewire\Estimate;
+namespace App\Http\Livewire\UserManagement;
 
-use App\Models\SORCategory;
-use App\Models\SorMaster;
-use App\View\Components\AppLayout;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
-
-class EstimatePrepare extends Component
+class UserManagement extends Component
 {
-
-    public $formOpen = false, $editFormOpen = false,$updateDataTableTracker;
+    public $formOpen=false;
     protected $listeners = ['openForm' => 'formOCControl'];
-    public function mount()
-    {
-        $a = SorMaster::with('estimate')->get();
-        // dd($a);
-    }
     public function formOCControl($isEditFrom = false, $eidtId = null)
     {
         if ($isEditFrom) {
@@ -33,13 +21,11 @@ class EstimatePrepare extends Component
         $this->editFormOpen = false;
         $this->formOpen = !$this->formOpen;
         $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
-        $this->updateDataTableTracker = rand(1,1000);
     }
     public function render()
     {
-        $this->updateDataTableTracker = rand(1,1000);
-        $this->emit('changeTitel', 'Estimate Prepare');
+        $this->emit('changeTitel', 'User Managemant');
         $assets = ['chart', 'animation'];
-        return view('livewire.estimate.estimate-prepare', compact('assets'));
+        return view('livewire.user-management.user-management',compact('assets'));
     }
 }
