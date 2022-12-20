@@ -1,9 +1,9 @@
 <div>
     <x-modal max-width="5xl" blur wire:model.defer="viewModal">
         <x-card>
-            <div class="modal-content">
-                <div class="p-0 modal-body">
-                    <div class="p-5 text-center">
+            {{-- <div class="modal-content"> --}}
+                {{-- <div class="p-0 modal-body"> --}}
+                    <div class="p-0 text-center">
                         <x-lucide-clipboard-list class="w-10 h-12 mx-auto text-success" />
                         <div class="mt-5 text-3xl">Details of Estimate No : {{ $estimate_id }}</div>
                         <div class="mt-2 text-slate-500"> </div>
@@ -73,11 +73,11 @@
 
                         </div>
                     </div>
-                </div>
-            </div>
+                {{-- </div> --}}
+            {{-- </div> --}}
             <x-slot name="footer">
                 <div class="flex justify-end gap-x-4">
-                    <x-button secondary label="Cancel" x-on:click="close" />
+                    <x-button secondary label="Close" x-on:click="close" />
                     {{-- <x-button primary label="I Agree" /> --}}
                 </div>
             </x-slot>
