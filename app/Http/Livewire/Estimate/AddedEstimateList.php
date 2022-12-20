@@ -110,10 +110,10 @@ class AddedEstimateList extends Component
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
             $this->insertAddEstimate($this->arrayIndex, '', '', '', '', '', '', '', '', $result, 'Total', '', '');
         } else {
-            $this->dispatchBrowserEvent('alert', [
-                'type' => 'error',
-                'message' => "Minimum select 2 Check boxes"
-            ]);
+            $this->notification()->error(
+                $title = 'Error !!!',
+                $description =  'Minimum select 2 Check boxes'
+            );
         }
     }
 

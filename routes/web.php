@@ -154,7 +154,6 @@ Route::group(['prefix' => 'maps'], function() {
 
 //Auth pages Routs
 Route::group(['prefix' => 'auth'], function() {
-    Route::get('signin', [HomeController::class, 'signin'])->name('auth.signin');
     Route::get('signup', [HomeController::class, 'signup'])->name('auth.signup');
     Route::get('confirmmail', [HomeController::class, 'confirmmail'])->name('auth.confirmmail');
     Route::get('lockscreen', [HomeController::class, 'lockscreen'])->name('auth.lockscreen');
