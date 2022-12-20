@@ -71,7 +71,8 @@ class AddedEstimateList extends Component
                             }
                         } else {
                             $this->notification()->error(
-                                $title = $alphabet . ' is a invalid input'
+                                $title = 'Error !!!',
+                                $description =  $alphabet . ' is a invalid input'
                             );
                         }
                     } elseif (htmlspecialchars($info) == "%") {

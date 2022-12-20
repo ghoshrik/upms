@@ -19,14 +19,15 @@ class EstimatedDataTable extends DataTableComponent
     public function configure(): void
     {
         $this->setPrimaryKey('estimate_id');
+        // $this->setDebugEnabled();
     }
 
     public function columns(): array
     {
 
         return [
-            Column::make("Id", "id")
-                ->sortable(),
+            // Column::make("Id", "id")
+            //     ->sortable(),
             Column::make("Estimate no", "estimate_id")
                 ->searchable()
                 ->sortable(),
