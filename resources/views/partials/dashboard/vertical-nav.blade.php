@@ -18,7 +18,7 @@
     </li> --}}
 
 
-    <li><hr class="hr-horizontal"></li>
+    {{-- <li><hr class="hr-horizontal"></li>
     <li class="nav-item static-item">
         <a class="nav-link static-item disabled" href="#" tabindex="-1">
             <span class="default-icon">Pages</span>
@@ -80,7 +80,7 @@
                 </li>
                 @endforeach
             @endif
-        @endif
+        @endif --}}
 
 
 
