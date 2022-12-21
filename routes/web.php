@@ -47,11 +47,11 @@ Route::get('set-role',function(){
 });
 // Route::get('test',function(){
 //     // $menu = Menu::where('title','User Management');
-//     $role=Role::where('name','Office Admin')->first();
+    // $role=Role::where('name','Office Admin')->first();
 //     // $role->syncPermissions(['create user', 'edit user']);
 //     // dd($role->hasPermissionTo('edit user'));
-//     // $role->syncPermissions(['create office','edit office','edit user','create user','create SOR','edit SOR','create departmentCategory','edit departmentCategory']);
-//     $role->syncPermissions(['create designation','edit designation','edit user','create user','create accessManager','edit accessManager']);
+    // $role->syncPermissions(['create office','edit office','edit user','create user','create SOR','edit SOR','create departmentCategory','edit departmentCategory']);
+    // $role->syncPermissions(['create milestones','edit milestones']);
 //     // Auth::user()->assignRole('stateAdmin');
 //     // Auth::user()->givePermissionTo(['create user', 'edit user']);
 //     // Auth::user()->givePermissionTo('create department');
@@ -114,11 +114,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('access-manager',AccessManager::class)->name('access-manager');
     Route::get('access-type',AccessType::class)->name('access-type');
     Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
-    Route::view('/powergrid', 'powergrid-demo');
-
+    Route::view('powergrid','powergrid-demo');
     Route::get('milestones',MilestoneLists::class)->name('milestones');
 
 });
+
 
 //App Details Page => 'Dashboard'], function() {
 Route::group(['prefix' => 'menu-style'], function() {
