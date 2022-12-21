@@ -1,4 +1,5 @@
 <div>
+    @section('webtitle',trans('cruds.estimate.title_singular'))
     <div wire:loading.delay.long>
         <div class="spinner-border text-primary loader-position" role="status"></div>
     </div>
@@ -13,19 +14,19 @@
                 <livewire:estimate.edit-estimate />
             @endif
         </div>
-        <div x-show="!formOpen && !editFormOpen" x-transition.duration.500ms>
+        <div x-show="!formOpen && !editFormOpen" >
             <div class="row">
                 <div class="col-md-12 col-lg-12">
                     <div class="row row-cols-1">
                         <div class="d-slider1 overflow-hidden ">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <li class="swiper-slide card card-slide">
-                                        <div class="card-body ">
+                                    <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab==1 ?'active':'' }}"  wire:click="draftData()">
+                                        <div class="card-body" wire:ignore>
                                             <div class="progress-widget">
                                                 <div id="circle-progress-01"
                                                     class="circle-progress-01 circle-progress circle-progress-primary text-center"
-                                                    data-min-value="0" data-max-value="100" data-value="90"
+                                                    data-min-value="0" data-max-value="100" data-value="{{ $counterData['draftDataCount'] }}"
                                                     data-type="percent">
                                                     <svg class="card-slie-arrow" width="24" height="24px"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -38,19 +39,19 @@
                                                 </div>
                                                 <div class="progress-detail">
                                                     <p class="mb-2">Total Draft</p>
-                                                    <h4 class="counter" style="visibility: visible;">1</h4>
+                                                    <h4 class="counter" style="visibility: visible;">{{ $counterData['draftDataCount'] }}</h4>
                                                 </div>
                                             </div>
                                         </div>
                                     </li>
                                 </div>
                                 <div class="col-md-4">
-                                    <li class="swiper-slide card card-slide">
-                                        <div class="card-body">
+                                    <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab==2 ?'active':'' }}" wire:click='forwardedData()'>
+                                        <div class="card-body"  wire:ignore>
                                             <div class="progress-widget">
                                                 <div id="circle-progress-02"
                                                     class="circle-progress-01 circle-progress circle-progress-info text-center"
-                                                    data-min-value="0" data-max-value="100" data-value="80"
+                                                    data-min-value="0" data-max-value="100" data-value="{{ $counterData['forwardedDataCount'] }}"
                                                     data-type="percent">
                                                     <svg class="card-slie-arrow " width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -61,19 +62,19 @@
                                                 </div>
                                                 <div class="progress-detail">
                                                     <p class="mb-2"> Total Forwarded</p>
-                                                    <h4 class="counter" style="visibility: visible;">2</h4>
+                                                    <h4 class="counter" style="visibility: visible;">{{ $counterData['forwardedDataCount'] }}</h4>
                                                 </div>
                                             </div>
                                         </div>
                                     </li>
                                 </div>
                                 <div class="col-md-4">
-                                    <li class="swiper-slide card card-slide">
-                                        <div class="card-body">
+                                    <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab==3 ?'active':'' }}" wire:click="revertedData()">
+                                        <div class="card-body" wire:ignore>
                                             <div class="progress-widget">
                                                 <div id="circle-progress-03"
                                                     class="circle-progress-01 circle-progress circle-progress-primary text-center"
-                                                    data-min-value="0" data-max-value="100" data-value="70"
+                                                    data-min-value="0" data-max-value="100" data-value="{{ $counterData['revertedDataCount'] }}"
                                                     data-type="percent">
                                                     <svg class="card-slie-arrow " width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -84,23 +85,61 @@
                                                 </div>
                                                 <div class="progress-detail">
                                                     <p class="mb-2">Total Reverted</p>
-                                                    <h4 class="counter" style="visibility: visible;">3</h4>
+                                                    <h4 class="counter" style="visibility: visible;">{{ $counterData['revertedDataCount'] }}</h4>
                                                 </div>
                                             </div>
                                         </div>
                                     </li>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
                 <div class="col-md-12 col-lg-12 col-sm-3">
+                    @if ($this->selectedTab == 1)
+                        <div class="card">
+                            <div class="card-body">
+                                <livewire:estimate.estimated-data-table :wire:key="$updateDataTableTracker" />
+                            </div>
+                        </div>
+                    @elseif ($this->selectedTab == 2)
                     <div class="card">
                         <div class="card-body">
-                            <livewire:estimate.estimated-data-table :wire:key="$updateDataTableTracker" />
+                            <livewire:estimate.datatable.forwarded-data-table :wire:key="$updateDataTableTracker" />
                         </div>
                     </div>
+                    @elseif ($this->selectedTab == 3)
+                    <div class="card">
+                        <div class="card-body">
+                            <livewire:estimate.datatable.reverted-data-table :wire:key="$updateDataTableTracker" />
+                        </div>
+                    </div>
+                    @else
+                        <div class="col-span-6 sm:col-span-3 xl:col-span-2 flex flex-col justify-end items-center">
+                            <svg width="10%" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"
+                                stroke="rgb(30, 41, 59)" class="w-36 h-36">
+                                <g fill="none" fill-rule="evenodd" stroke-width="4">
+                                    <circle cx="22" cy="22" r="1">
+                                        <animate attributeName="r" begin="0s" dur="1.8s" values="1; 20"
+                                            calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1"
+                                            repeatCount="indefinite"></animate>
+                                        <animate attributeName="stroke-opacity" begin="0s" dur="1.8s"
+                                            values="1; 0" calcMode="spline" keyTimes="0; 1"
+                                            keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"></animate>
+                                    </circle>
+                                    <circle cx="22" cy="22" r="1">
+                                        <animate attributeName="r" begin="-0.9s" dur="1.8s" values="1; 20"
+                                            calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1"
+                                            repeatCount="indefinite"></animate>
+                                        <animate attributeName="stroke-opacity" begin="-0.9s" dur="1.8s"
+                                            values="1; 0" calcMode="spline" keyTimes="0; 1"
+                                            keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"></animate>
+                                    </circle>
+                                </g>
+                            </svg>
+                            <div class="text-center text-xs mt-2">Loading...</div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

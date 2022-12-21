@@ -15,7 +15,7 @@ class EstimateForwardModal extends Component
 {
     use Actions;
     protected $listeners = ['openForwardModal' => 'forwardModalOpen'];
-    public $forwardModal = false, $estimate_id, $assigenUsersList = [],$assignUserDetails,$userAssignRemarks;
+    public $forwardModal = false, $estimate_id, $assigenUsersList = [],$assignUserDetails,$userAssignRemarks,$updateDataTableTracker;
 
     public function forwardModalOpen($estimate_id)
     {
@@ -47,9 +47,12 @@ class EstimateForwardModal extends Component
             );
         }
         $this->reset();
+        $this->emit('openForm');
+        $this->updateDataTableTracker = rand(1,1000);
     }
     public function render()
     {
+        $this->updateDataTableTracker = rand(1,1000);
         // TODO:: 1) REMOVE THIS SQL FROM RENDER 2) AFTER GEETING THE USER DATA, IF WE TYPE THE REMARKS THE USER DATA CHANGING TO ADMIN [NEED TO BE FIXED]
         $userAccess_id = AccessMaster::select('access_parent_id')->join('access_types', 'access_masters.access_type_id', '=', 'access_types.id')->where('user_id', Auth::user()->id)->first();
         $this->assigenUsersList = User::join('access_masters', 'users.id', '=', 'access_masters.user_id')

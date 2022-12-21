@@ -1,21 +1,15 @@
 <?php
 
-namespace App\Http\Livewire\Estimate;
+namespace App\Http\Livewire\Estimate\Datatable;
 
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Columns\LinkColumn;
-use Rappasoft\LaravelLivewireTables\Views\Columns\ButtonGroupColumn;
 use App\Models\EstimatePrepare;
-use App\Models\SorMaster;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-use Rappasoft\LaravelLivewireTables\Views\Filter;
 
-class EstimatedDataTable extends DataTableComponent
+class ForwardedDataTable extends DataTableComponent
 {
-    // protected $model = EstimatePrepare::class;
-
     public function configure(): void
     {
         $this->setPrimaryKey('estimate_id');
@@ -39,7 +33,7 @@ class EstimatedDataTable extends DataTableComponent
                 ->sortable(),
             Column::make("Actions", "estimate_id")
             ->format(
-                fn($value, $row, Column $column) => view('livewire.action-components.estimate-prepare.action-buttons')->withValue($value))
+                fn($value, $row, Column $column) => view('livewire.action-components.estimate-prepare.forwarded-table-buttons')->withValue($value))
         ];
     }
 
@@ -58,12 +52,12 @@ class EstimatedDataTable extends DataTableComponent
     public function builder(): Builder
     {
         return EstimatePrepare::query()
-            ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
-            ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-            ->where('estimate_user_assign_records.estimate_user_type','=',2)
-            ->where('sor_masters.status',1)
-            ->where('operation', 'Total')
-            ->where('created_by',Auth::user()->id);
+        ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
+        ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
+        ->where('estimate_user_assign_records.estimate_user_type','=',2)
+        ->where('sor_masters.status',2)
+        ->where('operation', 'Total')
+        ->where('created_by',Auth::user()->id);
         // ->groupBy('estimate_id.estimate_id');
     }
 }
