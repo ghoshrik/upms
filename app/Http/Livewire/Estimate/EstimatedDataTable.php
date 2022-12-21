@@ -58,8 +58,8 @@ class EstimatedDataTable extends DataTableComponent
     public function builder(): Builder
     {
         return EstimatePrepare::query()
-            ->where('operation', 'Total');
-            // ->where('created_by',Auth::user()->id);
+            ->where('operation', 'Total')
+            ->where('created_by',Auth::user()->id);
         // ->groupBy('estimate_id.estimate_id');
     }
 }
