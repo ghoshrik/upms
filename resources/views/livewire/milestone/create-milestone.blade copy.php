@@ -14,7 +14,9 @@
 
                         <div class="row">
                             <div class="col-md-4 col-lg-4 col-sm-3">
-                                <x-input label="Project Id" wire:model="projectId" placeholder="Enter Project No." />
+                                {{-- <x-select label="Select Unit Type" placeholder="Select Unit Type"
+                                :options="['project_1', 'project_2', 'project_3', 'project_4']"
+                                    wire:model.defer="project_name" /> --}}
 
                             </div>
                             <div class="col-md-4 col-lg-4 col-sm-3">
@@ -22,7 +24,7 @@
                                     placeholder="Your description" />
                             </div>
                             <div class="col-md-4 col-lg-4 col-sm-3">
-                                <button type="button" wire:click="addMilestone({{$Index}})"
+                                <button type="button" wire:click="addMileStep"
                                     class="btn btn-soft-success rounded-pill mt-3">Add</button>
                             </div>
 
@@ -31,57 +33,53 @@
                             <div class="col-md-12 col-lg-12 col-sm-6">
                                 <div class="iq-timeline1 m-0 d-flex align-items-center justify-content-between position-relative">
                                     <ul class="list-inline p-0 m-0 w-100 mt-2 mb-2 ml-2">
-                                        @foreach($mileStoneData as $key => $mileStone)
+                                        @foreach($inputsData as $key => $inputData)
                                         <li>
                                             <div class="row">
                                                 <div class="col-md-2 col-lg-2 col-sm-3">
-                                                    <x-input label="milestone_1" wire:key="inputsData.{{$key}}.milestone_1" wire:model="mileStoneData.{{$key}}.m1" placeholder="your Milestone_1{{$key}}" />
+                                                    <x-input label="milestone_1" wire:key="inputsData.{{$key}}.milestone_1" wire:model="inputsData.{{$key}}.milestone_1" placeholder="your Milestone_1{{$key}}" />
                                                 </div>
                                                 <div class="col-md-3 col-lg-3 col-sm-3">
-                                                    <x-input label="milestone_2" wire:key="inputsData.{{$key}}.milestone_2"  wire:model="mileStoneData.{{$key}}.m2" placeholder="your Milestone_2{{$key}}" />
+                                                    <x-input label="milestone_2" wire:key="inputsData.{{$key}}.milestone_2" wire:model="inputsData.{{$key}}.milestone_2" placeholder="your Milestone_2{{$key}}" />
                                                 </div>
                                                 <div class="col-md-2 col-lg-2 col-sm-3">
-                                                    <x-input label="milestone_3" wire:key="inputsData.{{$key}}.milestone_3"  wire:model="mileStoneData.{{$key}}.m3" placeholder="your Milestone_3{{$key}}" />
+                                                    <x-input label="milestone_3" wire:key="inputsData.{{$key}}.milestone_3" wire:model="inputsData.{{$key}}.milestone_3" placeholder="your Milestone_3{{$key}}" />
                                                 </div>
                                                 <div class="col-md-3 col-lg-3 col-sm-3">
-                                                    <x-input label="milestone_4" wire:key="inputsData.{{$key}}.milestone_4"  wire:model="mileStoneData.{{$key}}.m4" placeholder="your Milestone_4{{$key}}" />
+                                                    <x-input label="milestone_4" wire:key="inputsData.{{$key}}.milestone_4" wire:model="inputsData.{{$key}}.milestone_4" placeholder="your Milestone_4{{$key}}" />
                                                 </div>
                                                 <div class="col-md-2 col-lg-2 col-sm-3">
                                                     <div class="row">
                                                         <div class="col-md-8 col-lg-8 col-sm-6">
-                                                            <button type="button" wire:click="addSubMilestone({{$Index}})"
+                                                            <button type="button" wire:click="addSubMileStep({{$key}})"
                                                                 class="btn btn-soft-success rounded-pill mt-3 w-100">Add Sub</button>
                                                         </div>
-                                                        {{-- <div class="col-md-2 col-lg-2 col-sm-6">
+                                                        <div class="col-md-2 col-lg-2 col-sm-6">
                                                             <button type="button" wire:click="removeMileStep({{$key}})"
-                                                            class="btn btn-soft-danger rounded-pill mt-3 {{ count($inputData) < 2 ? 'disabled' : '' }}">
-                                                            <x-lucide-trash-2 class="w-4 h-4 text-denger-500" /></button>
-                                                        </div> --}}
+                                            class="btn btn-soft-danger rounded-pill mt-3 {{ count($inputData) < 2 ? 'disabled' : '' }}">
+                                            <x-lucide-trash-2 class="w-4 h-4 text-denger-500" /></button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            @isset($subMileData[$Index])
-                                                @foreach($subMileData[$Index] as $k => $submileStone)
-                                            {{-- @dd($mileStone[$Index]); --}}
-                                            {{-- @dd($submileStone) --}}
-                                            @if ($subMileData[$Index] == $mileStoneData[$Index])
-                                               <div class="row">
+                                            @foreach($InputSubData as $Index => $inputsubData)
+                                            <div class="row">
                                                 <div class="col-md-12 col-lg-12 col-sm-6">
                                                     <div class="iq-timeline1 m-0 d-flex align-items-center justify-content-between position-relative">
                                                         <ul class="list-inline p-0 m-0 w-100 mt-2 mb-2 ml-2">
                                                             <li>
                                                                 <div class="row">
                                                                     <div class="col-md-2 col-lg-2 col-sm-3">
-                                                                        <x-input label="milestone_4"  wire:model="mileStoneData.{{$k}}.m1" placeholder="your Milestone_1{{$Index}}" />
+                                                                        <x-input label="milestone_4" wire:key="milestone_4.{{$Index}}" wire:model="milestone_4.{{$inputsubData}}" placeholder="your Milestone_1{{$Index}}" />
                                                                     </div>
                                                                     <div class="col-md-3 col-lg-3 col-sm-3">
-                                                                        <x-input label="milestone_5"  wire:model="mileStoneData.{{$k}}.m2" placeholder="your Milestone_1{{$Index}}" />
+                                                                        <x-input label="milestone_5" wire:key="milestone_5.{{$Index}}" wire:model="milestone_5.{{$inputsubData}}" placeholder="your Milestone_1{{$Index}}" />
                                                                     </div>
                                                                     <div class="col-md-2 col-lg-2 col-sm-3">
-                                                                        <x-input label="milestone_6"  wire:model="mileStoneData.{{$k}}.m3" placeholder="your Milestone_1{{$Index}}" />
+                                                                        <x-input label="milestone_6" wire:key="milestone_6.{{$Index}}" wire:model="milestone_6.{{$inputsubData}}" placeholder="your Milestone_1{{$Index}}" />
                                                                     </div>
                                                                     <div class="col-md-3 col-lg-3 col-sm-3">
-                                                                        <x-input label="milestone_7"  wire:model="mileStoneData.{{$k}}.m4" placeholder="your Milestone_1{{$Index}}" />
+                                                                        <x-input label="milestone_7" wire:key="milestone_7.{{$Index}}" wire:model="milestone_7.{{$inputsubData}}" placeholder="your Milestone_1{{$Index}}" />
                                                                     </div>
                                                                     <div class="col-md-2 col-lg-2 col-sm-3">
                                                                         <div class="row">
@@ -89,10 +87,10 @@
                                                                                 <button type="button" wire:click="addSubMileStep({{$Index}})"
                                                                                     class="btn btn-soft-success rounded-pill mt-3 w-100">Add Sub</button>
                                                                             </div>
-                                                                            {{-- <div class="col-md-2 col-lg-2 col-sm-6">
+                                                                            <div class="col-md-2 col-lg-2 col-sm-6">
                                                                                 <button type="button" wire:click="removeSubMileStep({{$key.' '.$Index}})"
                                                                 class="btn btn-soft-danger rounded-pill mt-3 {{ count($inputsubData) < 2 ? 'disabled' : '' }}">
-                                                                <x-lucide-trash-2 class="w-4 h-4 text-denger-500" /></button> --}}
+                                                                <x-lucide-trash-2 class="w-4 h-4 text-denger-500" /></button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -102,11 +100,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            @endif
-
                                             @endforeach
-                                            @endisset
-
                                         </li>
                                         @endforeach
                                     </ul>

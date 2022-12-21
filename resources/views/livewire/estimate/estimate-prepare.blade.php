@@ -14,31 +14,35 @@
             @endif
         </div>
         <div x-show="!formOpen && !editFormOpen" x-transition.duration.500ms>
-            <div class="row">
-                <div class="col-md-4 col-lg-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="progress-widget">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="2" y="4" width="20" height="5" rx="2">
-                                    </rect>
-                                    <path d="M4 9v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"></path>
-                                    <path d="M10 13h4"></path>
-                                </svg>
-                                <div class="progress-detail">
-                                    <p class="mb-2">
-                                        Draft
-                                    </p>
-                                    <h4 class="counter" style="visibility: visible;">0</h4>
+            <div class="row" x-data="{tabs:['Draft','Forwared','Reverted'],activeTab:'Draft'}">
+                <!-- :class="{'bg-gray-200':activeTab===tab,'text-white':activeTab===tab}" -->
+                {{-- <div> --}}
+                    <template x-for="tab in tabs">
+                        <div class="col-md-4 col-lg-4" >
+                            <div class="card cursor-pointer" @click="activeTab=tab" :class="{'2px solid blue':activeTab===tab}">
+                                <div class="card-body">
+                                    <div class="progress-widget">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="2" y="4" width="20" height="5" rx="2">
+                                            </rect>
+                                            <path d="M4 9v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"></path>
+                                            <path d="M10 13h4"></path>
+                                        </svg>
+                                        <div class="progress-detail">
+                                            <p class="mb-2" x-text="tab"></p>
+                                            <h4 class="counter" style="visibility: visible;">0</h4>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-lg-4">
+                    </template>
+                {{-- </div> --}}
+
+
+                {{-- <div class="col-md-4 col-lg-4">
                     <div class="card">
                         <div class="card-body">
                             <div class="progress-widget">
@@ -73,11 +77,26 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 col-lg-12 col-sm-3">
+                </div> --}}
+
+                <div class="col-md-12 col-lg-12 col-sm-3" x-show="activeTab==='Draft'">
                     <div class="card">
                         <div class="card-body">
                             <livewire:estimate.estimated-data-table />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-12 col-sm-3" x-show="activeTab==='Forwared'">
+                    <div class="card">
+                        <div class="card-body">
+                            Forwarded
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-12 col-sm-3" x-show="activeTab==='Reverted'">
+                    <div class="card">
+                        <div class="card-body">
+                            Reverted
                         </div>
                     </div>
                 </div>

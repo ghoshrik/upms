@@ -22,7 +22,7 @@ class OfficeTable extends DataTableComponent
                 ->sortable(),
             Column::make("Office name", "office_name")
                 ->sortable(),
-            Column::make("Department id", "department_id")
+            Column::make("Department id", "getDepartmentName.department_name")
                 ->sortable(),
             Column::make("Dist code", "dist_code")
                 ->sortable(),
