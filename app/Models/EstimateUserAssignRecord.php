@@ -12,4 +12,8 @@ class EstimateUserAssignRecord extends Model
     protected $fillable = [
        'estimate_id','estimate_user_type','estimate_user_id','comments'
     ];
+    public function SOR()
+    {
+        return $this->hasOne(SorMaster::class,'estimate_id','estimate_id');
+    }
 }

@@ -18,11 +18,11 @@ class OfficeTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            Column::make("Id", "id")
-                ->sortable(),
+            // Column::make("Id", "id")
+            //     ->sortable(),
             Column::make("Office name", "office_name")
                 ->sortable(),
-            Column::make("Department id", "getDepartmentName.department_name")
+            Column::make("Department Name", "getDepartmentName.department_name")
                 ->sortable(),
             Column::make("Dist code", "dist_code")
                 ->sortable(),
