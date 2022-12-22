@@ -46,9 +46,12 @@ class CreateEstimateProject extends Component
         'estimateData.qty.numeric' => 'This field is must be numeric',
         'estimateData.rate.required' => 'This field is not empty',
         'estimateData.rate.numeric' => 'This field is must be numeric',
-        'estimateData.qty.total_amount' => 'This field is not empty',
-        'estimateData.qty.total_amount' => 'This field is must be numeric',
-
+        'estimateData.total_amount.required' => 'This field is not empty',
+        'estimateData.total_amount.numeric' => 'This field is must be numeric',
+        'estimateData.estimate_no.required' => 'This field is required',
+        'estimateData.estimate_no.numeric' => 'This field is must be numeric',
+        'estimateData.estimate_desc.required' => 'This field is required',
+        'estimateData.estimate_desc.string' => 'Invalid format input'
     ];
     public function booted()
     {
@@ -64,6 +67,14 @@ class CreateEstimateProject extends Component
         if ($this->selectedCategoryId == 2) {
             $this->rules =  Arr::collapse([$this->rules, [
                 'estimateData.other_name' => 'required|string',
+            ]]);
+        }
+        if($this->selectedCategoryId == 3){
+            $this->rules =  Arr::collapse([$this->rules, [
+                'estimateData.dept_id' => 'required|integer',
+                'estimateData.estimate_no' => 'required|integer',
+                'estimateData.estimate_desc' => 'required|string',
+                'estimateData.total_amount' => 'required|numeric'
             ]]);
         }
         if ($this->selectedCategoryId == 1 || $this->selectedCategoryId == 2) {
@@ -176,7 +187,10 @@ class CreateEstimateProject extends Component
     public function getDeptEstimates()
     {
         $this->fatchDropdownData['estimatesList'] = '';
-        $this->fatchDropdownData['estimatesList'] = EstimatePrepare::where('dept_id',$this->estimateData['dept_id'])->get();
+        $this->estimateData['estimate_no'] = '';
+        $this->estimateData['estimate_desc'] = '';
+        $this->estimateData['total_amount'] = '';
+        $this->fatchDropdownData['estimatesList'] = EstimatePrepare::select('estimate_id')->where('dept_id',$this->estimateData['dept_id'])->groupBy('estimate_id')->get();
     }
 
     public function getEstimateDetails()

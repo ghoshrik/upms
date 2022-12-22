@@ -197,7 +197,7 @@
                                             </x-select>
                                         </div>
                                     </div>
-                                    @isset($fatchDropdownData['estimateDetails'])
+                                    {{-- @isset($fatchDropdownData['estimateDetails']) --}}
                                         <div class="col">
                                             <div class="form-group">
                                                 <x-textarea rows="2" wire:key="other_rate"
@@ -216,7 +216,7 @@
                                                     placeholder="{{ trans('cruds.estimate.fields.estimate_total') }}" />
                                             </div>
                                         </div>
-                                    @endisset
+                                    {{-- @endisset --}}
 
                                 </div>
                             @endif

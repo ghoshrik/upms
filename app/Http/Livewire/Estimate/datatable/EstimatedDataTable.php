@@ -1,16 +1,12 @@
 <?php
 
-namespace App\Http\Livewire\Estimate;
+namespace App\Http\Livewire\Estimate\Datatable;
 
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use Rappasoft\LaravelLivewireTables\Views\Columns\LinkColumn;
-use Rappasoft\LaravelLivewireTables\Views\Columns\ButtonGroupColumn;
 use App\Models\EstimatePrepare;
-use App\Models\SorMaster;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-use Rappasoft\LaravelLivewireTables\Views\Filter;
 
 class EstimatedDataTable extends DataTableComponent
 {
@@ -37,6 +33,10 @@ class EstimatedDataTable extends DataTableComponent
             Column::make("TOTAL AMOUNT", "total_amount")
                 ->format(fn ($row) => round($row, 10, 2))
                 ->sortable(),
+            Column::make("Status","SOR.getEstimateStatus.status")
+                ->sortable()
+                ->format( fn($row) => '<span class="badge bg-soft-primary fs-6">'.$row.'</span>')
+                    ->html(),
             Column::make("Actions", "estimate_id")
             ->format(
                 fn($value, $row, Column $column) => view('livewire.action-components.estimate-prepare.action-buttons')->withValue($value))

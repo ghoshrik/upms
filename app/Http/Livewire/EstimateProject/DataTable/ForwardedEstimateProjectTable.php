@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Estimate\Datatable;
+namespace App\Http\Livewire\EstimateProject\DataTable;
 
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
@@ -8,7 +8,7 @@ use App\Models\EstimatePrepare;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
-class ForwardedDataTable extends DataTableComponent
+class ForwardedEstimateProjectTable extends DataTableComponent
 {
     public function configure(): void
     {
@@ -31,7 +31,7 @@ class ForwardedDataTable extends DataTableComponent
             Column::make("TOTAL AMOUNT", "total_amount")
                 ->format(fn ($row) => round($row, 10, 2))
                 ->sortable(),
-            Column::make("Status","SOR.getEstimateStatus.status")
+                Column::make("Status","SOR.getEstimateStatus.status")
                 ->sortable()
                 ->format( fn($row) => '<span class="badge bg-soft-info fs-6">'.$row.'</span>')
                     ->html(),
@@ -58,9 +58,10 @@ class ForwardedDataTable extends DataTableComponent
         return EstimatePrepare::query()
         ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
         ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-        ->where('estimate_user_assign_records.estimate_user_type','=',2)
+        ->where('estimate_user_assign_records.estimate_user_type','=',3)
         ->where('sor_masters.status',2)
         ->where('operation', 'Total')
+        ->where('estimate_no', '!=', NULL)
         ->where('created_by',Auth::user()->id);
         // ->groupBy('estimate_id.estimate_id');
     }

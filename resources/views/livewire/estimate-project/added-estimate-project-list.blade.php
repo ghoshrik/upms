@@ -110,7 +110,7 @@
                                         <td>
                                             @if ($addedEstimate['estimate_no'])
                                                 <x-button
-                                                    wire:click=""
+                                                    wire:click="viewModal({{ $addedEstimate['estimate_no'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-eye class="w-4 h-4 text-gray-500" /> View

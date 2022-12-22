@@ -107,19 +107,22 @@
                     @if ($this->selectedTab == 1)
                         <div class="card">
                             <div class="card-body">
-                                <livewire:estimate-project.data-table.estimate-project-table :wire:key="$updateDataTableTracker" />
+                                <livewire:estimate-project.data-table.estimate-project-table
+                                    :wire:key="$updateDataTableTracker" />
                             </div>
                         </div>
                     @elseif ($this->selectedTab == 2)
                         <div class="card">
                             <div class="card-body">
-                                <livewire:estimate.datatable.forwarded-data-table :wire:key="$updateDataTableTracker" />
+                                <livewire:estimate-project.data-table.forwarded-estimate-project-table
+                                    :wire:key="$updateDataTableTracker" />
                             </div>
                         </div>
                     @elseif ($this->selectedTab == 3)
                         <div class="card">
                             <div class="card-body">
-                                <livewire:estimate.datatable.reverted-data-table :wire:key="$updateDataTableTracker" />
+                                <livewire:estimate-project.data-table.reverted-estimate-project-table
+                                    :wire:key="$updateDataTableTracker" />
                             </div>
                         </div>
                     @else
@@ -152,4 +155,6 @@
             </div>
         </div>
     </div>
+    <livewire:components.modal.estimate.estimate-view-modal />
+    <livewire:components.modal.estimate.estimate-forward-modal />
 </div>

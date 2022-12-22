@@ -20,7 +20,7 @@ class AddedEstimateProjectList extends Component
     use Actions;
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
-    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc;
+    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc,$updateDataTableTracker;
 
     public function mount()
     {
@@ -32,7 +32,10 @@ class AddedEstimateProjectList extends Component
         Session()->forget('addedProjectEstimateData');
         $this->reset();
     }
-
+    public function viewModal($estimate_id)
+    {
+        $this->emit('openModal', $estimate_id);
+    }
     //calculate estimate list
     public function insertAddEstimate($arrayIndex, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks)
     {
@@ -285,6 +288,7 @@ class AddedEstimateProjectList extends Component
                         $title = 'Project Estimate Created Successfully!!'
                     );
                     $this->resetSession();
+                    $this->updateDataTableTracker = rand(1,1000);
                     $this->emit('openForm');
                 }
             } else {
@@ -299,6 +303,7 @@ class AddedEstimateProjectList extends Component
     }
     public function render()
     {
+        $this->updateDataTableTracker = rand(1,1000);
         $this->arrayRow = count($this->allAddedEstimatesData);
         return view('livewire.estimate-project.added-estimate-project-list');
     }

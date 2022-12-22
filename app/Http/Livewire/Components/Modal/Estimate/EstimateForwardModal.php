@@ -47,7 +47,7 @@ class EstimateForwardModal extends Component
             );
         }
         $this->reset();
-        $this->emit('openForm');
+        // $this->emit('openForm');
         $this->updateDataTableTracker = rand(1,1000);
     }
     public function render()

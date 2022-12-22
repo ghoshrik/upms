@@ -38,7 +38,7 @@
                                                     </svg>
                                                 </div>
                                                 <div class="progress-detail">
-                                                    <p class="mb-2">Total Draft</p>
+                                                    <p class="mb-2">Total Draft{{env('APP_NAME')}}</p>
                                                     <h4 class="counter" style="visibility: visible;">{{ $counterData['draftDataCount'] }}</h4>
                                                 </div>
                                             </div>
@@ -99,7 +99,7 @@
                     @if ($this->selectedTab == 1)
                         <div class="card">
                             <div class="card-body">
-                                <livewire:estimate.estimated-data-table :wire:key="$updateDataTableTracker" />
+                                <livewire:estimate.datatable.estimated-data-table :wire:key="$updateDataTableTracker" />
                             </div>
                         </div>
                     @elseif ($this->selectedTab == 2)

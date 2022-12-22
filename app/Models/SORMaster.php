@@ -22,4 +22,8 @@ class SorMaster extends Model
     {
         return $this->belongsTo(EstimateUserAssignRecord::class,'estimate_id','estimate_id');
     }
+    public function getEstimateStatus()
+    {
+        return $this->hasOne(EstimateStatus::class,'id','status');
+    }
 }
