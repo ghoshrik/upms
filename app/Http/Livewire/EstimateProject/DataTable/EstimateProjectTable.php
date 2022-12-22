@@ -35,8 +35,8 @@ class EstimateProjectTable extends DataTableComponent
             Column::make("TOTAL AMOUNT", "total_amount")
                 ->format(fn ($row) => round($row, 10, 2))
                 ->sortable(),
-
-            Column::make("Actions", "estimate_id")->view('components.data-table-components.buttons.edit'),
+            Column::make("Actions", "estimate_id")->format(
+                fn($value, $row, Column $column) => view('livewire.action-components.estimate-prepare.action-buttons')->withValue($value))
         ];
     }
     public function edit($id)
