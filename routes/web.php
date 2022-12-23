@@ -17,6 +17,7 @@ use App\Http\Livewire\Sor\Sor;
 use App\Http\Livewire\UserType\UserType;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\AccessType\AccessType;
+use App\Http\Livewire\Milestone\MilestoneLists;
 use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Models\Menu;
@@ -118,6 +119,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('milestones',MilestoneLists::class)->name('milestones');
 
 });
+// Route::get('milestones',MilestoneLists::class)->name('milestones');
 
 
 //App Details Page => 'Dashboard'], function() {
