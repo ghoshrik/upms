@@ -17,6 +17,7 @@ use App\Http\Livewire\Sor\Sor;
 use App\Http\Livewire\UserType\UserType;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\AccessType\AccessType;
+use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
 use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Models\Menu;
@@ -45,23 +46,23 @@ Route::get('set-role',function(){
        $user->assignRole('Super Admin');
     }
 });
-// Route::get('test',function(){
-//     // $menu = Menu::where('title','User Management');
-//     $role=Role::where('name','Office Admin')->first();
-//     // $role->syncPermissions(['create user', 'edit user']);
-//     // dd($role->hasPermissionTo('edit user'));
-//     // $role->syncPermissions(['create office','edit office','edit user','create user','create SOR','edit SOR','create departmentCategory','edit departmentCategory']);
-//     $role->syncPermissions(['create designation','edit designation','edit user','create user','create accessManager','edit accessManager']);
-//     // Auth::user()->assignRole('stateAdmin');
-//     // Auth::user()->givePermissionTo(['create user', 'edit user']);
-//     // Auth::user()->givePermissionTo('create department');
-//     // $role->revokePermissionTo('edit estimatePrepare');
-//     // $role->givePermissionTo('edit articles');
-//     // dd(Auth::user());
-//     // $menu = Menu::find(5);
-//     // $menu->givePermissionTo('create user');
-//     // dd($menu->hasPermissionTo('create user'));
-// });
+Route::get('test',function(){
+    // $menu = Menu::where('title','User Management');
+    // $role=Role::where('name','Office Admin')->first();
+    // $role->syncPermissions(['create user', 'edit user']);
+    // dd($role->hasPermissionTo('edit user'));
+    // $role->syncPermissions(['create office','edit office','edit user','create user','create SOR','edit SOR','create departmentCategory','edit departmentCategory']);
+    // $role->syncPermissions(['create designation','edit designation','edit user','create user','create accessManager','edit accessManager']);
+    // Auth::user()->assignRole('stateAdmin');
+    // Auth::user()->givePermissionTo(['create estimateRecommender', 'edit estimateRecommender']);
+    // Auth::user()->givePermissionTo('create department');
+    // $role->revokePermissionTo('edit estimatePrepare');
+    // $role->givePermissionTo('edit articles');
+    // dd(Auth::user());
+    // $menu = Menu::find(5);
+    // $menu->givePermissionTo('create user');
+    // dd($menu->hasPermissionTo('create user'));
+});
 
 Route::get('/storage', function () {
     Artisan::call('storage:link');
@@ -114,6 +115,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('access-manager',AccessManager::class)->name('access-manager');
     Route::get('access-type',AccessType::class)->name('access-type');
     Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
+    Route::get('estimate-recommender',EstimateRecomender::class)->name('estimate-recommender');
     Route::view('/powergrid', 'powergrid-demo');
 
 });

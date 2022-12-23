@@ -19113,3 +19113,6 @@ pre[class*=language-] {
 .d-slider1 .card-tab{
     transition: all .5s;
 }
+::-webkit-scrollbar{
+    display: none;
+}

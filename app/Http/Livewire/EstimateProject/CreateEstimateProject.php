@@ -73,7 +73,7 @@ class CreateEstimateProject extends Component
             $this->rules =  Arr::collapse([$this->rules, [
                 'estimateData.dept_id' => 'required|integer',
                 'estimateData.estimate_no' => 'required|integer',
-                'estimateData.estimate_desc' => 'required|string',
+                // 'estimateData.estimate_desc' => 'required|string',
                 'estimateData.total_amount' => 'required|numeric'
             ]]);
         }
@@ -103,7 +103,7 @@ class CreateEstimateProject extends Component
         $this->estimateData['item_name'] = $value;
         if ($this->estimateData['item_name'] == 'SOR') {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
-            $this->estimateData['estimate_no'] = '';
+            $this->estimateData['estimate_no'] = NULL;
             $this->estimateData['dept_id'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
@@ -114,7 +114,7 @@ class CreateEstimateProject extends Component
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
         } elseif($this->estimateData['item_name'] == 'Other') {
-            $this->estimateData['estimate_no'] = '';
+            $this->estimateData['estimate_no'] = NULL;
             $this->estimateData['dept_id'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
@@ -127,7 +127,7 @@ class CreateEstimateProject extends Component
         }elseif($this->estimateData['item_name'] == 'Estimate'){
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['estimate_no'] = '';
-            $this->estimateData['estimate_desc'] = '';
+            // $this->estimateData['estimate_desc'] = '';
             $this->estimateData['dept_id'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
@@ -188,7 +188,7 @@ class CreateEstimateProject extends Component
     {
         $this->fatchDropdownData['estimatesList'] = '';
         $this->estimateData['estimate_no'] = '';
-        $this->estimateData['estimate_desc'] = '';
+        $this->estimateData['description'] = '';
         $this->estimateData['total_amount'] = '';
         $this->fatchDropdownData['estimatesList'] = EstimatePrepare::select('estimate_id')->where('dept_id',$this->estimateData['dept_id'])->groupBy('estimate_id')->get();
     }
@@ -196,12 +196,12 @@ class CreateEstimateProject extends Component
     public function getEstimateDetails()
     {
         $this->estimateData['total_amount'] = '';
-        $this->estimateData['estimate_desc'] = '';
+        $this->estimateData['description'] = '';
         $this->fatchDropdownData['estimateDetails'] = EstimatePrepare::join('sor_masters','estimate_prepares.estimate_id','sor_masters.estimate_id')
                                                         ->where('estimate_prepares.estimate_id',$this->estimateData['estimate_no'])
                                                         ->where('estimate_prepares.operation','Total')->first();
         $this->estimateData['total_amount'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
-        $this->estimateData['estimate_desc'] = $this->fatchDropdownData['estimateDetails']['sorMasterDesc'];
+        $this->estimateData['description'] = $this->fatchDropdownData['estimateDetails']['sorMasterDesc'];
     }
     public function addEstimate()
     {

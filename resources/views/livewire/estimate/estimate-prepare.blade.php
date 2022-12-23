@@ -38,7 +38,7 @@
                                                     </svg>
                                                 </div>
                                                 <div class="progress-detail">
-                                                    <p class="mb-2">Total Draft{{env('APP_NAME')}}</p>
+                                                    <p class="mb-2">Total Draft</p>
                                                     <h4 class="counter" style="visibility: visible;">{{ $counterData['draftDataCount'] }}</h4>
                                                 </div>
                                             </div>
@@ -147,3 +147,4 @@
         <livewire:components.modal.estimate.estimate-forward-modal />
     </div>
 </div>
+
