@@ -15,7 +15,7 @@ class MilestoneLists extends Component
     }
     public function render()
     {
-        $this->emit('changeTitel', 'Milestone');
+        $this->emit('changeTitle', 'Milestone');
         $assets = ['chart', 'animation'];
         return view('livewire.milestone.milestone-lists',compact('assets'));
     }

@@ -26,11 +26,13 @@ class AddedEstimateList extends Component
     {
         $this->setEstimateDataToSession();
     }
+
     public function resetSession()
     {
         Session()->forget('addedEstimateData');
         $this->reset();
     }
+
     //calculate estimate list
     public function insertAddEstimate($arrayIndex, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks)
     {
@@ -50,6 +52,7 @@ class AddedEstimateList extends Component
         $this->setEstimateDataToSession();
         $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc');
     }
+
     public function expCalc()
     {
         $result = 0;
@@ -68,7 +71,8 @@ class AddedEstimateList extends Component
                             }
                         } else {
                             $this->notification()->error(
-                                $title = $alphabet . ' is a invalid input'
+                                $title = 'Error !!!',
+                                $description =  $alphabet . ' is a invalid input'
                             );
                         }
                     } elseif (htmlspecialchars($info) == "%") {
@@ -85,6 +89,7 @@ class AddedEstimateList extends Component
             );
         }
     }
+
     public function showTotalButton()
     {
         if (count($this->level) > 1) {
@@ -93,6 +98,7 @@ class AddedEstimateList extends Component
             $this->openTotalButton = false;
         }
     }
+
     public function totalOnSelected()
     {
         if (count($this->level) >= 2) {
@@ -104,12 +110,13 @@ class AddedEstimateList extends Component
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
             $this->insertAddEstimate($this->arrayIndex, '', '', '', '', '', '', '', '', $result, 'Total', '', '');
         } else {
-            $this->dispatchBrowserEvent('alert', [
-                'type' => 'error',
-                'message' => "Minimum select 2 Check boxes"
-            ]);
+            $this->notification()->error(
+                $title = 'Error !!!',
+                $description =  'Minimum select 2 Check boxes'
+            );
         }
     }
+
     public function setEstimateDataToSession()
     {
         $this->reset('allAddedEstimatesData');
@@ -137,6 +144,7 @@ class AddedEstimateList extends Component
             $this->reset('addedEstimateData');
         }
     }
+
     public function confDeleteDialog($value): void
     {
         $this->dialog()->confirm([
@@ -153,6 +161,7 @@ class AddedEstimateList extends Component
             ],
         ]);
     }
+
     public function deleteEstimate($value)
     {
         unset($this->allAddedEstimatesData[$value]);
@@ -163,6 +172,7 @@ class AddedEstimateList extends Component
             $title = 'Row Deleted Successfully'
         );
     }
+
     public function exportWord()
     {
         $exportDatas = array_values($this->allAddedEstimatesData);
@@ -226,6 +236,7 @@ class AddedEstimateList extends Component
         return response()->download($date . '.docx')->deleteFileAfterSend(true);
         $this->reset('exportDatas');
     }
+
     public function store()
     {
         try {
@@ -235,7 +246,7 @@ class AddedEstimateList extends Component
                     foreach ($this->allAddedEstimatesData as $key => $value) {
                         $insert = [
                             'estimate_id' => $intId,
-                            'dept_id' => 'aaaaa',
+                            'dept_id' => $value['dept_id'],
                             'category_id' => $value['category_id'],
                             'row_id' => $value['array_id'],
                             'row_index' => $value['arrayIndex'],
@@ -284,11 +295,13 @@ class AddedEstimateList extends Component
             $this->emit('showError', $th->getMessage());
         }
     }
+
     public function render()
     {
         $this->arrayRow = count($this->allAddedEstimatesData);
         return view('livewire.estimate.added-estimate-list');
     }
+
     public function logView($data, $of)
     {
         Log::alert('-----------------[Start OF' . $of . ']');

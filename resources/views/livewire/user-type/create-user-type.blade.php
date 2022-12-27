@@ -17,9 +17,11 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-6"> <button type="button" wire:click='resetSession'
-                                        class="btn btn-soft-danger rounded-pill float-left">Reset</button></div>
+                                        class="btn btn-soft-danger rounded-pill float-left">Reset</button>
+                                </div>
                                 <div class="col-6"><button type="submit" wire:click='store'
-                                        class="btn btn-success rounded-pill float-right">Save</button></div>
+                                        class="btn btn-success rounded-pill float-right">Save</button>
+                                </div>
                             </div>
                         </div>
                     </div>

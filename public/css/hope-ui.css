@@ -19112,3 +19112,13 @@ pre[class*=language-] {
   position: absolute;
   bottom: 93px;
 }
+.d-slider1 .card-tab:hover,.active{
+    cursor: pointer;
+    margin-top: 10px ;
+    transition: all .5s;
+    color: #fff;
+    background-color: var(--bs-primary-tint-40);
+}
+.d-slider1 .card-tab{
+    transition: all .5s;
+}
