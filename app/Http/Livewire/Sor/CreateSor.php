@@ -68,6 +68,7 @@ class CreateSor extends Component
     }
     public function render()
     {
+
         return view('livewire.sor.create-sor');
     }
 }

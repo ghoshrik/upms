@@ -14,6 +14,7 @@ use App\Http\Livewire\Estimate\EstimatePrepare;
 use App\Http\Livewire\Milestone\MilestoneLists;
 use App\Http\Livewire\Office\Office;
 use App\Http\Livewire\Sor\Sor;
+use App\Http\Livewire\TestALL\TestSearch;
 use App\Http\Livewire\UserType\UserType;
 use Illuminate\Support\Facades\Artisan;
 // Packages
@@ -81,7 +82,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::view('/powergrid', 'powergrid-demo');
 
     Route::get('milestones',MilestoneLists::class)->name('milestones');
-
+    Route::get('testsearch',TestSearch::class)->name('testsearch');
 });
 
 //App Details Page => 'Dashboard'], function() {
