@@ -14,6 +14,7 @@ use App\Http\Livewire\Estimate\EstimatePrepare;
 use App\Http\Livewire\EstimateProject\EstimateProject;
 use App\Http\Livewire\Office\Office;
 use App\Http\Livewire\Sor\Sor;
+use App\Http\Livewire\TestALL\TestSearch;
 use App\Http\Livewire\UserType\UserType;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\AccessType\AccessType;
@@ -117,7 +118,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
     // Route::view('powergrid','powergrid-demo');
     Route::get('milestones',MilestoneLists::class)->name('milestones');
-
+    Route::get('testsearch',TestSearch::class)->name('testsearch');
 });
 // Route::get('milestones',MilestoneLists::class)->name('milestones');
 
