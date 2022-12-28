@@ -115,7 +115,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('access-manager',AccessManager::class)->name('access-manager');
     Route::get('access-type',AccessType::class)->name('access-type');
     Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
-    Route::view('powergrid','powergrid-demo');
+    // Route::view('powergrid','powergrid-demo');
     Route::get('milestones',MilestoneLists::class)->name('milestones');
 
 });

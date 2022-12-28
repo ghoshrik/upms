@@ -96,22 +96,127 @@ class CreateMilestone extends Component
         // ];
         // dd($this->mileStoneData,$this->Index);
     }
-    public function addMilestone($id)
+    public function printTreeHTML($tree) {
+        echo "<ul>\n";
+        foreach ($tree as $node) {
+          echo "<li>" . $node['id'] . "</li>\n";
+        //   if (!empty($node['children'])) {
+        //     printTreeHTML($node['children']);
+        //   }
+        }
+        echo "</ul>\n";
+    }
+
+    public function addMilestone($nodes)
     {
-        $this->Index = $id+1;
+        // $this->printTreeHTML($nodes);
+        // dd($nodes);
+        $this->Index = $nodes+1;
         $this->mileStoneData[$this->Index] = [
+            'Index'=>$this->Index,
             'M1'=>'',
             'M2'=>'',
             'M3'=>'',
             'M4'=>'',
             'p'=>0
         ];
+        // dd($this->mileStoneData);
+        // $nodes = [
+        //     ['id' => 1, 'parent_id' => null],
+        //     ['id' => 2, 'parent_id' => 1],
+        //     ['id' => 3, 'parent_id' => 1],
+        //     ['id' => 4, 'parent_id' => 2],
+        //     ['id' => 5, 'parent_id' => 2],
+        //     ['id' => 6, 'parent_id' => 3],
+        // ];
+        // $children = array();
+
+        // foreach ($nodes as $node) {
+        //     $children[$node['id']] = $node;
+        //     $children[$node['id']]['children'] = array();
+        // }
+
+        // foreach ($children as $child) {
+        //     if (isset($children[$child['parent_id']])) {
+        //         $children[$child['parent_id']]['children'][] = &$children[$child['id']];
+        //     }
+        // }
+
+        // $rootNodes = array();
+        // foreach ($children as $child) {
+        //     if (!isset($child['parent_id'])) {
+        //         $rootNodes[] = $child;
+        //     }
+        // }
+        // dd($rootNodes);
+        // return $rootNodes;
+
+
+//         $nodes = [
+//             ['id' => 1, 'parent_id' => null],
+//             ['id' => 2, 'parent_id' => 1],
+//             ['id' => 3, 'parent_id' => 1],
+//             ['id' => 4, 'parent_id' => 2],
+//             ['id' => 5, 'parent_id' => 2],
+//             ['id' => 6, 'parent_id' => 3],
+//         ];
+
+// $this->treeView = $this->buildTree($nodes);
+
+// public function buildTree($nodes)
+//     {
+//         $children = array();
+
+//         foreach ($nodes as $node) {
+//             $children[$node['id']] = $node;
+//             $children[$node['id']]['children'] = array();
+//         }
+
+//         foreach ($children as $child) {
+//             if (isset($children[$child['parent_id']])) {
+//                 $children[$child['parent_id']]['children'][] = &$children[$child['id']];
+//             }
+//         }
+
+//         $rootNodes = array();
+//         foreach ($children as $child) {
+//             if (!isset($child['parent_id'])) {
+//                 $rootNodes[] = $child;
+//             }
+//         }
+
+//         return $rootNodes;
+//     }
+
+
+
+// function printTreeHTML($tree) {
+//   echo "<ul>\n";
+//   foreach ($tree as $node) {
+//     echo "<li>" . $node['id'] . "</li>\n";
+//     if (!empty($node['children'])) {
+//       printTreeHTML($node['children']);
+//     }
+//   }
+//   echo "</ul>\n";
+
+
+
+
+
+
+
+
+
+
+
+
     }
     public function render()
     {
         // info($this->inputsData);
 
-        $this->emit('changeTitel', 'Milestone');
+        $this->emit('changeTitle', 'Milestone');
         $assets = ['chart', 'animation'];
         return view('livewire.milestone.create-milestone',compact('assets'));
     }

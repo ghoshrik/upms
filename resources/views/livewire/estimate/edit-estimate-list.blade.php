@@ -110,7 +110,7 @@
                                                     wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
                                                     <span class="btn-inner">
-                                                        <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
+                                                        <x-lucide-edit class="w-4 h-4 text-gray-500" /> {{ trans('global.edit_btn') }}
                                                     </span>
                                                 </x-button>
                                             @endif
@@ -119,7 +119,7 @@
                                                     wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
                                                     type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
-                                                        <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
+                                                        <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> {{ trans('global.delete_btn') }}
                                                     </span>
                                                 </x-button>
                                             @endif

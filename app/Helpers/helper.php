@@ -2,10 +2,14 @@
 
 use App\Models\SOR;
 use App\Models\SorMaster;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 function removeSession($session){
-    if(\Session::has($session)){
-        \Session::forget($session);
+    if(Session::has($session)){
+        Session::forget($session);
     }
     return true;
 }
@@ -35,7 +39,7 @@ function activeRoute($route, $isClass = false): string
 function checkRecordExist($table_list,$column_name,$id){
     if(count($table_list) > 0){
         foreach($table_list as $table){
-            $check_data = \DB::table($table)->where($column_name,$id)->count();
+            $check_data = DB::table($table)->where($column_name,$id)->count();
             if($check_data > 0) return false ;
         }
         return true;
@@ -62,7 +66,7 @@ function storeMediaFile($model,$file,$name)
 // Model file get by storage by spatie media library
 function getSingleMedia($model, $collection = 'image_icon',$skip=true)
 {
-    if (!\Auth::check() && $skip) {
+    if (!Auth::check() && $skip) {
         return asset('images/avatars/01.png');
     }
     if ($model !== null) {
@@ -97,7 +101,7 @@ function getFileExistsCheck($media)
         if($media->disk == 'public') {
             $mediaCondition = file_exists($media->getPath());
         } else {
-            $mediaCondition = \Storage::disk($media->disk)->exists($media->getPath());
+            $mediaCondition = Storage::disk($media->disk)->exists($media->getPath());
         }
     }
     return $mediaCondition;
@@ -109,7 +113,7 @@ function getEstimateDescription($estimate_no)
     {
         $estimateDescription = SorMaster::select('sorMasterDesc')->where('estimate_id',$estimate_no)->first();
     }
-    return $estimateDescription = $estimateDescription['sorMasterDesc'];
+    return $estimateDescription['sorMasterDesc'];
 
 }
 
@@ -119,7 +123,7 @@ function getSorItemNumber($sor_item_number)
     {
         $sorItemNo = SOR::select('Item_details')->where('id',$sor_item_number)->first();
     }
-    return $sorItemNo = $sorItemNo['Item_details'];
+    return $sorItemNo['Item_details'];
 }
 
 function getSorItemNumberDesc($sor_item_number)
@@ -128,5 +132,5 @@ function getSorItemNumberDesc($sor_item_number)
     {
         $sorItemDesc = SOR::select('description')->where('id',$sor_item_number)->first();
     }
-    return $sorItemDesc = $sorItemDesc['description'];
+    return $sorItemDesc['description'];
 }

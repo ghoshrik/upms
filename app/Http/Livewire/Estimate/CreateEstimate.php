@@ -2,14 +2,15 @@
 
 namespace App\Http\Livewire\Estimate;
 
-use App\Models\Department;
+use Throwable;
 use App\Models\SOR;
-use App\Models\SORCategory;
-use App\Models\SorCategoryType;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
+use App\Models\Department;
 use WireUi\Traits\Actions;
+use App\Models\SORCategory;
+use Illuminate\Support\Arr;
+use App\Models\SorCategoryType;
+use Illuminate\Support\Facades\Log;
 
 class CreateEstimate extends Component
 {
@@ -121,26 +122,114 @@ class CreateEstimate extends Component
             ->where('dept_category_id', $this->estimateData['dept_category_id'])->groupBy('version')
             ->get();
     }
-
-    public function autoSearch($keyword)
+    public $searchResData,$searchStyle = 'none',$searchDtaCount;
+    public function autoSearch()
     {
-        $keyword = $keyword['_x_bindings']['value'];
-        $this->kword = $keyword;
-        $this->fatchDropdownData['items_number'] = SOR::where('department_id', $this->estimateData['dept_id'])
+        // dd($this->selectedSORKey);
+    //     $keyword = $keyword['_x_bindings']['value'];
+    //     // dd($keyword);
+    //     $this->kword = $keyword;
+
+
+        if($this->selectedSORKey)
+        {
+            $this->fatchDropdownData['items_number'] = SOR::select('Item_details','id')
+            ->where('department_id', $this->estimateData['dept_id'])
             ->where('dept_category_id', $this->estimateData['dept_category_id'])
             ->where('version', $this->estimateData['version'])
-            ->where('Item_details', 'like', '%' . $keyword . '%')->get();
+            ->where('Item_details', 'like', $this->selectedSORKey.'%')->get();
+            if(count($this->fatchDropdownData['items_number'])>0)
+            {
+                $this->searchDtaCount = (count($this->fatchDropdownData['items_number'])>0);
+                $this->searchStyle= 'block';
+            }
+            else
+            {
+                $this->notification()->error(
+                    $title = 'Not data found !!'.$this->selectedSORKey
+                );
+            }
+        }
+        else{
+            $this->notification()->error(
+                $title = 'Not found !!'.$this->selectedSORKey
+            );
+        }
+
+
     }
 
-    public function getItemDetails()
+    public function getItemDetails($id)
     {
-        $this->estimateData['description'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['description'];
-        $this->estimateData['qty'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['unit'];
-        $this->estimateData['rate'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['cost'];
-        $this->estimateData['item_number'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['id'];
-        $this->calculateValue();
-    }
+       //error Id passing security
+    //    $id = base64_decode($id);
+        $this->searchResData = SOR::where('id',$id)->get();
 
+        $this->searchDtaCount = count($this->searchResData)>0;
+        $this->searchStyle = 'none';
+        foreach($this->searchResData as $list)
+        {
+            $this->estimateData['description'] = $list['description'];
+            $this->estimateData['qty'] = $list['unit'];
+            $this->estimateData['rate'] = $list['cost'];
+            $this->selectedSORKey = $list['Item_details'];
+        }
+        $this->calculateValue();
+
+
+        // try
+        // {
+        //     if($this->selectedSORKey)
+        //     {
+        //         $this->searchResData = SOR::select('description','cost','unit')->where('Item_details',$this->selectedSORKey)->get();
+        //         if(count($this->searchResData)>0)
+        //         {
+        //             foreach($this->searchResData as $list)
+        //             {
+        //                 $this->estimateData['description'] = $list['description'];
+        //                 $this->estimateData['qty'] = $list['unit'];
+        //                 $this->estimateData['rate'] = $list['cost'];
+        //             }
+        //             $this->calculateValue();
+        //         }
+        //         else
+        //         {
+        //             // dd("Not found ".$this->selectedSORKey);
+        //             $this->notification()->error(
+        //                 $title = 'Not found !!'.$this->selectedSORKey
+        //             );
+        //             sleep(1);
+        //             $this->resetExcept($this->selectedSORKey);
+
+        //         }
+        //     }
+        //     else
+        //     {
+        //         dd("fill up Item Details number then press Tab on Keyboard either error");
+        //     }
+        // }
+        // catch (Throwable $th) {
+        //     // session()->flash('serverError', $th->getMessage());
+        //     $this->emit('showError', $th->getMessage());
+        // }
+        // dd($this->fatchDropdownData['items_number'][$this->selectedSORKey]['id']);
+
+        // $this->estimateData['description'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['description'];
+        // $this->estimateData['qty'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['unit'];
+        // $this->estimateData['rate'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['cost'];
+        // $this->estimateData['item_number'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['id'];
+        // $this->calculateValue();
+
+    }
+    public $resetExcept;
+    public function resetValus($resetAll = false)
+    {
+        if($resetAll)
+        {
+            $this->selectedSORKey = "";
+        }
+        $this->resetExcept(['selectedSORKey']);
+    }
     public function calculateValue()
     {
         if ($this->estimateData['item_name'] == 'SOR') {
