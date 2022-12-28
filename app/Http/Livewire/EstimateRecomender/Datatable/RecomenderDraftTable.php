@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Estimate\Datatable;
+namespace App\Http\Livewire\EstimateRecomender\Datatable;
 
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
@@ -8,7 +8,7 @@ use App\Models\EstimatePrepare;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
-class RevertedDataTable extends DataTableComponent
+class RecomenderDraftTable extends DataTableComponent
 {
     public function configure(): void
     {
@@ -33,11 +33,11 @@ class RevertedDataTable extends DataTableComponent
                 ->sortable(),
             Column::make("Status","SOR.getEstimateStatus.status")
                 ->sortable()
-                ->format( fn($row) => '<span class="badge bg-soft-warning text-dark fs-6">'.$row.'</span>')
-                    ->html(),
+                ->format( fn($row) => '<span class="badge bg-soft-primary fs-6">'.$row.'</span>')
+                ->html(),
             Column::make("Actions", "estimate_id")
             ->format(
-                fn($value, $row, Column $column) => view('livewire.action-components.estimate-prepare.reverted-table-buttons')->withValue($value))
+                fn($value, $row, Column $column) => view('livewire.action-components.estimate-recomender.draft-table-buttons')->withValue($value))
         ];
     }
 
@@ -49,6 +49,14 @@ class RevertedDataTable extends DataTableComponent
     {
         $this->emit('openModal', $estimate_id);
     }
+    public function verify($estimate_id)
+    {
+        $this->emit('openVerifyModal', $estimate_id);
+    }
+    public function revert($estimate_id)
+    {
+        $this->emit('openRevertModal',$estimate_id);
+    }
     public function forward($estimate_id)
     {
         $this->emit('openForwardModal',$estimate_id);
@@ -56,12 +64,12 @@ class RevertedDataTable extends DataTableComponent
     public function builder(): Builder
     {
         return EstimatePrepare::query()
-        ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
-        ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-        ->where('estimate_user_assign_records.estimate_user_type','=',2)
-        ->where('sor_masters.status',3)
-        ->where('operation', 'Total')
-        ->where('created_by',Auth::user()->id);
+            ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
+            ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
+            ->where('operation', 'Total')
+            ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
+            ->where('estimate_user_assign_records.estimate_user_type','=',1)
+            ->where([['sor_masters.status','=',2],['sor_masters.is_verified','=',0]]);
         // ->groupBy('estimate_id.estimate_id');
     }
 }
