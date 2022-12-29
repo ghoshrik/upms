@@ -15,16 +15,16 @@ class EditEstimateList extends Component
     public $eid = 0;
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
-    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc;
+    public $currentEstimateData = [];
+    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc,$addedEstimateUpdateTrack;
 
     public function mount()
     {
-        // $this->setEstimateDataToSession();
-        $this->allAddedEstimatesData = $this->addedEstimateData;
+        $this->setEstimateDataToSession();
     }
     public function resetSession()
     {
-        Session()->forget('addedEstimateData');
+        Session()->forget('editEstimateData');
         $this->reset();
     }
     //calculate estimate list
@@ -59,8 +59,8 @@ class EditEstimateList extends Component
                         $alphabet = strtoupper($info);
                         $alp_id = ord($alphabet) - 64;
                         if ($alp_id <= $count0) {
-                            if ($this->allAddedEstimatesData[$alp_id]['array_id']) {
-                                $this->expression = str_replace($info, $this->allAddedEstimatesData[$alp_id]['total_amount'], $this->expression, $key);
+                            if ($this->allAddedEstimatesData[$alp_id-1]['row_id']) {
+                                $this->expression = str_replace($info, $this->allAddedEstimatesData[$alp_id-1]['total_amount'], $this->expression, $key);
                             }
                         } else {
                             $this->notification()->error(
@@ -108,33 +108,82 @@ class EditEstimateList extends Component
             ]);
         }
     }
+    // public function setEstimateDataToSession()
+    // {
+    //     dd(count($this->addedEstimateData),$this->addedEstimateData,Session('editEstimateData'));
+    //     $this->reset('allAddedEstimatesData');
+    //     if (Session()->has('editEstimateData')) {
+    //         $this->allAddedEstimatesData = Session()->get('editEstimateData');
+    //     }
+    //     if(count($this->addedEstimateData)>1)
+    //     {
+    //         $index = count($this->allAddedEstimatesData) + 1;
+    //         foreach ($this->addedEstimateData as $key => $estimate) {
+    //             $this->allAddedEstimatesData[$key] = $estimate;
+    //         }
+    //         Session()->put('editEstimateData', $this->allAddedEstimatesData);
+    //         $this->reset('addedEstimateData');
+    //     }else{
+    //         if ($this->addedEstimateData != null) {
+    //             $index = count($this->allAddedEstimatesData) + 1;
+    //             if (!array_key_exists("operation", $this->addedEstimateData)) {
+    //                 $this->addedEstimateData['operation'] = '';
+    //             }
+    //             if (!array_key_exists("row_id", $this->addedEstimateData)) {
+    //                 $this->addedEstimateData['row_id'] = $index;
+    //             }
+    //             if (!array_key_exists("row_index", $this->addedEstimateData)) {
+    //                 $this->addedEstimateData['row_index'] = '';
+    //             }
+    //             if (!array_key_exists("remarks", $this->addedEstimateData)) {
+    //                 $this->addedEstimateData['remarks'] = '';
+    //             }
+    //             foreach ($this->addedEstimateData as $key => $estimate) {
+    //                 $this->allAddedEstimatesData[$index][$key] = $estimate;
+    //             }
+    //             Session()->put('editEstimateData', $this->allAddedEstimatesData);
+    //             $this->reset('addedEstimateData');
+    //         }
+    //     }
+
+
+    //     // dd($this->allAddedEstimatesData);
+    // }
+
     public function setEstimateDataToSession()
     {
+        // dd($this->currentEstimateData);
         $this->reset('allAddedEstimatesData');
-        if (Session()->has('addedEstimateData')) {
-            $this->allAddedEstimatesData = Session()->get('addedEstimateData');
+        if (Session()->has('editEstimateData')) {
+            $this->allAddedEstimatesData = Session()->get('editEstimateData');
+        }
+        if ($this->currentEstimateData != null) {
+            $this->allAddedEstimatesData = $this->currentEstimateData;
+            Session()->put('editEstimateData', $this->allAddedEstimatesData);
+            $this->reset('currentEstimateData');
         }
         if ($this->addedEstimateData != null) {
-            $index = count($this->allAddedEstimatesData) + 1;
+            $index = count($this->allAddedEstimatesData) ;
             if (!array_key_exists("operation", $this->addedEstimateData)) {
                 $this->addedEstimateData['operation'] = '';
             }
-            if (!array_key_exists("array_id", $this->addedEstimateData)) {
-                $this->addedEstimateData['array_id'] = $index;
+
+            if (!array_key_exists("row_id", $this->addedEstimateData)) {
+                $this->addedEstimateData['row_id'] = $index+1;
             }
-            if (!array_key_exists("arrayIndex", $this->addedEstimateData)) {
-                $this->addedEstimateData['arrayIndex'] = '';
+
+            if (!array_key_exists("row_index", $this->addedEstimateData)) {
+                $this->addedEstimateData['row_index'] = '';
             }
-            if (!array_key_exists("remarks", $this->addedEstimateData)) {
-                $this->addedEstimateData['remarks'] = '';
+            if (!array_key_exists("comments", $this->addedEstimateData)) {
+                $this->addedEstimateData['comments'] = '';
             }
-            foreach ($this->addedEstimateData as $key => $estimate) {
-                $this->allAddedEstimatesData[$index][$key] = $estimate;
-            }
-            Session()->put('addedEstimateData', $this->allAddedEstimatesData);
+            $this->allAddedEstimatesData[$index] = $this->addedEstimateData;
+            Session()->put('editEstimateData',  $this->allAddedEstimatesData);
             $this->reset('addedEstimateData');
         }
     }
+
     public function confDeleteDialog($value): void
     {
         $this->dialog()->confirm([
@@ -153,9 +202,10 @@ class EditEstimateList extends Component
     }
     public function deleteEstimate($value)
     {
-        unset($this->allAddedEstimatesData[$value]);
-        Session()->forget('addedEstimateData');
-        Session()->put('addedEstimateData', $this->allAddedEstimatesData);
+        unset($this->allAddedEstimatesData[$value-1]);
+        Session()->forget('editEstimateData');
+        Session()->put('editEstimateData', $this->allAddedEstimatesData);
+        $this->addedEstimateUpdateTrack = rand(1, 1000);
         $this->level = [];
         $this->notification()->error(
             $title = 'Row Deleted Successfully'

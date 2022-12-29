@@ -178,9 +178,10 @@
                 </div>
             </div>
         </div>
-        @if ($addedEstimate != null || Session::has('addedEstimateData'))
+        {{-- @dd($currentEstimate) --}}
+        @if ($addedEstimate != null || $currentEstimate !=null|| Session::has('editEstimateData'))
         <div x-transition.duration.500ms>
-            <livewire:estimate.edit-estimate-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
+            <livewire:estimate.edit-estimate-list :addedEstimateData="$addedEstimate" :currentEstimateData="$currentEstimate" :sorMasterDesc="$sorMasterDesc"
                 :wire:key="$addedEstimateUpdateTrack" />
         </div>
         @endif

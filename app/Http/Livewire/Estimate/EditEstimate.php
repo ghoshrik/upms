@@ -19,19 +19,22 @@ class EditEstimate extends Component
     // TODO:: remove $showTableOne if not use
     public $kword = null,$selectedSORKey,$selectedCategoryId,$showTableOne=false,$addedEstimateUpdateTrack;
     public $addedEstimate = [];
+    public $currentEstimate = [];
     public $estimate_id;
     protected $listeners = ['editEstimateRow' => 'editEstimate'];
 
     public function editEstimate($estimateId = 0)
     {
+        // dd('dddd');
        $this->estimate_id = $estimateId;
-       $this->addedEstimate = EstimatePrepare::with('sorNumber')->where('estimate_id',$this->estimate_id)->get();
+       $this->currentEstimate = EstimatePrepare::where('estimate_id',$this->estimate_id)->get()->toArray();
        $this->sorMasterDesc = SorMaster::select('sorMasterDesc')->where('estimate_id',$this->estimate_id)->first();
+    //    dd($this->currentEstimate,Session('editEstimateData'),'es');
     }
 
     public function mount()
     {
-        if(Session()->has('addedEstimateData')){
+        if(Session()->has('editEstimateData')){
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
     }
