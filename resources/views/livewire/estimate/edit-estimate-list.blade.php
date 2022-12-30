@@ -74,14 +74,14 @@
                                         </td>
                                         <td>
                                             @if ($addedEstimate['sor_item_number'])
-                                                {{-- {{ $addedEstimate->sorNumber->Item_details }} --}}
+                                                {{ getSorItemNumber($addedEstimate['sor_item_number']) }}
                                             @else
                                                 --
                                             @endif
                                         </td>
                                         <td>
                                             @if ($addedEstimate['sor_item_number'])
-                                                {{-- {{ $addedEstimate->sorNumber->description}} --}}
+                                                {{ getSorItemNumberDesc($addedEstimate['sor_item_number'])}}
                                             @elseif ($addedEstimate['row_index'])
                                                 @if ($addedEstimate['comments'])
                                                     {{ $addedEstimate['row_index'] . ' ( ' . $addedEstimate['comments'] . ' ) ' }}
@@ -107,7 +107,7 @@
                                         <td>
                                             @if ($addedEstimate['row_index'] == null)
                                                 <x-button
-                                                    wire:click="confDeleteDialog({{ $addedEstimate['row_id'] }})"
+                                                    wire:click="editEstimate({{ $addedEstimate['row_id'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
@@ -142,3 +142,4 @@
         </div>
     @endif
 </div>
+

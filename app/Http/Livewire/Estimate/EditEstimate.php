@@ -28,7 +28,8 @@ class EditEstimate extends Component
         // dd('dddd');
        $this->estimate_id = $estimateId;
        $this->currentEstimate = EstimatePrepare::where('estimate_id',$this->estimate_id)->get()->toArray();
-       $this->sorMasterDesc = SorMaster::select('sorMasterDesc')->where('estimate_id',$this->estimate_id)->first();
+       $sorDesc = SorMaster::select('sorMasterDesc')->where('estimate_id',$this->estimate_id)->first();
+       $this->sorMasterDesc = $sorDesc['sorMasterDesc'];
     //    dd($this->currentEstimate,Session('editEstimateData'),'es');
     }
 

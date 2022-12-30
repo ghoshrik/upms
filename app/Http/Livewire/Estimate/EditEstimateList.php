@@ -12,6 +12,7 @@ use WireUi\Traits\Actions;
 class EditEstimateList extends Component
 {
     use Actions;
+    protected $listeners = ['updatedValue' => 'updateEstimateData'];
     public $eid = 0;
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
@@ -183,7 +184,6 @@ class EditEstimateList extends Component
             $this->reset('addedEstimateData');
         }
     }
-
     public function confDeleteDialog($value): void
     {
         $this->dialog()->confirm([
@@ -210,6 +210,52 @@ class EditEstimateList extends Component
         $this->notification()->error(
             $title = 'Row Deleted Successfully'
         );
+    }
+    public function editEstimate($value)
+    {
+        $this->emit('openEditModal', $value,$this->allAddedEstimatesData);
+    }
+    public function updateEstimateData($id,$updateValue)
+    {
+        // dd($id,$updateValue);
+        $this->allAddedEstimatesData[$id-1] = $updateValue;
+        Session()->put('editEstimateData',  $this->allAddedEstimatesData);
+        $this->updatedEstimateRecalculate();
+    }
+    public function updatedEstimateRecalculate()
+    {
+        $result = 0;
+        $stringCalc = new StringCalc();
+        foreach ($this->allAddedEstimatesData as $key => $value) {
+            if ($value['row_index'] != '') {
+                try {
+                    if ($value['row_index']) {
+                        $amtTot = 0;
+                        $c = 1;
+                        foreach (str_split($value['row_index']) as $key => $info) {
+                            if (ctype_alpha($info)) {
+
+                                $alphabet = strtoupper($info);
+                                $alp_id = ord($alphabet) - 64;
+                                if ($this->allAddedEstimatesData[$alp_id - 1]['total_amount'] != '') {
+                                    $value['row_index'] = str_replace($info, $this->allAddedEstimatesData[$alp_id - 1]['total_amount'], $value['row_index'], $key);
+                                }
+                            } elseif (htmlspecialchars($info) == "%") {
+                                $value['row_index'] = str_replace($info, "/100*", $value['row_index'], $key);
+                            }
+                        }
+                    }
+                    $result = $stringCalc->calculate($value['row_index']);
+                    $this->allAddedEstimatesData[$alp_id]['total_amount'] = $result;
+                    Session()->put('editEstimateData',  $this->allAddedEstimatesData);
+                } catch (\Exception $exception) {
+                    $this->dispatchBrowserEvent('alert', [
+                        'type' => 'error',
+                        'message' => $exception->getMessage()
+                    ]);
+                }
+            }
+        }
     }
     public function exportWord()
     {
