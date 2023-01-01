@@ -54,16 +54,15 @@
                             <div class="form-group">
                                 <label for="search_query">Search Text</label>
                                 <div class="dropdown ">
-                                    <input type="text" wire:model="search_query" wire:keypress="searchWord"
-                                        value="{{ $search_query }}" wire:keydown.escape="reset"
-                                        wire:keydown.tab="{{ $search_query ? 'SearchFetch' : '' }}"
+                                    <input type="text" wire:model="search_query" value="{{ $search_query }}"
+                                        wire:keydown.escape="reset" wire:keydown.tab="searchWord"
                                         class="form-control dropbtn" placeholder="Search sor number" />
                                     @if (count($searchResult) > 0)
-                                        <div class="dropdown-content"
-                                            style="display:{{ count($searchResult) > 0 ? 'block' : 'none' }}">
+                                        <div class="dropdown-content" {{-- style="display:{{ count($searchResult) > 0 ? 'block' : 'none' }}"> --}}
+                                            style="display:{{ $dataCount ? $dataStyle : $dataStyle }}">
                                             @foreach ($searchResult as $list)
                                                 <a href="#"
-                                                    wire:keydown.tab="{{ $list->Item_details }}">{{ $list->Item_details }}</a>
+                                                    wire:click="SearchFetch({{ $list->id }})">{{ $list->Item_details }}</a>
                                                 {{-- <a href="#">Link 1</a> --}}
                                             @endforeach
                                         </div>

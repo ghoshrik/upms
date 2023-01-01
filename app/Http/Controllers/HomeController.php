@@ -15,6 +15,14 @@ class HomeController extends Controller
         return view('dashboards.dashboard', compact('assets'));
     }
 
+
+    public function testMileStone()
+    {
+        $assets = ['chart', 'animation'];
+        return view('testMileStone',compact('assets'));
+    }
+
+
     /*
      * Menu Style Routs
      */

@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\Menu;
 use App\Models\Permission;
 use App\Models\Role;
 
@@ -64,6 +65,14 @@ trait HasPermissionsTrait {
 
         return $this->belongsToMany(Permission::class,'users_permissions');
 
+      }
+      public function menus()
+      {
+        return $this->belongsToMany(Menu::class,'users_menus');
+      }
+      public function menuRoles()
+      {
+        return $this->belongsToMany(Role::class,'menus_roles');
       }
       protected function hasPermission($permission) {
 

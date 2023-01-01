@@ -92,10 +92,21 @@ Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
         // Route::get('estimate-prepare',EstimatePrepar::class)->name("estimate-prepare");
 
 
+
+
+        // Route::get(['middleware'=>'role:admin','prefix'=>'admin','as'=>'admin.'],function(){
+        //     // Route::get(['middleware'=>'auth'],function(){
+        //         Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
+
+        //     // });
+        // });
+
+
 Route::group(['middleware' => 'auth'], function () {
     // Permission Module
     Route::get('/role-permission',[RolePermission::class, 'index'])->name('role.permission.list');
-    Route::resource('permission',PermissionController::class);
+    // Route::resource('permission',PermissionController::class);
+    Route::get('permission',[PermissionController::class,'index'])->name('permission');
     Route::resource('role', RoleController::class);
 
     // Dashboard Routes
@@ -119,6 +130,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Route::view('powergrid','powergrid-demo');
     Route::get('milestones',MilestoneLists::class)->name('milestones');
     Route::get('testsearch',TestSearch::class)->name('testsearch');
+    Route::get('testmilestone',[HomeController::class,'testMileStone'])->name('testmilestone');
 });
 // Route::get('milestones',MilestoneLists::class)->name('milestones');
 
