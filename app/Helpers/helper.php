@@ -134,3 +134,17 @@ function getSorItemNumberDesc($sor_item_number)
     }
     return $sorItemDesc['description'];
 }
+function printTreeHTML($tree) {
+    echo "<ul>\n";
+    // dd($tree);
+    foreach ($tree as $node) {
+// dd($node);
+      echo "<li>" . $node['index'] . "</li>\n";
+      if (!empty($node['children'])) {
+        printTreeHTML($node['children']);
+      }
+    }
+    echo "</ul>\n";
+}
+//pening for design
+
