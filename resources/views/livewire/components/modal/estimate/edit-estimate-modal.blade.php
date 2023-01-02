@@ -94,7 +94,7 @@
                         <x-button class="btn btn-soft-danger" flat label="Cancel" x-on:click="close" />
                     </div>
                     <div class="flex float-right">
-                        <button wire:click="updateEstimateRow" class="btn btn-soft-success">
+                        <button wire:click.defer="updateEstimateRow" class="btn btn-soft-success">
                             <x-lucide-edit class="w-4 h-4 text-gray-500" /> Update
                         </button>
                     </div>

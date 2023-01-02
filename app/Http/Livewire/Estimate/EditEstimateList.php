@@ -6,6 +6,7 @@ use App\Models\EstimateUserAssignRecord;
 use App\Models\SORMaster as ModelsSORMaster;
 use ChrisKonnertz\StringCalc\StringCalc;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -29,9 +30,9 @@ class EditEstimateList extends Component
         $this->reset();
     }
     //calculate estimate list
-    public function insertAddEstimate($arrayIndex, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks)
+    public function insertAddEstimate($row_index, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks)
     {
-        $this->addedEstimateData['arrayIndex'] = $arrayIndex;
+        $this->addedEstimateData['row_index'] = $row_index;
         $this->addedEstimateData['dept_id'] = $dept_id;
         $this->addedEstimateData['category_id'] = $category_id;
         $this->addedEstimateData['sor_item_number'] = $sor_item_number;
@@ -50,7 +51,7 @@ class EditEstimateList extends Component
     public function expCalc()
     {
         $result = 0;
-        $tempIndex = strtoupper($this->expression);
+        $row_index = strtoupper($this->expression);
         $stringCalc = new StringCalc();
         try {
             if ($this->expression) {
@@ -75,9 +76,9 @@ class EditEstimateList extends Component
                 }
             }
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddEstimate($tempIndex, '', '', '', '', '', '', '', '', $result, 'Exp Calculoation', '', $this->remarks);
+            $this->insertAddEstimate($row_index, '', '', '', '', '', '', '', '', $result, 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
-            $this->expression = $tempIndex;
+            $this->expression = $row_index;
             $this->dispatchBrowserEvent('alert', [
                 'type' => 'error',
                 'message' => $exception->getMessage()
@@ -215,11 +216,9 @@ class EditEstimateList extends Component
     {
         $this->emit('openEditModal', $value,$this->allAddedEstimatesData);
     }
-    public function updateEstimateData($id,$updateValue)
+    public function updateEstimateData($updateValue,$id)
     {
-        // dd($id,$updateValue);
         $this->allAddedEstimatesData[$id-1] = $updateValue;
-        Session()->put('editEstimateData',  $this->allAddedEstimatesData);
         $this->updatedEstimateRecalculate();
     }
     public function updatedEstimateRecalculate()
@@ -230,11 +229,8 @@ class EditEstimateList extends Component
             if ($value['row_index'] != '') {
                 try {
                     if ($value['row_index']) {
-                        $amtTot = 0;
-                        $c = 1;
                         foreach (str_split($value['row_index']) as $key => $info) {
                             if (ctype_alpha($info)) {
-
                                 $alphabet = strtoupper($info);
                                 $alp_id = ord($alphabet) - 64;
                                 if ($this->allAddedEstimatesData[$alp_id - 1]['total_amount'] != '') {
@@ -246,7 +242,8 @@ class EditEstimateList extends Component
                         }
                     }
                     $result = $stringCalc->calculate($value['row_index']);
-                    $this->allAddedEstimatesData[$alp_id]['total_amount'] = $result;
+                    $this->allAddedEstimatesData[$value['row_id']-1]['total_amount'] = $result;
+                    Session()->forget('editEstimateData');
                     Session()->put('editEstimateData',  $this->allAddedEstimatesData);
                 } catch (\Exception $exception) {
                     $this->dispatchBrowserEvent('alert', [
@@ -324,7 +321,7 @@ class EditEstimateList extends Component
     {
         try {
             if ($this->allAddedEstimatesData) {
-                dd('test validation');
+                dd($this->allAddedEstimatesData);
                 $intId = random_int(100000, 999999);
                 if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
                     foreach ($this->allAddedEstimatesData as $key => $value) {
