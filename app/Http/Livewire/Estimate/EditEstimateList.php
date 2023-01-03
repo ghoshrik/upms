@@ -2,8 +2,9 @@
 
 namespace App\Http\Livewire\Estimate;
 
+use App\Models\EstimatePrepare;
 use App\Models\EstimateUserAssignRecord;
-use App\Models\SORMaster as ModelsSORMaster;
+use App\Models\SorMaster;
 use ChrisKonnertz\StringCalc\StringCalc;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -15,6 +16,7 @@ class EditEstimateList extends Component
     use Actions;
     protected $listeners = ['updatedValue' => 'updateEstimateData'];
     public $eid = 0;
+    public $updateEstimate_id;
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $currentEstimateData = [];
@@ -46,7 +48,7 @@ class EditEstimateList extends Component
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
         $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc');
+        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc','updateEstimate_id');
     }
     public function expCalc()
     {
@@ -99,7 +101,7 @@ class EditEstimateList extends Component
             $result = 0;
             foreach ($this->level as $key => $array) {
                 $this->arrayStore[] = chr($array + 64);
-                $result = $result + $this->allAddedEstimatesData[$array]['total_amount'];
+                $result = $result + $this->allAddedEstimatesData[$array-1]['total_amount'];
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
             $this->insertAddEstimate($this->arrayIndex, '', '', '', '', '', '', '', '', $result, 'Total', '', '');
@@ -154,7 +156,6 @@ class EditEstimateList extends Component
 
     public function setEstimateDataToSession()
     {
-        // dd($this->currentEstimateData);
         $this->reset('allAddedEstimatesData');
         if (Session()->has('editEstimateData')) {
             $this->allAddedEstimatesData = Session()->get('editEstimateData');
@@ -189,6 +190,7 @@ class EditEstimateList extends Component
     {
         $this->dialog()->confirm([
             'title'       => 'Are you Sure?',
+            'description' => "Delete can't be undo!",
             'icon'        => 'error',
             'accept'      => [
                 'label'  => 'Yes, Delete it',
@@ -208,7 +210,7 @@ class EditEstimateList extends Component
         Session()->put('editEstimateData', $this->allAddedEstimatesData);
         $this->addedEstimateUpdateTrack = rand(1, 1000);
         $this->level = [];
-        $this->notification()->error(
+        $this->notification()->success(
             $title = 'Row Deleted Successfully'
         );
     }
@@ -317,20 +319,19 @@ class EditEstimateList extends Component
         return response()->download($date . '.docx')->deleteFileAfterSend(true);
         $this->reset('exportDatas');
     }
-    public function store()
+    public function store($value)
     {
         try {
             if ($this->allAddedEstimatesData) {
-                dd($this->allAddedEstimatesData);
-                $intId = random_int(100000, 999999);
-                if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
+                if (count(SorMaster::where('estimate_id',$value)->where('status',1)->get()) == 1) {
+                    // EstimatePrepare::where('estimate_id',$value)->delete();
                     foreach ($this->allAddedEstimatesData as $key => $value) {
                         $insert = [
-                            'estimate_id' => $intId,
+                            'estimate_id' => $value,
                             'dept_id' => $value['dept_id'],
                             'category_id' => $value['category_id'],
-                            'row_id' => $value['array_id'],
-                            'row_index' => $value['arrayIndex'],
+                            'row_id' => $value['row_id'],
+                            'row_index' => $value['row_index'],
                             'sor_item_number' => $value['sor_item_number'],
                             'item_name' => $value['item_name'],
                             'other_name' => $value['other_name'],
@@ -339,22 +340,50 @@ class EditEstimateList extends Component
                             'total_amount' => $value['total_amount'],
                             'operation' => $value['operation'],
                             'created_by' => Auth::user()->id,
-                            'comments' => $value['remarks'],
+                            'comments' => $value['comments'],
                         ];
                         EstimatePrepare::create($insert);
                     }
-                    $data = [
-                        'estimate_id' => $intId,
-                        'estimate_user_type' => 2,
-                        'estimate_user_id' => Auth::user()->id,
-                    ];
-                    EstimateUserAssignRecord::create($data);
+                    // $data = [
+                    //     'estimate_id' => $intId,
+                    //     'estimate_user_type' => 2,
+                    //     'estimate_user_id' => Auth::user()->id,
+                    // ];
+                    // EstimateUserAssignRecord::create($data);
 
                     $this->notification()->success(
-                        $title = 'Estimate Prepare Created Successfully!!'
+                        $title = 'Estimate Prepare Updated Successfully!!'
                     );
                     $this->resetSession();
                     $this->emit('openForm');
+                }else{
+                    // if(SorMaster::where('estimate_id', $value)->update(['status' => 1])){
+                    //     foreach ($this->allAddedEstimatesData as $key => $value) {
+                    //         $insert = [
+                    //             'estimate_id' => $value,
+                    //             'dept_id' => $value['dept_id'],
+                    //             'category_id' => $value['category_id'],
+                    //             'row_id' => $value['row_id'],
+                    //             'row_index' => $value['row_index'],
+                    //             'sor_item_number' => $value['sor_item_number'],
+                    //             'item_name' => $value['item_name'],
+                    //             'other_name' => $value['other_name'],
+                    //             'qty' => $value['qty'],
+                    //             'rate' => $value['rate'],
+                    //             'total_amount' => $value['total_amount'],
+                    //             'operation' => $value['operation'],
+                    //             'created_by' => Auth::user()->id,
+                    //             'comments' => $value['comments'],
+                    //         ];
+                    //         EstimatePrepare::create($insert);
+                    //     }
+                    //     $this->notification()->success(
+                    //         $title = 'Estimate Prepare Updated Successfully!!'
+                    //     );
+                    // }
+                    $this->notification()->error(
+                        $title = 'please select correct data !!'
+                    );
                 }
             } else {
                 $this->notification()->error(

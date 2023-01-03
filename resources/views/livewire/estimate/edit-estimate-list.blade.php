@@ -134,9 +134,12 @@
                     <div class="row">
                         <div class="col-6"> <button type="button" wire:click='resetSession'
                                 class="btn btn-soft-danger rounded-pill float-left">Reset</button></div>
-                        <div class="col-6"><button type="submit" wire:click='store'
+                        <div class="col-6"><button type="submit" wire:click='store({{ $updateEstimate_id }})'
                                 class="btn btn-success rounded-pill float-right">Save</button></div>
                     </div>
+                    @php
+                    print_r($updateEstimate_id);
+                @endphp
                 </div>
             </div>
         </div>

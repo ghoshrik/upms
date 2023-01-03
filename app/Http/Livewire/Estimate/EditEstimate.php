@@ -25,12 +25,10 @@ class EditEstimate extends Component
 
     public function editEstimate($estimateId = 0)
     {
-        // dd('dddd');
        $this->estimate_id = $estimateId;
        $this->currentEstimate = EstimatePrepare::where('estimate_id',$this->estimate_id)->get()->toArray();
        $sorDesc = SorMaster::select('sorMasterDesc')->where('estimate_id',$this->estimate_id)->first();
        $this->sorMasterDesc = $sorDesc['sorMasterDesc'];
-    //    dd($this->currentEstimate,Session('editEstimateData'),'es');
     }
 
     public function mount()
@@ -132,7 +130,7 @@ class EditEstimate extends Component
         $this->addedEstimateUpdateTrack = rand(1, 1000);
         // dd($this->addedEstimate);
 
-        $this->resetExcept(['addedEstimate','showTableOne','addedEstimateUpdateTrack','sorMasterDesc']);
+        $this->resetExcept(['addedEstimate','showTableOne','addedEstimateUpdateTrack','sorMasterDesc','estimate_id']);
     }
 
     public function render()
