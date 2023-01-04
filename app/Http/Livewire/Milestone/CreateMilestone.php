@@ -8,6 +8,7 @@ use Livewire\Component;
 class CreateMilestone extends Component
 {
     public $mileStoneData = [], $Index = 0,$treeView;
+    public $mStone_name,$mVal,$mUnit,$mCost,$projectId,$description;
     public function addMilestone($id)
     {
         if($id == 0)
@@ -29,7 +30,31 @@ class CreateMilestone extends Component
 
         }
         $this->treeView= $this->buildTree($this->mileStoneData);
+        // dd($this->treeView);
     }
+    // public function mount()
+    // {
+    //    $this->treeView = [
+    //         // [
+    //             'mStone_name'=>'',
+    //             'mVal'=>'',
+    //             'mUnit'=>'',
+    //             'mCost'=>'',
+    //         // ]
+    //    ];
+    // }
+
+    //note
+    /*
+    1)vendor registration
+                => vendor company name,TIN,PAN,username,mobile,address,vendor type
+
+    2) AcFs project
+                =>project id,GEO id, upload
+    3)DPR upload with pdf
+
+
+    */
     public function buildTree($nodes)
     {
         $children = array();
@@ -51,6 +76,12 @@ class CreateMilestone extends Component
         }
         return $rootNodes;
     }
+
+    public function store()
+    {
+       dd($this->treeView);
+    }
+
 
     public function render()
     {
