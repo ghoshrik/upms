@@ -26,4 +26,8 @@ class Esrecommender extends Model
         'verified_by',
         'comments'
     ];
+    public function SOR()
+    {
+       return $this->hasOne(SorMaster::class,'estimate_id','estimate_id');
+    }
 }

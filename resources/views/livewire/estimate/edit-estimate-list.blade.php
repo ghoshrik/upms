@@ -57,10 +57,10 @@
                             <tbody>
                                 {{-- @dd($allAddedEstimatesData) --}}
                                 @foreach ($allAddedEstimatesData as $key => $addedEstimate)
-                                {{-- @dd($addedEstimate) --}}
-                                @php
-                                    // $sorDesc = \App\Models\
-                                @endphp
+                                    {{-- @dd($addedEstimate) --}}
+                                    @php
+                                        // $sorDesc = \App\Models\
+                                    @endphp
                                     <tr>
                                         <td>
                                             <x-checkbox wire:key="{{ $key . 'checkbox' }}" id="checkbox"
@@ -81,7 +81,7 @@
                                         </td>
                                         <td>
                                             @if ($addedEstimate['sor_item_number'])
-                                                {{ getSorItemNumberDesc($addedEstimate['sor_item_number'])}}
+                                                {{ getSorItemNumberDesc($addedEstimate['sor_item_number']) }}
                                             @elseif ($addedEstimate['row_index'])
                                                 @if ($addedEstimate['comments'])
                                                     {{ $addedEstimate['row_index'] . ' ( ' . $addedEstimate['comments'] . ' ) ' }}
@@ -106,8 +106,7 @@
                                         </td>
                                         <td>
                                             @if ($addedEstimate['row_index'] == null)
-                                                <x-button
-                                                    wire:click="editEstimate({{ $addedEstimate['row_id'] }})"
+                                                <x-button wire:click="editEstimate({{ $addedEstimate['row_id'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
@@ -115,8 +114,7 @@
                                                 </x-button>
                                             @endif
                                             @if ($arrayRow == $addedEstimate['row_id'])
-                                                <x-button
-                                                    wire:click="confDeleteDialog({{ $addedEstimate['row_id'] }})"
+                                                <x-button wire:click="confDeleteDialog({{ $addedEstimate['row_id'] }})"
                                                     type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
@@ -137,12 +135,8 @@
                         <div class="col-6"><button type="submit" wire:click='store({{ $updateEstimate_id }})'
                                 class="btn btn-success rounded-pill float-right">Save</button></div>
                     </div>
-                    @php
-                    print_r($updateEstimate_id);
-                @endphp
                 </div>
             </div>
         </div>
     @endif
 </div>
-

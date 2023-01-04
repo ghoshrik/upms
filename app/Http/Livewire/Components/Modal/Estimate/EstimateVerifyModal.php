@@ -46,7 +46,7 @@ class EstimateVerifyModal extends Component
                         'sor_item_number' => $estimate['sor_item_number'],
                         'estimate_no' => $estimate['estimate_no'],
                         'item_name' => $estimate['item_name'],
-                        'other_name' => $estimate['name'],
+                        'other_name' => $estimate['other_name'],
                         'qty' => $estimate['qty'],
                         'rate' => $estimate['rate'],
                         'total_amount' => $estimate['total_amount'],

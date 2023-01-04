@@ -14,11 +14,9 @@ class EstimatePrepare extends Component
 {
 
     public $formOpen = false, $editFormOpen = false,$updateDataTableTracker,$selectedTab = 1,$counterData=[];
-    protected $listeners = ['openForm' => 'formOCControl'];
+    protected $listeners = ['openForm' => 'formOCControl','refreshData' => 'mount'];
     public function mount()
     {
-        $a = SorMaster::with('estimate')->get();
-        // dd($a);
         $this->draftData();
     }
     public function draftData()
