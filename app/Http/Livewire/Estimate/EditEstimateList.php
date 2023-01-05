@@ -31,7 +31,6 @@ class EditEstimateList extends Component
         Session()->forget('editEstimateData');
         $this->reset();
     }
-    //calculate estimate list
     public function insertAddEstimate($row_index, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks)
     {
         $this->addedEstimateData['row_index'] = $row_index;
@@ -50,6 +49,7 @@ class EditEstimateList extends Component
         $this->setEstimateDataToSession();
         $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc','updateEstimate_id');
     }
+    //calculate estimate list
     public function expCalc()
     {
         $result = 0;
@@ -112,6 +112,7 @@ class EditEstimateList extends Component
             ]);
         }
     }
+    // TODO::Delete it later if not in use
     // public function setEstimateDataToSession()
     // {
     //     dd(count($this->addedEstimateData),$this->addedEstimateData,Session('editEstimateData'));
@@ -319,15 +320,15 @@ class EditEstimateList extends Component
         return response()->download($date . '.docx')->deleteFileAfterSend(true);
         $this->reset('exportDatas');
     }
-    public function store($value)
+    public function store($estimateStoreId)
     {
         try {
             if ($this->allAddedEstimatesData) {
-                if (count(SorMaster::where('estimate_id',$value)->where('status',1)->get()) == 1) {
+                if (count(SorMaster::where('estimate_id',$estimateStoreId)->where('status',1)->get()) == 1) {
                     // EstimatePrepare::where('estimate_id',$value)->delete();
                     foreach ($this->allAddedEstimatesData as $key => $value) {
                         $insert = [
-                            'estimate_id' => $value,
+                            'estimate_id' => $estimateStoreId,
                             'dept_id' => $value['dept_id'],
                             'category_id' => $value['category_id'],
                             'row_id' => $value['row_id'],

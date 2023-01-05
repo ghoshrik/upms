@@ -33,7 +33,7 @@ class RevertedEstimateProjectTable extends DataTableComponent
                 ->sortable(),
             Column::make("Status","SOR.getEstimateStatus.status")
                 ->sortable()
-                ->format( fn($row) => '<span class="badge bg-soft-warning fs-6">'.$row.'</span>')
+                ->format( fn($row) => '<span class="badge bg-soft-warning text-dark fs-6">'.$row.'</span>')
                     ->html(),
             Column::make("Actions", "estimate_id")
             ->format(
@@ -58,7 +58,7 @@ class RevertedEstimateProjectTable extends DataTableComponent
         return EstimatePrepare::query()
         ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
         ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-        ->where('estimate_user_assign_records.estimate_user_type','=',2)
+        ->where('estimate_user_assign_records.estimate_user_type','=',3)
         ->where('sor_masters.status',3)
         ->where('operation', 'Total')
         ->where('estimate_no', '!=', NULL)

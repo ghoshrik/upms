@@ -39,6 +39,11 @@ class EstimatePrepare extends Component
     }
     public function dataCounter()
     {
+        $this->counterData['totalDataCount'] = SorMaster::join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','sor_masters.estimate_id')
+        ->join('estimate_prepares','sor_masters.estimate_id' ,'=','estimate_prepares.estimate_id')
+        ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
+        ->where('estimate_user_assign_records.estimate_user_type','=',2)
+        ->count();
         $this->counterData['draftDataCount'] = SorMaster::join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','sor_masters.estimate_id')
         ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
         ->where('estimate_user_assign_records.estimate_user_type','=',2)

@@ -26,7 +26,7 @@
                                             <div class="progress-widget">
                                                 <div id="circle-progress-01"
                                                     class="circle-progress-01 circle-progress circle-progress-primary text-center"
-                                                    data-min-value="0" data-max-value="100"
+                                                    data-min-value="0" data-max-value="{{ $counterData['totalDataCount'] }}"
                                                     data-value="{{ $counterData['draftDataCount'] }}"
                                                     data-type="percent">
                                                     <svg class="card-slie-arrow" width="24" height="24px"
@@ -54,7 +54,7 @@
                                             <div class="progress-widget">
                                                 <div id="circle-progress-02"
                                                     class="circle-progress-01 circle-progress circle-progress-info text-center"
-                                                    data-min-value="0" data-max-value="100"
+                                                    data-min-value="0" data-max-value="{{ $counterData['totalDataCount'] }}"
                                                     data-value="{{ $counterData['forwardedDataCount'] }}"
                                                     data-type="percent">
                                                     <svg class="card-slie-arrow " width="24" height="24"
@@ -80,7 +80,7 @@
                                             <div class="progress-widget">
                                                 <div id="circle-progress-03"
                                                     class="circle-progress-01 circle-progress circle-progress-primary text-center"
-                                                    data-min-value="0" data-max-value="100"
+                                                    data-min-value="0" data-max-value="{{ $counterData['totalDataCount'] }}"
                                                     data-value="{{ $counterData['revertedDataCount'] }}"
                                                     data-type="percent">
                                                     <svg class="card-slie-arrow " width="24" height="24"
@@ -155,6 +155,10 @@
             </div>
         </div>
     </div>
-    <livewire:components.modal.estimate.estimate-view-modal />
-    <livewire:components.modal.estimate.estimate-forward-modal />
+    <div>
+        <livewire:components.modal.estimate.estimate-view-modal />
+        <livewire:components.modal.estimate.estimate-forward-modal />
+        <livewire:components.modal.estimate.edit-estimate-modal />
+    </div>
+
 </div>
