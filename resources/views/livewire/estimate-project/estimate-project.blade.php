@@ -38,7 +38,7 @@
                                                         <path d="M10 13h4"></path>
                                                     </svg>
                                                 </div>
-                                                <div class="progress-detail">
+                                                <div class="progress-detail" wire:key="$updateDataTableTracker">
                                                     <p class="mb-2">Total Draft</p>
                                                     <h4 class="counter" style="visibility: visible;">
                                                         {{ $counterData['draftDataCount'] }}</h4>

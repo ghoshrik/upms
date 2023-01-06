@@ -7,17 +7,19 @@ use App\Models\SorMaster;
 use App\View\Components\AppLayout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 
 class EstimatePrepare extends Component
 {
-
+// TODO::1)refreshDataCounter. 2)datatable counter remove if not require from mount
     public $formOpen = false, $editFormOpen = false,$updateDataTableTracker,$selectedTab = 1,$counterData=[];
     protected $listeners = ['openForm' => 'formOCControl','refreshData' => 'mount'];
     public function mount()
     {
         $this->draftData();
+        $this->updateDataTableTracker = rand(1,1000);
     }
     public function draftData()
     {
@@ -40,7 +42,6 @@ class EstimatePrepare extends Component
     public function dataCounter()
     {
         $this->counterData['totalDataCount'] = SorMaster::join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','sor_masters.estimate_id')
-        ->join('estimate_prepares','sor_masters.estimate_id' ,'=','estimate_prepares.estimate_id')
         ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
         ->where('estimate_user_assign_records.estimate_user_type','=',2)
         ->count();
