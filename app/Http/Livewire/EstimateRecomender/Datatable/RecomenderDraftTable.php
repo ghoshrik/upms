@@ -33,7 +33,7 @@ class RecomenderDraftTable extends DataTableComponent
                 ->sortable(),
             Column::make("Status","SOR.getEstimateStatus.status")
                 ->sortable()
-                ->format( fn($row) => '<span class="badge bg-soft-primary fs-6">'.$row.'</span>')
+                ->format( fn($row) => '<span class="badge bg-primary fs-6">'.$row.'</span>')
                 ->html(),
             Column::make("Actions", "estimate_id")
             ->format(
@@ -41,7 +41,7 @@ class RecomenderDraftTable extends DataTableComponent
         ];
     }
 
-    public function edit($id)
+    public function modify($id)
     {
         $this->emit('openForm', true, $id);
     }
@@ -70,6 +70,7 @@ class RecomenderDraftTable extends DataTableComponent
             ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type','=',1)
             ->where([['sor_masters.status','=',2],['sor_masters.is_verified','=',0]]);
+            // ->where([['sor_masters.status','=',2],['sor_masters.is_verified','=',0]]);
         // ->groupBy('estimate_id.estimate_id');
     }
 }

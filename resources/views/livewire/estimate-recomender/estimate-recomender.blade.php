@@ -2,8 +2,13 @@
     <div wire:loading.delay.long>
         <div class="spinner-border text-primary loader-position" role="status"></div>
     </div>
-    <div wire:loading.delay.long.class="loading" x-data="{ formOpen: @entangle('formOpen'), editFormOpen: @entangle('editFormOpen') }">
-        <div x-show="!formOpen && !editFormOpen" x-transition.duration.500ms>
+    <div wire:loading.delay.long.class="loading" x-data="{ formOpen: @entangle('formOpen'), modifyFormOpen: @entangle('modifyFormOpen') }">
+        <div x-show="modifyFormOpen" x-transition.duration.900ms>
+            @if ($modifyFormOpen)
+                <livewire:estimate-recomender.modify-estimate />
+            @endif
+        </div>
+        <div x-show="!formOpen && !modifyFormOpen" x-transition.duration.500ms>
             <div class="row">
                 <div class="col-md-12 col-lg-12">
                     <div class="row row-cols-1">
@@ -150,5 +155,4 @@
         <livewire:components.modal.estimate.estimate-verify-modal />
         <livewire:components.modal.estimate.estimate-revert-modal />
     </div>
-
 </div>

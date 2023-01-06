@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class EstimateRecomender extends Component
 {
-    public $formOpen = false, $editFormOpen = false, $updateDataTableTracker, $selectedEstTab = 1, $counterData = [];
+    public $formOpen = false, $modifyFormOpen = false, $updateDataTableTracker, $selectedEstTab = 1, $counterData = [];
     protected $listeners = ['openForm' => 'formOCControl'];
     public function mount()
     {
@@ -48,7 +48,8 @@ class EstimateRecomender extends Component
         $this->counterData['verifiedDataCount'] =  SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
             ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 1)
-            ->where([['sor_masters.status', '=', 2], ['sor_masters.is_verified', '=', 1]])
+            ->where('sor_masters.is_verified', '=', 1)
+            // ->where([['sor_masters.status', '=', 2], ['sor_masters.is_verified', '=', 1]])
             ->count();
         // $this->counterData['revertedDataCount'] = SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
         //     ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
@@ -56,17 +57,17 @@ class EstimateRecomender extends Component
         //     ->where('status', '=', 3)
         //     ->count();
     }
-    public function formOCControl($isEditFrom = false, $eidtId = null)
+    public function formOCControl($isModifyFrom = false, $eidtId = null)
     {
-        if ($isEditFrom) {
-            $this->editFormOpen = !$this->editFormOpen;
-            $this->emit('changeSubTitel', ($this->editFormOpen) ? 'Edit' : 'List');
+        if ($isModifyFrom) {
+            $this->modifyFormOpen = !$this->modifyFormOpen;
+            $this->emit('changeSubTitel', ($this->modifyFormOpen) ? 'Modify' : 'List');
             if ($eidtId != null) {
-                $this->emit('editEstimateRow', $eidtId);
+                $this->emit('modifyEstimateRow', $eidtId);
             }
             return;
         }
-        $this->editFormOpen = false;
+        $this->modifyFormOpen = false;
         $this->formOpen = !$this->formOpen;
         $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
         $this->updateDataTableTracker = rand(1, 1000);

@@ -31,7 +31,7 @@ class RecomenderVerifiedTable extends DataTableComponent
                 ->sortable(),
             Column::make("Status","SOR.getEstimateStatus.status")
                 ->sortable()
-                ->format( fn($row) => '<span class="badge bg-soft-primary fs-6">'.$row.'</span>')
+                ->format( fn($row) => '<span class="badge bg-success fs-6">'.$row.'</span>')
                 ->html(),
                 Column::make("Actions", "estimate_id")
             ->format(
@@ -50,7 +50,8 @@ class RecomenderVerifiedTable extends DataTableComponent
             ->where('operation', 'Total')
             ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type','=',1)
-            ->where([['sor_masters.status','=',2],['sor_masters.is_verified','=',1]]);
+            ->where('sor_masters.is_verified','=',1);
+            // ->where([['sor_masters.status','=',2],['sor_masters.is_verified','=',1]]);
         // ->groupBy('estimate_id.estimate_id');
     }
 }
