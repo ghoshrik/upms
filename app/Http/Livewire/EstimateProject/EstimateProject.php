@@ -39,22 +39,16 @@ class EstimateProject extends Component
         ->where('estimate_user_assign_records.estimate_user_type','=',3)
         ->count();
         $this->counterData['draftDataCount'] = SorMaster::join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','sor_masters.estimate_id')
-        // ->join('estimate_prepares','sor_masters.estimate_id' ,'=','estimate_prepares.estimate_id')
-        // ->where('estimate_prepares.estimate_no','!=',NULL)->where('estimate_prepares.estimate_no','!=',0)
         ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
         ->where('estimate_user_assign_records.estimate_user_type','=',3)
         ->where('sor_masters.status','=',1)
         ->count();
         $this->counterData['forwardedDataCount'] =  SorMaster::join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','sor_masters.estimate_id')
-        // ->join('estimate_prepares','sor_masters.estimate_id' ,'=','estimate_prepares.estimate_id')
-        // ->where('estimate_prepares.estimate_no','!=',NULL)->where('estimate_prepares.estimate_no','!=',0)
         ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
         ->where('estimate_user_assign_records.estimate_user_type','=',3)
-        ->where('sor_masters.status','=',2)
+        ->where('sor_masters.status','!=',1)
         ->count();
         $this->counterData['revertedDataCount'] = SorMaster::join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','sor_masters.estimate_id')
-        // ->join('estimate_prepares','sor_masters.estimate_id' ,'=','estimate_prepares.estimate_id')
-        // ->where('estimate_prepares.estimate_no','!=',NULL)->where('estimate_prepares.estimate_no','!=',0)
         ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
         ->where('estimate_user_assign_records.estimate_user_type','=',3)
         ->where('sor_masters.status','=',3)

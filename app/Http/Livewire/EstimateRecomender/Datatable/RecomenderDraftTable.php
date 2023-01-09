@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\EstimateRecomender\Datatable;
 
+use App\Models\Esrecommender;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\EstimatePrepare;
@@ -28,8 +29,14 @@ class RecomenderDraftTable extends DataTableComponent
             Column::make("DESCRIPTION", "SOR.sorMasterDesc")
                 ->searchable()
                 ->sortable(),
-            Column::make("TOTAL AMOUNT", "total_amount")
+            Column::make("Remarks", "SOR.userAR.comments")
+                ->searchable()
+                ->sortable(),
+            Column::make("Estimator Cost", "total_amount")
                 ->format(fn ($row) => round($row, 10, 2))
+                ->sortable(),
+            Column::make("Recomender Cost", "estimate_id")
+                ->format(fn($value, $row, Column $column) => view('livewire.components.data-table-view.estimate-recomender.recomender-cost')->withValue($value))
                 ->sortable(),
             Column::make("Status","SOR.getEstimateStatus.status")
                 ->sortable()
@@ -69,8 +76,6 @@ class RecomenderDraftTable extends DataTableComponent
             ->where('operation', 'Total')
             ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type','=',1)
-            ->where([['sor_masters.status','=',2],['sor_masters.is_verified','=',0]]);
-            // ->where([['sor_masters.status','=',2],['sor_masters.is_verified','=',0]]);
-        // ->groupBy('estimate_id.estimate_id');
+            ->where('sor_masters.is_verified','=',0);
     }
 }

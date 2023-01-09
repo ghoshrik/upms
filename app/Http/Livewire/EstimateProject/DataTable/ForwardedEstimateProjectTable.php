@@ -28,10 +28,13 @@ class ForwardedEstimateProjectTable extends DataTableComponent
             Column::make("DESCRIPTION", "SOR.sorMasterDesc")
                 ->searchable()
                 ->sortable(),
+            // Column::make("Remarks", "created_by")
+            //     ->format(fn($value, $row, Column $column) => view('livewire.components.data-table-view.estimate.forward-estimate-remarks')->withValue($value))
+            //     ->sortable(),
             Column::make("TOTAL AMOUNT", "total_amount")
                 ->format(fn ($row) => round($row, 10, 2))
                 ->sortable(),
-                Column::make("Status","SOR.getEstimateStatus.status")
+            Column::make("Status","SOR.getEstimateStatus.status")
                 ->sortable()
                 ->format( fn($row) => '<span class="badge bg-soft-info fs-6">'.$row.'</span>')
                     ->html(),

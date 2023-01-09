@@ -14,7 +14,7 @@ class ModifyEstimate extends Component
 {
     use Actions;
     public $estimate_id;
-    public $currentEstimate = [], $verifyEstimate;
+    public $currentEstimate = [];
     protected $listeners = ['modifyEstimateRow' => 'modifyEstimate', 'updatedValue' => 'updateEstimateData'];
     public function modifyEstimate($estimateId = 0)
     {
@@ -74,9 +74,9 @@ class ModifyEstimate extends Component
     public function store($value)
     {
         try {
-            $this->verifyEstimate = count(Esrecommender::where('estimate_id', $value)->get());
-            // dd($this->currentEstimate);
-            if ($this->verifyEstimate == 0) {
+            $verifyEstimate = count(Esrecommender::where('estimate_id', $value)->get());
+            // dd($verifyEstimate);
+            if ($verifyEstimate == 0) {
                 foreach ($this->currentEstimate as $key => $estimate) {
                     $insert = [
                         'estimate_id' => $value,
@@ -98,20 +98,22 @@ class ModifyEstimate extends Component
                     // dd($insert);
                     Esrecommender::create($insert);
                 }
-                $this->reset();
                 if (SorMaster::where('estimate_id', $value)->update(['status' => 4])) {
                     $this->notification()->success(
                         $title = 'Estimate Modified Successfully!!'
                     );
                 }
-            } elseif ($this->verifyEstimate != 0) {
+                $this->reset();
+            } elseif ($verifyEstimate != 0) {
                 $this->notification()->error(
                     $title = 'This Estimate Already Modified!!'
                 );
+                $this->reset();
             } else {
                 $this->notification()->error(
                     $title = 'Please Re-check for Modify!!'
                 );
+                $this->reset();
             }
             $this->emit('openForm');
         } catch (\Throwable $th) {

@@ -53,12 +53,12 @@ class EstimatePrepare extends Component
         $this->counterData['forwardedDataCount'] =  SorMaster::join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','sor_masters.estimate_id')
         ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
         ->where('estimate_user_assign_records.estimate_user_type','=',2)
-        ->where('sor_masters.status','=',2)
+        ->where('sor_masters.status','!=',1)
         ->count();
         $this->counterData['revertedDataCount'] = SorMaster::join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','sor_masters.estimate_id')
         ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
         ->where('estimate_user_assign_records.estimate_user_type','=',2)
-        ->where('status','=',3)
+        ->where('sor_masters.status','=',3)
         ->count();
     }
     public function formOCControl($isEditFrom = false, $eidtId = null)

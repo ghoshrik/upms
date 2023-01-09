@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\EstimateProject;
 
 use App\Models\Department;
+use App\Models\Esrecommender;
 use App\Models\EstimatePrepare;
 use App\Models\SOR;
 use App\Models\SORCategory;
@@ -190,7 +191,15 @@ class CreateEstimateProject extends Component
         $this->estimateData['estimate_no'] = '';
         $this->estimateData['description'] = '';
         $this->estimateData['total_amount'] = '';
-        $this->fatchDropdownData['estimatesList'] = EstimatePrepare::select('estimate_id')->where('dept_id',$this->estimateData['dept_id'])->groupBy('estimate_id')->get();
+        // $this->fatchDropdownData['estimatesList'] = EstimatePrepare::select('estimate_id')->where('dept_id',$this->estimateData['dept_id'])->groupBy('estimate_id')->get();
+        // $this->fatchDropdownData['estimatesList'] = EstimatePrepare::join('sor_masters','estimate_prepares.estimate_id','sor_masters.estimate_id')
+        //                                             ->where('estimate_prepares.dept_id',$this->estimateData['dept_id'])
+        //                                             ->where('sor_masters.is_verified','=',1)
+        //                                             ->get();
+        $this->fatchDropdownData['estimatesList'] = Esrecommender::join('sor_masters','estimate_recomender.estimate_id','sor_masters.estimate_id')
+                                                    ->where('estimate_recomender.dept_id',$this->estimateData['dept_id'])
+                                                    ->where('sor_masters.is_verified','=',1)
+                                                    ->get();
     }
 
     public function getEstimateDetails()
