@@ -60,6 +60,10 @@ class RecomenderDraftTable extends DataTableComponent
     {
         $this->emit('openVerifyModal', $estimate_id);
     }
+    public function approveForward($estimate_id)
+    {
+        $this->emit('openVerifyModal', $estimate_id);
+    }
     public function revert($estimate_id)
     {
         $this->emit('openRevertModal',$estimate_id);

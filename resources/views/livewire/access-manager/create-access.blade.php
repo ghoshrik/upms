@@ -10,7 +10,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 @isset($dropDownData['designations'])
-                                <x-select label="Designation" placeholder="Select Department"
+                                <x-select label="Designation" placeholder="{{ trans('cruds.access-manager.fields.designation') }}"
                                     wire:model.defer="newAccessData.designation_id" x-on:select="$wire.getUsers()">
                                     @foreach ($dropDownData['designations'] as $designation)
                                     <x-select.option label="{{ $designation['designation_name'] }}"
@@ -23,7 +23,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 @isset($dropDownData['accessTypes'])
-                                <x-select label="Access Type" placeholder="Select Department"
+                                <x-select label="Access Type" placeholder="{{ trans('cruds.access-manager.fields.access_type') }}"
                                     wire:model.defer="newAccessData.access_type_id">
                                     @foreach ($dropDownData['accessTypes'] as $accessType)
                                     <x-select.option label="{{ $accessType['access_name'] }}"

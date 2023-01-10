@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class AccessManager extends Component
 {
-    public $formOpen=false;
+    public $formOpen=false,$editFormOpen=false;
     protected $listeners = ['openForm' => 'formOCControl'];
     public function formOCControl($isEditFrom = false, $eidtId = null)
     {

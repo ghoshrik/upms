@@ -68,7 +68,7 @@
                                         </div>
                                     </li>
                                 </div>
-                                {{-- <div class="col-md-4">
+                                <div class="col-md-4">
                                     <li class="swiper-slide card card-tab card-slide {{ $this->selectedEstTab == 3 ? 'active' : '' }}"
                                         wire:click="revertedData()">
                                         <div class="card-body" wire:ignore>
@@ -76,7 +76,7 @@
                                                 <div id="circle-progress-03"
                                                     class="circle-progress-01 circle-progress circle-progress-primary text-center"
                                                     data-min-value="0" data-max-value="100"
-                                                    data-value="{{ $counterData['revertedDataCount'] }}"
+                                                    data-value="100"
                                                     data-type="percent">
                                                     <svg class="card-slie-arrow " width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -88,12 +88,12 @@
                                                 <div class="progress-detail">
                                                     <p class="mb-2">Total Reverted</p>
                                                     <h4 class="counter" style="visibility: visible;">
-                                                        {{ $counterData['revertedDataCount'] }}</h4>
+                                                        100</h4>
                                                 </div>
                                             </div>
                                         </div>
                                     </li>
-                                </div> --}}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -113,12 +113,12 @@
                                     :wire:key="$updateDataTableTracker" />
                             </div>
                         </div>
-                    {{-- @elseif ($this->selectedEstTab == 3)
+                    @elseif ($this->selectedEstTab == 3)
                         <div class="card">
                             <div class="card-body">
-                                <livewire:estimate.datatable.reverted-data-table :wire:key="$updateDataTableTracker" />
+                                <livewire:estimate-recomender.datatable.recomender-verified-table :wire:key="$updateDataTableTracker" />
                             </div>
-                        </div> --}}
+                        </div>
                     @else
                         <div class="col-span-6 sm:col-span-3 xl:col-span-2 flex flex-col justify-end items-center">
                             <svg width="10%" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"
@@ -149,10 +149,12 @@
             </div>
         </div>
     </div>
-    <div>
+
+</div>
+<div>
         <livewire:components.modal.estimate.estimate-view-modal />
         <livewire:components.modal.estimate.verified-estimate-view-modal />
         <livewire:components.modal.estimate.estimate-verify-modal />
         <livewire:components.modal.estimate.estimate-revert-modal />
+        <livewire:components.modal.estimate.estimate-forward-modal />
     </div>
-</div>

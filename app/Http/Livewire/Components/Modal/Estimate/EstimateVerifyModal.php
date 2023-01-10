@@ -26,53 +26,54 @@ class EstimateVerifyModal extends Component
     }
     public function verifyEstimate($value)
     {
-        try {
-            $checkForVerify = Esrecommender::where('estimate_id', $value)->first();
-            if ($checkForVerify != NULL) {
-                // dd('modified');
-                if (SorMaster::where('estimate_id', $value)->update(['is_verified' => 1,'status' => 8])) {
-                    $this->notification()->success(
-                        $title = 'Verified Estimate !!'
-                    );
-                }
-            } else {
-                $verifyEstimate = EstimatePrepare::where('estimate_id', $value)->get();
-                // dd('modify & verify');
-                if ($verifyEstimate != NULL) {
-                    foreach ($verifyEstimate as $key => $estimate) {
-                        $insert = [
-                            'estimate_id' => $value,
-                            'dept_id' => $estimate['dept_id'],
-                            'category_id' => $estimate['category_id'],
-                            'row_id' => $estimate['row_id'],
-                            'row_index' => $estimate['row_index'],
-                            'sor_item_number' => $estimate['sor_item_number'],
-                            'estimate_no' => $estimate['estimate_no'],
-                            'item_name' => $estimate['item_name'],
-                            'other_name' => $estimate['other_name'],
-                            'qty' => $estimate['qty'],
-                            'rate' => $estimate['rate'],
-                            'total_amount' => $estimate['total_amount'],
-                            'operation' => $estimate['operation'],
-                            'percentage_rate' => $estimate['perRate'],
-                            'verified_by' => Auth::user()->id,
-                            'commends' => $estimate['AddRemarks'],
-                        ];
-                        dd($insert);
-                        Esrecommender::create($insert);
-                    }
-                    if (SorMaster::where('estimate_id', $value)->update(['is_verified' => 1],['status' => 8])) {
-                        $this->notification()->success(
-                            $title = 'Estimate Verified Successfully!!'
-                        );
-                    }
-                }
-            }
-            $this->updateDataTableTracker = rand(1, 1000);
-            $this->emit('refreshData',$this->updateDataTableTracker);
-        } catch (\Throwable $th) {
-            $this->emit('showError', $th->getMessage());
-        }
+        $this->emit('openForwardModal',$value);
+        // try {
+        //     $checkForVerify = Esrecommender::where('estimate_id', $value)->first();
+        //     if ($checkForVerify != NULL) {
+        //         // dd('modified');
+        //         if (SorMaster::where('estimate_id', $value)->update(['is_verified' => 1,'status' => 8])) {
+        //             $this->notification()->success(
+        //                 $title = 'Verified Estimate !!'
+        //             );
+        //         }
+        //     } else {
+        //         $verifyEstimate = EstimatePrepare::where('estimate_id', $value)->get();
+        //         // dd('modify & verify');
+        //         if ($verifyEstimate != NULL) {
+        //             foreach ($verifyEstimate as $key => $estimate) {
+        //                 $insert = [
+        //                     'estimate_id' => $value,
+        //                     'dept_id' => $estimate['dept_id'],
+        //                     'category_id' => $estimate['category_id'],
+        //                     'row_id' => $estimate['row_id'],
+        //                     'row_index' => $estimate['row_index'],
+        //                     'sor_item_number' => $estimate['sor_item_number'],
+        //                     'estimate_no' => $estimate['estimate_no'],
+        //                     'item_name' => $estimate['item_name'],
+        //                     'other_name' => $estimate['other_name'],
+        //                     'qty' => $estimate['qty'],
+        //                     'rate' => $estimate['rate'],
+        //                     'total_amount' => $estimate['total_amount'],
+        //                     'operation' => $estimate['operation'],
+        //                     'percentage_rate' => $estimate['perRate'],
+        //                     'verified_by' => Auth::user()->id,
+        //                     'commends' => $estimate['AddRemarks'],
+        //                 ];
+        //                 dd($insert);
+        //                 Esrecommender::create($insert);
+        //             }
+        //             if (SorMaster::where('estimate_id', $value)->update(['is_verified' => 1],['status' => 8])) {
+        //                 $this->notification()->success(
+        //                     $title = 'Estimate Verified Successfully!!'
+        //                 );
+        //             }
+        //         }
+        //     }
+        //     $this->updateDataTableTracker = rand(1, 1000);
+        //     $this->emit('refreshData',$this->updateDataTableTracker);
+        // } catch (\Throwable $th) {
+        //     $this->emit('showError', $th->getMessage());
+        // }
     }
     public function render()
     {

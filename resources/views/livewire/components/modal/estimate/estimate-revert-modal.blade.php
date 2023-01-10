@@ -79,7 +79,7 @@
                 <div class="flex justify-between">
                     <div class="flex float-left">
                         {{-- <x-lucide-x-circle class="w-4 h-4 text-gray-500" /> --}}
-                        <x-button class="btn btn-soft-danger" flat icon="x-circle" negative label="Cancel" x-on:click="close" />
+                        <x-button class="btn btn-soft-secondary" flat icon="x-circle" negative label="Cancel" x-on:click="close" />
                     </div>
                     <div class="flex float-right">
                         <button wire:click="revertEstimate({{ $estimate_id }})" class="btn btn-soft-warning">

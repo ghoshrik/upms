@@ -59,9 +59,7 @@
                                 @foreach ($currentEstimate as $key => $addedEstimate)
                                     <tr>
                                         <td>
-                                            <x-checkbox wire:key="{{ $key . 'checkbox' }}" id="checkbox"
-                                                wire:model.defer="level" value="{{ $addedEstimate['row_id'] }}"
-                                                wire:click="showTotalButton" />
+
                                         </td>
                                         <td>
                                             <div wire:key="{{ $key . 'iNo' }}" class="d-flex align-items-center">

@@ -11,7 +11,7 @@
                             <table class="table mt-2 table-report">
                                 <thead>
                                     <tr>
-                                        <th class="whitespace-nowrap" style="padding-right:4rem;">#</th>
+                                        <th class="whitespace-nowrap" >#</th>
                                         <th class="whitespace-nowrap">ITEM
                                             NUMBER</th>
                                         <th class="whitespace-nowrap" style="width:40%;text-align:center;">
