@@ -12392,7 +12392,7 @@ textarea.form-control-lg {
 #form-wizard1 fieldset:not(:first-of-type) {
   display: none;
 }
-
+/* TODO::if open wireui dropdown datatable button remove overflow hidden */
 .table {
   overflow: hidden;
 }

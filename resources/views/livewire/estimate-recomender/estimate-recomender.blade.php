@@ -149,7 +149,11 @@
             </div>
         </div>
     </div>
-
+    <x-dropdown>
+        <x-dropdown.item label="Settings" />
+        <x-dropdown.item label="My Profile" />
+        <x-dropdown.item label="Logout" />
+    </x-dropdown>
 </div>
 <div>
         <livewire:components.modal.estimate.estimate-view-modal />

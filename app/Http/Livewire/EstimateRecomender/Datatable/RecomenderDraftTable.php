@@ -47,7 +47,13 @@ class RecomenderDraftTable extends DataTableComponent
                 fn($value, $row, Column $column) => view('livewire.action-components.estimate-recomender.draft-table-buttons')->withValue($value))
         ];
     }
-
+    public $buttonGroupOpen = false;
+    public function buttonGroup($estimate_id)
+    {
+        $this->buttonGroupOpen = !$this->buttonGroupOpen;
+        // $this->emit('openButton',$estimate_id);
+        // dd($this->emit('openButton',$estimate_id));
+    }
     public function modify($id)
     {
         $this->emit('openForm', true, $id);
@@ -55,6 +61,7 @@ class RecomenderDraftTable extends DataTableComponent
     public function view($estimate_id)
     {
         $this->emit('openModal', $estimate_id);
+        // dd($this->emit('openModal', $estimate_id));
     }
     public function verify($estimate_id)
     {
