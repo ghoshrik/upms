@@ -61,15 +61,14 @@ class RecomenderDraftTable extends DataTableComponent
     public function view($estimate_id)
     {
         $this->emit('openModal', $estimate_id);
-        // dd($this->emit('openModal', $estimate_id));
     }
     public function verify($estimate_id)
     {
         $this->emit('openVerifyModal', $estimate_id);
     }
-    public function approveForward($estimate_id)
+    public function approveEstimate($estimate_id)
     {
-        $this->emit('openVerifyModal', $estimate_id);
+        $this->emit('openApproveModal', $estimate_id);
     }
     public function revert($estimate_id)
     {

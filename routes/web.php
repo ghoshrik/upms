@@ -17,6 +17,7 @@ use App\Http\Livewire\Sor\Sor;
 use App\Http\Livewire\UserType\UserType;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\AccessType\AccessType;
+use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
 use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
 use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\UserManagement\UserManagement;
@@ -116,6 +117,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('access-type',AccessType::class)->name('access-type');
     Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
     Route::get('estimate-recommender',EstimateRecomender::class)->name('estimate-recommender');
+    Route::get('estimate-forwarder',EstimateForwarder::class)->name('estimate-forwarder');
     Route::view('/powergrid', 'powergrid-demo');
 
 });
