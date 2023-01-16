@@ -11,3 +11,4 @@ class VerifyTableButtons extends Component
         return view('livewire.action-components.estimate-recomender.verify-table-buttons');
     }
 }
+// TODO::rename verify to approve

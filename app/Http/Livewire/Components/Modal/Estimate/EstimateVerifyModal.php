@@ -31,7 +31,7 @@ class EstimateVerifyModal extends Component
             $checkForVerify = Esrecommender::where('estimate_id', $value)->first();
             if ($checkForVerify != NULL) {
                 // dd('modified');
-                if (SorMaster::where('estimate_id', $value)->update(['is_verified' => 1,'status' => 8])) {
+                if (SorMaster::where('estimate_id', $value)->update(['is_verified' => 1,'status' => 10])) {
                     $this->notification()->success(
                         $title = 'Verified Estimate !!'
                     );

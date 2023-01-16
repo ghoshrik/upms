@@ -44,16 +44,16 @@ class EstimateRecomender extends Component
             ->where('estimate_user_assign_records.estimate_user_type', '=', 1)
             ->where('sor_masters.is_verified', '=', 0)
             ->count();
-        $this->counterData['verifiedDataCount'] =  SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
+        $this->counterData['forwardedDataCount'] =  SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
             ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 1)
-            ->where('sor_masters.is_verified', '=', 1)
+            ->where([['sor_masters.is_verified', '=', 0],['sor_masters.status','=',11]])
             ->count();
-        // $this->counterData['revertedDataCount'] = SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-        //     ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
-        //     ->where('estimate_user_assign_records.estimate_user_type', '=', 1)
-        //     ->where('status', '=', 3)
-        //     ->count();
+        $this->counterData['revertedDataCount'] = SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
+        ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
+        ->where('estimate_user_assign_records.estimate_user_type', '=', 1)
+        ->where('sor_masters.is_verified', '=', 0)
+            ->count();
         // dd($this->counterData);
     }
     public function formOCControl($isModifyFrom = false, $eidtId = null)

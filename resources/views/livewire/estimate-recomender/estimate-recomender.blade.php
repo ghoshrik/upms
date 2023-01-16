@@ -52,7 +52,7 @@
                                                     class="circle-progress-01 circle-progress circle-progress-info text-center"
                                                     data-min-value="0"
                                                     data-max-value="{{ $counterData['totalPendingDataCount'] }}"
-                                                    data-value="{{ $counterData['verifiedDataCount'] }}"
+                                                    data-value="{{ $counterData['forwardedDataCount'] }}"
                                                     data-type="percent">
                                                     <svg class="card-slie-arrow " width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -62,7 +62,7 @@
                                                     </svg>
                                                 </div>
                                                 <div class="progress-detail">
-                                                    <p class="mb-2"> Total Verified</p>
+                                                    <p class="mb-2"> Total Forwarded</p>
                                                     <h4 class="counter" style="visibility: visible;">
                                                         {{ $counterData['verifiedDataCount'] }}</h4>
                                                 </div>
