@@ -15,8 +15,8 @@
                     <div class="card">
                         <div class="card-body">
                             {{-- TODO:: CHANGE --}}
-                            {{--
-                            <livewire:estimate.estimated-data-table /> --}}
+
+                            <livewire:access-manager.datatable.access-manager-datatable />
                         </div>
                     </div>
                 </div>

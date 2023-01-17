@@ -26,11 +26,9 @@ class EstimateVerifyModal extends Component
     }
     public function verifyEstimate($value)
     {
-        // $this->emit('openForwardModal',$value);
         try {
             $checkForVerify = Esrecommender::where('estimate_id', $value)->first();
             if ($checkForVerify != NULL) {
-                // dd('modified');
                 if (SorMaster::where('estimate_id', $value)->update(['is_verified' => 1,'status' => 10])) {
                     $this->notification()->success(
                         $title = 'Verified Estimate !!'
@@ -59,16 +57,16 @@ class EstimateVerifyModal extends Component
                             'verified_by' => Auth::user()->id,
                             'commends' => $estimate['AddRemarks'],
                         ];
-                        dd($insert);
                         Esrecommender::create($insert);
                     }
-                    if (SorMaster::where('estimate_id', $value)->update(['is_verified' => 1],['status' => 8])) {
+                    if (SorMaster::where('estimate_id', $value)->update(['is_verified' => 1],['status' => 10])) {
                         $this->notification()->success(
                             $title = 'Estimate Verified Successfully!!'
                         );
                     }
                 }
             }
+            $this->reset();
             $this->updateDataTableTracker = rand(1, 1000);
             $this->emit('refreshData',$this->updateDataTableTracker);
         } catch (\Throwable $th) {

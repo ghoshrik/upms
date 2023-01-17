@@ -52,7 +52,7 @@ class PendingEstimateForwardDatatable extends DataTableComponent
     }
     public function view($estimate_id)
     {
-        $this->emit('openModal', $estimate_id);
+        $this->emit('openVerifiedEstimateViewModal', $estimate_id);
     }
     public function verify($estimate_id)
     {

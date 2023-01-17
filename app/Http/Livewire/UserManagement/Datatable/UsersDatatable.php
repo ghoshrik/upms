@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Livewire\Office\DataTable;
+namespace App\Http\Livewire\UserManagement\Datatable;
 
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use App\Models\Office;
+use App\Models\User;
 
-class OfficeTable extends DataTableComponent
+class UsersDatatable extends DataTableComponent
 {
-    protected $model = Office::class;
+    protected $model = User::class;
 
     public function configure(): void
     {
@@ -20,23 +20,23 @@ class OfficeTable extends DataTableComponent
         return [
             // Column::make("Id", "id")
             //     ->sortable(),
-            Column::make("Office name", "office_name")
-                ->sortable(),
-            Column::make("Department Name", "getDepartmentName.department_name")
-                ->sortable(),
-            Column::make("Dist code", "getDistrictName.district_name")
-                ->sortable(),
-            // Column::make("In area", "In_area")
+            // Column::make("Name", "name")
             //     ->sortable(),
-            Column::make("Rural block code", "rural_block_code")
+            Column::make("Username", "username")
                 ->sortable(),
-            Column::make("Gp code", "gp_code")
+            Column::make("Email", "email")
                 ->sortable(),
-            Column::make("Urban code", "getUrban.urban_body_name")
+            Column::make("Emp id", "emp_id")
                 ->sortable(),
-            Column::make("Ward code", "ward_code")
+            Column::make("Emp name", "emp_name")
                 ->sortable(),
-            Column::make("Office address", "office_address")
+            Column::make("Designation id", "getDesignationName.designation_name")
+                ->sortable(),
+            Column::make("Department id", "getDepartmentName.department_name")
+                ->sortable(),
+            Column::make("Office id", "getOfficeName.office_name")
+                ->sortable(),
+            Column::make("User type", "getUserType.type")
                 ->sortable(),
             // Column::make("Created at", "created_at")
             //     ->sortable(),

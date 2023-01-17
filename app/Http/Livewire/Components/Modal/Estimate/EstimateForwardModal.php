@@ -40,7 +40,16 @@ class EstimateForwardModal extends Component
             'comments' => $this->userAssignRemarks,
         ];
         if (EstimateUserAssignRecord::create($data)) {
-            SorMaster::where('estimate_id', $forwardUserDetails[2])->update(['status' => 2]);
+            if($forwardUserDetails[1] == 1){
+                SorMaster::where('estimate_id', $forwardUserDetails[2])->update(['status' => 2]);
+            }elseif($forwardUserDetails[1] == 4){
+                SorMaster::where('estimate_id', $forwardUserDetails[2])->update(['status' => 11]);
+            }else{
+                $this->notification()->error(
+                    $title = 'Error',
+                    $description =  'Please Check & try again'
+                );
+            }
             $this->notification()->success(
                 $title = 'Success',
                 $description =  'Successfully Assign!!'

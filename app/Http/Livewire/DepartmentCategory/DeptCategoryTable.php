@@ -24,7 +24,7 @@ class DeptCategoryTable extends DataTableComponent
                 ->sortable(),
             Column::make("Dept category name", "dept_category_name")
                 ->sortable(),
-            Column::make("Actions", "id")->view('components.data-table-components.buttons.edit'),
+            // Column::make("Actions", "id")->view('components.data-table-components.buttons.edit'),
             // Column::make("Created at", "created_at")
             //     ->sortable(),
             // Column::make("Updated at", "updated_at")

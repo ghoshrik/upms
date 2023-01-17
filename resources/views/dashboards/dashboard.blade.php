@@ -3,7 +3,7 @@
         <div class="col-md-12 col-lg-12">
             <div class="row row-cols-1">
                 <div class="d-slider1 overflow-hidden ">
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="col-md-4">
                             <li class="swiper-slide card card-slide" data-aos="fade-up" data-aos-delay="700">
                                 <div class="card-body ">
@@ -66,7 +66,7 @@
                                 </div>
                             </li>
                         </div>
-                    </div>
+                    </div> --}}
 
                 </div>
             </div>

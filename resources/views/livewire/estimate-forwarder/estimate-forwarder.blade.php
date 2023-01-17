@@ -18,7 +18,7 @@
                                                     class="circle-progress-01 circle-progress circle-progress-primary text-center"
                                                     data-min-value="0"
                                                     data-max-value="{{ $counterData['totalPendingDataCount'] }}"
-                                                    data-value="25"
+                                                    data-value="{{ $counterData['pendingDataCount'] }}"
                                                     data-type="percent">
                                                     <svg class="card-slie-arrow" width="24" height="24px"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -47,7 +47,7 @@
                                                     class="circle-progress-01 circle-progress circle-progress-info text-center"
                                                     data-min-value="0"
                                                     data-max-value="{{ $counterData['totalPendingDataCount'] }}"
-                                                    data-value="35"
+                                                    data-value="{{ $counterData['verifiedDataCount'] }}"
                                                     data-type="percent">
                                                     <svg class="card-slie-arrow " width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -105,8 +105,8 @@
                     @elseif ($this->selectedEstTab == 2)
                         <div class="card">
                             <div class="card-body">
-                                {{-- <livewire:estimate-recomender.datatable.recomender-verified-table
-                                    :wire:key="$updateDataTableTracker" /> --}}
+                                <livewire:estimate-forwarder.datatable.verified-estimate-forward-datatable
+                                    :wire:key="$updateDataTableTracker" />
                             </div>
                         </div>
                     {{-- @elseif ($this->selectedEstTab == 3)
@@ -150,7 +150,7 @@
 <div>
     <livewire:components.modal.estimate.estimate-view-modal />
     <livewire:components.modal.estimate.verified-estimate-view-modal />
-    <livewire:components.modal.estimate.estimate-approve-modal />
+    <livewire:components.modal.estimate.estimate-verify-modal />
     <livewire:components.modal.estimate.estimate-revert-modal />
     <livewire:components.modal.estimate.estimate-forward-modal />
 </div>

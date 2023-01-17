@@ -111,7 +111,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('department', Department::class)->name("department");
     Route::get('department-category',DepartmentCategoryList::class)->name('department-category');
     Route::get('office', Office::class)->name('office');
-    Route::get('sor',Sor::class)->name('sor');
+    Route::get('prepare-sor',Sor::class)->name('prepare-sor');
     Route::get('user-management',UserManagement::class)->name('user-management');
     Route::get('access-manager',AccessManager::class)->name('access-manager');
     Route::get('access-type',AccessType::class)->name('access-type');

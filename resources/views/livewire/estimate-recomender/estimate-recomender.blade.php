@@ -64,7 +64,7 @@
                                                 <div class="progress-detail">
                                                     <p class="mb-2"> Total Forwarded</p>
                                                     <h4 class="counter" style="visibility: visible;">
-                                                        {{ $counterData['verifiedDataCount'] }}</h4>
+                                                        {{ $counterData['forwardedDataCount'] }}</h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -87,7 +87,7 @@
                                                     </svg>
                                                 </div>
                                                 <div class="progress-detail">
-                                                    <p class="mb-2">Total Reverted</p>
+                                                    <p class="mb-2">Total Reverted </p>
                                                     <h4 class="counter" style="visibility: visible;">
                                                         100</h4>
                                                 </div>
@@ -117,8 +117,8 @@
                     @elseif ($this->selectedEstTab == 3)
                         <div class="card">
                             <div class="card-body">
-                                <livewire:estimate-recomender.datatable.recomender-verified-table
-                                    :wire:key="$updateDataTableTracker" />
+                                {{-- <livewire:estimate-recomender.datatable.recomender-verified-table
+                                    :wire:key="$updateDataTableTracker" /> --}}
                             </div>
                         </div>
                     @else

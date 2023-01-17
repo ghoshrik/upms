@@ -38,12 +38,12 @@ class VerifiedEstimateForwardDatatable extends DataTableComponent
                 ->html(),
             Column::make("Actions", "estimate_id")
             ->format(
-                fn($value, $row, Column $column) => view('livewire.action-components.estimate-recomender.draft-table-buttons')->withValue($value))
+                fn($value, $row, Column $column) => view('livewire.action-components.estimate-forwarder.verify-table-buttons')->withValue($value))
         ];
     }
     public function view($estimate_id)
     {
-        $this->emit('openModal', $estimate_id);
+        $this->emit('openVerifiedEstimateViewModal', $estimate_id);
     }
     public function builder(): Builder
     {
