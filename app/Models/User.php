@@ -12,10 +12,9 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail, HasMedia
 {
-    // use HasFactory, Notifiable, HasRoles, InteractsWithMedia;
-    use HasFactory, Notifiable,HasPermissionsTrait;
+    use HasFactory, Notifiable, HasRoles, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.

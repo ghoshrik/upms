@@ -29,14 +29,14 @@ class Menu extends Model
         ];
     }
 
-    public function menus()
-    {
-        return $this->belongsToMany(Role::class,'menus_roles');
-    }
-    public function users()
-    {
-        return $this->belongsToMany(User::class,'users_menus');
-    }
+    // public function menus()
+    // {
+    //     return $this->belongsToMany(Role::class,'menus_roles');
+    // }
+    // public function users()
+    // {
+    //     return $this->belongsToMany(User::class,'users_menus');
+    // }
     // public function getChield(Type $var = null)
     // {
     //     # code...

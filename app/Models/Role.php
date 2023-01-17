@@ -9,17 +9,26 @@ class Role extends Model
 {
     use HasFactory;
     protected $table = "roles";
-    protected $fillable = ["name","slug"];
+    protected $fillable = ["user_id","user_type","office_id","dist_id","In_rural","user_type","office_id","dept_id","rural_block_code","gp_code","urban_code","ward_code"];
 
-    public function permissions() {
-
-        return $this->belongsToMany(Permission::class,'roles_permissions');
-
-     }
-
-     public function users() {
-
-        return $this->belongsToMany(User::class,'users_roles');
-
-     }
+    public function getDepartmentName()
+    {
+        return $this->belongsTo(Department::class, 'dept_id');
+    }
+    public function getUserType()
+    {
+        return $this->belongsTo(UserType::class, 'user_type');
+    }
+    public function getUsername()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
+    public function getOfficeName()
+    {
+        return $this->belongsTo(Office::class,"office_id");
+    }
+    public function getDistrictName()
+    {
+        return $this->belongsTo(District::class,"dist_code","dist_id");
+    }
 }

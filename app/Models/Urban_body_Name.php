@@ -10,7 +10,7 @@ class Urban_body_Name extends Model
     use HasFactory;
     protected $table= "m_urban_body_ward";
     protected $fillable = [
-        'id'
+      'id'
       ,'urban_body_id'
       ,'urban_body_code'
       ,'urban_body_ward_code'

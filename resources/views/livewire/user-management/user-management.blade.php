@@ -15,8 +15,9 @@
                     <div class="card">
                         <div class="card-body">
                             {{-- TODO:: CHANGE --}}
-                            {{--
-                            <livewire:estimate.estimated-data-table /> --}}
+                            {{----}}
+                            <livewire:data-table.users-table/>
+                            {{-- <livewire:estimate.estimated-data-table /> --}}
                         </div>
                     </div>
                 </div>

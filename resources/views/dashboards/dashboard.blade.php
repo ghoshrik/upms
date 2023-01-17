@@ -4,7 +4,10 @@
             <div class="row row-cols-1">
                 <div class="d-slider1 overflow-hidden ">
                     <div class="row">
-                        <div class="col-md-4">
+
+                        @hasrole('Office Admin|Estimate Recommender (ER)|Estimate Preparer (EP)|Project Estimate(EP)')
+
+                        {{-- <div class="col-md-4">
                             <li class="swiper-slide card card-slide" data-aos="fade-up" data-aos-delay="700">
                                 <div class="card-body ">
                                     <div class="progress-widget">
@@ -65,9 +68,43 @@
                                     </div>
                                 </div>
                             </li>
+                        </div> --}}
+                        <div class="col-md-12 col-lg-12 col-sm-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <strong> {{__('Office Admin')}}</strong>
+                                </div>
+                            </div>
                         </div>
+                        @endhasrole
+                        @hasrole('State Admin')
+                        <div class="col-md-12 col-lg-12 col-sm-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <strong> {{__('State Admin')}}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        @endhasrole
+                        @hasrole('Department Admin')
+                        <div class="col-md-12 col-lg-12 col-sm-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <strong>{{__('Department Admin')}} </strong>
+                                </div>
+                            </div>
+                        </div>
+                        @endhasrole
+                        @hasrole('Super Admin')
+                        <div class="col-md-12 col-lg-12 col-sm-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <strong>{{__('Super Admin')}}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        @endhasrole
                     </div>
-
                 </div>
             </div>
         </div>

@@ -16,11 +16,20 @@ class HomeController extends Controller
     }
 
 
-    public function testMileStone()
+    // public function testMileStone()
+    // {
+    //     $assets = ['chart', 'animation'];
+    //     return view('testMileStone',compact('assets'));
+    // }
+
+
+
+    public function testdesign()
     {
         $assets = ['chart', 'animation'];
         return view('testMileStone',compact('assets'));
     }
+
 
 
     /*

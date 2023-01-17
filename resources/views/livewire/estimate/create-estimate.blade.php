@@ -258,18 +258,5 @@
             </div>
         @endif
     </div>
-    <script>
-        $(document).ready(function() {
-            // $('#searchData').keyup(function()
-            // {
-            //     alert("dfkjgbdfjkg");
-            //     var searchval = $(this).val();
-            //     console.log(searchval);
-            // });
-            $('#ddsss').click(function() {
-                console.log($(this).val());
-            });
-            //  $('#searchData').val();
-        });
-    </script>
+
 </div>

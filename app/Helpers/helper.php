@@ -2,10 +2,12 @@
 
 use App\Models\SOR;
 use App\Models\SorMaster;
+use App\Models\UnitType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Mockery\Matcher\Type;
 
 function removeSession($session)
 {
@@ -131,68 +133,200 @@ function getSorItemNumberDesc($sor_item_number)
     }
     return $sorItemDesc['description'];
 }
+
+
+$Type;
+// function printTreeHTML($tree,$parent = 0)
+// {
+//     global $Type;
+//     // $type = "a";
+//     echo $Type;
+//     $unitDtls = UnitType::where('status',1)->get();
+//     foreach ($tree as $key => $node) {
+//         // echo $Type;
+//         // echo $node["index"];
+//         // if($node['parent_id'] == 0){
+//         //     $parent = 0;
+//         //     $parent = $key++;
+//         //     echo $parent;
+//         //     $parent = 0;
+//         // }
+//         // else{
+//         //     $parent=$parent+1;
+//         //     echo $key.$parent;
+//         // }
+//         echo "<li class='tree'>";
+//             // echo "$key";
+//             echo "<div class='row mutipal-add-row'>
+//                     <div class='col-md-3 col-lg-3 col-sm-3 ml-2 mt-1 mb-1'>";
+//                         echo '<input type="text" class="form-control" placeholder="milestone name" wire:model="arrayData.'.$node["index"].'.mStone_name" wire:key="arrayData.'.$node["index"].'.mStone_name"/>';
+//                             // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_1'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
+//                 echo "</div>";
+
+//                     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
+//                         echo '<input type="text" class="form-control" placeholder="weightage" wire:model="arrayData.'.$node["index"].'.mVal" wire:key="arrayData.'.$node["index"].'.mVal"/>';
+//                             // echo '<input type="text" class="form-control" placeholder="unit" wire:model="arrayData.'.$node["index"].'.mUnit" wire:key="arrayData.'.$node["index"].'.mUnit" />';
+//                                 // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_3'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
+//                     echo "</div>";
+
+//                     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
+//                         echo '<select class="form-control" wire:model="arrayData.'.$node["index"].'.mUnit" wire:key="arrayData.'.$node["index"].'.mUnit" wire:click="chMileType($event.target.value)"><option value="">-- Select Unit --</option>';
+//                             if(count($unitDtls)>0){
+//                                 foreach($unitDtls as $units){
+//                                     // echo '<input type="text" class="form-control" placeholder="value" wire:model="arrayData.'.$node["index"].'.mVal" wire:key="arrayData.'.$node["index"].'.mVal"/>';
+//                                         echo '<option value='.$units['type'].'>'.$units['type'].'</option>';
+//                                     }
+//                                 }
+//                             echo '</select>';
+//                                 // echo  "<x-input label='milestone_1' wire:key='inputsData.". $node['index'] .".milestone_2'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
+//                         echo "</div>";
+
+
+//                         // if($Type=="cm"){
+//                         //     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'".$Type ? 'd-block':'d-none'.">";
+//                         //     echo $Type;
+//                         //     echo "</div>";
+//                         // }
+//                     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
+//                         echo '<input type="text" class="form-control" placeholder="cost" wire:model="arrayData.'.$node["index"].'.mCost" wire:key="arrayData.'.$node["index"].'.mCost" />';
+//                             // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_4'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
+//                     echo "</div>";
+
+//                     echo "<div class='col-md-2 col-lg-1 col-sm-3 ml-2 mt-1 mb-1'>";
+//                         // echo "<div class='row'>";
+//                         echo "<div class='d-flex'>";
+//                             echo "<button type='button' wire:click='addMilestone(" . $node['index'] . ")' class='d-inline btn btn-soft-success rounded-pill'>
+//                             <span class='btn-inner'>
+//                                 <svg class='w-4 h-4 text-gray-500' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+//                                     <line x1='12' y1='5' x2='12' y2='19'></line>
+//                                     <line x1='5' y1='12' x2='19' y2='12'></line>
+//                                 </svg>
+//                             </span>
+//                         </button>&nbsp;&nbsp;&nbsp;";
+//                         echo "<button type='button' wire:click='removeMilestone(" . $node['parent_id'] . ")' class='d-inline btn btn-soft-danger rounded-pill'>
+//                             <span class='btn-inner'>
+//                                 <svg class='w-4 h-4 text-gray-500' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+//                                     <line x1='18' y1='6' x2='6' y2='18'></line>
+//                                     <line x1='6' y1='6' x2='18' y2='18'></line>
+//                                 </svg>
+//                             </span>
+//                         </button>";
+//                         echo "</div>";
+//                         // echo "</div>";
+//                     echo "</div>";
+//                 echo "</div>";
+//         if (!empty($node['children'])) {
+//             echo "<ul class='tree'>";
+//             printTreeHTML($node['children'],$parent);
+//             echo "</ul>";
+//         }
+//         echo "</li>";
+//     }
+// }
+
 function printTreeHTML($tree,$parent = 0)
-    {
-        // echo $parent;
-        foreach ($tree as $key => $node) {
-            if($node['parent_id'] == 0){
-                $parent = 0;
-                $parent = $key++;
-                echo $parent;
-                $parent = 0;
-            }
-            else{
-                $parent=$parent+1;
-                echo $key.$parent;
-            }
-            echo "<li class='tree'>";
-                // echo "$key";
-                echo "<div class='row'>";
-                        echo "<div class='col-md-3 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
-                            echo '<input type="text" class="form-control" placeholder="milestone name" wire:model="treeView.'.$key.'.mStone_name" wire:key="treeView.'.$node["index"].'.mStone_name"/>';
-                                // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_1'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
-                        echo "</div>";
-                        echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
-                            echo '<input type="text" class="form-control" placeholder="value" wire:model="treeView.'.$key.'.mVal" wire:key="treeView.'.$node["index"].'.mVal"/>';
+{
+    global $Type;
+    // $type = "a";
+    echo $Type;
+    $unitDtls = UnitType::where('status',1)->get();
+    foreach ($tree as $key => $node) {
+        $nodeModelIndex = $node["index"]-1;
+        // echo $Type;
+        // echo $node["index"];
+        // if($node['parent_id'] == 0){
+        //     $parent = 0;
+        //     $parent = $key++;
+        //     echo $parent;
+        //     $parent = 0;
+        // }
+        // else{
+        //     $parent=$parent+1;
+        //     echo $key.$parent;
+        // }
+        echo "<li class='tree'>";
+            // echo "$key";
+            echo "<div class='row mutipal-add-row'>
+                    <div class='col-md-3 col-lg-3 col-sm-3 ml-2 mt-1 mb-1'>";
+                        echo '<input type="text" class="form-control" placeholder="milestone name" wire:model="mileStoneData.'.$nodeModelIndex.'.m1" wire:key="mileStoneData.'.$nodeModelIndex.'.m1"/>';
+                            // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_1'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
+                echo "</div>";
+
+                    echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
+                        echo '<input type="text" class="form-control" placeholder="weightage" wire:model="mileStoneData.'.$nodeModelIndex.'.m2" wire:key="mileStoneData.'.$nodeModelIndex.'.m2"/>';
+                            // echo '<input type="text" class="form-control" placeholder="unit" wire:model="mileStoneData.'.$node["index"].'.mUnit" wire:key="mileStoneData.'.$node["index"].'.mUnit" />';
+                                // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_3'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
+                    echo "</div>";
+
+                    echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
+                        echo '<select class="form-control" wire:model="mileStoneData.'.$nodeModelIndex.'.m3" wire:key="mileStoneData.'.$nodeModelIndex.'.m3" wire:click="chMileType($event.target.value)"><option value="">-- Select Unit --</option>';
+                            if(count($unitDtls)>0){
+                                foreach($unitDtls as $units){
+                                    // echo '<input type="text" class="form-control" placeholder="value" wire:model="mileStoneData.'.$node["index"].'.mVal" wire:key="mileStoneData.'.$node["index"].'.mVal"/>';
+                                        echo '<option value='.$units['type'].'>'.$units['type'].'</option>';
+                                    }
+                                }
+                            echo '</select>';
                                 // echo  "<x-input label='milestone_1' wire:key='inputsData.". $node['index'] .".milestone_2'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
                         echo "</div>";
-                        echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
-                            echo '<input type="text" class="form-control" placeholder="unit" wire:model="treeView.'.$key.'.mUnit" wire:key="treeView.'.$node["index"].'.mUnit" />';
-                                // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_3'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
-                        echo "</div>";
-                        echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
-                            echo '<input type="text" class="form-control" placeholder="cost" wire:model="treeView.'.$key.'.mCost" wire:key="treeView.'.$node["index"].'.mCost" />';
-                                // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_4'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
-                        echo "</div>";
 
-                        echo "<div class='col-md-3 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
-                            // echo "<div class='row'>";
-                            echo "<div class='d-flex' >";
-                                echo "<button type='button' wire:click='addMilestone(" . $node['index'] . ")' class='d-inline btn btn-soft-success rounded-pill'>
-                                <span class='btn-inner'>
+
+                        // if($Type=="cm"){
+                        //     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'".$Type ? 'd-block':'d-none'.">";
+                        //     echo $Type;
+                        //     echo "</div>";
+                        // }
+                    echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
+                        echo '<input type="text" class="form-control" placeholder="cost" wire:model="mileStoneData.'.$nodeModelIndex.'.m4" wire:key="mileStoneData.'.$nodeModelIndex.'.m4" />';
+                            // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_4'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
+                    echo "</div>";
+
+                    echo "<div class='col-md-2 col-lg-1 col-sm-3 ml-2 mt-1 mb-1'>";
+                        // echo "<div class='row'>";
+                        echo "<div class='d-flex'>";
+                            echo "<button type='button' wire:click='addMilestone(" . $node['index'] . ")' class='d-inline btn btn-soft-success rounded-pill'>
+                            <span class='btn-inner'>
                                 <svg class='w-4 h-4 text-gray-500' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
                                     <line x1='12' y1='5' x2='12' y2='19'></line>
                                     <line x1='5' y1='12' x2='19' y2='12'></line>
                                 </svg>
-                            </span></button>&nbsp;&nbsp;&nbsp;";
-                                echo "<button type='button' wire:click='addMilestone(" . $node['index'] . ")' class='d-inline btn btn-soft-danger rounded-pill'>
-                                <span class='btn-inner'>
-                                    <svg class='w-4 h-4 text-gray-500' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
-                                        <line x1='18' y1='6' x2='6' y2='18'></line>
-                                        <line x1='6' y1='6' x2='18' y2='18'></line>
-                                    </svg>
-                                </span>
-                                </button>";
-                            echo "</div>";
-                            // echo "</div>";
+                            </span>
+                        </button>&nbsp;&nbsp;&nbsp;";
+                        // echo "<button type='button' wire:click='removeMilestone(" . $node['parent_id'] . ")' class='d-inline btn btn-soft-danger rounded-pill'>
+                        //     <span class='btn-inner'>
+                        //         <svg class='w-4 h-4 text-gray-500' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+                        //             <line x1='18' y1='6' x2='6' y2='18'></line>
+                        //             <line x1='6' y1='6' x2='18' y2='18'></line>
+                        //         </svg>
+                        //     </span>
+                        // </button>";
                         echo "</div>";
+                        // echo "</div>";
                     echo "</div>";
-            if (!empty($node['children'])) {
-                echo "<ul class='tree'>";
-                printTreeHTML($node['children'],$parent);
-                echo "</ul>";
-            }
-            echo "</li>";
+                echo "</div>";
+        if (!empty($node['children'])) {
+            echo "<ul class='tree'>";
+            printTreeHTML($node['children'],$parent);
+            echo "</ul>";
         }
+        echo "</li>";
     }
+}
+
+
+// if(!array_exists())
+function delete_entries(&$array, $ids_to_delete) {
+    $children = array();
+    foreach ($array as $node) {
+        dd($array);
+        $children[$node['index']] = $node;
+        $children[$node['index']]['children'] = array();
+    }
+    foreach ($array['children'] as $index => &$child) {
+        if (in_array($child['index']['parent_id'], $ids_to_delete)) {
+            unset($array['children'][$index]);
+        }
+        delete_entries($child, $ids_to_delete);
+    }
+}
 //pending for design reponsive problem

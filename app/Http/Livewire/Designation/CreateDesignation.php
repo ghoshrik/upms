@@ -40,7 +40,6 @@ class CreateDesignation extends Component
     }
     public function render()
     {
-
         $assets = ['chart', 'animation'];
         return view('livewire.designation.create-designation',compact('assets'));
     }

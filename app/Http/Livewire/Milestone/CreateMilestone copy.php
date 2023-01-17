@@ -8,20 +8,26 @@ use Livewire\Component;
 
 class CreateMilestone extends Component
 {
-    public $mileStoneData = [], $Index = 0,$treeView,$arrayData=[],$projectId,$description;
-
+    public $mileStoneData = [], $Index = 0,$treeView,$arrayData=[];
+    public $mStone_name,$mVal,$mUnit,$mCost,$projectId,$description;
     public function addMilestone($id)
     {
-        $this->Index = count($this->mileStoneData)+1;
+        if($id == 0)
+        {
+            $this->Index = count($this->mileStoneData)+1;
             $this->mileStoneData[] = [
                 'index' => $this->Index,
                 'parent_id' => $id,
-                'project_id'=>$this->projectId,
-                'm1'=>'',
-                'm2'=>'',
-                'm3'=>'',
-                'm4'=>'',
             ];
+        }
+        elseif($this->mileStoneData != null)
+        {
+            $index = count($this->mileStoneData)+1;
+            $this->mileStoneData[] = [
+                'index' => $index,
+                'parent_id' => $id
+            ];
+        }
         // dd($this->mileStoneData);
         $this->treeView= $this->buildTree($this->mileStoneData);
         // dd($this->treeView);
@@ -64,6 +70,16 @@ class CreateMilestone extends Component
 
     public function removeMilestone($parent_id)
     {
+        // dd($this->mileStoneData);
+
+
+        // if($this->mileStoneData[$Index]['parent_id'] == $Index){
+        //     // dd($this->mileStoneData[$Index]['index']);
+        //     $id = $this->mileStoneData[$Index]['index'];
+        //     // dd($this->mileStoneData[$id-1]);
+        //     unset($this->mileStoneData[$id-1]);
+        //     // dd($this->mileStoneData);
+        // }
         $newArray = [];
         foreach ($this->mileStoneData as $key => $value) {
             if (is_array($value)) {
@@ -76,21 +92,47 @@ class CreateMilestone extends Component
 
     public function store()
     {
-        // $this->validate();
-        try{
-            foreach($this->mileStoneData as $mileStone)
-            {
-                MileStone::create($mileStone);
-            }
-        }
+    //    dd($this->arrayData);
+    dd($this->mileStoneData,$this->arrayData);
+    // dd(array_merge($this->arrayData,$this->mileStoneData));
+    // 'projectId'=>$this->projectId,
+    // 'description'=>$this->description,
+    foreach($this->arrayData as $key => $list)
+    {
+        // $mileIndex = $list['index'];
+        // $mileparent = $list['parent_id'];
 
+            $insert= [
+                'project_id'=>$this->projectId,
+                'Index_id'=>$list['index'],
+                'parent_id'=>$list['parent_id'],
+                'm1'=>$list['mStone_name'],
+                'm2'=>$list['mVal'],
+                'm3'=>$list['mUnit'],
+                'm4'=>$list['mCost'],
+            ];
+dd($insert);
+            MileStone::create($insert);
+        //
+    }
 
-        catch (\Throwable $th) {
-            $this->emit('showError', $th->getMessage());
-        }
+    // $insert[] = [
+    //     ,
+    //     'project_id'=>$this->projectId,
+    //     'Index_id'=>$list['index'],
+    //     'parent_id'=>$list['parent_id'],
+    //     'm1'=>$val['mStone_name'],
+    //     'm2'=>$val['mVal'],
+    //     'm3'=>$val['mUnit'],
+    //     'm4'=>$val['mCost'],
+    // ];
+    // dd($insert);
+    // MileStone::create($insert);
 
         $this->reset();
         $this->emit('openForm');
+        // dd($insert);
+        // MileStone::create($insert);
 
     }
 

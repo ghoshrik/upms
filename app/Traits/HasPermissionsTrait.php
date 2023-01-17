@@ -3,11 +3,11 @@
 namespace App\Traits;
 
 use App\Models\Menu;
-use App\Models\Permission;
-use App\Models\Role;
+// use App\Models\Permission;
+// use App\Models\Role;
 
 trait HasPermissionsTrait {
-    public function givePermissionsTo(... $permissions)
+    /*public function givePermissionsTo(... $permissions)
     {
         $permissions = $this->getAllPermissions($permissions);
 
@@ -84,4 +84,5 @@ trait HasPermissionsTrait {
         return Permission::whereIn('slug',$permissions)->get();
 
       }
+      */
 }

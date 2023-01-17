@@ -6,6 +6,7 @@ use App\Http\Controllers\Security\RolePermission;
 use App\Http\Controllers\Security\RoleController;
 use App\Http\Controllers\Security\PermissionController;
 use App\Http\Controllers\UserController;
+use App\Http\Livewire\Aafs\ProjectList;
 use App\Http\Livewire\Department\Department;
 use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
 use App\Http\Livewire\Designation\CreateDesignation;
@@ -21,7 +22,9 @@ use App\Http\Livewire\AccessType\AccessType;
 use App\Http\Livewire\Milestone\MilestoneLists;
 use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\UserManagement\UserManagement;
+use App\Http\Livewire\VendorRegs\VendorList;
 use App\Models\Menu;
+use App\Models\MileStone;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -69,70 +72,85 @@ Route::get('/storage', function () {
     Artisan::call('storage:link');
 });
 
+Route::get('mileDesignTest',[HomeController::class, 'testdesign'])->name('mileDesignTest');
+
+
+
 //UI Pages Routs
 Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
-        // Route::get('designation', Designation::class)->name('designation');
-        // Route::get('department', Department::class)->name("department");
-        // Route::get('office', Office::class)->name('office');
-        // Route::get('user-management', UserManagement::class)->name("user-management");
-        // Route::get('user-type', UserType::class)->name("user-type");
-        // Route::get('access-manager', AccessManager::class)->name("access-manager");
-        // Route::get('access-type', AccessType::class)->name("access-type");
-        // Route::get('roles',RolesManagement::class)->name("roles");
-        // Route::get('menu',Menus::class)->name('menu');
-        // Route::get('menu-permission',MenuPermission::class)->name('menu-permission');
-        // Route::get('sor-category',SORCategory::class)->name('sor-category');
-        // // Route::get('estimate-master',[EstimatePrepareController::class,'index'])->name('estimate-master.index');
-        // Route::get('sor',Sor::class)->name('sor');
-        // Route::get('userslist',[UsersController::class,'index'])->name('userslist.index');
-        // Route::get('estimate-recommender',EstimateRecomender::class)->name('estimate-recommender');
-        // Route::get('estimate-recommender/{id}',Test::class);
-        // Route::get('estimate-project',EstimateProject::class)->name('estimate-project');
-        // Route::get('sor-master',SorMaster::class)->name('sor-master');
-        // Route::get('estimate-prepare',EstimatePrepar::class)->name("estimate-prepare");
 
+        //all Roles access
+        Route::group(['middleware'=>['auth','role:Super Admin|State Admin|Department Admin|Office Admin|Estimate Recommender (ER)|Estimate Preparer (EP)|Project Estimate(EP)']],function(){
+            // Dashboard Routes
+            Route::get('dashboard', [HomeController::class, 'index'])->name('dashboard');
+            Route::get('user-management',UserManagement::class)->name('user-management');
 
+            //only super admin(admin)
+            Route::group(['middleware'=>['auth','role:Super Admin|']],function(){
+                Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
+            });
+            //access only state admin & super Admin
+            Route::group(['middleware'=>['auth','role:State Admin|Super Admin']],function(){
+                Route::get('department', Department::class)->name("department");
+            });
 
+            //access only department admin & super admin
+            Route::group(['middleware'=>['auth','role:Department Admin|Super Admin']],function(){
+                Route::get('office', Office::class)->name('office');
+                Route::get('sor',Sor::class)->name('sor');
+                Route::get('department-category',DepartmentCategoryList::class)->name('department-category');
 
-        // Route::get(['middleware'=>'role:admin','prefix'=>'admin','as'=>'admin.'],function(){
-        //     // Route::get(['middleware'=>'auth'],function(){
-        //         Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
+                Route::get('milestones',MilestoneLists::class)->name('milestones');
 
-        //     // });
-        // });
+            });
+
+            //access only office admin & super admin
+            Route::group(['middleware'=>['auth','role:Office Admin|Super Admin']],function(){
+                Route::get('designation',Designation::class)->name('designation');
+                Route::get('access-manager',AccessManager::class)->name('access-manager');
+            });
+
+            //access only
+            Route::group(['middleware'=>['auth','role:Estimate Preparer (EP)|Super Admin']],function(){
+                Route::get('estimate-prepare',EstimatePrepare::class)->name('estimate-prepare');
+            });
+            Route::group(['middleware'=>['auth','role:Estimate Recommender (ER)|Super Admin']],function(){
+                // Route::get('estimate-prepare',EstimatePrepare::class)->name('estimate-prepare');
+                // Route::get('estimate-project',EstimateProject::class)->name('estimate-project');
+            });
+            Route::group(['middleware'=>['auth','role:Project Estimate(EP)|Super Admin']],function(){
+                Route::get('estimate-project',EstimateProject::class)->name('estimate-project');
+            });
+        });
+
 
 
 Route::group(['middleware' => 'auth'], function () {
-    // Permission Module
-    Route::get('/role-permission',[RolePermission::class, 'index'])->name('role.permission.list');
-    // Route::resource('permission',PermissionController::class);
-    Route::get('permission',[PermissionController::class,'index'])->name('permission');
-    Route::resource('role', RoleController::class);
+    // // Permission Module
+    // Route::get('/role-permission',[RolePermission::class, 'index'])->name('role.permission.list');
+    // // Route::resource('permission',PermissionController::class);
+    // Route::get('permission',[PermissionController::class,'index'])->name('permission');
+    // Route::resource('role', RoleController::class);
+    //  // Dashboard Routes
+     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
-    // Dashboard Routes
-    Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
     // Users Module
     Route::resource('users', UserController::class);
-
-    Route::get('estimate-prepare',EstimatePrepare::class)->name('estimate-prepare');
-    Route::get('estimate-project',EstimateProject::class)->name('estimate-project');
-    Route::get('designation',Designation::class)->name('designation');
     Route::get('user-type', UserType::class)->name("user-type");
-    Route::get('department', Department::class)->name("department");
-    Route::get('department-category',DepartmentCategoryList::class)->name('department-category');
-    Route::get('office', Office::class)->name('office');
-    Route::get('sor',Sor::class)->name('sor');
-    Route::get('user-management',UserManagement::class)->name('user-management');
-    Route::get('access-manager',AccessManager::class)->name('access-manager');
     Route::get('access-type',AccessType::class)->name('access-type');
-    Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
+
     // Route::view('powergrid','powergrid-demo');
     Route::get('milestones',MilestoneLists::class)->name('milestones');
+    Route::gtet('milestones/{Id}',MileStone::class)->name('milestones.{id}');
     Route::get('testsearch',TestSearch::class)->name('testsearch');
-    Route::get('testmilestone',[HomeController::class,'testMileStone'])->name('testmilestone');
+    // Route::get('testmilestone',[HomeController::class,'testMileStone'])->name('testmilestone');
+    Route::get('vendors',VendorList::class)->name('vendors');
+    Route::get('aafs-project',ProjectList::class)->name('aafs-project');
+
+    Route::get('milestonetest',[HomeController::class, 'testdesign'])->name('milestonetest');
 });
-// Route::get('milestones',MilestoneLists::class)->name('milestones');
+
 
 
 //App Details Page => 'Dashboard'], function() {
