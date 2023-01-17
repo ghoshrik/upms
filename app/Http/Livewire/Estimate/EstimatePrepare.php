@@ -54,6 +54,7 @@ class EstimatePrepare extends Component
         ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
         ->where('estimate_user_assign_records.estimate_user_type','=',2)
         ->where('sor_masters.status','!=',1)
+        ->where('sor_masters.status','!=',3)
         ->count();
         $this->counterData['revertedDataCount'] = SorMaster::join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','sor_masters.estimate_id')
         ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)

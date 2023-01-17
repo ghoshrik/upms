@@ -188,8 +188,8 @@ class AddedEstimateProjectList extends Component
             array('marginLeft' => 600, 'marginRight' => 200,
                 'marginTop' => 600, 'marginBottom' => 200)
         );
-        $html = "<h1 style='font-size:24px;font-weight:600;text-align: center;'>Estimate Preparation Details</h1>";
-        $html .= "<p>This is for test purpose</p>";
+        $html = "<h1 style='font-size:24px;font-weight:600;text-align: center;'>Project Estimate Preparation Details</h1>";
+        $html .= "<p>Estimate Packege list Are pending</p>";
         $html .= "<table style='border: 1px solid black;width:auto'><tr>";
         $html .= "<th scope='col' style='text-align: center'>Serial No.</th>";
         $html .= "<th scope='col' style='text-align: center'>Item Number/<br/>Project No(Ver.)</th>";
@@ -230,14 +230,14 @@ class AddedEstimateProjectList extends Component
             $html .= "<td style=''>" . $export['total_amount'] . "</td></tr>";
         }
         $html .= "</table>";
-        $html .= "<table style='border: 1px solid black;width:auto'><tr>";
-        $html .= "<th scope='col' style='text-align: center'>Serial No.</th>";
-        $html .= "<th scope='col' style='text-align: center'>Item Number(Ver.)</th>";
-        $html .= "<th scope='col' style='text-align: center'>Description</th>";
-        $html .= "<th scope='col' style='text-align: center'>Quantity</th>";
-        $html .= "<th scope='col' style='text-align: center'>Unit Price</th>";
-        $html .= "<th scope='col' style='text-align: center' >Cost</th></tr>";
-        $html .= "</table>";
+        // $html .= "<table style='border: 1px solid black;width:auto'><tr>";
+        // $html .= "<th scope='col' style='text-align: center'>Serial No.</th>";
+        // $html .= "<th scope='col' style='text-align: center'>Item Number(Ver.)</th>";
+        // $html .= "<th scope='col' style='text-align: center'>Description</th>";
+        // $html .= "<th scope='col' style='text-align: center'>Quantity</th>";
+        // $html .= "<th scope='col' style='text-align: center'>Unit Price</th>";
+        // $html .= "<th scope='col' style='text-align: center' >Cost</th></tr>";
+        // $html .= "</table>";
         \PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
         $pw->save($date . ".docx", "Word2007");
         header("Content-Type: application/octet-stream");

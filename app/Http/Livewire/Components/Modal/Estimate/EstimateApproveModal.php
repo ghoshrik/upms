@@ -65,6 +65,7 @@ class EstimateApproveModal extends Component
                     }
                 }
             }
+            $this->reset();
             $this->updateDataTableTracker = rand(1, 1000);
             $this->emit('refreshData',$this->updateDataTableTracker);
         } catch (\Throwable $th) {

@@ -192,12 +192,12 @@ class AddedEstimateList extends Component
         foreach ($exportDatas as $key => $export) {
             $html .= "<tr><td style='text-align: center'>" . chr($export['array_id'] + 64) . "</td>&nbsp;";
             if ($export['sor_item_number']) {
-                $html .= "<td style='text-align: center'>" . $export['sor_item_number'] . ' ( ' . $export['version'] . ' )' . "</td>&nbsp;";
+                $html .= "<td style='text-align: center'>" . getSorItemNumber($export['sor_item_number']) . ' ( ' . $export['version'] . ' )' . "</td>&nbsp;";
             } else {
                 $html .= "<td style='text-align: center'>--</td>&nbsp;";
             }
             if ($export['description']) {
-                $html .= "<td style='text-align: center'>" . $export['description'] . "</td>&nbsp;";
+                $html .= "<td style='text-align: center'>" . ($export['description']) . "</td>&nbsp;";
             } elseif ($export['operation']) {
                 if ($export['operation'] == 'Total') {
                     $html .= "<td style='text-align: center'> Total of (" . $export['arrayIndex'] . " )</td>&nbsp;";
@@ -209,7 +209,7 @@ class AddedEstimateList extends Component
                     }
                 }
             } else {
-                $html .= "<td style='text-align: center'>" . $export['name'] . "</td>&nbsp;";
+                $html .= "<td style='text-align: center'>" . $export['other_name'] . "</td>&nbsp;";
             }
             $html .= "<td style='text-align: center'>" . $export['qty'] . "</td>&nbsp;";
             $html .= "<td style='text-align: center'>" . $export['rate'] . "</td>&nbsp;";

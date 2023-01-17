@@ -158,6 +158,5 @@
     @endif
     <div>
         <livewire:components.modal.estimate.edit-estimate-modal />
-        <livewire:components.modal.estimate.estimate-view-modal />
     </div>
 </div>

@@ -164,7 +164,6 @@ return [
             'total_on_selected'=>'Total On Selected',
             'export_word'=>'Export Word',
             'description'=>'Description',
-            'description_helper'=>'',
             'quantity'=>'Quantity',
             'unit_price'=>'Unit Price(RS.)',
             'remarks' =>'Remarks',
@@ -181,13 +180,10 @@ return [
             'id'=>'ID',
             'id_helper'=>'#',
             'estimate_no'=>'Estimate No(Project ID)',
-            'estimate_no_helper'=>'',
             'estimate_total'=>'Estimate Cost',
-            'estimate_total_helper'=>'',
             'estimate_recommender_cost'=>'Estimate Recommender Cost',
             'item_number'=>'Item Number(Ver.)',
             'description'=>'Description',
-            'description_helper'=>'',
             'quantity'=>'Quantity',
             'unit_price'=>'Unit Price',
             'status'=>'Status',
@@ -236,6 +232,46 @@ return [
             'user_type'=>'User Type',
             'menu_access'=>'Menu Access',
             'actions'=>'Actions',
+        ],
+    ],
+    'milestone'=>[
+        'title'=>'MileStone',
+        'title_singular'=>'Milestones',
+        'fields'=>[
+            'id'=>'ID',
+            'id_helper'=>'#',
+            'project_id'=>'Project Id',
+            'm_id'=>'Milestone name',
+            'm_parent_id'=>'parent Milestone name',
+            'param'=>'Param'
+        ],
+    ],
+    'vendors'=>[
+        'title'=>'Vendor Registration',
+        'title_singular'=>'Vendors Registrations',
+        'fields'=>[
+            'id'=>'ID',
+            'id_helper'=>'#',
+            'comp_name'=>'Company Name',
+            'tin'=>'TAN Number',
+            'pan'=>'PAN Number',
+            'mobile'=>'Mobile',
+            'address'=>'Address',
+            'v_type'=>'Vendor Type',
+            'action'=>'actions'
+        ],
+    ],
+    'aafs_project'=>[
+        'title'=>'AAFS Project Details',
+        'title_singular'=>'AAFS Projects',
+        'fields'=>[
+            'id'=>'ID',
+            'id_helper'=>'#',
+            'proj_num'=>'Project Number',
+            'go_num'=>'GO Number',
+            'file_upload'=>'project file',
+            'file_note'=>'project related file upload here ,file extension must be pdf,jpg,jpeg',
+            'action'=>'actions'
         ],
     ],
 ];

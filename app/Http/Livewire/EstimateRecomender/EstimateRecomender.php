@@ -32,10 +32,10 @@ class EstimateRecomender extends Component
     {
         $this->selectedEstTab = '';
         $this->selectedEstTab = 3;
-        // $this->dataCounter();
-        $this->notification()->error(
-            $title = 'Estimate Revert is under devlopment'
-        );
+        $this->dataCounter();
+        // $this->notification()->error(
+        //     $title = 'Estimate Revert is under devlopment'
+        // );
     }
 
     public function dataCounter()
@@ -43,11 +43,14 @@ class EstimateRecomender extends Component
         $this->counterData['totalPendingDataCount'] =SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
             ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 1)
+            ->where('sor_masters.is_verified', '=', 0)
             ->count();
         $this->counterData['pendingDataCount'] = SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
             ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 1)
             ->where('sor_masters.is_verified', '=', 0)
+            ->where('sor_masters.status','!=',3)
+            ->where('sor_masters.status','!=',9)
             ->count();
         $this->counterData['forwardedDataCount'] =  SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
             ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
@@ -59,6 +62,8 @@ class EstimateRecomender extends Component
             ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 1)
             ->where('sor_masters.is_verified', '=', 0)
+            ->where('sor_masters.status','=',9)
+            // ->where([['sor_masters.status','=',9],['sor_masters.is_verified','=',0]])
             ->count();
         // dd($this->counterData);
     }

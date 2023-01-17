@@ -77,7 +77,7 @@
                                             <div class="progress-widget">
                                                 <div id="circle-progress-03"
                                                     class="circle-progress-01 circle-progress circle-progress-primary text-center"
-                                                    data-min-value="0" data-max-value="100" data-value="100"
+                                                    data-min-value="0" data-max-value="{{ $counterData['totalPendingDataCount'] }}" data-value="{{ $counterData['revertedDataCount'] }}"
                                                     data-type="percent">
                                                     <svg class="card-slie-arrow " width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -89,7 +89,7 @@
                                                 <div class="progress-detail">
                                                     <p class="mb-2">Total Reverted </p>
                                                     <h4 class="counter" style="visibility: visible;">
-                                                        100</h4>
+                                                        {{ $counterData['revertedDataCount'] }}</h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -117,8 +117,8 @@
                     @elseif ($this->selectedEstTab == 3)
                         <div class="card">
                             <div class="card-body">
-                                {{-- <livewire:estimate-recomender.datatable.recomender-verified-table
-                                    :wire:key="$updateDataTableTracker" /> --}}
+                                <livewire:estimate-recomender.datatable.recomender-revert-table
+                                    :wire:key="$updateDataTableTracker" />
                             </div>
                         </div>
                     @else

@@ -9,10 +9,10 @@
 <div x-data="{ open: false }">
     <div x-show="!open" :class="open ? 'd-none' : 'd-inline'">
         @include('components.data-table-components.buttons.view')
-        @include('components.data-table-components.buttons.revert')
         @isset($checkForApprove)
             @if (count($checkForApprove) == 0)
                 @include('components.data-table-components.buttons.approve')
+                @include('components.data-table-components.buttons.revert')
             @else
                 @include('components.data-table-components.buttons.forward')
             @endif

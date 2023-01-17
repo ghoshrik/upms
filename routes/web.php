@@ -21,6 +21,9 @@ use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
 use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
 use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\UserManagement\UserManagement;
+use App\Http\Livewire\VendorRegs\VendorList;
+use App\Http\Livewire\Milestone\MilestoneLists;
+use App\Http\Livewire\Aafs\ProjectList;
 use App\Models\Menu;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
@@ -118,6 +121,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
     Route::get('estimate-recommender',EstimateRecomender::class)->name('estimate-recommender');
     Route::get('estimate-forwarder',EstimateForwarder::class)->name('estimate-forwarder');
+    Route::get('milestones',MilestoneLists::class)->name('milestones');
+    Route::get('vendors',VendorList::class)->name('vendors');
+    Route::get('aafs-project',ProjectList::class)->name('aafs-project');
     Route::view('/powergrid', 'powergrid-demo');
 
 });
