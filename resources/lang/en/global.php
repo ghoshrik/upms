@@ -4,6 +4,7 @@ return [
     'cancel_btn_color'=>'btn btn-soft-danger rounded-pill',
     'data_store_btn'=>'Create',
     'data_store_btn_color'=>'btn btn-success rounded-pill text-white',
+    'data_save_btn'=>'Save',
     'update_btn'=>'Update',
     'update_btn_color'=>'btn btn-warning rounded-pill text-white',
     'add_btn'=>'Add',
@@ -19,4 +20,5 @@ return [
     'forward_icon'=>'<x-lucide-forward class="w-4 h-4 text-gray-500" />',
     'draft'=>'Draft',
     'reverted'=>'Reverted',
+
 ];

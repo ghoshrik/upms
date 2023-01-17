@@ -246,4 +246,32 @@ return [
             'param'=>'Param'
         ],
     ],
+    'vendors'=>[
+        'title'=>'Vendor Registration',
+        'title_singular'=>'Vendors Registrations',
+        'fields'=>[
+            'id'=>'ID',
+            'id_helper'=>'#',
+            'comp_name'=>'Company Name',
+            'tin'=>'TAN Number',
+            'pan'=>'PAN Number',
+            'mobile'=>'Mobile',
+            'address'=>'Address',
+            'v_type'=>'Vendor Type',
+            'action'=>'actions'
+        ],
+    ],
+    'aafs_project'=>[
+        'title'=>'AAFS Project Details',
+        'title_singular'=>'AAFS Projects',
+        'fields'=>[
+            'id'=>'ID',
+            'id_helper'=>'#',
+            'proj_id'=>'Project ID',
+            'Geo_id'=>'GEO ID',
+            'file_upload'=>'project file',
+            'file_note'=>'project related file upload here ,file extension must be pdf,jpg,jpeg',
+            'action'=>'actions'
+        ],
+    ],
 ];

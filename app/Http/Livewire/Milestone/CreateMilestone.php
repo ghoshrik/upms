@@ -2,47 +2,31 @@
 
 namespace App\Http\Livewire\Milestone;
 
+use App\Models\MileStone;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class CreateMilestone extends Component
 {
-    public $mileStoneData = [], $Index = 0,$treeView;
-    public $mStone_name,$mVal,$mUnit,$mCost,$projectId,$description;
+    public $mileStoneData = [], $Index = 0,$treeView,$arrayData=[],$projectId;
+
     public function addMilestone($id)
     {
-        if($id == 0)
-        {
-            $this->Index = count($this->mileStoneData) + 1;
+        $this->Index = count($this->mileStoneData)+1;
             $this->mileStoneData[] = [
                 'index' => $this->Index,
-                'parent_id' => $id
+                'parent_id' => $id,
+                'project_id'=>$this->projectId,
+                'm1'=>'',
+                'm2'=>'',
+                'm3'=>'',
+                'm4'=>'',
             ];
-        }
-        elseif($this->mileStoneData != null)
-        {
-            $index = count($this->mileStoneData) + 1;
-            $this->mileStoneData[] = [
-                'index' => $index,
-                'parent_id' => $id
-            ];
-        }else{
-
-        }
+        // dd($this->mileStoneData);
         $this->treeView= $this->buildTree($this->mileStoneData);
         // dd($this->treeView);
     }
-    // public function mount()
-    // {
-    //    $this->treeView = [
-    //         // [
-    //             'mStone_name'=>'',
-    //             'mVal'=>'',
-    //             'mUnit'=>'',
-    //             'mCost'=>'',
-    //         // ]
-    //    ];
-    // }
+
 
     //note
     /*
@@ -77,11 +61,46 @@ class CreateMilestone extends Component
         return $rootNodes;
     }
 
-    public function store()
+
+    public function removeMilestone($parent_id)
     {
-       dd($this->treeView);
+        $newArray = [];
+        foreach ($this->mileStoneData as $key => $value) {
+            if (is_array($value)) {
+                unset($value['parent_id']);
+            } else {
+                $newArray[$key] = $value;
+            }
+        }
     }
 
+    public function store()
+    {
+        // $this->validate();
+        try{
+            foreach($this->mileStoneData as $mileStone)
+            {
+                MileStone::create($mileStone);
+            }
+        }
+
+
+        catch (\Throwable $th) {
+            $this->emit('showError', $th->getMessage());
+        }
+
+        $this->reset();
+        $this->emit('openForm');
+
+    }
+
+    public $Type;
+
+    public function chMileType($value)
+    {
+        return $this->Type = $value;
+        // dd($this->Type);
+    }
 
     public function render()
     {
