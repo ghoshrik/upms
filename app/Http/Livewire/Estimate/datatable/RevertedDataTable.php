@@ -35,6 +35,7 @@ class RevertedDataTable extends DataTableComponent
                 ->sortable()
                 ->format( fn($row) => '<span class="badge bg-soft-warning text-dark fs-6">'.$row.'</span>')
                     ->html(),
+            Column::make("Remarks","assigningUserRemarks.comments"),
             Column::make("Actions", "estimate_id")
             ->format(
                 fn($value, $row, Column $column) => view('livewire.action-components.estimate-prepare.reverted-table-buttons')->withValue($value))

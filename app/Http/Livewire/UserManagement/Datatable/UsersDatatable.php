@@ -5,6 +5,8 @@ namespace App\Http\Livewire\UserManagement\Datatable;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class UsersDatatable extends DataTableComponent
 {
@@ -24,8 +26,8 @@ class UsersDatatable extends DataTableComponent
             //     ->sortable(),
             Column::make("Username", "username")
                 ->sortable(),
-            Column::make("Email", "email")
-                ->sortable(),
+            // Column::make("Email", "email")
+            //     ->sortable(),
             Column::make("Emp id", "emp_id")
                 ->sortable(),
             Column::make("Emp name", "emp_name")
@@ -43,5 +45,26 @@ class UsersDatatable extends DataTableComponent
             // Column::make("Updated at", "updated_at")
             //     ->sortable(),
         ];
+    }
+    public function builder(): Builder
+    {
+        if (Auth::user()->department_id) {
+            if (Auth::user()->office_id) {
+                return User::query()
+                    ->join('user_types', 'users.user_type', '=', 'user_types.id')
+                    ->where('user_types.parent_id', '=', Auth::user()->user_type)
+                    ->where('users.department_id', Auth::user()->department_id)
+                    ->where('users.office_id', Auth::user()->office_id);
+            } else {
+                return User::query()
+                    ->join('user_types', 'users.user_type', '=', 'user_types.id')
+                    ->where('user_types.parent_id', '=', Auth::user()->user_type)
+                    ->where('users.department_id', Auth::user()->department_id);
+            }
+        } else {
+            return User::query()
+                ->join('user_types', 'users.user_type', '=', 'user_types.id')
+                ->where('user_types.parent_id', '=', Auth::user()->user_type);
+        }
     }
 }

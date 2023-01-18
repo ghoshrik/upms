@@ -112,48 +112,7 @@ class EditEstimateList extends Component
             ]);
         }
     }
-    // TODO::Delete it later if not in use
-    // public function setEstimateDataToSession()
-    // {
-    //     dd(count($this->addedEstimateData),$this->addedEstimateData,Session('editEstimateData'));
-    //     $this->reset('allAddedEstimatesData');
-    //     if (Session()->has('editEstimateData')) {
-    //         $this->allAddedEstimatesData = Session()->get('editEstimateData');
-    //     }
-    //     if(count($this->addedEstimateData)>1)
-    //     {
-    //         $index = count($this->allAddedEstimatesData) + 1;
-    //         foreach ($this->addedEstimateData as $key => $estimate) {
-    //             $this->allAddedEstimatesData[$key] = $estimate;
-    //         }
-    //         Session()->put('editEstimateData', $this->allAddedEstimatesData);
-    //         $this->reset('addedEstimateData');
-    //     }else{
-    //         if ($this->addedEstimateData != null) {
-    //             $index = count($this->allAddedEstimatesData) + 1;
-    //             if (!array_key_exists("operation", $this->addedEstimateData)) {
-    //                 $this->addedEstimateData['operation'] = '';
-    //             }
-    //             if (!array_key_exists("row_id", $this->addedEstimateData)) {
-    //                 $this->addedEstimateData['row_id'] = $index;
-    //             }
-    //             if (!array_key_exists("row_index", $this->addedEstimateData)) {
-    //                 $this->addedEstimateData['row_index'] = '';
-    //             }
-    //             if (!array_key_exists("remarks", $this->addedEstimateData)) {
-    //                 $this->addedEstimateData['remarks'] = '';
-    //             }
-    //             foreach ($this->addedEstimateData as $key => $estimate) {
-    //                 $this->allAddedEstimatesData[$index][$key] = $estimate;
-    //             }
-    //             Session()->put('editEstimateData', $this->allAddedEstimatesData);
-    //             $this->reset('addedEstimateData');
-    //         }
-    //     }
 
-
-    //     // dd($this->allAddedEstimatesData);
-    // }
 
     public function setEstimateDataToSession()
     {
@@ -325,7 +284,8 @@ class EditEstimateList extends Component
         try {
             if ($this->allAddedEstimatesData) {
                 if (count(SorMaster::where('estimate_id',$estimateStoreId)->where('status',1)->get()) == 1) {
-                    // EstimatePrepare::where('estimate_id',$estimateStoreId)->delete();
+                    EstimatePrepare::where('estimate_id',$estimateStoreId)->delete();
+                    die;
                     foreach ($this->allAddedEstimatesData as $key => $value) {
                         $insert = [
                             'estimate_id' => $estimateStoreId,
