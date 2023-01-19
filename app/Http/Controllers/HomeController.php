@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MileStone;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -24,10 +25,14 @@ class HomeController extends Controller
 
 
 
-    public function testdesign()
+    public function testMileStone()
     {
+
+        $milestone = MileStone::with('children')->whereNull('parent_id')->get();
+        // $milestone =
+        // buildTree($milestone);
         $assets = ['chart', 'animation'];
-        return view('testMileStone',compact('assets'));
+        return view('testMileStone',compact('assets','milestone'));
     }
 
 

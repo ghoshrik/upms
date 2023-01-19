@@ -17,13 +17,13 @@ class CreateMileStonesTable extends Migration
             $table->id();
             $table->integer('index');
             $table->integer('parent_id')->nullable();
-            $table->unsignedBigInteger('project_id');
+            $table->bigInteger('project_id');
             // $table->longText('description')->nullable();
-            $table->string('m1');
-            $table->string('m2');
-            $table->string('m3');
-            $table->string('m4');
-            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
+            $table->string('milestone_name');
+            $table->string('weight');
+            $table->string('unit_type');
+            $table->string('cost');
+            // $table->foreign('project_id')->references('id')->on('sor_masters')->onDelete('cascade');
             $table->timestamps();
         });
     }

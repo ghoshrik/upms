@@ -20,8 +20,6 @@
     @endphp
     @canany($permissions)
     <li class="nav-item mb-2">
-
-
         @if (Route::has($menu->link))
         <a class="nav-link {{activeRoute(route($menu->link))}}" aria-current="page" href="{{route($menu->link)}}">
             @else

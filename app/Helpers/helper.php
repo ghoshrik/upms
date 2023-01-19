@@ -248,18 +248,18 @@ function printTreeHTML($tree,$parent = 0)
             // echo "$key";
             echo "<div class='row mutipal-add-row'>
                     <div class='col-md-3 col-lg-3 col-sm-3 ml-2 mt-1 mb-1'>";
-                        echo '<input type="text" class="form-control" placeholder="milestone name" wire:model="mileStoneData.'.$nodeModelIndex.'.m1" wire:key="mileStoneData.'.$nodeModelIndex.'.m1"/>';
+                        echo '<input type="text" class="form-control" placeholder="milestone name" wire:model="mileStoneData.'.$nodeModelIndex.'.milestone_name" wire:key="mileStoneData.'.$nodeModelIndex.'.milestone_name"/>';
                             // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_1'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
                 echo "</div>";
 
                     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
-                        echo '<input type="text" class="form-control" placeholder="weightage" wire:model="mileStoneData.'.$nodeModelIndex.'.m2" wire:key="mileStoneData.'.$nodeModelIndex.'.m2"/>';
+                        echo '<input type="text" class="form-control" placeholder="weightage" wire:model="mileStoneData.'.$nodeModelIndex.'.weight" wire:key="mileStoneData.'.$nodeModelIndex.'.weight"/>';
                             // echo '<input type="text" class="form-control" placeholder="unit" wire:model="mileStoneData.'.$node["index"].'.mUnit" wire:key="mileStoneData.'.$node["index"].'.mUnit" />';
                                 // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_3'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
                     echo "</div>";
 
                     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
-                        echo '<select class="form-control" wire:model="mileStoneData.'.$nodeModelIndex.'.m3" wire:key="mileStoneData.'.$nodeModelIndex.'.m3" wire:click="chMileType($event.target.value)"><option value="">-- Select Unit --</option>';
+                        echo '<select class="form-control" wire:model="mileStoneData.'.$nodeModelIndex.'.unit_type" wire:key="mileStoneData.'.$nodeModelIndex.'.unit_type" wire:click="chMileType($event.target.value)"><option value="">-- Select Unit --</option>';
                             if(count($unitDtls)>0){
                                 foreach($unitDtls as $units){
                                     // echo '<input type="text" class="form-control" placeholder="value" wire:model="mileStoneData.'.$node["index"].'.mVal" wire:key="mileStoneData.'.$node["index"].'.mVal"/>';
@@ -277,7 +277,7 @@ function printTreeHTML($tree,$parent = 0)
                         //     echo "</div>";
                         // }
                     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
-                        echo '<input type="text" class="form-control" placeholder="cost" wire:model="mileStoneData.'.$nodeModelIndex.'.m4" wire:key="mileStoneData.'.$nodeModelIndex.'.m4" />';
+                        echo '<input type="text" class="form-control" placeholder="cost" wire:model="mileStoneData.'.$nodeModelIndex.'.cost" wire:key="mileStoneData.'.$nodeModelIndex.'.cost" />';
                             // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_4'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
                     echo "</div>";
 
@@ -313,7 +313,27 @@ function printTreeHTML($tree,$parent = 0)
     }
 }
 
+    function buildTree($nodes)
+    {
+        $children = array();
 
+        foreach ($nodes as $node) {
+            $children[$node['index']] = $node;
+            $children[$node['index']]['children'] = array();
+        }
+        foreach ($children as $child) {
+            if (isset($children[$child['parent_id']])) {
+                $children[$child['parent_id']]['children'][] = &$children[$child['index']];
+            }
+        }
+        $rootNodes = array();
+        foreach ($children as $child) {
+            if ($child['parent_id']==0) {
+                $rootNodes[] = $child;
+            }
+        }
+        return $rootNodes;
+    }
 // if(!array_exists())
 function delete_entries(&$array, $ids_to_delete) {
     $children = array();

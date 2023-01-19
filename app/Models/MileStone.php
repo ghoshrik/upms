@@ -9,26 +9,29 @@ class MileStone extends Model
 {
     use HasFactory;
     protected $table = 'mile_stones';
-    protected $fillable = ['index','parent_id','project_id','m1','m2','m3','m4'];
+    protected $fillable = ['index','parent_id','project_id','milestone_name','weight','unit_type','cost'];
 
+
+    //one level parents
     public function parent()
     {
         return $this->belongsTo(MileStone::class, 'parent_id');
     }
-
-    public function parent_info(){
-        return $this->hasOne(MileStone::class,'id','parent_id');
+    //Recursive parents
+    public function parents(){
+        return $this->belongsTo(MileStone::class,'parent_id')->with('parent');
     }
-
     public function project_list()
     {
-        return $this->belongsTo(MileStone::class,'project_id');
+        return $this->belongsTo(SorMaster::class,'project_id','estimate_id');
     }
-    public function child_cat(){
-        return $this->hasMany(MileStone::class,'parent_id','id');
+    //One level child
+    public function child(){
+        return $this->hasMany(MileStone::class,'parent_id');
     }
+    //Recursive children
     public function children()
     {
-        return $this->hasMany(MileStone::class, 'parent_id');
+        return $this->hasMany(MileStone::class, 'parent_id')->with('children');
     }
 }

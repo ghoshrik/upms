@@ -21,6 +21,7 @@ use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\AccessType\AccessType;
 use App\Http\Livewire\Milestone\MilestoneLists;
 use App\Http\Livewire\MenuManagement\MenuManagement;
+use App\Http\Livewire\Setting\SettingLists;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\VendorRegs\VendorList;
 use App\Models\Menu;
@@ -72,23 +73,24 @@ Route::get('/storage', function () {
     Artisan::call('storage:link');
 });
 
-Route::get('mileDesignTest',[HomeController::class, 'testdesign'])->name('mileDesignTest');
-
-
 
 //UI Pages Routs
 Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
 
         //all Roles access
         Route::group(['middleware'=>['auth','role:Super Admin|State Admin|Department Admin|Office Admin|Estimate Recommender (ER)|Estimate Preparer (EP)|Project Estimate(EP)']],function(){
+
             // Dashboard Routes
             Route::get('dashboard', [HomeController::class, 'index'])->name('dashboard');
             Route::get('user-management',UserManagement::class)->name('user-management');
 
             //only super admin(admin)
-            Route::group(['middleware'=>['auth','role:Super Admin|']],function(){
+            Route::group(['middleware'=>['auth','role:Super Admin']],function(){
                 Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
+                Route::get('settings',SettingLists::class)->name('settings');
+
             });
+
             //access only state admin & super Admin
             Route::group(['middleware'=>['auth','role:State Admin|Super Admin']],function(){
                 Route::get('department', Department::class)->name("department");
@@ -125,6 +127,10 @@ Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
 
 
 
+
+
+
+
 Route::group(['middleware' => 'auth'], function () {
     // // Permission Module
     // Route::get('/role-permission',[RolePermission::class, 'index'])->name('role.permission.list');
@@ -142,14 +148,19 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Route::view('powergrid','powergrid-demo');
     Route::get('milestones',MilestoneLists::class)->name('milestones');
-    Route::gtet('milestones/{Id}',MileStone::class)->name('milestones.{id}');
     Route::get('testsearch',TestSearch::class)->name('testsearch');
-    // Route::get('testmilestone',[HomeController::class,'testMileStone'])->name('testmilestone');
+    Route::get('testmilestone',[HomeController::class,'testMileStone'])->name('testmilestone');
     Route::get('vendors',VendorList::class)->name('vendors');
     Route::get('aafs-project',ProjectList::class)->name('aafs-project');
-
     Route::get('milestonetest',[HomeController::class, 'testdesign'])->name('milestonetest');
 });
+
+
+
+
+
+
+
 
 
 
