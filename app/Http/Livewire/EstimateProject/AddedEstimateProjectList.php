@@ -20,7 +20,7 @@ class AddedEstimateProjectList extends Component
     use Actions;
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
-    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc,$updateDataTableTracker;
+    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker;
 
     public function mount()
     {
@@ -177,7 +177,7 @@ class AddedEstimateProjectList extends Component
             $title = 'Row Deleted Successfully'
         );
     }
-// TODO::export word on project estimate
+    // TODO::export word on project estimate
     public function exportWord()
     {
         $exportDatas = array_values($this->allAddedEstimatesData);
@@ -185,11 +185,13 @@ class AddedEstimateProjectList extends Component
         $date = date('Y-m-d');
         $pw = new \PhpOffice\PhpWord\PhpWord();
         $section = $pw->addSection(
-            array('marginLeft' => 600, 'marginRight' => 200,
-                'marginTop' => 600, 'marginBottom' => 200)
+            array(
+                'marginLeft' => 600, 'marginRight' => 200,
+                'marginTop' => 600, 'marginBottom' => 200
+            )
         );
         $html = "<h1 style='font-size:24px;font-weight:600;text-align: center;'>Project Estimate Preparation Details</h1>";
-        $html .= "<p>Estimate Packege list Are pending</p>";
+        $html .= "<p>Projected Estimate Details List</p>";
         $html .= "<table style='border: 1px solid black;width:auto'><tr>";
         $html .= "<th scope='col' style='text-align: center'>Serial No.</th>";
         $html .= "<th scope='col' style='text-align: center'>Item Number/<br/>Project No(Ver.)</th>";
@@ -201,10 +203,9 @@ class AddedEstimateProjectList extends Component
             $html .= "<tr><td style='text-align: center'>" . chr($export['array_id'] + 64) . "</td>&nbsp;";
             if ($export['sor_item_number']) {
                 $html .= "<td style='text-align: center'>" . getSorItemNumber($export['sor_item_number']) . ' ( ' . $export['version'] . ' )' . "</td>&nbsp;";
-            }elseif($export['estimate_no']){
+            } elseif ($export['estimate_no']) {
                 $html .= "<td style='text-align: center'>" . $export['estimate_no'] . "</td>&nbsp;";
-            }
-            else {
+            } else {
                 $html .= "<td style='text-align: center'>--</td>&nbsp;";
             }
             if ($export['description']) {
@@ -219,7 +220,7 @@ class AddedEstimateProjectList extends Component
                         $html .= "<td style='text-align: center'> " . $export['arrayIndex'] . "</td>&nbsp;";
                     }
                 }
-            }elseif($export['other_name']){
+            } elseif ($export['other_name']) {
                 $html .= "<td style='text-align: center'>" . $export['other_name'] . "</td>&nbsp;";
             } else {
                 // $html .= "<td style='text-align: center'>" . $export['name'] . "</td>&nbsp;";
@@ -230,14 +231,50 @@ class AddedEstimateProjectList extends Component
             $html .= "<td style=''>" . $export['total_amount'] . "</td></tr>";
         }
         $html .= "</table>";
-        // $html .= "<table style='border: 1px solid black;width:auto'><tr>";
-        // $html .= "<th scope='col' style='text-align: center'>Serial No.</th>";
-        // $html .= "<th scope='col' style='text-align: center'>Item Number(Ver.)</th>";
-        // $html .= "<th scope='col' style='text-align: center'>Description</th>";
-        // $html .= "<th scope='col' style='text-align: center'>Quantity</th>";
-        // $html .= "<th scope='col' style='text-align: center'>Unit Price</th>";
-        // $html .= "<th scope='col' style='text-align: center' >Cost</th></tr>";
-        // $html .= "</table>";
+        foreach ($exportDatas as $key => $export) {
+            if ($export['estimate_no']) {
+                $html .= "<p>Estimate Packege ".$export['estimate_no']."</p>";
+                $getEstimateDetails = EstimatePrepare::where('estimate_id', '=', $export['estimate_no'])->get();
+                $html .= "<table style='border: 1px solid black;width:auto'><tr>";
+                $html .= "<th scope='col' style='text-align: center'>Serial No.</th>";
+                $html .= "<th scope='col' style='text-align: center'>Item Number(Ver.)</th>";
+                $html .= "<th scope='col' style='text-align: center'>Description</th>";
+                $html .= "<th scope='col' style='text-align: center'>Quantity</th>";
+                $html .= "<th scope='col' style='text-align: center'>Unit Price</th>";
+                $html .= "<th scope='col' style='text-align: center' >Cost</th></tr>";
+                if (isset($getEstimateDetails)) {
+                    foreach ($getEstimateDetails as $estimateDetails) {
+                        $html .= "<tr><td style='text-align: center'>" . chr($estimateDetails['row_id'] + 64) . "</td>&nbsp;";
+                        if ($estimateDetails['sor_item_number']) {
+                            $html .= "<td style='text-align: center'>" . getSorItemNumber($estimateDetails['sor_item_number']) . ' ( ' . $estimateDetails['version'] . ' )' . "</td>&nbsp;";
+                        } else {
+                            $html .= "<td style='text-align: center'>--</td>&nbsp;";
+                        }
+                        if ($estimateDetails['sor_item_number']) {
+                            $html .= "<td style='text-align: center'>" . getSorItemNumberDesc($estimateDetails['sor_item_number']) . "</td>&nbsp;";
+                        } elseif ($estimateDetails['operation']) {
+                            if ($estimateDetails['operation'] == 'Total') {
+                                $html .= "<td style='text-align: center'> Total of (" . $estimateDetails['row_index'] . " )</td>&nbsp;";
+                            } else {
+                                if ($estimateDetails['comments'] != '') {
+                                    $html .= "<td style='text-align: center'> " . $estimateDetails['row_index'] . " ( " . $estimateDetails['comments'] . " )" . "</td>&nbsp;";
+                                } else {
+                                    $html .= "<td style='text-align: center'> " . $estimateDetails['row_index'] . "</td>&nbsp;";
+                                }
+                            }
+                        } else {
+                            $html .= "<td style='text-align: center'>" . $estimateDetails['other_name'] . "</td>&nbsp;";
+                        }
+                        $html .= "<td style='text-align: center'>" . $estimateDetails['qty'] . "</td>&nbsp;";
+                        $html .= "<td style='text-align: center'>" . $estimateDetails['rate'] . "</td>&nbsp;";
+                        $html .= "<td style=''>" . $estimateDetails['total_amount'] . "</td></tr>";
+                    }
+                }
+
+                $html .= "</table>";
+            }
+        }
+
         \PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
         $pw->save($date . ".docx", "Word2007");
         header("Content-Type: application/octet-stream");
@@ -273,14 +310,13 @@ class AddedEstimateProjectList extends Component
                             'created_by' => Auth::user()->id,
                             'comments' => $value['remarks'],
                         ];
-                        $validateData = Validator::make($insert,[
+                        $validateData = Validator::make($insert, [
                             'estimate_id' => 'required|integer',
                             'dept_id' => 'required|integer',
                             'category_id' => 'required|integer',
                             'row_id' => 'required|integer',
                         ]);
-                        if($validateData->fails())
-                        {
+                        if ($validateData->fails()) {
                             // dd($validateData->messages());
                         }
                         EstimatePrepare::create($insert);
@@ -296,7 +332,7 @@ class AddedEstimateProjectList extends Component
                         $title = 'Project Estimate Created Successfully!!'
                     );
                     $this->resetSession();
-                    $this->updateDataTableTracker = rand(1,1000);
+                    $this->updateDataTableTracker = rand(1, 1000);
                     $this->emit('openForm');
                 }
             } else {
@@ -311,7 +347,7 @@ class AddedEstimateProjectList extends Component
     }
     public function render()
     {
-        $this->updateDataTableTracker = rand(1,1000);
+        $this->updateDataTableTracker = rand(1, 1000);
         $this->arrayRow = count($this->allAddedEstimatesData);
         return view('livewire.estimate-project.added-estimate-project-list');
     }

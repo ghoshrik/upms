@@ -41,7 +41,7 @@ class PendingEstimateForwardDatatable extends DataTableComponent
                 ->sortable()
                 ->format( fn($row) => '<span class="badge bg-primary fs-6">'.$row.'</span>')
                 ->html(),
-            Column::make("Remarks","assigningUserRemarks.comments"),
+            // Column::make("Remarks","assigningUserRemarks.comments"),
             Column::make("Actions", "estimate_id")
             ->format(
                 fn($value, $row, Column $column) => view('livewire.action-components.estimate-forwarder.pending-table-buttons')->withValue($value))

@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class EstimateForwarder extends Component
 {
-    protected $listeners = ['openForm' => 'formOCControl'];
+    protected $listeners = ['openForm' => 'formOCControl','wordDownload'=>'exportAndDownload'];
     public $formOpen = false, $modifyFormOpen = false, $updateDataTableTracker, $selectedEstTab = 1, $counterData = [];
     public function mount()
     {
@@ -49,6 +49,10 @@ class EstimateForwarder extends Component
         //     ->where('status', '=', 3)
         //     ->count();
         // dd($this->counterData);
+    }
+    public function exportAndDownload($value)
+    {
+        exportWord($value);
     }
     public function formOCControl($isModifyFrom = false, $eidtId = null)
     {

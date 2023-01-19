@@ -5,6 +5,7 @@ namespace App\Http\Livewire\EstimateForwarder\Datatable;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Esrecommender;
+use App\Services\CommonFunction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,6 +45,12 @@ class VerifiedEstimateForwardDatatable extends DataTableComponent
     public function view($estimate_id)
     {
         $this->emit('openVerifiedEstimateViewModal', $estimate_id);
+    }
+    public function downloadWord($estimate_id)
+    {
+        CommonFunction::exportWord($estimate_id,Esrecommender::class);
+        // exportWord($estimate_id);
+        // $this->emit('wordDownload',$estimate_id);
     }
     public function builder(): Builder
     {

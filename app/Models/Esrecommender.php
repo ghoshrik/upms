@@ -30,4 +30,8 @@ class Esrecommender extends Model
     {
        return $this->hasOne(SorMaster::class,'estimate_id','estimate_id');
     }
+    public function assigningUserRemarks()
+    {
+        return $this->belongsTo(EstimateUserAssignRecord::class,'verified_by','estimate_user_id');
+    }
 }
