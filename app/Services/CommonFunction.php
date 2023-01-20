@@ -45,8 +45,8 @@ class CommonFunction extends Controller
             } else {
                 $html .= "<td style='text-align: center'>--</td>&nbsp;";
             }
-            if ($export['description']) {
-                $html .= "<td style='text-align: center'>" . getSorItemNumberDesc($export['description']) . "</td>&nbsp;";
+            if ($export['sor_item_number']) {
+                $html .= "<td style='text-align: center'>" . getSorItemNumberDesc($export['sor_item_number']) . "</td>&nbsp;";
             } elseif ($export['operation']) {
                 if ($export['operation'] == 'Total') {
                     $html .= "<td style='text-align: center'> Total of (" . $export['row_index'] . " )</td>&nbsp;";
@@ -117,9 +117,9 @@ class CommonFunction extends Controller
         header("Content-Type: application/octet-stream");
         header("Content-Disposition: attachment;filename=\"convert.docx\"");
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($pw, "Word2007");
-        // dd($objWriter);
         $objWriter->save($date . '.docx');
-        return response()->download($date . '.docx')->deleteFileAfterSend(true);
+        return public_path().'\\'.$date . '.docx';
+        // return response()->download($date.'.docx');
         // $this->reset('exportDatas');
     }
 }

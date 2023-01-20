@@ -48,9 +48,7 @@ class VerifiedEstimateForwardDatatable extends DataTableComponent
     }
     public function downloadWord($estimate_id)
     {
-        CommonFunction::exportWord($estimate_id,Esrecommender::class);
-        // exportWord($estimate_id);
-        // $this->emit('wordDownload',$estimate_id);
+         return response()->download(CommonFunction::exportWord($estimate_id,Esrecommender::class))->deleteFileAfterSend(true);
     }
     public function builder(): Builder
     {

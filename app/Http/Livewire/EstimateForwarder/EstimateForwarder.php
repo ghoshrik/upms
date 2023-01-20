@@ -50,10 +50,7 @@ class EstimateForwarder extends Component
         //     ->count();
         // dd($this->counterData);
     }
-    public function exportAndDownload($value)
-    {
-        exportWord($value);
-    }
+
     public function formOCControl($isModifyFrom = false, $eidtId = null)
     {
         if ($isModifyFrom) {
