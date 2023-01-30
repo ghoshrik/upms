@@ -52,12 +52,13 @@ Route::get('set-role',function(){
 });
 Route::get('test',function(){
     // $menu = Menu::where('title','User Management');
-    // $role=Role::where('name','Office Admin')->first();
+    // $role=Role::where('name','Estimate Forwarder (EF)')->first();
     // $role->syncPermissions(['create user', 'edit user']);
+    // $role->syncPermissions('verify estimateForwarder');
     // dd($role->hasPermissionTo('edit user'));
     // $role->syncPermissions(['create office','edit office','edit user','create user','create SOR','edit SOR','create departmentCategory','edit departmentCategory']);
     // $role->syncPermissions(['create designation','edit designation','edit user','create user','create accessManager','edit accessManager']);
-    // Auth::user()->assignRole('stateAdmin');
+    Auth::user()->assignRole('Estimate Forwarder (EF)');
     // Auth::user()->givePermissionTo(['create estimateRecommender', 'edit estimateRecommender']);
     // Auth::user()->givePermissionTo('create department');
     // $role->revokePermissionTo('edit estimatePrepare');

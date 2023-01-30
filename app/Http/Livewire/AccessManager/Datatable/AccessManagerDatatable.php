@@ -20,8 +20,8 @@ class AccessManagerDatatable extends DataTableComponent
     public function columns(): array
     {
         return [
-            // Column::make("Id", "id")
-            //     ->sortable(),
+            Column::make("Id", "id")
+                ->sortable(),
             Column::make("Department", "getDepartmentName.department_name")
                 ->sortable(),
             Column::make("Designation", "getDesignationName.designation_name")

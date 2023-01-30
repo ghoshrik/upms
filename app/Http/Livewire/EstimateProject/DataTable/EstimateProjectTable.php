@@ -67,7 +67,7 @@ class EstimateProjectTable extends DataTableComponent
             ->where('estimate_user_assign_records.estimate_user_type','=',3)
             ->where('sor_masters.status',1)
             ->where('operation', 'Total')
-            ->where('estimate_prepares.estimate_no','!=', NULL)
+            // ->where('estimate_prepares.estimate_no','!=', NULL)
             ->where('created_by',Auth::user()->id);
         // ->groupBy('estimate_id.estimate_id');
     }

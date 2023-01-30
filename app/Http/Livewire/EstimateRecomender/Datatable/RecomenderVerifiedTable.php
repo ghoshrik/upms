@@ -50,7 +50,7 @@ class RecomenderVerifiedTable extends DataTableComponent
             ->where('operation', 'Total')
             ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type','=',1)
-            ->where('sor_masters.is_verified','=',1);
+            ->where('sor_masters.is_verified','=',0);
             // ->where([['sor_masters.status','=',2],['sor_masters.is_verified','=',1]]);
         // ->groupBy('estimate_id.estimate_id');
     }
