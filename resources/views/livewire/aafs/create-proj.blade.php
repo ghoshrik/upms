@@ -7,8 +7,8 @@
                         placeholder="Enter {{ trans('cruds.aafs_project.fields.proj_id') }}" />
                 </div>
                 <div class="col-md-4 col-lg-4 col-sm-3 mb-2">
-                    <x-input label="{{ trans('cruds.aafs_project.fields.Geo_id') }}" wire:model='geoId'
-                        placeholder="Enter {{ trans('cruds.aafs_project.fields.Geo_id') }}" />
+                    <x-input label="{{ trans('cruds.aafs_project.fields.Govt_id') }}" wire:model='geoId'
+                        placeholder="Enter {{ trans('cruds.aafs_project.fields.Govt_id') }}" />
                 </div>
                 <div class="col-md-4 col-lg-4 col-sm-3 mb-2">
                     <div>

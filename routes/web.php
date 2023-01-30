@@ -19,8 +19,8 @@ use App\Http\Livewire\TestALL\TestSearch;
 use App\Http\Livewire\UserType\UserType;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\AccessType\AccessType;
-use App\Http\Livewire\Milestone\MilestoneLists;
 use App\Http\Livewire\MenuManagement\MenuManagement;
+use App\Http\Livewire\Milestone\Milestones;
 use App\Http\Livewire\Setting\SettingLists;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\VendorRegs\VendorList;
@@ -102,8 +102,6 @@ Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
                 Route::get('sor',Sor::class)->name('sor');
                 Route::get('department-category',DepartmentCategoryList::class)->name('department-category');
 
-                Route::get('milestones',MilestoneLists::class)->name('milestones');
-
             });
 
             //access only office admin & super admin
@@ -147,7 +145,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('access-type',AccessType::class)->name('access-type');
 
     // Route::view('powergrid','powergrid-demo');
-    Route::get('milestones',MilestoneLists::class)->name('milestones');
+    Route::get('milestones',Milestones::class)->name('milestones');
     Route::get('testsearch',TestSearch::class)->name('testsearch');
     Route::get('testmilestone',[HomeController::class,'testMileStone'])->name('testmilestone');
     Route::get('vendors',VendorList::class)->name('vendors');

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMileStonesTable extends Migration
+class CreateMilestonesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,16 @@ class CreateMileStonesTable extends Migration
      */
     public function up()
     {
-        Schema::create('mile_stones', function (Blueprint $table) {
+        Schema::create('milestones', function (Blueprint $table) {
             $table->id();
-            $table->integer('index');
-            $table->integer('parent_id')->nullable();
+            $table->bigInteger('index');
+            $table->unsignedBigInteger('milestone_id')->nullable();
             $table->bigInteger('project_id');
-            // $table->longText('description')->nullable();
             $table->string('milestone_name');
             $table->string('weight');
             $table->string('unit_type');
             $table->string('cost');
-            // $table->foreign('project_id')->references('id')->on('sor_masters')->onDelete('cascade');
+            // $table->foreign('milestone_id')->references('id')->on('milestones');
             $table->timestamps();
         });
     }
@@ -35,6 +34,6 @@ class CreateMileStonesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mile_stones');
+        Schema::dropIfExists('milestones');
     }
 }

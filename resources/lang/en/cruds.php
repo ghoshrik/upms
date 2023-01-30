@@ -269,7 +269,7 @@ return [
             'id'=>'ID',
             'id_helper'=>'#',
             'proj_id'=>'Project ID',
-            'Geo_id'=>'GEO ID',
+            'Govt_id'=>'GOVT. ID',
             'file_upload'=>'project file',
             'file_note'=>'project related file upload here ,file extension must be pdf,jpg,jpeg',
             'action'=>'actions'

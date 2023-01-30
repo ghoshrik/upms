@@ -61,7 +61,7 @@ class CreateMenu extends Component
     public function store()
     {
         $this->newMenuData['permission'] = $this->formatedPermission[$this->newMenuData['permission']] ;
-        dd($this->newMenuData);
+        // dd($this->newMenuData);
         if (Menu::create($this->newMenuData)) {
             $this->notification()->success(
                 $title = 'Success',

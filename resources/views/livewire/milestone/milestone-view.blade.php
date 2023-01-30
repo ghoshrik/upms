@@ -1,5 +1,4 @@
-<x-app-layout :assets="$assets ?? []">
-
+<div>
     <style>
         .treeview .btn-default {
             border-color: #e3e5ef;
@@ -177,63 +176,38 @@
             content: unset;
         }
     </style>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between">
-                        <div class="header-title">
-                            <h4 class="card-title">Milestone</h4>
-                        </div>
-                    </div>
+    <div class="col-md-12 col-lg-12 col-sm-3">
+        <div class="card">
+            <div class="card-header">
+                <a href="{{route('milestones')}}" class="float-right btn btn-soft-danger btn-sm">back</a>
+            </div>
+            <div class="card-body">
+                {{-- {{$milestones}} --}}
+                <div class="treeview">
+                    <ul>
+                        @foreach ($milestones as $milestone)
+                            <li>
+                                <div class="treeview__level" data-level="M">
+                                    <span class="level-title">{{$milestone->milestone_name}}</span>
+                                    <div class="treeview__level-btns">
 
-                    @php
-                    print_r("<pre>");
-                    print_r($milestone);
-                    print_r("</pre>");
-                    @endphp
-                    <div class="card-body">
-                        <div class="treeview">
-                            <ul>
-                                @foreach ($milestone as $stone)
-                                    {{-- {{$stone->project_id}} --}}
-                                    <li>
-                                        <div class="treeview__level" data-level="{{$stone->parent_id}}">
-                                            <span class="level-title">{{$stone->parent_id}}</span>
-                                            <div class="treeview__level-btns">
-                                                <div class="btn btn-default btn-sm level-add"><span
-                                                        class="fa fa-plus"></span></div>
-                                                <div class="btn btn-default btn-sm level-remove"><span
-                                                        class="fa fa-trash text-danger"></span></div>
+                                        <div class="btn btn-default btn-sm level-add">{{$milestone->created_at->format('Y-m-d')}}</div>
+                                        <input type="file" class="btn-sm level-add" placeholder="  file..." />
+                                        <div class="btn btn-default btn-sm level-add">status</div>
 
-                                            </div>
-                                        </div>
-                                        <ul>
-                                             @include('testchild')
-                                        </ul>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    </div>
+                                    </div>
+
+                                </div>
+                                <ul>
+                                    @foreach ($milestone->childrenMilestones as $childMilestone)
+                                        @include('child_milestone',['child_milestone'=>$childMilestone])
+                                    @endforeach
+                                </ul>
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
-    </div>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            var html = $('.copy').css({
-                "display": "none"
-            });
-            $('.add_more').click(function() {
-                $(html).css({
-                    'display': 'block'
-                });
-                $(html).after(html);
-            });
-        });
-    </script>
-</x-app-layout>
+</div>
