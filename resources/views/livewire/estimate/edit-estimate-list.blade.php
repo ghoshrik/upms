@@ -102,7 +102,7 @@
                                             {{ $addedEstimate['rate'] }}
                                         </td>
                                         <td>
-                                            {{ $addedEstimate['total_amount'] }}
+                                            {{ round($addedEstimate['total_amount'],10,2) }}
                                         </td>
                                         <td>
                                             @if ($addedEstimate['row_index'] == null)

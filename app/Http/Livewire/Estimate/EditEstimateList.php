@@ -285,7 +285,6 @@ class EditEstimateList extends Component
             if ($this->allAddedEstimatesData) {
                 if (count(SorMaster::where('estimate_id',$estimateStoreId)->where('status',1)->get()) == 1) {
                     EstimatePrepare::where('estimate_id',$estimateStoreId)->delete();
-                    die;
                     foreach ($this->allAddedEstimatesData as $key => $value) {
                         $insert = [
                             'estimate_id' => $estimateStoreId,

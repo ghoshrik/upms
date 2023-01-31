@@ -119,7 +119,5 @@ class CommonFunction extends Controller
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($pw, "Word2007");
         $objWriter->save($date . '.docx');
         return public_path().'\\'.$date . '.docx';
-        // return response()->download($date.'.docx');
-        // $this->reset('exportDatas');
     }
 }
