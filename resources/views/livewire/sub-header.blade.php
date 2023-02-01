@@ -12,9 +12,10 @@
             <div class="col-md-12">
                 <div class="d-flex justify-content-between align-items-center flex-wrap">
                     <div>
-                        <h1>{{ $titel }}</h1>
+                        <h1>{{ (Route::has('dashboard')? $titel: $titel) }}</h1>
                         <p>{{ $subTitel }}</p>
                     </div>
+                    {{-- @if(Request()->route('dashboard')) --}}
                     <div x-data="{ createButtonOn: @entangle('createButtonOn') }">
                         <button x-show="!createButtonOn" wire:click="$emit('openForm')"
                             class="btn btn-primary rounded-pill " x-transition:enter.duration.600ms
@@ -32,6 +33,7 @@
                         </button>
                     </div>
 
+                    {{-- @endif --}}
                 </div>
             </div>
         </div>

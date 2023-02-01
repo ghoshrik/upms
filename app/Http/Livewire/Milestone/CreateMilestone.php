@@ -93,7 +93,7 @@ class CreateMilestone extends Component
         try{
             foreach($this->mileStoneData as $mileStone)
             {
-                MileStone::create($mileStone);
+                Milestone::create($mileStone);
             }
         }
 

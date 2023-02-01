@@ -13073,7 +13073,7 @@ thead, tbody, tfoot, tr, td, th {
 .sidebar-default .sidebar-list .navbar-nav .nav-item .nav-link:not(.disabled) span {
   flex: 1;
   transition: all 400ms ease;
-  margin-left: 1rem;
+  margin-left: 0.3rem;
   transform: translateX(0);
   opacity: 1;
 }
@@ -13968,6 +13968,15 @@ body.offcanvas-active {
   height: 100%;
   background-color: #ccc;
 }
+.iq-timeline1:before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 100%;
+    background-color: #ccc;
+  }
 
 .iq-timeline {
   margin: 0 0 0 20px;
