@@ -2,35 +2,38 @@
 
 namespace App\Http\Livewire\Estimate;
 
+use App\Models\EstimatePrepare;
 use App\Models\EstimateUserAssignRecord;
-use App\Models\SORMaster as ModelsSORMaster;
+use App\Models\SorMaster;
 use ChrisKonnertz\StringCalc\StringCalc;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
 class EditEstimateList extends Component
 {
     use Actions;
+    protected $listeners = ['updatedValue' => 'updateEstimateData'];
     public $eid = 0;
+    public $updateEstimate_id;
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
-    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc;
+    public $currentEstimateData = [];
+    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc,$addedEstimateUpdateTrack;
 
     public function mount()
     {
-        // $this->setEstimateDataToSession();
-        $this->allAddedEstimatesData = $this->addedEstimateData;
+        $this->setEstimateDataToSession();
     }
     public function resetSession()
     {
-        Session()->forget('addedEstimateData');
+        Session()->forget('editEstimateData');
         $this->reset();
     }
-    //calculate estimate list
-    public function insertAddEstimate($arrayIndex, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks)
+    public function insertAddEstimate($row_index, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks)
     {
-        $this->addedEstimateData['arrayIndex'] = $arrayIndex;
+        $this->addedEstimateData['row_index'] = $row_index;
         $this->addedEstimateData['dept_id'] = $dept_id;
         $this->addedEstimateData['category_id'] = $category_id;
         $this->addedEstimateData['sor_item_number'] = $sor_item_number;
@@ -44,12 +47,13 @@ class EditEstimateList extends Component
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
         $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc');
+        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc','updateEstimate_id');
     }
+    //calculate estimate list
     public function expCalc()
     {
         $result = 0;
-        $tempIndex = strtoupper($this->expression);
+        $row_index = strtoupper($this->expression);
         $stringCalc = new StringCalc();
         try {
             if ($this->expression) {
@@ -59,8 +63,8 @@ class EditEstimateList extends Component
                         $alphabet = strtoupper($info);
                         $alp_id = ord($alphabet) - 64;
                         if ($alp_id <= $count0) {
-                            if ($this->allAddedEstimatesData[$alp_id]['array_id']) {
-                                $this->expression = str_replace($info, $this->allAddedEstimatesData[$alp_id]['total_amount'], $this->expression, $key);
+                            if ($this->allAddedEstimatesData[$alp_id-1]['row_id']) {
+                                $this->expression = str_replace($info, $this->allAddedEstimatesData[$alp_id-1]['total_amount'], $this->expression, $key);
                             }
                         } else {
                             $this->notification()->error(
@@ -74,9 +78,9 @@ class EditEstimateList extends Component
                 }
             }
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddEstimate($tempIndex, '', '', '', '', '', '', '', '', $result, 'Exp Calculoation', '', $this->remarks);
+            $this->insertAddEstimate($row_index, '', '', '', '', '', '', '', '', $result, 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
-            $this->expression = $tempIndex;
+            $this->expression = $row_index;
             $this->dispatchBrowserEvent('alert', [
                 'type' => 'error',
                 'message' => $exception->getMessage()
@@ -97,7 +101,7 @@ class EditEstimateList extends Component
             $result = 0;
             foreach ($this->level as $key => $array) {
                 $this->arrayStore[] = chr($array + 64);
-                $result = $result + $this->allAddedEstimatesData[$array]['total_amount'];
+                $result = $result + $this->allAddedEstimatesData[$array-1]['total_amount'];
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
             $this->insertAddEstimate($this->arrayIndex, '', '', '', '', '', '', '', '', $result, 'Total', '', '');
@@ -108,30 +112,37 @@ class EditEstimateList extends Component
             ]);
         }
     }
+
+
     public function setEstimateDataToSession()
     {
         $this->reset('allAddedEstimatesData');
-        if (Session()->has('addedEstimateData')) {
-            $this->allAddedEstimatesData = Session()->get('addedEstimateData');
+        if (Session()->has('editEstimateData')) {
+            $this->allAddedEstimatesData = Session()->get('editEstimateData');
+        }
+        if ($this->currentEstimateData != null) {
+            $this->allAddedEstimatesData = $this->currentEstimateData;
+            Session()->put('editEstimateData', $this->allAddedEstimatesData);
+            $this->reset('currentEstimateData');
         }
         if ($this->addedEstimateData != null) {
-            $index = count($this->allAddedEstimatesData) + 1;
+            $index = count($this->allAddedEstimatesData) ;
             if (!array_key_exists("operation", $this->addedEstimateData)) {
                 $this->addedEstimateData['operation'] = '';
             }
-            if (!array_key_exists("array_id", $this->addedEstimateData)) {
-                $this->addedEstimateData['array_id'] = $index;
+
+            if (!array_key_exists("row_id", $this->addedEstimateData)) {
+                $this->addedEstimateData['row_id'] = $index+1;
             }
-            if (!array_key_exists("arrayIndex", $this->addedEstimateData)) {
-                $this->addedEstimateData['arrayIndex'] = '';
+
+            if (!array_key_exists("row_index", $this->addedEstimateData)) {
+                $this->addedEstimateData['row_index'] = '';
             }
-            if (!array_key_exists("remarks", $this->addedEstimateData)) {
-                $this->addedEstimateData['remarks'] = '';
+            if (!array_key_exists("comments", $this->addedEstimateData)) {
+                $this->addedEstimateData['comments'] = '';
             }
-            foreach ($this->addedEstimateData as $key => $estimate) {
-                $this->allAddedEstimatesData[$index][$key] = $estimate;
-            }
-            Session()->put('addedEstimateData', $this->allAddedEstimatesData);
+            $this->allAddedEstimatesData[$index] = $this->addedEstimateData;
+            Session()->put('editEstimateData',  $this->allAddedEstimatesData);
             $this->reset('addedEstimateData');
         }
     }
@@ -139,6 +150,7 @@ class EditEstimateList extends Component
     {
         $this->dialog()->confirm([
             'title'       => 'Are you Sure?',
+            'description' => "Delete can't be undo!",
             'icon'        => 'error',
             'accept'      => [
                 'label'  => 'Yes, Delete it',
@@ -153,13 +165,56 @@ class EditEstimateList extends Component
     }
     public function deleteEstimate($value)
     {
-        unset($this->allAddedEstimatesData[$value]);
-        Session()->forget('addedEstimateData');
-        Session()->put('addedEstimateData', $this->allAddedEstimatesData);
+        unset($this->allAddedEstimatesData[$value-1]);
+        Session()->forget('editEstimateData');
+        Session()->put('editEstimateData', $this->allAddedEstimatesData);
+        $this->addedEstimateUpdateTrack = rand(1, 1000);
         $this->level = [];
-        $this->notification()->error(
+        $this->notification()->success(
             $title = 'Row Deleted Successfully'
         );
+    }
+    public function editEstimate($value)
+    {
+        $this->emit('openEditModal', $value,$this->allAddedEstimatesData);
+    }
+    public function updateEstimateData($updateValue,$id)
+    {
+        $this->allAddedEstimatesData[$id-1] = $updateValue;
+        $this->updatedEstimateRecalculate();
+    }
+    public function updatedEstimateRecalculate()
+    {
+        $result = 0;
+        $stringCalc = new StringCalc();
+        foreach ($this->allAddedEstimatesData as $key => $value) {
+            if ($value['row_index'] != '') {
+                try {
+                    if ($value['row_index']) {
+                        foreach (str_split($value['row_index']) as $key => $info) {
+                            if (ctype_alpha($info)) {
+                                $alphabet = strtoupper($info);
+                                $alp_id = ord($alphabet) - 64;
+                                if ($this->allAddedEstimatesData[$alp_id - 1]['total_amount'] != '') {
+                                    $value['row_index'] = str_replace($info, $this->allAddedEstimatesData[$alp_id - 1]['total_amount'], $value['row_index'], $key);
+                                }
+                            } elseif (htmlspecialchars($info) == "%") {
+                                $value['row_index'] = str_replace($info, "/100*", $value['row_index'], $key);
+                            }
+                        }
+                    }
+                    $result = $stringCalc->calculate($value['row_index']);
+                    $this->allAddedEstimatesData[$value['row_id']-1]['total_amount'] = $result;
+                    Session()->forget('editEstimateData');
+                    Session()->put('editEstimateData',  $this->allAddedEstimatesData);
+                } catch (\Exception $exception) {
+                    $this->dispatchBrowserEvent('alert', [
+                        'type' => 'error',
+                        'message' => $exception->getMessage()
+                    ]);
+                }
+            }
+        }
     }
     public function exportWord()
     {
@@ -224,20 +279,19 @@ class EditEstimateList extends Component
         return response()->download($date . '.docx')->deleteFileAfterSend(true);
         $this->reset('exportDatas');
     }
-    public function store()
+    public function store($estimateStoreId)
     {
         try {
             if ($this->allAddedEstimatesData) {
-                dd('test validation');
-                $intId = random_int(100000, 999999);
-                if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
+                if (count(SorMaster::where('estimate_id',$estimateStoreId)->where('status',1)->get()) == 1) {
+                    EstimatePrepare::where('estimate_id',$estimateStoreId)->delete();
                     foreach ($this->allAddedEstimatesData as $key => $value) {
                         $insert = [
-                            'estimate_id' => $intId,
+                            'estimate_id' => $estimateStoreId,
                             'dept_id' => $value['dept_id'],
                             'category_id' => $value['category_id'],
-                            'row_id' => $value['array_id'],
-                            'row_index' => $value['arrayIndex'],
+                            'row_id' => $value['row_id'],
+                            'row_index' => $value['row_index'],
                             'sor_item_number' => $value['sor_item_number'],
                             'item_name' => $value['item_name'],
                             'other_name' => $value['other_name'],
@@ -246,22 +300,50 @@ class EditEstimateList extends Component
                             'total_amount' => $value['total_amount'],
                             'operation' => $value['operation'],
                             'created_by' => Auth::user()->id,
-                            'comments' => $value['remarks'],
+                            'comments' => $value['comments'],
                         ];
                         EstimatePrepare::create($insert);
                     }
-                    $data = [
-                        'estimate_id' => $intId,
-                        'estimate_user_type' => 2,
-                        'estimate_user_id' => Auth::user()->id,
-                    ];
-                    EstimateUserAssignRecord::create($data);
+                    // $data = [
+                    //     'estimate_id' => $intId,
+                    //     'estimate_user_type' => 2,
+                    //     'estimate_user_id' => Auth::user()->id,
+                    // ];
+                    // EstimateUserAssignRecord::create($data);
 
                     $this->notification()->success(
-                        $title = 'Estimate Prepare Created Successfully!!'
+                        $title = 'Estimate Prepare Updated Successfully!!'
                     );
                     $this->resetSession();
                     $this->emit('openForm');
+                }else{
+                    // if(SorMaster::where('estimate_id', $value)->update(['status' => 1])){
+                    //     foreach ($this->allAddedEstimatesData as $key => $value) {
+                    //         $insert = [
+                    //             'estimate_id' => $value,
+                    //             'dept_id' => $value['dept_id'],
+                    //             'category_id' => $value['category_id'],
+                    //             'row_id' => $value['row_id'],
+                    //             'row_index' => $value['row_index'],
+                    //             'sor_item_number' => $value['sor_item_number'],
+                    //             'item_name' => $value['item_name'],
+                    //             'other_name' => $value['other_name'],
+                    //             'qty' => $value['qty'],
+                    //             'rate' => $value['rate'],
+                    //             'total_amount' => $value['total_amount'],
+                    //             'operation' => $value['operation'],
+                    //             'created_by' => Auth::user()->id,
+                    //             'comments' => $value['comments'],
+                    //         ];
+                    //         EstimatePrepare::create($insert);
+                    //     }
+                    //     $this->notification()->success(
+                    //         $title = 'Estimate Prepare Updated Successfully!!'
+                    //     );
+                    // }
+                    $this->notification()->error(
+                        $title = 'please select correct data !!'
+                    );
                 }
             } else {
                 $this->notification()->error(

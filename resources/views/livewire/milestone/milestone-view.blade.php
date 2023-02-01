@@ -182,7 +182,6 @@
                 <a href="{{route('milestones')}}" class="float-right btn btn-soft-danger btn-sm">back</a>
             </div>
             <div class="card-body">
-                {{-- {{$milestones}} --}}
                 <div class="treeview">
                     <ul>
                         @foreach ($milestones as $milestone)

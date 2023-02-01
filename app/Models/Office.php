@@ -20,5 +20,8 @@ class Office extends Model
     {
         return $this->belongsTo(District::class,'dist_code','district_code');
     }
-
+    public function getUrban()
+    {
+        return $this->belongsTo(Urban_body::class,'urban_code','urban_body_code');
+    }
 }

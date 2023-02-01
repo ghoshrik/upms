@@ -34,6 +34,10 @@ class EstimateProject extends Component
     }
     public function dataCounter()
     {
+        $this->counterData['totalDataCount'] = SorMaster::join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','sor_masters.estimate_id')
+        ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
+        ->where('estimate_user_assign_records.estimate_user_type','=',3)
+        ->count();
         $this->counterData['draftDataCount'] = SorMaster::join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','sor_masters.estimate_id')
         ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
         ->where('estimate_user_assign_records.estimate_user_type','=',3)
@@ -42,12 +46,12 @@ class EstimateProject extends Component
         $this->counterData['forwardedDataCount'] =  SorMaster::join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','sor_masters.estimate_id')
         ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
         ->where('estimate_user_assign_records.estimate_user_type','=',3)
-        ->where('sor_masters.status','=',2)
+        ->where('sor_masters.status','!=',1)
         ->count();
         $this->counterData['revertedDataCount'] = SorMaster::join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','sor_masters.estimate_id')
         ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
         ->where('estimate_user_assign_records.estimate_user_type','=',3)
-        ->where('status','=',3)
+        ->where('sor_masters.status','=',3)
         ->count();
     }
     public function formOCControl($isEditFrom = false, $eidtId = null)

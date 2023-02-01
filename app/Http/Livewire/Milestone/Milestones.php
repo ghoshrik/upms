@@ -7,7 +7,6 @@ use Livewire\Component;
 
 class Milestones extends Component
 {
-
     public $formOpen = false,$viewMode = false,$updateDataTableTracker,$milestones,$titel,$subTitel,$createButtonOn;
     protected $listeners = ['openForm' => 'formOCControl','mileStoneRow'=>'milestoneViewController'];
 
@@ -18,12 +17,14 @@ class Milestones extends Component
         $this->emit('CloseButton',(!$this->createButtonOn));
 
         $this->viewMode = !$this->viewMode;
+        // dd(Milestone::where('milestone_id',0)->where('project_id',$value)
+        // ->with('childrenMilestones')
+        // ->get());
         $this->milestones = Milestone::where('milestone_id',0)->where('project_id',$value)
         ->with('childrenMilestones')
         ->get();
-        $this->emit('testTree',$this->milestones);
-
     }
+
     public function formOCControl()
     {
         $this->formOpen = !$this->formOpen;

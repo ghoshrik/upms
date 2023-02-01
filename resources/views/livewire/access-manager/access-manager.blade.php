@@ -13,10 +13,10 @@
             <div class="row">
                 <div class="col-md-12 col-lg-12 col-sm-3">
                     <div class="card">
+                        {{-- <h2>Department & office wise Data Sorting is pending.</h2> --}}
                         <div class="card-body">
                             {{-- TODO:: CHANGE --}}
-                            {{--
-                            <livewire:estimate.estimated-data-table /> --}}
+                            <livewire:access-manager.datatable.access-manager-datatable :wire:key="$updateDataTableTracker" />
                         </div>
                     </div>
                 </div>

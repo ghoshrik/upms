@@ -76,9 +76,16 @@
                 {{-- </div> --}}
             {{-- </div> --}}
             <x-slot name="footer">
-                <div class="flex justify-end gap-x-4">
-                    <x-button secondary label="Close" x-on:click="close" />
-                    {{-- <x-button primary label="I Agree" /> --}}
+                <div class="flex justify-between">
+                    <div class="flex float-left">
+                        <x-button class="btn btn-soft-danger" flat label="Cancel" x-on:click="close" />
+                    </div>
+                    {{-- <div class="flex float-right">
+                        <button wire:click="download({{ $estimate_id }})" class="btn btn-soft-info">
+                            <x-lucide-download class="w-4 h-4 text-gray-500" /> Download
+                        </button>
+                    </div> --}}
+                </div>
                 </div>
             </x-slot>
         </x-card>

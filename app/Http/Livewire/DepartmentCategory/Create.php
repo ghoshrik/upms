@@ -44,6 +44,7 @@ class Create extends Component
 
     public function render()
     {
+        $this->emit('changeTitel', 'Office');
         $assets = ['chart', 'animation'];
         return view('livewire.department-category.create',compact('assets'));
     }

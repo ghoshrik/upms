@@ -22,7 +22,7 @@ class VendorTable extends DataTableComponent
                 ->sortable(),
             Column::make("Comp name", "comp_name")
                 ->sortable(),
-            Column::make("Tin number", "tin_number")
+            Column::make("Tan number", "tin_number")
                 ->sortable(),
             Column::make("Pan number", "pan_number")
                 ->sortable(),

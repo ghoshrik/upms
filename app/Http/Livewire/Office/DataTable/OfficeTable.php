@@ -24,17 +24,17 @@ class OfficeTable extends DataTableComponent
                 ->sortable(),
             Column::make("Department Name", "getDepartmentName.department_name")
                 ->sortable(),
-            Column::make("Dist code", "dist_code")
+            Column::make("Dist Name", "getDistrictName.district_name")
                 ->sortable(),
-            Column::make("In area", "In_area")
+            // Column::make("In area", "In_area")
+            //     ->sortable(),
+            Column::make("Rural block Name", "rural_block_code")
                 ->sortable(),
-            Column::make("Rural block code", "rural_block_code")
+            Column::make("Gp Name", "gp_code")
                 ->sortable(),
-            Column::make("Gp code", "gp_code")
+            Column::make("Urban Name", "getUrban.urban_body_name")
                 ->sortable(),
-            Column::make("Urban code", "urban_code")
-                ->sortable(),
-            Column::make("Ward code", "ward_code")
+            Column::make("Ward Name", "ward_code")
                 ->sortable(),
             Column::make("Office address", "office_address")
                 ->sortable(),

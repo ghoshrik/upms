@@ -19,6 +19,8 @@ use App\Http\Livewire\TestALL\TestSearch;
 use App\Http\Livewire\UserType\UserType;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\AccessType\AccessType;
+use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
+use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
 use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\Milestone\Milestones;
 use App\Http\Livewire\Setting\SettingLists;

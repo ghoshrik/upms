@@ -13,7 +13,6 @@
                             </tr>
                         </thead>
                         <tbody>
-
                             @if (count($mileStone) > 0)
                                 @foreach ($mileStone as $miles)
                                     <tr>

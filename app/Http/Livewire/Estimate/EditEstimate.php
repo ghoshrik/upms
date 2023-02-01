@@ -19,49 +19,51 @@ class EditEstimate extends Component
     // TODO:: remove $showTableOne if not use
     public $kword = null,$selectedSORKey,$selectedCategoryId,$showTableOne=false,$addedEstimateUpdateTrack;
     public $addedEstimate = [];
+    public $currentEstimate = [];
     public $estimate_id;
     protected $listeners = ['editEstimateRow' => 'editEstimate'];
 
     public function editEstimate($estimateId = 0)
     {
        $this->estimate_id = $estimateId;
-       $this->addedEstimate = EstimatePrepare::with('sorNumber')->where('estimate_id',$this->estimate_id)->get();
-       $this->sorMasterDesc = SorMaster::select('sorMasterDesc')->where('estimate_id',$this->estimate_id)->first();
+       $this->currentEstimate = EstimatePrepare::where('estimate_id',$this->estimate_id)->get()->toArray();
+       $sorDesc = SorMaster::select('sorMasterDesc')->where('estimate_id',$this->estimate_id)->first();
+       $this->sorMasterDesc = $sorDesc['sorMasterDesc'];
     }
 
     public function mount()
     {
-        if(Session()->has('addedEstimateData')){
+        if(Session()->has('editEstimateData')){
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
     }
 
     public function changeCategory($value)
     {
-        $this->resetExcept(['addedEstimate','selectedCategoryId','addedEstimateUpdateTrack','sorMasterDesc']);
+        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc','estimate_id']);
         $value = $value['_x_bindings']['value'];
         $this->estimateData['item_name'] = $value;
         if ($this->estimateData['item_name'] == 'SOR') {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
-            $this->estimateData['dept_id'] ='';
-            $this->estimateData['dept_category_id'] ='';
-            $this->estimateData['version'] ='';
-            $this->estimateData['item_number'] ='';
-            $this->estimateData['description'] ='';
-            $this->estimateData['other_name'] ='';
-            $this->estimateData['qty'] ='';
-            $this->estimateData['rate'] ='';
-            $this->estimateData['total_amount'] ='';
-        }else{
-            $this->estimateData['dept_id'] ='';
-            $this->estimateData['dept_category_id'] ='';
-            $this->estimateData['version'] ='';
-            $this->estimateData['item_number'] ='';
-            $this->estimateData['description'] ='';
-            $this->estimateData['other_name'] ='';
-            $this->estimateData['qty'] ='';
-            $this->estimateData['rate'] ='';
-            $this->estimateData['total_amount'] ='';
+            $this->estimateData['dept_id'] = '';
+            $this->estimateData['dept_category_id'] = '';
+            $this->estimateData['version'] = '';
+            $this->estimateData['item_number'] = '';
+            $this->estimateData['description'] = '';
+            $this->estimateData['other_name'] = '';
+            $this->estimateData['qty'] = '';
+            $this->estimateData['rate'] = '';
+            $this->estimateData['total_amount'] = '';
+        } else {
+            $this->estimateData['dept_id'] = '';
+            $this->estimateData['dept_category_id'] = '';
+            $this->estimateData['version'] = '';
+            $this->estimateData['item_number'] = '';
+            $this->estimateData['description'] = '';
+            $this->estimateData['other_name'] = '';
+            $this->estimateData['qty'] = '';
+            $this->estimateData['rate'] = '';
+            $this->estimateData['total_amount'] = '';
         }
     }
     public function getDeptCategory()
@@ -91,7 +93,7 @@ class EditEstimate extends Component
         $this->estimateData['description'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['description'];
         $this->estimateData['qty'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['unit'];
         $this->estimateData['rate'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['cost'];
-        $this->estimateData['item_number'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['Item_details'];
+        $this->estimateData['item_number'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['id'];
         $this->calculateValue();
     }
 
@@ -112,6 +114,7 @@ class EditEstimate extends Component
 
     public function addEstimate()
     {
+        // dd($this->estimateData);
         $this->reset('addedEstimate');
         $this->showTableOne = !$this->showTableOne;
         $this->addedEstimate['dept_id'] =$this->estimateData['dept_id'];
@@ -125,9 +128,9 @@ class EditEstimate extends Component
         $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
         $this->addedEstimate['version'] = $this->estimateData['version'];
         $this->addedEstimateUpdateTrack = rand(1, 1000);
-        // dd($this->sorMasterDesc);
+        // dd($this->addedEstimate);
 
-        $this->resetExcept(['addedEstimate','showTableOne','addedEstimateUpdateTrack','sorMasterDesc']);
+        $this->resetExcept(['addedEstimate','showTableOne','addedEstimateUpdateTrack','sorMasterDesc','estimate_id']);
     }
 
     public function render()

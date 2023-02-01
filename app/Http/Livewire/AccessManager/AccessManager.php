@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class AccessManager extends Component
 {
-    public $formOpen=false;
+    public $formOpen=false,$editFormOpen=false,$updateDataTableTracker;
     protected $listeners = ['openForm' => 'formOCControl'];
     public function formOCControl($isEditFrom = false, $eidtId = null)
     {
@@ -21,9 +21,11 @@ class AccessManager extends Component
         $this->editFormOpen = false;
         $this->formOpen = !$this->formOpen;
         $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
+        $this->updateDataTableTracker = rand(1,1000);
     }
     public function render()
     {
+        $this->updateDataTableTracker = rand(1,1000);
         $this->emit('changeTitel', 'Access Manager');
         $assets = ['chart', 'animation'];
         return view('livewire.access-manager.access-manager',compact('assets'));

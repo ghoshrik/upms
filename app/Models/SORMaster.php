@@ -18,8 +18,16 @@ class SorMaster extends Model
     {
         return $this->belongsTo(EstimatePrepare::class,'estimate_id','estimate_id');
     }
+    public function estimateRecomender()
+    {
+        return $this->belongsTo(Esrecommender::class,'estimate_id','estimate_id');
+    }
     public function userAR()
     {
         return $this->belongsTo(EstimateUserAssignRecord::class,'estimate_id','estimate_id');
+    }
+    public function getEstimateStatus()
+    {
+        return $this->hasOne(EstimateStatus::class,'id','status');
     }
 }

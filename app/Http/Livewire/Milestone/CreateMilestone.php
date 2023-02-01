@@ -109,7 +109,7 @@ class CreateMilestone extends Component
     {
         // $this->validate();
         // die();
-        dd($this->mileStoneData);
+        // dd($this->mileStoneData);
         try{
             foreach($this->mileStoneData as $mileStone)
             {

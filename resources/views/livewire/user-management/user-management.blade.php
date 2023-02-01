@@ -15,9 +15,8 @@
                     <div class="card">
                         <div class="card-body">
                             {{-- TODO:: CHANGE --}}
-                            {{----}}
-                            <livewire:data-table.users-table/>
-                            {{-- <livewire:estimate.estimated-data-table /> --}}
+                            {{-- <h2>Designation wise user data list sorting pending</h2> --}}
+                            <livewire:user-management.datatable.users-datatable />
                         </div>
                     </div>
                 </div>

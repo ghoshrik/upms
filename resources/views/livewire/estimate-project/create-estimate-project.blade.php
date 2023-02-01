@@ -197,11 +197,11 @@
                                             </x-select>
                                         </div>
                                     </div>
-                                    @isset($fatchDropdownData['estimateDetails'])
+                                    {{-- @isset($fatchDropdownData['estimateDetails']) --}}
                                         <div class="col">
                                             <div class="form-group">
                                                 <x-textarea rows="2" wire:key="other_rate"
-                                                    wire:model.defer="estimateData.estimate_desc"
+                                                    wire:model.defer="estimateData.description"
                                                     wire:keyup="calculateValue"
                                                     label="Estimate {{ trans('cruds.estimate.fields.description') }}"
                                                     placeholder="Estimate {{ trans('cruds.estimate.fields.description') }}"
@@ -216,7 +216,7 @@
                                                     placeholder="{{ trans('cruds.estimate.fields.estimate_total') }}" />
                                             </div>
                                         </div>
-                                    @endisset
+                                    {{-- @endisset --}}
 
                                 </div>
                             @endif

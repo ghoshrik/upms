@@ -3,11 +3,15 @@
         <x-slot name='form'>
             <div class="row">
                 <div class="col-md-4 col-lg-4 col-sm-3 mb-2">
-                    <x-input label="{{ trans('cruds.aafs_project.fields.proj_id') }}" wire:model='projId'
-                        placeholder="Enter {{ trans('cruds.aafs_project.fields.proj_id') }}" />
+                        <x-select label="Select {{ trans('cruds.aafs_project.fields.proj_id') }}" placeholder="Select one {{ trans('cruds.aafs_project.fields.proj_id') }}" wire:model.defer="projectId">
+
+                        @foreach ($projects_number as $projects)
+                            <x-select.option label="{{ $projects['estimate_id'] }}" value="{{ $projects['estimate_id'] }}" />
+                        @endforeach
+                    </x-select>
                 </div>
                 <div class="col-md-4 col-lg-4 col-sm-3 mb-2">
-                    <x-input label="{{ trans('cruds.aafs_project.fields.Govt_id') }}" wire:model='geoId'
+                    <x-input label="{{ trans('cruds.aafs_project.fields.Govt_id') }}" wire:model='goId'
                         placeholder="Enter {{ trans('cruds.aafs_project.fields.Govt_id') }}" />
                 </div>
                 <div class="col-md-4 col-lg-4 col-sm-3 mb-2">

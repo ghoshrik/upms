@@ -287,4 +287,15 @@ return [
             'actions'=>'Action',
         ],
     ],
+    'permissions'=>[
+        'title'=>'Permissions',
+        'title_singular'=>'Permission',
+        'create_mgs'=>'New permission created!',
+        'fields'=>[
+            'id'=>'ID',
+            'id_helper'=>'#',
+            'permission_name'=>'Permission Name',
+            'actions'=>'Action',
+        ],
+    ],
 ];

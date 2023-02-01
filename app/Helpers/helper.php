@@ -1,13 +1,11 @@
 <?php
 
+use App\Models\Esrecommender;
+use App\Models\EstimatePrepare;
 use App\Models\SOR;
 use App\Models\SorMaster;
 use App\Models\UnitType;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
-use Mockery\Matcher\Type;
 
 function removeSession($session)
 {
@@ -133,97 +131,124 @@ function getSorItemNumberDesc($sor_item_number)
     }
     return $sorItemDesc['description'];
 }
+// download word file
+function exportWord($estimate_id)
+    {
+        if(Auth::user()->user_type == 1)
+        {
+            $exportDatas = Esrecommender::where('estimate_id','=',$estimate_id)->get();
+        }elseif(Auth::user()->user_type == 4)
+        {
+            $exportDatas = Esrecommender::where('estimate_id','=',$estimate_id)->get();
+        }
+        else{
+            $exportDatas = EstimatePrepare::where('estimate_id','=',$estimate_id)->get();
+        }
+        // $exportDatas = array_values($exportDatas);
+        // dd($exportDatas);
+        $date = date('Y-m-d');
+        $pw = new \PhpOffice\PhpWord\PhpWord();
+        $section = $pw->addSection(
+            array(
+                'marginLeft' => 600, 'marginRight' => 200,
+                'marginTop' => 600, 'marginBottom' => 200
+            )
+        );
+        $html = "<h1 style='font-size:24px;font-weight:600;text-align: center;'>Project Estimate Preparation Details</h1>";
+        $html .= "<p>Projected Estimate Details List</p>";
+        $html .= "<table style='border: 1px solid black;width:auto'><tr>";
+        $html .= "<th scope='col' style='text-align: center'>Serial No.</th>";
+        $html .= "<th scope='col' style='text-align: center'>Item Number/<br/>Project No(Ver.)</th>";
+        $html .= "<th scope='col' style='text-align: center'>Description</th>";
+        $html .= "<th scope='col' style='text-align: center'>Quantity</th>";
+        $html .= "<th scope='col' style='text-align: center'>Unit Price</th>";
+        $html .= "<th scope='col' style='text-align: center' >Cost</th></tr>";
+        foreach ($exportDatas as $key => $export) {
+            $html .= "<tr><td style='text-align: center'>" . chr($export['row_id'] + 64) . "</td>&nbsp;";
+            if ($export['sor_item_number']) {
+                $html .= "<td style='text-align: center'>" . getSorItemNumber($export['sor_item_number']) . ' ( ' . $export['version'] . ' )' . "</td>&nbsp;";
+            } elseif ($export['estimate_no']) {
+                $html .= "<td style='text-align: center'>" . $export['estimate_no'] . "</td>&nbsp;";
+            } else {
+                $html .= "<td style='text-align: center'>--</td>&nbsp;";
+            }
+            if ($export['description']) {
+                $html .= "<td style='text-align: center'>" . getSorItemNumberDesc($export['description']) . "</td>&nbsp;";
+            } elseif ($export['operation']) {
+                if ($export['operation'] == 'Total') {
+                    $html .= "<td style='text-align: center'> Total of (" . $export['row_index'] . " )</td>&nbsp;";
+                } else {
+                    if ($export['remarks'] != '') {
+                        $html .= "<td style='text-align: center'> " . $export['row_index'] . " ( " . $export['remarks'] . " )" . "</td>&nbsp;";
+                    } else {
+                        $html .= "<td style='text-align: center'> " . $export['row_index'] . "</td>&nbsp;";
+                    }
+                }
+            } elseif ($export['other_name']) {
+                $html .= "<td style='text-align: center'>" . $export['other_name'] . "</td>&nbsp;";
+            } else {
+                // $html .= "<td style='text-align: center'>" . $export['name'] . "</td>&nbsp;";
+                $html .= "<td style='text-align: center'>--</td>&nbsp;";
+            }
+            $html .= "<td style='text-align: center'>" . $export['qty'] . "</td>&nbsp;";
+            $html .= "<td style='text-align: center'>" . $export['rate'] . "</td>&nbsp;";
+            $html .= "<td style=''>" . $export['total_amount'] . "</td></tr>";
+        }
+        $html .= "</table>";
+        foreach ($exportDatas as $key => $export) {
+            if ($export['estimate_no']) {
+                $html .= "<p>Estimate Packege ".$export['estimate_no']."</p>";
+                $getEstimateDetails = EstimatePrepare::where('estimate_id', '=', $export['estimate_no'])->get();
+                $html .= "<table style='border: 1px solid black;width:auto'><tr>";
+                $html .= "<th scope='col' style='text-align: center'>Serial No.</th>";
+                $html .= "<th scope='col' style='text-align: center'>Item Number(Ver.)</th>";
+                $html .= "<th scope='col' style='text-align: center'>Description</th>";
+                $html .= "<th scope='col' style='text-align: center'>Quantity</th>";
+                $html .= "<th scope='col' style='text-align: center'>Unit Price</th>";
+                $html .= "<th scope='col' style='text-align: center' >Cost</th></tr>";
+                if (isset($getEstimateDetails)) {
+                    foreach ($getEstimateDetails as $estimateDetails) {
+                        $html .= "<tr><td style='text-align: center'>" . chr($estimateDetails['row_id'] + 64) . "</td>&nbsp;";
+                        if ($estimateDetails['sor_item_number']) {
+                            $html .= "<td style='text-align: center'>" . getSorItemNumber($estimateDetails['sor_item_number']) . ' ( ' . $estimateDetails['version'] . ' )' . "</td>&nbsp;";
+                        } else {
+                            $html .= "<td style='text-align: center'>--</td>&nbsp;";
+                        }
+                        if ($estimateDetails['sor_item_number']) {
+                            $html .= "<td style='text-align: center'>" . getSorItemNumberDesc($estimateDetails['sor_item_number']) . "</td>&nbsp;";
+                        } elseif ($estimateDetails['operation']) {
+                            if ($estimateDetails['operation'] == 'Total') {
+                                $html .= "<td style='text-align: center'> Total of (" . $estimateDetails['row_index'] . " )</td>&nbsp;";
+                            } else {
+                                if ($estimateDetails['comments'] != '') {
+                                    $html .= "<td style='text-align: center'> " . $estimateDetails['row_index'] . " ( " . $estimateDetails['comments'] . " )" . "</td>&nbsp;";
+                                } else {
+                                    $html .= "<td style='text-align: center'> " . $estimateDetails['row_index'] . "</td>&nbsp;";
+                                }
+                            }
+                        } else {
+                            $html .= "<td style='text-align: center'>" . $estimateDetails['other_name'] . "</td>&nbsp;";
+                        }
+                        $html .= "<td style='text-align: center'>" . $estimateDetails['qty'] . "</td>&nbsp;";
+                        $html .= "<td style='text-align: center'>" . $estimateDetails['rate'] . "</td>&nbsp;";
+                        $html .= "<td style=''>" . $estimateDetails['total_amount'] . "</td></tr>";
+                    }
+                }
 
+                $html .= "</table>";
+            }
+        }
 
-$Type;
-// function printTreeHTML($tree,$parent = 0)
-// {
-//     global $Type;
-//     // $type = "a";
-//     echo $Type;
-//     $unitDtls = UnitType::where('status',1)->get();
-//     foreach ($tree as $key => $node) {
-//         // echo $Type;
-//         // echo $node["index"];
-//         // if($node['parent_id'] == 0){
-//         //     $parent = 0;
-//         //     $parent = $key++;
-//         //     echo $parent;
-//         //     $parent = 0;
-//         // }
-//         // else{
-//         //     $parent=$parent+1;
-//         //     echo $key.$parent;
-//         // }
-//         echo "<li class='tree'>";
-//             // echo "$key";
-//             echo "<div class='row mutipal-add-row'>
-//                     <div class='col-md-3 col-lg-3 col-sm-3 ml-2 mt-1 mb-1'>";
-//                         echo '<input type="text" class="form-control" placeholder="milestone name" wire:model="arrayData.'.$node["index"].'.mStone_name" wire:key="arrayData.'.$node["index"].'.mStone_name"/>';
-//                             // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_1'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
-//                 echo "</div>";
-
-//                     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
-//                         echo '<input type="text" class="form-control" placeholder="weightage" wire:model="arrayData.'.$node["index"].'.mVal" wire:key="arrayData.'.$node["index"].'.mVal"/>';
-//                             // echo '<input type="text" class="form-control" placeholder="unit" wire:model="arrayData.'.$node["index"].'.mUnit" wire:key="arrayData.'.$node["index"].'.mUnit" />';
-//                                 // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_3'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
-//                     echo "</div>";
-
-//                     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
-//                         echo '<select class="form-control" wire:model="arrayData.'.$node["index"].'.mUnit" wire:key="arrayData.'.$node["index"].'.mUnit" wire:click="chMileType($event.target.value)"><option value="">-- Select Unit --</option>';
-//                             if(count($unitDtls)>0){
-//                                 foreach($unitDtls as $units){
-//                                     // echo '<input type="text" class="form-control" placeholder="value" wire:model="arrayData.'.$node["index"].'.mVal" wire:key="arrayData.'.$node["index"].'.mVal"/>';
-//                                         echo '<option value='.$units['type'].'>'.$units['type'].'</option>';
-//                                     }
-//                                 }
-//                             echo '</select>';
-//                                 // echo  "<x-input label='milestone_1' wire:key='inputsData.". $node['index'] .".milestone_2'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
-//                         echo "</div>";
-
-
-//                         // if($Type=="cm"){
-//                         //     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'".$Type ? 'd-block':'d-none'.">";
-//                         //     echo $Type;
-//                         //     echo "</div>";
-//                         // }
-//                     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
-//                         echo '<input type="text" class="form-control" placeholder="cost" wire:model="arrayData.'.$node["index"].'.mCost" wire:key="arrayData.'.$node["index"].'.mCost" />';
-//                             // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_4'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
-//                     echo "</div>";
-
-//                     echo "<div class='col-md-2 col-lg-1 col-sm-3 ml-2 mt-1 mb-1'>";
-//                         // echo "<div class='row'>";
-//                         echo "<div class='d-flex'>";
-//                             echo "<button type='button' wire:click='addMilestone(" . $node['index'] . ")' class='d-inline btn btn-soft-success rounded-pill'>
-//                             <span class='btn-inner'>
-//                                 <svg class='w-4 h-4 text-gray-500' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
-//                                     <line x1='12' y1='5' x2='12' y2='19'></line>
-//                                     <line x1='5' y1='12' x2='19' y2='12'></line>
-//                                 </svg>
-//                             </span>
-//                         </button>&nbsp;&nbsp;&nbsp;";
-//                         echo "<button type='button' wire:click='removeMilestone(" . $node['parent_id'] . ")' class='d-inline btn btn-soft-danger rounded-pill'>
-//                             <span class='btn-inner'>
-//                                 <svg class='w-4 h-4 text-gray-500' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
-//                                     <line x1='18' y1='6' x2='6' y2='18'></line>
-//                                     <line x1='6' y1='6' x2='18' y2='18'></line>
-//                                 </svg>
-//                             </span>
-//                         </button>";
-//                         echo "</div>";
-//                         // echo "</div>";
-//                     echo "</div>";
-//                 echo "</div>";
-//         if (!empty($node['children'])) {
-//             echo "<ul class='tree'>";
-//             printTreeHTML($node['children'],$parent);
-//             echo "</ul>";
-//         }
-//         echo "</li>";
-//     }
-// }
-
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
+        $pw->save($date . ".docx", "Word2007");
+        header("Content-Type: application/octet-stream");
+        header("Content-Disposition: attachment;filename=\"convert.docx\"");
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($pw, "Word2007");
+        dd($objWriter);
+        $objWriter->save($date . '.docx');
+        return response()->download($date . '.docx')->deleteFileAfterSend(true);
+        // $this->reset('exportDatas');
+    }
 function printTreeHTML($tree,$parent = 0)
 {
     global $Type;
@@ -301,6 +326,7 @@ function printTreeHTML($tree,$parent = 0)
         echo "</li>";
     }
 }
+
 
 function buildTree($nodes)
 {

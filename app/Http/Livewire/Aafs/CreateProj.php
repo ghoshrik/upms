@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Aafs;
 
+use App\Models\SorMaster;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -9,7 +10,12 @@ use Livewire\WithFileUploads;
 class CreateProj extends Component
 {
     use WithFileUploads;
-    public $photo,$projId,$geoId;
+    public $photo,$projects_number = [],$goId,$projectId;
+
+    public function mount()
+    {
+        $this->projects_number = SorMaster::where('is_verified','=',1)->get();
+    }
     public function store()
     {
         $this->validate([
