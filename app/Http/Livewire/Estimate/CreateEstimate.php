@@ -144,15 +144,25 @@ class CreateEstimate extends Component
             {
                 $this->searchDtaCount = (count($this->fatchDropdownData['items_number'])>0);
                 $this->searchStyle= 'block';
+
             }
             else
             {
+                $this->estimateData['description'] = '';
+                $this->estimateData['qty'] = '';
+                $this->estimateData['rate'] ='';
+                $this->searchStyle= 'none';
                 $this->notification()->error(
                     $title = 'Not data found !!'.$this->selectedSORKey
                 );
+
             }
         }
         else{
+            $this->estimateData['description'] = '';
+                $this->estimateData['qty'] = '';
+                $this->estimateData['rate'] ='';
+                $this->searchStyle= 'none';
             $this->notification()->error(
                 $title = 'Not found !!'.$this->selectedSORKey
             );
@@ -185,14 +195,23 @@ class CreateEstimate extends Component
         // dd($this->searchResData);
         $this->searchDtaCount = count($this->searchResData)>0;
         $this->searchStyle = 'none';
-        foreach($this->searchResData as $list)
+        if(count($this->searchResData)>0)
         {
-            $this->estimateData['description'] = $list['description'];
-            $this->estimateData['qty'] = $list['unit'];
-            $this->estimateData['rate'] = $list['cost'];
-            $this->selectedSORKey = $list['Item_details'];
+            foreach($this->searchResData as $list)
+            {
+                $this->estimateData['description'] = $list['description'];
+                $this->estimateData['qty'] = $list['unit'];
+                $this->estimateData['rate'] = $list['cost'];
+                $this->selectedSORKey = $list['Item_details'];
+            }
+            $this->calculateValue();
+        }else
+        {
+            $this->estimateData['description'] = '';
+            $this->estimateData['qty'] = '';
+            $this->estimateData['rate'] ='';
         }
-        $this->calculateValue();
+
     }
     public function addEstimate()
     {
