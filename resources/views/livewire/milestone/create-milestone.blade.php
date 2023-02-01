@@ -82,18 +82,21 @@
             <div class="row">
                 <div class="col-md-4 col-lg-4 col-sm-3">
                     {{-- <x-input label="Project Id" wire:model="projectId" placeholder="Enter Project No." /> --}}
-                    <x-select label="Select Project Id" placeholder="Select one Projects" wire:model.defer="projectId"
-                    x-on:select="$wire.changeproject()">
+                    <x-select label="{{ trans('cruds.milestone.fields.project_num') }}"
+                    placeholder="Select {{ trans('cruds.milestone.fields.project_num') }}"
+                    wire:model.defer="projectId" x-on:select="$wire.changeProject()">
 
                         @foreach ($projects_number as $projects)
                             <x-select.option label="{{ $projects['estimate_id'] }}" value="{{ $projects['estimate_id'] }}" />
                         @endforeach
                     </x-select>
                 </div>
+                @if($this->description)
                 <div class="col-md-6 col-lg-6 col-sm-3">
-                    <x-textarea wire:model="description" rows="2" label="description"
-                        placeholder="Your description" disabled />
+                    <x-textarea wire:model="description" rows="2" label="{{ trans('cruds.milestone.fields.desc') }}"
+                    placeholder="{{ trans('cruds.milestone.fields.desc') }}" readonly />
                 </div>
+               @endif
                 <div class="col-md-2 col-lg-2 col-sm-3">
                     <button type="button" wire:click="addMilestone(0)"
                         class="btn btn-soft-success rounded-pill mt-3">Add</button>

@@ -122,25 +122,44 @@ class CreateEstimate extends Component
             ->where('dept_category_id', $this->estimateData['dept_category_id'])->groupBy('version')
             ->get();
     }
-
-    public function autoSearch($keyword)
+    public $searchDtaCount,$searchStyle,$searchResData;
+    public function autoSearch()
     {
-        $keyword = $keyword['_x_bindings']['value'];
-        $this->kword = $keyword;
-        $this->fatchDropdownData['items_number'] = SOR::where('department_id', $this->estimateData['dept_id'])
+        // $keyword = $keyword['_x_bindings']['value'];
+        // $this->kword = $keyword;
+        // $this->fatchDropdownData['items_number'] = SOR::where('department_id', $this->estimateData['dept_id'])
+        //     ->where('dept_category_id', $this->estimateData['dept_category_id'])
+        //     ->where('version', $this->estimateData['version'])
+        //     ->where('Item_details', 'like', '%' . $keyword . '%')->get();
+
+        // dd("sdfsdf");
+        if($this->selectedSORKey)
+        {
+            $this->fatchDropdownData['items_number'] = SOR::select('Item_details','id')
+            ->where('department_id', $this->estimateData['dept_id'])
             ->where('dept_category_id', $this->estimateData['dept_category_id'])
             ->where('version', $this->estimateData['version'])
-            ->where('Item_details', 'like', '%' . $keyword . '%')->get();
+            ->where('Item_details', 'like', $this->selectedSORKey.'%')->get();
+            if(count($this->fatchDropdownData['items_number'])>0)
+            {
+                $this->searchDtaCount = (count($this->fatchDropdownData['items_number'])>0);
+                $this->searchStyle= 'block';
+            }
+            else
+            {
+                $this->notification()->error(
+                    $title = 'Not data found !!'.$this->selectedSORKey
+                );
+            }
+        }
+        else{
+            $this->notification()->error(
+                $title = 'Not found !!'.$this->selectedSORKey
+            );
+        }
     }
 
-    public function getItemDetails()
-    {
-        $this->estimateData['description'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['description'];
-        $this->estimateData['qty'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['unit'];
-        $this->estimateData['rate'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['cost'];
-        $this->estimateData['item_number'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['id'];
-        $this->calculateValue();
-    }
+
 
     public function calculateValue()
     {
@@ -154,7 +173,27 @@ class CreateEstimate extends Component
             }
         }
     }
+    public function getItemDetails($id)
+    {
+        // $this->estimateData['description'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['description'];
+        // $this->estimateData['qty'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['unit'];
+        // $this->estimateData['rate'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['cost'];
+        // $this->estimateData['item_number'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['id'];
+        // $this->calculateValue();
 
+        $this->searchResData = SOR::where('id',$id)->get();
+        // dd($this->searchResData);
+        $this->searchDtaCount = count($this->searchResData)>0;
+        $this->searchStyle = 'none';
+        foreach($this->searchResData as $list)
+        {
+            $this->estimateData['description'] = $list['description'];
+            $this->estimateData['qty'] = $list['unit'];
+            $this->estimateData['rate'] = $list['cost'];
+            $this->selectedSORKey = $list['Item_details'];
+        }
+        $this->calculateValue();
+    }
     public function addEstimate()
     {
         $validatee = $this->validate();

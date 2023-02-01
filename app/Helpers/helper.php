@@ -273,41 +273,31 @@ function printTreeHTML($tree,$parent = 0)
             // echo "$key";
             echo "<div class='row mutipal-add-row'>
                     <div class='col-md-3 col-lg-3 col-sm-3 ml-2 mt-1 mb-1'>";
-                        echo '<input type="text" class="form-control" placeholder="milestone name" wire:model="mileStoneData.'.$nodeModelIndex.'.m1" wire:key="mileStoneData.'.$nodeModelIndex.'.m1"/>';
-                            // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_1'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
+                        echo '<input type="text" class="form-control" placeholder="milestone name" wire:model="mileStoneData.'.$nodeModelIndex.'.milestone_name" wire:key="mileStoneData.'.$nodeModelIndex.'.milestone_name"/>';
                 echo "</div>";
-
                     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
-                        echo '<input type="text" class="form-control" placeholder="weightage" wire:model="mileStoneData.'.$nodeModelIndex.'.m2" wire:key="mileStoneData.'.$nodeModelIndex.'.m2"/>';
-                            // echo '<input type="text" class="form-control" placeholder="unit" wire:model="mileStoneData.'.$node["index"].'.mUnit" wire:key="mileStoneData.'.$node["index"].'.mUnit" />';
-                                // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_3'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
+                        echo '<input type="text" class="form-control" placeholder="weightage" wire:model="mileStoneData.'.$nodeModelIndex.'.weight" wire:key="mileStoneData.'.$nodeModelIndex.'.weight"/>';
                     echo "</div>";
-
                     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
-                        echo '<select class="form-control" wire:model="mileStoneData.'.$nodeModelIndex.'.m3" wire:key="mileStoneData.'.$nodeModelIndex.'.m3" wire:click="chMileType($event.target.value)"><option value="">-- Select Unit --</option>';
-                            if(count($unitDtls)>0){
-                                foreach($unitDtls as $units){
-                                    // echo '<input type="text" class="form-control" placeholder="value" wire:model="mileStoneData.'.$node["index"].'.mVal" wire:key="mileStoneData.'.$node["index"].'.mVal"/>';
-                                        echo '<option value='.$units['type'].'>'.$units['type'].'</option>';
-                                    }
+                        echo '<select class="form-control" wire:model="mileStoneData.'.$nodeModelIndex.'.unit_type" wire:key="mileStoneData.'.$nodeModelIndex.'.unit_type" wire:click="chMileType($event.target.value)"><option value="">-- Select Unit --</option>';
+                            if(count($unitDtls)>0)
+                            {
+                                foreach($unitDtls as $units)
+                                {
+                                    echo '<option value='.$units['type'].'>'.$units['type'].'</option>';
                                 }
+                            }
                             echo '</select>';
-                                // echo  "<x-input label='milestone_1' wire:key='inputsData.". $node['index'] .".milestone_2'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
                         echo "</div>";
-
-
                         // if($Type=="cm"){
                         //     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'".$Type ? 'd-block':'d-none'.">";
                         //     echo $Type;
                         //     echo "</div>";
                         // }
                     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
-                        echo '<input type="text" class="form-control" placeholder="cost" wire:model="mileStoneData.'.$nodeModelIndex.'.m4" wire:key="mileStoneData.'.$nodeModelIndex.'.m4" />';
-                            // echo  "<x-input label='milestone_1' wire:key='inputsData." . $node['index'] . ".milestone_4'  placeholder='your Milestone_.$key" . $node['index'] . "' />";
+                        echo '<input type="text" class="form-control" placeholder="cost" wire:model="mileStoneData.'.$nodeModelIndex.'.cost" wire:key="mileStoneData.'.$nodeModelIndex.'.cost" />';
                     echo "</div>";
-
                     echo "<div class='col-md-2 col-lg-1 col-sm-3 ml-2 mt-1 mb-1'>";
-                        // echo "<div class='row'>";
                         echo "<div class='d-flex'>";
                             echo "<button type='button' wire:click='addMilestone(" . $node['index'] . ")' class='d-inline btn btn-soft-success rounded-pill'>
                             <span class='btn-inner'>
@@ -317,16 +307,15 @@ function printTreeHTML($tree,$parent = 0)
                                 </svg>
                             </span>
                         </button>&nbsp;&nbsp;&nbsp;";
-                        // echo "<button type='button' wire:click='removeMilestone(" . $node['parent_id'] . ")' class='d-inline btn btn-soft-danger rounded-pill'>
-                        //     <span class='btn-inner'>
-                        //         <svg class='w-4 h-4 text-gray-500' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
-                        //             <line x1='18' y1='6' x2='6' y2='18'></line>
-                        //             <line x1='6' y1='6' x2='18' y2='18'></line>
-                        //         </svg>
-                        //     </span>
-                        // </button>";
+                        echo "<button type='button' wire:click='removeMilestone(".$node['index'].")' class='d-inline btn btn-soft-danger rounded-pill'>
+                            <span class='btn-inner'>
+                                <svg class='w-4 h-4 text-gray-500' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+                                    <line x1='18' y1='6' x2='6' y2='18'></line>
+                                    <line x1='6' y1='6' x2='18' y2='18'></line>
+                                </svg>
+                            </span>
+                        </button>";
                         echo "</div>";
-                        // echo "</div>";
                     echo "</div>";
                 echo "</div>";
         if (!empty($node['children'])) {
@@ -336,4 +325,27 @@ function printTreeHTML($tree,$parent = 0)
         }
         echo "</li>";
     }
+}
+
+
+function buildTree($nodes)
+{
+    $children = array();
+
+    foreach ($nodes as $node) {
+        $children[$node['index']] = $node;
+        $children[$node['index']]['children'] = array();
+    }
+    foreach ($children as $child) {
+        if (isset($children[$child['parent_id']])) {
+            $children[$child['parent_id']]['children'][] = &$children[$child['index']];
+        }
+    }
+    $rootNodes = array();
+    foreach ($children as $child) {
+        if ($child['parent_id']==0) {
+            $rootNodes[] = $child;
+        }
+    }
+    return $rootNodes;
 }

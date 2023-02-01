@@ -22,8 +22,8 @@ use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
 use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\VendorRegs\VendorList;
-use App\Http\Livewire\Milestone\MilestoneLists;
 use App\Http\Livewire\Aafs\ProjectList;
+use App\Http\Livewire\Milestone\Milestones;
 use App\Models\Menu;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
@@ -58,7 +58,7 @@ Route::get('test',function(){
     // dd($role->hasPermissionTo('edit user'));
     // $role->syncPermissions(['create office','edit office','edit user','create user','create SOR','edit SOR','create departmentCategory','edit departmentCategory']);
     // $role->syncPermissions(['create designation','edit designation','edit user','create user','create accessManager','edit accessManager']);
-    Auth::user()->assignRole('Estimate Forwarder (EF)');
+    // Auth::user()->assignRole('Estimate Forwarder (EF)');
     // Auth::user()->givePermissionTo(['create estimateRecommender', 'edit estimateRecommender']);
     // Auth::user()->givePermissionTo('create department');
     // $role->revokePermissionTo('edit estimatePrepare');
@@ -122,8 +122,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
     Route::get('estimate-recommender',EstimateRecomender::class)->name('estimate-recommender');
     Route::get('estimate-forwarder',EstimateForwarder::class)->name('estimate-forwarder');
-    Route::get('milestones',MilestoneLists::class)->name('milestones');
     Route::get('vendors',VendorList::class)->name('vendors');
+    Route::get('milestones',Milestones::class)->name('milestones');
     Route::get('aafs-project',ProjectList::class)->name('aafs-project');
     Route::view('/powergrid', 'powergrid-demo');
 

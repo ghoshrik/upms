@@ -77,8 +77,8 @@
                                         </div>
                                     </div>
                                     <div class="col">
-                                        <div class="form-group">
-                                            <x-select wire:key="sor"
+                                        <div class="form-group search-sor">
+                                            {{-- <x-select wire:key="sor"
                                                 label="Select {{ trans('cruds.estimate.fields.sor') }}"
                                                 placeholder="Select {{ trans('cruds.estimate.fields.sor') }}"
                                                 wire:model.defer="selectedSORKey" x-on:select="$wire.getItemDetails()"
@@ -89,11 +89,36 @@
                                                             value="{{ $key }}" />
                                                     @endforeach
                                                 @endisset
-                                            </x-select>
+                                            </x-select> --}}
+                                            <div class="dropdown">
+                                                <x-input wire:key="sor"
+                                                    label="{{ trans('cruds.estimate.fields.sor') }}"
+                                                    placeholder="{{ trans('cruds.estimate.fields.sor') }}"
+                                                    wire:model.defer="selectedSORKey"
+                                                    value="{{ $selectedSORKey }}"
+                                                    wire:keydown.escape="resetValus"
+                                                    wire:keydown.tab="autoSearch"
+                                                    class="dropbtn" />
+
+
+                                                    @isset($this->fatchDropdownData['items_number'])
+                                                    @if (count($this->fatchDropdownData['items_number']) > 0)
+                                                        <div class="dropdown-content"
+                                                            style="display:{{ $searchDtaCount ? $searchStyle : $searchStyle }}">
+                                                            @foreach ($this->fatchDropdownData['items_number'] as $list)
+                                                                <a href="javascript:void(0);"
+                                                                wire:click="getItemDetails({{ $list['id'] }})">{{ $list['Item_details'] }}</a>
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
+                                                @endisset
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                @if (!empty($estimateData['item_number']))
+                                {{-- @if (!empty($estimateData['item_number'])) --}}
+                                @if (!empty($searchResData))
+                                        @if (count($searchResData) > 0)
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group">
@@ -128,6 +153,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @endif
                                 @endif
                             @endif
                             @if ($estimateData['item_name'] == 'Other')

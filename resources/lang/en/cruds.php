@@ -240,8 +240,9 @@ return [
         'fields'=>[
             'id'=>'ID',
             'id_helper'=>'#',
-            'project_id'=>'Project Id',
-            'm_id'=>'Milestone name',
+            'project_num'=>'Project Number',
+            'desc'=>'Project Description',
+            'm_name'=>'Milestone name',
             'm_parent_id'=>'parent Milestone name',
             'param'=>'Param'
         ],
@@ -267,11 +268,34 @@ return [
         'fields'=>[
             'id'=>'ID',
             'id_helper'=>'#',
-            'proj_num'=>'Project Number',
-            'go_num'=>'GO Number',
+            'proj_id'=>'Project ID',
+            'Govt_id'=>'GOVT. ID',
             'file_upload'=>'project file',
             'file_note'=>'project related file upload here ,file extension must be pdf,jpg,jpeg',
             'action'=>'actions'
+        ],
+    ],
+    'settings'=>[
+        'title'=>'Settings',
+        'title_singular'=>'Settings',
+        'fields'=>[
+            'id'=>'ID',
+            'id_helper'=>'#',
+            'unit_type'=>'Unit Type',
+            'sor_category'=>'SOR Category',
+            'estimate_status'=>'Estimate Status',
+            'actions'=>'Action',
+        ],
+    ],
+    'permissions'=>[
+        'title'=>'Permissions',
+        'title_singular'=>'Permission',
+        'create_mgs'=>'New permission created!',
+        'fields'=>[
+            'id'=>'ID',
+            'id_helper'=>'#',
+            'permission_name'=>'Permission Name',
+            'actions'=>'Action',
         ],
     ],
 ];
