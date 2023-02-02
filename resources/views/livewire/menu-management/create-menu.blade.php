@@ -34,7 +34,6 @@
                                         <x-select.option label="{{ $menu['title'] }}" value="{{ $menu['id'] }}" />
                                         @endforeach
                                     @endisset
-
                                 </x-select>
                             </div>
                         </div>

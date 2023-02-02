@@ -6,12 +6,12 @@ use Livewire\Component;
 
 class Sor extends Component
 {
-    public $formOpen = false ,$editFormOpen = false,$sorUpdateTrack;
+    public $formOpen = false ,$editFormOpen = false,$updateDataTableTracker;
     protected $listeners = ['openForm' => 'formOCControl'];
 
     public function mount()
     {
-        $this->sorUpdateTrack = rand(1, 1000);
+        $this->updateDataTableTracker = rand(1, 1000);
     }
 
     public function formOCControl($isEditFrom = false, $editId = null)
@@ -31,6 +31,7 @@ class Sor extends Component
 
     public function render()
     {
+        $this->updateDataTableTracker = rand(1,1000);
         $this->emit('changeTitel', 'SOR');
         $assets = ['chart', 'animation'];
         return view('livewire.sor.sor',compact('assets'));

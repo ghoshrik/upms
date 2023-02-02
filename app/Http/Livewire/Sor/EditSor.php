@@ -11,7 +11,7 @@ class EditSor extends Component
 {
     use Actions;
     protected $listeners = ['editSorRow' => 'editSor'];
-    public $sor_id, $sorEditData = [], $editRow, $effect_to, $editedData;
+    public $sor_id, $sorEditData = [], $editRow, $effect_to, $editedData,$updateDataTableTracker;
     public function mount()
     {
         $this->editRow = [
@@ -61,6 +61,7 @@ class EditSor extends Component
             }
             $this->reset();
             $this->emit('openForm');
+            $this->updateDataTableTracker = rand(1,1000);
         } catch (\Throwable $th) {
             $this->emit('showError', $th->getMessage());
         }

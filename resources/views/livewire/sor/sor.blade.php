@@ -17,7 +17,7 @@
             <div class="col-md-12 col-lg-12 col-sm-3">
                 <div class="card">
                     <div class="card-body">
-                        <livewire:sor.data-table.sor-data-table :wire:key="$sorUpdateTrack" />
+                        <livewire:sor.data-table.sor-data-table :wire:key="$updateDataTableTracker" />
                     </div>
                 </div>
             </div>

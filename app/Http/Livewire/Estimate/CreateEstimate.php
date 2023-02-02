@@ -202,7 +202,7 @@ class CreateEstimate extends Component
                 $this->estimateData['description'] = $list['description'];
                 $this->estimateData['qty'] = $list['unit'];
                 $this->estimateData['rate'] = $list['cost'];
-                $this->selectedSORKey = $list['Item_details'];
+                $this->estimateData['item_number'] = $list['id'];
             }
             $this->calculateValue();
         }else
