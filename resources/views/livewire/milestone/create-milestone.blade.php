@@ -77,8 +77,6 @@
     </style>
     <x-form-section submit='store'>
         <x-slot name='form'>
-
-
             <div class="row">
                 <div class="col-md-4 col-lg-4 col-sm-3">
                     {{-- <x-input label="Project Id" wire:model="projectId" placeholder="Enter Project No." /> --}}

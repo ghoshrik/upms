@@ -11,11 +11,16 @@
             @endif
         </div>
         <div x-show="!formOpen " x-transition.duration.900ms>
-            @if($viewMode)
-                <livewire:milestone.milestone-view :milestones="$milestones"/>
-            @else
-                <livewire:milestone.milestone-lists :wire:key="$updateDataTableTracker"/>
-            @endif
+            <x-cards title="">
+                <x-slot name="table">
+                    @if($viewMode)
+                        <livewire:milestone.milestone-view :milestones="$milestones"/>
+                    @else
+                        <livewire:milestone.milestone-lists :wire:key="$updateDataTableTracker"/>
+                        {{-- <livewire:data-table.milestone-data-table :wire:key="$updateDataTableTracker"/> --}}
+                    @endif
+                </x-slot>
+            </x-cards>
         </div>
     </div>
 </div>

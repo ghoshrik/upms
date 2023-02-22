@@ -1,5 +1,7 @@
 <?php
 return [
+    'create_new'=>'Create new',
+    'list'=>'List',
     'cancel_btn'=>'Cancel',
     'cancel_btn_color'=>'btn btn-soft-danger rounded-pill',
     'data_store_btn'=>'Create',
