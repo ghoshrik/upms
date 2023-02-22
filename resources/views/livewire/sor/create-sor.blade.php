@@ -27,9 +27,9 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <x-inputs.maskable wire:key='item_details.{{ $key }}' label="{{ trans('cruds.sor.fields.item_number') }}"
+                                            <x-input wire:key='item_details.{{ $key }}' label="{{ trans('cruds.sor.fields.item_number') }}"
                                                 placeholder="{{ trans('cruds.sor.fields.item_number') }}"
-                                                wire:model.defer="inputsData.{{ $key }}.item_details" mask="##.##.##"
+                                                wire:model.defer="inputsData.{{ $key }}.item_details"
                                                 placeholder="12.34"/>
                                                 <!--only maskable 12 number -->
                                         </div>

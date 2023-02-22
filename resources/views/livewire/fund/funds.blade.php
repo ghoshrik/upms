@@ -12,7 +12,7 @@
         <div x-show="!formOpen " x-transition.duration.900ms>
             <x-cards title="">
                 <x-slot name="table">
-                    <livewire:data-table.fund-data-table/>
+                    <livewire:data-table.fund-data-table :wire:key='$updateDataTableTracker'/>
                 </x-slot>
             </x-cards>
         </div>

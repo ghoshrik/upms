@@ -17,6 +17,7 @@
     @if ($menu->permission!=null)
     @php
     $permissions = explode(',',$menu->permission);
+
     @endphp
     @canany($permissions)
     <li class="nav-item mb-2">

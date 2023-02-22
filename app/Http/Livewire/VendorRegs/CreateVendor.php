@@ -26,18 +26,37 @@ class CreateVendor extends Component
         'vendorRegs.mobile.required'=>'This field is required',
         'vendorRegs.address.required'=>'This field is required',
     ];
+    public function mount()
+    {
+        $this->vendorRegs['comp_name']='';
+        $this->vendorRegs['mobile']='';
+        $this->vendorRegs['pan_number']='';
+        $this->vendorRegs['tin_number']='';
+        $this->vendorRegs['address']='';
+        $data = Vendor::all();
+        // dd($data);
+    }
     public function store()
     {
-        $this->validate();
+        // dd($this->vendorRegs);
+        // $this->validate();
         try{
-
-            Vendor::create([
+            $insert = [
                 'comp_name'=>$this->vendorRegs['comp_name'],
                 'tin_number'=>$this->vendorRegs['tin_number'],
                 'pan_number'=>$this->vendorRegs['pan_number'],
                 'mobile'=>$this->vendorRegs['mobile'],
                 'address'=>$this->vendorRegs['address'],
-            ]);
+            ];
+            // Vendor::create([
+            //     'comp_name'=>$this->vendorRegs['comp_name'],
+            //     'tin_number'=>$this->vendorRegs['tin_number'],
+            //     'pan_number'=>$this->vendorRegs['pan_number'],
+            //     'mobile'=>$this->vendorRegs['mobile'],
+            //     'address'=>$this->vendorRegs['address'],
+            // ]);
+            // dd($insert);
+            Vendor::create($insert);
             $this->reset();
             $this->emit('openForm');
         }
@@ -47,10 +66,10 @@ class CreateVendor extends Component
         }
 
     }
-    public function updated($param)
-    {
-        $this->validateOnly($param);
-    }
+    // public function updated($param)
+    // {
+    //     $this->validateOnly($param);
+    // }
     public function render()
     {
         return view('livewire.vendor-regs.create-vendor');

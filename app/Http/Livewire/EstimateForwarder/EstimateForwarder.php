@@ -12,6 +12,7 @@ class EstimateForwarder extends Component
     public $formOpen = false, $modifyFormOpen = false, $updateDataTableTracker, $selectedEstTab = 1, $counterData = [];
     public function mount()
     {
+        $this->updateDataTableTracker = rand(1,1000);
         $this->draftData();
     }
     public function draftData()

@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class Funds extends Component
 {
-    public $formOpen = false,$titel,$subTitel;
+    public $formOpen = false,$titel,$subTitel,$updateDataTableTracker;
     protected $listeners = ['openForm' => 'formOCControl'];
 
 
@@ -19,6 +19,7 @@ class Funds extends Component
 
     public function render()
     {
+        $this->updateDataTableTracker = rand(1,1000);
         $this->emit('changeTitel', 'Funds Approved');
         // $this->emit('changeTitel', 'Office');
         $assets = ['chart', 'animation'];

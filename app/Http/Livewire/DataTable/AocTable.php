@@ -20,22 +20,27 @@ class AocTable extends DataTableComponent
         return [
             Column::make("Id", "id")
                 ->sortable(),
-            Column::make(trans('cruds.aoc.fields.project_id'), "tender_id")
+            Column::make(trans('cruds.aoc.fields.tender_id'), "tender_id")
                 ->sortable()
                 ->searchable(),
             Column::make(trans('cruds.aoc.fields.title'), "tender_title")
                 ->sortable()
                 ->searchable(),
-            Column::make(trans('cruds.aoc.fields.ref_no'), "refc_no")
+            Column::make(trans('cruds.aoc.fields.project_id'), "projects.estimate_id")
                 ->sortable()
                 ->searchable(),
             Column::make(trans('cruds.aoc.fields.category'), "tender_category")
                 ->sortable(),
-            Column::make(trans('cruds.aoc.fields.actions'), "id")->view('components.data-table-components.buttons.edit'),
+            // Column::make(trans('cruds.aoc.fields.actions'), "id")->view('components.data-table-components.buttons.edit'),
             // Column::make("Created at", "created_at")
             //     ->sortable(),
             // Column::make("Updated at", "updated_at")
             //     ->sortable(),
         ];
+    }
+
+    public function edit($ID)
+    {
+        return $this->emit('editAOC',$ID);
     }
 }

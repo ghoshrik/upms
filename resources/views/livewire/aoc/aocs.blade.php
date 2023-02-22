@@ -13,7 +13,7 @@
         <div x-show="!formOpen " x-transition.duration.900ms>
             <x-cards title="">
                 <x-slot name="table">
-                    <livewire:data-table.aoc-table/>
+                    <livewire:data-table.aoc-table :wire:key="$updateDataTableTracker"/>
                 </x-slot>
             </x-cards>
         </div>

@@ -4,11 +4,12 @@ namespace App\Http\Livewire\Aoc;
 
 use App\Models\AOC;
 use Livewire\Component;
-use Illuminate\Support\Carbon;
 
+use Illuminate\Support\Carbon;
+use App\Models\SorMaster;
 class CreateAoc extends Component
 {
-    public $title,$refcNo,$category,$projId;
+    public $title,$refcNo,$category,$projId,$fetchData;
     public function store()
     {
         try{
@@ -18,7 +19,7 @@ class CreateAoc extends Component
             $insert = [
                 'tender_id'=>$this->projId.'-'.Carbon::now()->year,
                 'tender_title'=>$this->title,
-                'refc_no'=>$this->refcNo,
+                'project_no'=>$this->refcNo,
                 'tender_category'=>$this->category
             ];
             // dd($insert);
@@ -36,6 +37,7 @@ class CreateAoc extends Component
     }
     public function render()
     {
+        $this->fetchData['project_number'] = SorMaster::where('is_verified','=',1)->get();
         $assets = ['chart', 'animation'];
         return view('livewire.aoc.create-aoc',compact('assets'));
     }

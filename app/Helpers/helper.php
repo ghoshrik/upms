@@ -249,6 +249,12 @@ function exportWord($estimate_id)
         return response()->download($date . '.docx')->deleteFileAfterSend(true);
         // $this->reset('exportDatas');
     }
+
+    function getFromDateAttribute($value) {
+        $date_format = date_create($value);
+        return date_format($date_format,"Y/m/d");
+    }
+
 function printTreeHTML($tree,$parent = 0)
 {
     global $Type;

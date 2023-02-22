@@ -140,6 +140,9 @@ class CreateEstimate extends Component
             ->where('dept_category_id', $this->estimateData['dept_category_id'])
             ->where('version', $this->estimateData['version'])
             ->where('Item_details', 'like', $this->selectedSORKey.'%')->get();
+
+
+            // dd($this->fatchDropdownData['items_number']);
             if(count($this->fatchDropdownData['items_number'])>0)
             {
                 $this->searchDtaCount = (count($this->fatchDropdownData['items_number'])>0);
@@ -171,16 +174,16 @@ class CreateEstimate extends Component
 
 
 
-        $this->searchDtaCount = count($this->searchResData)>0;
-        $this->searchStyle = 'none';
-        foreach($this->searchResData as $list)
-        {
-            $this->estimateData['description'] = $list['description'];
-            $this->estimateData['qty'] = $list['unit'];
-            $this->estimateData['rate'] = $list['cost'];
-            $this->selectedSORKey = $list['Item_details'];
-        }
-        $this->calculateValue();
+        // $this->searchDtaCount = count($this->searchResData)>0;
+        // $this->searchStyle = 'none';
+        // foreach($this->searchResData as $list)
+        // {
+        //     $this->estimateData['description'] = $list['description'];
+        //     $this->estimateData['qty'] = $list['unit'];
+        //     $this->estimateData['rate'] = $list['cost'];
+        //     $this->selectedSORKey = $list['Item_details'];
+        // }
+        // $this->calculateValue();
 
 
         // try
@@ -226,7 +229,7 @@ class CreateEstimate extends Component
         // $this->estimateData['item_number'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['id'];
         // $this->calculateValue();
 
-    }
+    // }
     public $resetExcept;
     public function resetValus($resetAll = false)
     {
@@ -268,6 +271,7 @@ class CreateEstimate extends Component
                 $this->estimateData['qty'] = $list['unit'];
                 $this->estimateData['rate'] = $list['cost'];
                 $this->estimateData['item_number'] = $list['id'];
+                $this->selectedSORKey = $list['Item_details'];
             }
             $this->calculateValue();
         }else

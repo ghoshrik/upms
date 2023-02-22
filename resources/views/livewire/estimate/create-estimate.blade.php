@@ -44,23 +44,20 @@
                                             </x-select>
                                         </div>
                                     </div>
-                                    @if ($estimateData['dept_id'])
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <x-select wire:key="category"
-                                                    label="{{ trans('cruds.estimate.fields.category') }}"
-                                                    placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
-                                                    wire:model.defer="estimateData.dept_category_id"
-                                                    x-on:select="$wire.getVersion()">
-                                                    @isset($fatchDropdownData['departmentsCategory'])
-                                                        @foreach ($fatchDropdownData['departmentsCategory'] as $deptCategory)
-                                                            <x-select.option
-                                                                label="{{ $deptCategory['dept_category_name'] }}"
-                                                                value="{{ $deptCategory['id'] }}" />
-                                                        @endforeach
-                                                    @endisset
-                                                </x-select>
-                                            </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="category"
+                                                label="{{ trans('cruds.estimate.fields.category') }}"
+                                                placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
+                                                wire:model.defer="estimateData.dept_category_id"
+                                                x-on:select="$wire.getVersion()">
+                                                @isset($fatchDropdownData['departmentsCategory'])
+                                                    @foreach ($fatchDropdownData['departmentsCategory'] as $deptCategory)
+                                                        <x-select.option label="{{ $deptCategory['dept_category_name'] }}"
+                                                            value="{{ $deptCategory['id'] }}" />
+                                                    @endforeach
+                                                @endisset
+                                            </x-select>
                                         </div>
                                     </div>
                                     <div class="col">
