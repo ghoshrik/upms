@@ -349,3 +349,45 @@ function buildTree($nodes)
     }
     return $rootNodes;
 }
+
+//delete entries
+function remove_element_by_value($arr, $val) {
+    $return = array();
+    $array = array_values($arr);
+    // dd($array);
+    foreach($array as $k => $v) {
+        if($v['index']==$val)
+        {
+            // dd($v);
+           unset($array[$k]);
+                //   dd($array);
+        }
+    //    if(is_array($v[])) {
+    //     // dd($v);
+
+    //       $return[$k] = remove_element_by_value($v, $val); //recursion
+    //       continue;
+    //    }
+    //    if($v == $val) continue;
+    //    $return[$k] = $v;
+    }
+    return $array;
+ }
+
+
+// if(!array_exists())
+function delete_entries(&$array, $ids_to_delete) {
+    $children = array();
+    foreach ($array as $node) {
+        dd($array);
+        $children[$node['index']] = $node;
+        $children[$node['index']]['children'] = array();
+    }
+    foreach ($array['children'] as $index => &$child) {
+        if (in_array($child['index']['parent_id'], $ids_to_delete)) {
+            unset($array['children'][$index]);
+        }
+        delete_entries($child, $ids_to_delete);
+    }
+}
+//pending for design reponsive problem
