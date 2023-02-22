@@ -9,7 +9,7 @@ class Milestone extends Model
 {
     use HasFactory;
     protected $table = "milestones";
-    protected $fillable = ["index","milestone_id","project_id","milestone_name","weight","unit_type","cost"];
+    protected $fillable = ["index","milestone_id","project_id","milestone_name","weight","unit_type","cost","Is_achived"];
 
 
     public function project_list()

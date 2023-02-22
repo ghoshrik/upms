@@ -19,10 +19,14 @@ use App\Http\Livewire\TestALL\TestSearch;
 use App\Http\Livewire\UserType\UserType;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\AccessType\AccessType;
+use App\Http\Livewire\Aoc\Aocs;
 use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
 use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
+use App\Http\Livewire\Fund\Funds;
 use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\Milestone\Milestones;
+use App\Http\Livewire\Permission\Permissions;
+use App\Http\Livewire\Role\Roles;
 use App\Http\Livewire\Setting\SettingLists;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\VendorRegs\VendorList;
@@ -80,26 +84,27 @@ Route::get('/storage', function () {
 Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
 
         //all Roles access
-        Route::group(['middleware'=>['auth','role:Super Admin|State Admin|Department Admin|Office Admin|Estimate Recommender (ER)|Estimate Preparer (EP)|Project Estimate(EP)']],function(){
-
+        Route::group(['middleware'=>['auth','role:Super Admin|State Admin|Department Admin|Office Admin|Estimate Recommender (ER)|Estimate Preparer (EP)|Project Estimate(EP)']],function()
+        {
             // Dashboard Routes
             Route::get('dashboard', [HomeController::class, 'index'])->name('dashboard');
             Route::get('user-management',UserManagement::class)->name('user-management');
-
+            Route::get('permissions',Permissions::class)->name('permissions');
+            Route::get('roles',Roles::class)->name('roles');
             //only super admin(admin)
-            Route::group(['middleware'=>['auth','role:Super Admin']],function(){
+            Route::group(['middleware'=>['role:Super Admin']],function(){
                 Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
                 Route::get('settings',SettingLists::class)->name('settings');
 
             });
 
             //access only state admin & super Admin
-            Route::group(['middleware'=>['auth','role:State Admin|Super Admin']],function(){
+            Route::group(['middleware'=>['role:State Admin|Super Admin']],function(){
                 Route::get('department', Department::class)->name("department");
             });
 
             //access only department admin & super admin
-            Route::group(['middleware'=>['auth','role:Department Admin|Super Admin']],function(){
+            Route::group(['middleware'=>['role:Department Admin|Super Admin']],function(){
                 Route::get('office', Office::class)->name('office');
                 Route::get('sor',Sor::class)->name('sor');
                 Route::get('department-category',DepartmentCategoryList::class)->name('department-category');
@@ -107,29 +112,23 @@ Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
             });
 
             //access only office admin & super admin
-            Route::group(['middleware'=>['auth','role:Office Admin|Super Admin']],function(){
+            Route::group(['middleware'=>['role:Office Admin|Super Admin']],function(){
                 Route::get('designation',Designation::class)->name('designation');
                 Route::get('access-manager',AccessManager::class)->name('access-manager');
             });
 
             //access only
-            Route::group(['middleware'=>['auth','role:Estimate Preparer (EP)|Super Admin']],function(){
+            Route::group(['middleware'=>['role:Estimate Preparer (EP)|Super Admin']],function(){
                 Route::get('estimate-prepare',EstimatePrepare::class)->name('estimate-prepare');
             });
-            Route::group(['middleware'=>['auth','role:Estimate Recommender (ER)|Super Admin']],function(){
+            Route::group(['middleware'=>['role:Estimate Recommender (ER)|Super Admin']],function(){
                 // Route::get('estimate-prepare',EstimatePrepare::class)->name('estimate-prepare');
                 // Route::get('estimate-project',EstimateProject::class)->name('estimate-project');
             });
-            Route::group(['middleware'=>['auth','role:Project Estimate(EP)|Super Admin']],function(){
+            Route::group(['middleware'=>['role:Project Estimate(EP)|Super Admin']],function(){
                 Route::get('estimate-project',EstimateProject::class)->name('estimate-project');
             });
         });
-
-
-
-
-
-
 
 Route::group(['middleware' => 'auth'], function () {
     // // Permission Module
@@ -152,7 +151,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('testmilestone',[HomeController::class,'testMileStone'])->name('testmilestone');
     Route::get('vendors',VendorList::class)->name('vendors');
     Route::get('aafs-project',ProjectList::class)->name('aafs-project');
+    Route::get('funds',Funds::class)->name('funds');
+
+
+
     Route::get('milestonetest',[HomeController::class, 'testdesign'])->name('milestonetest');
+
+
+
+    Route::get('aoclist',Aocs::class)->name('aoclist');
+
+
 });
 
 

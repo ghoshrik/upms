@@ -17,12 +17,12 @@ class Milestones extends Component
         $this->emit('CloseButton',(!$this->createButtonOn));
 
         $this->viewMode = !$this->viewMode;
-        // dd(Milestone::where('milestone_id',0)->where('project_id',$value)
-        // ->with('childrenMilestones')
-        // ->get());
-        $this->milestones = Milestone::where('milestone_id',0)->where('project_id',$value)
+        // $this->milestones = $value;
+        // $this->emit('ApprovedMilestone',$value);
+        $this->milestones = Milestone::where('project_id',$value)->where('milestone_id',0)
         ->with('childrenMilestones')
         ->get();
+        // dd($this->milestones);
     }
 
     public function formOCControl()
@@ -33,7 +33,7 @@ class Milestones extends Component
     public function render()
     {
         $this->updateDataTableTracker = rand(1,1000);
-        $this->emit('changeTitle', 'Milestone');
+        $this->emit('changeTitel', 'Milestone');
         $assets = ['chart', 'animation'];
         return view('livewire.milestone.milestones',compact('assets'));
     }

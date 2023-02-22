@@ -176,37 +176,48 @@
             content: unset;
         }
     </style>
-    <div class="col-md-12 col-lg-12 col-sm-3">
+    {{-- <div class="col-md-12 col-lg-12 col-sm-3">
         <div class="card">
             <div class="card-header">
                 <a href="{{route('milestones')}}" class="float-right btn btn-soft-danger btn-sm">back</a>
             </div>
             <div class="card-body">
-                <div class="treeview">
-                    <ul>
-                        @foreach ($milestones as $milestone)
-                            <li>
-                                <div class="treeview__level" data-level="M">
-                                    <span class="level-title">{{$milestone->milestone_name}}</span>
-                                    <div class="treeview__level-btns">
 
-                                        <div class="btn btn-default btn-sm level-add">{{$milestone->created_at->format('Y-m-d')}}</div>
-                                        <input type="file" class="btn-sm level-add" placeholder="  file..." />
-                                        <div class="btn btn-default btn-sm level-add">status</div>
-
-                                    </div>
-
-                                </div>
-                                <ul>
-                                    @foreach ($milestone->childrenMilestones as $childMilestone)
-                                        @include('child_milestone',['child_milestone'=>$childMilestone])
-                                    @endforeach
-                                </ul>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
             </div>
         </div>
+    </div> --}}
+    <div class="treeview">
+        <ul>
+            {{-- @php
+                $rest = DB::table('milestones')->whereNull('milestone_id')->where('project_id',$value)->with('childrenMilestones')->get();
+
+            @endphp --}}
+            @foreach ($milestones as $key => $milestone)
+                {{-- @php
+                    $milestonenew = \App\Models\Milestone::where('project_id',$milestone->project_id)->with('childrenMilestones')->get();
+
+                    // @dd($milestonenew);
+                @endphp --}}
+                <li>
+                    <div class="treeview__level" data-level="M">
+                        <span class="level-title">{{$milestone->milestone_name}}</span>
+                        <div class="treeview__level-btns">
+                            @if($milestone->Is_achived=='verified')
+                                {{$milestone->Is_achived}}
+                            @else
+                            <div class="btn btn-default btn-sm level-add">{{$milestone->created_at->format('Y-m-d')}}</div>
+                            <input type="file" class="btn-sm level-add" placeholder="file..." />
+                            <div class="btn btn-default btn-sm level-add" wire:click="ApprovedMilestone('{{$milestone->milestone_name}}')" wire:key='{{ $milestone->id}}'>{{$milestone->Is_achived}}</div>
+                            @endif
+                        </div>
+                    </div>
+                    <ul>
+                        @foreach ($milestone->childrenMilestones as $childMilestone)
+                            @include('child_milestone',['child_milestone'=>$childMilestone])
+                        @endforeach
+                    </ul>
+                </li>
+            @endforeach
+        </ul>
     </div>
 </div>

@@ -64,21 +64,21 @@ class CreateMilestone extends Component
 
     public function removeMilestone($deleteId)
     {
-                // dd($deleteId);
-        // remove_element_by_value($this->mileStoneData,$deleteId);
-        // $array = array_values($this->mileStoneData);
-        foreach($this->mileStoneData as $k => $v) {
 
-            if($v['index']== $deleteId)
-            {
-                unset($this->mileStoneData [$k]);
-                array_values($this->mileStoneData);
-            }
-            if($v['parent_id'] == $deleteId)
-            {
-                unset($this->mileStoneData[$k]);
-            }
-        }
+        // deleteNodeAndReindex($this->mileStoneData, $deleteId);
+        deleteNode($this->mileStoneData,$deleteId);
+        // foreach($this->mileStoneData as $k => $v) {
+
+        //     if($v['index']== $deleteId)
+        //     {
+        //         unset($this->mileStoneData [$k]);
+        //         array_values($this->mileStoneData);
+        //     }
+        //     if($v['parent_id'] == $deleteId)
+        //     {
+        //         unset($this->mileStoneData[$k]);
+        //     }
+        // }
         //
         // return $array;
         // dd($this->treeView());
@@ -163,7 +163,7 @@ class CreateMilestone extends Component
 
     public function render()
     {
-        $this->emit('changeTitle', 'Milestone');
+        $this->emit('changeTitel', 'Milestone');
         $assets = ['chart', 'animation'];
         return view('livewire.milestone.create-milestone',compact('assets'));
     }

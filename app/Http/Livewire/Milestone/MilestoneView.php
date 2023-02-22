@@ -9,12 +9,17 @@ use Livewire\Component;
 class MilestoneView extends Component
 {
     // public $viewMode = false;
-    // protected $listeners = ['testTree'=>'buildTree'];
-
-
+    protected $listeners = ['ApprovedMilestone'=>'ApprovedViewMilestone'];
 
 
     public $milestones,$allTree;
+
+
+    public function ApprovedMilestone($value)
+    {
+        // dd("start");
+        dd($value);
+    }
 
     // public function buildTree($nodes)
     // {
