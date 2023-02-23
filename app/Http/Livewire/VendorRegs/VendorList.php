@@ -21,7 +21,7 @@ class VendorList extends Component
     public function render()
     {
         $this->updateDataTableTracker = rand(1,1000);
-        $this->emit('changeTitle', 'Milestone');
+        $this->emit('changeTitel', trans('cruds.vendors.menu_title'));
         $assets = ['chart', 'animation'];
         return view('livewire.vendor-regs.vendor-list',compact('assets'));
     }

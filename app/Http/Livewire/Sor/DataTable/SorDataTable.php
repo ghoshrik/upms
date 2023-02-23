@@ -5,6 +5,8 @@ namespace App\Http\Livewire\Sor\DataTable;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\SOR;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class SorDataTable extends DataTableComponent
 {
@@ -50,5 +52,10 @@ class SorDataTable extends DataTableComponent
     public function edit($id)
     {
         $this->emit('openForm',true,$id);
+    }
+    public function builder(): Builder
+    {
+        return SOR::query()
+                    ->where('s_o_r_s.department_id', Auth::user()->department_id);
     }
 }

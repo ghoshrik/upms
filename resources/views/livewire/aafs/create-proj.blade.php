@@ -3,7 +3,7 @@
         <x-slot name='form'>
             <div class="row">
                 <div class="col-md-4 col-lg-4 col-sm-3 mb-2">
-                        <x-select label="Select {{ trans('cruds.aafs_project.fields.proj_id') }}" placeholder="Select one {{ trans('cruds.aafs_project.fields.proj_id') }}" wire:model.defer="projectId">
+                        <x-select label="{{ trans('cruds.aafs_project.fields.proj_id') }}" placeholder="Select one {{ trans('cruds.aafs_project.fields.proj_id') }}" wire:model.defer="projectId">
 
                         @foreach ($projects_number as $projects)
                             <x-select.option label="{{ $projects['estimate_id'] }}" value="{{ $projects['estimate_id'] }}" />
@@ -13,6 +13,13 @@
                 <div class="col-md-4 col-lg-4 col-sm-3 mb-2">
                     <x-input label="{{ trans('cruds.aafs_project.fields.Govt_id') }}" wire:model='goId'
                         placeholder="Enter {{ trans('cruds.aafs_project.fields.Govt_id') }}" />
+                </div>
+                <div class="col-md-4 col-lg-4 col-sm-3 mb-2">
+                    <x-datetime-picker without-time
+                        label="{{ trans('cruds.aafs_project.fields.go_date') }}"
+                        placeholder="{{ trans('cruds.aafs_project.fields.go_date') }}"
+                        wire:model.defer="goDate"
+                    />
                 </div>
                 <div class="col-md-4 col-lg-4 col-sm-3 mb-2">
                     <div>
@@ -30,10 +37,10 @@
                         @error('photo') <span class="error" style="color: red;">{{ $message }}</span> @enderror
                     </div>
                 </div>
-                @if ($photo)
+                {{-- @if ($photo)
                     Photo Preview:
                     <img src="{{ $photo->temporaryUrl() }}">
-                @endif
+                @endif --}}
 
             </div>
             <div class="row">

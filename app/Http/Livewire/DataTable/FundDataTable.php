@@ -20,7 +20,7 @@ class FundDataTable extends DataTableComponent
         return [
             Column::make("Id", "id")
                 ->sortable(),
-            Column::make(trans('cruds.funds.fields.project_id'), "getProjectDetails.estimate_id")
+            Column::make(trans('cruds.funds.fields.project_id'), "project_id")
                 ->sortable(),
             Column::make(trans('cruds.funds.fields.go_id'), "go_id")
                 ->sortable(),

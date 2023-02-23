@@ -20,6 +20,8 @@ class CreateVendorsTable extends Migration
             $table->string('pan_number')->unique();
             $table->string('mobile')->unique();
             $table->longText('address');
+            $table->string('gstn_no');
+            $table->string('class_vendor');
             $table->timestamps();
         });
     }

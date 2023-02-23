@@ -250,14 +250,17 @@ return [
     'vendors'=>[
         'title'=>'Vendor Registration',
         'title_singular'=>'Vendors Registrations',
+        'menu_title'=>'Vendors Information',
         'fields'=>[
             'id'=>'ID',
             'id_helper'=>'#',
             'comp_name'=>'Company Name',
             'tin'=>'TAN Number',
             'pan'=>'PAN Number',
+            'gstin'=>'GSTIN No.',
             'mobile'=>'Mobile',
             'address'=>'Address',
+            'class_vendor'=>'Class of Vendor',
             'v_type'=>'Vendor Type',
             'action'=>'actions'
         ],
@@ -268,8 +271,9 @@ return [
         'fields'=>[
             'id'=>'ID',
             'id_helper'=>'#',
-            'proj_id'=>'Project ID',
-            'Govt_id'=>'GOVT. ID',
+            'proj_id'=>'Project No',
+            'Govt_id'=>'GO No.',
+            'go_date'=>'GO Date',
             'file_upload'=>'project file',
             'file_note'=>'project related file upload here ,file extension must be pdf,jpg,jpeg',
             'action'=>'actions'
@@ -312,14 +316,20 @@ return [
         ],
     ],
     'aoc'=>[
-        'title'=>'Award of Contacts',
+        // 'title'=>'Award of Contacts',
+        'title'=>'Tender Information',
         'title_singular'=>'Award of Contract',
         'create_msg'=>'created success',
         'fields'=>[
             'id'=>'ID',
             'id_helper'=>'#',
-            'project_id'=>'Project ID',
-            'tender_id'=>'Tender_id',
+            'project_id'=>'Project No.',
+            'tender_id'=>'Tender No.',
+            'tender_title'=>'Tender Title',
+            'date_of_pub'=>'Date Of Published',
+            'date_of_close'=>'Date Of Closing',
+            'num_bider'=>'Number Of Biders',
+
             'title'=>'Tender Title',
             'ref_no'=>'Reference No.',
             'category'=>'Tender Category',
@@ -327,14 +337,15 @@ return [
         ],
     ],
     'funds'=>[
-        'title'=>'IFMS Fund',
+        // 'title'=>'IFMS Fund',
+        'title'=>'Awards of Contracts',
         'title_singular'=>'IFMS funds release',
         'create_msg'=>'Fund created',
         'fields'=>[
             'id'=>'ID',
             'id_helper'=>'#',
             'project_id'=>'Project No',
-            'go_id'=>'Go ID',
+            'go_id'=>'Go Number',
             'vendor_id'=>'Vendor',
             'go_order'=>'Go Order',
             'amount'=>'Amount',

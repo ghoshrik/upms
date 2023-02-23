@@ -15,9 +15,12 @@ class CreateAOCSTable extends Migration
     {
         Schema::create('a_o_c_s', function (Blueprint $table) {
             $table->id();
-            $table->string('tender_id')->unique();
+            $table->integer('project_no');
+            $table->string('tender_id');
             $table->string('tender_title');
-            $table->string('project_no')->unique();
+            $table->date('publish_date');
+            $table->date('close_date');
+            $table->string('bidder_name');
             $table->string('tender_category');
             // $table->
             $table->timestamps();

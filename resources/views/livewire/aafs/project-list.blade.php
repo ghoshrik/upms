@@ -12,7 +12,7 @@
         <div x-show="!formOpen" x-transition.duration.500ms>
             <x-cards title="">
                 <x-slot name="table">
-                    {{__('AAfs Project List')}}
+                    <livewire:aafs.datatable.a-a-f-s-datatable :wire:key="$updateDataTableTracker" />
                 </x-slot>
             </x-cards>
         </div>

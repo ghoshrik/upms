@@ -5,25 +5,23 @@
                 <div class="col-md-3 col-lg-3 col-sm-3">
                     <x-select label="{{ trans('cruds.funds.fields.project_id') }}"
                     placeholder="Select {{ trans('cruds.funds.fields.project_id') }}"
-                    wire:model.defer="storeInputData.projectId">
+                    wire:model.defer="storeInputData.projectId" x-on:select="$wire.changeProjectID()">
                         @foreach ($fetchData['project_number'] as $projects)
-                            <x-select.option label="{{ $projects['estimate_id'] }}" value="{{ $projects['id'] }}" />
+                            <x-select.option label="{{ $projects['project_id'] }}" value="{{ $projects['project_id'] }}" />
                         @endforeach
                     </x-select>
                 </div>
                 <div class="col-md-3 col-lg-3 col-sm-3">
-                    <x-input label="{{trans('cruds.funds.fields.go_id')}}" wire:model.defer="storeInputData.goId" placeholder="{{trans('cruds.funds.fields.go_id')}}" />
+                    <x-input label="{{trans('cruds.funds.fields.go_id')}}"  wire:model.defer="storeInputData.goId" placeholder="{{trans('cruds.funds.fields.go_id')}}" />
                 </div>
-                <div class="col-md-3 col-lg-3 col-sm-3">
-                    <x-select label="{{ trans('cruds.funds.fields.vendor_id') }}"
-                    placeholder="Select {{ trans('cruds.funds.fields.vendor_id') }}"
-                    wire:model.defer="storeInputData.vendorId">
-                        @foreach ($fetchData['vendors'] as $vendor)
-                            <x-select.option label="{{ $vendor['comp_name'] }}" value="{{ $vendor['id'] }}" />
-                        @endforeach
+                <div class="col-md-6 col-lg-6 col-sm-3">
+                    <x-select label="{{ trans('cruds.funds.fields.vendor_id') }}" placeholder="Select {{ trans('cruds.funds.fields.vendor_id') }}" wire:model.defer="storeInputData.vendorId" multiselect>
+                            @foreach ($fetchData['vendors'] as $user)
+                            <x-select.option label="{{ $user['comp_name'] }}" value="{{ $user['id'] }}" />
+                            @endforeach
                     </x-select>
                 </div>
-                <div class="col-md-3 col-lg-3 col-sm-3">
+                <div class="col-md-3 col-lg-3 col-sm-3 mt-2">
                     <x-datetime-picker without-time
                         label="{{ trans('cruds.funds.fields.approved_date') }}"
                         placeholder="{{ trans('cruds.funds.fields.approved_date') }}"

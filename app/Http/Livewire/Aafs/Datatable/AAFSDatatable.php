@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Livewire\DataTable;
+namespace App\Http\Livewire\Aafs\Datatable;
 
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use App\Models\Vendor;
+use App\Models\AAFS;
 
-class VendorTable extends DataTableComponent
+class AAFSDatatable extends DataTableComponent
 {
-    protected $model = Vendor::class;
+    protected $model = AAFS::class;
 
     public function configure(): void
     {
@@ -20,20 +20,16 @@ class VendorTable extends DataTableComponent
         return [
             Column::make("Id", "id")
                 ->sortable(),
-            Column::make("Comp name", "comp_name")
+            Column::make(trans('cruds.aafs_project.fields.proj_id'), "project_id")
                 ->sortable(),
-            Column::make("Tan number", "tin_number")
+            Column::make(trans('cruds.aafs_project.fields.Govt_id'), "Go_id")
                 ->sortable(),
-            Column::make("Pan number", "pan_number")
+            Column::make(trans('cruds.aafs_project.fields.go_date'), "go_date")
                 ->sortable(),
-            Column::make("Mobile", "mobile")
-                ->sortable(),
-            Column::make("GSTIN No.", "gstn_no")
-            ->sortable(),
-            Column::make("Class Vendor", "class_vendor")
-            ->sortable(),
-            Column::make("Address", "address")
-                ->sortable(),
+            // Column::make("Support data", "support_data")
+            //     ->sortable(),
+            // Column::make("Status", "status")
+            //     ->sortable(),
             // Column::make("Created at", "created_at")
             //     ->sortable(),
             // Column::make("Updated at", "updated_at")

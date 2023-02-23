@@ -20,7 +20,7 @@ class Funds extends Component
     public function render()
     {
         $this->updateDataTableTracker = rand(1,1000);
-        $this->emit('changeTitel', 'Funds Approved');
+        $this->emit('changeTitel', trans('cruds.funds.title'));
         // $this->emit('changeTitel', 'Office');
         $assets = ['chart', 'animation'];
         return view('livewire.fund.funds',compact('assets'));

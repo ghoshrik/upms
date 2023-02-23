@@ -32,7 +32,9 @@ class CreateVendor extends Component
         $this->vendorRegs['mobile']='';
         $this->vendorRegs['pan_number']='';
         $this->vendorRegs['tin_number']='';
+        $this->vendorRegs['gstin']='';
         $this->vendorRegs['address']='';
+        $this->vendorRegs['class_vendor']='';
         $data = Vendor::all();
         // dd($data);
     }
@@ -47,6 +49,8 @@ class CreateVendor extends Component
                 'pan_number'=>$this->vendorRegs['pan_number'],
                 'mobile'=>$this->vendorRegs['mobile'],
                 'address'=>$this->vendorRegs['address'],
+                'gstn_no'=>$this->vendorRegs['gstin'],
+                'class_vendor'=>$this->vendorRegs['class_vendor']
             ];
             // Vendor::create([
             //     'comp_name'=>$this->vendorRegs['comp_name'],

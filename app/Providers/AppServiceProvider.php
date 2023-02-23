@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
         });
         Schema::defaultStringLength(191);
         view()->composer('*', function ($menus) {
-            $menus->with('menus', Menu::where('parent_id', '=', '0')->get());
+            $menus->with('menus', Menu::where('parent_id', '=', '0')->orderBy('piority')->get());
         });
     }
 }
