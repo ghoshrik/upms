@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
-use App\Providers\RouteServiceProvider;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Providers\RouteServiceProvider;
+use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Validation\ValidationException;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -29,11 +32,30 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        $request->authenticate();
 
-        $request->session()->regenerate();
-
-        return redirect(RouteServiceProvider::HOME);
+        $user = User::where('username', $request->username)->first();
+        if($user)
+        {
+            if (Hash::check($request->password, $user->password))
+            {
+                $request->authenticate();
+                $request->session()->regenerate();
+                return redirect(RouteServiceProvider::HOME);
+            }
+            else
+            {
+                throw ValidationException::withMessages([
+                    'username' => __('auth.failed'),
+                ]);
+            }
+        }
+        else
+        {
+            $request->session()->regenerate();
+            throw ValidationException::withMessages([
+                'username' => __('auth.incorrect'),
+            ]);
+        }
     }
 
     /**

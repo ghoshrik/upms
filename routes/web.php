@@ -57,49 +57,9 @@ Route::get('set-role',function(){
        $user->assignRole('Super Admin');
     }
 });
-// Route::get('test',function(){
-//     // $menu = Menu::where('title','User Management');
-    // $role=Role::where('name','Office Admin')->first();
-//     // $role->syncPermissions(['create user', 'edit user']);
-//     // dd($role->hasPermissionTo('edit user'));
-    // $role->syncPermissions(['create office','edit office','edit user','create user','create SOR','edit SOR','create departmentCategory','edit departmentCategory']);
-    // $role->syncPermissions(['create milestones','edit milestones']);
-//     // Auth::user()->assignRole('stateAdmin');
-//     // Auth::user()->givePermissionTo(['create user', 'edit user']);
-//     // Auth::user()->givePermissionTo('create department');
-//     // $role->revokePermissionTo('edit estimatePrepare');
-//     // $role->givePermissionTo('edit articles');
-//     // dd(Auth::user());
-//     // $menu = Menu::find(5);
-//     // $menu->givePermissionTo('create user');
-//     // dd($menu->hasPermissionTo('create user'));
-// });
-
-Route::get('/storage', function () {
-    Artisan::call('storage:link');
-});
 
 
 Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
-        // Route::get('designation', Designation::class)->name('designation');
-        // Route::get('department', Department::class)->name("department");
-        // Route::get('office', Office::class)->name('office');
-        // Route::get('user-management', UserManagement::class)->name("user-management");
-        // Route::get('user-type', UserType::class)->name("user-type");
-        // Route::get('access-manager', AccessManager::class)->name("access-manager");
-        // Route::get('access-type', AccessType::class)->name("access-type");
-        // Route::get('roles',RolesManagement::class)->name("roles");
-        // Route::get('menu',Menus::class)->name('menu');
-        // Route::get('menu-permission',MenuPermission::class)->name('menu-permission');
-        // Route::get('sor-category',SORCategory::class)->name('sor-category');
-        // // Route::get('estimate-master',[EstimatePrepareController::class,'index'])->name('estimate-master.index');
-        // Route::get('sor',Sor::class)->name('sor');
-        // Route::get('userslist',[UsersController::class,'index'])->name('userslist.index');
-        // Route::get('estimate-recommender',EstimateRecomender::class)->name('estimate-recommender');
-        // Route::get('estimate-recommender/{id}',Test::class);
-        // Route::get('estimate-project',EstimateProject::class)->name('estimate-project');
-        // Route::get('sor-master',SorMaster::class)->name('sor-master');
-        // Route::get('estimate-prepare',EstimatePrepar::class)->name("estimate-prepare");
 
 
 Route::group(['middleware' => 'auth'], function () {
