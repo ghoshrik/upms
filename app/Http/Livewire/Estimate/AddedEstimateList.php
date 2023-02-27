@@ -3,16 +3,13 @@
 namespace App\Http\Livewire\Estimate;
 
 use App\Models\EstimatePrepare;
-use Illuminate\Support\Facades\Log;
-use Livewire\Component;
-use ChrisKonnertz\StringCalc\StringCalc;
-use App\Models\SORMaster as ModelsSORMaster;
-use Illuminate\Support\Facades\Auth;
 use App\Models\EstimateUserAssignRecord;
-use ChrisKonnertz\StringCalc\Exceptions\StringCalcException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\SORMaster as ModelsSORMaster;
+use ChrisKonnertz\StringCalc\StringCalc;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Livewire\Component;
 use WireUi\Traits\Actions;
 
 class AddedEstimateList extends Component
@@ -20,7 +17,7 @@ class AddedEstimateList extends Component
     use Actions;
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
-    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc;
+    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $totalOnSelectedCount = 0;
 
     public function mount()
     {
@@ -50,7 +47,7 @@ class AddedEstimateList extends Component
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
         $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc');
+        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount');
     }
 
     public function expCalc()
@@ -72,7 +69,7 @@ class AddedEstimateList extends Component
                         } else {
                             $this->notification()->error(
                                 $title = 'Error !!!',
-                                $description =  $alphabet . ' is a invalid input'
+                                $description = $alphabet . ' is a invalid input'
                             );
                         }
                     } elseif (htmlspecialchars($info) == "%") {
@@ -109,10 +106,11 @@ class AddedEstimateList extends Component
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
             $this->insertAddEstimate($this->arrayIndex, '', '', '', '', '', '', '', '', $result, 'Total', '', '');
+            $this->totalOnSelectedCount++;
         } else {
             $this->notification()->error(
                 $title = 'Error !!!',
-                $description =  'Minimum select 2 Check boxes'
+                $description = 'Minimum select 2 Check boxes'
             );
         }
     }
@@ -148,15 +146,15 @@ class AddedEstimateList extends Component
     public function confDeleteDialog($value): void
     {
         $this->dialog()->confirm([
-            'title'       => 'Are you Sure?',
-            'icon'        => 'error',
-            'accept'      => [
-                'label'  => 'Yes, Delete it',
+            'title' => 'Are you Sure?',
+            'icon' => 'error',
+            'accept' => [
+                'label' => 'Yes, Delete it',
                 'method' => 'deleteEstimate',
                 'params' => $value,
             ],
             'reject' => [
-                'label'  => 'No, cancel'
+                'label' => 'No, cancel',
                 // 'method' => 'cancel',
             ],
         ]);
@@ -168,6 +166,10 @@ class AddedEstimateList extends Component
         Session()->forget('addedEstimateData');
         Session()->put('addedEstimateData', $this->allAddedEstimatesData);
         $this->level = [];
+        if($this->totalOnSelectedCount == 1)
+        {
+            $this->reset('totalOnSelectedCount');
+        }
         $this->notification()->error(
             $title = 'Row Deleted Successfully'
         );
@@ -239,61 +241,67 @@ class AddedEstimateList extends Component
 
     public function store()
     {
-        try {
-            if ($this->allAddedEstimatesData) {
-                $intId = random_int(100000, 999999);
-                if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
-                    foreach ($this->allAddedEstimatesData as $key => $value) {
-                        $insert = [
-                            'estimate_id' => $intId,
-                            'dept_id' => $value['dept_id'],
-                            'category_id' => $value['category_id'],
-                            'row_id' => $value['array_id'],
-                            'row_index' => $value['arrayIndex'],
-                            'sor_item_number' => $value['sor_item_number'],
-                            'item_name' => $value['item_name'],
-                            'other_name' => $value['other_name'],
-                            'qty' => $value['qty'],
-                            'rate' => $value['rate'],
-                            'total_amount' => $value['total_amount'],
-                            'operation' => $value['operation'],
-                            'created_by' => Auth::user()->id,
-                            'comments' => $value['remarks'],
-                        ];
-                        $validateData = Validator::make($insert,[
-                            'estimate_id' => 'required|integer',
-                            'dept_id' => 'required|integer',
-                            'category_id' => 'required|integer',
-                            'row_id' => 'required|integer',
-                        ]);
-                        if($validateData->fails())
-                        {
-                            // dd($validateData->messages());
+        if ($this->totalOnSelectedCount == 1) {
+            try {
+                if ($this->allAddedEstimatesData) {
+                    $intId = random_int(100000, 999999);
+                    if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
+                        foreach ($this->allAddedEstimatesData as $key => $value) {
+                            $insert = [
+                                'estimate_id' => $intId,
+                                'dept_id' => $value['dept_id'],
+                                'category_id' => $value['category_id'],
+                                'row_id' => $value['array_id'],
+                                'row_index' => $value['arrayIndex'],
+                                'sor_item_number' => $value['sor_item_number'],
+                                'item_name' => $value['item_name'],
+                                'other_name' => $value['other_name'],
+                                'qty' => $value['qty'],
+                                'rate' => $value['rate'],
+                                'total_amount' => $value['total_amount'],
+                                'operation' => $value['operation'],
+                                'created_by' => Auth::user()->id,
+                                'comments' => $value['remarks'],
+                            ];
+                            $validateData = Validator::make($insert, [
+                                'estimate_id' => 'required|integer',
+                                'dept_id' => 'required|integer',
+                                'category_id' => 'required|integer',
+                                'row_id' => 'required|integer',
+                            ]);
+                            if ($validateData->fails()) {
+                                // dd($validateData->messages());
+                            }
+                            EstimatePrepare::create($insert);
                         }
-                        EstimatePrepare::create($insert);
+                        $data = [
+                            'estimate_id' => $intId,
+                            'estimate_user_type' => 2,
+                            'estimate_user_id' => Auth::user()->id,
+                        ];
+                        EstimateUserAssignRecord::create($data);
+                        $this->notification()->success(
+                            $title = 'Estimate Prepare Created Successfully!!'
+                        );
+                        $this->resetSession();
+                        $this->emit('openForm');
+                        $this->emit('refreshData');
                     }
-                    $data = [
-                        'estimate_id' => $intId,
-                        'estimate_user_type' => 2,
-                        'estimate_user_id' => Auth::user()->id,
-                    ];
-                    EstimateUserAssignRecord::create($data);
-
-                    $this->notification()->success(
-                        $title = 'Estimate Prepare Created Successfully!!'
+                } else {
+                    $this->notification()->error(
+                        $title = 'please insert at list one item !!'
                     );
-                    $this->resetSession();
-                    $this->emit('openForm');
                 }
-            } else {
-                $this->notification()->error(
-                    $title = 'please insert at list one item !!'
-                );
+            } catch (\Throwable $th) {
+                // session()->flash('serverError', $th->getMessage());
+                $this->emit('showError', $th->getMessage());
             }
-        } catch (\Throwable $th) {
-            // session()->flash('serverError', $th->getMessage());
-            $this->emit('showError', $th->getMessage());
+        }else{
+            $this->notification()->error(
+                $title = 'Please Calculate total first !!'
+            );
         }
+
     }
 
     public function render()

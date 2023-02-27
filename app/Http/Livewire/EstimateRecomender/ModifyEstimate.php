@@ -69,7 +69,9 @@ class ModifyEstimate extends Component
     }
     public function close()
     {
-        $this->emit('openForm');
+        return redirect('/estimate-recommender');
+        // $this->emit('openForm');
+        // $this->emit('refreshData');
     }
     public function store($value)
     {

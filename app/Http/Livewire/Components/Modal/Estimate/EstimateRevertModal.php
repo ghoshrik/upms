@@ -43,8 +43,8 @@ class EstimateRevertModal extends Component
                 $title = 'Please Check & try again'
             );
         }
-
         $this->reset();
+        $this->emit('refreshData',$this->updateDataTableTracker);
         // dd($getUser);
     }
     public function render()

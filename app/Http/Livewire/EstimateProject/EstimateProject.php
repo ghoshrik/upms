@@ -9,7 +9,7 @@ use Livewire\Component;
 class EstimateProject extends Component
 {
     public $formOpen = false, $editFormOpen = false,$updateDataTableTracker,$selectedTab = 1,$counterData=[];
-    protected $listeners = ['openForm' => 'formOCControl'];
+    protected $listeners = ['openForm' => 'formOCControl','refreshData' => 'mount'];
     public function mount()
     {
         $this->draftData();
@@ -72,7 +72,7 @@ class EstimateProject extends Component
     public function render()
     {
         $this->updateDataTableTracker = rand(1,1000);
-        $this->emit('changeTitel', 'Estimate Project');
+        $this->emit('changeTitel', 'Project Estimate');
         $assets = ['chart', 'animation'];
         return view('livewire.estimate-project.estimate-project');
     }

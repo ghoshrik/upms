@@ -77,13 +77,13 @@
                                 <div class="col-md-4">
                                     <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab == 3 ? 'active' : '' }}"
                                         wire:click="revertedData()">
-                                        <div class="card-body" wire:ignore>
+                                        <div class="card-body" >
                                             <div class="progress-widget">
                                                 <div id="circle-progress-03"
                                                     class="circle-progress-01 circle-progress circle-progress-primary text-center"
                                                     data-min-value="0" data-max-value="{{ $counterData['totalDataCount'] }}"
                                                     data-value="{{ $counterData['revertedDataCount'] }}"
-                                                    data-type="percent">
+                                                    data-type="percent" wire:ignore>
                                                     <svg class="card-slie-arrow " width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
