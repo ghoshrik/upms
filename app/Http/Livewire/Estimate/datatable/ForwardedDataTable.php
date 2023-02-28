@@ -35,7 +35,8 @@ class ForwardedDataTable extends DataTableComponent
                 ->sortable()
                 ->format( fn($row) => '<span class="badge bg-soft-info fs-6">'.$row.'</span>')
                     ->html(),
-            Column::make("Remarks","assigningUserRemarks.comments"),
+            Column::make("Remarks","estimate_id")
+            ->format(fn($value, $row, Column $column) => view('livewire.components.data-table-view.estimate.forward-estimate-remarks')->withValue($value)),
             Column::make("Actions", "estimate_id")
             ->format(
                 fn($value, $row, Column $column) => view('livewire.action-components.estimate-prepare.forwarded-table-buttons')->withValue($value))

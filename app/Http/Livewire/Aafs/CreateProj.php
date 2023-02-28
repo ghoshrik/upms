@@ -33,23 +33,26 @@ class CreateProj extends Component
 
             // $file = $this->photo->store('documents','public');
             // AAFS::create(['project_id'=>$this->projectId,'Go_id'=>$this->goId,'goDate'=>$this->goDate]);
-
+            // dd($this->photo);
+            // $file_name = $this->photo->store('photos','public');
+            // dd($file_name);
             $insert = [
                 'project_id'=>$this->projectId,
                 'Go_id'=>$this->goId,
                 'go_date'=>getFromDateAttribute($this->goDate),
-                'support_data'=>$this->photo->store('files', 'public'),
+                // 'support_data'=>$file_name,
                 'status'=>0,
             ];
+            // dd($insert);
             AAFS::create($insert);
-            
+
             $this->notification()->success(
                 $title = "Project Order Created Successfully"
             );
             $this->reset();
             $this->emit('openForm');
 
-            
+
         }
         catch (\Throwable $th) {
             session()->flash('serverError', $th->getMessage());

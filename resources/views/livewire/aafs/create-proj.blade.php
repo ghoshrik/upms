@@ -34,7 +34,7 @@
 
                         </div>
                         <div wire:loading wire:target="photo">Uploading...</div>
-                        @error('photo') <span class="error" style="color: red;">{{ $message }}</span> @enderror
+                        {{-- @error('photo') <span class="error" style="color: red;">{{ $message }}</span> @enderror --}}
                     </div>
                 </div>
                 {{-- @if ($photo)

@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class UserManagement extends Component
 {
-    public $formOpen=false;
+    public $formOpen=false,$updateDataTableTracker;
     protected $listeners = ['openForm' => 'formOCControl'];
     public function formOCControl($isEditFrom = false, $eidtId = null)
     {
@@ -20,6 +20,7 @@ class UserManagement extends Component
         }
         $this->editFormOpen = false;
         $this->formOpen = !$this->formOpen;
+        $this->updateDataTableTracker = rand(1,1000);
         $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
     }
     public function render()

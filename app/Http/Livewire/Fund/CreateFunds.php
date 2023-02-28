@@ -47,6 +47,7 @@ class CreateFunds extends Component
                 'approved_date' => getFromDateAttribute($this->storeInputData['approvedDate']),
                 'amount' => $this->storeInputData['amount'],
             ];
+            // dd($insert);
             Fundapprove::create($insert);
         }
 

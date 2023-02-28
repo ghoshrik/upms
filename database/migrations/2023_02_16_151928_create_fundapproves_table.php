@@ -16,7 +16,7 @@ class CreateFundapprovesTable extends Migration
         Schema::create('fundapproves', function (Blueprint $table) {
             $table->id();
             $table->integer('project_id');
-            $table->string('go_id')->unique();
+            $table->string('go_id');
             $table->integer('vendor_id');
             // $table->string('go_record');
             $table->dateTime('approved_date');

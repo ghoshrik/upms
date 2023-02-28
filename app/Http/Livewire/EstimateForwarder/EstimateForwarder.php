@@ -37,6 +37,7 @@ class EstimateForwarder extends Component
             ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 4)
             ->where('sor_masters.status','!=',3)
+            ->where('sor_masters.status','=',11)
             ->where('sor_masters.is_verified', '=', 0)
             // ->where([['sor_masters.is_verified', '=', 0],['sor_masters.status','=',11]])
             ->count();

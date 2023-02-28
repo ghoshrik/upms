@@ -6,12 +6,13 @@ use Livewire\Component;
 
 class Department extends Component
 {
-    public $formOpen = false;
+    public $formOpen = false,$updateDataTableTracker;
     protected $listeners = ['openForm' => 'formOCControl'];
     public function formOCControl()
     {
         $this->formOpen = !$this->formOpen;
         $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
+        $this->updateDataTableTracker = rand(1,1000);
     }
     public function render()
     {

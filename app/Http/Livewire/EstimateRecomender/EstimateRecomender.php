@@ -56,8 +56,10 @@ class EstimateRecomender extends Component
         $this->counterData['forwardedDataCount'] =  SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
             ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 1)
-            ->where('sor_masters.is_verified', '=', 0)
-            ->where('sor_masters.status','=',8)
+            // ->where('sor_masters.is_verified', '=', 0)
+            ->where('sor_masters.status','!=',3)
+            ->where('sor_masters.status','!=',4)
+            ->where('sor_masters.status','!=',8)
             ->count();
         $this->counterData['revertedDataCount'] = SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
             ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)

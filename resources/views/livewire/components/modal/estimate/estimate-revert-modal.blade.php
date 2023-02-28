@@ -7,6 +7,7 @@
                         <div class="mt-2 text-slate-500"> </div>
                         <div>
                             <x-textarea wire:model="userAssignRemarks" label="Remarks" placeholder="Your Remarks" />
+                            <input type="hidden" value="">
                         </div>
                     </div>
             <x-slot name="footer">

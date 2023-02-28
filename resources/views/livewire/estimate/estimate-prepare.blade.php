@@ -29,7 +29,7 @@
                                                     class="circle-progress-01 circle-progress circle-progress-primary text-center"
                                                     data-min-value="0" data-max-value="{{ $counterData['totalDataCount'] }}"
                                                     data-value="{{ $counterData['draftDataCount'] }}"
-                                                    data-type="percent":wire:key="$updateDataTableTracker" wire:ignore>
+                                                    data-type="percent" wire:ignore>
                                                     <svg class="card-slie-arrow" width="24" height="24px"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -39,7 +39,7 @@
                                                         <path d="M10 13h4"></path>
                                                     </svg>
                                                 </div>
-                                                <div class="progress-detail" :wire:key="$updateDataTableTracker">
+                                                <div class="progress-detail" >
                                                     <p class="mb-2">Total Draft</p>
                                                     <h4 class="counter" style="visibility: visible;">
                                                         {{ $counterData['draftDataCount'] }}</h4>
@@ -57,7 +57,7 @@
                                                     class="circle-progress-01 circle-progress circle-progress-info text-center"
                                                     data-min-value="0" data-max-value="{{ $counterData['totalDataCount'] }}"
                                                     data-value="{{ $counterData['forwardedDataCount'] }}"
-                                                    data-type="percent" :wire:key="$updateDataTableTracker" wire:ignore>
+                                                    data-type="percent"  wire:ignore>
                                                     <svg class="card-slie-arrow " width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" >
@@ -65,7 +65,7 @@
                                                         <path d="M4 18v-2a4 4 0 0 1 4-4h12"></path>
                                                     </svg>
                                                 </div>
-                                                <div class="progress-detail" :wire:key="$updateDataTableTracker">
+                                                <div class="progress-detail" >
                                                     <p class="mb-2"> Total Forwarded</p>
                                                     <h4 class="counter" style="visibility: visible;">
                                                         {{ $counterData['forwardedDataCount'] }}</h4>
@@ -91,7 +91,7 @@
                                                         <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
                                                     </svg>
                                                 </div>
-                                                <div class="progress-detail" :wire:key="$updateDataTableTracker">
+                                                <div class="progress-detail" >
                                                     <p class="mb-2">Total Reverted</p>
                                                     <h4 class="counter" style="visibility: visible;">
                                                         {{ $counterData['revertedDataCount'] }}</h4>

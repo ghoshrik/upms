@@ -8,12 +8,13 @@ use App\Models\SorMaster;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use WireUi\Traits\Actions;
+use Illuminate\Support\Facades\Cache;
 
 class EstimateRevertModal extends Component
 {
     use Actions;
     protected $listeners = ['openRevertModal' => 'openRevertModal'];
-    public $openRevertModal = false, $estimate_id, $viewEstimates = [], $updateDataTableTracker;
+    public $openRevertModal = false, $estimate_id, $viewEstimates = [],$userAssignRemarks, $updateDataTableTracker;
     public function openRevertModal($value)
     {
         $this->reset();
@@ -28,12 +29,14 @@ class EstimateRevertModal extends Component
         $getUser = EstimateUserAssignRecord::select('estimate_user_type')->where('estimate_id', '=', $value)->where('estimate_user_id', '=', Auth::user()->id)->first();
         if ($getUser['estimate_user_type'] == 1) {
             if (SorMaster::where('estimate_id', $value)->update(['status' => 3])) {
+                Cache::put($value.'|recomender', $this->userAssignRemarks);
                 $this->notification()->success(
                     $title = 'Estimate Reverted'
                 );
             }
         } elseif ($getUser['estimate_user_type'] == 4) {
             if (SorMaster::where('estimate_id', $value)->update(['status' => 9])) {
+                Cache::put($value.'|forwader', $this->userAssignRemarks);
                 $this->notification()->success(
                     $title = 'Estimate Reverted to Recomender'
                 );

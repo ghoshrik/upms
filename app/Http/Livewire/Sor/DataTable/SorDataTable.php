@@ -23,8 +23,10 @@ class SorDataTable extends DataTableComponent
             // Column::make("Id", "id")
             //     ->sortable(),
             Column::make("Item Number", "item_details")
+                ->searchable()
                 ->sortable(),
             Column::make("Department Name", "getDepartmentName.department_name")
+                ->searchable()
                 ->sortable(),
             Column::make("Dept Category", "getDeptCategoryName.dept_category_name")
                 ->sortable(),
@@ -40,8 +42,8 @@ class SorDataTable extends DataTableComponent
                 ->sortable(),
             Column::make("Effect to", "effect_to")
                 ->sortable(),
-            Column::make("IsActive", "IsActive")
-                ->sortable(),
+            // Column::make("IsActive", "IsActive")
+            //     ->sortable(),
             Column::make("Actions", "id")->view('components.data-table-components.buttons.edit'),
             // Column::make("Created at", "created_at")
             //     ->sortable(),

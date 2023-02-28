@@ -16,7 +16,7 @@
                         <div class="card-body">
                             {{-- TODO:: CHANGE --}}
                             {{-- <h2>Designation wise user data list sorting pending</h2> --}}
-                            <livewire:user-management.datatable.users-datatable />
+                            <livewire:user-management.datatable.users-datatable :wire:key='$updateDataTableTracker' />
                         </div>
                     </div>
                 </div>

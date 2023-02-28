@@ -12,7 +12,7 @@
                     </x-select>
                 </div>
                 <div class="col-md-3 col-lg-3 col-sm-3">
-                    <x-input label="{{trans('cruds.funds.fields.go_id')}}"  wire:model.defer="storeInputData.goId" placeholder="{{trans('cruds.funds.fields.go_id')}}" />
+                    <x-input label="{{trans('cruds.funds.fields.go_id')}}"  wire:model.defer="storeInputData.goId" placeholder="{{trans('cruds.funds.fields.go_id')}}" readonly/>
                 </div>
                 <div class="col-md-6 col-lg-6 col-sm-3">
                     <x-select label="{{ trans('cruds.funds.fields.vendor_id') }}" placeholder="Select {{ trans('cruds.funds.fields.vendor_id') }}" wire:model.defer="storeInputData.vendorId" multiselect>

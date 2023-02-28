@@ -18,6 +18,6 @@ class EstimateUserAssignRecord extends Model
     }
     // public function assigningUserRemarks()
     // {
-    //     return $this->belongsTo(EstimateUserAssignRecord::class,'estimate_user_id','created_by');
+    //     return $this->belongsTo(SorMaster::class,'estimate_id','estimate_id');
     // }
 }
