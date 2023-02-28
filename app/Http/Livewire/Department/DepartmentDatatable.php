@@ -21,9 +21,10 @@ class DepartmentDatatable extends DataTableComponent
             Column::make("Id", "id")
                 ->sortable(),
             Column::make("Department name", "department_name")
+                ->searchable()
                 ->sortable(),
-            Column::make("Actions", "id")
-                ->view('components.data-table-components.buttons.edit'),
+            // Column::make("Actions", "id")
+            //     ->view('components.data-table-components.buttons.edit'),
 
         ];
     }

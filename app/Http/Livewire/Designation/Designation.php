@@ -7,12 +7,12 @@ use Livewire\Component;
 class Designation extends Component
 {
     public $updateMode = false;
-    public $formOpen=false,$editFormOpen = false,$desgUpdateTrack;
+    public $formOpen=false,$editFormOpen = false,$updatedDataTableTracker;
     protected $listeners = ['openForm' => 'formOCControl'];
 
     public function mount()
     {
-        $this->desgUpdateTrack = rand(1,1000);
+        $this->updatedDataTableTracker = rand(1,1000);
     }
     public function formOCControl($isEditFrom = false, $editId = null)
     {
@@ -27,6 +27,7 @@ class Designation extends Component
         $this->editFormOpen = false;
         $this->formOpen = !$this->formOpen;
         $this->emit('changeSubTitle', ($this->formOpen)?'Create new':'List');
+        $this->updatedDataTableTracker = rand(1,1000);
     }
     public function render()
     {

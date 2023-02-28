@@ -32,7 +32,6 @@
                             </span>
                         </button>
                     </div>
-
                     {{-- @endif --}}
                 </div>
             </div>

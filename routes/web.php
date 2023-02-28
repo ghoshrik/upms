@@ -133,8 +133,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('aafs-project',ProjectList::class)->name('aafs-project');
     Route::view('/powergrid', 'powergrid-demo');
 
-    Route::get('vendors',VendorList::class)->name('vendors');
-    Route::get('aafs-project',ProjectList::class)->name('aafs-project');
     Route::get('funds',Funds::class)->name('funds');
     Route::get('aoclist',Aocs::class)->name('aoclist');
 
