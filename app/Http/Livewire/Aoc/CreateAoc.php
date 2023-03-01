@@ -2,58 +2,65 @@
 
 namespace App\Http\Livewire\Aoc;
 
-use App\Models\AOC;
+use App\Models\Aoc;
+use App\Models\AAFS;
+use App\Models\Vendor;
 use Livewire\Component;
 use WireUi\Traits\Actions;
-use Illuminate\Support\Carbon;
-use App\Models\SorMaster;
+use Livewire\WithFileUploads;
+
 class CreateAoc extends Component
 {
-    public $title,$refcNo,$category,$projId,$fetchData,$InputStoreData = [];
-    
-    use Actions;
+    use Actions, WithFileUploads;
+    public $titel, $subTitel, $formOpen, $fetchData = [], $storeInputData = [];
+
     public function mount()
     {
-        $this->InputStoreData['projID'] = '';
-        $this->InputStoreData['tenderNo'] = '';
-        $this->InputStoreData['tenderTitle'] = '';
-        $this->InputStoreData['publishDate'] = '';
-        $this->InputStoreData['closeDate'] = '';
-        $this->InputStoreData['BiderNo'] = '';
-        $this->InputStoreData['tenderCategory'] = '';
 
+        $this->fetchData['project_number'] = AAFS::get();
+        // $this->fetchData['vendors'] = Vendor::all();
+        $this->storeInputData['projectId'] = '';
+        $this->fetchData['goID'] = '';
+        $this->storeInputData['goId'] = '';
+        $this->storeInputData['vendorId'] = '';
+        $this->storeInputData['approvedDate'] = '';
+        $this->storeInputData['amount'] = '';
     }
-    
+    public function changeProjectID()
+    {
+        // dd($this->storeInputData['projectId']);
+        $this->fetchData['goID'] = AAFS::select('go_id')->where('project_id', $this->storeInputData['projectId'])->first();
+        $this->storeInputData['goId'] = $this->fetchData['goID']['go_id'];
+        //  dd($this->storeInputData['goId']);
+    }
+
     public function store()
     {
-        try{
+        foreach ($this->storeInputData['vendorId'] as $key => $vendorId) {
             $insert = [
-                'project_no'=>$this->InputStoreData['projID'],
-                'tender_id'=>$this->InputStoreData['tenderNo'],
-                'tender_title'=>$this->InputStoreData['tenderTitle'],
-                'publish_date'=>$this->InputStoreData['publishDate'],
-                'close_date'=>$this->InputStoreData['closeDate'],
-                'bidder_name'=>$this->InputStoreData['BiderNo'] ,
-                'tender_category'=>$this->InputStoreData['tenderCategory']
+                'project_id' => $this->storeInputData['projectId'],
+                'go_id' => $this->storeInputData['goId'],
+                'vendor_id' => $vendorId,
+                // 'go_record'=>$this->storeInputData['uploadData']->storeAs($this->storeInputData['uploadData']),
+                'approved_date' => getFromDateAttribute($this->storeInputData['approvedDate']),
+                'amount' => $this->storeInputData['amount'],
             ];
-            // dd($insert);
-            
-            AOC::create($insert);
-            $this->notification()->success(
-                $title = trans('cruds.aoc.create_msg')
-            );
-            $this->reset();
-            $this->emit('openForm');
+            Aoc::create($insert);
         }
-        catch(\Throwable $th)
-        {
-            $this->emit('showError', $th->getMessage());
-        }
+
+
+        $this->notification()->success(
+            $title = trans('cruds.funds.create_msg')
+        );
+        // $this->reset();
+        $this->emit('openForm');
     }
     public function render()
     {
-        $this->fetchData['project_number'] = SorMaster::where('is_verified','=',1)->get();
-        $assets = ['chart', 'animation'];
-        return view('livewire.aoc.create-aoc',compact('assets'));
+        // $this->fetchData['project_number'] = SorMaster::where('is_verified','=',1)->get();
+        $this->fetchData['vendors'] = Vendor::all();
+
+        // $this->emit('changeTitel', trans('cruds.funds.title'));
+        return view('livewire.aoc.create-aoc');
     }
 }

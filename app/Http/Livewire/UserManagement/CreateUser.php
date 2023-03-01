@@ -29,6 +29,8 @@ class CreateUser extends Component
             'username' => '',
             'password' => '',
             'confirm_password' => '',
+            'mobile'=>'',
+            'email'=>'',
         ];
         if (Auth::user()->user_type == 2) {
             $this->getDropdownData('DEPT');
@@ -69,6 +71,8 @@ class CreateUser extends Component
             $this->newUserData['user_type'] = $userType['id'];
             $this->newUserData['department_id'] = Auth::user()->department_id;
             $this->newUserData['office_id'] = Auth::user()->office_id;
+            $this->newUserData['email'] = $this->newUserData['email'];
+            $this->newUserData['mobile'] = $this->newUserData['mobile'];
             // $this->newUserData['password'] = Hash::make($this->newUserData['password']);
             $this->newUserData['password'] = Hash::make('password');
             if (User::create($this->newUserData)) {

@@ -9,13 +9,13 @@ use App\Http\Controllers\UserController;
 use App\Http\Livewire\Aafs\ProjectList;
 use App\Http\Livewire\Department\Department;
 use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
-use App\Http\Livewire\Designation\CreateDesignation;
+// use App\Http\Livewire\Designation\CreateDesignation;
 use App\Http\Livewire\Designation\Designation;
 use App\Http\Livewire\Estimate\EstimatePrepare;
 use App\Http\Livewire\EstimateProject\EstimateProject;
 use App\Http\Livewire\Office\Office;
 use App\Http\Livewire\Sor\Sor;
-use App\Http\Livewire\TestALL\TestSearch;
+// use App\Http\Livewire\TestALL\TestSearch;
 use App\Http\Livewire\UserType\UserType;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\AccessType\AccessType;
@@ -25,13 +25,14 @@ use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
 use App\Http\Livewire\Fund\Funds;
 use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\Milestone\Milestones;
-use App\Http\Livewire\Permission\Permissions;
-use App\Http\Livewire\Role\Roles;
-use App\Http\Livewire\Setting\SettingLists;
+use App\Http\Livewire\Tender\Tenders;
+// use App\Http\Livewire\Permission\Permissions;
+// use App\Http\Livewire\Role\Roles;
+// use App\Http\Livewire\Setting\SettingLists;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\VendorRegs\VendorList;
-use App\Models\Menu;
-use App\Models\MileStone;
+// use App\Models\Menu;
+// use App\Models\MileStone;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -95,8 +96,10 @@ Route::group(['middleware' => ['prevent-back-history']],function(){
 
         Route::get('vendors',VendorList::class)->name('vendors');
         Route::get('aafs-project',ProjectList::class)->name('aafs-project');
-        Route::get('funds',Funds::class)->name('funds');
-        Route::get('aoclist',Aocs::class)->name('aoclist');
+        // Route::get('funds',Funds::class)->name('funds');
+        Route::get('aoc',Aocs::class)->name('aoc');
+
+        Route::get('tenders',Tenders::class)->name('tenders');
 
     });
 });

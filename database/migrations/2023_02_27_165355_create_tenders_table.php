@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAOCSTable extends Migration
+class CreateTendersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateAOCSTable extends Migration
      */
     public function up()
     {
-        Schema::create('a_o_c_s', function (Blueprint $table) {
+        Schema::create('tenders', function (Blueprint $table) {
             $table->id();
             $table->integer('project_no');
             $table->string('tender_id');
@@ -22,7 +22,6 @@ class CreateAOCSTable extends Migration
             $table->date('close_date');
             $table->string('bidder_name');
             $table->string('tender_category');
-            // $table->
             $table->timestamps();
         });
     }
@@ -34,6 +33,6 @@ class CreateAOCSTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('a_o_c_s');
+        Schema::dropIfExists('tenders');
     }
 }
