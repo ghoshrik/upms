@@ -35,8 +35,7 @@ class ForwardedDataTable extends DataTableComponent
                 ->sortable()
                 ->format( fn($row) => '<span class="badge bg-soft-info fs-6">'.$row.'</span>')
                     ->html(),
-            Column::make("Remarks","estimate_id")
-            ->format(fn($value, $row, Column $column) => view('livewire.components.data-table-view.estimate.forward-estimate-remarks')->withValue($value)),
+            Column::make("Remarks","comments"),
             Column::make("Actions", "estimate_id")
             ->format(
                 fn($value, $row, Column $column) => view('livewire.action-components.estimate-prepare.forwarded-table-buttons')->withValue($value))
@@ -57,7 +56,7 @@ class ForwardedDataTable extends DataTableComponent
     }
     public function builder(): Builder
     {
-        return EstimatePrepare::query()
+        $a = EstimatePrepare::query()->select('estimate_prepares.estimate_id')
         ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
         ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
         ->where('estimate_user_assign_records.estimate_user_type','=',2)
@@ -66,5 +65,7 @@ class ForwardedDataTable extends DataTableComponent
         ->where('operation', 'Total')
         ->where('created_by',Auth::user()->id);
         // ->groupBy('estimate_id.estimate_id');
+        // dd($a->toSql());
+        return $a;
     }
 }

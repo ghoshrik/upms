@@ -114,8 +114,8 @@
                     @elseif ($this->selectedTab == 2)
                         <div class="card">
                             <div class="card-body">
-                                <livewire:estimate.datatable.forwarded-data-table
-                                    :wire:key="$updateDataTableTracker" />
+                                <livewire:estimate.datatable.forwarded-data-table :wire:key="$updateDataTableTracker" />
+                                <livewire:app.http.livewire.estimate.datatable.power-grid.estimated-table :wire:key="$updateDataTableTracker"/>
                             </div>
                         </div>
                     @elseif ($this->selectedTab == 3)
