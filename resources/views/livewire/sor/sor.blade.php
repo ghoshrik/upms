@@ -7,7 +7,7 @@
                         <h1>{{$titel}}</h1>
                         <p class="mb-0">{{$subTitel}}</p>
                     </div>
-                    @canany(['create'])
+                    @canany(['create Prepare SOR','edit Prepare SOR'])
                     <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
                         @if (!$isFromOpen)
                         <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
@@ -53,7 +53,7 @@
                 @if($isFromOpen && $openedFormType == 'create')
                     <livewire:sor.create-sor />
                 @elseif($isFromOpen && $openedFormType == 'edit')
-                    <livewire:sor.create-sor />
+                    <livewire:sor.edit-sor />
                 @else
                 <div class="col-md-12 col-lg-12 col-sm-3">
                     <div class="card">

@@ -51,6 +51,7 @@ class EditSor extends Component
                 'version' => $this->sorEditData['version'],
                 'effect_from' => $this->effect_to,
             ];
+            // dd($this->editedData);
             if ($this->sor_id) {
                 if (SOR::create($this->editedData)) {
                     SOR::where('id', $this->sor_id)->update(['effect_to' => date('Y-m-d', strtotime('-1 day', strtotime($this->effect_to)))]);
@@ -63,7 +64,8 @@ class EditSor extends Component
             $this->emit('openForm');
             $this->updateDataTableTracker = rand(1,1000);
         } catch (\Throwable $th) {
-            $this->emit('showError', $th->getMessage());
+            dd($th->getMessage());
+            // $this->emit('showError', $th->getMessage());
         }
     }
     public function render()
