@@ -50,8 +50,8 @@ class CreateSor extends Component
                 'department_id' => Auth::user()->department_id,
                 'dept_category_id' => '',
                 'description' => '',
-                'unit' => 0,
-                'cost' => 0,
+                'unit' => '',
+                'cost' => '',
                 'version' => '',
                 'effect_from' => '',
             ]
@@ -62,16 +62,16 @@ class CreateSor extends Component
     public function addNewRow()
     {
         $this->inputsData[] =
-            [
-                'item_details' => '',
-                'department_id' => Auth::user()->department_id,
-                'dept_category_id' => '',
-                'description' => '',
-                'unit' => 0,
-                'cost' => 0,
-                'version' => '',
-                'effect_from' => '',
-            ];
+        [
+            'item_details' => '',
+            'department_id' => Auth::user()->department_id,
+            'dept_category_id' => '',
+            'description' => '',
+            'unit' => '',
+            'cost' => '',
+            'version' => '',
+            'effect_from' => '',
+        ];
     }
     public function updated($param)
     {

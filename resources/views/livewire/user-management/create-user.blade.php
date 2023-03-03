@@ -60,12 +60,12 @@
                         </div>
                     </div>
                     <div class="row">
-                        {{-- <div class="col-md-6">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <x-input wire:model="newUserData.mobile" label="Mobile"
                                     placeholder="Enter Employee Mobile No" />
                             </div>
-                        </div> --}}
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <x-input wire:model="newUserData.email" label="Email"

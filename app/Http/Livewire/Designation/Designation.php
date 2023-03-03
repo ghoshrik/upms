@@ -9,10 +9,30 @@ class Designation extends Component
     public $updateMode = false;
     public $formOpen=false,$editFormOpen = false,$updatedDataTableTracker;
     protected $listeners = ['openForm' => 'formOCControl'];
-
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel = "Designations";
     public function mount()
     {
         $this->updatedDataTableTracker = rand(1,1000);
+    }
+    public function fromEntryControl($data='')
+    {
+        // dd($data);
+        $this->openedFormType = is_array($data) ? $data['formType']:$data;
+        $this->isFromOpen = !$this->isFromOpen;
+        switch ($this->openedFormType) {
+            case 'create':
+                $this->subTitel = 'Create';
+                break;
+            case 'edit':
+                $this->subTitel = 'Edit';
+                break;
+            default:
+                $this->subTitel = 'List';
+                break;
+        }
+        if(isset($data['id'])){
+            $this->selectedIdForEdit = $data['id'];
+        }
     }
     public function formOCControl($isEditFrom = false, $editId = null)
     {

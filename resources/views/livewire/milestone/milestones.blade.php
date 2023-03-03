@@ -1,26 +1,72 @@
 <div>
-    {{-- Close your eyes. Count to one. That is how long forever feels. --}}
-    @section('webtitle', trans('cruds.milestone.title_singular'))
-    <div wire:loading.delay.long>
-        <div class="spinner-border text-primary loader-position" role="status"></div>
-    </div>
-    <div wire:loading.delay.long.class="loading" x-data="{ formOpen: @entangle('formOpen')}">
-        <div x-show="formOpen" x-transition.duration.900ms>
-            @if ($formOpen)
-                <livewire:milestone.create-milestone />
-            @endif
+    <div class="conatiner-fluid content-inner mt-3 py-0">
+        <div class="iq-navbar-header" style="height: 145px;">
+            <div class="container-fluid iq-container">
+                <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
+                    <div class="d-flex flex-column">
+                        <h1>{{$titel}}</h1>
+                        <p class="mb-0">{{$subTitel}}</p>
+                    </div>
+                    @canany(['create'])
+                    <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
+                        @if (!$isFromOpen)
+                        <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
+                            x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
+                            <span class="btn-inner">
+                                <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
+                            </span>
+                        </button>
+                        @else
+                        <button wire:click="fromEntryControl" class="btn btn-danger rounded-pill "
+                            x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
+                            <span class="btn-inner">
+                                <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
+                            </span>
+                        </button>
+                        @endif
+                    </div>
+                    @endcanany
+                </div>
+            </div>
+            <div class="iq-header-img">
+                <img src="{{ asset('images/dashboard/top-header.png') }}" alt="header"
+                    class="theme-color-default-img img-fluid w-100 h-100 animated-scaleX">
+                <img src="{{ asset('images/dashboard/top-header1.png') }}" alt="header"
+                    class="theme-color-purple-img img-fluid w-100 h-100 animated-scaleX">
+                <img src="{{ asset('images/dashboard/top-header2.png') }}" alt="header"
+                    class="theme-color-blue-img img-fluid w-100 h-100 animated-scaleX">
+                <img src="{{ asset('images/dashboard/top-header3.png') }}" alt="header"
+                    class="theme-color-green-img img-fluid w-100 h-100 animated-scaleX">
+                <img src="{{ asset('images/dashboard/top-header4.png') }}" alt="header"
+                    class="theme-color-yellow-img img-fluid w-100 h-100 animated-scaleX">
+                <img src="{{ asset('images/dashboard/top-header5.png') }}" alt="header"
+                    class="theme-color-pink-img img-fluid w-100 h-100 animated-scaleX">
+            </div>
         </div>
-        <div x-show="!formOpen " x-transition.duration.900ms>
-            <x-cards title="">
-                <x-slot name="table">
-                    @if($viewMode)
-                        <livewire:milestone.milestone-view :milestones="$milestones"/>
-                    @else
-                        <livewire:milestone.milestone-lists :wire:key="$updateDataTableTracker"/>
-                        {{-- <livewire:data-table.milestone-data-table :wire:key="$updateDataTableTracker"/> --}}
-                    @endif
-                </x-slot>
-            </x-cards>
+        @section('webtitle', trans('cruds.milestone.title_singular'))
+        <div wire:loading.delay.long>
+            <div class="spinner-border text-primary loader-position" role="status"></div>
+        </div>
+        <div wire:loading.delay.long.class="loading">
+            <div x-transition.duration.900ms>
+                @if ($isFromOpen && $openedFormType == 'create')
+                <livewire:milestone.create-milestone />
+                @elseif($isFromOpen && $openedFormType == 'edit')
+                @else
+                <x-cards title="">
+                    <x-slot name="table">
+                        @if($viewMode)
+                        <livewire:milestone.milestone-view :milestones="$milestones" />
+                        @else
+                        <livewire:milestone.milestone-lists :wire:key="$updateDataTableTracker" />
+                        {{--
+                        <livewire:data-table.milestone-data-table :wire:key="$updateDataTableTracker" /> --}}
+                        @endif
+                    </x-slot>
+                </x-cards>
+                @endif
+            </div>
+
         </div>
     </div>
 </div>

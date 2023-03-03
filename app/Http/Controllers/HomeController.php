@@ -14,10 +14,15 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+        // $this->emit('changeTitleSubTitle');
+
         $assets = ['chart', 'animation'];
         return view('dashboards.dashboard', compact('assets'));
     }
-
+    public function changeTitleSubTitle()
+    {
+        dd("asdas");
+    }
 
     // public function testMileStone()
     // {

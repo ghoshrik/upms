@@ -248,8 +248,8 @@ return [
         ],
     ],
     'vendors'=>[
-        'title'=>'Vendor Registration',
-        'title_singular'=>'Vendors Registrations',
+        'title'=>'Vendor Informations',
+        'title_singular'=>'Vendors Informations',
         'menu_title'=>'Vendors Information',
         'fields'=>[
             'id'=>'ID',
@@ -315,7 +315,7 @@ return [
             'actions'=>'Actions',
         ],
     ],
-    'aoc'=>[
+    'tenders'=>[
         // 'title'=>'Award of Contacts',
         'title'=>'Tender Information',
         'title_singular'=>'Award of Contract',
@@ -336,7 +336,7 @@ return [
             'actions'=>'Action',
         ],
     ],
-    'funds'=>[
+    'aocs'=>[
         // 'title'=>'IFMS Fund',
         'title'=>'Awards of Contracts',
         'title_singular'=>'IFMS funds release',

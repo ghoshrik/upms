@@ -3,59 +3,45 @@
         <x-slot name='form'>
             <div class="row">
                 <div class="col-md-3 col-lg-3 col-sm-3">
-                    {{-- <x-input label="{{ trans('cruds.aoc.fields.ref_no') }}" wire:model.defer="refcNo" placeholder="{{ trans('cruds.aoc.fields.ref_no') }}"/> --}}
-                    <x-select label="{{ trans('cruds.aoc.fields.project_id') }}"
-                    placeholder="Select {{ trans('cruds.funds.fields.project_id') }}"
-                    wire:model.defer="InputStoreData.projID">
+                    <x-select label="{{ trans('cruds.aocs.fields.project_id') }}"
+                    placeholder="Select {{ trans('cruds.aocs.fields.project_id') }}"
+                    wire:model.defer="storeInputData.projectId" x-on:select="$wire.changeProjectID()">
                         @foreach ($fetchData['project_number'] as $projects)
-                            <x-select.option label="{{ $projects['estimate_id'] }}" value="{{ $projects['estimate_id'] }}" />
+                            <x-select.option label="{{ $projects['project_id'] }}" value="{{ $projects['project_id'] }}" />
                         @endforeach
                     </x-select>
                 </div>
                 <div class="col-md-3 col-lg-3 col-sm-3">
-                    <x-input label="{{ trans('cruds.aoc.fields.tender_id') }}" wire:model.defer="InputStoreData.tenderNo" placeholder="{{ trans('cruds.aoc.fields.tender_id') }}"/>
-                    {{-- <x-select label="Tender ID"
-                    placeholder="Select Tender ID"
-                    wire:model.defer="projId">
-                        @foreach ($fetchData['project_number'] as $projects)
-                            <x-select.option label="{{ $projects['estimate_id'] }}" value="{{ $projects['id'] }}" />
-                        @endforeach
-                    </x-select> --}}
+                    <x-input label="{{trans('cruds.aocs.fields.go_id')}}"  wire:model.defer="storeInputData.goId" placeholder="{{trans('cruds.aocs.fields.go_id')}}" />
                 </div>
                 <div class="col-md-6 col-lg-6 col-sm-3">
-                    <x-input label="{{ trans('cruds.aoc.fields.title') }}" wire:model.defer="InputStoreData.tenderTitle" placeholder="{{ trans('cruds.aoc.fields.title') }}"/>
+                    <x-select label="{{ trans('cruds.aocs.fields.vendor_id') }}" placeholder="Select {{ trans('cruds.aocs.fields.vendor_id') }}" wire:model.defer="storeInputData.vendorId" multiselect>
+                            @foreach ($fetchData['vendors'] as $user)
+                            <x-select.option label="{{ $user['comp_name'] }}" value="{{ $user['id'] }}" />
+                            @endforeach
+                    </x-select>
                 </div>
-
-                <div class="col-md-3 col-lg-3 col-sm-3">
-                    <x-datetime-picker without-time
-                        label="{{ trans('cruds.aoc.fields.date_of_pub') }}"
-                        placeholder="{{ trans('cruds.aoc.fields.date_of_pub') }}"
-                        wire:model.defer="InputStoreData.publishDate"
-                    />    
-                </div>
-
                 <div class="col-md-3 col-lg-3 col-sm-3 mt-2">
                     <x-datetime-picker without-time
-                        label="{{ trans('cruds.aoc.fields.date_of_close') }}"
-                        placeholder="{{ trans('cruds.aoc.fields.date_of_close') }}"
-                        wire:model.defer="InputStoreData.closeDate"
-                    />    
-                </div>
-                <div class="col-md-3 col-lg-3 col-sm-3 mt-2">
-                    <x-input label="{{ trans('cruds.aoc.fields.num_bider') }}" wire:model.defer="InputStoreData.BiderNo" placeholder="{{ trans('cruds.aoc.fields.num_bider') }}"/>
-                </div>
+                        label="{{ trans('cruds.aocs.fields.approved_date') }}"
+                        placeholder="{{ trans('cruds.aocs.fields.approved_date') }}"
 
-                <div class="col-md-3 col-lg-3 col-sm-3 mt-2">
-                    <x-select
-                        label="Select {{ trans('cruds.aoc.fields.category') }}"
-                        placeholder="Select {{ trans('cruds.aoc.fields.category') }}"
-                        :options="['Services', 'Goods', 'Works']"
-                        wire:model.defer="InputStoreData.tenderCategory"
-                    />
+                        wire:model.defer="storeInputData.approvedDate" />
                 </div>
+                <div class="col-md-3 col-lg-3 col-sm-3 mt-2">
+                    <x-input wire:model.defer="storeInputData.amount"
+                    label="{{ trans('cruds.aocs.fields.amount') }}" placeholder="{{ trans('cruds.aocs.fields.amount') }}" />
+                </div>
+                {{-- <div class="col-md-3 col-lg-3 col-sm-3 mt-2">
+                   <div class="form-group">
+                    <label for="">{{ trans('cruds.funds.fields.support_data') }}</label>
+                    <input type="file" wire:model="storeInputData.uploadData" class="form-control"/>
+                   </div>
+                </div> --}}
+
             </div>
             <div class="row">
-                <div class="col-12 mt-2">
+                <div class="col-12">
                     <button type="submit" class="btn btn-success rounded-pill float-right">Save</button>
                 </div>
             </div>

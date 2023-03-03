@@ -12,6 +12,8 @@ class CreateMenu extends Component
     use Actions;
 
     public $dropDownData = [], $formatedPermission = [], $newMenuData = [];
+
+
     public function mount()
     {
         $this->newMenuData = [
