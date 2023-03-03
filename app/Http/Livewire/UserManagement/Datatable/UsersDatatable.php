@@ -25,19 +25,25 @@ class UsersDatatable extends DataTableComponent
             // Column::make("Name", "name")
             //     ->sortable(),
             Column::make("Username", "username")
+                ->sortable()
+                ->searchable(),
+            Column::make("Email", "email")
                 ->sortable(),
-            // Column::make("Email", "email")
-            //     ->sortable(),
             Column::make("Emp id", "emp_id")
                 ->sortable(),
             Column::make("Emp name", "emp_name")
                 ->sortable(),
-            Column::make("Designation id", "getDesignationName.designation_name")
+
+            Column::make("Designation Name", "getDesignationName.designation_name")
                 ->sortable(),
-            Column::make("Department id", "getDepartmentName.department_name")
+                // ->hideIf(Auth::user()->user_type=3 && Auth::user()->user_type=2) ,
+                // ->hideIf(Auth::user()->user_type=2),
+
+            Column::make("Department Name", "getDepartmentName.department_name")
                 ->sortable(),
-            Column::make("Office id", "getOfficeName.office_name")
+            Column::make("Office Name", "getOfficeName.office_name")
                 ->sortable(),
+                // ->hideIf(!Auth::user()->user_type=3),
             Column::make("User type", "getUserType.type")
                 ->sortable(),
             // Column::make("Created at", "created_at")

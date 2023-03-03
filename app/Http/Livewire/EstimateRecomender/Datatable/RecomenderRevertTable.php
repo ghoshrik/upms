@@ -33,10 +33,12 @@ class RecomenderRevertTable extends DataTableComponent
                 ->sortable()
                 ->format(fn ($row) => '<span class="badge bg-success fs-6">' . $row . '</span>')
                 ->html(),
+            Column::make("Remarks","estimate_id")
+                ->format(fn($value, $row, Column $column) => view('livewire.components.data-table-view.estimate-recomender.revert-estimate-remarks')->withValue($value)),
             Column::make("Actions", "estimate_id")
-                // ->format(
-                //     fn ($value, $row, Column $column) => view('livewire.action-components.estimate-recomender.verify-table-buttons')->withValue($value)
-                // )
+                ->format(
+                    fn ($value, $row, Column $column) => view('livewire.action-components.estimate-recomender.verify-table-buttons')->withValue($value)
+                )
         ];
     }
     public function view($estimate_id)

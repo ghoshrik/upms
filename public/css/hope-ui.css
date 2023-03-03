@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap);
+/* @import url(https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap); */
 @charset "UTF-8";
 /*!
 * Version: 1.2.0
@@ -8,6 +8,9 @@
 * NOTE: This file contains the styling for Template.
 *
 */
+
+
+
 :focus {
   outline: none;
 }
@@ -5952,7 +5955,7 @@ textarea.form-control-lg {
   }
 }
 .spinner-border {
-  display: inline-block;
+  /* display: inline-block; */
   width: 2rem;
   height: 2rem;
   vertical-align: -0.125em;

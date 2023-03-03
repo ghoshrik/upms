@@ -20,7 +20,7 @@ class AddedEstimateProjectList extends Component
     use Actions;
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
-    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker;
+    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
 
     public function mount()
     {
@@ -53,7 +53,7 @@ class AddedEstimateProjectList extends Component
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
         $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc');
+        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount');
     }
 
     public function expCalc()
@@ -111,6 +111,7 @@ class AddedEstimateProjectList extends Component
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
             $this->insertAddEstimate($this->arrayIndex, '', '', '', '', '', '', '', '', $result, 'Total', '', '');
+            $this->totalOnSelectedCount++;
         } else {
             $this->dispatchBrowserEvent('alert', [
                 'type' => 'error',
@@ -173,6 +174,10 @@ class AddedEstimateProjectList extends Component
         Session()->forget('addedProjectEstimateData');
         Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
         $this->level = [];
+        if($this->totalOnSelectedCount == 1)
+        {
+            $this->reset('totalOnSelectedCount');
+        }
         $this->notification()->error(
             $title = 'Row Deleted Successfully'
         );
@@ -288,62 +293,70 @@ class AddedEstimateProjectList extends Component
 
     public function store()
     {
-        try {
-            if ($this->allAddedEstimatesData) {
-                $intId = random_int(100000, 999999);
-                if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
-                    foreach ($this->allAddedEstimatesData as $key => $value) {
-                        $insert = [
-                            'estimate_id' => $intId,
-                            'estimate_no' => $value['estimate_no'],
-                            'dept_id' => $value['dept_id'],
-                            'category_id' => $value['category_id'],
-                            'row_id' => $value['array_id'],
-                            'row_index' => $value['arrayIndex'],
-                            'sor_item_number' => $value['sor_item_number'],
-                            'item_name' => $value['item_name'],
-                            'other_name' => $value['other_name'],
-                            'qty' => $value['qty'],
-                            'rate' => $value['rate'],
-                            'total_amount' => $value['total_amount'],
-                            'operation' => $value['operation'],
-                            'created_by' => Auth::user()->id,
-                            'comments' => $value['remarks'],
-                        ];
-                        $validateData = Validator::make($insert, [
-                            'estimate_id' => 'required|integer',
-                            'dept_id' => 'required|integer',
-                            'category_id' => 'required|integer',
-                            'row_id' => 'required|integer',
-                        ]);
-                        if ($validateData->fails()) {
-                            // dd($validateData->messages());
+        if ($this->totalOnSelectedCount == 1) {
+            try {
+                if ($this->allAddedEstimatesData) {
+                    $intId = random_int(100000, 999999);
+                    if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
+                        foreach ($this->allAddedEstimatesData as $key => $value) {
+                            $insert = [
+                                'estimate_id' => $intId,
+                                'estimate_no' => $value['estimate_no'],
+                                'dept_id' => $value['dept_id'],
+                                'category_id' => $value['category_id'],
+                                'row_id' => $value['array_id'],
+                                'row_index' => $value['arrayIndex'],
+                                'sor_item_number' => $value['sor_item_number'],
+                                'item_name' => $value['item_name'],
+                                'other_name' => $value['other_name'],
+                                'qty' => $value['qty'],
+                                'rate' => $value['rate'],
+                                'total_amount' => $value['total_amount'],
+                                'operation' => $value['operation'],
+                                'created_by' => Auth::user()->id,
+                                'comments' => $value['remarks'],
+                            ];
+                            $validateData = Validator::make($insert, [
+                                'estimate_id' => 'required|integer',
+                                'dept_id' => 'required|integer',
+                                'category_id' => 'required|integer',
+                                'row_id' => 'required|integer',
+                            ]);
+                            if ($validateData->fails()) {
+                                // dd($validateData->messages());
+                            }
+                            EstimatePrepare::create($insert);
                         }
-                        EstimatePrepare::create($insert);
-                    }
-                    $data = [
-                        'estimate_id' => $intId,
-                        'estimate_user_type' => 3,
-                        'estimate_user_id' => Auth::user()->id,
-                    ];
-                    EstimateUserAssignRecord::create($data);
+                        $data = [
+                            'estimate_id' => $intId,
+                            'estimate_user_type' => 3,
+                            'estimate_user_id' => Auth::user()->id,
+                        ];
+                        EstimateUserAssignRecord::create($data);
 
-                    $this->notification()->success(
-                        $title = 'Project Estimate Created Successfully!!'
+                        $this->notification()->success(
+                            $title = 'Project Estimate Created Successfully!!'
+                        );
+                        $this->resetSession();
+                        $this->updateDataTableTracker = rand(1, 1000);
+                        $this->emit('openForm');
+                        $this->emit('refreshData');
+                    }
+                } else {
+                    $this->notification()->error(
+                        $title = 'please insert at list one item !!'
                     );
-                    $this->resetSession();
-                    $this->updateDataTableTracker = rand(1, 1000);
-                    $this->emit('openForm');
                 }
-            } else {
-                $this->notification()->error(
-                    $title = 'please insert at list one item !!'
-                );
+            } catch (\Throwable $th) {
+                // session()->flash('serverError', $th->getMessage());
+                $this->emit('showError', $th->getMessage());
             }
-        } catch (\Throwable $th) {
-            // session()->flash('serverError', $th->getMessage());
-            $this->emit('showError', $th->getMessage());
+        }else{
+            $this->notification()->error(
+                $title = 'Please Calculate total first !!'
+            );
         }
+
     }
     public function render()
     {

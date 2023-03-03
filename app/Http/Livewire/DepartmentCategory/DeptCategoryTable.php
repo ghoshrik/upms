@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DeptCategoryTable extends DataTableComponent
 {
-    protected $model = SorCategoryType::class;
+    // protected $model = SorCategoryType::class;
 
     public function configure(): void
     {

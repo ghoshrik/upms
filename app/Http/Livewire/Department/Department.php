@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class Department extends Component
 {
-    public $formOpen = false;
+    public $formOpen = false,$updateDataTableTracker;
     protected $listeners = ['openForm' => 'formOCControl'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel = "Departments";
     // public function formOCControl()

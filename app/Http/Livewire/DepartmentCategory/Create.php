@@ -27,7 +27,7 @@ class Create extends Component
     {
         $validateData = $this->validate();
         try {
-            SorCategoryType::create($validateData,[
+            SorCategoryType::create([
                 'department_id'=> Auth::user()->department_id,
                 'dept_category_name'=>$this->dept_category_name
             ]);

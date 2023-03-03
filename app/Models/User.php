@@ -32,7 +32,8 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         'designation_id',
         'department_id',
         'office_id',
-        'user_type'
+        'user_type',
+        // 'mobile',
     ];
 
     /**
