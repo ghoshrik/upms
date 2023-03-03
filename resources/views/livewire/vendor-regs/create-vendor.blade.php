@@ -31,7 +31,7 @@
                 <div class="col-md-4 col-lg-4 col-sm-3 mb-2">
                     <x-input label="{{ trans('cruds.vendors.fields.mobile') }}" onkeypress="return /[0-9]/i.test(event.key)" wire:model="vendorRegs.mobile" placeholder="Enter {{ trans('cruds.vendors.fields.mobile') }}" />
                 </div>
-                <div class="col-md-4 col-lg-8 col-sm-3 mb-2">
+                <div class="col-md-12 col-lg-12 col-sm-3 mb-2">
                     <x-textarea wire:model="vendorRegs.address" rows="2" cols="3" label="{{ trans('cruds.vendors.fields.address') }}"
                         placeholder="Your {{ trans('cruds.vendors.fields.address') }}" />
                 </div>

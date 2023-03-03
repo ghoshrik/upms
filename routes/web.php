@@ -6,7 +6,7 @@ use App\Http\Controllers\Security\RolePermission;
 use App\Http\Controllers\Security\RoleController;
 use App\Http\Controllers\Security\PermissionController;
 use App\Http\Controllers\UserController;
-use App\Http\Livewire\Aafs\ProjectList;
+use App\Http\Livewire\Aafs\AafsProjects;
 use App\Http\Livewire\Department\Department;
 use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
 // use App\Http\Livewire\Designation\CreateDesignation;
@@ -91,25 +91,15 @@ Route::group(['middleware' => ['prevent-back-history']],function(){
         Route::get('estimate-forwarder',EstimateForwarder::class)->name('estimate-forwarder');
         Route::get('vendors',VendorList::class)->name('vendors');
         Route::get('milestones',Milestones::class)->name('milestones');
-        Route::get('aafs-project',ProjectList::class)->name('aafs-project');
+        // Route::get('aafs-project',ProjectList::class)->name('aafs-project');
         Route::view('/powergrid', 'powergrid-demo');
 
         Route::get('vendors',VendorList::class)->name('vendors');
-        Route::get('aafs-project',ProjectList::class)->name('aafs-project');
-        // Route::get('funds',Funds::class)->name('funds');
+        Route::get('aafs-project',AafsProjects::class)->name('aafs-project');
         Route::get('aoc',Aocs::class)->name('aoc');
-
         Route::get('tenders',Tenders::class)->name('tenders');
-
     });
 });
-
-
-
-
-
-
-
 
 
 //App Details Page => 'Dashboard'], function() {

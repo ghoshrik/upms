@@ -6,23 +6,34 @@ use Livewire\Component;
 
 class SubHeader extends Component
 {
-    public $createButtonOn = false;
+    public $showCloseButton = false;
     public $titel = 'UPMS',$subTitel;
-    protected $listeners = ['openForm' => 'CCButtonControl','changeTitel'=>'setTitel','changeSubTitel'=>'setSubTitel','showError'=>'setErrorAlert','CloseButton'=>'CCButtonControl'];
+    protected $listeners = ['openForm' => 'CCButtonControl','showError'=>'setErrorAlert','CloseButton'=>'CCButtonControl','changeTitleSubTitle'=>'setTitleSubTitle'];
     public $errorMessage;
 
-    public function CCButtonControl()
+    // public function CCButtonControl()
+    // {
+    //     $this->createButtonOn = !$this->createButtonOn;
+    // }
+    public function openCloseEntryForm()
     {
-        $this->createButtonOn = !$this->createButtonOn;
+        $this->emit('openEntryForm');
+        $this->showCloseButton = !$this->showCloseButton;
     }
-    public function setTitel($titel)
+    // public function setTitel($titel)
+    // {
+    //     $this->titel = $titel;
+    // }
+    public function setTitleSubTitle($titleSubTitle)
     {
-        $this->titel = $titel;
+        $titleSubTitle = explode('|',$titleSubTitle);
+        $this->titel = $titleSubTitle[0];
+        $this->subTitel = $titleSubTitle[1];
     }
-    public function setSubTitel($subTitel)
-    {
-        $this->subTitel = $subTitel;
-    }
+    // public function setSubTitel($subTitel)
+    // {
+    //     $this->subTitel = $subTitel;
+    // }
     public function setErrorAlert($errorMessage)
     {
        $this->errorMessage = $errorMessage;

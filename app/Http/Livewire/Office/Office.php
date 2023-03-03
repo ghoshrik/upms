@@ -7,23 +7,37 @@ use Livewire\Component;
 class Office extends Component
 {
     public $formOpen = false;
-    // protected $listeners = ['openForm' => 'formOCControl'];
-    public $titel = 'Offices';
-    public $subTitel='List';
+    protected $listeners = ['openForm' => 'formOCControl'];
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
 
     public $addedOfficeUpdateTrack;
-    protected $listeners = ['openForm' => 'formOCControl'];
-    public function formOCControl()
+
+    public function mount()
     {
-        $this->addedOfficeUpdateTrack = rand(1, 1000);
-        $this->formOpen = !$this->formOpen;
-        // $this->titel = ($this->formOpen) ? 'Office':'Office';
-        // $this->subTitel =  ($this->formOpen) ? 'Create' : 'List';
-        // $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
+        $this->addedOfficeUpdateTrack = rand(1,1000);
+    }
+
+    public function fromEntryControl($data='')
+    {
+        $this->openedFormType = is_array($data) ? $data['formType']:$data;
+        $this->isFromOpen = !$this->isFromOpen;
+        switch ($this->openedFormType) {
+            case 'create':
+                $this->subTitel = 'Create';
+                break;
+            case 'edit':
+                $this->subTitel = 'Edit';
+                break;
+            default:
+                $this->subTitel = 'List';
+                break;
+        }
+        if(isset($data['id'])){
+            $this->selectedIdForEdit = $data['id'];
+        }
     }
     public function render()
     {
-        $this->emit('changeTitel', 'Office');
         $this->titel =  "Offices";
         $assets = ['chart', 'animation'];
         return view('livewire.office.office',compact('assets'));

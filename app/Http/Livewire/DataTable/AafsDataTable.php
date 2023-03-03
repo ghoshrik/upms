@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Livewire\Aafs\Datatable;
+namespace App\Http\Livewire\DataTable;
 
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\AAFS;
 
-class AAFSDatatable extends DataTableComponent
+class AafsDataTable extends DataTableComponent
 {
     protected $model = AAFS::class;
 
@@ -20,16 +20,16 @@ class AAFSDatatable extends DataTableComponent
         return [
             Column::make("Id", "id")
                 ->sortable(),
-            Column::make(trans('cruds.aafs_project.fields.proj_id'), "project_id")
+            Column::make("Project id", "project_id")
                 ->sortable(),
-            Column::make(trans('cruds.aafs_project.fields.Govt_id'), "Go_id")
+            Column::make("Go id", "Go_id")
                 ->sortable(),
-            Column::make(trans('cruds.aafs_project.fields.go_date'), "go_date")
+            Column::make("Support data", "support_data")
                 ->sortable(),
-            // Column::make("Support data", "support_data")
-            //     ->sortable(),
-            // Column::make("Status", "status")
-            //     ->sortable(),
+            Column::make("Status", "status")
+                ->sortable(),
+            Column::make("Go date", "go_date")
+                ->sortable(),
             // Column::make("Created at", "created_at")
             //     ->sortable(),
             // Column::make("Updated at", "updated_at")

@@ -1,21 +1,19 @@
 <?php
 
-namespace App\Http\Livewire\Department;
+namespace App\Http\Livewire\Aafs;
 
 use Livewire\Component;
 
-class Department extends Component
+class AafsProjects extends Component
 {
-    public $formOpen = false;
+
+    public $updateDataTableTracker;
     protected $listeners = ['openForm' => 'formOCControl'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel = "Departments";
-    // public function formOCControl()
-    // {
-    //     $this->formOpen = !$this->formOpen;
-    //     $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
-    // }
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
+
     public function fromEntryControl($data='')
     {
+        // dd($data);
         $this->openedFormType = is_array($data) ? $data['formType']:$data;
         $this->isFromOpen = !$this->isFromOpen;
         switch ($this->openedFormType) {
@@ -35,8 +33,9 @@ class Department extends Component
     }
     public function render()
     {
-        $this->emit('changeTitel', 'Department');
+        $this->updateDataTableTracker = rand(1,1000);
+        $this->titel = trans('cruds.aafs_project.title');
         $assets = ['chart', 'animation'];
-        return view('livewire.department.department',compact('assets'));
+        return view('livewire.aafs.aafs-projects',compact('assets'));
     }
 }

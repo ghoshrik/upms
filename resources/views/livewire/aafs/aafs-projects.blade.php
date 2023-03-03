@@ -10,7 +10,7 @@
                     @canany(['create'])
                     <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
                         @if (!$isFromOpen)
-                            <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
+                        <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
                             x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
                             <span class="btn-inner">
                                 <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
@@ -43,30 +43,24 @@
                     class="theme-color-pink-img img-fluid w-100 h-100 animated-scaleX">
             </div>
         </div>
+         @section('webtitle',trans('cruds.aafs_project.title'))
+            <div wire:loading.delay.long>
+                <div class="spinner-border text-primary loader-position" role="status"></div>
+            </div>
+            <div wire:loading.delay.long.class="loading">
+                <div x-transition.duration.900ms>
+                @if($isFromOpen && $openedFormType == 'create')
+                    <livewire:aafs.create-aafs-projects />
+                @elseif($isFromOpen && $openedFormType == 'edit')
 
-
-        @section('webtitle',trans('cruds.designation.title'))
-
-        <div wire:loading.delay.long>
-            <div class="spinner-border text-primary loader-position" role="status"></div>
-        </div>
-        <div wire:loading.delay.long.class="loading">
-            <div x-transition.duration.900ms>
-            @if ($isFromOpen && $openedFormType == 'create')
-                <livewire:designation.create-designation />
-            @elseif ($isFromOpen && $openedFormType == 'edit')
-                <livewire:designation.edit-designation />
-            @else
-            <div>
-                <x-cards title="{{ trans('cruds.designation.title') }}">
+                @else
+                <x-cards title="">
                     <x-slot name="table">
-                        <livewire:designation.designation-table />
+                        <livewire:data-table.aafs-data-table :wire:key="$updateDataTableTracker" />
                     </x-slot>
                 </x-cards>
-            </div>
                 @endif
             </div>
-
         </div>
     </div>
 </div>

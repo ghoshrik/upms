@@ -10,7 +10,7 @@
     <title>@yield('webtitle',env('APP_NAME'))</title>
     @livewireStyles
     <wireui:scripts />
-    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="{{asset('js/alpineJs/alpinejs.cdn.min.js')}}" defer></script>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @include('partials.dashboard._head')
 </head>
@@ -20,5 +20,4 @@
     @include('partials.dashboard._body')
     @livewireScripts
 </body>
-
 </html>
