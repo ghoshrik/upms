@@ -23,10 +23,22 @@ class CreateAccessType extends Component
     }
     public function store()
     {
-        $role = Role::create(['name' => $this->newAccessTypeData['access_name']]);
-        $role->syncPermissions($this->newAccessTypeData['permissions']);
-        unset($this->newAccessTypeData['permissions']);
-        AccessType::create($this->newAccessTypeData);
+        try{
+            $role = Role::create(['name' => $this->newAccessTypeData['access_name']]);
+            $role->syncPermissions($this->newAccessTypeData['permissions']);
+            unset($this->newAccessTypeData['permissions']);
+            AccessType::create($this->newAccessTypeData);
+
+            $this->notification()->success(
+                $description =  trans('cruds.access-type.create_msg')
+            );
+            $this->reset();
+            $this->emit('openEntryForm');
+        }
+        catch (\Throwable $th) {
+            dd($th->getMessage());
+        }
+
     }
     public function render()
     {

@@ -120,10 +120,10 @@ class CreateOffice extends Component
             // Office::create($insert);
             // dd($insert);
             $this->notification()->success(
-                $title = 'Office Created Successfully!!'
+                $title = trans('cruds.office.create_mgs')
             );
             // $this->reset();
-            $this->emit('openForm');
+            $this->emit('openEntryForm');
 
         } catch (\Throwable $th) {
             $this->emit('showError', $th->getMessage());

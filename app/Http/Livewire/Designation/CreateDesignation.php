@@ -32,7 +32,7 @@ class CreateDesignation extends Component
             $this->notification()->success(
                 $title = 'Designation Created Successfully'
             );
-            $this->emit('openForm');
+            $this->emit('openEntryForm');
 
         } catch (\Throwable $th) {
             $this->emit('showError', $th->getMessage());

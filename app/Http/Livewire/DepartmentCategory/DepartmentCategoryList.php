@@ -8,7 +8,7 @@ class DepartmentCategoryList extends Component
 {
     public $formOpen=false,$updatedDataTableTracker;
     protected $listeners = ['openForm' => 'formOCControl'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel = "Department Category";
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
 
     public function fromEntryControl($data='')
     {
@@ -32,8 +32,8 @@ class DepartmentCategoryList extends Component
     }
     public function render()
     {
+        $this->titel = "Department Category";
         $assets = ['chart', 'animation'];
-        $this->emit('changeTitle', 'Designation');
         return view('livewire.department-category.department-category-list',compact('assets'));
     }
 }

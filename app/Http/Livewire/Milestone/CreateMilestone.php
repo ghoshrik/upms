@@ -126,6 +126,11 @@ class CreateMilestone extends Component
                 ];
                 // dd($insert);
                 Milestone::create($insert);
+                $this->notification()->success(
+                    $description =  trans('cruds.milestone.create_msg')
+                );
+                $this->reset();
+                $this->emit('openEntryForm');
             }
         }
 

@@ -7,8 +7,8 @@ use Livewire\Component;
 class Department extends Component
 {
     public $formOpen = false,$updateDataTableTracker;
-    protected $listeners = ['openForm' => 'formOCControl'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel = "Departments";
+    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     // public function formOCControl()
     // {
     //     $this->formOpen = !$this->formOpen;
@@ -35,7 +35,7 @@ class Department extends Component
     }
     public function render()
     {
-        $this->emit('changeTitel', 'Department');
+        $this->titel ="Departments";
         $assets = ['chart', 'animation'];
         return view('livewire.department.department',compact('assets'));
     }

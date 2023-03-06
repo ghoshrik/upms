@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire\Aafs;
 
-use App\Models\AAFS;
 use Livewire\Component;
 use App\Models\SorMaster;
 use WireUi\Traits\Actions;
@@ -20,6 +19,7 @@ class CreateAafsProjects extends Component
     }
     public function store()
         {
+            dd("fd");
             // $this->validate([
             //     'photo' => 'pdf',
             // ]);
@@ -40,13 +40,14 @@ class CreateAafsProjects extends Component
                     'support_data'=>$this->photo->store('files', 'public'),
                     'status'=>0,
                 ];
-                AAFS::create($insert);
+                dd($insert);
+                // AAFS::create($insert);
 
                 $this->notification()->success(
                     $title = "Project Order Created Successfully"
                 );
                 $this->reset();
-                $this->emit('openForm');
+                $this->emit('openEntryForm');
 
 
             }

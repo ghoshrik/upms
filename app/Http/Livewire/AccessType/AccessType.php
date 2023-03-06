@@ -7,7 +7,7 @@ use Livewire\Component;
 class AccessType extends Component
 {
     public $formOpen = false;
-    protected $listeners = ['openForm' => 'formOCControl'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel = "Access Types";
     public function fromEntryControl($data='')
     {

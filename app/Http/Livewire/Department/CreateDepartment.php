@@ -27,10 +27,10 @@ class CreateDepartment extends Component
         try{
             Department::create($validateData,['department_name' => $this->department_name]);
                 $this->notification()->success(
-                    $title = 'Department Created Successfully!!'
+                    $title = trans('cruds.department.create_msg')
                 );
             $this->reset();
-            $this->emit('openForm');
+            $this->emit('openEntryForm');
 
         }catch (\Throwable $th) {
             $this->emit('showError', $th->getMessage());

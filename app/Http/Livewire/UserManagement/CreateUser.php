@@ -18,6 +18,17 @@ class CreateUser extends Component
 {
     use Actions;
     public $dropDownData = [], $newUserData = [];
+
+    protected $rules = [
+        'email'=>'required|unique:users,email',
+        'phone'=>'required',
+    ];
+    protected $messages = [
+        'email.required'=>'Email Field is required',
+        'phone.required'=>'phone number field is required',
+    ];
+
+
     public function mount()
     {
         $this->newUserData = [
@@ -31,6 +42,7 @@ class CreateUser extends Component
             'confirm_password' => '',
             'mobile'=>'',
             'email'=>'',
+            'level'=>'',
         ];
         if (Auth::user()->user_type == 2) {
             $this->getDropdownData('DEPT');
@@ -62,33 +74,41 @@ class CreateUser extends Component
             session()->flash('serverError', $th->getMessage());
         }
     }
+
     public function store()
     {
+        $this->validate();
+        try{
         // TODO::INSERT THE DEPT. ID NAD OFFICE ID .
-        unset($this->newUserData['confirm_password']);
-        $userType =  UserType::where('parent_id', Auth::user()->user_type)->first();
-        if (isset($userType)) {
-            $this->newUserData['user_type'] = $userType['id'];
-            $this->newUserData['department_id'] = Auth::user()->department_id;
-            $this->newUserData['office_id'] = Auth::user()->office_id;
-            $this->newUserData['email'] = $this->newUserData['email'];
-            $this->newUserData['mobile'] = $this->newUserData['mobile'];
-            // $this->newUserData['password'] = Hash::make($this->newUserData['password']);
-            $this->newUserData['password'] = Hash::make('password');
-            if (User::create($this->newUserData)) {
-                $this->notification()->success(
-                    $title = 'Success',
-                    $description =  'New User created successfully!'
+                unset($this->newUserData['confirm_password']);
+                $userType =  UserType::where('parent_id', Auth::user()->user_type)->first();
+                if (isset($userType)) {
+                    $this->newUserData['user_type'] = $userType['id'];
+                    $this->newUserData['department_id'] = Auth::user()->department_id;
+                    $this->newUserData['office_id'] = Auth::user()->office_id;
+                    $this->newUserData['email'] = $this->newUserData['email'];
+                    $this->newUserData['mobile'] = $this->newUserData['mobile'];
+                    // $this->newUserData['password'] = Hash::make($this->newUserData['password']);
+                    $this->newUserData['password'] = Hash::make('password');
+                    if (User::create($this->newUserData)) {
+                        $this->notification()->success(
+                            $title = 'Success',
+                            $description =  trans('cruds.user-management.create_msg')
+                        );
+                        $this->reset();
+                        $this->emit('openEntryForm');
+                        return;
+                    }
+                }
+                $this->notification()->error(
+                    $title = 'Error !!!',
+                    $description = 'Something went wrong.'
                 );
-                $this->reset();
-                $this->emit('openForm');
-                return;
             }
-        }
-        $this->notification()->error(
-            $title = 'Error !!!',
-            $description = 'Something went wrong.'
-        );
+
+            catch (\Throwable $th) {
+                $this->emit('showError', $th->getMessage());
+            }
     }
     public function render()
     {

@@ -17,6 +17,7 @@ return [
         'title'=>'Department',
         'title_singular'=>'Departments',
         'create_btn_name'=>'Add New Department',
+        'create_msg'=>'Department Created Successfully!!',
         'fields'=>[
             'id'=>'ID',
             'id_helper'=>'#',
@@ -29,6 +30,7 @@ return [
         'title'=>'Office',
         'title_singular'=>'Offices',
         'create_btn_name'=>'Add Office',
+        'create_msg'=>'Office Created Successfully!!',
         'fields'=>[
             'id'=>'ID',
             'id_helper'=>'#',
@@ -61,13 +63,14 @@ return [
         'title'=>'Users Management',
         'title_singulars'=>'Users Managements',
         'create_btn_name'=>'Add new Users',
+        'create_msg'=>'New User created successfully',
         'fields'=>[
             'id'=>'ID',
             'id_helper'=>'#',
             'employee_id'=>'Employee ID',
-            'employee_name'=>'Employee Name',
+            'employee_name'=>'Employee Name(User Name)',
             'office_name'=>'Office Name',
-            'username'=>'Username',
+            'username'=>'Login Id',
             'designation'=>'Designation',
             'department'=>'Department',
             'user_type'=>'User Type',
@@ -99,6 +102,7 @@ return [
         'title'=>'Access Type',
         'title_singulars'=>'Access_types',
         'create_btn'=>'create_access_type',
+        'create_msg'=>'New Aceess Type Created!',
         'fields'=>[
             'id'=>'ID',
             'id_helper'=>'#',
@@ -111,6 +115,7 @@ return [
         'title'=>'SOR List',
         'title_singular'=>'SOR Lists',
         'create_btn_name'=>'Add New Sor',
+        'create_msg'=>'SOR Created Successfully!!',
         'fields'=>[
             'id'=>'ID',
             'id_helper'=>'#',
@@ -237,6 +242,7 @@ return [
     'milestone'=>[
         'title'=>'MileStone',
         'title_singular'=>'Milestones',
+        'create_msg'=>'New Milestone Created',
         'fields'=>[
             'id'=>'ID',
             'id_helper'=>'#',
@@ -251,6 +257,7 @@ return [
         'title'=>'Vendor Informations',
         'title_singular'=>'Vendors Informations',
         'menu_title'=>'Vendors Information',
+        'create_msg'=>'Vendor created!',
         'fields'=>[
             'id'=>'ID',
             'id_helper'=>'#',

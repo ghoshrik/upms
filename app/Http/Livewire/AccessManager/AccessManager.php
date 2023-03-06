@@ -7,7 +7,7 @@ use Livewire\Component;
 class AccessManager extends Component
 {
     public $formOpen=false,$editFormOpen=false,$updateDataTableTracker;
-    protected $listeners = ['openForm' => 'formOCControl'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel = "Access Managers";
 
     public function fromEntryControl($data='')

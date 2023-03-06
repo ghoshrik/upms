@@ -16,6 +16,7 @@ class EstimatePrepare extends Component
 // TODO::1)refreshDataCounter. 2)datatable counter remove if not require from mount
     public $formOpen = false, $editFormOpen = false,$updateDataTableTracker,$selectedTab = 1,$counterData=[];
     protected $listeners = ['openForm' => 'formOCControl','refreshData' => 'mount'];
+    // protected $listeners = ['openEntryForm' => 'fromEntryControl'];
     public function mount()
     {
         $this->draftData();
@@ -80,7 +81,7 @@ class EstimatePrepare extends Component
     public function render()
     {
         $this->updateDataTableTracker = rand(1,1000);
-        $this->emit('changeTitel', 'Estimate Prepare');
+        // $this->tit('changeTitel', 'Estimate Prepare');
         $assets = ['chart', 'animation'];
         return view('livewire.estimate.estimate-prepare', compact('assets'));
     }

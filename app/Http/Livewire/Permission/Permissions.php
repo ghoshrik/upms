@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Livewire\Tender;
+namespace App\Http\Livewire\Permission;
 
 use Livewire\Component;
 
-class Tenders extends Component
+class Permissions extends Component
 {
-    public $formOpen = false,$updateDataTableTracker;
+
     protected $listeners = ['openEntryForm' => 'fromEntryControl'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel,$updateDataTableTracker;
 
     public function fromEntryControl($data='')
     {
@@ -30,11 +30,12 @@ class Tenders extends Component
             $this->selectedIdForEdit = $data['id'];
         }
     }
+
     public function render()
     {
         $this->updateDataTableTracker = rand(1,1000);
-        $this->titel = trans('cruds.tenders.title');
+        $this->titel = "ALL Permissions";
         $assets = ['chart', 'animation'];
-        return view('livewire.tender.tenders',compact('assets'));
+        return view('livewire.permission.permissions');
     }
 }

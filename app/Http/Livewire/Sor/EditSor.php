@@ -61,7 +61,7 @@ class EditSor extends Component
                 );
             }
             $this->reset();
-            $this->emit('openForm');
+            $this->emit('openEntryForm');
             $this->updateDataTableTracker = rand(1,1000);
         } catch (\Throwable $th) {
             dd($th->getMessage());

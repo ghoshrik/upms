@@ -86,10 +86,10 @@ class CreateSor extends Component
                 SOR::create($data);
             }
             $this->notification()->success(
-                $title = 'SOR Created Successfully!!'
+                $title = trans('cruds.sor.create_msg')
             );
             $this->reset();
-            $this->emit('openForm');
+            $this->emit('openEntryForm');
         } catch (\Throwable $th) {
             $this->emit('showError', $th->getMessage());
         }
