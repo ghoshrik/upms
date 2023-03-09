@@ -5,12 +5,11 @@
 <main class="main-content">
     <div class="position-relative">
     @include('partials.dashboard._body_header')
-    @include('partials.dashboard.sub-header')
+    {{-- @include('partials.dashboard.sub-header') --}}
     </div>
-
-    <div class="conatiner-fluid content-inner mt-n5 py-0">
+    {{-- <div class="conatiner-fluid content-inner mt-n5 py-0"> --}}
     {{ $slot }}
-    </div>
+    {{-- </div> --}}
 
     @include('partials.dashboard._body_footer')
 </main>
@@ -20,6 +19,7 @@
         <circle cx="12.1747" cy="11.8891" r="2.63616" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></circle>
     </svg>
 </a>
+<x-notifications position="bottom-center" />
 @include('partials.components.setting-offcanvas')
 @include('partials.dashboard._scripts')
 @include('partials.dashboard._app_toast')

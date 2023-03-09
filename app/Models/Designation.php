@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-// use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Designation extends Model
@@ -12,12 +11,4 @@ class Designation extends Model
     protected $fillable = [
         'designation_name'
     ];
-    // public function sluggable(): array
-    // {
-    //     return [
-    //         'slug' => [
-    //             'source' => 'designation_name'
-    //         ]
-    //     ];
-    // }
 }

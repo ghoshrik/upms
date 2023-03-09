@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "chriskonnertz/string-calc": "^1.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -17,9 +18,11 @@
         "laravelcollective/html": "^6.2",
         "livewire/livewire": "^2.10",
         "mallardduck/blade-lucide-icons": "^1.8",
+        "phpoffice/phpword": "^1.0",
+        "power-components/livewire-powergrid": "^2.4",
         "rappasoft/laravel-livewire-tables": "^2.8",
         "spatie/laravel-medialibrary": "^9.0.0",
-        "spatie/laravel-permission": "^5.3",
+        "spatie/laravel-permission": "^5.7",
         "wireui/wireui": "0.16.2",
         "yajra/laravel-datatables": "^1.5",
         "yajra/laravel-datatables-oracle": "~9.0"

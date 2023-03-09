@@ -2,7 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Menu;
+use App\Models\Role;
 use App\Models\User;
+use App\Models\Permission;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -15,6 +18,33 @@ class AdminSeeder extends Seeder
      */
     public function run()
     {
+
+        // //Role
+        // $user_role = Role::where('slug','super-admin')->first();
+        // //permission
+        // $user_permission = Permission::where('slug','create-menu')->first();
+        // //user menu
+        // $user_menu = Menu::where('slug','menu-manager')->first();
+        // // dd($user_menu);
+
+        // $user = new User();
+        // $user->name = "Admin";
+        // $user->email = "admin@admin.com";
+        // $user->username= "admin";
+        // $user->emp_id = 1025;
+        // $user->emp_name="admin";
+        // $user->user_type=1;
+        // $user->email_verified_at = now();
+        // $user->password=Hash::make('password');
+        // // dd($user->menus()->attach($user_menu));
+        // $user->save();
+        // $user->roles()->attach($user_role);
+        // $user->permissions()->attach($user_permission);
+        // // $user->menuRoles()->attach($user_role);
+        // // $user_role->menuRoles()->
+        // $user->menus()->attach($user_menu);
+
+
         User::create([
             'name'=> 'Admin',
             'email'=> 'admin@admin.com',

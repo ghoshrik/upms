@@ -7,18 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{env('APP_NAME')}}</title>
+    <title>@yield('webtitle',env('APP_NAME'))</title>
     @livewireStyles
     <wireui:scripts />
-    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="{{asset('js/alpineJs/alpinejs.cdn.min.js')}}" defer></script>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @include('partials.dashboard._head')
 </head>
 
 <body class="">
-    <x-notifications />
+    <x-dialog/>
     @include('partials.dashboard._body')
     @livewireScripts
 </body>
-
 </html>

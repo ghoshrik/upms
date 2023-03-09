@@ -1,0 +1,11 @@
+<x-livewire-tables::bs5.table.row>
+    <x-livewire-tables::bs4.table.cell>
+        {{$loop->index}}
+    </x-livewire-tables::bs4.table.cell>
+    <x-livewire-tables::bs4.table.cell>
+        {{$row->designation_name}}
+    </x-livewire-tables::bs4.table.cell>
+    <x-livewire-tables::bs4.table.cell>
+        {{__('Edit')}}
+    </x-livewire-tables::bs4.table.cell>>
+</x-livewire-tables::bs5.table.row>

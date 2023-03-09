@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\MileStone;
+use App\Models\testCategory;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -11,9 +14,62 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+        // $this->emit('changeTitleSubTitle');
+
         $assets = ['chart', 'animation'];
         return view('dashboards.dashboard', compact('assets'));
     }
+    public function changeTitleSubTitle()
+    {
+        dd("asdas");
+    }
+
+    // public function testMileStone()
+    // {
+    //     $assets = ['chart', 'animation'];
+    //     return view('testMileStone',compact('assets'));
+    // }
+
+
+    public function buildTree($nodes)
+    {
+        $children = array();
+
+        foreach ($nodes as $node) {
+            $children[$node['index']] = $node;
+            $children[$node['index']]['children'] = array();
+        }
+        foreach ($children as $child) {
+            if (isset($children[$child['parent_id']])) {
+                $children[$child['parent_id']]['children'][] = &$children[$child['index']];
+            }
+        }
+        $rootNodes = array();
+        foreach ($children as $child) {
+            if ($child['parent_id']==0) {
+                $rootNodes[] = $child;
+            }
+        }
+        return $rootNodes;
+    }
+
+
+    public function testMileStone()
+    {
+
+
+        $categories = Category::whereNull('category_id')
+        ->with('childrenCategories')
+        ->get();
+
+        // dd($milestone);
+        // $milestone =
+        // buildTree($milestone);
+        $assets = ['chart', 'animation'];
+        return view('testMileStone',compact('assets','categories'));
+    }
+
+
 
     /*
      * Menu Style Routs

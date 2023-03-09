@@ -23,13 +23,21 @@ class EstimatePrepare extends Model
         'qty',
         'rate',
         'total_amount',
-        'percentage_rate',
         'operation',
         'created_by',
         'comments'
     ];
+
     public function sorNumber()
     {
-        return $this->belongsTo(SOR::class,'sor_item_number');
+        return $this->belongsTo(SOR::class,'sor_item_number','id');
+    }
+    public function SOR()
+    {
+       return $this->hasOne(SorMaster::class,'estimate_id','estimate_id');
+    }
+    public function assigningUserRemarks()
+    {
+        return $this->belongsTo(EstimateUserAssignRecord::class,'created_by','estimate_user_id');
     }
 }

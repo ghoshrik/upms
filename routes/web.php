@@ -6,10 +6,39 @@ use App\Http\Controllers\Security\RolePermission;
 use App\Http\Controllers\Security\RoleController;
 use App\Http\Controllers\Security\PermissionController;
 use App\Http\Controllers\UserController;
+use App\Http\Livewire\Aafs\AafsProjects;
+use App\Http\Livewire\Department\Department;
+use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
+// use App\Http\Livewire\Designation\CreateDesignation;
 use App\Http\Livewire\Designation\Designation;
+use App\Http\Livewire\Estimate\EstimatePrepare;
+use App\Http\Livewire\EstimateProject\EstimateProject;
+use App\Http\Livewire\Office\Office;
+use App\Http\Livewire\Sor\Sor;
+// use App\Http\Livewire\TestALL\TestSearch;
+use App\Http\Livewire\UserType\UserType;
+use App\Http\Livewire\AccessManager\AccessManager;
+use App\Http\Livewire\AccessType\AccessType;
+use App\Http\Livewire\Aoc\Aocs;
+use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
+use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
+use App\Http\Livewire\Fund\Funds;
+use App\Http\Livewire\MenuManagement\MenuManagement;
+use App\Http\Livewire\Milestone\Milestones;
+use App\Http\Livewire\Tender\Tenders;
+// use App\Http\Livewire\Permission\Permissions;
+// use App\Http\Livewire\Role\Roles;
+// use App\Http\Livewire\Setting\SettingLists;
+use App\Http\Livewire\UserManagement\UserManagement;
+use App\Http\Livewire\VendorRegs\VendorList;
+// use App\Models\Menu;
+// use App\Models\MileStone;
+use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 // Packages
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,29 +52,55 @@ use Illuminate\Support\Facades\Route;
 */
 
 require __DIR__.'/auth.php';
-
-Route::get('/storage', function () {
-    Artisan::call('storage:link');
+Route::get('set-role',function(){
+    $users = User::where('user_type',1)->get();
+    foreach ($users as $user) {
+       $user->assignRole('Super Admin');
+    }
 });
 
-//UI Pages Routs
+
 Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
 
-Route::group(['middleware' => 'auth'], function () {
-    // Permission Module
-    Route::get('/role-permission',[RolePermission::class, 'index'])->name('role.permission.list');
-    Route::resource('permission',PermissionController::class);
-    Route::resource('role', RoleController::class);
+Route::group(['middleware' => ['prevent-back-history']],function(){
+    Route::group(['middleware' => 'auth'], function () {
+        // Permission Module
+        Route::get('/role-permission',[RolePermission::class, 'index'])->name('role.permission.list');
+        Route::resource('permission',PermissionController::class);
+        Route::resource('role', RoleController::class);
 
-    // Dashboard Routes
-    Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
+        // Dashboard Routes
+        Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
-    // Users Module
-    Route::resource('users', UserController::class);
-    Route::get('designation',Designation::class)->name('designation');
+        // Users Module
+        Route::resource('users', UserController::class);
 
+        Route::get('estimate-prepare',EstimatePrepare::class)->name('estimate-prepare');
+        Route::get('estimate-project',EstimateProject::class)->name('estimate-project');
+        Route::get('designation',Designation::class)->name('designation');
+        Route::get('user-type', UserType::class)->name("user-type");
+        Route::get('department', Department::class)->name("department");
+        Route::get('department-category',DepartmentCategoryList::class)->name('department-category');
+        Route::get('office', Office::class)->name('office');
+        Route::get('prepare-sor',Sor::class)->name('prepare-sor');
+        Route::get('user-management',UserManagement::class)->name('user-management');
+        Route::get('access-manager',AccessManager::class)->name('access-manager');
+        Route::get('access-type',AccessType::class)->name('access-type');
+        Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
+        Route::get('estimate-recommender',EstimateRecomender::class)->name('estimate-recommender');
+        Route::get('estimate-forwarder',EstimateForwarder::class)->name('estimate-forwarder');
+        Route::get('vendors',VendorList::class)->name('vendors');
+        Route::get('milestones',Milestones::class)->name('milestones');
+        // Route::get('aafs-project',ProjectList::class)->name('aafs-project');
+        Route::view('/powergrid', 'powergrid-demo');
 
+        Route::get('vendors',VendorList::class)->name('vendors');
+        Route::get('aafs-project',AafsProjects::class)->name('aafs-project');
+        Route::get('aoc',Aocs::class)->name('aoc');
+        Route::get('tenders',Tenders::class)->name('tenders');
+    });
 });
+
 
 //App Details Page => 'Dashboard'], function() {
 Route::group(['prefix' => 'menu-style'], function() {
@@ -83,7 +138,6 @@ Route::group(['prefix' => 'maps'], function() {
 
 //Auth pages Routs
 Route::group(['prefix' => 'auth'], function() {
-    Route::get('signin', [HomeController::class, 'signin'])->name('auth.signin');
     Route::get('signup', [HomeController::class, 'signup'])->name('auth.signup');
     Route::get('confirmmail', [HomeController::class, 'confirmmail'])->name('auth.confirmmail');
     Route::get('lockscreen', [HomeController::class, 'lockscreen'])->name('auth.lockscreen');
@@ -120,8 +174,7 @@ Route::group(['prefix' => 'icons'], function() {
     Route::get('dualtone', [HomeController::class, 'dualtone'])->name('icons.dualtone');
     Route::get('colored', [HomeController::class, 'colored'])->name('icons.colored');
 });
+
 //Extra Page Routs
 // Route::get('privacy-policy', [HomeController::class, 'privacypolicy'])->name('pages.privacy-policy');
 // Route::get('terms-of-use', [HomeController::class, 'termsofuse'])->name('pages.term-of-use');
-
-// Route::get('desi')

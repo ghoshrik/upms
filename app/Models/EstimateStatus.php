@@ -12,4 +12,8 @@ class EstimateStatus extends Model
     protected $fillable = [
         'status','slug'
     ];
+    public function statusName()
+    {
+        return $this->belongsTo(SorMaster::class,'status');
+    }
 }

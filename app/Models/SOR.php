@@ -23,7 +23,7 @@ class SOR extends Model
         'IsActive'
     ];
 
-    public function GetDepartmentName()
+    public function getDepartmentName()
     {
         return $this->belongsTo(Department::class,'department_id');
     }
@@ -31,5 +31,9 @@ class SOR extends Model
     public function setDueDateAttribute($value)
     {
         $this->attributes['version_date'] = Carbon::createFromFormat('m/d/Y', $value)->format('Y-m-d');
+    }
+    public function getDeptCategoryName()
+    {
+        return $this->belongsTo(SorCategoryType::class,'dept_category_id');
     }
 }

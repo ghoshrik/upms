@@ -12,4 +12,9 @@ class Urban_body extends Model
     protected $fillable = [
         "district_code","urban_body_code","urban_body_name","sub_district_code","urban_body_status","ds_urban_body_name"
     ];
+
+    public function urban()
+    {
+        return $this->belongsTo(District::class,'district_code','district_code');
+    }
 }

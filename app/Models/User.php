@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasPermissionsTrait;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -24,13 +25,15 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         'name',
         'username',
         'email',
+        'mobile',
         'password',
         'emp_id',
         'emp_name',
         'designation_id',
         'department_id',
         'office_id',
-        'user_type'
+        'user_type',
+        // 'mobile',
     ];
 
     /**
@@ -54,10 +57,10 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
 
     protected $appends = ['full_name'];
 
-    // public function getFullNameAttribute()
-    // {
-    //     return $this->first_name . ' ' . $this->last_name;
-    // }
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
 
     // public function userProfile() {
     //     return $this->hasOne(UserProfile::class, 'user_id', 'id');

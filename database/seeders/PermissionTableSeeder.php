@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Permission;
+
 
 class PermissionTableSeeder extends Seeder
 {
@@ -17,32 +18,32 @@ class PermissionTableSeeder extends Seeder
     {
         $permissions = [
             [
-                'name' => 'role',
-                'title' => 'Role',
+                'name' => 'Create Menu',
+                'slug' => 'create-menu',
             ],
             [
-                'name' => 'role-add',
-                'title' => 'Role Add',
-                'parent_id' => 1,
+                'name' => 'Edit Menu',
+                'slug' => 'edit-menu',
+                // 'parent_id' => 1,
             ],
             [
-                'name' => 'role-list',
-                'title' => 'Role List',
-                'parent_id' => 1,
+                'name' => 'All Permission',
+                'slug' => 'all-permission',
+                // 'parent_id' => 1,
             ],
             [
-                'name' => 'permission',
-                'title' => 'Permission',
+                'name' => 'Create Sor',
+                'slug' => 'create-sor',
             ],
             [
-                'name' => 'permission-add',
-                'title' => 'Permission Add',
-                'parent_id' => 4,
+                'name' => 'Edit Sor',
+                'slug' => 'edit-sor',
+                // 'parent_id' => 4,
             ],
             [
-                'name' => 'permission-list',
-                'title' => 'Permission List',
-                'parent_id' => 4,
+                'name' => 'Delete Sor',
+                'slug' => 'delete-sor',
+                // 'parent_id' => 4,
             ]
         ];
 

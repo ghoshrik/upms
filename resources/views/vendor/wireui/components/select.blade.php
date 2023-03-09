@@ -117,6 +117,7 @@
                     x-model="search"
                     x-on:keydown.arrow-down.prevent="$event.shiftKey || getNextFocusable().focus()"
                     x-on:keydown.arrow-up.prevent="getPrevFocusable().focus()"
+                    {{-- @keypress="$wire.autoSearch($event.target)" --}}
                     borderless
                     shadowless
                     right-icon="search"

@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap);
+/* @import url(https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap); */
 @charset "UTF-8";
 /*!
 * Version: 1.2.0
@@ -8,6 +8,9 @@
 * NOTE: This file contains the styling for Template.
 *
 */
+
+
+
 :focus {
   outline: none;
 }
@@ -1757,7 +1760,8 @@ progress {
   border-color: #eee;
 }
 .table > :not(caption) > * > * {
-  padding: 1rem 1.5rem;
+  padding: 0.5rem 0.5rem;
+  /* padding: 1rem 1.5rem; */
   background-color: var(--bs-table-bg);
   border-bottom-width: 1px;
   box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
@@ -1906,6 +1910,7 @@ progress {
 }
 
 .table-responsive {
+    display: block;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -5950,7 +5955,7 @@ textarea.form-control-lg {
   }
 }
 .spinner-border {
-  display: inline-block;
+  /* display: inline-block; */
   width: 2rem;
   height: 2rem;
   vertical-align: -0.125em;
@@ -12390,7 +12395,7 @@ textarea.form-control-lg {
 #form-wizard1 fieldset:not(:first-of-type) {
   display: none;
 }
-
+/* TODO::if open wireui dropdown datatable button remove overflow hidden */
 .table {
   overflow: hidden;
 }
@@ -12401,7 +12406,8 @@ textarea.form-control-lg {
   background-color: #F5F6FA;
 }
 .table thead tr th {
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 0.2rem;
+  /* padding: 0.75rem 1.5rem; */
   text-transform: uppercase;
   letter-spacing: 0.2px;
   border-bottom: 2px solid transparent !important;
@@ -12883,7 +12889,7 @@ thead, tbody, tfoot, tr, td, th {
   top: 0;
   z-index: -1;
   height: 264px;
-  width: 100%;
+  /* width: 100%; */
   transition: all 400ms;
   transform-origin: center left;
 }
@@ -13070,7 +13076,7 @@ thead, tbody, tfoot, tr, td, th {
 .sidebar-default .sidebar-list .navbar-nav .nav-item .nav-link:not(.disabled) span {
   flex: 1;
   transition: all 400ms ease;
-  margin-left: 1rem;
+  margin-left: 0.3rem;
   transform: translateX(0);
   opacity: 1;
 }
@@ -13965,6 +13971,15 @@ body.offcanvas-active {
   height: 100%;
   background-color: #ccc;
 }
+.iq-timeline1:before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 100%;
+    background-color: #ccc;
+  }
 
 .iq-timeline {
   margin: 0 0 0 20px;
@@ -16850,7 +16865,7 @@ body.offcanvas-active {
 }
 
 .h-10 {
-  height: 10rem;
+  height: auto;
 }
 
 .avatar {
@@ -19080,3 +19095,60 @@ pre[class*=language-] {
 .input-h{
     height: 50px;
 }
+.loading{
+ filter: blur(1px);
+ pointer-events: none;
+}
+.loader-position{
+    position: absolute;
+    right: 50%;
+    left: 50%;
+    top: 50%;
+    bottom: 50%;
+    z-index: 1;
+}
+.mutipal-add-row{
+  background-color: #f1f3f8;
+  padding-top: 15px;
+  padding-bottom: 10px;
+  border-radius: 7px;
+  margin-top: 10px;
+}
+.mutipal-row-add-button{
+  position: absolute;
+  bottom: 93px;
+}
+.d-slider1 .card-tab:hover,.active{
+    cursor: pointer;
+    margin-top: 10px ;
+    transition: all .5s;
+    color: #fff;
+    background-color: var(--bs-primary-tint-40);
+}
+.d-slider1 .card-tab{
+    transition: all .5s;
+}
+
+
+body::-webkit-scrollbar{
+    /* overflow-y:hidden !important; */
+    width: 1px;
+    transition:  3s all;
+    /* height: 8px; */
+    /* background-color: red; */
+}
+body::-webkit-scrollbar:hover{
+    overflow-y: auto;
+    width: 10px;
+    transition:  3s all;
+}
+/* body::-webkit-scrollbar-track{
+    background-color: #05bbc9;
+} */
+body::-webkit-scrollbar-thumb{
+    border-radius: 20px;
+    background-color: var(--bs-primary);
+}
+/* body::-webkit-scrollbar-thumb:hover{
+    background-color:;
+} */
