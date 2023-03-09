@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Livewire\Estimate\datatable\PowerGrid;
+namespace App\Http\Livewire\EstimateRecomender\Datatable\Powergrid;
 
+use App\Models\Esrecommender;
 use App\Models\EstimatePrepare;
 use App\Models\EstimateStatus;
 use Illuminate\Support\Carbon;
@@ -16,7 +17,7 @@ use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\Rules\Rule;
 
-final class EstimateForwardedDatatable extends PowerGridComponent
+final class RecomenderDraftTable extends PowerGridComponent
 {
     use ActionButton;
 
@@ -71,11 +72,13 @@ final class EstimateForwardedDatatable extends PowerGridComponent
         )
         ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
         ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-        ->where('estimate_user_assign_records.estimate_user_type','=',2)
-        ->where('sor_masters.status','!=',1)
+        ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
+        ->where('estimate_user_assign_records.estimate_user_type','=',1)
+        ->where('sor_masters.is_verified','=',0)
+        ->where('sor_masters.status','!=',9)
+        ->where('sor_masters.status','!=',11)
         ->where('sor_masters.status','!=',3)
-        ->where('operation', 'Total')
-        ->where('created_by',Auth::user()->id);
+        ->where('operation', 'Total');
     }
 
     /*
@@ -110,6 +113,11 @@ final class EstimateForwardedDatatable extends PowerGridComponent
             ->addColumn('estimate_id')
             ->addColumn('sorMasterDesc')
             ->addColumn('total_amount', fn ($model)=>  round($model->total_amount, 10, 2))
+            ->addColumn('recomender_cost',function($model){
+                $recomenderCost = Esrecommender::where('estimate_id',$model->estimate_id)->where('operation', 'Total')->first();
+                $recomenderCost = ($recomenderCost)?$recomenderCost->total_amount:'';
+                return $recomenderCost;
+            })
             ->addColumn('status',function ($model){
                 $statusName =EstimateStatus::where('id',$model->status)->select('status')->first();
                 $statusName = $statusName->status;
@@ -145,8 +153,12 @@ final class EstimateForwardedDatatable extends PowerGridComponent
                 ->field('sorMasterDesc')
                 ->searchable(),
             Column::add()
-                ->title('TOTAL AMOUNT')
+                ->title('ESTIMATOR COST')
                 ->field('total_amount')
+                ->makeInputRange(),
+            Column::add()
+                ->title('RECOMENDER COST')
+                ->field('recomender_cost')
                 ->makeInputRange(),
             Column::add()
                 ->title('STATUS')
@@ -181,9 +193,23 @@ final class EstimateForwardedDatatable extends PowerGridComponent
                 ->caption('View')
                 ->class('btn btn-soft-primary btn-sm')
                 ->emit('openModal', ['estimate_id']),
-
+            Button::add('approve')
+                ->caption('Approve')
+                ->class('btn btn-soft-primary btn-sm')
+                ->emit('openApproveModal', ['id'=>'estimate_id']),
+            Button::add('revert')
+                ->caption('Revert')
+                ->class('btn btn-soft-primary btn-sm')
+                ->emit('openRevertModal', ['id'=>'estimate_id']),
+            Button::add('forward')
+                ->caption('Forward')
+                ->class('btn btn-soft-primary btn-sm')
+                ->emit('openForm', ['id'=>'estimate_id']),
+            Button::add('modify')
+                ->caption('Modify')
+                ->class('btn btn-soft-primary btn-sm')
+                ->emit('openForm', ['formType'=>'modify', 'id'=>'estimate_id']),
          ];
-
     }
 
 
@@ -201,18 +227,17 @@ final class EstimateForwardedDatatable extends PowerGridComponent
      * @return array<int, \PowerComponents\LivewirePowerGrid\Rules\RuleActions>
      */
 
-    /*
+
     public function actionRules(): array
     {
        return [
-
-           //Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($estimate-prepare) => $estimate-prepare->id === 1)
+            Rule::button('forward')
+                ->when(fn($model) => $model->status == 2 || $model->status == 4)
                 ->hide(),
         ];
+
     }
-    */
+
 
     /*
     |--------------------------------------------------------------------------

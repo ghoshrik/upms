@@ -11,6 +11,7 @@ class VerifiedEstimateViewModal extends Component
     public $viewVerifyModal = false, $estimate_id, $viewEstimates = [];
     public function openVerifyViewModal($estimate_id)
     {
+        $estimate_id = is_array($estimate_id)? $estimate_id[0]:$estimate_id;
         $this->reset();
         $this->viewVerifyModal = !$this->viewVerifyModal;
         if($estimate_id)

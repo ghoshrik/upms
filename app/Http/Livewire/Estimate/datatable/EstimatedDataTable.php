@@ -45,7 +45,7 @@ class EstimatedDataTable extends DataTableComponent
 
     public function edit($id)
     {
-        $this->emit('openForm', true, $id);
+        $this->emit('openForm', ['formType'=>'edit', 'id'=>$id]);
     }
     public function view($estimate_id)
     {

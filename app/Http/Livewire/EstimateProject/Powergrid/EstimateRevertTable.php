@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Estimate\datatable\PowerGrid;
+namespace App\Http\Livewire\EstimateProject\Powergrid;
 
 use App\Models\EstimatePrepare;
 use App\Models\EstimateStatus;
@@ -16,7 +16,7 @@ use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\Rules\Rule;
 
-final class EstimateForwardedDatatable extends PowerGridComponent
+final class EstimateRevertTable extends PowerGridComponent
 {
     use ActionButton;
 
@@ -71,9 +71,10 @@ final class EstimateForwardedDatatable extends PowerGridComponent
         )
         ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
         ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-        ->where('estimate_user_assign_records.estimate_user_type','=',2)
-        ->where('sor_masters.status','!=',1)
-        ->where('sor_masters.status','!=',3)
+        ->where('estimate_user_assign_records.estimate_user_type','=',3)
+        ->where('sor_masters.status','=',3)
+        // ->where('sor_masters.status','!=',3)
+        ->where('estimate_no', '!=', NULL)
         ->where('operation', 'Total')
         ->where('created_by',Auth::user()->id);
     }
@@ -155,7 +156,6 @@ final class EstimateForwardedDatatable extends PowerGridComponent
             Column::add()
                 ->title('COMMENTS')
                 ->field('comments'),
-
         ];
     }
 
@@ -181,9 +181,7 @@ final class EstimateForwardedDatatable extends PowerGridComponent
                 ->caption('View')
                 ->class('btn btn-soft-primary btn-sm')
                 ->emit('openModal', ['estimate_id']),
-
          ];
-
     }
 
 

@@ -15,7 +15,8 @@ class EstimatePrepare extends Component
 {
 // TODO::1)refreshDataCounter. 2)datatable counter remove if not require from mount
     public $formOpen = false, $editFormOpen = false,$updateDataTableTracker,$selectedTab = 1,$counterData=[];
-    protected $listeners = ['openForm' => 'formOCControl','refreshData' => 'mount'];
+    protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'mount'];
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function mount()
     {
         $this->draftData();
@@ -62,6 +63,26 @@ class EstimatePrepare extends Component
         ->where('sor_masters.status','=',3)
         ->count();
     }
+    public function fromEntryControl($data='')
+    {
+        $this->openedFormType = is_array($data) ? $data['formType']:$data;
+        $this->isFromOpen = !$this->isFromOpen;
+        switch ($this->openedFormType) {
+            case 'create':
+                $this->subTitel = 'Create';
+                break;
+            case 'edit':
+                $this->subTitel = 'Edit';
+                break;
+            default:
+                $this->subTitel = 'List';
+                break;
+        }
+        if(isset($data['id'])){
+            // $this->selectedIdForEdit = $data['id'];
+            $this->emit('editEstimateRow',$data['id']);
+        }
+    }
     public function formOCControl($isEditFrom = false, $eidtId = null)
     {
         if ($isEditFrom) {
@@ -80,7 +101,7 @@ class EstimatePrepare extends Component
     public function render()
     {
         $this->updateDataTableTracker = rand(1,1000);
-        $this->emit('changeTitel', 'Estimate Prepare');
+        $this->titel = 'Estimate Prepare';
         $assets = ['chart', 'animation'];
         return view('livewire.estimate.estimate-prepare', compact('assets'));
     }

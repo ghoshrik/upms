@@ -9,7 +9,8 @@ use Livewire\Component;
 class EstimateProject extends Component
 {
     public $formOpen = false, $editFormOpen = false,$updateDataTableTracker,$selectedTab = 1,$counterData=[];
-    protected $listeners = ['openForm' => 'formOCControl','refreshData' => 'mount'];
+    protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'mount'];
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function mount()
     {
         $this->draftData();
@@ -54,6 +55,26 @@ class EstimateProject extends Component
         ->where('sor_masters.status','=',3)
         ->count();
     }
+    public function fromEntryControl($data='')
+    {
+        $this->openedFormType = is_array($data) ? $data['formType']:$data;
+        $this->isFromOpen = !$this->isFromOpen;
+        switch ($this->openedFormType) {
+            case 'create':
+                $this->subTitel = 'Create';
+                break;
+            case 'edit':
+                $this->subTitel = 'Edit';
+                break;
+            default:
+                $this->subTitel = 'List';
+                break;
+        }
+        if(isset($data['id'])){
+            // $this->selectedIdForEdit = $data['id'];
+            $this->emit('editEstimateRow',$data['id']);
+        }
+    }
     public function formOCControl($isEditFrom = false, $eidtId = null)
     {
         if ($isEditFrom) {
@@ -72,7 +93,7 @@ class EstimateProject extends Component
     public function render()
     {
         $this->updateDataTableTracker = rand(1,1000);
-        $this->emit('changeTitel', 'Project Estimate');
+        $this->titel = 'Project Estimate';
         $assets = ['chart', 'animation'];
         return view('livewire.estimate-project.estimate-project');
     }

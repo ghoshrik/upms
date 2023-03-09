@@ -56,7 +56,7 @@ class RecomenderDraftTable extends DataTableComponent
     }
     public function modify($id)
     {
-        $this->emit('openForm', true, $id);
+        $this->emit('openForm', ['formType'=>'modify', 'id'=>$id]);
     }
     public function view($estimate_id)
     {

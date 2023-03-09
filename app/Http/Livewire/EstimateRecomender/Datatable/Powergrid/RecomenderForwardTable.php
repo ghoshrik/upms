@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Livewire\app\Http\Livewire\Estimate\datatable\PowerGrid;
+namespace App\Http\Livewire\EstimateRecomender\Datatable\Powergrid;
 
-use App\Models\EstimatePrepare;
+use App\Models\Esrecommender;
 use App\Models\EstimateStatus;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\QueryException;
@@ -16,7 +16,7 @@ use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\Rules\Rule;
 
-final class EstimatedTable extends PowerGridComponent
+final class RecomenderForwardTable extends PowerGridComponent
 {
     use ActionButton;
 
@@ -49,37 +49,34 @@ final class EstimatedTable extends PowerGridComponent
     /**
     * PowerGrid datasource.
     *
-    * @return  \Illuminate\Database\Eloquent\Builder<\App\Models\EstimatePrepare>|null
+    * @return  \Illuminate\Database\Eloquent\Builder<\App\Models\Esrecommender>|null
     */
     public function datasource(): ?Builder
     {
-        $x = EstimatePrepare::query()
+        return Esrecommender::query()
         ->select(
-            'estimate_prepares.id',
-            'estimate_prepares.estimate_id',
-            'estimate_prepares.operation',
-            'estimate_prepares.total_amount',
-            'estimate_prepares.created_by',
-            'estimate_user_assign_records.estimate_id',
+            'estimate_recomender.id',
+            'estimate_recomender.estimate_id',
+            'estimate_recomender.operation',
+            'estimate_recomender.total_amount',
+            'estimate_recomender.verified_by',
+            'estimate_user_assign_records.estimate_id as user_assign_records_estimate_id',
             'estimate_user_assign_records.estimate_user_type',
             'estimate_user_assign_records.estimate_user_id',
             'estimate_user_assign_records.estimate_user_type',
             'estimate_user_assign_records.comments',
-            'sor_masters.estimate_id',
+            'sor_masters.estimate_id as sor_masters_estimate_id',
+            'sor_masters.sorMasterDesc',
             'sor_masters.status'
         )
-        ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
-        ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-        ->where('estimate_user_assign_records.estimate_user_type','=',2)
-        ->where('sor_masters.status','!=',1)
+        ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_recomender.estimate_id')
+        ->join('sor_masters','sor_masters.estimate_id','=','estimate_recomender.estimate_id')
+        ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
+        ->where('estimate_user_assign_records.estimate_user_type','=',1)
         ->where('sor_masters.status','!=',3)
-        ->where('operation', 'Total')
-        ->where('created_by',Auth::user()->id);
-
-        // dd($x->toSql());
-
-        return $x;
-
+        ->where('sor_masters.status','!=',4)
+        ->where('sor_masters.status','!=',8)
+        ->where('operation', 'Total');
     }
 
     /*
@@ -112,14 +109,14 @@ final class EstimatedTable extends PowerGridComponent
     {
         return PowerGrid::eloquent()
             ->addColumn('estimate_id')
+            ->addColumn('sorMasterDesc')
             ->addColumn('total_amount', fn ($model)=>  round($model->total_amount, 10, 2))
             ->addColumn('status',function ($model){
                 $statusName =EstimateStatus::where('id',$model->status)->select('status')->first();
                 $statusName = $statusName->status;
-                return '<span class="badge bg-soft-info fs-6">'.$statusName.'</span>';
+                return '<span class="badge bg-soft-info fs-6"><x-lucide-eye class="w-4 h-4 text-gray-500" />'.$statusName.'</span>';
             })
             ->addColumn('comments');
-
     }
 
     /*
@@ -144,23 +141,23 @@ final class EstimatedTable extends PowerGridComponent
                 ->field('estimate_id')
                 ->sortable()
                 ->searchable(),
-
             Column::add()
-                ->title('TOTAL AMOUNT')
+                ->title('DESCRIPTION')
+                ->field('sorMasterDesc')
+                ->searchable(),
+            Column::add()
+                ->title('RECOMENDER COST')
                 ->field('total_amount')
                 ->makeInputRange(),
             Column::add()
                 ->title('STATUS')
                 ->field('status')
-                ->sortable()
                 ->searchable(),
-
             Column::add()
                 ->title('COMMENTS')
                 ->field('comments'),
 
-        ]
-;
+        ];
     }
 
     /*
@@ -172,21 +169,22 @@ final class EstimatedTable extends PowerGridComponent
     */
 
      /**
-     * PowerGrid EstimatePrepare Action Buttons.
+     * PowerGrid Esrecommender Action Buttons.
      *
      * @return array<int, \PowerComponents\LivewirePowerGrid\Button>
      */
 
+
     public function actions(): array
     {
-       return [
-           Button::add('view')
-               ->caption('View')
-               ->class('btn btn-soft-primary btn-sm')
-               ->emit('openModal', ['estimate_id']),
-
-        ];
+        return [
+            Button::add('view')
+                ->caption('View')
+                ->class('btn btn-soft-primary btn-sm')
+                ->emit('openVerifiedEstimateViewModal', ['estimate_id']),
+         ];
     }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -197,7 +195,7 @@ final class EstimatedTable extends PowerGridComponent
     */
 
      /**
-     * PowerGrid EstimatePrepare Action Rules.
+     * PowerGrid Esrecommender Action Rules.
      *
      * @return array<int, \PowerComponents\LivewirePowerGrid\Rules\RuleActions>
      */
@@ -209,7 +207,7 @@ final class EstimatedTable extends PowerGridComponent
 
            //Hide button edit for ID 1
             Rule::button('edit')
-                ->when(fn($estimate-prepare) => $estimate-prepare->id === 1)
+                ->when(fn($esrecommender) => $esrecommender->id === 1)
                 ->hide(),
         ];
     }
@@ -225,7 +223,7 @@ final class EstimatedTable extends PowerGridComponent
     */
 
      /**
-     * PowerGrid EstimatePrepare Update.
+     * PowerGrid Esrecommender Update.
      *
      * @param array<string,string> $data
      */
@@ -234,7 +232,7 @@ final class EstimatedTable extends PowerGridComponent
     public function update(array $data ): bool
     {
        try {
-           $updated = EstimatePrepare::query()->findOrFail($data['id'])
+           $updated = Esrecommender::query()
                 ->update([
                     $data['field'] => $data['value'],
                 ]);

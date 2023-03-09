@@ -11,7 +11,8 @@ class EstimateRecomender extends Component
 {
     use Actions;
     public $formOpen = false, $modifyFormOpen = false, $updateDataTableTracker, $selectedEstTab = 1, $counterData = [];
-    protected $listeners = ['openForm' => 'formOCControl','refreshData' => 'mount'];
+    protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'mount'];
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function mount()
     {
         $this->draftData();
@@ -70,6 +71,23 @@ class EstimateRecomender extends Component
             ->count();
         // dd($this->counterData);
     }
+    public function fromEntryControl($data='')
+    {
+        $this->openedFormType = is_array($data) ? $data['formType']:$data;
+        $this->isFromOpen = !$this->isFromOpen;
+        switch ($this->openedFormType) {
+            case 'modify':
+                $this->subTitel = 'Modify';
+                break;
+            default:
+                $this->subTitel = 'List';
+                break;
+        }
+        if(isset($data['id'])){
+            // $this->selectedIdForEdit = $data['id'];
+            $this->emit('modifyEstimateRow',$data['id']);
+        }
+    }
     public function formOCControl($isModifyFrom = false, $eidtId = null)
     {
         if ($isModifyFrom) {
@@ -88,7 +106,7 @@ class EstimateRecomender extends Component
     public function render()
     {
         $this->updateDataTableTracker = rand(1, 1000);
-        $this->emit('changeTitel', 'Estimate Recomender');
+        $this->titel= 'Estimate Recomender';
         return view('livewire.estimate-recomender.estimate-recomender');
     }
 }
