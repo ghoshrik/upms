@@ -7,7 +7,7 @@ use Livewire\Component;
 class Office extends Component
 {
     public $formOpen = false;
-    protected $listeners = ['openForm' => 'fromEntryControl'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
 
     public $addedOfficeUpdateTrack;

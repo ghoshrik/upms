@@ -12888,7 +12888,7 @@ thead, tbody, tfoot, tr, td, th {
   position: absolute;
   top: 0;
   z-index: -1;
-  height: 264px;
+  /* height: 264px; */
   /* width: 100%; */
   transition: all 400ms;
   transform-origin: center left;

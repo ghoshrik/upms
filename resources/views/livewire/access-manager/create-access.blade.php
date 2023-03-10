@@ -24,7 +24,7 @@
                             <div class="form-group">
                                 @isset($dropDownData['accessTypes'])
                                 <x-select label="Access Type" placeholder="{{ trans('cruds.access-manager.fields.access_type') }}"
-                                    wire:model.defer="newAccessData.access_type_id">
+                                    wire:model.defer="newAccessData.access_type_id" multiselect>
                                     @foreach ($dropDownData['accessTypes'] as $accessType)
                                     <x-select.option label="{{ $accessType['access_name'] }}"
                                         value="{{ $accessType['id'] }}" />

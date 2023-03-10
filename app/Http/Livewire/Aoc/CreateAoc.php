@@ -53,7 +53,7 @@ class CreateAoc extends Component
             $title = trans('cruds.funds.create_msg')
         );
         // $this->reset();
-        $this->emit('openForm');
+        $this->emit('openEntryForm');
     }
     public function render()
     {

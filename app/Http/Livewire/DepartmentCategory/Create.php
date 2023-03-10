@@ -32,10 +32,10 @@ class Create extends Component
                 'dept_category_name'=>$this->dept_category_name
             ]);
             $this->notification()->success(
-                $title = 'Created Successfully'
+                $title = 'Department category created'
             );
             $this->reset();
-            $this->emit('openForm');
+            $this->emit('openEntryForm');
 
         } catch (\Throwable $th) {
             $this->emit('showError', $th->getMessage());

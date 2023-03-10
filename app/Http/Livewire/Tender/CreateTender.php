@@ -42,7 +42,7 @@ class CreateTender extends Component
                 $title = trans('cruds.aoc.create_msg')
             );
             $this->reset();
-            $this->emit('openForm');
+            $this->emit('openEntryForm');
         }
         catch(\Throwable $th)
         {

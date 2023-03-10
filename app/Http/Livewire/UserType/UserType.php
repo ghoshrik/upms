@@ -7,7 +7,7 @@ use Livewire\Component;
 class UserType extends Component
 {
     public $formOpen = false;
-    protected $listeners = ['openForm' => 'formOCControl'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
 
     public function fromEntryControl($data='')

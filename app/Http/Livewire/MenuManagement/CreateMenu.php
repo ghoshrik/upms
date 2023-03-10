@@ -70,7 +70,7 @@ class CreateMenu extends Component
                 $description =  'New Menu created successfully!'
             );
             $this->reset();
-            $this->emit('openForm');
+            $this->emit('openEntryForm');
             return;
         }
         $this->notification()->error(

@@ -7,7 +7,7 @@ use Livewire\Component;
 class UserManagement extends Component
 {
     public $formOpen=false,$updateDataTableTracker;
-    protected $listeners = ['openForm' => 'formOCControl'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
 
     public function fromEntryControl($data='')

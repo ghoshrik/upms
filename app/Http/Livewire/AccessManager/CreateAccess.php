@@ -17,6 +17,11 @@ class CreateAccess extends Component
 {
     use Actions;
     public $dropDownData = [], $newAccessData = [];
+
+    // protected $rules = [
+    //     ''
+    // ];
+
     public function mount()
     {
         $this->newAccessData = [
@@ -84,7 +89,7 @@ class CreateAccess extends Component
                 $description =  'New User created successfully!'
             );
             $this->reset();
-            $this->emit('openForm');
+            $this->emit('openEntryForm');
             return;
         } catch (\Throwable $th) {
             dd($th->getMessage());

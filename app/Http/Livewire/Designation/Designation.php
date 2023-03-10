@@ -8,8 +8,8 @@ class Designation extends Component
 {
     public $updateMode = false;
     public $formOpen=false,$editFormOpen = false,$updatedDataTableTracker;
-    protected $listeners = ['openForm' => 'formOCControl'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel = "Designations";
+    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function mount()
     {
         $this->updatedDataTableTracker = rand(1,1000);
@@ -52,7 +52,7 @@ class Designation extends Component
     public function render()
     {
         $assets = ['chart', 'animation'];
-        $this->emit('changeTitle', 'Designation');
+        $this->titel = 'Designation';
         return view('livewire.designation.designation',compact('assets'));
     }
 }

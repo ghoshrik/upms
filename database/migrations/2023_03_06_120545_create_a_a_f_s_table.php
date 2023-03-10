@@ -15,11 +15,11 @@ class CreateAAFSTable extends Migration
     {
         Schema::create('a_a_f_s', function (Blueprint $table) {
             $table->id();
-            $table->integer('project_id');
-            $table->integer('Go_id');
+            $table->string('project_id');
+            $table->string('Go_id');
             $table->date('go_date');
             $table->string('support_data')->nullable();
-            $table->tinyInteger('status');
+            $table->tinyIncrements('status')->default('0');
             $table->timestamps();
         });
     }
