@@ -202,9 +202,12 @@ final class RecomenderDraftTable extends PowerGridComponent
                 ->class('btn btn-soft-primary btn-sm')
                 ->emit('openRevertModal', ['id'=>'estimate_id']),
             Button::add('forward')
+                ->bladeComponent('',[])
                 ->caption('Forward')
-                ->class('btn btn-soft-primary btn-sm')
-                ->emit('openForm', ['id'=>'estimate_id']),
+
+                // ->class('btn btn-soft-primary btn-sm')
+                // ->emit('openForm', ['id'=>'estimate_id'])
+                ,
             Button::add('modify')
                 ->caption('Modify')
                 ->class('btn btn-soft-primary btn-sm')
@@ -228,15 +231,15 @@ final class RecomenderDraftTable extends PowerGridComponent
      */
 
 
-    public function actionRules(): array
-    {
-       return [
-            Rule::button('forward')
-                ->when(fn($model) => $model->status == 2 || $model->status == 4)
-                ->hide(),
-        ];
+    // public function actionRules(): array
+    // {
+    //    return [
+    //         Rule::button('forward')
+    //             ->when(fn($model) => $model->status == 2 || $model->status == 4)
+    //             ->hide(),
+    //     ];
 
-    }
+    // }
 
 
     /*

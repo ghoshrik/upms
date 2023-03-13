@@ -153,7 +153,7 @@
                             @if ($this->selectedEstTab == 1)
                                 <div class="card">
                                     <div class="card-body">
-                                        <livewire:estimate-recomender.datatable.recomender-draft-table :wire:key="$updateDataTableTracker" />
+                                        {{-- <livewire:estimate-recomender.datatable.recomender-draft-table :wire:key="$updateDataTableTracker" /> --}}
                                         <livewire:estimate-recomender.datatable.powergrid.recomender-draft-table :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>

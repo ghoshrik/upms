@@ -28,12 +28,6 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4 col-lg-4 col-sm-4">
-                            <div class="form-group">
-                                <x-input wire:model="newUserData.email" label="Email"
-                                    placeholder="Enter Employee Email " />
-                            </div>
-                        </div>
                         @isset($dropDownData['offices'])
                         <div class="col-md-4 col-lg-4 col-sm-4">
                             <x-select label="Select Office Level" placeholder="Select Office Level" :options="[
@@ -71,13 +65,19 @@
                                 </x-select>
                                 @endisset
                                 @isset($dropDownData['offices'])
-                                <x-select label="Office" placeholder="Select Department"
+                                <x-select label="Office" placeholder="Select Office"
                                     wire:model.defer="newUserData.office_id">
                                     @foreach ($dropDownData['offices'] as $office)
                                     <x-select.option label="{{ $office['office_name'] }}" value="{{ $office['id'] }}" />
                                     @endforeach
                                 </x-select>
                                 @endisset
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4 col-sm-4">
+                            <div class="form-group">
+                                <x-input wire:model="newUserData.email" label="Email"
+                                    placeholder="Enter Employee Email " />
                             </div>
                         </div>
                         <div class="col-md-4 col-lg-4 col-sm-4">
