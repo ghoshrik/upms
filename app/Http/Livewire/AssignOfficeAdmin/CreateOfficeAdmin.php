@@ -2,106 +2,40 @@
 
 namespace App\Http\Livewire\AssignOfficeAdmin;
 
+use App\Models\District;
+use App\Models\Office;
+use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class CreateOfficeAdmin extends Component
 {
-    public $offices, $officeLevel, $selectedLevelAllOffices = [], $filtredOffices=[], $users, $office_id, $getUserList = [], $officeDetail;
-
+    public  $selectedLevel,$selectedDist,$selectedOffice, $dropdownData = [],$searchCondition=[], $filtredOffices, $hooUsers;
     public function mount()
     {
-        $this->offices = [
-            [
-                'id' => 1,
-                'level_id' => 1,
-                'office_name' => 'Office 1',
-            ],
-            [
-                'id' => 2,
-                'level_id' => 1,
-                'office_name' => 'Office 2',
-            ],
-            [
-                'id' => 3,
-                'level_id' => 2,
-                'office_name' => 'Office 3',
-            ],
-            [
-                'id' => 4,
-                'level_id' => 2,
-                'office_name' => 'Office 4',
-            ],
-            [
-                'id' => 5,
-                'level_id' => 3,
-                'office_name' => 'Office 5',
-            ],
-            [
-                'id' => 6,
-                'level_id' => 4,
-                'office_name' => 'Office 6',
-            ],
-            [
-                'id' => 7,
-                'level_id' => 5,
-                'office_name' => 'Office 7',
-            ],
-        ];
-        $this->users = [
-            [
-                'id' => 1,
-                'user_type' => 'HOD',
-                'office_id' => 1,
-                'user_name' => 'User 1',
-
-            ],
-            [
-                'id' => 2,
-                'user_type' => 'HOD',
-                'office_id' => 1,
-                'user_name' => 'User 2',
-
-            ],
-            [
-                'id' => 3,
-                'user_type' => 'HOD',
-                'office_id' => 1,
-                'user_name' => 'User 3',
-
-            ],
-            [
-                'id' => 4,
-                'user_type' => 'HOD',
-                'office_id' => 2,
-                'user_name' => 'User 4',
-
-            ],
-        ];
+        $this->hooUsers = User::where([['user_type',4],['department_id',Auth::user()->department_id]])->get();
+        $this->dropdownData['dist'] = District::all();
     }
-    public function getOffice()
+    public function getOffices()
     {
-            $this->resetExcept(['officeLevel', 'offices','users']);
-            $userCollection = collect($this->users);
-            foreach ($this->offices as $key=> $office) {
-                if ($office['level_id'] == $this->officeLevel) {
-                    $this->selectedLevelAllOffices[] = $office;
-                    $this->filtredOffices[] = $office;
-                    $this->filtredOffices[count($this->filtredOffices)-1]['users'] = $userCollection->where('office_id',$office['id']);
-                }
-            }
-
-    }
-    public function getOfficeById()
-    {
-        $this->resetExcept(['officeLevel', 'offices', 'office_id','selectedLevelAllOffices','users']);
-        $userCollection = collect($this->users);
-        foreach ($this->offices as $office) {
-            if ($office['id'] == $this->office_id) {
-                $this->filtredOffices[] = $office;
-                $this->filtredOffices[count($this->filtredOffices)-1]['users'] = $userCollection->where('office_id',$office['id']);
-            }
+        if($this->selectedLevel){
+            $this->searchCondition=Arr::add($this->searchCondition,'level',$this->selectedLevel);
         }
+        if($this->selectedDist){
+            $this->searchCondition=Arr::add($this->searchCondition,'dist_code',$this->selectedDist);
+        }
+            $this->filtredOffices = Office::where($this->searchCondition)->where('department_id',Auth::user()->department_id)->get();
+            // $this->filtredOffices = Office::leftJoin('users', function($join) {
+            //     $join->on('offices.id', '=', 'users.office_id')
+            //          ->where([['users.user_type',4]]);
+            // })
+            // ->where('offices.department_id',Auth::user()->department_id)
+            // ->select('offices.id as id', 'offices.office_name','offices.office_address','offices.level', 'users.id as user_id')
+            // ->get();
+            // dd($this->filtredOffices);
+        $this->resetExcept('hooUsers','filtredOffices','dropdownData','selectedLevel','selectedDist');
     }
     public function render()
     {
