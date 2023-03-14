@@ -20,6 +20,7 @@ use App\Http\Livewire\UserType\UserType;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\AccessType\AccessType;
 use App\Http\Livewire\Aoc\Aocs;
+use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
 use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
 use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
 use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
@@ -104,6 +105,7 @@ Route::group(['middleware' => ['prevent-back-history']],function(){
         Route::get('aoc',Aocs::class)->name('aoc');
         Route::get('tenders',Tenders::class)->name('tenders');
         Route::get('assign-office-admin',AssignOfficeAdmin::class)->name('assign-office-admin');
+        Route::get('assign-dept-admin',AssignDepartmentAdmin::class)->name('assign-dept-admin');
     });
 });
 
