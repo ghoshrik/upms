@@ -7,25 +7,6 @@
                         <h1>{{ $titel }}</h1>
                         <p class="mb-0">{{ $subTitel }}</p>
                     </div>
-                    @canany(['create assignOfficeAdmin', 'edit assignOfficeAdmin'])
-                        <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
-                            @if (!$isFromOpen)
-                                <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
-                                    x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
-                                    <span class="btn-inner">
-                                        <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
-                                    </span>
-                                </button>
-                            @else
-                                <button wire:click="fromEntryControl" class="btn btn-danger rounded-pill "
-                                    x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
-                                    <span class="btn-inner">
-                                        <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
-                                    </span>
-                                </button>
-                            @endif
-                        </div>
-                    @endcanany
                 </div>
             </div>
             <div class="iq-header-img">
@@ -49,20 +30,7 @@
         </div>
         <div wire:loading.delay.long.class="loading">
             <div x-transition.duration.900ms>
-                @if ($isFromOpen && $openedFormType == 'create')
-                    <livewire:assign-office-admin.create-office-admin />
-                @elseif($isFromOpen && $openedFormType == 'edit')
-                @else
-                    <div class="row">
-                        <div class="col-md-12 col-lg-12 col-sm-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    {{-- <livewire:data-table.aoc-data-table :wire:key='$updateDataTableTracker' /> --}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
+                <livewire:assign-office-admin.create-office-admin />
             </div>
         </div>
     </div>
