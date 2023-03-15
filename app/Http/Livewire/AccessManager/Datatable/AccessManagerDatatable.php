@@ -43,5 +43,6 @@ class AccessManagerDatatable extends DataTableComponent
         return AccessMaster::query()
         ->where('access_masters.department_id',Auth::user()->department_id)
         ->where('access_masters.office_id','=',Auth::user()->office_id);
+        // ->where('');
     }
 }

@@ -73,11 +73,16 @@
                                                 wire:model.defer="inputsData.{{ $key }}.effect_from" min="{{ now() }}" />
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <x-textarea rows="2" wire:key="description.{{ $key }}" wire:model="inputsData.{{ $key }}.description"
                                                 label="{{ trans('cruds.sor.fields.description') }}"
                                                 placeholder="{{ trans('cruds.sor.fields.description') }}" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            {{-- <x-media-library-attachment name="myUpload" /> --}}
                                         </div>
                                     </div>
                                 </div>

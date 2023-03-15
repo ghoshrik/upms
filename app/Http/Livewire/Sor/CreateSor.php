@@ -13,10 +13,10 @@ class CreateSor extends Component
 {
     use Actions;
     public $inputsData = [], $fetchDropDownData = [];
-
+    //|regex:/^\d{2}\.\d{2}/
     protected $rules = [
         'inputsData.*.dept_category_id'=>'required|integer',
-        'inputsData.*.item_details'=>'required',
+        'inputsData.*.item_details'=>'required|numeric',
         'inputsData.*.description'=>'required|string',
         'inputsData.*.unit'=>'required|numeric',
         'inputsData.*.cost'=>'required|numeric',
@@ -27,7 +27,8 @@ class CreateSor extends Component
         'inputsData.*.dept_category_id.required'=>'This field is required',
         'inputsData.*.dept_category_id.required'=>'Invalid format',
         'inputsData.*.item_details.required'=> 'This field is required',
-        // 'inputsData.*.item_details.numeric'=>'Only allow number',
+        'inputsData.*.item_details.numeric'=>'Only allow number',
+        // 'inputsData.*.item_details.regex'=> 'The field invalid characters',
         'inputsData.*.description.required'=>'This field is required',
         'inputsData.*.description.string'=>'This field must be allow alphabet',
         'inputsData.*.unit.required'=>'This field is required',
@@ -80,7 +81,6 @@ class CreateSor extends Component
     public function store()
     {
         $this->validate();
-
         try {
             foreach ($this->inputsData as $key => $data) {
                 SOR::create($data);

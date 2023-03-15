@@ -51,6 +51,10 @@ class SorDataTable extends DataTableComponent
             //     ->sortable(),
         ];
     }
+    public function sorapproved($value)
+    {
+        $this->emit('openModel',$value);
+    }
     public function edit($id)
     {
         $this->emit('openForm',['formType'=>'edit','id'=>$id]);
@@ -58,6 +62,7 @@ class SorDataTable extends DataTableComponent
     public function builder(): Builder
     {
         return SOR::query()
-                    ->where('s_o_r_s.department_id', Auth::user()->department_id);
+                    ->where('s_o_r_s.department_id', Auth::user()->department_id)
+                    ->where('IsActive','1');
     }
 }

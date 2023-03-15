@@ -20,6 +20,7 @@ class SOR extends Model
         'version',
         'effect_from',
         'effect_to',
+        'support_data',
         'IsActive'
     ];
 

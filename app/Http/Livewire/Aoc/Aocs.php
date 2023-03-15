@@ -34,9 +34,9 @@ class Aocs extends Component
     }
     public function render()
     {
-        $this->updateDataTableTracker = rand(1,1000);
-        $this->titel = trans('cruds.aocs.title');
-        $assets = ['chart', 'animation'];
+            $this->updateDataTableTracker = rand(1,1000);
+            $this->titel = trans('cruds.aocs.title');
+            $assets = ['chart', 'animation'];
         return view('livewire.aoc.aocs',compact('assets'));
     }
 }

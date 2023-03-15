@@ -58,8 +58,8 @@
                         {{-- <h2>Department & office wise Data Sorting is pending.</h2> --}}
                         <div class="card-body">
                             {{-- TODO:: CHANGE --}}
-                            <livewire:access-manager.datatable.access-manager-datatable
-                                :wire:key="$updateDataTableTracker" />
+                            <livewire:access-manager.datatable.access-manager-datatable :wire:key="$updateDataTableTracker" />
+
                         </div>
                     </div>
                 </div>
