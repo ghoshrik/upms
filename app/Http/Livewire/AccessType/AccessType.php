@@ -8,7 +8,7 @@ class AccessType extends Component
 {
     public $formOpen = false;
     protected $listeners = ['openEntryForm' => 'fromEntryControl'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel = "Access Types";
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function fromEntryControl($data='')
     {
         // dd($data);
@@ -46,6 +46,7 @@ class AccessType extends Component
     public function render()
     {
         $assets = ['chart', 'animation'];
+        $this->titel = trans('cruds.access-type.title_singulars');
         return view('livewire.access-type.access-type',compact('assets'));
     }
 }

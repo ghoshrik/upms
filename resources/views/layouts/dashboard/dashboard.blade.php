@@ -19,5 +19,6 @@
     <x-dialog/>
     @include('partials.dashboard._body')
     @livewireScripts
+    {{-- @yield('scripts') --}}
 </body>
 </html>

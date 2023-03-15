@@ -3,11 +3,14 @@
 namespace App\Http\Livewire\AccessType;
 
 use Livewire\Component;
-use Spatie\Permission\Models\Permission;
+use App\Models\AccessType;
+use WireUi\Traits\Actions;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class CreateAccessType extends Component
 {
+    use Actions;
     public $dropDownData = [], $newAccessTypeData = [];
     public function mount()
     {
@@ -27,6 +30,7 @@ class CreateAccessType extends Component
             $role = Role::create(['name' => $this->newAccessTypeData['access_name']]);
             $role->syncPermissions($this->newAccessTypeData['permissions']);
             unset($this->newAccessTypeData['permissions']);
+            // AccessType::create($this->newAccessTypeData);
             AccessType::create($this->newAccessTypeData);
 
             $this->notification()->success(

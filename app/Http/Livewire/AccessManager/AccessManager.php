@@ -2,13 +2,14 @@
 
 namespace App\Http\Livewire\AccessManager;
 
+use App\Models\AccessMaster;
 use Livewire\Component;
 
 class AccessManager extends Component
 {
     public $formOpen=false,$editFormOpen=false,$updateDataTableTracker;
     protected $listeners = ['openEntryForm' => 'fromEntryControl'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel = "Access Managers";
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel,$AccessManagerTable = [];
 
     public function fromEntryControl($data='')
     {
@@ -48,8 +49,10 @@ class AccessManager extends Component
     // }
     public function render()
     {
+
+        $this->AccessManagerTable = AccessMaster::OrderBy('id','desc')->get();
         $this->updateDataTableTracker = rand(1,1000);
-        $this->emit('changeTitel', 'Access Manager');
+        $this->titel = trans('cruds.access-manager.title');
         $assets = ['chart', 'animation'];
         return view('livewire.access-manager.access-manager',compact('assets'));
     }

@@ -17,9 +17,9 @@ class CreateAccessMastersTable extends Migration
             $table->id();
             $table->bigInteger('department_id');
             $table->bigInteger('designation_id');
-            $table->bigInteger('access_type_id');
+            $table->bigInteger('access_type_id');//multiple
             $table->bigInteger('office_id');
-            $table->bigInteger('user_id');
+            $table->bigInteger('user_id');//multiple
             $table->timestamps();
         });
     }

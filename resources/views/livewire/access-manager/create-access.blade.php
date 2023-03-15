@@ -22,6 +22,18 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
+                                <x-select label="User" placeholder="Select User" wire:model.defer="newAccessData.user_id">
+                                    @isset($dropDownData['users'])
+                                        @foreach ($dropDownData['users'] as $user)
+                                        <x-select.option label="{{ $user['emp_name'] }}" value="{{ $user['id'] }}" />
+                                        @endforeach
+                                    @endisset
+                                </x-select>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
                                 @isset($dropDownData['accessTypes'])
                                 <x-select label="Access Type" placeholder="{{ trans('cruds.access-manager.fields.access_type') }}"
                                     wire:model.defer="newAccessData.access_type_id" multiselect>
@@ -33,19 +45,7 @@
                                 @endisset
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
 
-                                <x-select label="User" placeholder="Select User" wire:model.defer="newAccessData.user_id" multiselect>
-                                    @isset($dropDownData['users'])
-                                        @foreach ($dropDownData['users'] as $user)
-                                        <x-select.option label="{{ $user['emp_name'] }}" value="{{ $user['id'] }}" />
-                                        @endforeach
-                                    @endisset
-                                </x-select>
-
-                            </div>
-                        </div>
                     </div>
                     <div class="row">
                         <div class="col">

@@ -26,6 +26,7 @@ use App\Http\Livewire\Fund\Funds;
 use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\Milestone\Milestones;
 use App\Http\Livewire\Permission\Permissions;
+use App\Http\Livewire\Sorapprove\SorApprovers;
 use App\Http\Livewire\Tender\Tenders;
 // use App\Http\Livewire\Permission\Permissions;
 // use App\Http\Livewire\Role\Roles;
@@ -102,6 +103,7 @@ Route::group(['middleware' => ['prevent-back-history']],function(){
         Route::get('aafs-project',AafsProjects::class)->name('aafs-project');
         Route::get('aoc',Aocs::class)->name('aoc');
         Route::get('tenders',Tenders::class)->name('tenders');
+        Route::get('sor-approver',SorApprovers::class)->name('sor-approver');
     });
 });
 
