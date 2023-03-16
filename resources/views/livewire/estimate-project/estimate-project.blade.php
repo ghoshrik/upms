@@ -167,14 +167,14 @@
                                 <div class="card">
                                     <div class="card-body">
                                         {{-- <livewire:estimate-project.data-table.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" /> --}}
-                                        <livewire:estimate-project.powergrid.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" />
+                                        <livewire:estimate-project.datatable.powergrid.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 3)
                                 <div class="card">
                                     <div class="card-body">
                                         {{-- <livewire:estimate-project.data-table.reverted-estimate-project-table :wire:key="$updateDataTableTracker" /> --}}
-                                        <livewire:estimate-project.powergrid.estimate-revert-table :wire:key="$updateDataTableTracker" />
+                                        <livewire:estimate-project.datatable.powergrid.estimate-revert-table :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @else

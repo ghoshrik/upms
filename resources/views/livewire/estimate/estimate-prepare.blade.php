@@ -175,7 +175,7 @@
                                     <div class="card-body">
                                         {{-- <livewire:estimate.datatable.reverted-data-table
                                             :wire:key="$updateDataTableTracker" /> --}}
-                                        <livewire:estimate.datatable.powergrid.estimate-revert-table
+                                        <livewire:estimate.datatable.power-grid.estimate-revert-table
                                             :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>

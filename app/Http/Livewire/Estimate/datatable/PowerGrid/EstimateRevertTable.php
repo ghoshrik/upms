@@ -1,27 +1,19 @@
 <?php
 
-namespace App\Http\Livewire\Estimate\datatable\Powergrid;
+namespace App\Http\Livewire\Estimate\Datatable\PowerGrid;
 
 use App\Models\EstimatePrepare;
 use App\Models\EstimateStatus;
 use Illuminate\Support\Carbon;
-use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-use PowerComponents\LivewirePowerGrid\Button;
-use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
-use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
-use PowerComponents\LivewirePowerGrid\Rules\Rule;
+use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
 
 final class EstimateRevertTable extends PowerGridComponent
 {
     use ActionButton;
-
-    //Messages informing success/error data is updated.
-    public bool $showUpdateMessages = true;
 
     /*
     |--------------------------------------------------------------------------
@@ -30,12 +22,19 @@ final class EstimateRevertTable extends PowerGridComponent
     | Setup Table's general features
     |
     */
-    public function setUp(): void
+    public function setUp(): array
     {
-        $this->showCheckBox()
-            ->showPerPage()
-            ->showSearchInput()
-            ->showExportOption('download', ['excel', 'csv']);
+        $this->showCheckBox();
+
+        return [
+            Exportable::make('export')
+                ->striped()
+                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
+            Header::make()->showSearchInput(),
+            Footer::make()
+                ->showPerPage()
+                ->showRecordCount(),
+        ];
     }
 
     /*
@@ -49,11 +48,11 @@ final class EstimateRevertTable extends PowerGridComponent
     /**
     * PowerGrid datasource.
     *
-    * @return  \Illuminate\Database\Eloquent\Builder<\App\Models\EstimatePrepare>|null
+    * @return Builder<\App\Models\EstimatePrepare>
     */
-    public function datasource(): ?Builder
+    public function datasource(): Builder
     {
-        $x = EstimatePrepare::query()
+        return EstimatePrepare::query()
         ->select(
             'estimate_prepares.id',
             'estimate_prepares.estimate_id',
@@ -76,10 +75,6 @@ final class EstimateRevertTable extends PowerGridComponent
         ->where('sor_masters.status','=',3)
         ->where('operation', 'Total')
         ->where('created_by',Auth::user()->id);
-
-        // dd($x->toSql());
-
-        return $x;
     }
 
     /*
@@ -107,8 +102,11 @@ final class EstimateRevertTable extends PowerGridComponent
     | Make Datasource fields available to be used as columns.
     | You can pass a closure to transform/modify the data.
     |
+    | ❗ IMPORTANT: When using closures, you must escape any value coming from
+    |    the database using the `e()` Laravel Helper function.
+    |
     */
-    public function addColumns(): ?PowerGridEloquent
+    public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
         ->addColumn('estimate_id')
@@ -175,7 +173,7 @@ final class EstimateRevertTable extends PowerGridComponent
      /**
      * PowerGrid EstimatePrepare Action Buttons.
      *
-     * @return array<int, \PowerComponents\LivewirePowerGrid\Button>
+     * @return array<int, Button>
      */
 
 
@@ -208,7 +206,7 @@ final class EstimateRevertTable extends PowerGridComponent
      /**
      * PowerGrid EstimatePrepare Action Rules.
      *
-     * @return array<int, \PowerComponents\LivewirePowerGrid\Rules\RuleActions>
+     * @return array<int, RuleActions>
      */
 
     /*
@@ -221,54 +219,6 @@ final class EstimateRevertTable extends PowerGridComponent
                 ->when(fn($estimate-prepare) => $estimate-prepare->id === 1)
                 ->hide(),
         ];
-    }
-    */
-
-    /*
-    |--------------------------------------------------------------------------
-    | Edit Method
-    |--------------------------------------------------------------------------
-    | Enable the method below to use editOnClick() or toggleable() methods.
-    | Data must be validated and treated (see "Update Data" in PowerGrid doc).
-    |
-    */
-
-     /**
-     * PowerGrid EstimatePrepare Update.
-     *
-     * @param array<string,string> $data
-     */
-
-    /*
-    public function update(array $data ): bool
-    {
-       try {
-           $updated = EstimatePrepare::query()
-                ->update([
-                    $data['field'] => $data['value'],
-                ]);
-       } catch (QueryException $exception) {
-           $updated = false;
-       }
-       return $updated;
-    }
-
-    public function updateMessages(string $status = 'error', string $field = '_default_message'): string
-    {
-        $updateMessages = [
-            'success'   => [
-                '_default_message' => __('Data has been updated successfully!'),
-                //'custom_field'   => __('Custom Field updated successfully!'),
-            ],
-            'error' => [
-                '_default_message' => __('Error updating the data.'),
-                //'custom_field'   => __('Error updating custom field.'),
-            ]
-        ];
-
-        $message = ($updateMessages[$status][$field] ?? $updateMessages[$status]['_default_message']);
-
-        return (is_string($message)) ? $message : 'Error!';
     }
     */
 }
