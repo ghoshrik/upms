@@ -1,16 +1,16 @@
 
 <x-app-layout :assets="$assets ?? []">
-    <div class="conatiner-fluid content-inner mt-3 py-0">
-        <div class="iq-navbar-header" style="height: 145px;">
+    <div class="conatiner-fluid content-inner py-0">
+        <div class="iq-navbar-header" style="height: 124px;">
             <div class="container-fluid iq-container">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                     <div class="d-flex flex-column">
-                        <h1>{{$titel ?? 'DashBoard'}}</h1>
+                        <h1 class="text-dark">{{$titel ?? 'DashBoard'}}</h1>
                         {{-- <p class="text-primary mb-0">{{$subTitel}}</p> --}}
                     </div>
                 </div>
             </div>
-            <div class="iq-header-img">
+            {{-- <div class="iq-header-img">
                 <img src="{{ asset('images/dashboard/top-header.png') }}" alt="header"
                     class="theme-color-default-img img-fluid w-100 h-100 animated-scaleX">
                 <img src="{{ asset('images/dashboard/top-header1.png') }}" alt="header"
@@ -23,7 +23,7 @@
                     class="theme-color-yellow-img img-fluid w-100 h-100 animated-scaleX">
                 <img src="{{ asset('images/dashboard/top-header5.png') }}" alt="header"
                     class="theme-color-pink-img img-fluid w-100 h-100 animated-scaleX">
-            </div>
+            </div> --}}
         </div>
     </div>
 

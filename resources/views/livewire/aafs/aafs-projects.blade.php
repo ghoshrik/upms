@@ -1,11 +1,11 @@
 <div>
-    <div class="conatiner-fluid content-inner mt-3 py-0">
-        <div class="iq-navbar-header" style="height: 145px;">
+    <div class="conatiner-fluid content-inner py-0">
+        <div class="iq-navbar-header" style="height: 124px;">
             <div class="container-fluid iq-container">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                     <div class="d-flex flex-column">
-                        <h1>{{$titel}}</h1>
-                        <p class="mb-0">{{$subTitel}}</p>
+                       <h3 class="text-dark">{{$titel}}</h3>
+                    <p class="text-primary mb-0">{{$subTitel}}</p>
                     </div>
                     @canany(['create aafs-projects','edit aafs-projects'])
                     <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
@@ -28,7 +28,7 @@
                     @endcanany
                 </div>
             </div>
-            <div class="iq-header-img">
+            {{-- <div class="iq-header-img">
                 <img src="{{ asset('images/dashboard/top-header.png') }}" alt="header"
                     class="theme-color-default-img  w-100  animated-scaleX">
                 <img src="{{ asset('images/dashboard/top-header1.png') }}" alt="header"
@@ -41,7 +41,7 @@
                     class="theme-color-yellow-img  w-100  animated-scaleX">
                 <img src="{{ asset('images/dashboard/top-header5.png') }}" alt="header"
                     class="theme-color-pink-img  w-100  animated-scaleX">
-            </div>
+            </div> --}}
         </div>
          @section('webtitle',trans('cruds.aafs_project.title'))
             <div wire:loading.delay.long>
