@@ -105,20 +105,20 @@ class CreateOffice extends Component
         try {
             $insert = array_merge($this->selectedOption, $this->officeData);
             // dd($insert);
-            Office::create($insert);
-            // $insert = [
-            //     'In_area'=>$this->selectedOption['In_area'],
-            //     'department_id'=>$this->officeData['department_id'],
-            //     'office_name'=>$this->officeData['office_name'],
-            //     'office_address'=>$this->officeData['office_address'],
-            //     'dist_code'=>$this->selectedOption['dist_code'],
-            //     'rural_block_code'=>$this->selectedOption['dist_code'],
-            //     'gp_code'=>$this->selectedOption['dist_code'],
-            //     'urban_code'=>$this->selectedOption['urban_code'],
-            //     'ward_code'=>$this->selectedOption['ward_code']
-            // ];
             // Office::create($insert);
-            // dd($insert);
+            $insert = [
+                'In_area'=>$this->selectedOption['In_area'],
+                'department_id'=>$this->officeData['department_id'],
+                'office_name'=>$this->officeData['office_name'],
+                'office_address'=>$this->officeData['office_address'],
+                'dist_code'=>$this->selectedOption['dist_code'],
+                'rural_block_code'=>$this->selectedOption['dist_code'],
+                'gp_code'=>$this->selectedOption['dist_code'],
+                'urban_code'=>$this->selectedOption['urban_code'],
+                'ward_code'=>$this->selectedOption['ward_code']
+            ];dd($insert);
+            Office::create($insert);
+
             $this->notification()->success(
                 $title = trans('cruds.office.create_mgs')
             );
