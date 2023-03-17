@@ -37,6 +37,7 @@
                             @if($selectedSors)
                            <button type="button" class="btn btn-sm btn btn-soft-danger" wire:click="approvedSOR()">({{count($selectedSors)}}) selected</button>
                            @endif
+                           {{-- {{Auth::user()->department_id}} --}}
                             <div class="table-responsive mt-4">
                                 <table id="basic-table" class="table table-striped mb-0" role="grid">
                                     <thead>
@@ -48,6 +49,7 @@
                                             <th>{{ trans('cruds.sor.fields.department') }}</th>
                                             <th>{{ trans('cruds.sor.fields.unit') }}</th>
                                             <th>{{ trans('cruds.sor.fields.cost') }}</th>
+                                            <th>Status</th>
                                             <th>{{ trans('cruds.sor.fields.action') }}</th>
                                         </tr>
                                     </thead>
@@ -61,6 +63,9 @@
                                                 <td>{{$sors->getDepartmentName->department_name}}</td>
                                                 <td>{{$sors->unit}}</td>
                                                 <td>{{$sors->cost}}</td>
+                                                <td>
+                                                    <span class="btn btn-{{($sors->IsActive=='0') ? 'warning':''}} px-1 py-1 btn-sm">{{($sors->IsActive=='0') ? 'pending':''}}</span>
+                                                </td>
                                                 <td>
                                                     <button type="button" class="btn btn-soft-info btn-sm" wire:click="approvedSOR()">Approved</button>
                                                 </td>
