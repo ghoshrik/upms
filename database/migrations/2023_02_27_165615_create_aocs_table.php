@@ -14,7 +14,7 @@ class CreateAocsTable extends Migration
     public function up()
     {
         Schema::create('aocs', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->autoIncrement();
             $table->integer('project_id');
             $table->integer('go_id');
             $table->integer('vendor_id');

@@ -14,7 +14,7 @@ class CreateEstimateUserAssignRecordsTable extends Migration
     public function up()
     {
         Schema::create('estimate_user_assign_records', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->autoIncrement();
             $table->bigInteger('estimate_id');
             $table->bigInteger('estimate_user_type');
             $table->bigInteger('estimate_user_id');

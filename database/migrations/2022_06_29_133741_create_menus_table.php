@@ -14,13 +14,15 @@ class CreateMenusTable extends Migration
     public function up()
     {
         Schema::create('menus', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->autoIncrement();
             $table->string('title')->unique();
             $table->integer('parent_id')->nullable();
             $table->string('icon');
-            $table->string('slug');
+            // $table->string('slug');
             $table->string('link');
             $table->string('link_type');
+            $table->string('permission')->nullable();;
+            $table->integer('piority')->nullable();
             $table->timestamps();
         });
     }

@@ -18,29 +18,40 @@ class RoleTableSeeder extends Seeder
     {
         $roles = [
             [
-                'name' => 'Super Admin',
-                'slug' => 'super-admin',
-                // 'status' => 1,
-                // 'permissions' => ['role','role-add', 'role-list', 'permission', 'permission-add', 'permission-list']
+                'name' => 'state',
+                'guard_name' => 'admin',
+
             ],
             [
                 'name' => 'State Admin',
-                'slug' => 'state-admin',
-                // 'status' => 1,
-                // 'permissions' => []
+                'guard_name' => 'web'
             ],
             [
-                'name' => 'Dept Admin',
-                'slug' => 'dept-admin',
-                // 'status' => 1,
-                // 'permissions' => []
+                'name' => 'Estimate Recommender (ER)',
+                'guard_name' => 'web',
             ],
             [
-                'name'=>'Office Admin',
-                'slug'=>'office-admin',
+                'name' => 'Estimate Preparer (EP)',
+                'guard_name' => 'web',
             ],[
-                'name'=>'Office User',
-                'slug'=>'office-user'
+                'name' => 'Project Estimate(EP)',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'Department Admin',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'Office Admin',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'Super Admin',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'SOR Approver',
+                'guard_name' => 'web',
             ]
 
         ];

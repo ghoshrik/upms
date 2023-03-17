@@ -14,7 +14,7 @@ class CreateSORCategoriesTable extends Migration
     public function up()
     {
         Schema::create('s_o_r_categories', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->autoIncrement();
             $table->string('item_name')->unique();
             $table->enum('status',['active','inactive'])->default('inactive');
             $table->timestamps();

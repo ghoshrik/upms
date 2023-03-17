@@ -3,16 +3,19 @@
 namespace App\Http\Livewire\Sor;
 
 use Livewire\Component;
+use App\Models\SOR as ModelsSOR;
+use Illuminate\Support\Facades\Auth;
 
 class Sor extends Component
 {
     public $formOpen = false ,$editFormOpen = false,$updateDataTableTracker;
     protected $listeners = ['openForm' => 'fromEntryControl'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel,$editId=null;
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel,$editId=null,$CountSorListPending;
 
     public function mount()
     {
         $this->updateDataTableTracker = rand(1, 1000);
+        $this->CountSorListPending = ModelsSOR::where('department_id',Auth::user()->department_id)->count();
     }
 
     // public function formOCControl($isEditFrom = false, $editId = null)

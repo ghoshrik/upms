@@ -14,7 +14,7 @@ class CreateSORSTable extends Migration
     public function up()
     {
         Schema::create('s_o_r_s', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->autoIncrement();
             $table->string('Item_details');
             $table->bigInteger('department_id');
             $table->integer('dept_category_id');
