@@ -123,28 +123,28 @@ Route::group(['prefix' => 'menu-style'], function() {
 });
 
 //App Details Page => 'special-pages'], function() {
-Route::group(['prefix' => 'special-pages'], function() {
-    //Example Page Routs
-    Route::get('billing', [HomeController::class, 'billing'])->name('special-pages.billing');
-    Route::get('calender', [HomeController::class, 'calender'])->name('special-pages.calender');
-    Route::get('kanban', [HomeController::class, 'kanban'])->name('special-pages.kanban');
-    Route::get('pricing', [HomeController::class, 'pricing'])->name('special-pages.pricing');
-    Route::get('rtl-support', [HomeController::class, 'rtlsupport'])->name('special-pages.rtlsupport');
-    Route::get('timeline', [HomeController::class, 'timeline'])->name('special-pages.timeline');
-});
+// Route::group(['prefix' => 'special-pages'], function() {
+//     //Example Page Routs
+//     Route::get('billing', [HomeController::class, 'billing'])->name('special-pages.billing');
+//     Route::get('calender', [HomeController::class, 'calender'])->name('special-pages.calender');
+//     Route::get('kanban', [HomeController::class, 'kanban'])->name('special-pages.kanban');
+//     Route::get('pricing', [HomeController::class, 'pricing'])->name('special-pages.pricing');
+//     Route::get('rtl-support', [HomeController::class, 'rtlsupport'])->name('special-pages.rtlsupport');
+//     Route::get('timeline', [HomeController::class, 'timeline'])->name('special-pages.timeline');
+// });
 
 //Widget Routs
-Route::group(['prefix' => 'widget'], function() {
-    Route::get('widget-basic', [HomeController::class, 'widgetbasic'])->name('widget.widgetbasic');
-    Route::get('widget-chart', [HomeController::class, 'widgetchart'])->name('widget.widgetchart');
-    Route::get('widget-card', [HomeController::class, 'widgetcard'])->name('widget.widgetcard');
-});
+// Route::group(['prefix' => 'widget'], function() {
+//     Route::get('widget-basic', [HomeController::class, 'widgetbasic'])->name('widget.widgetbasic');
+//     Route::get('widget-chart', [HomeController::class, 'widgetchart'])->name('widget.widgetchart');
+//     Route::get('widget-card', [HomeController::class, 'widgetcard'])->name('widget.widgetcard');
+// });
 
 //Maps Routs
-Route::group(['prefix' => 'maps'], function() {
-    Route::get('google', [HomeController::class, 'google'])->name('maps.google');
-    Route::get('vector', [HomeController::class, 'vector'])->name('maps.vector');
-});
+// Route::group(['prefix' => 'maps'], function() {
+//     Route::get('google', [HomeController::class, 'google'])->name('maps.google');
+//     Route::get('vector', [HomeController::class, 'vector'])->name('maps.vector');
+// });
 
 //Auth pages Routs
 Route::group(['prefix' => 'auth'], function() {
@@ -164,26 +164,26 @@ Route::group(['prefix' => 'errors'], function() {
 
 
 //Forms Pages Routs
-Route::group(['prefix' => 'forms'], function() {
-    Route::get('element', [HomeController::class, 'element'])->name('forms.element');
-    Route::get('wizard', [HomeController::class, 'wizard'])->name('forms.wizard');
-    Route::get('validation', [HomeController::class, 'validation'])->name('forms.validation');
-});
+// Route::group(['prefix' => 'forms'], function() {
+//     Route::get('element', [HomeController::class, 'element'])->name('forms.element');
+//     Route::get('wizard', [HomeController::class, 'wizard'])->name('forms.wizard');
+//     Route::get('validation', [HomeController::class, 'validation'])->name('forms.validation');
+// });
 
 
 //Table Page Routs
-Route::group(['prefix' => 'table'], function() {
-    Route::get('bootstraptable', [HomeController::class, 'bootstraptable'])->name('table.bootstraptable');
-    Route::get('datatable', [HomeController::class, 'datatable'])->name('table.datatable');
-});
+// Route::group(['prefix' => 'table'], function() {
+//     Route::get('bootstraptable', [HomeController::class, 'bootstraptable'])->name('table.bootstraptable');
+//     Route::get('datatable', [HomeController::class, 'datatable'])->name('table.datatable');
+// });
 
 //Icons Page Routs
-Route::group(['prefix' => 'icons'], function() {
-    Route::get('solid', [HomeController::class, 'solid'])->name('icons.solid');
-    Route::get('outline', [HomeController::class, 'outline'])->name('icons.outline');
-    Route::get('dualtone', [HomeController::class, 'dualtone'])->name('icons.dualtone');
-    Route::get('colored', [HomeController::class, 'colored'])->name('icons.colored');
-});
+// Route::group(['prefix' => 'icons'], function() {
+//     Route::get('solid', [HomeController::class, 'solid'])->name('icons.solid');
+//     Route::get('outline', [HomeController::class, 'outline'])->name('icons.outline');
+//     Route::get('dualtone', [HomeController::class, 'dualtone'])->name('icons.dualtone');
+//     Route::get('colored', [HomeController::class, 'colored'])->name('icons.colored');
+// });
 
 //Extra Page Routs
 // Route::get('privacy-policy', [HomeController::class, 'privacypolicy'])->name('pages.privacy-policy');

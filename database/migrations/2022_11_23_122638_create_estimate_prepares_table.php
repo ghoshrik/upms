@@ -14,7 +14,7 @@ class CreateEstimatePreparesTable extends Migration
     public function up()
     {
         Schema::create('estimate_prepares', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->autoIncrement();
             $table->integer('estimate_id');
             $table->integer('dept_id')->nullable();
             $table->integer('category_id')->nullable();

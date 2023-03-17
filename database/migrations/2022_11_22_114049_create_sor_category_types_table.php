@@ -14,7 +14,7 @@ class CreateSorCategoryTypesTable extends Migration
     public function up()
     {
         Schema::create('sor_category_types', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->autoIncrement();
             $table->integer('department_id');
             $table->string('dept_category_name');
             $table->timestamps();
