@@ -19,14 +19,14 @@ class CreateUser extends Component
     use Actions;
     public $dropDownData = [], $newUserData = [];
 
-    protected $rules = [
-        'email'=>'required|unique:users,email',
-        'phone'=>'required',
-    ];
-    protected $messages = [
-        'email.required'=>'Email Field is required',
-        'phone.required'=>'phone number field is required',
-    ];
+    // protected $rules = [
+    //     'newUserData.email'=>'required|unique:users,email',
+    //     'newUserData.phone'=>'required',
+    // ];
+    // protected $messages = [
+    //     'newUserData.email.required'=>'Email Field is required',
+    //     'newUserData.phone.required'=>'phone number field is required',
+    // ];
 
 
     public function mount()
@@ -77,7 +77,7 @@ class CreateUser extends Component
 
     public function store()
     {
-        $this->validate();
+        // $this->validate();
         try{
         // TODO::INSERT THE DEPT. ID NAD OFFICE ID .
                 unset($this->newUserData['confirm_password']);
@@ -85,11 +85,13 @@ class CreateUser extends Component
                 if (isset($userType)) {
                     $this->newUserData['user_type'] = $userType['id'];
                     $this->newUserData['department_id'] = Auth::user()->department_id;
+                    $this->newUserData['designation_id'] = Auth::user()->designation_id;
                     $this->newUserData['office_id'] = Auth::user()->office_id;
                     $this->newUserData['email'] = $this->newUserData['email'];
                     $this->newUserData['mobile'] = $this->newUserData['mobile'];
                     // $this->newUserData['password'] = Hash::make($this->newUserData['password']);
                     $this->newUserData['password'] = Hash::make('password');
+                    // dd($this->newUserData);
                     if (User::create($this->newUserData)) {
                         $this->notification()->success(
                             $title = 'Success',
@@ -107,6 +109,7 @@ class CreateUser extends Component
             }
 
             catch (\Throwable $th) {
+                dd($th->getMessage());
                 $this->emit('showError', $th->getMessage());
             }
     }
