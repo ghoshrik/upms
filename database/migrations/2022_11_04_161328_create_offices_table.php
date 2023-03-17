@@ -14,7 +14,7 @@ class CreateOfficesTable extends Migration
     public function up()
     {
         Schema::create('offices', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->autoIncrement();
             $table->string('office_name')->unique();
             $table->longText('office_address');
             $table->unsignedBigInteger('department_id')->nullable();
@@ -24,6 +24,7 @@ class CreateOfficesTable extends Migration
             $table->bigInteger('gp_code')->nullable();
             $table->bigInteger('urban_code')->nullable();
             $table->bigInteger('ward_code')->nullable();
+            $table->integer('level');
             // $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

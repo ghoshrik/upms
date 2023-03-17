@@ -14,10 +14,11 @@ class CreateSorMastersTable extends Migration
     public function up()
     {
         Schema::create('sor_masters', function (Blueprint $table) {
-            $table->id();
-            $table->integer('estimate_id');
+            $table->bigIncrements('id')->autoIncrement();
+            $table->bigInteger('estimate_id');
             $table->longText('sorMasterDesc');
-            $table->string('status');
+            $table->integer('status');
+            $table->tinyInteger('is_verified')->default('0');
             $table->timestamps();
         });
     }

@@ -14,7 +14,7 @@ class CreateEstimateStatusesTable extends Migration
     public function up()
     {
         Schema::create('estimate_statuses', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->autoIncrement();
             $table->string('status');
             $table->string('slug');
             $table->timestamps();

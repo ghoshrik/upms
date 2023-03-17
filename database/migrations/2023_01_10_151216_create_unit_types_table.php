@@ -14,7 +14,7 @@ class CreateUnitTypesTable extends Migration
     public function up()
     {
         Schema::create('unit_types', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->autoIncrement();
             $table->string('type')->unique();
             $table->enum('status',['0','1'])->default('0');
             $table->timestamps();
