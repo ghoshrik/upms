@@ -27,7 +27,8 @@ class CreateOffice extends Component
             'rural_block_code' => '',
             'gp_code' => '',
             'urban_code' => '',
-            'ward_code' => ''
+            'ward_code' => '',
+            'level'=>''
         ];
         $this->officeData = [
             'office_address' => '',
@@ -41,6 +42,7 @@ class CreateOffice extends Component
         'officeData.office_name'=>'required|string',
         'selectedOption.dist_code'=>'required|integer',
         'selectedOption.In_area'=>'required|integer',
+        'selectedOption.level'=>'required|integer',
     ];
     protected $messages = [
         'officeData.office_address.required'=>'This field is required',
@@ -55,7 +57,9 @@ class CreateOffice extends Component
         'selectedOption.rural_block_code.required'=>'This field is required',
         'selectedOption.rural_block_code.integer'=>'Invalid format',
         'selectedOption.urban_code.required'=>'This field is required',
-        'selectedOption.ward_code.integer'=>'Invalid format'
+        'selectedOption.ward_code.integer'=>'Invalid format',
+        'selectedOption.level.integer'=>'Invalid format',
+        'selectedOption.level.required'=>'This field is required'
     ];
     public function updated($param)
     {
@@ -104,23 +108,23 @@ class CreateOffice extends Component
         // dd($this->selectedOption,$this->officeData);
         try {
             $insert = array_merge($this->selectedOption, $this->officeData);
-            // dd($insert);
-            // Office::create($insert);
             $insert = [
                 'In_area'=>$this->selectedOption['In_area'],
                 'department_id'=>$this->officeData['department_id'],
                 'office_name'=>$this->officeData['office_name'],
                 'office_address'=>$this->officeData['office_address'],
                 'dist_code'=>$this->selectedOption['dist_code'],
-                'rural_block_code'=>$this->selectedOption['dist_code'],
-                'gp_code'=>$this->selectedOption['dist_code'],
-                'urban_code'=>$this->selectedOption['urban_code'],
-                'ward_code'=>$this->selectedOption['ward_code']
-            ];dd($insert);
+                'rural_block_code'=>($this->selectedOption['rural_block_code']=='') ? 0 :$this->selectedOption['dist_code'],
+                'gp_code'=>($this->selectedOption['gp_code']=='') ? 0 :$this->selectedOption['dist_code'],
+                'urban_code'=>($this->selectedOption['urban_code']=='') ? 0 :$this->selectedOption['urban_code'],
+                'ward_code'=>($this->selectedOption['ward_code']=='') ? 0 :$this->selectedOption['ward_code'],
+                'level'=>$this->selectedOption['level']
+            ];
+            // dd($insert);
             Office::create($insert);
 
             $this->notification()->success(
-                $title = trans('cruds.office.create_mgs')
+                $title = 'Office Created Successfully'
             );
             // $this->reset();
             $this->emit('openEntryForm');

@@ -24,6 +24,8 @@ class OfficeTable extends DataTableComponent
             //     ->sortable(),
             Column::make("Office name", "office_name")
                 ->sortable(),
+            Column::make("Office Level", "level")
+                 ->sortable(),
             Column::make("Department Name", "getDepartmentName.department_name")
                 ->sortable(),
             Column::make("Dist Name", "getDistrictName.district_name")

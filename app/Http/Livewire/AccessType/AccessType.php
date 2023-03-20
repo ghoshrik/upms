@@ -7,7 +7,7 @@ use Livewire\Component;
 class AccessType extends Component
 {
     public $formOpen = false;
-    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function fromEntryControl($data='')
     {
@@ -28,6 +28,10 @@ class AccessType extends Component
         if(isset($data['id'])){
             $this->selectedIdForEdit = $data['id'];
         }
+    }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
     }
     // public function formOCControl($isEditFrom = false, $eidtId = null)
     // {

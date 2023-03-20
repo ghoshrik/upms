@@ -8,8 +8,8 @@ use Livewire\Component;
 
 class EstimateForwarder extends Component
 {
-    protected $listeners = ['openForm' => 'formOCControl','wordDownload'=>'exportAndDownload'];
-    public $formOpen = false, $modifyFormOpen = false, $updateDataTableTracker, $selectedEstTab = 1, $counterData = [];
+    protected $listeners = ['openForm' => 'formOCControl','wordDownload'=>'exportAndDownload','showError'=>'setErrorAlert'];
+    public $formOpen = false, $modifyFormOpen = false, $updateDataTableTracker, $selectedEstTab = 1, $counterData = [],$errorMessage;
     public function mount()
     {
         $this->updateDataTableTracker = rand(1,1000);
@@ -68,6 +68,10 @@ class EstimateForwarder extends Component
         $this->formOpen = !$this->formOpen;
         $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
         $this->updateDataTableTracker = rand(1, 1000);
+    }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
     }
     public function render()
     {

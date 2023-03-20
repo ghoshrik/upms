@@ -8,7 +8,7 @@ class AafsProjects extends Component
 {
 
     public $updateDataTableTracker;
-    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
 
     public function fromEntryControl($data='')
@@ -30,6 +30,10 @@ class AafsProjects extends Component
         if(isset($data['id'])){
             $this->selectedIdForEdit = $data['id'];
         }
+    }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
     }
     public function render()
     {

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class Sor extends Component
 {
     public $formOpen = false ,$editFormOpen = false,$updateDataTableTracker;
-    protected $listeners = ['openForm' => 'fromEntryControl'];
+    protected $listeners = ['openForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel,$editId=null,$CountSorListPending;
 
     public function mount()
@@ -60,6 +60,11 @@ class Sor extends Component
                 }
             }
         }
+        $this->updateDataTableTracker = rand(1,1000);
+    }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
     }
     public function render()
     {

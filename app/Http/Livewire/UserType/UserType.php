@@ -7,8 +7,8 @@ use Livewire\Component;
 class UserType extends Component
 {
     public $formOpen = false;
-    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
+    protected $listeners = ['openEntryForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel,$updateDataTableTracker;
 
     public function fromEntryControl($data='')
     {
@@ -28,9 +28,15 @@ class UserType extends Component
         if(isset($data['id'])){
             $this->selectedIdForEdit = $data['id'];
         }
+        $this->updateDataTableTracker = rand(1,1000);
+    }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
     }
     public function render()
     {
+        $this->updateDataTableTracker = rand(1,1000);
         $this->titel = "User Type";
         $assets = ['chart', 'animation'];
         return view('livewire.user-type.user-type', compact('assets'));
