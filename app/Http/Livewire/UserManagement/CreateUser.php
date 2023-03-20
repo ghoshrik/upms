@@ -91,7 +91,7 @@ class CreateUser extends Component
                     $this->newUserData['mobile'] = $this->newUserData['mobile'];
                     // $this->newUserData['password'] = Hash::make($this->newUserData['password']);
                     $this->newUserData['password'] = Hash::make('password');
-                    // dd($this->newUserData);
+                    dd($this->newUserData);
                     if (User::create($this->newUserData)) {
                         $this->notification()->success(
                             $title = 'Success',
