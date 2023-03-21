@@ -22,7 +22,7 @@ class SorDataTable extends DataTableComponent
         return [
             // Column::make("Id", "id")
             //     ->sortable(),
-            Column::make("Item Number", "Item_details")
+            Column::make("Item Number", "item_details")
                 ->searchable()
                 ->sortable(),
             Column::make("Department Name", "getDepartmentName.department_name")
@@ -53,15 +53,15 @@ class SorDataTable extends DataTableComponent
     }
     public function sorapproved($value)
     {
-        $this->emit('openModel', $value);
+        $this->emit('openModel',$value);
     }
     public function edit($id)
     {
-        $this->emit('openForm', ['formType' => 'edit', 'id' => $id]);
+        $this->emit('openForm',['formType'=>'edit','id'=>$id]);
     }
     public function builder(): Builder
     {
         return SOR::query()
-            ->where('s_o_r_s.department_id', Auth::user()->department_id);
+                    ->where('s_o_r_s.department_id', Auth::user()->department_id);
     }
 }
