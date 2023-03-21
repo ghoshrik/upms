@@ -7,7 +7,7 @@ use Livewire\Component;
 class Office extends Component
 {
     public $formOpen = false;
-    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
 
     public $addedOfficeUpdateTrack;
@@ -35,6 +35,10 @@ class Office extends Component
         if(isset($data['id'])){
             $this->selectedIdForEdit = $data['id'];
         }
+    }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
     }
     public function render()
     {

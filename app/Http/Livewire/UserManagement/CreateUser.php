@@ -17,7 +17,7 @@ use function PHPUnit\Framework\isEmpty;
 class CreateUser extends Component
 {
     use Actions;
-    public $dropDownData = [], $newUserData = [];
+    public $dropDownData = [], $newUserData = [], $selectLevel;
 
     // protected $rules = [
     //     'newUserData.email'=>'required|unique:users,email',
@@ -42,13 +42,12 @@ class CreateUser extends Component
             'confirm_password' => '',
             'mobile'=>'',
             'email'=>'',
-            'level'=>'',
         ];
         if (Auth::user()->user_type == 2) {
             $this->getDropdownData('DEPT');
         }
         if (Auth::user()->user_type == 3) {
-            $this->getDropdownData('OFFC');
+            $this->getDropdownData('LEVEL');
         }
         if (Auth::user()->user_type == 4) {
             $this->getDropdownData('DES');
@@ -65,16 +64,23 @@ class CreateUser extends Component
                 } else {
                     $this->dropDownData['departments'] =  Department::all();
                 }
-            } elseif ($lookingFor === 'OFFC') {
-                $this->dropDownData['offices'] = Office::where('department_id', Auth::user()->department_id)->get();
-            } else {
+            }elseif($lookingFor === 'LEVEL'){
+                $this->dropDownData['level'] = true;
+            }
+            else {
                 // $this->allUserTypes = UserType::where('parent_id', Auth::user()->user_type)->get();
             }
         } catch (\Throwable $th) {
             session()->flash('serverError', $th->getMessage());
         }
     }
-
+    public function fetchLevelWiseOffice()
+    {
+        if($this->selectLevel)
+        {
+            $this->dropDownData['offices'] = Office::where([['department_id', Auth::user()->department_id],['level',$this->selectLevel]])->get();
+        }
+    }
     public function store()
     {
         // $this->validate();
@@ -84,9 +90,9 @@ class CreateUser extends Component
                 $userType =  UserType::where('parent_id', Auth::user()->user_type)->first();
                 if (isset($userType)) {
                     $this->newUserData['user_type'] = $userType['id'];
-                    $this->newUserData['department_id'] = Auth::user()->department_id;
-                    $this->newUserData['designation_id'] = Auth::user()->designation_id;
-                    $this->newUserData['office_id'] = Auth::user()->office_id;
+                    $this->newUserData['department_id'] = (Auth::user()->user_type==2)? $this->newUserData['department_id'] : Auth::user()->department_id;
+                    $this->newUserData['designation_id'] = ($this->newUserData['designation_id'] == '') ? Auth::user()->designation_id : $this->newUserData['designation_id'];
+                    $this->newUserData['office_id'] = ($this->newUserData['office_id'] == '')? Auth::user()->office_id : $this->newUserData['office_id'];
                     $this->newUserData['email'] = $this->newUserData['email'];
                     $this->newUserData['mobile'] = $this->newUserData['mobile'];
                     // $this->newUserData['password'] = Hash::make($this->newUserData['password']);
@@ -109,7 +115,6 @@ class CreateUser extends Component
             }
 
             catch (\Throwable $th) {
-                dd($th->getMessage());
                 $this->emit('showError', $th->getMessage());
             }
     }

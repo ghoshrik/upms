@@ -8,7 +8,7 @@ use Livewire\Component;
 class AccessManager extends Component
 {
     public $formOpen = false, $editFormOpen = false, $updateDataTableTracker;
-    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert'];
     public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel, $AccessManagerTable = [];
 
 
@@ -32,7 +32,10 @@ class AccessManager extends Component
             $this->selectedIdForEdit = $data['id'];
         }
     }
-
+    public function setErrorAlert($errorMessage)
+    {
+        $this->errorMessage = $errorMessage;
+    }
     // public function formOCControl($isEditFrom = false, $eidtId = null)
     // {
     //     if ($isEditFrom) {

@@ -52,7 +52,7 @@ class CreateAafsProjects extends Component
 
             }
             catch (\Throwable $th) {
-                session()->flash('serverError', $th->getMessage());
+                $this->emit('showError', $th->getMessage());
             }
         }
     public function render()

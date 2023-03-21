@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\Auth;
 
 class Sor extends Component
 {
-    public $formOpen = false ,$editFormOpen = false,$updateDataTableTracker;
-    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel,$editId=null,$CountSorListPending;
+    public $formOpen = false, $editFormOpen = false, $updateDataTableTracker;
+    protected $listeners = ['openForm' => 'fromEntryControl', 'showError' => 'setErrorAlert'];
+    public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel, $editId = null, $CountSorListPending;
 
     public function mount()
     {
         $this->updateDataTableTracker = rand(1, 1000);
-        $this->CountSorListPending = ModelsSOR::where('department_id',Auth::user()->department_id)->count();
+        $this->CountSorListPending = ModelsSOR::where('department_id', Auth::user()->department_id)->count();
     }
 
     // public function formOCControl($isEditFrom = false, $editId = null)
@@ -33,10 +33,10 @@ class Sor extends Component
     //     $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
     // }
 
-    public function fromEntryControl($data='')
+    public function fromEntryControl($data = '')
     {
         // dd($data);
-        $this->openedFormType = is_array($data) ? $data['formType']:$data;
+        $this->openedFormType = is_array($data) ? $data['formType'] : $data;
         $this->isFromOpen = !$this->isFromOpen;
         switch ($this->openedFormType) {
             case 'create':
@@ -49,23 +49,28 @@ class Sor extends Component
                 $this->subTitel = 'List';
                 break;
         }
-        if(isset($data['id'])){
+        if (isset($data['id'])) {
             // $this->selectedIdForEdit = $data['id'];
 
             $this->editId = $data['id'];
             if ($this->editId) {
                 $this->editFormOpen = !$this->editFormOpen;
                 if ($this->editId != null) {
-                    $this->emit('editSorRow',$this->editId);
+                    $this->emit('editSorRow', $this->editId);
                 }
             }
         }
+        $this->updateDataTableTracker = rand(1, 1000);
+    }
+    public function setErrorAlert($errorMessage)
+    {
+        $this->errorMessage = $errorMessage;
     }
     public function render()
     {
-        $this->updateDataTableTracker = rand(1,1000);
+        $this->updateDataTableTracker = rand(1, 1000);
         $this->titel = trans('cruds.sor.title');
         $assets = ['chart', 'animation'];
-        return view('livewire.sor.sor',compact('assets'));
+        return view('livewire.sor.sor', compact('assets'));
     }
 }

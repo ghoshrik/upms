@@ -1,4 +1,10 @@
 <div>
+    @if ($errorMessage != null)
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span> {{ $errorMessage }}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
     <div wire:loading.delay.long>
         <div class="spinner-border text-primary loader-position" role="status"></div>
     </div>
@@ -12,7 +18,7 @@
                                 <div class="col-md-4">
                                     <li class="swiper-slide card card-tab card-slide {{ $this->selectedEstTab == 1 ? 'active' : '' }}"
                                         wire:click="draftData()">
-                                        <div class="card-body" >
+                                        <div class="card-body">
                                             <div class="progress-widget">
                                                 <div id="circle-progress-01"
                                                     class="circle-progress-01 circle-progress circle-progress-primary text-center"
@@ -41,7 +47,7 @@
                                 <div class="col-md-4">
                                     <li class="swiper-slide card card-tab card-slide {{ $this->selectedEstTab == 2 ? 'active' : '' }}"
                                         wire:click='verifiedData()'>
-                                        <div class="card-body" >
+                                        <div class="card-body">
                                             <div class="progress-widget">
                                                 <div id="circle-progress-02"
                                                     class="circle-progress-01 circle-progress circle-progress-info text-center"
@@ -109,7 +115,7 @@
                                     :wire:key="$updateDataTableTracker" />
                             </div>
                         </div>
-                    {{-- @elseif ($this->selectedEstTab == 3)
+                        {{-- @elseif ($this->selectedEstTab == 3)
                         <div class="card">
                             <div class="card-body">
                                 <livewire:estimate-recomender.datatable.recomender-verified-table

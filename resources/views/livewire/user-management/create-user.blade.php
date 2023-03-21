@@ -15,65 +15,74 @@
                         </div>
                         <div class="col-md-4 col-lg-4 col-sm-4">
                             <div class="form-group">
-                                <x-input wire:model="newUserData.emp_name" label="{{trans('cruds.user-management.fields.employee_name')}}"
-                                    placeholder="Enter {{trans('cruds.user-management.fields.employee_name')}}" />
+                                <x-input wire:model="newUserData.emp_name"
+                                    label="{{ trans('cruds.user-management.fields.employee_name') }}"
+                                    placeholder="Enter {{ trans('cruds.user-management.fields.employee_name') }}" />
                             </div>
                         </div>
                         <div class="col-md-4 col-lg-4 col-sm-4">
                             <div class="form-group">
-                                <x-input wire:model="newUserData.username" label="{{trans('cruds.user-management.fields.username')}}"
-                                    placeholder="{{trans('cruds.user-management.fields.username')}}" />
+                                <x-input wire:model="newUserData.username"
+                                    label="{{ trans('cruds.user-management.fields.username') }}"
+                                    placeholder="{{ trans('cruds.user-management.fields.username') }}" />
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
-                        @isset($dropDownData['offices'])
-                        <div class="col-md-4 col-lg-4 col-sm-4">
-                            <x-select label="Select Office Level" placeholder="Select Office Level" :options="[
-                                        ['name' => 'L1 Level',  'id' => 1],
-                                        ['name' => 'L2 Level', 'id' => 2],
-                                        ['name' => 'L3 Level',   'id' => 3],
-                                        ['name' => 'L4 Level',    'id' => 4],
-                                        ['name' => 'L5 Level',    'id' => 5],
-                                        ['name' => 'L6 Level',    'id' => 6],
-                                    ]"
-                                option-label="name"
-                                option-value="id"
-                                wire:model.defer="newUserData.level" />
-                        </div>
-                        @endisset
-                        <div class="col-md-4 col-lg-4 col-sm-4">
-
-                            <div class="form-group">
-                                @isset($dropDownData['departments'])
-                                <x-select label="Department" placeholder="Select Department"
-                                    wire:model.defer="newUserData.department_id">
-                                    @foreach ($dropDownData['departments'] as $department)
-                                    <x-select.option label="{{ $department['department_name'] }}"
-                                        value="{{ $department['id'] }}" />
-                                    @endforeach
-                                </x-select>
-                                @endisset
-                                @isset($dropDownData['designations'])
-                                <x-select label="Designation" placeholder="Select Department"
-                                    wire:model.defer="newUserData.designation_id">
-                                    @foreach ($dropDownData['designations'] as $designation)
-                                    <x-select.option label="{{ $designation['designation_name'] }}"
-                                        value="{{ $designation['id'] }}" />
-                                    @endforeach
-                                </x-select>
-                                @endisset
-                                @isset($dropDownData['offices'])
-                                <x-select label="Office" placeholder="Select Office"
-                                    wire:model.defer="newUserData.office_id">
-                                    @foreach ($dropDownData['offices'] as $office)
-                                    <x-select.option label="{{ $office['office_name'] }}" value="{{ $office['id'] }}" />
-                                    @endforeach
-                                </x-select>
-                                @endisset
+                        @isset($dropDownData['level'])
+                            <div class="col-md-4 col-lg-4 col-sm-4">
+                                <x-select label="Select Office Level" placeholder="Select Office Level" :options="[
+                                    ['name' => 'L1 Level', 'id' => 1],
+                                    ['name' => 'L2 Level', 'id' => 2],
+                                    ['name' => 'L3 Level', 'id' => 3],
+                                    ['name' => 'L4 Level', 'id' => 4],
+                                    ['name' => 'L5 Level', 'id' => 5],
+                                    ['name' => 'L6 Level', 'id' => 6],
+                                ]"
+                                    option-label="name" option-value="id" wire:model.defer="selectLevel"
+                                    x-on:select="$wire.fetchLevelWiseOffice()" />
                             </div>
-                        </div>
+                        @endisset
+                        @isset($dropDownData['departments'])
+                            <div class="col-md-4 col-lg-4 col-sm-4">
+                                <div class="form-group">
+                                    <x-select label="Department" placeholder="Select Department"
+                                        wire:model.defer="newUserData.department_id">
+                                        @foreach ($dropDownData['departments'] as $department)
+                                            <x-select.option label="{{ $department['department_name'] }}"
+                                                value="{{ $department['id'] }}" />
+                                        @endforeach
+                                    </x-select>
+                                </div>
+                            </div>
+                        @endisset
+                        @isset($dropDownData['designations'])
+                            <div class="col-md-4 col-lg-4 col-sm-4">
+                                <div class="form-group">
+                                    <x-select label="Designation" placeholder="Select Department"
+                                        wire:model.defer="newUserData.designation_id">
+                                        @foreach ($dropDownData['designations'] as $designation)
+                                            <x-select.option label="{{ $designation['designation_name'] }}"
+                                                value="{{ $designation['id'] }}" />
+                                        @endforeach
+                                    </x-select>
+                                </div>
+                            </div>
+                        @endisset
+                        @isset($dropDownData['offices'])
+                            <div class="col-md-4 col-lg-4 col-sm-4">
+                                <div class="form-group">
+                                    <x-select label="Office" placeholder="Select Office"
+                                        wire:model.defer="newUserData.office_id">
+                                        @foreach ($dropDownData['offices'] as $office)
+                                            <x-select.option label="{{ $office['office_name'] }}"
+                                                value="{{ $office['id'] }}" />
+                                        @endforeach
+                                    </x-select>
+                                </div>
+                            </div>
+                        @endisset
                         <div class="col-md-4 col-lg-4 col-sm-4">
                             <div class="form-group">
                                 <x-input wire:model="newUserData.email" label="Email"

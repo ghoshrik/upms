@@ -8,7 +8,7 @@ use Psy\Readline\Transient;
 class Aocs extends Component
 {
     public $updateDataTableTracker;
-    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
 
 
@@ -31,6 +31,10 @@ class Aocs extends Component
         if(isset($data['id'])){
             $this->selectedIdForEdit = $data['id'];
         }
+    }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
     }
     public function render()
     {

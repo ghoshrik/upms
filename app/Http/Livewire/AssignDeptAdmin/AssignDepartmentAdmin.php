@@ -7,7 +7,7 @@ use Livewire\Component;
 class AssignDepartmentAdmin extends Component
 {
     public $updateDataTableTracker;
-    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
+    protected $listeners = ['refresh' => 'render','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
 
 
@@ -31,6 +31,10 @@ class AssignDepartmentAdmin extends Component
     //         $this->selectedIdForEdit = $data['id'];
     //     }
     // }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
+    }
     public function render()
     {
         $this->updateDataTableTracker = rand(1,1000);
