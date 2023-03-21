@@ -61,7 +61,8 @@
                             <button type="button" class="btn btn-sm btn-soft-warning px-2 py-2">Pending Approved ({{$CountSorListPending}})</button>
                         </div>
                         <div class="card-body">
-                            <livewire:sor.data-table.sor-data-table :wire:key="$updateDataTableTracker" />
+                            {{-- <livewire:sor.data-table.sor-data-table :wire:key="$updateDataTableTracker" /> --}}
+                            <livewire:sor.data-table.power-grid.s-o-r-data-table :wire:key="$updateDataTableTracker" />
                         </div>
                     </div>
                 </div>
