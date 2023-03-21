@@ -24,7 +24,7 @@ class CreateOfficesTable extends Migration
             $table->bigInteger('gp_code')->nullable();
             $table->bigInteger('urban_code')->nullable();
             $table->bigInteger('ward_code')->nullable();
-            $table->integer('level');
+            $table->integer('level')->nullable();
             // $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

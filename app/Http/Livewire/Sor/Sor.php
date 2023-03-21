@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class Sor extends Component
 {
     public $formOpen = false ,$editFormOpen = false,$updateDataTableTracker;
-    protected $listeners = ['openForm' => 'fromEntryControl'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel,$editId=null,$CountSorListPending;
 
     public function mount()

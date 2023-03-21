@@ -112,7 +112,7 @@ class AdminSeeder extends Seeder
             ],
             [
                 'email'=>'iwd_office_admin@gmail.com',
-                'username'=>'Kaushik Pal',
+                'username'=>'iwd_office_admin',
                 'emp_id'=>1006,
                 'emp_name'=>'Mawar Hossain',
                 'designation_id'=>0,

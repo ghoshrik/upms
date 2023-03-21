@@ -83,6 +83,10 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             {{-- <x-media-library-attachment name="myUpload" /> --}}
+                                            <label>File Upload</label>
+                                                <input type="file" wire:key="file_upload.{{ $key }}"
+                                                    wire:model="inputsData.{{ $key }}.file_upload"
+                                                    class="form-control" multiple accept=".pdf" />
                                         </div>
                                     </div>
                                 </div>

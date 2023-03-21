@@ -57,7 +57,6 @@ class SorApprovers extends Component
         // $this->supported_data->storeAs('/', $name);
         SOR::where('id',$value)->update(['IsActive'=>1]);
         $this->SorLists = [];
-        $this->selectedSors = [];
         $this->notification()->success(
             $title = "Record Approved"
         );

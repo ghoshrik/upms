@@ -50,12 +50,17 @@
                                             <th>{{ trans('cruds.sor.fields.unit') }}</th>
                                             <th>{{ trans('cruds.sor.fields.cost') }}</th>
                                             <th>Status</th>
+                                            <th>File</th>
                                             <th>{{ trans('cruds.sor.fields.action') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
                                             @forelse ($SorLists as $sors)
+                                                @php
+                                                    $SorId = DB::table('attach_docs')->where('sor_docu_id',$sors->id)->first();
+                                                @endphp
+                                                {{-- @dd('data:application/pdf;base64'.$SorId->attach_doc); --}}
                                             <tr>
                                             <td> <input type="checkbox" value="{{ $sors->id }}" wire:model="selectedSors"/></td>
                                                 <td>{{$loop->iteration}}</td>
@@ -65,6 +70,9 @@
                                                 <td>{{$sors->cost}}</td>
                                                 <td>
                                                     <span class="btn btn-{{($sors->IsActive=='0') ? 'warning':''}} px-1 py-1 btn-sm">{{($sors->IsActive=='0') ? 'pending':''}}</span>
+                                                </td>
+                                                <td>
+                                                    <embed type="{{$SorId->document_mime }}" width="100%" height="100%" src="data:application/pdf;base64,'.{{$SorId->attach_doc}}.'">
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-soft-info btn-sm" wire:click="approvedSOR()">Approved</button>

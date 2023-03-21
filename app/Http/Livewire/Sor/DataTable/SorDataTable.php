@@ -62,7 +62,6 @@ class SorDataTable extends DataTableComponent
     public function builder(): Builder
     {
         return SOR::query()
-                    ->where('s_o_r_s.department_id', Auth::user()->department_id)
-                    ->where('IsActive','1');
+                    ->where('s_o_r_s.department_id', Auth::user()->department_id);
     }
 }
