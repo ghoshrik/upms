@@ -230,7 +230,6 @@ class CreateEstimate extends Component
         // $this->calculateValue();
 
     // }
-    public $resetExcept;
     public function resetValus($resetAll = false)
     {
         if($resetAll)
@@ -287,9 +286,9 @@ class CreateEstimate extends Component
         $validatee = $this->validate();
         $this->reset('addedEstimate');
         $this->showTableOne = !$this->showTableOne;
-        $this->addedEstimate['dept_id'] = $this->estimateData['dept_id'];
-        $this->addedEstimate['category_id'] = $this->estimateData['dept_category_id'];
-        $this->addedEstimate['sor_item_number'] = $this->estimateData['item_number'];
+        $this->addedEstimate['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
+        $this->addedEstimate['category_id'] = ($this->estimateData['dept_category_id'] == '') ? 0 : $this->estimateData['dept_category_id'];
+        $this->addedEstimate['sor_item_number'] = ($this->estimateData['item_number'] == '') ? 0 :$this->estimateData['item_number'];
         $this->addedEstimate['item_name'] = $this->estimateData['item_name'];
         $this->addedEstimate['other_name'] = $this->estimateData['other_name'];
         $this->addedEstimate['description'] = $this->estimateData['description'];
