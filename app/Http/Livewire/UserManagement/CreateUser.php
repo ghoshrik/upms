@@ -7,6 +7,7 @@ use App\Models\Designation;
 use App\Models\Office;
 use App\Models\User;
 use App\Models\UserType;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
@@ -19,14 +20,46 @@ class CreateUser extends Component
     use Actions;
     public $dropDownData = [], $newUserData = [], $selectLevel;
 
-    // protected $rules = [
-    //     'newUserData.email'=>'required|unique:users,email',
-    //     'newUserData.phone'=>'required',
-    // ];
-    // protected $messages = [
-    //     'newUserData.email.required'=>'Email Field is required',
-    //     'newUserData.phone.required'=>'phone number field is required',
-    // ];
+    protected $rules = [
+        'newUserData.email' => 'required|unique:users,email',
+        // 'newUserData.emp_id'=>'required|numeric'
+        'newUserData.username' => 'required|string',
+        'newUserData.emp_name' => 'required|string',
+        'newUserData.department_id' => 'required|integer',
+        'newUserData.mobile' => 'required|numeric|min:10',
+
+    ];
+    protected $messages = [
+        'newUserData.email.required' => 'Email Field is required',
+        'newUserData.email.unique' => 'The email address is already in use.',
+        'newUserData.username.required' => 'username is required',
+        'newUserData.username.string' => 'username must be string',
+        'newUserData.emp_name.required' => 'employee name is required',
+        'newUserData.emp_name.string' => 'error',
+        'newUserData.department_id.required' => 'please select department',
+        'newUserData.department_id.integer' => 'do not format',
+        'newUserData.mobile.required' => 'The mobile number is required',
+        'newUserData.mobile.numeric' => 'The mobile number must be a number',
+        'newUserData.mobile.min' => 'The mobile number must be exactly 10 digits long',
+        'newUserData.office_id.required' => 'The office name must be required',
+        'newUserData.office_id.integer' => 'data mismatch',
+        'selectLevel.required' => 'The Office level must be required',
+
+        // 'selectLevel.'
+    ];
+
+
+    public function booted()
+    {
+        // if($newUserData.office_id)
+        if (Auth::user()->user_type == 3) {
+            $this->rules =  Arr::collapse([$this->rules, [
+                'newUserData.office_id' => 'required|integer',
+                'selectLevel' => 'required|unique'
+            ]]);
+        }
+        // if (Auth::user()->user_type == 3) {
+    }
 
 
     public function mount()
@@ -83,7 +116,7 @@ class CreateUser extends Component
     }
     public function store()
     {
-        // $this->validate();
+        $this->validate();
         try{
         // TODO::INSERT THE DEPT. ID NAD OFFICE ID .
                 unset($this->newUserData['confirm_password']);
