@@ -61,159 +61,37 @@ class CreateAccess extends Component
     public function store()
     {
         try {
-
-
+            $this->newAccessData['department_id'] = Auth::user()->department_id;
+            $this->newAccessData['office_id'] = Auth::user()->office_id;
             $accessTypeName = array_filter($this->dropDownData['accessTypes'], function ($e) {
                 if ($e['id'] == $this->newAccessData['access_type_id']) {
                     return $e;
                 }
             });
-            dd($accessTypeName);
-            foreach($this->newAccessData['access_type_id'] as $accesstype)
-            {
-                $access = AccessType::where('id', $accesstype)->pluck('access_name');
-                $this->newAccessData['department_id'] = Auth::user()->department_id;
-                $this->newAccessData['office_id'] = Auth::user()->office_id;
-
-                $this->access_type_name = $access;
-
-
-                if(AccessMaster::create($this->newAccessData))
-                {
-                    // dd("dd");
-                    $user = User::find($this->newAccessData['user_id']);
-                    dd();
-                    $user->assignRole($access);
-                    $this->notification()->success(
-                        $title = 'Success',
-                        $description =  'New User created successfully!'
-                    );
-                    $this->reset();
-                    $this->emit('openEntryForm');
-                }
-                else
-                {
+            $accessTypeName = $accessTypeName[array_key_first($accessTypeName)];
+            foreach ($this->newAccessData['user_id'] as $user_id) {
+                $newAccessData = $this->newAccessData;
+                $newAccessData['user_id'] = $user_id;
+                if (AccessMaster::create($newAccessData)) {
+                    $user = User::find($user_id);
+                    $user->assignRole($accessTypeName['access_name']);
+                }else{
                     $this->notification()->error(
                         $title = 'Error !!!',
                         $description = 'Something went wrong.'
                     );
+                    return;
                 }
-
             }
-            // dd($access);
-            // $insert = [
-            //     'department_id'=>$this->newAccessData['department_id'],
-            //     'office_id'=>$this->newAccessData['office_id'],
-            //     'designation_id'=>$this->newAccessData['designation_id'],
-            //     'access_type_id'=>implode(',',$this->newAccessData['access_type_id']),
-            //     'user_id'=>$this->newAccessData['user_id'],
-            // ];
-            // dd($insert);
-
-
-
-
-            // foreach($this->newAccessData['user_id'] as $users)
-            // {
-            //     foreach($this->newAccessData['access_type_id'] as $access_type)
-            //     {
-            //         $this->access_type_name = $access_type;
-            //         $this->userlist = $users;
-            //     }
-            // }
-            // if(AccessMaster::create($insert))
-            // {
-            //     $user = User::find($this->userlist);
-            //     $user->assignRole($this->access_type_name);
-            //     $this->notification()->success(
-            //         $title = 'Success',
-            //         $description =  'New User created successfully!'
-            //     );
-            //     $this->reset();
-            //     $this->emit('openEntryForm');
-            // }
-            // else
-            // {
-            //     $this->notification()->error(
-            //         $title = 'Error !!!',
-            //         $description = 'Something went wrong.'
-            //     );
-            // }
-
-            // $this->newAccessData['department_id'] = Auth::user()->department_id;
-            // $this->newAccessData['office_id'] = Auth::user()->office_id;
-
-            // $accessTypeName = array_filter($this->dropDownData['accessTypes'], function ($e) {
-            //     if ($e['id'] == $this->newAccessData['access_type_id']) {
-            //         return $e;
-            //     }
-            // });
-            // dd($accessTypeName);
-
-            // $accessTypeName = $accessTypeName[array_key_first($accessTypeName)];
-            // dd($accessTypeName);
-
-            // foreach ($this->newAccessData['access_type_id'] as $access_type) {
-            //     $user = User::find($this->newAccessData['user_id']);
-            //     $sde = AccessType::whereIn('id', [$access_type])->pluck('access_name');
-            //     $user->assignRole([$sde]);
-            //     $insert = [
-            //         'department_id' => $this->newAccessData['department_id'],
-            //         'designation_id' => $this->newAccessData['designation_id'],
-            //         'office_id' => $this->newAccessData['office_id'],
-            //         'access_type_id' => $access_type,
-            //         'user_id' => $this->newAccessData['user_id'],
-            //     ];
-                // dd($insert);
-                // if (AccessMaster::create($insert)) {
-                    // dd($accessTypeName['access_name']);
-                    // $user = User::find($this->newAccessData['user_id']);
-                    // $accessType = $access_type->pluck('access_name');
-
-                    // dd($accessType);
-                    // $user->assignRole($access_type);
-            //         $this->notification()->success(
-            //             $title = 'Success',
-            //             $description = 'New User created successfully!'
-            //         );
-            //         $this->reset();
-            //         $this->emit('openEntryForm');
-            //     } else {
-            //         $this->notification()->error(
-            //             $title = 'Error !!!',
-            //             $description = 'Something went wrong.'
-            //         );
-            //         return;
-            //     }
-            // }
-            // dd($newAccessData);
-            // dd($this->newAccessData);
-
-            // foreach ($this->newAccessData['user_id'] as $user_id) {
-            //     $newAccessData = $this->newAccessData;
-            //     $newAccessData['user_id'] = $user_id;
-            //     if(AccessMaster::create($this->newAccessData))
-            // {
-            //     $user = User::find($user_id);
-            //     $user->assignRole($accessTypeName);
-            //     $this->notification()->success(
-            //         $title = 'Success',
-            //         $description =  'New User created successfully!'
-            //     );
-            //     $this->reset();
-            //     $this->emit('openEntryForm');
-            // }
-            // else
-            // {
-            //     $this->notification()->error(
-            //         $title = 'Error !!!',
-            //         $description = 'Something went wrong.'
-            //     );
-            // }
-
-
-        } catch (\Throwable$th) {
-            $this->emit('showError', $th->getMessage());
+            $this->notification()->success(
+                $title = 'Success',
+                $description =  'New User created successfully!'
+            );
+            $this->reset();
+            $this->emit('openEntryForm');
+            return;
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
         }
     }
     public function render()
