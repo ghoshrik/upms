@@ -27,7 +27,9 @@ use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
 use App\Http\Livewire\Fund\Funds;
 use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\Milestone\Milestones;
+use App\Http\Livewire\Permission\Permission;
 use App\Http\Livewire\Permission\Permissions;
+use App\Http\Livewire\Roles\Roles;
 use App\Http\Livewire\Sorapprove\SorApprovers;
 use App\Http\Livewire\Tender\Tenders;
 // use App\Http\Livewire\Permission\Permissions;
@@ -69,9 +71,9 @@ Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
 Route::group(['middleware' => ['prevent-back-history']],function(){
     Route::group(['middleware' => 'auth'], function () {
         // Permission Module
-        Route::get('/role-permission',[RolePermission::class, 'index'])->name('role.permission.list');
-        Route::resource('permission',PermissionController::class);
-        Route::resource('role', RoleController::class);
+        // Route::get('/role-permission',[RolePermission::class, 'index'])->name('role.permission.list');
+        // Route::resource('permission',PermissionController::class);
+        // Route::resource('role', RoleController::class);
 
         // Dashboard Routes
         Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
@@ -97,9 +99,9 @@ Route::group(['middleware' => ['prevent-back-history']],function(){
         Route::get('milestones',Milestones::class)->name('milestones');
         // Route::get('aafs-project',ProjectList::class)->name('aafs-project');
         Route::view('/powergrid', 'powergrid-demo');
-        // Route::get('roles',Roles::class)->name('roles');
+        Route::get('roles',Roles::class)->name('roles');
 
-        Route::get('permissions',Permissions::class)->name('permissions');
+        Route::get('permissions',Permission::class)->name('permissions');
 
         // Route::get('vendors',VendorList::class)->name('vendors');
         Route::get('aafs-project',AafsProjects::class)->name('aafs-project');
