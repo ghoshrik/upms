@@ -2,8 +2,10 @@
 
 namespace App\Http\Livewire\Aafs;
 
+use App\Models\AAFS;
 use Livewire\Component;
 use App\Models\SorMaster;
+use Illuminate\Support\Facades\Storage;
 use WireUi\Traits\Actions;
 use Livewire\WithFileUploads;
 
@@ -19,10 +21,11 @@ class CreateAafsProjects extends Component
     }
     public function store()
         {
-            dd("fd");
+            // dd("fd");
             // $this->validate([
             //     'photo' => 'pdf',
             // ]);
+            // dd($this->photo);
             try{
                 // $fileModel = Model::all();//select model Name
                 // $fileName = time().'_'.$this->photo->getClientOriginalName(); //
@@ -33,15 +36,27 @@ class CreateAafsProjects extends Component
                 // $file = $this->photo->store('documents','public');
                 // AAFS::create(['project_id'=>$this->projectId,'Go_id'=>$this->goId,'goDate'=>$this->goDate]);
 
+                // dd(Storage::put('/files/'.$this->photo));
+
+
+                // dd(request()->hasFile($this->photo->store('app/uploads')));
+                $filenameWithExt = $this->photo->getClientOriginalName();
+                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                $extension =  $this->photo->getClientOriginalExtension();
+                $fileNameToStore = $filename.'_'.time().'.'.$extension;
+                $path =  $this->photo->storeAs('public/avatars',$fileNameToStore);
+
+                // $this->photo->
+
                 $insert = [
                     'project_id'=>$this->projectId,
                     'Go_id'=>$this->goId,
-                    'go_date'=>getFromDateAttribute($this->goDate),
-                    'support_data'=>$this->photo->store('files', 'public'),
+                    'go_date'=>$this->goDate,
+                    'support_data'=>$fileNameToStore ,
                     'status'=>0,
                 ];
-                dd($insert);
-                // AAFS::create($insert);
+                // dd($insert);
+                AAFS::csreate($insert);
 
                 $this->notification()->success(
                     $title = "Project Order Created Successfully"

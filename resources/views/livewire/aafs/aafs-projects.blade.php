@@ -13,7 +13,7 @@
                        <h3 class="text-dark">{{$titel}}</h3>
                     <p class="text-primary mb-0">{{$subTitel}}</p>
                     </div>
-                    @canany(['create aafs-projects','edit aafs-projects'])
+                    {{-- @canany(['create aafs-projects','edit aafs-projects']) --}}
                     <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
                         @if (!$isFromOpen)
                         <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
@@ -31,7 +31,7 @@
                         </button>
                         @endif
                     </div>
-                    @endcanany
+                    {{-- @endcanany --}}
                 </div>
             </div>
             {{-- <div class="iq-header-img">
@@ -62,7 +62,12 @@
                 @else
                 <x-cards title="">
                     <x-slot name="table">
-                        <livewire:data-table.aafs-data-table :wire:key="$updateDataTableTracker" />
+                        {{-- <livewire:data-table.aafs-data-table :wire:key="$updateDataTableTracker" /> --}}
+                        @foreach ($proj as $list)
+                            {{-- <embed type="application/pdf" width="100%" height="100%" src="data:application/pdf;,{{asset('images/11-09-2022 12_08_21.pdf')}}"> --}}
+                                <iframe src="{{asset('storage/app/public/avatars/'.$list->support_data)}}" width="100%" height="600px"></iframe>
+                                {{-- <img src="{{$list->support_data}})" /> --}}
+                        @endforeach
                     </x-slot>
                 </x-cards>
                 @endif

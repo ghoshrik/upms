@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Aafs;
 
+use App\Models\AAFS;
 use Livewire\Component;
 
 class AafsProjects extends Component
@@ -39,6 +40,7 @@ class AafsProjects extends Component
     {
         $this->updateDataTableTracker = rand(1,1000);
         $this->titel = trans('cruds.aafs_project.title');
+        $this-> proj = AAFS::all();
         $assets = ['chart', 'animation'];
         return view('livewire.aafs.aafs-projects',compact('assets'));
     }

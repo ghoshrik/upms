@@ -46,6 +46,7 @@ class CreateTender extends Component
         }
         catch(\Throwable $th)
         {
+            dd($th->getMessage());
             $this->emit('showError', $th->getMessage());
         }
     }
