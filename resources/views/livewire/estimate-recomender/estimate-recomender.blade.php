@@ -34,7 +34,7 @@
                     @endcanany
                 </div>
             </div>
-            <div class="iq-header-img">
+            {{-- <div class="iq-header-img">
                 <img src="{{ asset('images/dashboard/top-header.png') }}" alt="header"
                     class="theme-color-default-img  w-100  animated-scaleX">
                 <img src="{{ asset('images/dashboard/top-header1.png') }}" alt="header"
@@ -47,7 +47,7 @@
                     class="theme-color-yellow-img  w-100  animated-scaleX">
                 <img src="{{ asset('images/dashboard/top-header5.png') }}" alt="header"
                     class="theme-color-pink-img  w-100  animated-scaleX">
-            </div>
+            </div> --}}
         </div>
         <div wire:loading.delay.long>
             <div class="spinner-border text-primary loader-position" role="status"></div>
@@ -159,17 +159,17 @@
                             @if ($this->selectedEstTab == 1)
                                 <div class="card">
                                     <div class="card-body">
-                                        {{-- <livewire:estimate-recomender.datatable.recomender-draft-table :wire:key="$updateDataTableTracker" /> --}}
-                                        <livewire:estimate-recomender.datatable.powergrid.recomender-draft-table
-                                            :wire:key="$updateDataTableTracker" />
+                                        <livewire:estimate-recomender.datatable.recomender-draft-table :wire:key="$updateDataTableTracker" />
+                                        {{-- <livewire:estimate-recomender.datatable.powergrid.recomender-draft-table
+                                            :wire:key="$updateDataTableTracker" /> --}}
                                     </div>
                                 </div>
                             @elseif ($this->selectedEstTab == 2)
                                 <div class="card">
                                     <div class="card-body">
-                                        {{-- <livewire:estimate-recomender.datatable.recomender-verified-table :wire:key="$updateDataTableTracker" /> --}}
-                                        <livewire:estimate-recomender.datatable.powergrid.recomender-forward-table
-                                            :wire:key="$updateDataTableTracker" />
+                                        <livewire:estimate-recomender.datatable.recomender-verified-table :wire:key="$updateDataTableTracker" />
+                                        {{-- <livewire:estimate-recomender.datatable.powergrid.recomender-forward-table
+                                            :wire:key="$updateDataTableTracker" /> --}}
                                     </div>
                                 </div>
                             @elseif ($this->selectedEstTab == 3)

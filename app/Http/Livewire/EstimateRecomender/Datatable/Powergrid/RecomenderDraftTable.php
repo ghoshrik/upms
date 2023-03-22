@@ -192,6 +192,8 @@ final class RecomenderDraftTable extends PowerGridComponent
     public function actions(): array
     {
         return [
+            // Button::add('custom')
+            // ->bladeComponent('action-components.estimate-recomender.draft-table-buttons', ['value'=>'estimate_id']),
             Button::add('view')
                 ->caption('View')
                 ->class('btn btn-soft-primary btn-sm')
@@ -199,15 +201,15 @@ final class RecomenderDraftTable extends PowerGridComponent
             Button::add('approve')
                 ->caption('Approve')
                 ->class('btn btn-soft-primary btn-sm')
-                ->emit('openApproveModal', ['id'=>'estimate_id']),
+                ->emit('openApproveModal', ['estimate_id']),
             Button::add('revert')
                 ->caption('Revert')
                 ->class('btn btn-soft-primary btn-sm')
-                ->emit('openRevertModal', ['id'=>'estimate_id']),
+                ->emit('openRevertModal', ['estimate_id']),
             Button::add('forward')
                 ->caption('Forward')
                 ->class('btn btn-soft-primary btn-sm')
-                ->emit('openForm', ['id'=>'estimate_id']),
+                ->emit('openForm', ['estimate_id']),
             Button::add('modify')
                 ->caption('Modify')
                 ->class('btn btn-soft-primary btn-sm')
@@ -236,6 +238,12 @@ final class RecomenderDraftTable extends PowerGridComponent
         return [
             Rule::button('forward')
                 ->when(fn($model) => $model->status == 2 || $model->status == 4)
+                ->hide(),
+            Rule::button('approve')
+                ->when(fn($model) => $model->status == 6)
+                ->hide(),
+            Rule::button('revert')
+                ->when(fn($model) => $model->status == 6 || $model->status == 4)
                 ->hide(),
         ];
     }
