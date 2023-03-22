@@ -88,7 +88,7 @@ final class RolesTable extends PowerGridComponent
             ->addColumn('id')
             ->addColumn('name')
             ->addColumn('created_at_formatted', fn (Role $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
-            // ->addColumn('updated_at_formatted', fn (Role $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
+        // ->addColumn('updated_at_formatted', fn (Role $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
     }
 
     /*
@@ -141,15 +141,15 @@ final class RolesTable extends PowerGridComponent
 
     public function actions(): array
     {
-       return [
-           Button::make('edit', 'Edit')
-               ->class('bg-indigo-500 cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm')
-               ->emit('openEntryForm', ['id' => 'id','formType'=>'edit']),
+        return [
+            Button::make('edit', 'Edit')
+                ->class('btn btn-soft-primary btn-sm')
+                ->emit('openEntryForm', ['id' => 'id', 'formType' => 'edit']),
 
-        //    Button::make('destroy', 'Delete')
-        //        ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
-        //        ->route('role.destroy', ['role' => 'id'])
-        //        ->method('delete')
+            //    Button::make('destroy', 'Delete')
+            //        ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
+            //        ->route('role.destroy', ['role' => 'id'])
+            //        ->method('delete')
         ];
     }
 
