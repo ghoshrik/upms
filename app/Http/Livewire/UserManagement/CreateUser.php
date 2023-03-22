@@ -32,8 +32,8 @@ class CreateUser extends Component
     protected $messages = [
         'newUserData.email.required' => 'Email Field is required',
         'newUserData.email.unique' => 'The email address is already in use.',
-        'newUserData.username.required' => 'username is required',
-        'newUserData.username.string' => 'username must be string',
+        'newUserData.username.required' => 'loginid is required',
+        'newUserData.username.string' => 'loginid must be string',
         'newUserData.emp_name.required' => 'employee name is required',
         'newUserData.emp_name.string' => 'error',
         'newUserData.department_id.required' => 'please select department',
@@ -44,10 +44,15 @@ class CreateUser extends Component
         'newUserData.office_id.required' => 'The office name must be required',
         'newUserData.office_id.integer' => 'data mismatch',
         'selectLevel.required' => 'The Office level must be required',
+        'newUserData.designation_id.required' => 'The designation must be required',
+        'newUserData.designation_id.integer' => 'data mismatch',
 
         // 'selectLevel.'
     ];
-
+    public function updated($param)
+    {
+        $this->validateOnly($param);
+    }
 
     public function booted()
     {
@@ -58,7 +63,11 @@ class CreateUser extends Component
                 'selectLevel' => 'required|unique'
             ]]);
         }
-        // if (Auth::user()->user_type == 3) {
+        if (Auth::user()->user_type == 4) {
+            $this->rules =  Arr::collapse([$this->rules, [
+                'newUserData.designation_id' => 'required|integer',
+            ]]);
+        }
     }
 
 
@@ -136,7 +145,6 @@ class CreateUser extends Component
                     );
                     $this->reset();
                     $this->emit('openEntryForm');
-                    return;
                 }
             }
             $this->notification()->error(

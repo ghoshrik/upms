@@ -19,7 +19,7 @@ class CreateAttachDocsTable extends Migration
             $table->string('document_type');
             $table->string('document_mime');
             $table->string('document_size');
-            $table->longText('attach_doc');
+            $table->longText('docfile');
             $table->foreign('sor_docu_id')->references('id')->on('s_o_r_s')->onDelete('cascade');
             $table->timestamps();
         });
