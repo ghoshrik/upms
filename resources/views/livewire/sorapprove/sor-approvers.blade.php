@@ -72,7 +72,7 @@
                                                     <span class="btn btn-{{($sors->IsActive=='0') ? 'warning':''}} px-1 py-1 btn-sm">{{($sors->IsActive=='0') ? 'pending':''}}</span>
                                                 </td>
                                                 <td>
-                                                    <embed type="{{$SorId->document_mime }}" width="100%" height="100%" src="data:application/pdf;base64,'.{{$SorId->attach_doc}}.'">
+                                                    <embed type="{{$SorId->document_mime }}" width="100%" height="100%" src="{{$SorId->attach_doc}}">
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-soft-info btn-sm" wire:click="approvedSOR()">Approved</button>

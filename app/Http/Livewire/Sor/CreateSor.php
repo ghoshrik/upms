@@ -102,9 +102,11 @@ class CreateSor extends Component
                     'effect_from'=>$data['effect_from'],
                     'created_by_level'=>Auth::user()->id,
                 ]);
+                // dd($data['file_upload']);
                 foreach($data['file_upload'] as $DataAttr)
                 {
-                    $filePath = file_get_contents($DataAttr->getRealPath());
+                    // dd($DataAttr->getRealPath());
+                    $filePath = file_get_contents($DataAttr);
                     $fileSize = $DataAttr->getSize();
                     $filExt = $DataAttr->getClientOriginalExtension();
                     $mimeType = $DataAttr->getMimeType();
@@ -113,7 +115,7 @@ class CreateSor extends Component
                         'document_type'=>$filExt,
                         'document_mime'=>$mimeType,
                         'document_size'=>$fileSize,
-                        'attach_doc'=>base64_encode($filePath)
+                        'attach_doc'=>$filePath
                     ]);
                 }
             }
