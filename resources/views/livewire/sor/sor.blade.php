@@ -1,6 +1,12 @@
 <div>
     <div class="conatiner-fluid content-inner py-0">
         <div class="iq-navbar-header" style="height: 124px;">
+            @if ($errorMessage != null)
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span> {{ $errorMessage }}</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             <div class="container-fluid iq-container">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                     <div class="d-flex flex-column">
@@ -61,7 +67,8 @@
                             <button type="button" class="btn btn-sm btn-soft-warning px-2 py-2">Pending Approved ({{$CountSorListPending}})</button>
                         </div>
                         <div class="card-body">
-                            <livewire:sor.data-table.sor-data-table :wire:key="$updateDataTableTracker" />
+                            {{-- <livewire:sor.data-table.sor-data-table :wire:key="$updateDataTableTracker" /> --}}
+                            <livewire:sor.data-table.power-grid.s-o-r-data-table :wire:key="$updateDataTableTracker" />
                         </div>
                     </div>
                 </div>

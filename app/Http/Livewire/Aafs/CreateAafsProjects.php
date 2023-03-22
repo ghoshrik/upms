@@ -56,7 +56,7 @@ class CreateAafsProjects extends Component
                     'status'=>0,
                 ];
                 // dd($insert);
-                AAFS::create($insert);
+                AAFS::csreate($insert);
 
                 $this->notification()->success(
                     $title = "Project Order Created Successfully"
@@ -67,9 +67,7 @@ class CreateAafsProjects extends Component
 
             }
             catch (\Throwable $th) {
-
-                dd( $th->getMessage());
-                session()->flash('serverError', $th->getMessage());
+                $this->emit('showError', $th->getMessage());
             }
         }
     public function render()

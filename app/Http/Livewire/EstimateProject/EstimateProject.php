@@ -9,7 +9,7 @@ use Livewire\Component;
 class EstimateProject extends Component
 {
     public $formOpen = false, $editFormOpen = false,$updateDataTableTracker,$selectedTab = 1,$counterData=[];
-    protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'mount'];
+    protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'mount','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function mount()
     {
@@ -74,6 +74,7 @@ class EstimateProject extends Component
             // $this->selectedIdForEdit = $data['id'];
             $this->emit('editEstimateRow',$data['id']);
         }
+        $this->updateDataTableTracker = rand(1,1000);
     }
     public function formOCControl($isEditFrom = false, $eidtId = null)
     {
@@ -88,7 +89,11 @@ class EstimateProject extends Component
         $this->editFormOpen = false;
         $this->formOpen = !$this->formOpen;
         $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
-        $this->updateDataTableTracker = rand(1,1000);
+
+    }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
     }
     public function render()
     {

@@ -15,7 +15,7 @@ class EstimatePrepare extends Component
 {
 // TODO::1)refreshDataCounter. 2)datatable counter remove if not require from mount
     public $formOpen = false, $editFormOpen = false,$updateDataTableTracker,$selectedTab = 1,$counterData=[];
-    protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'mount'];
+    protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'mount','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function mount()
     {
@@ -82,22 +82,27 @@ class EstimatePrepare extends Component
             // $this->selectedIdForEdit = $data['id'];
             $this->emit('editEstimateRow',$data['id']);
         }
-    }
-    public function formOCControl($isEditFrom = false, $eidtId = null)
-    {
-        if ($isEditFrom) {
-            $this->editFormOpen = !$this->editFormOpen;
-            $this->emit('changeSubTitel', ($this->editFormOpen) ? 'Edit' : 'List');
-            if ($eidtId != null) {
-                $this->emit('editEstimateRow',$eidtId);
-            }
-            return;
-        }
-        $this->editFormOpen = false;
-        $this->formOpen = !$this->formOpen;
-        $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
         $this->updateDataTableTracker = rand(1,1000);
     }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
+    }
+    // public function formOCControl($isEditFrom = false, $eidtId = null)
+    // {
+    //     if ($isEditFrom) {
+    //         $this->editFormOpen = !$this->editFormOpen;
+    //         $this->emit('changeSubTitel', ($this->editFormOpen) ? 'Edit' : 'List');
+    //         if ($eidtId != null) {
+    //             $this->emit('editEstimateRow',$eidtId);
+    //         }
+    //         return;
+    //     }
+    //     $this->editFormOpen = false;
+    //     $this->formOpen = !$this->formOpen;
+    //     $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
+
+    // }
     public function render()
     {
         $this->updateDataTableTracker = rand(1,1000);

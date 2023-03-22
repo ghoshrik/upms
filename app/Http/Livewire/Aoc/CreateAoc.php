@@ -2,12 +2,12 @@
 
 namespace App\Http\Livewire\Aoc;
 
-use App\Models\Aoc;
 use App\Models\AAFS;
+use App\Models\Aoc;
 use App\Models\Vendor;
 use Livewire\Component;
-use WireUi\Traits\Actions;
 use Livewire\WithFileUploads;
+use WireUi\Traits\Actions;
 
 class CreateAoc extends Component
 {
@@ -36,24 +36,27 @@ class CreateAoc extends Component
 
     public function store()
     {
-        foreach ($this->storeInputData['vendorId'] as $key => $vendorId) {
-            $insert = [
-                'project_id' => $this->storeInputData['projectId'],
-                'go_id' => $this->storeInputData['goId'],
-                'vendor_id' => $vendorId,
-                // 'go_record'=>$this->storeInputData['uploadData']->storeAs($this->storeInputData['uploadData']),
-                'approved_date' => getFromDateAttribute($this->storeInputData['approvedDate']),
-                'amount' => $this->storeInputData['amount'],
-            ];
-            Aoc::create($insert);
+        try {
+            foreach ($this->storeInputData['vendorId'] as $key => $vendorId) {
+                $insert = [
+                    'project_id' => $this->storeInputData['projectId'],
+                    'go_id' => $this->storeInputData['goId'],
+                    'vendor_id' => $vendorId,
+                    // 'go_record'=>$this->storeInputData['uploadData']->storeAs($this->storeInputData['uploadData']),
+                    'approved_date' => getFromDateAttribute($this->storeInputData['approvedDate']),
+                    'amount' => $this->storeInputData['amount'],
+                ];
+                Aoc::create($insert);
+            }
+            $this->notification()->success(
+                $title = trans('cruds.funds.create_msg')
+            );
+            // $this->reset();
+            $this->emit('openEntryForm');
+        } catch (\Throwable$th) {
+            $this->emit('showError', $th->getMessage());
         }
 
-
-        $this->notification()->success(
-            $title = trans('cruds.funds.create_msg')
-        );
-        // $this->reset();
-        $this->emit('openEntryForm');
     }
     public function render()
     {

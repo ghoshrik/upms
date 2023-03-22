@@ -11,7 +11,7 @@ class EstimateRecomender extends Component
 {
     use Actions;
     public $formOpen = false, $modifyFormOpen = false, $updateDataTableTracker, $selectedEstTab = 1, $counterData = [];
-    protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'mount'];
+    protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'mount','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function mount()
     {
@@ -87,6 +87,11 @@ class EstimateRecomender extends Component
             // $this->selectedIdForEdit = $data['id'];
             $this->emit('modifyEstimateRow',$data['id']);
         }
+        $this->updateDataTableTracker = rand(1, 1000);
+    }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
     }
     public function formOCControl($isModifyFrom = false, $eidtId = null)
     {
@@ -101,7 +106,7 @@ class EstimateRecomender extends Component
         $this->modifyFormOpen = false;
         $this->formOpen = !$this->formOpen;
         $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
-        $this->updateDataTableTracker = rand(1, 1000);
+
     }
     public function render()
     {

@@ -1,11 +1,17 @@
 <div>
     <div class="conatiner-fluid content-inner py-0">
         <div class="iq-navbar-header" style="height: 124px;">
+            @if ($errorMessage != null)
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span> {{ $errorMessage }}</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             <div class="container-fluid iq-container">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                     <div class="d-flex flex-column">
-                       <h3 class="text-dark">{{$titel}}</h3>
-                    <p class="text-primary mb-0">{{$subTitel}}</p>
+                        <h3 class="text-dark">{{ $titel }}</h3>
+                        <p class="text-primary mb-0">{{ $subTitel }}</p>
                     </div>
                 </div>
             </div>
@@ -24,7 +30,7 @@
                     class="theme-color-pink-img  w-100  animated-scaleX">
             </div> --}}
         </div>
-        @section('webtitle',trans('cruds.sor-approver.title_singular'))
+        @section('webtitle', trans('cruds.sor-approver.title_singular'))
         <div wire:loading.delay.long>
             <div class="spinner-border text-primary loader-position" role="status"></div>
         </div>
@@ -34,10 +40,11 @@
                     <div class="card">
                         <div class="card-body">
                             {{-- <livewire:sor.data-table.sor-data-table :wire:key="$updateDataTableTracker" /> --}}
-                            @if($selectedSors)
-                           <button type="button" class="btn btn-sm btn btn-soft-danger" wire:click="approvedSOR()">({{count($selectedSors)}}) selected</button>
-                           @endif
-                           {{-- {{Auth::user()->department_id}} --}}
+                            @if ($selectedSors)
+                                <button type="button" class="btn btn-sm btn btn-soft-danger"
+                                    wire:click="approvedSOR()">({{ count($selectedSors) }}) selected</button>
+                            @endif
+                            {{-- {{Auth::user()->department_id}} --}}
                             <div class="table-responsive mt-4">
                                 <table id="basic-table" class="table table-striped mb-0" role="grid">
                                     <thead>
@@ -56,54 +63,87 @@
                                     </thead>
                                     <tbody>
 
-                                            @forelse ($SorLists as $sors)
-                                                @php
-                                                    $SorId = DB::table('attach_docs')->where('sor_docu_id',$sors->id)->first();
-                                                @endphp
-                                                {{-- @dd('data:application/pdf;base64'.$SorId->attach_doc); --}}
+                                        @forelse ($SorLists as $sors)
+                                            @php
+                                                $SorId = DB::table('attach_docs')
+                                                    ->where('sor_docu_id', $sors->id)
+                                                    ->first();
+                                                $bng_file = 'data:' . $SorId->document_mime . ';base64,' . base64_encode($SorId->attach_doc);
+                                                // dd($SorId);
+                                            @endphp
+                                            {{-- @dd('data:application/pdf;base64'.$SorId->attach_doc); --}}
                                             <tr>
-                                            <td> <input type="checkbox" value="{{ $sors->id }}" wire:model="selectedSors"/></td>
-                                                <td>{{$loop->iteration}}</td>
-                                                <td>{{$sors->Item_details}}</td>
-                                                <td>{{$sors->getDepartmentName->department_name}}</td>
-                                                <td>{{$sors->unit}}</td>
-                                                <td>{{$sors->cost}}</td>
+                                                <td> <input type="checkbox" value="{{ $sors->id }}"
+                                                        wire:model="selectedSors" /></td>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $sors->Item_details }}</td>
+                                                <td>{{ $sors->getDepartmentName->department_name }}</td>
+                                                <td>{{ $sors->unit }}</td>
+                                                <td>{{ $sors->cost }}</td>
                                                 <td>
-                                                    <span class="btn btn-{{($sors->IsActive=='0') ? 'warning':''}} px-1 py-1 btn-sm">{{($sors->IsActive=='0') ? 'pending':''}}</span>
+                                                    <span
+                                                        class="btn btn-{{ $sors->IsActive == '0' ? 'warning' : '' }} px-0 py-0 btn-sm">{{ $sors->IsActive == '0' ? 'pending' : '' }}</span>
                                                 </td>
                                                 <td>
-                                                    <embed type="{{$SorId->document_mime }}" width="100%" height="100%" src="{{$SorId->attach_doc}}">
+                                                    {{-- <embed type="{{ $SorId->document_mime }}" width="100%"
+                                                        height="100%"
+                                                        src="data:application/pdf;base64,'.{{ $SorId->attach_doc }}.'" /> --}}
+
+                                                    <button type="button" data-bs-toggle="modal"
+                                                        data-bs-target="#approved-modal">
+                                                        <x-icon name="eye" class="w-5 h-5" /> View
+                                                    </button>
+                                                    {{-- <a href="pdfView({{$sors->id}})">edasd</a> --}}
+                                                    {{-- <x-button type="button" class="btn btn-soft-info btn-sm"
+                                                        wire:click="pdfViewRow({{ $sors->id }})">
+                                                        <span class="btn-inner">
+                                                            <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
+                                                        </span>
+                                                    </x-button> --}}
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-soft-info btn-sm" wire:click="approvedSOR()">Approved</button>
+                                                    <button type="button" class="btn btn-soft-info btn-sm"
+                                                        wire:click="approvedSOR()">Approved</button>
                                                 </td>
                                             </tr>
-                                            @empty
+                                        @empty
                                             <tr>
-                                                <td colspan="7" class="text-center">{{__('No Record Found')}}</td>
+                                                <td colspan="7" class="text-center">{{ __('No Record Found') }}</td>
                                             </tr>
-                                            @endforelse
+                                        @endforelse
 
                                     </tbody>
                                 </table>
-                                {{-- <div wire:model.self id="approved-modal" class="modal" role="dialog">
+                                <div wire:model.self id="approved-modal" class="modal" role="dialog">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title">Suported Data</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <button type="button" class="close" data-bs-dismiss="modal"
+                                                    aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <input type="file" wire:model="supported_data" class="form-control"/>
+                                                @forelse ($SorLists as $sors)
+                                                    @php
+                                                        $SorId = DB::table('attach_docs')
+                                                            ->where('sor_docu_id', $sors->id)
+                                                            ->first();
+                                                        $bng_file = 'data:' . $SorId->document_mime . ';base64,' . base64_decode($SorId->attach_doc);
+                                                    @endphp
+                                                    <embed src="{{ $bng_file }}" type="application/pdf"
+                                                        width="100%" height="600" />
+                                                @endforeach
+
                                             </div>
-                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-primary" data-dismiss="modal" wire:click="SelectedRecordApprove({{$sors->id}})">Save changes</button>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary"
+                                                    data-bs-dismiss="modal">Close</button>
                                             </div>
                                         </div>
                                     </div>
-                                </div> --}}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -112,11 +152,11 @@
         </div>
     </div>
     <script>
-        $(document).ready(function(){
-            $("#approved-modal").on('hidden.bs.modal', function(){
-                //livewire.emit('onCloseModal');
-                $(this).modal('show');
-            });
-        });
+        // $(document).ready(function() {
+        //     $("#approved-modal").on('hidden.bs.modal', function() {
+        //         //livewire.emit('onCloseModal');
+        //         $(this).modal('show');
+        //     });
+        // });
     </script>
 </div>

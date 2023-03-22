@@ -40,7 +40,7 @@ class CreateAccessType extends Component
             $this->emit('openEntryForm');
         }
         catch (\Throwable $th) {
-            dd($th->getMessage());
+            $this->emit('showError', $th->getMessage());
         }
 
     }
