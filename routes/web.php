@@ -1,48 +1,46 @@
 <?php
 
 // Controllers
+use App\Models\User;
+use App\Http\Livewire\Sor\Sor;
+use App\Http\Livewire\Aoc\Aocs;
+use App\Http\Livewire\Fund\Funds;
+use Spatie\Permission\Models\Role;
+use App\Http\Livewire\Office\Office;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Livewire\Tender\Tenders;
+// use App\Http\Livewire\Designation\CreateDesignation;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Security\RolePermission;
-use App\Http\Controllers\Security\RoleController;
-use App\Http\Controllers\Security\PermissionController;
 use App\Http\Controllers\UserController;
 use App\Http\Livewire\Aafs\AafsProjects;
-use App\Http\Livewire\Department\Department;
-use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
-// use App\Http\Livewire\Designation\CreateDesignation;
-use App\Http\Livewire\Designation\Designation;
-use App\Http\Livewire\Estimate\EstimatePrepare;
-use App\Http\Livewire\EstimateProject\EstimateProject;
-use App\Http\Livewire\Office\Office;
-use App\Http\Livewire\Sor\Sor;
 // use App\Http\Livewire\TestALL\TestSearch;
 use App\Http\Livewire\UserType\UserType;
-use App\Http\Livewire\AccessManager\AccessManager;
-use App\Http\Livewire\AccessType\AccessType;
-use App\Http\Livewire\Aoc\Aocs;
-use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
-use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
-use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
-use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
-use App\Http\Livewire\Fund\Funds;
-use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\Milestone\Milestones;
+use App\Http\Livewire\AccessType\AccessType;
+use App\Http\Livewire\Department\Department;
+use App\Http\Livewire\VendorRegs\VendorList;
 use App\Http\Livewire\Permission\Permissions;
+use App\Http\Livewire\Designation\Designation;
 use App\Http\Livewire\Sorapprove\SorApprovers;
-use App\Http\Livewire\Tender\Tenders;
+use App\Http\Livewire\Estimate\EstimatePrepare;
+use App\Http\Controllers\Security\RoleController;
+use App\Http\Controllers\Security\RolePermission;
+use App\Http\Livewire\AccessManager\AccessManager;
+use App\Http\Livewire\MenuManagement\MenuManagement;
+use App\Http\Livewire\UserManagement\UserManagement;
 // use App\Http\Livewire\Permission\Permissions;
 // use App\Http\Livewire\Role\Roles;
 // use App\Http\Livewire\Setting\SettingLists;
-use App\Http\Livewire\UserManagement\UserManagement;
-use App\Http\Livewire\VendorRegs\VendorList;
-// use App\Models\Menu;
-// use App\Models\MileStone;
-use App\Models\User;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Livewire\EstimateProject\EstimateProject;
+use App\Http\Controllers\Security\PermissionController;
+use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
+use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
 // Packages
-use Illuminate\Support\Facades\Route;
-use Spatie\Permission\Models\Role;
+use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
+use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
+use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
 
 /*
 |--------------------------------------------------------------------------
@@ -188,3 +186,13 @@ Route::group(['prefix' => 'errors'], function () {
 //Extra Page Routs
 // Route::get('privacy-policy', [HomeController::class, 'privacypolicy'])->name('pages.privacy-policy');
 // Route::get('terms-of-use', [HomeController::class, 'termsofuse'])->name('pages.term-of-use');
+
+
+//clear cache url
+Route::get('cache-clear', function () {
+    Artisan::call('route:cache');
+    Artisan::call('config:cache');
+    Artisan::call('view:clear');
+    Artisan::call('optimize:clear');
+    return 'Routes cache has been cleared';
+});

@@ -77,6 +77,10 @@ class CreateAccess extends Component
                 if (AccessMaster::create($newAccessData)) {
                     $user = User::find($user_id);
                     $user->assignRole($accessTypeName['access_name']);
+                    $this->notification()->success(
+                        $title = 'Success',
+                        $description =  'New User created successfully!'
+                    );
                 } else {
                     $this->notification()->error(
                         $title = 'Error !!!',
@@ -85,10 +89,7 @@ class CreateAccess extends Component
                     return;
                 }
             }
-            $this->notification()->success(
-                $title = 'Success',
-                $description =  'New User created successfully!'
-            );
+
             $this->reset();
             $this->emit('openEntryForm');
             return;
