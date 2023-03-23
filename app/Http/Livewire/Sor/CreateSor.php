@@ -18,20 +18,20 @@ class CreateSor extends Component
     //|regex:/^\d{2}\.\d{2}/
     protected $rules = [
         'inputsData.*.dept_category_id' => 'required|integer',
-        'inputsData.*.item_details' => 'required|numeric',
+        'inputsData.*.item_details' => 'required|regex:/^[0-9+.]+$/',
         'inputsData.*.description' => 'required|string',
         'inputsData.*.unit' => 'required|numeric|min:1',
         'inputsData.*.cost' => 'required|numeric|min:1',
         'inputsData.*.version' => 'required|string',
-        'inputsData.*.effect_from' => 'required|date_format:Y-m-d',
-        'inputsData.*.file_upload' => 'required|mimes:pdf'
+        'inputsData.*.effect_from' => 'required',
+        'inputsData.*.file_upload' => 'required'
     ];
     protected $messages = [
         'inputsData.*.dept_category_id.required' => 'This field is required',
         'inputsData.*.dept_category_id.required' => 'Invalid format',
         'inputsData.*.item_details.required' => 'This field is required',
         'inputsData.*.item_details.numeric' => 'Only allow number',
-        // 'inputsData.*.item_details.regex'=> 'The field invalid characters',
+        'inputsData.*.item_details.regex'=> 'The field invalid characters',
         'inputsData.*.description.required' => 'This field is required',
         'inputsData.*.description.string' => 'This field must be allow alphabet',
         'inputsData.*.unit.required' => 'This field is required',
@@ -43,9 +43,9 @@ class CreateSor extends Component
         'inputsData.*.version.required' => 'This field is required',
         'inputsData.*.version.string' => 'This field allow only alphabet',
         'inputsData.*.effect_from.required' => 'This field is required',
-        'inputsData.*.effect_from.date_format' => 'This field must be valid only date format',
+        // 'inputsData.*.effect_from.date_format' => 'This field must be valid only date format',
         'inputsData.*.file_upload.required' => 'This field is required',
-        'inputsData.*.file_upload.mimes' => 'The uploaded file must be a PDF document.',
+        // 'inputsData.*.file_upload' => 'The uploaded file must be a PDF document.',
 
     ];
     public function mount()
@@ -87,8 +87,10 @@ class CreateSor extends Component
     }
     public function store()
     {
-        $this->validate();
+            // dd($this->inputsData);
+            $this->validate();
         try {
+
             foreach ($this->inputsData as $key => $data) {
                 $last = SOR::create([
                     'Item_details' => $data['item_details'],
@@ -114,6 +116,7 @@ class CreateSor extends Component
                         'docfile' => base64_encode($filePath)
                     ]);
                 }
+                // dd($data['file_upload']);
             }
             $this->notification()->success(
                 $title = trans('cruds.sor.create_msg')
@@ -138,7 +141,6 @@ class CreateSor extends Component
 
     public function render()
     {
-
         return view('livewire.sor.create-sor');
     }
 }

@@ -57,10 +57,13 @@ use Spatie\Permission\Models\Role;
 
 require __DIR__ . '/auth.php';
 Route::get('set-role', function () {
-    $users = User::where('user_type', 1)->get();
-    foreach ($users as $user) {
-        $user->assignRole('Super Admin');
-    }
+    // $users = User::where('user_type', 1)->get();
+    // foreach ($users as $user) {
+    //     $user->assignRole('Super Admin');
+    // }
+    $user = Auth::user()->id;
+    $user = User::find($user)->first();
+    $user->syncRoles("Department Admin");
 });
 
 

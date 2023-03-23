@@ -44,7 +44,7 @@ class SorDataTable extends DataTableComponent
                 ->sortable(),
             // Column::make("IsActive", "IsActive")
             //     ->sortable(),
-            Column::make("Actions", "id")->view('components.data-table-components.buttons.edit'),
+            Column::make("Actions", "id")->view('livewire.action-components.sor.sor-prepare-table-buttons'),
             // Column::make("Created at", "created_at")
             //     ->sortable(),
             // Column::make("Updated at", "updated_at")
@@ -57,7 +57,11 @@ class SorDataTable extends DataTableComponent
     }
     public function edit($id)
     {
-        $this->emit('openForm', ['formType' => 'edit', 'id' => $id]);
+        $this->emit('openEntryForm', ['formType' => 'edit', 'id' => $id]);
+    }
+    public function generatePdf($value)
+    {
+        $this->emit('sorFileDownload', $value);
     }
     public function builder(): Builder
     {
