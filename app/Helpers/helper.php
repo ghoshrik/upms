@@ -5,6 +5,7 @@ use App\Models\EstimatePrepare;
 use App\Models\SOR;
 use App\Models\SorMaster;
 use App\Models\UnitType;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 function removeSession($session)
@@ -124,6 +125,13 @@ function getSorItemNumber($sor_item_number)
     return $sorItemNo['Item_details'];
 }
 
+function getUserName($id)
+{
+    if($id){
+        $getUser = User::select('emp_name')->where('id',$id)->first();
+    }
+    return $getUser['emp_name'];
+}
 function getSorItemNumberDesc($sor_item_number)
 {
     if ($sor_item_number) {

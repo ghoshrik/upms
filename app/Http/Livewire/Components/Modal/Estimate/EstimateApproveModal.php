@@ -18,6 +18,7 @@ class EstimateApproveModal extends Component
     public function openApproveModal($estimate_id)
     {
         $this->reset();
+        $estimate_id = is_array($estimate_id)? $estimate_id[0]:$estimate_id;
         $this->openApproveModal = !$this->openApproveModal;
         if ($estimate_id) {
             $this->estimate_id = $estimate_id;

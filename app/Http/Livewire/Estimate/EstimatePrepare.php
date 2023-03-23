@@ -15,7 +15,7 @@ class EstimatePrepare extends Component
 {
 // TODO::1)refreshDataCounter. 2)datatable counter remove if not require from mount
     public $formOpen = false, $editFormOpen = false,$updateDataTableTracker,$selectedTab = 1,$counterData=[];
-    protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'mount','showError'=>'setErrorAlert'];
+    protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'render','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function mount()
     {

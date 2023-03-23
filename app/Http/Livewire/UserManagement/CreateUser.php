@@ -3,7 +3,10 @@
 namespace App\Http\Livewire\UserManagement;
 
 use App\Models\User;
-use App\Models\Office;
+use App\Models\UserType;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use App\Models\UserType;
 use App\Models\Department;
@@ -32,8 +35,8 @@ class CreateUser extends Component
     protected $messages = [
         'newUserData.email.required' => 'Email Field is required',
         'newUserData.email.unique' => 'The email address is already in use.',
-        'newUserData.username.required' => 'loginid is required',
-        'newUserData.username.string' => 'loginid must be string',
+        'newUserData.username.required' => 'username is required',
+        'newUserData.username.string' => 'username must be string',
         'newUserData.emp_name.required' => 'employee name is required',
         'newUserData.emp_name.string' => 'error',
         'newUserData.department_id.required' => 'please select department',
@@ -124,27 +127,29 @@ class CreateUser extends Component
     public function store()
     {
         $this->validate();
-        try {
-            // TODO::INSERT THE DEPT. ID NAD OFFICE ID .
-            unset($this->newUserData['confirm_password']);
-            $userType =  UserType::where('parent_id', Auth::user()->user_type)->first();
-            if (isset($userType)) {
-                $this->newUserData['user_type'] = $userType['id'];
-                $this->newUserData['department_id'] = (Auth::user()->user_type == 2) ? $this->newUserData['department_id'] : Auth::user()->department_id;
-                $this->newUserData['designation_id'] = ($this->newUserData['designation_id'] == '') ? Auth::user()->designation_id : $this->newUserData['designation_id'];
-                $this->newUserData['office_id'] = ($this->newUserData['office_id'] == '') ? Auth::user()->office_id : $this->newUserData['office_id'];
-                $this->newUserData['email'] = $this->newUserData['email'];
-                $this->newUserData['mobile'] = $this->newUserData['mobile'];
-                // $this->newUserData['password'] = Hash::make($this->newUserData['password']);
-                $this->newUserData['password'] = Hash::make('password');
-                // dd($this->newUserData);
-                if (User::create($this->newUserData)) {
-                    $this->notification()->success(
-                        $title = 'Success',
-                        $description =  trans('cruds.user-management.create_msg')
-                    );
-                    $this->reset();
-                    $this->emit('openEntryForm');
+        try{
+        // TODO::INSERT THE DEPT. ID NAD OFFICE ID .
+                unset($this->newUserData['confirm_password']);
+                $userType =  UserType::where('parent_id', Auth::user()->user_type)->first();
+                if (isset($userType)) {
+                    $this->newUserData['user_type'] = $userType['id'];
+                    $this->newUserData['department_id'] = (Auth::user()->user_type==2)? $this->newUserData['department_id'] : Auth::user()->department_id;
+                    $this->newUserData['designation_id'] = ($this->newUserData['designation_id'] == '') ? Auth::user()->designation_id : $this->newUserData['designation_id'];
+                    $this->newUserData['office_id'] = ($this->newUserData['office_id'] == '')? Auth::user()->office_id : $this->newUserData['office_id'];
+                    $this->newUserData['email'] = $this->newUserData['email'];
+                    $this->newUserData['mobile'] = $this->newUserData['mobile'];
+                    // $this->newUserData['password'] = Hash::make($this->newUserData['password']);
+                    $this->newUserData['password'] = Hash::make('password');
+                    // dd($this->newUserData);
+                    if (User::create($this->newUserData)) {
+                        $this->notification()->success(
+                            $title = 'Success',
+                            $description =  trans('cruds.user-management.create_msg')
+                        );
+                        $this->reset();
+                        $this->emit('openEntryForm');
+                        return;
+                    }
                 }
             }
             $this->notification()->error(

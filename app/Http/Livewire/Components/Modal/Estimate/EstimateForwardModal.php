@@ -20,6 +20,7 @@ class EstimateForwardModal extends Component
     public function forwardModalOpen($estimate_id)
     {
         $this->reset();
+        $estimate_id = is_array($estimate_id)? $estimate_id[0]:$estimate_id;
         $this->estimate_id = $estimate_id;
         $this->forwardModal = !$this->forwardModal;
         // $userAccess_id = AccessMaster::select('access_parent_id')->join('access_types', 'access_masters.access_type_id', '=', 'access_types.id')->where('user_id', Auth::user()->id)->first();
