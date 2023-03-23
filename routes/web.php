@@ -55,22 +55,22 @@ use Spatie\Permission\Models\Role;
 |
 */
 
-require __DIR__.'/auth.php';
-Route::get('set-role',function(){
-    $users = User::where('user_type',1)->get();
+require __DIR__ . '/auth.php';
+Route::get('set-role', function () {
+    $users = User::where('user_type', 1)->get();
     foreach ($users as $user) {
-       $user->assignRole('Super Admin');
+        $user->assignRole('Super Admin');
     }
 });
 
 
 Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
 
-Route::group(['middleware' => ['prevent-back-history']],function(){
+Route::group(['middleware' => ['prevent-back-history']], function () {
     Route::group(['middleware' => 'auth'], function () {
         // Permission Module
-        Route::get('/role-permission',[RolePermission::class, 'index'])->name('role.permission.list');
-        Route::resource('permission',PermissionController::class);
+        Route::get('/role-permission', [RolePermission::class, 'index'])->name('role.permission.list');
+        Route::resource('permission', PermissionController::class);
         Route::resource('role', RoleController::class);
 
         // Dashboard Routes
@@ -79,41 +79,41 @@ Route::group(['middleware' => ['prevent-back-history']],function(){
         // Users Module
         Route::resource('users', UserController::class);
 
-        Route::get('estimate-prepare',EstimatePrepare::class)->name('estimate-prepare');
-        Route::get('estimate-project',EstimateProject::class)->name('estimate-project');
-        Route::get('designation',Designation::class)->name('designation');
+        Route::get('estimate-prepare', EstimatePrepare::class)->name('estimate-prepare');
+        Route::get('estimate-project', EstimateProject::class)->name('estimate-project');
+        Route::get('designation', Designation::class)->name('designation');
         Route::get('user-type', UserType::class)->name("user-type");
         Route::get('department', Department::class)->name("department");
-        Route::get('department-category',DepartmentCategoryList::class)->name('department-category');
+        Route::get('department-category', DepartmentCategoryList::class)->name('department-category');
         Route::get('office', Office::class)->name('office');
-        Route::get('prepare-sor',Sor::class)->name('prepare-sor');
-        Route::get('user-management',UserManagement::class)->name('user-management');
-        Route::get('access-manager',AccessManager::class)->name('access-manager');
-        Route::get('access-type',AccessType::class)->name('access-type');
-        Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
-        Route::get('estimate-recommender',EstimateRecomender::class)->name('estimate-recommender');
-        Route::get('estimate-forwarder',EstimateForwarder::class)->name('estimate-forwarder');
-        Route::get('vendors',VendorList::class)->name('vendors');
-        Route::get('milestones',Milestones::class)->name('milestones');
+        Route::get('prepare-sor', Sor::class)->name('prepare-sor');
+        Route::get('user-management', UserManagement::class)->name('user-management');
+        Route::get('access-manager', AccessManager::class)->name('access-manager');
+        Route::get('access-type', AccessType::class)->name('access-type');
+        Route::get('menu-manager', MenuManagement::class)->name('menu-manager');
+        Route::get('estimate-recommender', EstimateRecomender::class)->name('estimate-recommender');
+        Route::get('estimate-forwarder', EstimateForwarder::class)->name('estimate-forwarder');
+        Route::get('vendors', VendorList::class)->name('vendors');
+        Route::get('milestones', Milestones::class)->name('milestones');
         // Route::get('aafs-project',ProjectList::class)->name('aafs-project');
         Route::view('/powergrid', 'powergrid-demo');
         // Route::get('roles',Roles::class)->name('roles');
 
-        Route::get('permissions',Permissions::class)->name('permissions');
+        Route::get('permissions', Permissions::class)->name('permissions');
 
         // Route::get('vendors',VendorList::class)->name('vendors');
-        Route::get('aafs-project',AafsProjects::class)->name('aafs-project');
-        Route::get('aoc',Aocs::class)->name('aoc');
-        Route::get('tenders',Tenders::class)->name('tenders');
-        Route::get('assign-office-admin',AssignOfficeAdmin::class)->name('assign-office-admin');
-        Route::get('assign-dept-admin',AssignDepartmentAdmin::class)->name('assign-dept-admin');
-        Route::get('sor-approver',SorApprovers::class)->name('sor-approver');
+        Route::get('aafs-project', AafsProjects::class)->name('aafs-project');
+        Route::get('aoc', Aocs::class)->name('aoc');
+        Route::get('tenders', Tenders::class)->name('tenders');
+        Route::get('assign-office-admin', AssignOfficeAdmin::class)->name('assign-office-admin');
+        Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
+        Route::get('sor-approver', SorApprovers::class)->name('sor-approver');
     });
 });
 
 
 //App Details Page => 'Dashboard'], function() {
-Route::group(['prefix' => 'menu-style'], function() {
+Route::group(['prefix' => 'menu-style'], function () {
     //MenuStyle Page Routs
     Route::get('horizontal', [HomeController::class, 'horizontal'])->name('menu-style.horizontal');
     Route::get('dual-horizontal', [HomeController::class, 'dualhorizontal'])->name('menu-style.dualhorizontal');
@@ -147,7 +147,7 @@ Route::group(['prefix' => 'menu-style'], function() {
 // });
 
 //Auth pages Routs
-Route::group(['prefix' => 'auth'], function() {
+Route::group(['prefix' => 'auth'], function () {
     Route::get('signup', [HomeController::class, 'signup'])->name('auth.signup');
     Route::get('confirmmail', [HomeController::class, 'confirmmail'])->name('auth.confirmmail');
     Route::get('lockscreen', [HomeController::class, 'lockscreen'])->name('auth.lockscreen');
@@ -156,7 +156,7 @@ Route::group(['prefix' => 'auth'], function() {
 });
 
 //Error Page Route
-Route::group(['prefix' => 'errors'], function() {
+Route::group(['prefix' => 'errors'], function () {
     Route::get('error404', [HomeController::class, 'error404'])->name('errors.error404');
     Route::get('error500', [HomeController::class, 'error500'])->name('errors.error500');
     Route::get('maintenance', [HomeController::class, 'maintenance'])->name('errors.maintenance');

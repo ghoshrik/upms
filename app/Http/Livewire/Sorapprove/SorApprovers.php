@@ -7,25 +7,26 @@ use Livewire\Component;
 use WireUi\Traits\Actions;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class SorApprovers extends Component
 {
 
-    use Actions,WithFileUploads;
+    use Actions, WithFileUploads;
     public $updateDataTableTracker;
-    protected $listeners = ['openEntryForm' => 'fromEntryControl'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$titel;
-    public $SorLists = [],$selectedSors = [],$supported_data;
+    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert'];
+    public $openedFormType = false, $isFromOpen, $subTitel = "List", $titel, $errorMessage;
+    public $SorLists = [], $selectedSors = [], $supported_data;
 
     public function mount()
     {
-        $this->SorLists = SOR::where('department_id','=',Auth::user()->department_id)->where('IsActive','=','0')->get();
+        $this->SorLists = SOR::where('department_id', '=', Auth::user()->department_id)->where('IsActive', '=', '0')->get();
         // $this->blukDisable = count($this->selectedSors)< 1;
 
     }
     public function approvedSOR()
     {
-        $listsSors = implode(',',$this->selectedSors);
+        $listsSors = implode(',', $this->selectedSors);
 
         $this->dialog()->confirm([
             'title' => 'Are you Sure?',
@@ -43,31 +44,49 @@ class SorApprovers extends Component
     }
     public function approvedListSor($value)
     {
-        SOR::whereIn('id',explode(",",$value))->update(['IsActive'=>1]);
+        SOR::whereIn('id', explode(",", $value))->update(['IsActive' => 1]);
         $this->SorLists = [];
         $this->selectedSors = [];
         $this->notification()->success(
             $title = "Record Approved"
         );
-
     }
     public function SelectedRecordApprove($value)
     {
         // dd($value);
         // $this->supported_data->storeAs('/', $name);
-        SOR::where('id',$value)->update(['IsActive'=>1]);
+        SOR::where('id', $value)->update(['IsActive' => 1]);
         $this->SorLists = [];
-        $this->selectedSors = [];
         $this->notification()->success(
             $title = "Record Approved"
         );
     }
+    public function setErrorAlert($errorMessage)
+    {
+        $this->errorMessage = $errorMessage;
+    }
+
+    public function generatePdf($value)
+    {
+        $sor = SOR::join('attach_docs', 'attach_docs.sor_docu_id', '=', 's_o_r_s.id')->where('s_o_r_s.id', $value)->first();
+        $decoded = base64_decode($sor->docfile);
+        $file = $sor->Item_details . '.pdf';
+        file_put_contents($file, $decoded);
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+        //     header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        return response()->download($file)->deleteFileAfterSend(true);
+        $this->reset('sor');
+    }
     public function render()
     {
-        $this->SorLists = SOR::where('department_id','=',Auth::user()->department_id)->where('IsActive','=','0')->get();
+        $this->SorLists = SOR::where('department_id', '=', Auth::user()->department_id)->where('IsActive', '=', '0')->get();
         // $this->updateDataTableTracker = rand(1,1000);
         $this->titel = trans('cruds.sor-approver.title_singular');
         $assets = ['chart', 'animation'];
-        return view('livewire.sorapprove.sor-approvers',compact('assets'));
+        return view('livewire.sorapprove.sor-approvers', compact('assets'));
     }
 }

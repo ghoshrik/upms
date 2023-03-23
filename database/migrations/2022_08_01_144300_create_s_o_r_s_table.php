@@ -25,8 +25,10 @@ class CreateSORSTable extends Migration
             $table->string('version');
             $table->date('effect_from');
             $table->date('effect_to')->nullable();
-            $table->string('support_data')->nullable();
+            // $table->string('support_data')->nullable();
             $table->enum('IsActive',[0,1])->default('0');
+            $table->tinyInteger('created_by_level')->default('0');
+            $table->enum('IsApproved',[0,1])->default('0');
             $table->timestamps();
         });
     }

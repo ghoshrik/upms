@@ -7,7 +7,7 @@ use Livewire\Component;
 class VendorList extends Component
 {
     public $formOpen = false,$updateDataTableTracker;
-    protected $listeners = ['openForm' => 'formOCControl','showError'=>'setErrorAlert'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function fromEntryControl($data='')
     {
