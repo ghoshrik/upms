@@ -9,13 +9,18 @@ use WireUi\Traits\Actions;
 class CreateDepartment extends Component
 {
     use Actions;
-    public $department_name;
+    public $department_name,$department_code;
     protected $rules = [
-        'department_name' => 'required|string'
+        'department_name' => 'required|string|unique:departments',
+        'department_code' => 'required|string|unique:departments'
     ];
     protected $messages = [
         'department_name.required' => 'This Field is Required',
-        'department_name.string' => 'Invalid Input'
+        'department_name.string' => 'Invalid Input',
+        'department_name.unique' => 'Department Name Already Exists',
+        'department_code.required' => 'This Field is Required',
+        'department_code.string' => 'Invalid Input',
+        'department_code.unique' => 'Department Code Already Exists',
     ];
     public function updated($param)
     {
@@ -25,13 +30,19 @@ class CreateDepartment extends Component
     {
         $validateData = $this->validate();
         try{
-            Department::create($validateData,['department_name' => $this->department_name]);
+            $insert = [
+                'department_name' => $this->department_name,
+                'department_code' => $this->department_code
+            ];
+            if($validateData)
+            {
+                Department::create($insert);
                 $this->notification()->success(
                     $title = trans('cruds.department.create_msg')
                 );
+            }
             $this->reset();
             $this->emit('openEntryForm');
-
         }catch (\Throwable $th) {
             $this->emit('showError', $th->getMessage());
         }

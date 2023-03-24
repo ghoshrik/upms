@@ -32,6 +32,7 @@ class Department extends Component
         if(isset($data['id'])){
             $this->selectedIdForEdit = $data['id'];
         }
+        $this->updateDataTableTracker = rand(1,1000);
     }
     public function setErrorAlert($errorMessage)
     {
@@ -39,6 +40,7 @@ class Department extends Component
     }
     public function render()
     {
+        $this->updateDataTableTracker = rand(1,1000);
         $this->titel ="Departments";
         $assets = ['chart', 'animation'];
         return view('livewire.department.department',compact('assets'));
