@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class Sor extends Component
 {
     public $formOpen = false, $editFormOpen = false, $updateDataTableTracker;
-    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert','sorFileDownload' => 'generatePdf'];
     public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel, $editId = null, $CountSorListPending;
 
     public function mount()
@@ -61,6 +61,21 @@ class Sor extends Component
             }
         }
         $this->updateDataTableTracker = rand(1, 1000);
+    }
+    public function generatePdf($value)
+    {
+        $sor = ModelsSOR::join('attach_docs', 'attach_docs.sor_docu_id', '=', 's_o_r_s.id')->where('s_o_r_s.id', $value)->first();
+        $decoded = base64_decode($sor->docfile);
+        $file = $sor->Item_details . '.pdf';
+        file_put_contents($file, $decoded);
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+        //     header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        return response()->download($file)->deleteFileAfterSend(true);
+        $this->reset('sor');
     }
     public function setErrorAlert($errorMessage)
     {

@@ -74,22 +74,30 @@ class CreateAccess extends Component
             foreach ($this->newAccessData['user_id'] as $user_id) {
                 $newAccessData = $this->newAccessData;
                 $newAccessData['user_id'] = $user_id;
-                if (AccessMaster::create($newAccessData)) {
-                    $user = User::find($user_id);
-                    $user->assignRole($accessTypeName['access_name']);
-                    $this->notification()->success(
-                        $title = 'Success',
-                        $description =  'New User created successfully!'
-                    );
+                // dd($newAccessData);
+                $isAlreadyAssign = AccessMaster::where([['user_id', $user_id], ['access_type_id', $this->newAccessData['access_type_id']]])->first();
+                if (!isset($isAlreadyAssign)) {
+                    if (AccessMaster::create($newAccessData)) {
+                        $user = User::find($user_id);
+                        $user->assignRole($accessTypeName['access_name']);
+                        $this->notification()->success(
+                            $title = 'Success',
+                            $description = 'New User created successfully!'
+                        );
+                    } else {
+                        $this->notification()->error(
+                            $title = 'Error !!!',
+                            $description = 'Something went wrong.'
+                        );
+                        // return;
+                    }
                 } else {
                     $this->notification()->error(
                         $title = 'Error !!!',
-                        $description = 'Something went wrong.'
+                        $description = 'User already assign.'
                     );
-                    return;
                 }
             }
-
             $this->reset();
             $this->emit('openEntryForm');
             return;

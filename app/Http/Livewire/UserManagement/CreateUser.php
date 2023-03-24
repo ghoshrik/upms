@@ -11,9 +11,7 @@ use WireUi\Traits\Actions;
 use App\Models\Designation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-
 use Illuminate\Support\Facades\Hash;
-use function PHPUnit\Framework\isEmpty;
 
 class CreateUser extends Component
 {
@@ -21,11 +19,11 @@ class CreateUser extends Component
     public $dropDownData = [], $newUserData = [], $selectLevel;
 
     protected $rules = [
-        'newUserData.email' => 'required|unique:users,email',
+        // 'newUserData.email' => 'required|unique:users,email',
         // 'newUserData.emp_id'=>'required|numeric'
         'newUserData.username' => 'required|string',
         'newUserData.emp_name' => 'required|string',
-        'newUserData.department_id' => 'required|integer',
+        // 'newUserData.department_id' => 'required|integer',
         'newUserData.mobile' => 'required|numeric|min:10',
 
     ];
@@ -36,8 +34,8 @@ class CreateUser extends Component
         'newUserData.username.string' => 'username must be string',
         'newUserData.emp_name.required' => 'employee name is required',
         'newUserData.emp_name.string' => 'error',
-        'newUserData.department_id.required' => 'please select department',
-        'newUserData.department_id.integer' => 'do not format',
+        // 'newUserData.department_id.required' => 'please select department',
+        // 'newUserData.department_id.integer' => 'do not format',
         'newUserData.mobile.required' => 'The mobile number is required',
         'newUserData.mobile.numeric' => 'The mobile number must be a number',
         'newUserData.mobile.min' => 'The mobile number must be exactly 10 digits long',
@@ -49,18 +47,14 @@ class CreateUser extends Component
 
         // 'selectLevel.'
     ];
-    public function updated($param)
-    {
-        $this->validateOnly($param);
-    }
 
     public function booted()
     {
         // if($newUserData.office_id)
         if (Auth::user()->user_type == 3) {
-            $this->rules =  Arr::collapse([$this->rules, [
+            $this->rules = Arr::collapse([$this->rules, [
                 'newUserData.office_id' => 'required|integer',
-                'selectLevel' => 'required|unique'
+                'selectLevel' => 'required|unique',
             ]]);
         }
         if (Auth::user()->user_type == 4) {
@@ -69,7 +63,6 @@ class CreateUser extends Component
             ]]);
         }
     }
-
 
     public function mount()
     {
@@ -104,7 +97,7 @@ class CreateUser extends Component
                 if (Auth::user()->department_id) {
                     $this->dropDownData['departments'] = Department::where('id', Auth::user()->department_id)->get();
                 } else {
-                    $this->dropDownData['departments'] =  Department::all();
+                    $this->dropDownData['departments'] = Department::all();
                 }
             } elseif ($lookingFor === 'LEVEL') {
                 $this->dropDownData['level'] = true;
@@ -123,11 +116,12 @@ class CreateUser extends Component
     }
     public function store()
     {
-        $this->validate();
+
         try {
+            // $this->validate();
             // TODO::INSERT THE DEPT. ID NAD OFFICE ID .
             unset($this->newUserData['confirm_password']);
-            $userType =  UserType::where('parent_id', Auth::user()->user_type)->first();
+            $userType = UserType::where('parent_id', Auth::user()->user_type)->first();
             if (isset($userType)) {
                 $this->newUserData['user_type'] = $userType['id'];
                 $this->newUserData['department_id'] = (Auth::user()->user_type == 2) ? $this->newUserData['department_id'] : Auth::user()->department_id;
@@ -137,23 +131,27 @@ class CreateUser extends Component
                 $this->newUserData['mobile'] = $this->newUserData['mobile'];
                 // $this->newUserData['password'] = Hash::make($this->newUserData['password']);
                 $this->newUserData['password'] = Hash::make('password');
+                $newUserDetails = User::create($this->newUserData);
                 // dd($this->newUserData);
-                if (User::create($this->newUserData)) {
+                if ($newUserDetails) {
+                    if (Auth::user()->user_type != 4) {
+                        // dd(Auth::user()->user_type,$userType->type);
+                        $newUserDetails->syncRoles([$userType->type]);
+                    }
                     $this->notification()->success(
                         $title = 'Success',
-                        $description =  trans('cruds.user-management.create_msg')
+                        $description = trans('cruds.user-management.create_msg')
                     );
                     $this->reset();
                     $this->emit('openEntryForm');
                     return;
                 }
             }
-        }
-        // $this->notification()->error(
-        //     $title = 'Error !!!',
-        //     $description = 'Something went wrong.'
-        // );
-        catch (\Throwable $th) {
+            $this->notification()->error(
+                $title = 'Error !!!',
+                $description = 'Something went wrong.'
+            );
+        } catch (\Throwable $th) {
             $this->emit('showError', $th->getMessage());
         }
     }
