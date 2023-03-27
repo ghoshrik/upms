@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id')->autoIncrement();
             $table->string('name')->default('0');
             $table->string('email')->unique()->safeEmail()->default('0');
-            $table->string('username');
+            $table->string('username')->unique();
             $table->integer('emp_id');
             $table->string('emp_name');
             $table->integer('designation_id')->default('0');
@@ -26,7 +26,8 @@ class CreateUsersTable extends Migration
             $table->integer('user_type');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->integer('mobile')->default('0');
+            $table->string('mobile')->unique()->default('0');
+            $table->tinyInteger('status')->default('0');
             $table->rememberToken();
             $table->timestamps();
         });

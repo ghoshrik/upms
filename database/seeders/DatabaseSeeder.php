@@ -18,19 +18,18 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            AdminSeeder::class,
-            EstimateStatusSeeder::class,
+            // AdminSeeder::class,
+            // EstimateStatusSeeder::class,
             MenuSeeder::class,
-            UnitSeeder::class,
-            DepartmentSeeder::class,
-            AccessTypeSeeder::class,
-            DepartmentSeeder::class,
-            DesignationSeeder::class,
-            sorCategoryTypeSeeder::class,
-            UserTypeSeeder::class,
-            OfficeSeeder::class,
-            SorCategoriesSeeder::class
+            // UnitSeeder::class,
+            // DepartmentSeeder::class,
+            // AccessTypeSeeder::class,
+            // DepartmentSeeder::class,
+            // DesignationSeeder::class,
+            // sorCategoryTypeSeeder::class,
+            // UserTypeSeeder::class,
+            // OfficeSeeder::class,
+            // SorCategoriesSeeder::class
         ]);
-
     }
 }
