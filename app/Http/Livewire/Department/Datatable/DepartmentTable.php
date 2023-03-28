@@ -51,7 +51,7 @@ final class DepartmentTable extends PowerGridComponent
     */
     public function datasource(): Builder
     {
-        return Department::query();
+        return Department::query()->take(1);
     }
 
     /*
