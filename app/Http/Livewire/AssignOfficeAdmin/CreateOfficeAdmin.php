@@ -22,14 +22,13 @@ class CreateOfficeAdmin extends Component
     public function filter()
     {
         if ($this->selectedLevel) {
-            $this->searchCondition = Arr::add($this->searchCondition, 'level', $this->selectedLevel);
+            $this->searchCondition = Arr::add($this->searchCondition, 'level_no', $this->selectedLevel);
         }
         if ($this->selectedDist) {
             $this->searchCondition = Arr::add($this->searchCondition, 'dist_code', $this->selectedDist);
         }
-        $this->getSelectedUsers();
         $this->getOffices();
-
+        $this->getSelectedUsers();
     }
     private function getOffices()
     {
@@ -40,7 +39,7 @@ class CreateOfficeAdmin extends Component
         })
             ->where($this->searchCondition)
             ->where('offices.department_id', Auth::user()->department_id)
-            ->select('offices.id as id', 'offices.office_name', 'offices.office_address', 'offices.level', 'offices.dist_code', 'users.id as user_id')
+            ->select('offices.id as id', 'offices.office_name', 'offices.office_address', 'offices.level_no', 'offices.dist_code', 'users.id as user_id')
             ->get();
         $this->resetExcept('hooUsers', 'filtredOffices', 'dropdownData', 'selectedLevel', 'selectedDist', 'selectedUser');
     }
