@@ -13,66 +13,54 @@ class CreateAafsProjects extends Component
 {
     use WithFileUploads;
     use Actions;
-    public $photo, $projects_number = [], $goId, $projectId, $goDate;
+    // public $photo,$goId, $projectId, $goDate;
+    public $InputStore = [], $projects_number = [];
 
 
 
     protected $rules = [
-        'photo' => 'required',
-        'goId' => 'required|numeric',
-        'projectId' => 'required|integer',
-        'goDate' => 'required|date_format:Y-m-d',
+        'InputStore.photo' => 'required',
+        'InputStore.goId' => 'required|numeric',
+        'InputStore.projectId' => 'required|integer',
+        'InputStore.goDate' => 'required',
     ];
     protected $messages = [
-        'photo.required' => 'This company name field is required',
-        'goId.required' => 'This go field is required',
-        'projectId.required' => 'This project Number field is required',
-        'goDate.required' => 'This GO date field is required',
-        'goDate.date_format' => 'This field must be valid only date format'
+        'InputStore.photo.required' => 'This field is required',
+        // 'InputStore.photo.mimes' => 'The uploaded file must be a PDF document.',
+        'InputStore.goId.required' => 'This go field is required',
+        'InputStore.projectId.required' => 'This project Number field is required',
+        'InputStore.projectId.integer' => 'Data format mismatch',
+        'InputStore.goDate.required' => 'This GO date field is required',
+        // 'InputStore.goDate.date_format' => 'This field must be valid only date format'
     ];
 
-
-
-
-
+    public function updated($param)
+    {
+        $this->validateOnly($param);
+    }
     public function mount()
     {
         $this->projects_number = SorMaster::where('is_verified', '=', 1)->get();
+        $this->InputStore = [
+            'photo' => '',
+            'goId' => '',
+            'projectId' => '',
+            'goDate' => ''
+        ];
     }
     public function store()
     {
 
-
-        // dd("fd");
-        // $this->validate([
-        //     'photo' => 'pdf',
-        // ]);
-        // dd($this->photo);
         $this->validate();
         try {
-            // $fileModel = Model::all();//select model Name
-            // $fileName = time().'_'.$this->photo->getClientOriginalName(); //
-            // $filePath = $this->photo('DPR')->storeAs('uploads', $fileName, 'public'); //client path
-            // $fileModel->photo = time().'_'.$this->photo->getClientOriginalName();
-            // $fileModel->file_path = '/storage/' . $filePath; //file path
-
-            // $file = $this->photo->store('documents','public');
-            // AAFS::create(['project_id'=>$this->projectId,'Go_id'=>$this->goId,'goDate'=>$this->goDate]);
-
-            // dd(Storage::put('/files/'.$this->photo));
-            // $path =  $this->photo->storeAs('public/avatars',$fileNameToStore);
-
-            // $this->photo->
-
             $insert = [
-                'project_id' => $this->projectId,
-                'Go_id' => $this->goId,
-                'go_date' => $this->goDate,
-                'support_data' => base64_encode(file_get_contents($this->photo->getRealPath())),
+                'project_id' => $this->InputStore['projectId'],
+                'Go_id' => $this->InputStore['goId'],
+                'go_date' => $this->InputStore['goDate'],
+                'support_data' => base64_encode(file_get_contents($this->InputStore['photo']->getRealPath())),
                 'status' => 0,
             ];
-            // dd($insert);
-            AAFS::csreate($insert);
+            AAFS::create($insert);
 
             $this->notification()->success(
                 $title = "Project Order Created Successfully"

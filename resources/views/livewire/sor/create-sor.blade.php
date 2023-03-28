@@ -87,13 +87,28 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             {{-- <x-media-library-attachment name="myUpload" /> --}}
-                                            <label>File Upload</label>
+                                            {{-- <label>File Upload</label>
                                             <input type="file" wire:key="file_upload.{{ $key }}"
                                                 wire:model="inputsData.{{ $key }}.file_upload"
                                                 class="form-control" multiple accept=".pdf" />
                                             @error('inputsData.{{ $key }}.file_upload')
                                                 {{ $message }}
-                                            @enderror
+                                            @enderror --}}
+                                            <div>
+                                                <div class="relative rounded-md shadow-sm">
+                                                    <x-input type="file"
+                                                        wire:model="inputsData.{{ $key }}.file_upload"
+                                                        label="Choose file" autocomplete="off" multiple accept=".pdf"
+                                                        class="placeholder-secondary-400 dark:bg-secondary-800 dark:text-secondary-400 dark:placeholder-secondary-500 border border-secondary-300 focus:ring-primary-500 focus:border-primary-500 dark:border-secondary-600 form-input block w-full sm:text-sm rounded-md transition ease-in-out duration-100 focus:outline-none shadow-sm" />
+                                                    {{-- @error('InputStore.photo')
+                                                        <span class="error" style="color: red;">{{ $message }}</span>
+                                                    @enderror --}}
+                                                </div>
+                                                <div wire:loading
+                                                    wire:target="inputsData.{{ $key }}.file_upload">
+                                                    Uploading...</div>
+
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

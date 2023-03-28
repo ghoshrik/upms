@@ -31,7 +31,7 @@ class CreateSor extends Component
         'inputsData.*.dept_category_id.required' => 'Invalid format',
         'inputsData.*.item_details.required' => 'This field is required',
         'inputsData.*.item_details.numeric' => 'Only allow number',
-        'inputsData.*.item_details.regex'=> 'The field invalid characters',
+        'inputsData.*.item_details.regex' => 'The field invalid characters',
         'inputsData.*.description.required' => 'This field is required',
         'inputsData.*.description.string' => 'This field must be allow alphabet',
         'inputsData.*.unit.required' => 'This field is required',
@@ -87,8 +87,8 @@ class CreateSor extends Component
     }
     public function store()
     {
-            // dd($this->inputsData);
-            $this->validate();
+        // dd($this->inputsData);
+        $this->validate();
         try {
 
             foreach ($this->inputsData as $key => $data) {

@@ -48,7 +48,7 @@ class CreateAccess extends Component
                     // ->where([['parent_id', Auth::user()->user_type], ['department_id', Auth::user()->department_id]])->get();
                     break;
             }
-        } catch (\Throwable$th) {
+        } catch (\Throwable $th) {
             session()->flash('serverError', $th->getMessage());
         }
     }
@@ -58,8 +58,10 @@ class CreateAccess extends Component
             ->where([['parent_id', Auth::user()->user_type], ['department_id', Auth::user()->department_id], ['designation_id', $this->newAccessData['designation_id']], ['office_id', Auth::user()->office_id]])->get();
     }
 
+
     public function store()
     {
+
         try {
             $this->newAccessData['department_id'] = Auth::user()->department_id;
             $this->newAccessData['office_id'] = Auth::user()->office_id;
@@ -89,18 +91,17 @@ class CreateAccess extends Component
                         );
                         // return;
                     }
-                }else{
+                } else {
                     $this->notification()->error(
                         $title = 'Error !!!',
                         $description = 'User already assign.'
                     );
                 }
-
             }
             $this->reset();
             $this->emit('openEntryForm');
             return;
-        } catch (\Throwable$th) {
+        } catch (\Throwable $th) {
             dd($th->getMessage());
         }
     }

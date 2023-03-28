@@ -34,23 +34,17 @@ class AuthenticatedSessionController extends Controller
     {
 
         $user = User::where('username', $request->username)->first();
-        if($user)
-        {
-            if (Hash::check($request->password, $user->password))
-            {
+        if ($user) {
+            if (Hash::check($request->password, $user->password)) {
                 $request->authenticate();
                 $request->session()->regenerate();
                 return redirect(RouteServiceProvider::HOME);
-            }
-            else
-            {
+            } else {
                 throw ValidationException::withMessages([
                     'username' => __('auth.failed'),
                 ]);
             }
-        }
-        else
-        {
+        } else {
             $request->session()->regenerate();
             throw ValidationException::withMessages([
                 'username' => __('auth.incorrect'),

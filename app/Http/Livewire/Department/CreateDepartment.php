@@ -9,10 +9,10 @@ use WireUi\Traits\Actions;
 class CreateDepartment extends Component
 {
     use Actions;
-    public $department_name,$department_code;
+    public $department_name, $department_code;
     protected $rules = [
         'department_name' => 'required|string|unique:departments',
-        'department_code' => 'required|string|unique:departments'
+        'department_code' => 'required|string|unique:departments',
     ];
     protected $messages = [
         'department_name.required' => 'This Field is Required',
@@ -29,13 +29,12 @@ class CreateDepartment extends Component
     public function store()
     {
         $validateData = $this->validate();
-        try{
+        try {
             $insert = [
                 'department_name' => $this->department_name,
-                'department_code' => $this->department_code
+                'department_code' => $this->department_code,
             ];
-            if($validateData)
-            {
+            if ($validateData) {
                 Department::create($insert);
                 $this->notification()->success(
                     $title = trans('cruds.department.create_msg')
@@ -43,9 +42,31 @@ class CreateDepartment extends Component
             }
             $this->reset();
             $this->emit('openEntryForm');
-        }catch (\Throwable $th) {
+        } catch (\Throwable$th) {
             $this->emit('showError', $th->getMessage());
         }
+        // $this->validate();
+        // try {
+        //     $words = explode(' ', $this->department_name);
+        //     $initials = '';
+        //     foreach ($words as $word) {
+        //         $initials .= strtoupper(substr($word, 0, 1));
+        //     }
+        //     // dd($initials);
+        //     $insert = [
+        //         'department_name' => $this->department_name, 'dept_code' => $initials
+        //     ];
+        //     // dd($insert);
+
+        //     Department::create($insert);
+        //     $this->notification()->success(
+        //         $title = trans('cruds.department.create_msg')
+        //     );
+        //     $this->reset();
+        //     $this->emit('openEntryForm');
+        // } catch (\Throwable $th) {
+        //     $this->emit('showError', $th->getMessage());
+        // }
     }
     public function render()
     {

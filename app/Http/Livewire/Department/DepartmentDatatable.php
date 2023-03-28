@@ -20,6 +20,9 @@ class DepartmentDatatable extends DataTableComponent
     {
         return [
             Column::make("Id", "id"),
+            Column::make("Department code", "dept_code")
+                ->searchable()
+                ->sortable(),
             Column::make("Department name", "department_name")
                 ->searchable()
                 ->sortable(),
@@ -30,7 +33,7 @@ class DepartmentDatatable extends DataTableComponent
     }
     public function edit($Id)
     {
-        return $this->emit('openForm',true,$Id);
+        return $this->emit('openForm', true, $Id);
     }
     public function builder(): builder
     {

@@ -12,9 +12,9 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 
-class User extends Authenticatable implements MustVerifyEmail, HasMedia
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable, HasRoles, InteractsWithMedia;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -33,7 +33,8 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         'department_id',
         'office_id',
         'user_type',
-        // 'mobile',
+        'mobile',
+        'status',
     ];
 
     /**
@@ -80,7 +81,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
     }
     public function getOfficeName()
     {
-        return $this->belongsTo(Office::class,'office_id','id');
+        return $this->belongsTo(Office::class, 'office_id', 'id');
     }
     public function getUserTypeName()
     {

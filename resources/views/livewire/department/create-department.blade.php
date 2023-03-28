@@ -33,3 +33,10 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        setTimeout(function() {
+            $('.alert').hide();
+        }, 300);
+    });
+</script>
