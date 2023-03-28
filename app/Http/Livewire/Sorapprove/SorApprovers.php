@@ -20,9 +20,27 @@ class SorApprovers extends Component
 
     public function mount()
     {
-        $this->SorLists = SOR::where('department_id', '=', Auth::user()->department_id)->where('IsActive', '=', '0')->get();
+        $this->SorLists = SOR::where('department_id', '=', Auth::user()->department_id)->where('is_active', '=', '0')->get();
         // $this->blukDisable = count($this->selectedSors)< 1;
 
+    }
+
+    public function approvedselectSOR($value)
+    {
+        // dd($value);
+        $this->dialog()->confirm([
+            'title' => 'Are you Sure?',
+            'icon' => 'success',
+            'accept' => [
+                'label' => 'Yes, Approved',
+                'method' => 'SelectedRecordApprove',
+                'params' => $value,
+            ],
+            'reject' => [
+                'label' => 'No, cancel',
+                // 'method' => 'cancel',
+            ],
+        ]);
     }
     public function approvedSOR()
     {
@@ -44,7 +62,7 @@ class SorApprovers extends Component
     }
     public function approvedListSor($value)
     {
-        SOR::whereIn('id', explode(",", $value))->update(['IsActive' => 1]);
+        SOR::whereIn('id', explode(",", $value))->update(['is_active' => 1]);
         $this->SorLists = [];
         $this->selectedSors = [];
         $this->notification()->success(
@@ -55,7 +73,7 @@ class SorApprovers extends Component
     {
         // dd($value);
         // $this->supported_data->storeAs('/', $name);
-        SOR::where('id', $value)->update(['IsActive' => 1]);
+        SOR::where('id', $value)->update(['is_active' => 1]);
         $this->SorLists = [];
         $this->notification()->success(
             $title = "Record Approved"
@@ -83,7 +101,7 @@ class SorApprovers extends Component
     }
     public function render()
     {
-        $this->SorLists = SOR::where('department_id', '=', Auth::user()->department_id)->where('IsActive', '=', '0')->get();
+        $this->SorLists = SOR::where('department_id', '=', Auth::user()->department_id)->where('is_active', '=', '0')->get();
         // $this->updateDataTableTracker = rand(1,1000);
         $this->titel = trans('cruds.sor-approver.title_singular');
         $assets = ['chart', 'animation'];

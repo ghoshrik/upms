@@ -15,7 +15,7 @@ class Sor extends Component
     public function mount()
     {
         $this->updateDataTableTracker = rand(1, 1000);
-        $this->CountSorListPending = ModelsSOR::where('department_id', Auth::user()->department_id)->count();
+        $this->CountSorListPending = ModelsSOR::where('department_id', Auth::user()->department_id)->where('is_active',0)->count();
     }
 
     // public function formOCControl($isEditFrom = false, $editId = null)

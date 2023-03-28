@@ -72,7 +72,7 @@
                                                 <td>{{ $sors->cost }}</td>
                                                 <td>
                                                     <span
-                                                        class="btn btn-{{ $sors->IsActive == '0' ? 'warning' : '' }} px-1 py-1 btn-sm">{{ $sors->IsActive == '0' ? 'pending' : '' }}</span>
+                                                        class="btn btn-{{ $sors->is_active == '0' ? 'warning' : '' }} px-1 py-1 btn-sm">{{ $sors->is_active == '0' ? 'pending' : '' }}</span>
                                                 </td>
                                                 <td>
                                                     <button wire:click="generatePdf({{ $sors->id }})">
@@ -82,7 +82,7 @@
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-soft-info btn-sm"
-                                                        wire:click="approvedSOR()">Approved</button>
+                                                        wire:click="approvedselectSOR({{ $sors->id }})">Approved</button>
                                                 </td>
                                             </tr>
                                         @empty

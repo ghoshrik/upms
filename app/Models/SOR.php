@@ -20,9 +20,9 @@ class SOR extends Model
         'version',
         'effect_from',
         'effect_to',
-        'IsActive',
+        'is_active',
         'created_by_level',
-        'IsApproved'
+        'is_approved'
     ];
 
     protected $dates = ['effect_from','effect_to'];

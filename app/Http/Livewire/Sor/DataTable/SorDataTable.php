@@ -42,8 +42,16 @@ class SorDataTable extends DataTableComponent
                 ->sortable(),
             Column::make("Effect to", "effect_to")
                 ->sortable(),
-            // Column::make("IsActive", "IsActive")
-            //     ->sortable(),
+            Column::make("Status", "is_active")
+
+                ->format(function ($value, $column, $row) {
+                    if ($column->is_active == 1) {
+                        return 'Approve';
+                    } else {
+                        return 'Pending';
+                    }
+                })
+                ->sortable(),
             Column::make("Actions", "id")->view('livewire.action-components.sor.sor-prepare-table-buttons'),
             // Column::make("Created at", "created_at")
             //     ->sortable(),
