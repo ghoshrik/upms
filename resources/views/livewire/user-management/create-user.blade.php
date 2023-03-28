@@ -9,7 +9,7 @@
                     <div class="row">
                         <div class="col-md-4 col-lg-4 col-sm-3">
                             <div class="form-group">
-                                <x-input wire:model="newUserData.emp_id" label="Employee ID(optional)"
+                                <x-input wire:model="newUserData.ehrms_id" label="eHrms ID(optional)"
                                     placeholder="Enter HRMS ID" />
                             </div>
                         </div>

@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('name')->default('0');
             $table->string('email')->unique()->safeEmail()->default('0');
             $table->string('username');
-            $table->integer('emp_id');
+            $table->bigInteger('ehrms_id')->nullable();
             $table->string('emp_name');
             $table->integer('designation_id')->default('0');
             $table->integer('department_id')->default('0');
@@ -26,7 +26,7 @@ class CreateUsersTable extends Migration
             $table->integer('user_type');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->integer('mobile')->default('0');
+            $table->string('mobile')->default('0');
             $table->rememberToken();
             $table->timestamps();
         });
