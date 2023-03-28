@@ -54,15 +54,16 @@ use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
 */
 
 require __DIR__ . '/auth.php';
-Route::get('set-role', function () {
-    // $users = User::where('user_type', 1)->get();
-    // foreach ($users as $user) {
-    //     $user->assignRole('Super Admin');
-    // }
-    $user = Auth::user()->id;
-    $user = User::find($user)->first();
-    $user->syncRoles("Department Admin");
-});
+// Route::get('set-role', function () {
+//     $users = User::where('user_type', 4)->get();
+//     foreach ($users as $user) {
+//         $user->syncRoles('Office Admin');
+//     }
+//     $user = Auth::user()->id;
+//     $user = User::find($user)->first();
+//     $user = User::where('id',$user)->first();
+//     $user->syncRoles("Department Admin");
+// });
 
 
 Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');

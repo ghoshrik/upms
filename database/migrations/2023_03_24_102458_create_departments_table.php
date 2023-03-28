@@ -17,7 +17,7 @@ class CreateDepartmentsTable extends Migration
             $table->bigIncrements('id')->autoIncrement();
             $table->string('dept_code')->unique();
             $table->string('department_name')->unique();
-            $table->enum('status', ['0', '1'])->default('0');
+            $table->string('department_code')->unique();
             $table->timestamps();
         });
     }

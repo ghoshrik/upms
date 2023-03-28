@@ -34,7 +34,7 @@ class UsersDatatable extends DataTableComponent
                 ->searchable(),
             Column::make("Email", "email")
                 ->sortable(),
-            Column::make("Emp id", "emp_id")
+            Column::make("eHrms id", "ehrms_id")
                 ->sortable(),
             Column::make("Emp name", "emp_name")
                 ->sortable(),

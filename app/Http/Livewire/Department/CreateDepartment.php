@@ -9,15 +9,18 @@ use WireUi\Traits\Actions;
 class CreateDepartment extends Component
 {
     use Actions;
-    public $department_name;
+    public $department_name, $department_code;
     protected $rules = [
-        'department_name' => 'required|unique:departments,department_name'
+        'department_name' => 'required|string|unique:departments',
+        'department_code' => 'required|string|unique:departments'
     ];
     protected $messages = [
         'department_name.required' => 'This Field is Required',
-        'department_name.unique' => 'The department name is already in use',
-        // 'department_name.max'=>'The department maximum '
-        // 'department_name.string' => 'Invalid Input'
+        'department_name.string' => 'Invalid Input',
+        'department_name.unique' => 'Department Name Already Exists',
+        'department_code.required' => 'This Field is Required',
+        'department_code.string' => 'Invalid Input',
+        'department_code.unique' => 'Department Code Already Exists',
     ];
     public function updated($param)
     {
@@ -25,23 +28,18 @@ class CreateDepartment extends Component
     }
     public function store()
     {
-        $this->validate();
+        $validateData = $this->validate();
         try {
-            $words = explode(' ', $this->department_name);
-            $initials = '';
-            foreach ($words as $word) {
-                $initials .= strtoupper(substr($word, 0, 1));
-            }
-            // dd($initials);
             $insert = [
-                'department_name' => $this->department_name, 'dept_code' => $initials
+                'department_name' => $this->department_name,
+                'department_code' => $this->department_code
             ];
-            // dd($insert);
-
-            Department::create($insert);
-            $this->notification()->success(
-                $title = trans('cruds.department.create_msg')
-            );
+            if ($validateData) {
+                Department::create($insert);
+                $this->notification()->success(
+                    $title = trans('cruds.department.create_msg')
+                );
+            }
             $this->reset();
             $this->emit('openEntryForm');
         } catch (\Throwable $th) {

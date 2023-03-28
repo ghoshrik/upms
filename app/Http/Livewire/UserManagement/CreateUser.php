@@ -81,7 +81,7 @@ class CreateUser extends Component
     {
         $this->newUserData = [
             'emp_name' => '',
-            'emp_id' => '',
+            'ehrms_id' => '',
             'department_id' => '',
             'designation_id' => '',
             'office_id' => '',

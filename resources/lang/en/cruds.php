@@ -22,6 +22,7 @@ return [
             'id' => 'ID',
             'id_helper' => '#',
             'department_name' => 'Department Name',
+            'department_code' => 'Department Code',
             'status' => 'Status',
             'actions' => 'Actions'
         ],

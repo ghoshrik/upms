@@ -62,10 +62,10 @@
                     <div class="col-md-12 col-lg-12 col-sm-3">
                         <div class="card">
                             <div class="card-body">
-                                <livewire:department.department-datatable>
+                                {{-- <livewire:department.department-datatable> --}}
+                                <livewire:department.datatable.department-table :wire:key="$updateDataTableTracker" />
                             </div>
                         </div>
-                    </div>
                 @endif
             </div>
         </div>
