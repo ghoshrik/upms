@@ -63,8 +63,15 @@
 
                                         @forelse ($SorLists as $sors)
                                             <tr>
-                                                <td> <input type="checkbox" value="{{ $sors->id }}"
-                                                        wire:model="selectedSors" /></td>
+                                                <td>
+                                                    @if ($sors->is_approved == 1)
+                                                    @else
+                                                        <input type="checkbox" value="{{ $sors->id }}"
+                                                            wire:model="selectedSors" />
+                                                    @endif
+                                                </td>
+
+
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $sors->Item_details }}</td>
                                                 <td>{{ $sors->getDepartmentName->department_name }}</td>
@@ -72,7 +79,7 @@
                                                 <td>{{ $sors->cost }}</td>
                                                 <td>
                                                     <span
-                                                        class="badge badge-pill bg-{{ $sors->IsActive == '0' ? 'warning' : 'success' }} px-1 py-1">{{ $sors->IsActive == '0' ? 'Pending' : 'Approved' }}</span>
+                                                        class="badge badge-pill bg-{{ $sors->is_approved == '0' ? 'warning' : 'success' }} px-1 py-1">{{ $sors->is_approved == '0' ? 'Pending' : 'Approved' }}</span>
                                                 </td>
                                                 <td>
                                                     <button wire:click="generatePdf({{ $sors->id }})">
@@ -81,8 +88,9 @@
 
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-soft-info btn-sm"
-                                                        wire:click="approvedselectSOR({{ $sors->id }})">Approved</button>
+                                                    <button type="button"
+                                                        class="btn btn-soft-{{ $sors->is_approved == 1 ? 'info' : 'warning' }} btn-sm {{ $sors->is_approved == 1 ? 'disabled' : '' }}"
+                                                        wire:click="approvedselectSOR({{ $sors->id }})">{{ $sors->is_approved == 0 ? 'pending' : 'Approved' }}</button>
                                                 </td>
                                             </tr>
                                         @empty

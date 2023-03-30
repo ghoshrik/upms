@@ -166,14 +166,13 @@ class CreateEstimateProject extends Component
                 ->where('dept_category_id', $this->estimateData['dept_category_id'])
                 ->where('version', $this->estimateData['version'])
                 ->where('Item_details', 'like', $this->selectedSORKey . '%')
-                ->where('is_active',1)
+                ->where('is_approved', 1)
                 ->get();
 
             // dd($this->fatchDropdownData['items_number']);
             if (count($this->fatchDropdownData['items_number']) > 0) {
                 $this->searchDtaCount = (count($this->fatchDropdownData['items_number']) > 0);
                 $this->searchStyle = 'block';
-
             } else {
                 $this->estimateData['description'] = '';
                 $this->estimateData['qty'] = '';
@@ -182,7 +181,6 @@ class CreateEstimateProject extends Component
                 $this->notification()->error(
                     $title = 'Not data found !!' . $this->selectedSORKey
                 );
-
             }
         } else {
             $this->estimateData['description'] = '';
@@ -221,7 +219,6 @@ class CreateEstimateProject extends Component
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
         }
-
     }
 
     public function calculateValue()

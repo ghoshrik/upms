@@ -66,37 +66,40 @@
                                 @foreach ($filtredOffices as $key => $office)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $office['office_name'] }}</td>
+                                        <td class="text-wrap" style="width: 30rem">{{ $office['office_name'] }}</td>
                                         <td>
-                                            <span
-                                                class="badge badge-pill {{ $office['office_code'] ? $office['office_code'] : 'bg-danger' }}">{{ $office['office_code'] ? $office['office_code'] : 'N/A' }}</span>
+                                            {{-- <span class="badge badge-pill {{ ($office['office_code']) ? 'bg-info' : 'bg-danger' }} text-dark">{{ $office['office_code'] ? $office['office_code'] : 'N/A' }}</span> --}}
+                                            {{ $office['office_code'] }}
                                         </td>
-                                        <td>address</td>
-                                        <td width="40%">
-                                            <div class="row">
-                                                <div class="col-8">
-                                                    <select class="form-select" aria-label="Select user"
-                                                        wire:key='select-{{ $key }}'
-                                                        {{ $office['user_id'] ? 'disabled wire:ignore' : '' }}
-                                                        wire:model='selectedUser.{{ $office['id'] }}'>
-                                                        <option wire:key='select_option-{{ $key }}'>Select User
+                                        <td class="text-wrap" style="width: 30rem">{{ $office['office_address'] }}</td>
+                                        <td>
+                                            @if ($office['user_id'])
+                                                @foreach ($hooUsers as $user)
+                                                    @if ($user['id'] == $office['user_id'])
+                                                        <input class="form-group" type="text"
+                                                            value="{{ $user['emp_name'] }}" readonly>
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                <select class="form-select" aria-label="Select user"
+                                                    wire:key='select-{{ $key }}'
+                                                    wire:model='selectedUser.{{ $office['id'] }}'>
+                                                    <option wire:key='select_option-{{ $key }}'>Select User
+                                                    </option>
+                                                    @foreach ($hooUsers as $user)
+                                                        <option wire:key='user-{{ $user['id'] }}'
+                                                            value="{{ $user['id'] }}">{{ $user['emp_name'] }}
                                                         </option>
-                                                        @foreach ($hooUsers as $user)
-                                                            <option wire:key='user-{{ $user['id'] }}'
-                                                                {{ $user['id'] == $office['user_id'] ? 'selected' : '' }}
-                                                                value="{{ $user['id'] }}">{{ $user['emp_name'] }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-4">
-                                                    <button type="button" wire:click="assign({{ $office['id'] }})"
-                                                        class="btn btn-soft-primary btn-sm"
-                                                        {{ $office['user_id'] ? 'disabled wire:ignore' : '' }}>
-                                                        Assign Admin
-                                                    </button>
-                                                </div>
-                                            </div>
+                                                    @endforeach
+                                                </select>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <button type="button" wire:click="assign({{ $office['id'] }})"
+                                                class="btn btn-soft-primary btn-sm"
+                                                {{ $office['user_id'] ? 'disabled ' : '' }}>
+                                                Assign Admin
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach

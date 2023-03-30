@@ -48,7 +48,7 @@ class SorDataTable extends DataTableComponent
                     return  $value ? $value->format('Y-m-d') : '';
                 })
                 ->sortable(),
-            Column::make("status", "IsActive")
+            Column::make("status", "is_approved")
                 ->format(function ($value, $column, $row) {
                     if ($value) {
                         return '<span class="badge badge-pill bg-success">Approved</span>';
@@ -59,10 +59,6 @@ class SorDataTable extends DataTableComponent
                 ->html()
                 ->sortable(),
             Column::make("Actions", "id")->view('livewire.action-components.sor.sor-prepare-table-buttons'),
-            // Column::make("Created at", "created_at")
-            //     ->sortable(),
-            // Column::make("Upvalued at", "updated_at")
-            //     ->sortable(),
         ];
     }
     public function sorapproved($value)

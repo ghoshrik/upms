@@ -20,7 +20,7 @@ class DepartmentDatatable extends DataTableComponent
     {
         return [
             Column::make("Id", "id"),
-            Column::make("Department code", "dept_code")
+            Column::make("Department code", "department_code")
                 ->searchable()
                 ->sortable(),
             Column::make("Department name", "department_name")

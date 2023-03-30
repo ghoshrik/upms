@@ -133,13 +133,14 @@ class CreateEstimate extends Component
         //     ->where('Item_details', 'like', '%' . $keyword . '%')->get();
 
         // dd("sdfsdf");
+
         if ($this->selectedSORKey) {
             $this->fatchDropdownData['items_number'] = SOR::select('Item_details', 'id')
                 ->where('department_id', $this->estimateData['dept_id'])
                 ->where('dept_category_id', $this->estimateData['dept_category_id'])
                 ->where('version', $this->estimateData['version'])
                 ->where('Item_details', 'like', $this->selectedSORKey . '%')
-                ->where('is_active',1)
+                ->where('is_approved', 1)
                 ->get();
 
 

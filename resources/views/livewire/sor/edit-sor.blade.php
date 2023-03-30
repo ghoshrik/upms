@@ -53,7 +53,10 @@
                                         <x-datetime-picker without-time wire:key="effect_to"
                                             label="{{ trans('cruds.sor.fields.effect_to') }}"
                                             placeholder="{{ trans('cruds.sor.fields.effect_to') }}"
-                                            wire:model.defer="effect_to" :min="now()->addDays(1)->hours(0)->minutes(0)" />
+                                            wire:model.defer="effect_to" :min="now()
+                                                ->addDays(1)
+                                                ->hours(0)
+                                                ->minutes(0)" />
                                     </div>
                                 </div>
                                 <div class="col-md-6">

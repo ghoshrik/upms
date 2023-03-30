@@ -49,7 +49,7 @@ class UsersDatatable extends DataTableComponent
                 ->sortable(),
             Column::make("Office Name", "getOfficeName.office_name")
                 ->sortable()
-                ->hideIf(!auth()->user()->user_type = 0),
+                ->hideIf(auth()->user()->user_type = 2),
             Column::make("User type", "getUserType.type")
                 ->sortable()
                 ->searchable(),
@@ -99,17 +99,7 @@ class UsersDatatable extends DataTableComponent
         ];
     }
 
-    // public function filters(): array
-    // {
-    //     return [
-    //         SelectFilter::make('status')
-    //             ->options([
-    //                 '' => 'All',
-    //                 0 => 'Inactive',
-    //                 1 => 'Active',
-    //             ]),
-    //     ];
-    // }
+
     public function toggleSelected($id, $status)
     {
         $model = User::find($id);

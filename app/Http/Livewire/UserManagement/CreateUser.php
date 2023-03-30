@@ -125,7 +125,7 @@ class CreateUser extends Component
     public function fetchLevelWiseOffice()
     {
         if ($this->selectLevel) {
-            $this->dropDownData['offices'] = Office::where([['department_id', Auth::user()->department_id], ['level', $this->selectLevel]])->get();
+            $this->dropDownData['offices'] = Office::where([['department_id', Auth::user()->department_id], ['level_no', $this->selectLevel]])->get();
         }
     }
     public function updated($param)

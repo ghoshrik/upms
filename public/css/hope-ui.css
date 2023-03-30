@@ -13452,9 +13452,9 @@ thead, tbody, tfoot, tr, td, th {
 .navs-rounded-all .sidebar-body {
   padding-right: 1rem;
 }
-.navs-rounded-all .navbar-nav .nav-item:not(.static-item) {
+/* .navs-rounded-all .navbar-nav .nav-item:not(.static-item) {
   padding-left: 1rem;
-}
+} */
 .navs-rounded-all .navbar-nav .nav-item .nav-link {
   padding: 0.625rem 1rem;
 }
@@ -19152,3 +19152,25 @@ body::-webkit-scrollbar-thumb{
 /* body::-webkit-scrollbar-thumb:hover{
     background-color:;
 } */
+
+.notification {
+    /* background-color: #555; */
+    /* color: white; */
+    text-decoration: none;
+    padding: 15px 26px;
+    position: relative;
+    display: inline-block;
+    border-radius: 2px;
+}
+.notification .badge {
+    position: absolute;
+    /* inset-block-start: -10px; */
+    top: -10px;
+    /* inset-block-end: -10px; */
+    right: -10px;
+    padding: 5px 10px;
+    border-radius: 50%;
+    background-color: rgb(255, 187, 0);
+    color: #000000;
+
+}
