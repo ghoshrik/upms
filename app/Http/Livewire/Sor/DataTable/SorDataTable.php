@@ -43,21 +43,6 @@ class SorDataTable extends DataTableComponent
                     return $value->format('Y-m-d');
                 })
                 ->sortable(),
-            Column::make("Effect to", "effect_to")
-                ->format(function ($value) {
-                    return  $value ? $value->format('Y-m-d') : '' ;
-                })
-                ->sortable(),
-            Column::make("status", "IsActive")
-                ->format(function ($value, $column, $row) {
-                    if ($value) {
-                        return '<span class="badge badge-pill bg-success">Approved</span>';
-                    } else {
-                        return '<span class="badge badge-pill bg-warning">Pending</span>';
-                    }
-                })
-                ->html()
-                ->sortable(),
 
             Column::make("Effect to", "effect_to")
                 ->format(function ($value) {
