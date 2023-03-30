@@ -53,11 +53,12 @@
                     <table id="basic-table" class="table table-striped mb-0" role="grid">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Office Name</th>
-                                <th>Office Code</th>
-                                <th>Office Address</th>
-                                <th>Actions</th>
+                                <th scope="col">#</th>
+                                <th scope="col">Office Name</th>
+                                <th scope="col">Office Code</th>
+                                <th scope="col">Office Address</th>
+                                <th scope="col">User</th>
+                                <th scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
