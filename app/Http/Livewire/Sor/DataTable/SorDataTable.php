@@ -39,15 +39,29 @@ class SorDataTable extends DataTableComponent
             Column::make("Version", "version")
                 ->sortable(),
             Column::make("Effect from", "effect_from")
+                ->format(function ($value) {
+                    return $value->format('Y-m-d');
+                })
                 ->sortable(),
             Column::make("Effect to", "effect_to")
+                ->format(function ($value) {
+                    return  $value ? $value->format('Y-m-d') : '' ;
+                })
                 ->sortable(),
-            // Column::make("IsActive", "IsActive")
-            //     ->sortable(),
+            Column::make("status", "IsActive")
+                ->format(function ($value, $column, $row) {
+                    if ($value) {
+                        return '<span class="badge badge-pill bg-success">Approved</span>';
+                    } else {
+                        return '<span class="badge badge-pill bg-warning">Pending</span>';
+                    }
+                })
+                ->html()
+                ->sortable(),
             Column::make("Actions", "id")->view('livewire.action-components.sor.sor-prepare-table-buttons'),
             // Column::make("Created at", "created_at")
             //     ->sortable(),
-            // Column::make("Updated at", "updated_at")
+            // Column::make("Upvalued at", "updated_at")
             //     ->sortable(),
         ];
     }
