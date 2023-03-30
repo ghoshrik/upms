@@ -14,20 +14,16 @@ class SorApprovers extends Component
 
     use Actions, WithFileUploads;
     public $updateDataTableTracker;
-    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert'];
+    protected $listeners = ['showError' => 'setErrorAlert'];
     public $openedFormType = false, $isFromOpen, $subTitel = "List", $titel, $errorMessage;
-    public $SorLists = [], $selectedSors = [], $supported_data;
+    public $SorLists = [], $selectedSors = [];
 
     public function mount()
     {
-        $this->SorLists = SOR::where('department_id', '=', Auth::user()->department_id)->where('is_active', '=', '0')->get();
-        // $this->blukDisable = count($this->selectedSors)< 1;
-
+        $this->SorLists = SOR::where('department_id', '=', Auth::user()->department_id)->get();
     }
-
     public function approvedselectSOR($value)
     {
-        // dd($value);
         $this->dialog()->confirm([
             'title' => 'Are you Sure?',
             'icon' => 'success',
@@ -62,7 +58,7 @@ class SorApprovers extends Component
     }
     public function approvedListSor($value)
     {
-        SOR::whereIn('id', explode(",", $value))->update(['is_active' => 1]);
+        SOR::whereIn('id', explode(",", $value))->update(['is_approved' => 1]);
         $this->SorLists = [];
         $this->selectedSors = [];
         $this->notification()->success(
@@ -71,9 +67,7 @@ class SorApprovers extends Component
     }
     public function SelectedRecordApprove($value)
     {
-        // dd($value);
-        // $this->supported_data->storeAs('/', $name);
-        SOR::where('id', $value)->update(['is_active' => 1]);
+        SOR::where('id', $value)->update(['is_approved' => 1]);
         $this->SorLists = [];
         $this->notification()->success(
             $title = "Record Approved"
@@ -90,7 +84,7 @@ class SorApprovers extends Component
         $decoded = base64_decode($sor->docfile);
         $file = $sor->Item_details . '.pdf';
         file_put_contents($file, $decoded);
-        header('Content-Description: File Transfer');
+        header('Content-Description: SOR ');
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename="' . basename($file) . '"');
         //     header('Expires: 0');
@@ -101,7 +95,7 @@ class SorApprovers extends Component
     }
     public function render()
     {
-        $this->SorLists = SOR::where('department_id', '=', Auth::user()->department_id)->where('is_active', '=', '0')->get();
+        $this->SorLists = SOR::where('department_id', '=', Auth::user()->department_id)->get();
         // $this->updateDataTableTracker = rand(1,1000);
         $this->titel = trans('cruds.sor-approver.title_singular');
         $assets = ['chart', 'animation'];

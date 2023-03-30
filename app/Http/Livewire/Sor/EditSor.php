@@ -11,7 +11,7 @@ class EditSor extends Component
 {
     use Actions;
     protected $listeners = ['editSorRow' => 'editSor'];
-    public $sor_id, $sorEditData = [], $editRow, $effect_to, $editedData,$updateDataTableTracker;
+    public $sor_id, $sorEditData = [], $editRow, $effect_to, $editedData, $updateDataTableTracker;
     public function mount()
     {
         $this->editRow = [
@@ -40,9 +40,10 @@ class EditSor extends Component
     }
     public function store()
     {
+        // dd($this->effect_to, $this->editedData);
         try {
             $this->editedData = [
-                'item_details' => $this->sorEditData['Item_details'],
+                'Item_details' => $this->sorEditData['Item_details'],
                 'department_id' => $this->sorEditData['department_id'],
                 'dept_category_id' => $this->sorEditData['dept_category_id'],
                 'description' => $this->sorEditData['description'],
@@ -51,7 +52,7 @@ class EditSor extends Component
                 'version' => $this->sorEditData['version'],
                 'effect_from' => $this->effect_to,
             ];
-            // dd($this->editedData);
+            // dd($this->sor_id, $this->editedData);
             if ($this->sor_id) {
                 if (SOR::create($this->editedData)) {
                     SOR::where('id', $this->sor_id)->update(['effect_to' => date('Y-m-d', strtotime('-1 day', strtotime($this->effect_to)))]);
@@ -62,7 +63,7 @@ class EditSor extends Component
             }
             $this->reset();
             $this->emit('openEntryForm');
-            $this->updateDataTableTracker = rand(1,1000);
+            $this->updateDataTableTracker = rand(1, 1000);
         } catch (\Throwable $th) {
             dd($th->getMessage());
             // $this->emit('showError', $th->getMessage());
