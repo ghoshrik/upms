@@ -3,25 +3,27 @@
 namespace App\Http\Livewire\UserManagement\Datatable\Powergrid;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
+use WireUi\Traits\Actions;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
-use PowerComponents\LivewirePowerGrid\Column;
 
-use PowerComponents\LivewirePowerGrid\Exportable;
+use PowerComponents\LivewirePowerGrid\Column;
 
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridComponent;
-use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
+use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Rules\Rule;
-use PowerComponents\LivewirePowerGrid\Rules\RuleActions;use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
+use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
+use PowerComponents\LivewirePowerGrid\Rules\RuleActions;
+use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 
 final class UsersDataTable extends PowerGridComponent
 {
-    use ActionButton;
+    use ActionButton, Actions;
 
     /*
     |--------------------------------------------------------------------------
@@ -36,8 +38,13 @@ final class UsersDataTable extends PowerGridComponent
 
         return [
             Exportable::make('export')
-                ->striped()
-                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
+                ->csvSeparator('|')
+                ->csvDelimiter("'")
+
+                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV)
+                ->striped('A6ACCD'),
+
+            // ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             Header::make()->showSearchInput(),
             Footer::make()
                 ->showPerPage()
@@ -76,6 +83,7 @@ final class UsersDataTable extends PowerGridComponent
                         'users.office_id',
                         'user_types.id as userType_id',
                         'user_types.parent_id',
+                        'users.status',
                     )
                     ->join('user_types', 'users.user_type', '=', 'user_types.id')
                     ->where('user_types.parent_id', '=', Auth::user()->user_type)
@@ -96,6 +104,7 @@ final class UsersDataTable extends PowerGridComponent
                         'users.office_id',
                         'user_types.id as userType_id',
                         'user_types.parent_id',
+                        'users.status',
                     )
                     ->join('user_types', 'users.user_type', '=', 'user_types.id')
                     ->where('user_types.parent_id', '=', Auth::user()->user_type)
@@ -116,6 +125,7 @@ final class UsersDataTable extends PowerGridComponent
                     'users.office_id',
                     'user_types.id as userType_id',
                     'user_types.parent_id',
+                    'users.status',
                 )
                 ->join('user_types', 'users.user_type', '=', 'user_types.id')
                 ->where('user_types.parent_id', '=', Auth::user()->user_type);
@@ -158,7 +168,7 @@ final class UsersDataTable extends PowerGridComponent
             ->addColumn('id')
             ->addColumn('name')
 
-        /** Example of custom column using a closure **/
+            /** Example of custom column using a closure **/
             ->addColumn('name_lower', function (User $model) {
                 return strtolower(e($model->name));
             })
@@ -171,7 +181,16 @@ final class UsersDataTable extends PowerGridComponent
             ->addColumn('getDesignationName.designation_name')
             ->addColumn('getDepartmentName.department_name')
             ->addColumn('getOfficeName.office_name')
-            ->addColumn('getUserType.type');
+
+            ->addColumn('getUserType.type')
+            ->addColumn('status', function (User $user) {
+
+                if ($user->status == 0) {
+                    return '<label wire:click="toggleSelectedActive(' . $user->id . ')" class="badge badge-pill bg-danger cursor-pointer">Inactive</label>';
+                } else {
+                    return '<label wire:click="toggleSelectedInactive(' . $user->id . ')" class="badge badge-pill bg-success cursor-pointer">Active</label>';
+                }
+            });
         // ->addColumn('created_at_formatted', fn (User $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'))
         // ->addColumn('updated_at_formatted', fn (User $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
     }
@@ -190,6 +209,69 @@ final class UsersDataTable extends PowerGridComponent
      *
      * @return array<int, Column>
      */
+
+    // public function dialogBox($value, $icon, $method, $currStatus)
+    // {
+    //     $this->dialog()->confirm([
+    //         'title' => 'Are you Sure?',
+    //         'icon' => 'success',
+    //         'accept' => [
+    //             'label' => 'Yes, Approved',
+    //             'method' => 'approvedUser',
+    //             'params' => $value,
+    //         ],
+    //         'reject' => [
+    //             'label' => 'No, cancel',
+    //             // 'method' => 'cancel',
+    //         ],
+    //     ]);
+    // }
+
+    public function toggleSelectedInactive($value)
+    {
+        $this->dialog()->confirm([
+            'title' => 'Are you Sure want to Inactive user ?',
+            'icon' => 'warning',
+            'accept' => [
+                'label' => 'Yes,Inactive',
+                'method' => 'InactiveUser',
+                'params' => $value,
+            ],
+            'reject' => [
+                'label' => 'No, cancel',
+                // 'method' => 'cancel',
+            ],
+        ]);
+    }
+
+    public function InactiveUser($value)
+    {
+        User::where('id', $value)->update(['status' => 0]);
+    }
+
+    public function toggleSelectedActive($value)
+    {
+        $this->dialog()->confirm([
+            'title' => 'Are you Sure want to Active user ?',
+            'icon' => 'success',
+            'accept' => [
+                'label' => 'Yes,Active',
+                'method' => 'activeUser',
+                'params' => $value,
+            ],
+            'reject' => [
+                'label' => 'No, cancel',
+                // 'method' => 'cancel',
+            ],
+        ]);
+    }
+
+    public function activeUser($value)
+    {
+        User::where('id', $value)->update(['status' => 1]);
+    }
+
+
     public function columns(): array
     {
         return [
@@ -237,23 +319,17 @@ final class UsersDataTable extends PowerGridComponent
             Column::make('OFFICE NAME', 'getOfficeName.office_name')
                 ->sortable()
                 ->searchable(),
+            // ->when(fn ($dish) => $dish->in_stock == false)
+            // ->hide(),
 
             Column::make('USER TYPE', 'getUserType.type')
                 ->sortable()
                 ->searchable(),
 
-            // Column::make('CREATED AT', 'created_at_formatted', 'created_at')
-            //     ->searchable()
-            //     ->sortable()
-            //     ->makeInputDatePicker(),
+            Column::make('STATUS', 'status')
+                ->sortable(),
 
-            // Column::make('UPDATED AT', 'updated_at_formatted', 'updated_at')
-            //     ->searchable()
-            //     ->sortable()
-            //     ->makeInputDatePicker(),
-
-        ]
-        ;
+        ];
     }
 
     /*
@@ -301,15 +377,20 @@ final class UsersDataTable extends PowerGridComponent
      */
 
     /*
-public function actionRules(): array
-{
-return [
+    public function actionRules(): array
+    {
+        return [
 
-//Hide button edit for ID 1
-Rule::button('edit')
-->when(fn($user) => $user->id === 1)
-->hide(),
-];
-}
- */
+            //Hide button edit for ID 1
+            // Rule::button('edit')
+            // ->when(fn($user) => $user->id === 1)
+            // ->hide(),
+
+            Rule::rows()
+                ->when(fn ($dish) => $dish->in_stock == false)
+                ->hide()
+
+        ];
+    }
+    */
 }

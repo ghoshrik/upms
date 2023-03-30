@@ -66,7 +66,8 @@
                                         {{-- TODO:: CHANGE --}}
                                         {{-- <h2>Designation wise user data list sorting pending</h2> --}}
                                         {{-- <livewire:user-management.datatable.users-datatable :wire:key='$updateDataTableTracker' /> --}}
-                                        <livewire:user-management.datatable.powergrid.users-data-table :wire:key='$updateDataTableTracker' />
+                                        <livewire:user-management.datatable.powergrid.users-data-table
+                                            :wire:key='$updateDataTableTracker' />
                                     </div>
                                 </div>
                             </div>
