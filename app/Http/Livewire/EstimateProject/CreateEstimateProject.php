@@ -165,7 +165,9 @@ class CreateEstimateProject extends Component
                 ->where('department_id', $this->estimateData['dept_id'])
                 ->where('dept_category_id', $this->estimateData['dept_category_id'])
                 ->where('version', $this->estimateData['version'])
-                ->where('Item_details', 'like', $this->selectedSORKey . '%')->get();
+                ->where('Item_details', 'like', $this->selectedSORKey . '%')
+                ->where('is_active',1)
+                ->get();
 
             // dd($this->fatchDropdownData['items_number']);
             if (count($this->fatchDropdownData['items_number']) > 0) {

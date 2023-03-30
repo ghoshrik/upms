@@ -65,7 +65,6 @@
                                 {{-- <livewire:department.department-datatable> --}}
                                 <livewire:department.datatable.department-table :wire:key="$updateDataTableTracker" />
                             </div>
-                        </div>
                 @endif
             </div>
         </div>

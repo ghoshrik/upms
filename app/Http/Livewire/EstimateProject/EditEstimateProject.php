@@ -162,7 +162,9 @@ class EditEstimateProject extends Component
         $this->fatchDropdownData['items_number'] = SOR::where('department_id', $this->estimateData['dept_id'])
             ->where('dept_category_id', $this->estimateData['dept_category_id'])
             ->where('version', $this->estimateData['version'])
-            ->where('Item_details', 'like', '%' . $keyword . '%')->get();
+            ->where('Item_details', 'like', '%' . $keyword . '%')
+            ->where('is_active',1)
+            ->get();
     }
 
     public function getItemDetails()

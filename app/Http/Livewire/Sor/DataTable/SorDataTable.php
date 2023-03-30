@@ -45,7 +45,7 @@ class SorDataTable extends DataTableComponent
                 ->sortable(),
             Column::make("Effect to", "effect_to")
                 ->format(function ($value) {
-                    return  $value ? $value->format('Y-m-d') : '' ;
+                    return  $value ? $value->format('Y-m-d') : '';
                 })
                 ->sortable(),
             Column::make("status", "IsActive")
