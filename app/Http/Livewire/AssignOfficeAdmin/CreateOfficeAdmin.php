@@ -39,7 +39,7 @@ class CreateOfficeAdmin extends Component
         })
             ->where($this->searchCondition)
             ->where('offices.department_id', Auth::user()->department_id)
-            ->select('offices.id as id', 'offices.office_name', 'offices.office_address', 'offices.level_no', 'offices.dist_code', 'users.id as user_id')
+            ->select('offices.id as id', 'offices.office_name', 'offices.office_address','offices.office_code', 'offices.level_no', 'offices.dist_code', 'users.id as user_id')
             ->get();
         $this->resetExcept('hooUsers', 'filtredOffices', 'dropdownData', 'selectedLevel', 'selectedDist', 'selectedUser');
     }

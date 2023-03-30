@@ -12,12 +12,11 @@ class Create extends Component
     use Actions;
     public $dept_category_name;
     protected $rules = [
-        'dept_category_name' => 'required|string|max:255|regex:/(^([a-zA-z]+)(\d+)?$)/u'
+        'dept_category_name' => 'required|string|max:255'
     ];
     protected $messages = [
         'dept_category_name.required'=>'This field is required',
         'dept_category_name.string'=>'This field is must be string',
-        'dept_category_name.regex'=>'This field must be not allow '
     ];
     public function updated($param)
     {
