@@ -53,6 +53,7 @@
             <div class="spinner-border text-primary loader-position" role="status"></div>
         </div>
         {{-- x-data="{ formOpen: @entangle('formOpen'), editFormOpen: @entangle('editFormOpen') }" --}}
+
         <div wire:loading.delay.long.class="loading">
             <div x-show="formOpen" x-transition.duration.900ms>
                 @if ($isFromOpen && $openedFormType == 'create')
@@ -63,12 +64,16 @@
                     <div class="col-md-12 col-lg-12 col-sm-3">
                         <div class="card">
                             <div class="card-header">
-                                <button type="button" class="btn btn-sm btn-soft-warning px-2 py-2"
-                                    :wire:key="$updateDataTableTracker" >Pending Approval
-                                    ({{ $CountSorListPending }})</button>
+                                <button type="button" class="btn btn-sm btn-soft-warning px-2 py-2 notification"
+                                    :wire:key="$updateDataTableTracker">
+                                    <span>Pending Approval</span>
+                                    <span class="badge">{{ $CountSorListPending }}</span>
+                                </button>
+
                             </div>
                             <div class="card-body">
                                 <livewire:sor.data-table.sor-data-table :wire:key="$updateDataTableTracker" />
+                                {{-- <livewire:data-table.sordatatable :wire:key="$updateDataTableTracker" /> --}}
                             </div>
                         </div>
                     </div>

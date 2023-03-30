@@ -9,6 +9,19 @@
                     <div class="row">
                         <div class="col col-md-5 col-lg-5 col-sm-12 col-xs-12 mb-2">
                             <div class="form-group">
+                                <x-select wire:key='dist' label="Select District" placeholder="Select District"
+                                    wire:model.defer="selectedDist">
+                                    @isset($dropdownData['dist'])
+                                        @foreach ($dropdownData['dist'] as $dist)
+                                            <x-select.option label="{{ $dist['district_name'] }}"
+                                                value="{{ $dist['district_code'] }}" :key="'district-' . $dist['district_code']" />
+                                        @endforeach
+                                    @endisset
+                                </x-select>
+                            </div>
+                        </div>
+                        <div class="col col-md-5 col-lg-5 col-sm-12 col-xs-12 mb-2">
+                            <div class="form-group">
                                 <x-select wire:key='level' label="Select Office Level" placeholder="Select Office Level"
                                     wire:model.defer="selectedLevel">
                                     <x-select.option :key="1" label="L1 Level" value="1" />
@@ -20,19 +33,7 @@
                                 </x-select>
                             </div>
                         </div>
-                        <div class="col col-md-5 col-lg-5 col-sm-12 col-xs-12 mb-2">
-                            <div class="form-group">
-                                <x-select wire:key='dist' label="Select District" placeholder="Select District"
-                                    wire:model.defer="selectedDist">
-                                    @isset($dropdownData['dist'])
-                                        @foreach ($dropdownData['dist'] as $dist)
-                                            <x-select.option label="{{ $dist['district_name'] }}"
-                                                value="{{ $dist['district_code'] }}" :key="'district-'.$dist['district_code']" />
-                                        @endforeach
-                                    @endisset
-                                </x-select>
-                            </div>
-                        </div>
+
                         <div class="col col-md-2 col-lg-2 col-sm-12 col-xs-12 mb-2">
                             <div class="form-group pt-4">
                                 <button type="button" wire:click='filter' class="btn btn-soft-primary ">
@@ -52,37 +53,54 @@
                     <table id="basic-table" class="table table-striped mb-0" role="grid">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Office Name</th>
-                                <th>Office Address</th>
-                                <th>Actions</th>
+                                <th scope="col">#</th>
+                                <th scope="col">Office Name</th>
+                                <th scope="col">Office Code</th>
+                                <th scope="col">Office Address</th>
+                                <th scope="col">User</th>
+                                <th scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @isset($filtredOffices)
-                            {{-- @dd($filtredOffices) --}}
+                                {{-- @dd($filtredOffices) --}}
                                 @foreach ($filtredOffices as $key => $office)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $office['office_name'] }}</td>
-                                        <td>address</td>
-                                        <td width="40%">
-                                            <div class="row" >
-                                                <div class="col-8">
-                                                    <select class="form-select" aria-label="Select user" wire:key='select-{{$key}}' {{ ($office['user_id'])?'disabled wire:ignore'  :'' }} wire:model='selectedUser.{{$office['id']}}'>
-                                                        <option wire:key='select_option-{{$key}}'>Select User</option>
-                                                        @foreach ($hooUsers as $user)
-                                                            <option wire:key='user-{{ $user['id'] }}' {{ ($user['id']==$office['user_id'])?'selected':'' }} value="{{ $user['id'] }}">{{ $user['emp_name'] }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-4">
-                                                    <button type="button" wire:click="assign({{$office['id']}})" class="btn btn-soft-primary btn-sm" {{ ($office['user_id'])?'disabled wire:ignore'  :'' }}>
-                                                        Assign Admin
-                                                    </button>
-                                                </div>
-                                            </div>
+                                        <td class="text-wrap" style="width: 30rem">{{ $office['office_name'] }}</td>
+                                        <td>
+                                            {{-- <span class="badge badge-pill {{ ($office['office_code']) ? 'bg-info' : 'bg-danger' }} text-dark">{{ $office['office_code'] ? $office['office_code'] : 'N/A' }}</span> --}}
+                                            {{ $office['office_code'] }}
+                                        </td>
+                                        <td class="text-wrap" style="width: 30rem">{{ $office['office_address'] }}</td>
+                                        <td>
+                                            @if ($office['user_id'])
+                                                @foreach ($hooUsers as $user)
+                                                    @if ($user['id'] == $office['user_id'])
+                                                        <input class="form-group" type="text"
+                                                            value="{{ $user['emp_name'] }}" readonly>
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                <select class="form-select" aria-label="Select user"
+                                                    wire:key='select-{{ $key }}'
+                                                    wire:model='selectedUser.{{ $office['id'] }}'>
+                                                    <option wire:key='select_option-{{ $key }}'>Select User
+                                                    </option>
+                                                    @foreach ($hooUsers as $user)
+                                                        <option wire:key='user-{{ $user['id'] }}'
+                                                            value="{{ $user['id'] }}">{{ $user['emp_name'] }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <button type="button" wire:click="assign({{ $office['id'] }})"
+                                                class="btn btn-soft-primary btn-sm"
+                                                {{ $office['user_id'] ? 'disabled ' : '' }}>
+                                                Assign Admin
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach

@@ -72,11 +72,11 @@
                                                 <td>{{ $sors->cost }}</td>
                                                 <td>
                                                     <span
-                                                        class="btn btn-{{ $sors->is_active == '0' ? 'warning' : '' }} px-1 py-1 btn-sm">{{ $sors->is_active == '0' ? 'pending' : '' }}</span>
+                                                        class="badge badge-pill bg-{{ $sors->IsActive == '0' ? 'warning' : 'success' }} px-1 py-1">{{ $sors->IsActive == '0' ? 'Pending' : 'Approved' }}</span>
                                                 </td>
                                                 <td>
                                                     <button wire:click="generatePdf({{ $sors->id }})">
-                                                        <x-icon name="document" class="w-5 h-5" />
+                                                        <x-icon name="download" class="w-5 h-5" />download
                                                     </button>
 
                                                 </td>
