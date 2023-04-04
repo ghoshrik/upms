@@ -25,7 +25,43 @@ class OfficeTable extends DataTableComponent
             Column::make("Office name", "office_name")
                 ->sortable(),
             Column::make("Office Level", "level_no")
-                 ->sortable(),
+                ->format(function ($value, $column, $row) {
+                    switch ($value) {
+                        case 1:
+                            return '<span class="badge bg-primary text-dark">Level 1 Office </span>';
+                            break;
+                        case 2:
+                            return '<span class="badge bg-soft- secondary">Level 2 Office </span>';
+                            break;
+                        case 3:
+                            return '<span class="badge bg-soft-success">Level 3 Office </span>';
+                            break;
+                        case 4:
+                            return '<span class="badge bg-soft-info">Level 4 Office </span>';
+                            break;
+                        case 5:
+                            return '<span class="badge bg-soft-warning">Level 5 Office </span>';
+                            break;
+                        default:
+                            return '<span class="badge bg-soft-dark">Level 6 Office</span>';
+                    }
+
+                    // if ($value == 1) {
+                    //     return '<span class="badge bg-primary text-dark">Level 1 Office </span>';
+                    // } elseif ($value == 2) {
+                    //     return '<span class="badge bg-soft- secondary">Level 2 Office </span>';
+                    // } elseif ($value == 3) {
+                    //     return '<span class="badge bg-soft-success">Level 3 Office </span>';
+                    // } elseif ($value == 4) {
+                    //     return '<span class="badge bg-soft-info">Level 4 Office </span>';
+                    // } elseif ($value == 5) {
+                    //     return '<span class="badge bg-soft-warning">Level 5 Office </span>';
+                    // } else {
+                    //     return '<span class="badge bg-soft-dark">Level 6 Office</span>';
+                    // }
+                })
+                ->html()
+                ->sortable(),
             Column::make("Department Name", "getDepartmentName.department_name")
                 ->sortable(),
             Column::make("Dist Name", "getDistrictName.district_name")
@@ -51,6 +87,6 @@ class OfficeTable extends DataTableComponent
     public function builder(): Builder
     {
         return Office::query()
-                    ->where('offices.department_id', Auth::user()->department_id);
+            ->where('offices.department_id', Auth::user()->department_id);
     }
 }
