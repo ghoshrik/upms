@@ -19,7 +19,7 @@ class EditMenu extends Component
 
     public function mount($id)
     {
-        dd(User::role('Estimate Preparer (EP)')->get());
+        // dd(User::role('Estimate Preparer (EP)')->get());
         $this->selectedMenu = Menu::find($id);
         $this->newMenuData = [
             'title' => $this->selectedMenu->title,
@@ -85,7 +85,7 @@ class EditMenu extends Component
         $selectedIndex = $this->newMenuData['permissions_roles'];
         $selectedPermissionRole = $permissionsRoles[$selectedIndex];
         $this->newMenuData['permissions_roles'] = (is_array($selectedPermissionRole)) ? $selectedPermissionRole['name'] : $selectedPermissionRole;
-        
+
         $this->selectedMenu->title = $this->newMenuData['title'];
         $this->selectedMenu->parent_id = $this->newMenuData['parent_id'];
         $this->selectedMenu->icon = $this->newMenuData['icon'];
