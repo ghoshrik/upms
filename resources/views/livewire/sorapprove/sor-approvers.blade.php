@@ -90,7 +90,7 @@
                                                 <td>
                                                     @if ($sors->is_approved == 0)
                                                         <button type="button"
-                                                        class="btn btn-soft-{{ $sors->is_approved == 1 ? 'info' : 'warning' }} btn-sm {{ $sors->is_approved == 1 ? 'disabled' : '' }}"
+                                                        class="btn btn-soft-{{ $sors->is_approved == 0 ? 'info' : '' }} btn-sm {{ $sors->is_approved == 1 ? 'disabled' : '' }}"
                                                         wire:click="approvedselectSOR({{ $sors->id }})">{{ $sors->is_approved == 0 ? 'Approve' : '' }}</button>
                                                     @endif
                                                 </td>

@@ -13,7 +13,7 @@ class AssignDepartmentAdminList extends Component
     public $hodUsers, $departments, $selectedUser;
     public function mount()
     {
-        $this->hodUsers = User::where('user_type', 3)->get();
+        $this->hodUsers = User::where('user_type', 3)->where('is_active',1)->get();
 
         $this->selectedUser = collect($this->hodUsers)->filter(function ($user) {
             return $user['department_id'] !== null;

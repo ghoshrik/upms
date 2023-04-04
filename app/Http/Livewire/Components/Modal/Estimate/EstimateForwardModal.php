@@ -69,6 +69,7 @@ class EstimateForwardModal extends Component
         $this->assigenUsersList = User::join('access_masters', 'users.id', '=', 'access_masters.user_id')
             ->join('access_types', 'access_masters.access_type_id', '=', 'access_types.id')
             ->where('access_types.id', $userAccess_id->access_parent_id)
+            ->where('users.is_active',1)
             ->get();
         // Log::info(json_encode($this->assigenUsersList));
         return view('livewire.components.modal.estimate.estimate-forward-modal');
