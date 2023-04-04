@@ -6,7 +6,9 @@ use App\Models\SOR;
 use App\Models\SorMaster;
 use App\Models\UnitType;
 use App\Models\User;
+use App\Models\UsersHasRoles;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 function removeSession($session)
 {
@@ -405,3 +407,20 @@ function delete_entries(&$array, $ids_to_delete) {
     }
 }
 //pending for design reponsive problem
+
+function getAllAssigenRoles()
+{
+    $roles =  UsersHasRoles::join('roles', 'roles.id', '=', 'users_has_roles.role_id')
+            ->where('users_has_roles.user_id', Auth::user()->id)
+            ->select('users_has_roles.role_id as id', 'roles.name as role_name')
+            ->get();
+
+
+    $generatedHtml = '';
+    foreach ($roles as $key => $role) {
+        if (Auth::user()->getRoleNames()[0] != $role->role_name) {
+            $generatedHtml .= '<li><a class="dropdown-item" href="' . route('change-role', $role->id) . '">' . ucfirst($role->role_name) . '</a></li>';
+        }
+    }
+    return $generatedHtml;
+}

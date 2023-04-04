@@ -25,6 +25,7 @@ use App\Http\Livewire\Permission\Permissions;
 use App\Http\Livewire\Designation\Designation;
 use App\Http\Livewire\Permission\Permission;
 // use App\Http\Livewire\Permission\Permissions;
+use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\Roles\Roles;
 use App\Http\Livewire\Sorapprove\SorApprovers;
 use App\Http\Livewire\Estimate\EstimatePrepare;
@@ -107,12 +108,17 @@ Route::group(['middleware' => ['prevent-back-history']], function () {
         Route::get('permissions',Permission::class)->name('permissions');
 
         // Route::get('vendors',VendorList::class)->name('vendors');
-        Route::get('aafs-project', AafsProjects::class)->name('aafs-project');
-        Route::get('aoc', Aocs::class)->name('aoc');
-        Route::get('tenders', Tenders::class)->name('tenders');
-        Route::get('assign-office-admin', AssignOfficeAdmin::class)->name('assign-office-admin');
-        Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
-        Route::get('sor-approver', SorApprovers::class)->name('sor-approver');
+        Route::get('aafs-project',AafsProjects::class)->name('aafs-project');
+        Route::get('aoc',Aocs::class)->name('aoc');
+        Route::get('tenders',Tenders::class)->name('tenders');
+        Route::get('assign-office-admin',AssignOfficeAdmin::class)->name('assign-office-admin');
+        Route::get('assign-dept-admin',AssignDepartmentAdmin::class)->name('assign-dept-admin');
+        Route::get('sor-approver',SorApprovers::class)->name('sor-approver');
+        Route::get('change-role/{id}', function ($id) {
+            $selectedRole =  Role::find($id);
+            Auth::user()->syncRoles($selectedRole->name);
+            return redirect('/dashboard');
+        })->name('change-role');
     });
 });
 

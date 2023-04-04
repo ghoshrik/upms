@@ -61,7 +61,7 @@
                                     wire:model.defer="newMenuData.permissions_roles">
                                     @isset($dropDownData['permissionsRoles'])
                                     @foreach ($dropDownData['permissionsRoles'] as $key => $permissionRole)
-                                    <x-select.option label="{{ ($newMenuData['permission_or_role']=='role')?$permissionRole['name']:$key }}" value="{{ ($newMenuData['permission_or_role']=='role')?$permissionRole['id']:$key}}" />
+                                    <x-select.option label="{{ ($newMenuData['permission_or_role']=='role')?$permissionRole['name']:$key }}" value="{{$key}}" />
                                     @endforeach
                                     @endisset
                                 </x-select>
