@@ -29,6 +29,7 @@ use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\Milestone\Milestones;
 use App\Http\Livewire\Permission\Permission;
 use App\Http\Livewire\Permission\Permissions;
+use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\Roles\Roles;
 use App\Http\Livewire\Sorapprove\SorApprovers;
 use App\Http\Livewire\Tender\Tenders;
@@ -59,10 +60,16 @@ use Spatie\Permission\Models\Role;
 
 require __DIR__.'/auth.php';
 Route::get('set-role',function(){
-    $users = User::where('user_type',1)->get();
-    foreach ($users as $user) {
-       $user->assignRole('Super Admin');
-    }
+    // dd(Auth::user()->getRoleNames());
+    // $users = User::where('user_type',1)->get();
+    // foreach ($users as $user) {
+    //    $user->assignRole('Super Admin');
+    // }
+    // $user = Auth::user()->id;
+    // // dd($user);
+    // $user = User::where('id',$user)->first();
+    // $user->assignRole('Super Admin');
+    
 });
 
 
@@ -91,6 +98,7 @@ Route::group(['middleware' => ['prevent-back-history']],function(){
         Route::get('prepare-sor',Sor::class)->name('prepare-sor');
         Route::get('user-management',UserManagement::class)->name('user-management');
         Route::get('access-manager',AccessManager::class)->name('access-manager');
+        Route::get('assign-role',AssignRole::class)->name('assign-role');
         Route::get('access-type',AccessType::class)->name('access-type');
         Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
         Route::get('estimate-recommender',EstimateRecomender::class)->name('estimate-recommender');
@@ -110,6 +118,11 @@ Route::group(['middleware' => ['prevent-back-history']],function(){
         Route::get('assign-office-admin',AssignOfficeAdmin::class)->name('assign-office-admin');
         Route::get('assign-dept-admin',AssignDepartmentAdmin::class)->name('assign-dept-admin');
         Route::get('sor-approver',SorApprovers::class)->name('sor-approver');
+        Route::get('change-role/{id}', function ($id) {
+            $selectedRole =  Role::find($id);
+            Auth::user()->syncRoles($selectedRole->name);
+            return redirect('/dashboard');
+        })->name('change-role');
     });
 });
 
