@@ -1,15 +1,17 @@
 <?php
 
-namespace App\Http\Livewire\Permission;
+namespace App\Http\Livewire\Roles;
 
 use Livewire\Component;
 
-class Permissions extends Component
+class Roles extends Component
 {
-
+    public $isFromOpen = false; 
+    public $openedFormType = ''; 
+    public $selectedIdForEdit = 0;
     protected $listeners = ['openEntryForm' => 'fromEntryControl'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel,$updateDataTableTracker;
-
+    public $titel = 'Role';
+    public $subTitel='List';
     public function fromEntryControl($data='')
     {
         // dd($data);
@@ -30,12 +32,8 @@ class Permissions extends Component
             $this->selectedIdForEdit = $data['id'];
         }
     }
-
     public function render()
     {
-        $this->updateDataTableTracker = rand(1,1000);
-        $this->titel = "ALL Permissions";
-        $assets = ['chart', 'animation'];
-        return view('livewire.permission.permissions');
+        return view('livewire.roles.roles');
     }
 }

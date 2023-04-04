@@ -15,10 +15,9 @@
         </a>
     </li>
     @foreach ($menus as $menu)
-    @if ($menu->permission!=null)
+    @if ($menu->permissions_roles!=null)
     @php
-    $permissions = explode(',',$menu->permission);
-
+    $permissions = explode(',',$menu->permissions_roles);
     @endphp
     @canany($permissions)
     <li class="nav-item mb-2">

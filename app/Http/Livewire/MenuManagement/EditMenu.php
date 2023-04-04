@@ -9,31 +9,33 @@ use WireUi\Traits\Actions;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 
-class CreateMenu extends Component
+class EditMenu extends Component
 {
     use Actions;
 
-    public $dropDownData = [], $formatedPermission = [], $newMenuData = [];
+    public $dropDownData = [], $formatedPermission = [], $newMenuData = [], $selectedMenu;
 
 
-    public function mount()
+    public function mount($id)
     {
+        $this->selectedMenu = Menu::find($id);
         $this->newMenuData = [
-            'title' => '',
-            'parent_id' => 0,
-            'icon' => '',
-            'link' => '',
-            'link_type' => '',
-            'piority'=>0,
-            'permission_or_role'=>'',
+            'title' => $this->selectedMenu->title,
+            'parent_id' => $this->selectedMenu->parent_id,
+            'icon' => $this->selectedMenu->icon,
+            'link' => $this->selectedMenu->link,
+            'link_type' => $this->selectedMenu->link_type,
+            'piority' => $this->selectedMenu->piority,
+            'permission_or_role' => $this->selectedMenu->permission_or_role,
             'permissions_roles' => '',
+            // 'permissions_roles' => $this->selectedMenu->permissions_roles,
         ];
         $this->getDropdownData('menus');
-        // $this->getDropdownData('permission');
+        $this->getDropdownData($this->selectedMenu->permission_or_role);
     }
     public function getDropdownData($lookingFor)
     {
-        $lookingFor=is_array($lookingFor) ? $lookingFor['_x_bindings']['value']:$lookingFor;
+        $lookingFor = is_array($lookingFor) ? $lookingFor['_x_bindings']['value'] : $lookingFor;
         try {
             switch (Str::lower($lookingFor)) {
                 case 'menus':
@@ -60,7 +62,7 @@ class CreateMenu extends Component
             // extract the role from the permission name without the action prefix
             return str_replace(['create ', 'update '], '', $permission['name']);
         });
-        
+
         $formatedPermissions = $groupedPermissions->reduce(function ($result, $permissions, $role) {
             // concatenate the permission names for each role
             $permissionsArray = $permissions->pluck('name')->toArray();
@@ -73,19 +75,27 @@ class CreateMenu extends Component
             }
             return $result;
         }, []);
-        $this->dropDownData['permissionsRoles']=$formatedPermissions;
+        $this->dropDownData['permissionsRoles'] = $formatedPermissions;
     }
     public function store()
     {
         $permissionsRoles = $this->dropDownData['permissionsRoles'];
         $selectedIndex = $this->newMenuData['permissions_roles'];
         $selectedPermissionRole = $permissionsRoles[$selectedIndex];
-        $this->newMenuData['permissions_roles'] = (is_array($selectedPermissionRole))?$selectedPermissionRole['name']:$selectedPermissionRole;
-        // dd($this->newMenuData);
-        if (Menu::create($this->newMenuData)) {
+        $this->newMenuData['permissions_roles'] = (is_array($selectedPermissionRole)) ? $selectedPermissionRole['name'] : $selectedPermissionRole;
+
+        $this->selectedMenu->title = $this->newMenuData['title'];
+        $this->selectedMenu->parent_id = $this->newMenuData['parent_id'];
+        $this->selectedMenu->icon = $this->newMenuData['icon'];
+        $this->selectedMenu->link = $this->newMenuData['link'];
+        $this->selectedMenu->link_type = $this->newMenuData['link_type'];
+        $this->selectedMenu->piority = $this->newMenuData['piority'];
+        $this->selectedMenu->permission_or_role = $this->newMenuData['permission_or_role'];
+
+        if ($this->selectedMenu->update()) {
             $this->notification()->success(
                 $title = 'Success',
-                $description =  'New Menu created successfully!'
+                $description =  'Menu Updated successfully!'
             );
             $this->reset();
             $this->emit('openEntryForm');
@@ -98,6 +108,6 @@ class CreateMenu extends Component
     }
     public function render()
     {
-        return view('livewire.menu-management.create-menu');
+        return view('livewire.menu-management.edit-menu');
     }
 }

@@ -14,7 +14,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <x-select label="Type" placeholder="Select Menu Type" :options="['Route']"
+                                <x-select label="Type" placeholder="Select Menu Type" :options="['route']"
                                     wire:model.defer="newMenuData.link_type" />
                             </div>
                         </div>
