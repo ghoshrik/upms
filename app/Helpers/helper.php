@@ -419,7 +419,7 @@ function getAllAssigenRoles()
     $generatedHtml = '';
     foreach ($roles as $key => $role) {
         if (Auth::user()->getRoleNames()[0] != $role->role_name) {
-            $generatedHtml .= '<li><a class="dropdown-item" href="' . route('change-role', $role->id) . '">' . ucfirst($role->role_name) . '</a></li>';
+            $generatedHtml .= '<li><a class="dropdown-item badge rounded-pill bg-secondary" href="' . route('change-role', $role->id) . '">' . ucfirst($role->role_name) . '</a></li>';
         }
     }
     return $generatedHtml;

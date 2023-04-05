@@ -20,7 +20,7 @@ class EditMenu extends Component
     public function mount($id)
     {
         // dd(User::role('Estimate Preparer (EP)')->get());
-        $this->selectedMenu = Menu::find($id);
+        $this->selectedMenu = Menu::where('id',$id)->first();
         $this->newMenuData = [
             'title' => $this->selectedMenu->title,
             'parent_id' => $this->selectedMenu->parent_id,
