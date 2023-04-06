@@ -72,7 +72,7 @@ final class RecomenderForwardTable extends PowerGridComponent
         ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_recomender.estimate_id')
         ->join('sor_masters','sor_masters.estimate_id','=','estimate_recomender.estimate_id')
         ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
-        ->where('estimate_user_assign_records.estimate_user_type','=',1)
+        ->where('estimate_user_assign_records.estimate_user_type','=',3)
         ->where('sor_masters.status','!=',3)
         ->where('sor_masters.status','!=',4)
         ->where('sor_masters.status','!=',8)

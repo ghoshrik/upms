@@ -171,18 +171,18 @@
                             @elseif ($this->selectedTab == 2)
                                 <div class="card">
                                     <div class="card-body">
-                                        <livewire:estimate.datatable.forwarded-data-table :wire:key="$updateDataTableTracker" />
-                                        {{-- <livewire:estimate.datatable.power-grid.estimate-forwarded-datatable
-                                            :wire:key="$updateDataTableTracker" /> --}}
+                                        {{-- <livewire:estimate.datatable.forwarded-data-table :wire:key="$updateDataTableTracker" /> --}}
+                                        <livewire:estimate.datatable.power-grid.estimate-forwarded-datatable
+                                            :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 3)
                                 <div class="card">
                                     <div class="card-body">
-                                        <livewire:estimate.datatable.reverted-data-table
-                                            :wire:key="$updateDataTableTracker" />
-                                        {{-- <livewire:estimate.datatable.power-grid.estimate-revert-table
+                                        {{-- <livewire:estimate.datatable.reverted-data-table
                                             :wire:key="$updateDataTableTracker" /> --}}
+                                        <livewire:estimate.datatable.power-grid.estimate-revert-table
+                                            :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @else

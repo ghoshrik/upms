@@ -52,7 +52,7 @@ class RecomenderRevertTable extends DataTableComponent
             ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_recomender.estimate_id')
             ->where('operation', 'Total')
             ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
-            ->where('estimate_user_assign_records.estimate_user_type', '=', 1)
+            ->where('estimate_user_assign_records.estimate_user_type', '=', 3)
             // ->where('sor_masters.is_verified','=',0);
             ->where([['sor_masters.status', '=', 9], ['sor_masters.is_verified', '=', 0]]);
         // ->groupBy('estimate_id.estimate_id');

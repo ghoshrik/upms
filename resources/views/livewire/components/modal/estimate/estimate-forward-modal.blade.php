@@ -5,8 +5,8 @@
                 @isset($assigenUsersList)
                     @foreach ($assigenUsersList as $user)
                         <x-select.option
-                            label="{{ $user['emp_name'] . ' - ' . $user['access_name'] . ' [ ' . $user->getDesignationName->designation_name . ' ]' }}"
-                            value="{{ $user['user_id'] . '-' . $user['access_type_id'] . '-' . $estimate_id }}" />
+                            label="{{ $user['emp_name'] . ' - ' . $user['name'] . ' [ ' . $user->getDesignationName->designation_name . ' ]' }}"
+                            value="{{ $user['id'] . '-' . $user['role_id'] . '-' . $estimate_id }}" />
                         {{-- <x-select.option label="{{ $user['id']. '-' . $user['access_type_id'] . '-' . $estimate_id }}" value="{{ $user['id']. '-' . $user['access_type_id'] . '-' . $estimate_id }}" /> --}}
                     @endforeach
                 @endisset

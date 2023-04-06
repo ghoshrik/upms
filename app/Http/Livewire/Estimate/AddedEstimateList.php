@@ -276,7 +276,7 @@ class AddedEstimateList extends Component
                         }
                         $data = [
                             'estimate_id' => $intId,
-                            'estimate_user_type' => 2,
+                            'estimate_user_type' => 4,
                             'estimate_user_id' => Auth::user()->id,
                         ];
                         EstimateUserAssignRecord::create($data);
@@ -310,10 +310,10 @@ class AddedEstimateList extends Component
         return view('livewire.estimate.added-estimate-list');
     }
 
-    public function logView($data, $of)
-    {
-        Log::alert('-----------------[Start OF' . $of . ']');
-        Log::info(json_encode($data));
-        Log::alert('-----------------[END OF' . $of . ']');
-    }
+    // public function logView($data, $of)
+    // {
+    //     Log::alert('-----------------[Start OF' . $of . ']');
+    //     Log::info(json_encode($data));
+    //     Log::alert('-----------------[END OF' . $of . ']');
+    // }
 }
