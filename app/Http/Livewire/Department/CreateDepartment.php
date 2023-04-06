@@ -12,8 +12,13 @@ class CreateDepartment extends Component
     use Actions;
     public $department_name, $department_code;
     protected $rules = [
+<<<<<<< Updated upstream
         'department_name' => 'required|string|unique:departments',
         'department_code' => 'required|string|unique:departments',
+=======
+        'department_name' => 'required|string|unique:departments,department_name',
+        'department_code' => 'required|string|unique:departments,department_code'
+>>>>>>> Stashed changes
     ];
     protected $messages = [
         'department_name.required' => 'This Field is Required',
