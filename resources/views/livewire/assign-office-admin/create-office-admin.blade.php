@@ -69,7 +69,6 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td class="text-wrap" style="width: 30rem">{{ $office['office_name'] }}</td>
                                         <td>
-                                            {{-- <span class="badge badge-pill {{ ($office['office_code']) ? 'bg-info' : 'bg-danger' }} text-dark">{{ $office['office_code'] ? $office['office_code'] : 'N/A' }}</span> --}}
                                             {{ $office['office_code'] }}
                                         </td>
                                         <td class="text-wrap" style="width: 30rem">{{ $office['office_address'] }}</td>

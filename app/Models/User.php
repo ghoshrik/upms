@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
+use Spatie\MediaLibrary\HasMedia;
 use App\Traits\HasPermissionsTrait;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -33,7 +34,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'department_id',
         'office_id',
         'user_type',
-        'status',
+        'is_active',
+        'is_verified'
     ];
 
     /**
@@ -55,7 +57,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    protected $appends = ['full_name'];
+    // protected $appends = ['full_name'];
 
     public function getFullNameAttribute()
     {
