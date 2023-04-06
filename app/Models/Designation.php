@@ -11,4 +11,13 @@ class Designation extends Model
     protected $fillable = [
         'designation_name'
     ];
+    public function fetchDesignationName()
+    {
+        return $this->belongsTo(User::class, 'designation_id','id');
+    }
+
+    function user()
+    {
+        $this->hasMany(User::class,'designation_id');
+    }
 }

@@ -40,12 +40,10 @@ final class UsersDataTable extends PowerGridComponent
             Exportable::make('export')
                 ->csvSeparator('|')
                 ->csvDelimiter("'")
-
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV)
                 ->striped('A6ACCD'),
-
             // ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
-            Header::make()->showSearchInput(),
+            Header::make()->showToggleColumns()->showSearchInput(),
             Footer::make()
                 ->showPerPage()
                 ->showRecordCount(),
@@ -69,7 +67,11 @@ final class UsersDataTable extends PowerGridComponent
     {
         if (Auth::user()->department_id) {
             if (Auth::user()->office_id) {
+
                 return User::query()
+                    ->join('user_types', function ($user_types) {
+                        $user_types->on('users.user_type', '=', 'user_types.id');
+                    })->join('designations', 'users.designation_id', '=', 'designations.id')
                     ->select(
                         'users.id',
                         'users.name',
@@ -85,13 +87,19 @@ final class UsersDataTable extends PowerGridComponent
                         'user_types.id as userType_id',
                         'user_types.parent_id',
                         'users.is_active',
+                        'designations.id as designationId',
+                        'designations.designation_name'
                     )
-                    ->join('user_types', 'users.user_type', '=', 'user_types.id')
+                    // ->join('user_types', 'users.user_type', '=', 'user_types.id')
                     ->where('user_types.parent_id', '=', Auth::user()->user_type)
                     ->where('users.department_id', Auth::user()->department_id)
                     ->where('users.office_id', Auth::user()->office_id);
             } else {
+                // dd(User::query()->with('designation')->first());
                 return User::query()
+                    ->join('user_types', function ($user_types) {
+                        $user_types->on('users.user_type', '=', 'user_types.id');
+                    })->join('designations', 'users.designation_id', '=', 'designations.id')
                     ->select(
                         'users.id',
                         'users.name',
@@ -100,6 +108,7 @@ final class UsersDataTable extends PowerGridComponent
                         'users.ehrms_id',
                         'users.mobile',
                         'users.emp_name',
+                        'users.mobile',
                         'users.designation_id',
                         'users.department_id',
                         'users.user_type',
@@ -107,8 +116,10 @@ final class UsersDataTable extends PowerGridComponent
                         'user_types.id as userType_id',
                         'user_types.parent_id',
                         'users.is_active',
+                        'designations.id as designationId',
+                        'designations.designation_name'
                     )
-                    ->join('user_types', 'users.user_type', '=', 'user_types.id')
+
                     ->where('user_types.parent_id', '=', Auth::user()->user_type)
                     ->where('users.department_id', Auth::user()->department_id);
             }
@@ -121,6 +132,7 @@ final class UsersDataTable extends PowerGridComponent
                     'users.username',
                     'users.ehrms_id',
                     'users.emp_name',
+                    'users.mobile',
                     'users.designation_id',
                     'users.department_id',
                     'users.user_type',
@@ -129,8 +141,11 @@ final class UsersDataTable extends PowerGridComponent
                     'user_types.id as userType_id',
                     'user_types.parent_id',
                     'users.is_active',
+                    'designations.id as designationId',
+                    'designations.designation_name'
                 )
                 ->join('user_types', 'users.user_type', '=', 'user_types.id')
+                ->join('designations', 'users.designation_id', '=', 'designations.id')
                 ->where('user_types.parent_id', '=', Auth::user()->user_type);
         }
         // return User::query();
@@ -181,7 +196,7 @@ final class UsersDataTable extends PowerGridComponent
             ->addColumn('mobile')
             ->addColumn('ehrms_id')
             ->addColumn('emp_name')
-            ->addColumn('getDesignationName.designation_name')
+            ->addColumn('designation_name')
             ->addColumn('getDepartmentName.department_name')
             ->addColumn('getOfficeName.office_name')
 
@@ -288,13 +303,13 @@ final class UsersDataTable extends PowerGridComponent
 
             Column::make('LOGIN ID', 'username')
                 ->sortable()
-                ->searchable(),
-            // ->makeInputText(),
+                ->searchable()
+                ->makeInputText(),
 
             Column::make('EMAIL', 'email')
                 ->sortable()
-                ->searchable(),
-            // ->makeInputText(),
+                ->searchable()
+                ->makeInputText(),
 
             Column::make('MOBILE', 'mobile')
                 ->sortable()
@@ -311,9 +326,10 @@ final class UsersDataTable extends PowerGridComponent
                 ->searchable()
                 ->makeInputText(),
 
-            Column::make('DESIGNATION NAME', 'getDesignationName.designation_name')
+            Column::make('DESIGNATION NAME', 'designation_name')
                 ->sortable()
-                ->searchable(),
+                ->searchable()
+                ->makeInputText(),
 
             Column::make('DEPARTMENT NAME', 'getDepartmentName.department_name')
                 ->sortable()
@@ -329,7 +345,7 @@ final class UsersDataTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make('status', 'is_active')
+            Column::make('STATUS', 'is_active')
                 ->sortable(),
 
         ];

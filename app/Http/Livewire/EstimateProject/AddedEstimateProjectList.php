@@ -141,7 +141,7 @@ class AddedEstimateProjectList extends Component
                 $this->addedEstimateData['remarks'] = '';
             }
             if (!array_key_exists("estimate_no", $this->addedEstimateData)) {
-                $this->addedEstimateData['estimate_no'] = '';
+                $this->addedEstimateData['estimate_no'] = 0;
             }
             foreach ($this->addedEstimateData as $key => $estimate) {
                 $this->allAddedEstimatesData[$index][$key] = $estimate;
@@ -295,7 +295,7 @@ class AddedEstimateProjectList extends Component
     {
         if ($this->totalOnSelectedCount == 1) {
             try {
-                dd($this->allAddedEstimatesData);
+                // dd($this->allAddedEstimatesData);
                 if ($this->allAddedEstimatesData) {
                     $intId = random_int(100000, 999999);
                     if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
@@ -330,7 +330,7 @@ class AddedEstimateProjectList extends Component
                         }
                         $data = [
                             'estimate_id' => $intId,
-                            'estimate_user_type' => 3,
+                            'estimate_user_type' => 5,
                             'estimate_user_id' => Auth::user()->id,
                         ];
                         EstimateUserAssignRecord::create($data);

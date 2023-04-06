@@ -21,12 +21,11 @@
         </a>
     </li>
     @foreach ($menus as $menu)
-        @if ($menu->permission != null)
+        @if ($menu->permissions_roles != null)
             @php
-                $permissions = explode(',', $menu->permission);
-                
+                $permissions_role = explode(',', $menu->permissions_roles);
             @endphp
-            @canany($permissions)
+            @hasanyrole($permissions_role)
                 <li class="nav-item mb-2">
                     @if (Route::has($menu->link))
                         <a class="nav-link {{ activeRoute(route($menu->link)) }}" aria-current="page"
@@ -35,14 +34,10 @@
                             <a class="nav-link aria-current" href="#">
                     @endif
                     <i class="icon">
-                        {{-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        {{-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                     </svg> --}}
-                        {{-- <x-lucide-info class="w-4 h-4 text-gray-500" /> --}}
-                        {{-- <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                      </svg> --}}
                         @if ($menu->icon)
                             <x-icon name="{{ $menu->icon }}" class="w-5 h-5" />
                         @else
@@ -53,7 +48,32 @@
                     </a>
                     {{-- <br> --}}
                 </li>
-            @endcanany
+            @else
+                @canany($permissions_role)
+                    <li class="nav-item mb-2">
+                        @if (Route::has($menu->link))
+                            <a class="nav-link {{ activeRoute(route($menu->link)) }}" aria-current="page"
+                                href="{{ route($menu->link) }}">
+                            @else
+                                <a class="nav-link aria-current" href="#">
+                        @endif
+                        <i class="icon">
+                            {{-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg> --}}
+                            @if ($menu->icon)
+                                <x-icon name="{{ $menu->icon }}" class="w-5 h-5" />
+                            @else
+                                <x-icon name="link" class="w-5 h-5" />
+                            @endif
+                        </i>
+                        <span class="item-name">{{ $menu->title }}</span>
+                        </a>
+                        {{-- <br> --}}
+                    </li>
+                @endcanany
+            @endhasanyrole
         @endif
     @endforeach
 </ul>

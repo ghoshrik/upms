@@ -16,7 +16,7 @@ class CreateOfficeAdmin extends Component
     public $selectedLevel, $selectedDist, $selectedOffice, $dropdownData = [], $searchCondition = [], $filtredOffices, $hooUsers, $selectedUser;
     public function mount()
     {
-        $this->hooUsers = User::where([['user_type', 4], ['department_id', Auth::user()->department_id]])->get();
+        $this->hooUsers = User::where([['user_type', 4], ['department_id', Auth::user()->department_id],['is_active',1]])->get();
         $this->dropdownData['dist'] = District::all();
     }
     public function filter()

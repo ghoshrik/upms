@@ -55,7 +55,8 @@ class CreateAccess extends Component
     public function getUsers()
     {
         $this->dropDownData['users'] = User::select('users.id', 'users.emp_name')->join('user_types', 'users.user_type', '=', 'user_types.id')
-            ->where([['parent_id', Auth::user()->user_type], ['department_id', Auth::user()->department_id], ['designation_id', $this->newAccessData['designation_id']], ['office_id', Auth::user()->office_id]])->get();
+            ->where([['is_active',1],['parent_id', Auth::user()->user_type], ['department_id', Auth::user()->department_id], ['designation_id', $this->newAccessData['designation_id']], ['office_id', Auth::user()->office_id]])
+            ->get();
     }
 
 

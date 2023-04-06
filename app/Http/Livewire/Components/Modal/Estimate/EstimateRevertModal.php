@@ -27,7 +27,7 @@ class EstimateRevertModal extends Component
     public function revertEstimate($value)
     {
         $getUser = EstimateUserAssignRecord::select('estimate_user_type')->where('estimate_id', '=', $value)->where('estimate_user_id', '=', Auth::user()->id)->first();
-        if ($getUser['estimate_user_type'] == 1) {
+        if ($getUser['estimate_user_type'] == 3) {
             $getRevertDataId = EstimateUserAssignRecord::select(
                 'estimate_user_assign_records.id as estimate_user_assign_records_id',
                 'estimate_user_assign_records.estimate_user_type',
@@ -49,7 +49,7 @@ class EstimateRevertModal extends Component
                     $title = 'Estimate Reverted'
                 );
             }
-        } elseif ($getUser['estimate_user_type'] == 4) {
+        } elseif ($getUser['estimate_user_type'] == 9) {
             $getRevertDataId = EstimateUserAssignRecord::select(
                 'estimate_user_assign_records.id as estimate_user_assign_records_id',
                 'estimate_user_assign_records.estimate_user_type',

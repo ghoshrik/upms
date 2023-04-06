@@ -26,6 +26,10 @@ use App\Http\Livewire\Department\Department;
 use App\Http\Livewire\VendorRegs\VendorList;
 use App\Http\Livewire\Permission\Permissions;
 use App\Http\Livewire\Designation\Designation;
+use App\Http\Livewire\Permission\Permission;
+// use App\Http\Livewire\Permission\Permissions;
+use App\Http\Livewire\Roles\AssignRole\AssignRole;
+use App\Http\Livewire\Roles\Roles;
 use App\Http\Livewire\Sorapprove\SorApprovers;
 use App\Http\Livewire\Estimate\EstimatePrepare;
 use App\Http\Controllers\Security\RoleController;
@@ -79,9 +83,9 @@ Route::post('otp/verify', [AuthController::class, 'LoginWithOTP'])->name('otp.lo
 Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::group(['middleware' => 'auth', '2fa.verify'], function () {
         // Permission Module
-        Route::get('/role-permission', [RolePermission::class, 'index'])->name('role.permission.list');
-        Route::resource('permission', PermissionController::class);
-        Route::resource('role', RoleController::class);
+        // Route::get('/role-permission',[RolePermission::class, 'index'])->name('role.permission.list');
+        // Route::resource('permission',PermissionController::class);
+        // Route::resource('role', RoleController::class);
 
         // Dashboard Routes
         Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
@@ -96,28 +100,34 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('department', Department::class)->name("department");
         Route::get('department-category', DepartmentCategoryList::class)->name('department-category');
         Route::get('office', Office::class)->name('office');
-        Route::get('prepare-sor', Sor::class)->name('prepare-sor');
-        Route::get('user-management', UserManagement::class)->name('user-management');
-        Route::get('access-manager', AccessManager::class)->name('access-manager');
-        Route::get('access-type', AccessType::class)->name('access-type');
-        Route::get('menu-manager', MenuManagement::class)->name('menu-manager');
-        Route::get('estimate-recommender', EstimateRecomender::class)->name('estimate-recommender');
-        Route::get('estimate-forwarder', EstimateForwarder::class)->name('estimate-forwarder');
-        Route::get('vendors', VendorList::class)->name('vendors');
-        Route::get('milestones', Milestones::class)->name('milestones');
+        Route::get('prepare-sor',Sor::class)->name('prepare-sor');
+        Route::get('user-management',UserManagement::class)->name('user-management');
+        Route::get('access-manager',AccessManager::class)->name('access-manager');
+        Route::get('assign-role',AssignRole::class)->name('assign-role');
+        Route::get('access-type',AccessType::class)->name('access-type');
+        Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
+        Route::get('estimate-recommender',EstimateRecomender::class)->name('estimate-recommender');
+        Route::get('estimate-forwarder',EstimateForwarder::class)->name('estimate-forwarder');
+        Route::get('vendors',VendorList::class)->name('vendors');
+        Route::get('milestones',Milestones::class)->name('milestones');
         // Route::get('aafs-project',ProjectList::class)->name('aafs-project');
         Route::view('/powergrid', 'powergrid-demo');
-        // Route::get('roles',Roles::class)->name('roles');
+        Route::get('roles',Roles::class)->name('roles');
 
-        Route::get('permissions', Permissions::class)->name('permissions');
+        Route::get('permissions',Permission::class)->name('permissions');
 
         // Route::get('vendors',VendorList::class)->name('vendors');
-        Route::get('aafs-project', AafsProjects::class)->name('aafs-project');
-        Route::get('aoc', Aocs::class)->name('aoc');
-        Route::get('tenders', Tenders::class)->name('tenders');
-        Route::get('assign-office-admin', AssignOfficeAdmin::class)->name('assign-office-admin');
-        Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
-        Route::get('sor-approver', SorApprovers::class)->name('sor-approver');
+        Route::get('aafs-project',AafsProjects::class)->name('aafs-project');
+        Route::get('aoc',Aocs::class)->name('aoc');
+        Route::get('tenders',Tenders::class)->name('tenders');
+        Route::get('assign-office-admin',AssignOfficeAdmin::class)->name('assign-office-admin');
+        Route::get('assign-dept-admin',AssignDepartmentAdmin::class)->name('assign-dept-admin');
+        Route::get('sor-approver',SorApprovers::class)->name('sor-approver');
+        Route::get('change-role/{id}', function ($id) {
+            $selectedRole =  Role::find($id);
+            Auth::user()->syncRoles($selectedRole->name);
+            return redirect('/dashboard');
+        })->name('change-role');
     });
 });
 

@@ -8,8 +8,9 @@ use Livewire\Component;
 
 class EstimateForwarder extends Component
 {
-    protected $listeners = ['openForm' => 'formOCControl','wordDownload'=>'exportAndDownload','showError'=>'setErrorAlert'];
-    public $formOpen = false, $modifyFormOpen = false, $updateDataTableTracker, $selectedEstTab = 1, $counterData = [],$errorMessage;
+    protected $listeners = ['openForm' => 'formOCControl','wordDownload'=>'exportAndDownload','showError'=>'setErrorAlert','refreshData' => 'formOCControl'];
+    public $updateDataTableTracker, $selectedEstTab = 1, $counterData = [];
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function mount()
     {
         $this->updateDataTableTracker = rand(1,1000);
@@ -31,11 +32,11 @@ class EstimateForwarder extends Component
     {
         $this->counterData['totalPendingDataCount'] =SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
             ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
-            ->where('estimate_user_assign_records.estimate_user_type', '=', 4)
+            ->where('estimate_user_assign_records.estimate_user_type', '=', 9)
             ->count();
         $this->counterData['pendingDataCount'] = SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
             ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
-            ->where('estimate_user_assign_records.estimate_user_type', '=', 4)
+            ->where('estimate_user_assign_records.estimate_user_type', '=', 9)
             ->where('sor_masters.status','!=',3)
             ->where('sor_masters.status','=',11)
             ->where('sor_masters.is_verified', '=', 0)
@@ -43,7 +44,7 @@ class EstimateForwarder extends Component
             ->count();
         $this->counterData['verifiedDataCount'] =  SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
             ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
-            ->where('estimate_user_assign_records.estimate_user_type', '=', 4)
+            ->where('estimate_user_assign_records.estimate_user_type', '=', 9)
             ->where('sor_masters.is_verified', '=', 1)
             ->count();
         // $this->counterData['revertedDataCount'] = SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
@@ -53,30 +54,50 @@ class EstimateForwarder extends Component
         //     ->count();
         // dd($this->counterData);
     }
-
-    public function formOCControl($isModifyFrom = false, $eidtId = null)
+    public function fromEntryControl($data='')
     {
-        if ($isModifyFrom) {
-            $this->modifyFormOpen = !$this->modifyFormOpen;
-            $this->emit('changeSubTitel', ($this->modifyFormOpen) ? 'Modify' : 'List');
-            if ($eidtId != null) {
-                $this->emit('modifyEstimateRow', $eidtId);
-            }
-            return;
+        $this->openedFormType = is_array($data) ? $data['formType']:$data;
+        $this->isFromOpen = !$this->isFromOpen;
+        switch ($this->openedFormType) {
+            case 'create':
+                $this->subTitel = 'Create';
+                break;
+            case 'edit':
+                $this->subTitel = 'Edit';
+                break;
+            default:
+                $this->subTitel = 'List';
+                break;
         }
-        $this->modifyFormOpen = false;
-        $this->formOpen = !$this->formOpen;
-        $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
-        $this->updateDataTableTracker = rand(1, 1000);
+        if(isset($data['id'])){
+            // $this->selectedIdForEdit = $data['id'];
+            $this->emit('editEstimateRow',$data['id']);
+        }
+        $this->updateDataTableTracker = rand(1,1000);
     }
     public function setErrorAlert($errorMessage)
     {
        $this->errorMessage = $errorMessage;
     }
+    // public function formOCControl($isModifyFrom = false, $eidtId = null)
+    // {
+    //     if ($isModifyFrom) {
+    //         $this->modifyFormOpen = !$this->modifyFormOpen;
+    //         $this->emit('changeSubTitel', ($this->modifyFormOpen) ? 'Modify' : 'List');
+    //         if ($eidtId != null) {
+    //             $this->emit('modifyEstimateRow', $eidtId);
+    //         }
+    //         return;
+    //     }
+    //     $this->modifyFormOpen = false;
+    //     $this->formOpen = !$this->formOpen;
+    //     $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
+    //     $this->updateDataTableTracker = rand(1, 1000);
+    // }
     public function render()
     {
         $this->updateDataTableTracker = rand(1,1000);
-        $this->emit('changeTitel', 'Estimate Forwarder');
+        $this->titel= 'Estimate Forwarder';
         $assets = ['chart', 'animation'];
         return view('livewire.estimate-forwarder.estimate-forwarder',compact('assets'));
     }

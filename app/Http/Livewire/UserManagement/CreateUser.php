@@ -9,6 +9,7 @@ use App\Models\UserType;
 use App\Models\Department;
 use WireUi\Traits\Actions;
 use App\Models\Designation;
+use App\Models\UsersHasRoles;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -90,7 +91,7 @@ class CreateUser extends Component
             'confirm_password' => '',
             'mobile' => '',
             'email' => '',
-            'status' => 1,
+            // 'is_active' => 1,
         ];
         if (Auth::user()->user_type == 2) {
             $this->getDropdownData('DEPT');
@@ -149,25 +150,30 @@ class CreateUser extends Component
                 $this->newUserData['mobile'] = $this->newUserData['mobile'];
                 // $this->newUserData['password'] = Hash::make($this->newUserData['password']);
                 $this->newUserData['password'] = Hash::make('password');
-                $this->newUserData['status'] = 1;
-                // dd($this->newUserData);
-
-                // dd($this->newUserData);
                 $newUserDetails = User::create($this->newUserData);
-                // dd($this->newUserData);
+                // $newUserDetails = true;
                 if ($newUserDetails) {
                     if (Auth::user()->user_type != 4) {
-                        // dd(Auth::user()->user_type,$userType->type);
-                        $newUserDetails->syncRoles([$userType->type]);
+                        $assignRoleDetails = $newUserDetails->syncRoles([$userType->type]);
+                        UsersHasRoles::create([
+                            'user_id' => $assignRoleDetails->id,
+                            'role_id' => $assignRoleDetails->roles[0]->id
+                        ]);
+                        // dd($newUserDetails,Auth::user()->user_type,$userType->type);
                     }
                     $this->notification()->success(
                         $title = 'Success',
-                        $description = trans('cruds.user-management.create_msg')
+                        $description =  trans('cruds.user-management.create_msg')
                     );
                     $this->reset();
                     $this->emit('openEntryForm');
+                    return;
                 }
             }
+            $this->notification()->error(
+                $title = 'Error !!!',
+                $description = 'Something went wrong.'
+            );
         } catch (\Throwable $th) {
             dd($th->getMessage());
             $this->emit('showError', $th->getMessage());

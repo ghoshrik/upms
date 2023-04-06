@@ -13,7 +13,7 @@
                        <h3 class="text-dark">{{$titel}}</h3>
                     <p class="text-primary mb-0">{{$subTitel}}</p>
                     </div>
-                    {{-- @canany(['create milestone','edit milestone']) --}}
+                    {{-- @canany(['create accessManager','edit accessManager']) --}}
                     <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
                         @if (!$isFromOpen)
                         <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
@@ -49,30 +49,28 @@
                     class="theme-color-pink-img  w-100  animated-scaleX">
             </div> --}}
         </div>
-        @section('webtitle', trans('cruds.permissions.title_singular'))
         <div wire:loading.delay.long>
             <div class="spinner-border text-primary loader-position" role="status"></div>
         </div>
         <div wire:loading.delay.long.class="loading">
-            <div x-transition.duration.900ms>
+
+            <div x-show="formOpen" x-transition.duration.900ms>
                 @if ($isFromOpen && $openedFormType == 'create')
-                <livewire:milestone.create-milestone />
+                    <livewire:roles.assign-role.create/>
                 @elseif($isFromOpen && $openedFormType == 'edit')
                 @else
-                <x-cards title="">
-                    <x-slot name="table">
-                        @if($viewMode)
-                        <livewire:milestone.milestone-view :milestones="$milestones" />
-                        @else
-                        <livewire:milestone.milestone-lists :wire:key="$updateDataTableTracker" />
-                        {{--
-                        <livewire:data-table.milestone-data-table :wire:key="$updateDataTableTracker" /> --}}
-                        @endif
-                    </x-slot>
-                </x-cards>
+                <div class="col-md-12 col-lg-12 col-sm-3">
+                    <div class="card">
+                        {{-- <h2>Department & office wise Data Sorting is pending.</h2> --}}
+                        <div class="card-body">
+                            {{-- TODO:: CHANGE --}}
+                            <livewire:roles.assign-role.datatable.assign-role-datatable :wire:key="$updateDataTableTracker" />
+
+                        </div>
+                    </div>
+                </div>
                 @endif
             </div>
-
         </div>
     </div>
 </div>

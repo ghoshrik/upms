@@ -58,15 +58,13 @@
                 @if ($isFromOpen && $openedFormType == 'create')
                     <livewire:menu-management.create-menu>
                 @elseif($isFromOpen && $openedFormType == 'edit')
-
+                    <livewire:menu-management.edit-menu :id="$selectedIdForEdit"/>
                 @else
                 <div class="row">
                     <div class="col-md-12 col-lg-12 col-sm-3">
                         <div class="card">
                             <div class="card-body">
-                                {{-- TODO:: CHANGE --}}
-                                {{--
-                                <livewire:estimate.estimated-data-table /> --}}
+                                <livewire:menu-management.data-table.menu-table/> 
                             </div>
                         </div>
                     </div>

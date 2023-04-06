@@ -208,13 +208,12 @@
           <img src="{{asset('images/avatars/avtar_5.png')}}" alt="User-Profile" class="theme-color-yellow-img img-fluid avatar avatar-50 avatar-rounded">
           <img src="{{asset('images/avatars/avtar_3.png')}}" alt="User-Profile" class="theme-color-pink-img img-fluid avatar avatar-50 avatar-rounded"> --}}
             <div class="caption ms-3 d-none d-md-block ">
-              <h6 class="mb-0 caption-title">{{ auth()->user()->username ?? ''  }}</h6>
-              <p class="mb-0 caption-sub-title text-capitalize">{{ Auth::user()->getUserType->type ?? '' }}</p>
-            </div>
+              <h6 class="mb-0 caption-title">{{ auth()->user()->emp_name ?? ''  }}</h6>
+              <p class="mb-0 caption-sub-title text-capitalize"><span class="badge rounded-pill bg-primary">{{ Auth::user()->getRoleNames()[0] }}</span></p>
+              </div>
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{{route('users.show', auth()->id() || 1)}}">Profile</a></li>
-            <li><a class="dropdown-item" href="{{route('auth.userprivacysetting')}}">Privacy Setting</a></li>
+            {!! getAllAssigenRoles()!!}
             <li><hr class="dropdown-divider"></li>
             <li><form method="POST" action="{{route('logout')}}">
               @csrf

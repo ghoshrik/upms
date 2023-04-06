@@ -13,7 +13,7 @@
                         <h3 class="text-dark">{{$titel}}</h3>
                     <p class="text-primary mb-0">{{$subTitel}}</p>
                     </div>
-                    @canany(['create estimatePrepare', 'edit estimatePrepare'])
+                    @canany(['create estimate', 'edit estimate'])
                         <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
                             @if (!$isFromOpen)
                                 <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
@@ -171,18 +171,18 @@
                             @elseif ($this->selectedTab == 2)
                                 <div class="card">
                                     <div class="card-body">
-                                        <livewire:estimate.datatable.forwarded-data-table :wire:key="$updateDataTableTracker" />
-                                        {{-- <livewire:estimate.datatable.power-grid.estimate-forwarded-datatable
-                                            :wire:key="$updateDataTableTracker" /> --}}
+                                        {{-- <livewire:estimate.datatable.forwarded-data-table :wire:key="$updateDataTableTracker" /> --}}
+                                        <livewire:estimate.datatable.power-grid.estimate-forwarded-datatable
+                                            :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 3)
                                 <div class="card">
                                     <div class="card-body">
-                                        <livewire:estimate.datatable.reverted-data-table
-                                            :wire:key="$updateDataTableTracker" />
-                                        {{-- <livewire:estimate.datatable.power-grid.estimate-revert-table
+                                        {{-- <livewire:estimate.datatable.reverted-data-table
                                             :wire:key="$updateDataTableTracker" /> --}}
+                                        <livewire:estimate.datatable.power-grid.estimate-revert-table
+                                            :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @else
