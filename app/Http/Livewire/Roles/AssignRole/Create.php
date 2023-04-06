@@ -39,7 +39,7 @@ class Create extends Component
                     $this->dropDownData['offices'] = Office::where('id', Auth::user()->office_id)->get();
                     break;
                 case 'roles':
-                    $this->dropDownData['roles'] = Role::all();
+                    $this->dropDownData['roles'] = Role::join('roles_order','roles.id','=','roles_order.role_id')->where('roles_order.parent_id','>',3)->get();
                     break;
                 default:
                     // $this->allUsers = User::select('users.id','users.emp_name')->join('user_types', 'users.user_type', '=', 'user_types.id')

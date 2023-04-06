@@ -31,9 +31,11 @@ class AssignRole extends Component
         if(isset($data['id'])){
             $this->selectedIdForEdit = $data['id'];
         }
+        $this->updateDataTableTracker = rand(1,1000);
     }
     public function render()
     {
+        $this->updateDataTableTracker = rand(1,1000);
         return view('livewire.roles.assign-role.assign-role');
     }
 }
