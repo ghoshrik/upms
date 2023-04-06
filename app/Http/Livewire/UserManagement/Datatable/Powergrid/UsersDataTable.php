@@ -84,7 +84,7 @@ final class UsersDataTable extends PowerGridComponent
                         'users.office_id',
                         'user_types.id as userType_id',
                         'user_types.parent_id',
-                        'users.status',
+                        'users.is_active',
                     )
                     ->join('user_types', 'users.user_type', '=', 'user_types.id')
                     ->where('user_types.parent_id', '=', Auth::user()->user_type)
@@ -106,7 +106,7 @@ final class UsersDataTable extends PowerGridComponent
                         'users.office_id',
                         'user_types.id as userType_id',
                         'user_types.parent_id',
-                        'users.status',
+                        'users.is_active',
                     )
                     ->join('user_types', 'users.user_type', '=', 'user_types.id')
                     ->where('user_types.parent_id', '=', Auth::user()->user_type)
@@ -128,7 +128,7 @@ final class UsersDataTable extends PowerGridComponent
                     'users.mobile',
                     'user_types.id as userType_id',
                     'user_types.parent_id',
-                    'users.status',
+                    'users.is_active',
                 )
                 ->join('user_types', 'users.user_type', '=', 'user_types.id')
                 ->where('user_types.parent_id', '=', Auth::user()->user_type);
@@ -186,9 +186,9 @@ final class UsersDataTable extends PowerGridComponent
             ->addColumn('getOfficeName.office_name')
 
             ->addColumn('getUserType.type')
-            ->addColumn('status', function (User $user) {
+            ->addColumn('is_active', function (User $user) {
 
-                if ($user->status == 0) {
+                if ($user->is_active == 0) {
                     return '<label wire:click="toggleSelectedActive(' . $user->id . ')" class="badge badge-pill bg-danger cursor-pointer">Inactive</label>';
                 } else {
                     return '<label wire:click="toggleSelectedInactive(' . $user->id . ')" class="badge badge-pill bg-success cursor-pointer">Active</label>';
@@ -213,7 +213,7 @@ final class UsersDataTable extends PowerGridComponent
      * @return array<int, Column>
      */
 
-    // public function dialogBox($value, $icon, $method, $currStatus)
+    // public function dialogBox($value, $icon, $method, $curris_active)
     // {
     //     $this->dialog()->confirm([
     //         'title' => 'Are you Sure?',
@@ -249,7 +249,7 @@ final class UsersDataTable extends PowerGridComponent
 
     public function InactiveUser($value)
     {
-        User::where('id', $value)->update(['status' => 0]);
+        User::where('id', $value)->update(['is_active' => 0]);
     }
 
     public function toggleSelectedActive($value)
@@ -271,7 +271,7 @@ final class UsersDataTable extends PowerGridComponent
 
     public function activeUser($value)
     {
-        User::where('id', $value)->update(['status' => 1]);
+        User::where('id', $value)->update(['is_active' => 1]);
     }
 
 
@@ -329,7 +329,7 @@ final class UsersDataTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make('STATUS', 'status')
+            Column::make('status', 'is_active')
                 ->sortable(),
 
         ];
