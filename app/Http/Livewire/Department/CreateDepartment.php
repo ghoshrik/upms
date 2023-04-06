@@ -12,13 +12,8 @@ class CreateDepartment extends Component
     use Actions;
     public $department_name, $department_code;
     protected $rules = [
-<<<<<<< Updated upstream
-        'department_name' => 'required|string|unique:departments',
-        'department_code' => 'required|string|unique:departments',
-=======
         'department_name' => 'required|string|unique:departments,department_name',
         'department_code' => 'required|string|unique:departments,department_code'
->>>>>>> Stashed changes
     ];
     protected $messages = [
         'department_name.required' => 'This Field is Required',
@@ -39,7 +34,7 @@ class CreateDepartment extends Component
     }
     public function store()
     {
-        // $this->validate();
+        $this->validate();
         // dd($this->department_name, $this->department_code);
         try {
             $insert = [
@@ -48,8 +43,8 @@ class CreateDepartment extends Component
             ];
             // dd($insert);
             // if ($validateData) {
-            // Department::create($insert);
-            DB::table('departments')->insert($insert);
+            Department::create($insert);
+            // DB::table('departments')->insert($insert);
             $this->notification()->success(
                 $title = trans('cruds.department.create_msg')
             );
