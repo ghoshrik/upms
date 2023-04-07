@@ -106,7 +106,6 @@ final class UsersDataTable extends PowerGridComponent
                         'users.email',
                         'users.username',
                         'users.ehrms_id',
-                        'users.mobile',
                         'users.emp_name',
                         'users.mobile',
                         'users.designation_id',
@@ -137,7 +136,6 @@ final class UsersDataTable extends PowerGridComponent
                     'users.department_id',
                     'users.user_type',
                     'users.office_id',
-                    'users.mobile',
                     'user_types.id as userType_id',
                     'user_types.parent_id',
                     'users.is_active',
@@ -228,7 +226,7 @@ final class UsersDataTable extends PowerGridComponent
      * @return array<int, Column>
      */
 
-    // public function dialogBox($value, $icon, $method, $curris_active)
+    // public function dialogBox($value, $icon, $method, $currStatus)
     // {
     //     $this->dialog()->confirm([
     //         'title' => 'Are you Sure?',
