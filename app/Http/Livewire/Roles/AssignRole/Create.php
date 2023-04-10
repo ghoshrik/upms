@@ -16,7 +16,7 @@ use WireUi\Traits\Actions;
 class Create extends Component
 {
     use Actions;
-    public $dropDownData = [], $newAccessData = [], $access_type_name = [], $userlist = [];
+    public $dropDownData = [], $newAccessData = [], $access_type_name = [], $userlist = [],$openAssignModal;
 
     public function mount()
     {
@@ -26,7 +26,6 @@ class Create extends Component
             'roles_id' => [],
         ];
         $this->getDropdownData('designations');
-        $this->getDropdownData('roles');
     }
     public function getDropdownData($lookingFor)
     {
@@ -54,13 +53,20 @@ class Create extends Component
 
     public function getUsers()
     {
-        $this->dropDownData['users'] = User::select('users.id', 'users.emp_name')->join('user_types', 'users.user_type', '=', 'user_types.id')
-            ->where([['parent_id', Auth::user()->user_type], ['department_id', Auth::user()->department_id], ['designation_id', $this->newAccessData['designation_id']], ['office_id', Auth::user()->office_id]])->get();
+        $this->dropDownData['users'] = User::select('users.id', 'users.emp_name','users.ehrms_id','users.designation_id','users.office_id','users.mobile','users.email')->join('user_types', 'users.user_type', '=', 'user_types.id')
+            ->where([['user_types.parent_id', Auth::user()->user_type], ['users.department_id', Auth::user()->department_id], ['users.designation_id', $this->newAccessData['designation_id']]])->get();
     }
 
+    public function assignRole($userId)
+    {
+        $this->newAccessData['users_id']= $userId;
+        $this->getDropdownData('roles');
+        $this->openAssignModal = true;
+    }
 
     public function store()
     {
+        // dd($this->newAccessData);
         try {
             $selectedUsers = $this->newAccessData['users_id'];
             $selectedRoles = $this->newAccessData['roles_id'];
