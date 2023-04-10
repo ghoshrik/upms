@@ -46,6 +46,7 @@
             </div>
         </div>
     </div>
+
     @if ($filtredOffices != null)
         <div class="card" wire:loading.delay.longest.class="loading">
             <div class="card-body p-2">
@@ -57,7 +58,7 @@
                                 <th scope="col">Office Name</th>
                                 <th scope="col">Office Code</th>
                                 <th scope="col">Office Address</th>
-                                <th scope="col">User</th>
+                                {{-- <th scope="col">User</th> --}}
                                 <th scope="col">Actions</th>
                             </tr>
                         </thead>
@@ -72,7 +73,7 @@
                                             {{ $office['office_code'] }}
                                         </td>
                                         <td class="text-wrap" style="width: 30rem">{{ $office['office_address'] }}</td>
-                                        <td>
+                                        {{-- <td>
                                             @if ($office['user_id'])
                                                 @foreach ($hooUsers as $user)
                                                     @if ($user['id'] == $office['user_id'])
@@ -93,13 +94,21 @@
                                                     @endforeach
                                                 </select>
                                             @endif
-                                        </td>
+                                        </td> --}}
                                         <td>
-                                            <button type="button" wire:click="assign({{ $office['id'] }})"
+                                            {{-- <button type="button" wire:click="assign({{ $office['id'] }})"
                                                 class="btn btn-soft-primary btn-sm"
                                                 {{ $office['user_id'] ? 'disabled ' : '' }}>
                                                 Assign Admin
+                                            </button> --}}
+                                            <button type="button" wire:click="assignuser({{ $office['id'] }})"
+                                                class="btn btn-soft-primary btn-sm">
+                                                Assign Admin
                                             </button>
+                                            {{-- <button type="button" class="btn btn-soft-warning btn-sm"
+                                                wire:click="assignuser({{ $office['id'] }})">
+                                                <x-lucide-user-check class="w-4 h-4 text-gray-500" />
+                                            </button> --}}
                                         </td>
                                     </tr>
                                 @endforeach
