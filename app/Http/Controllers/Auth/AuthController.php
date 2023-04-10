@@ -46,7 +46,7 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'loginId' => 'required',
-            // 'password' => 'required|min:6',
+            'password' => 'required|min:6',
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -86,7 +86,7 @@ class AuthController extends Controller
     }
     public function LoginWithOTP(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
         // dd(implode('', $request->verifyOtp));
 
         $validator = Validator::make($request->all(), [

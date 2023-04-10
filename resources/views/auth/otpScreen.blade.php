@@ -21,17 +21,17 @@
                         <img src="{{ asset('images/avatars/01.png') }}" class="rounded avatar-80 mb-3" alt="">
                         <h2 class="mb-2">Hi ! {{ $userdtls->emp_name }}</h2>
                         <style>
-                            :where(.otp-container, form, .input-field) {
+                            /* :where(.otp-container, form, .input-field) {
                                 display: flex;
                                 flex-direction: column;
                                 align-items: center;
-                                /* justify-content: center; */
-                            }
+                                justify-content: center;
+                            } */
 
                             .otp-container {
-                                padding: 20px 50px;
+                                /* padding: 20px 50px;
                                 border-radius: 12px;
-                                row-gap: 50px;
+                                row-gap: 50px; */
                                 /* box-shadow: 0 5px 10px rgba(0, 0, 0, 1.0); */
                             }
 
@@ -41,55 +41,62 @@
                                 font-weight: 500;
                             }
 
-                            .otp-container form .input-field {
-                                flex-direction: row;
-                                column-gap: 25px;
-                            }
-
-                            .otp-container .input-field input {
-                                height: 45px;
-                                width: 60px;
-                                border-radius: 6px;
-                                outline: none;
-                                font-size: 1.125rem;
-                                text-align: center;
-                                border: 1px solid #ddd;
-                            }
-
-                            .otp-container .input-field input:focus {
-                                box-shadow: 0 1px 0rgba(0, 0, 0, 0.1);
-                            }
-
-                            .otp-container .input-field input::-webkit-inner-spin-button,
-                            .otp-container .input-field input::-webkit-outer-spin-button {
-                                display: none;
-                            }
-
-                            .otp-container form button {
-                                margin-top: 25px;
+                            .inputfield {
                                 width: 100%;
-                                font-size: 1rem;
-                                color: #ffffff;
-                                border: none;
-                                padding: 9px 0;
+                                display: flex;
+                                justify-content: space-around;
+                            }
+
+                            .input {
+                                height: 3em;
+                                width: 3em;
+                                border: 2px solid #dad9df;
+                                outline: none;
+                                text-align: center;
+                                font-size: 1.5em;
+                                border-radius: 0.3em;
+                                background-color: #ffffff;
+                                outline: none;
+                                /*Hide number field arrows*/
+                                -moz-appearance: textfield;
+                            }
+
+                            input[type="number"]::-webkit-outer-spin-button,
+                            input[type="number"]::-webkit-inner-spin-button {
+                                -webkit-appearance: none;
+                                margin: 0;
+                            }
+
+                            .input:disabled {
+                                color: #89888b;
+                            }
+
+                            .input:focus {
+                                border: 3px solid #857f71;
+                            }
+
+                            #submit {
+                                /* background-color: #044ecf; */
+                                /* border: none; */
+                                outline: none;
+                                font-size: 1.2em;
+                                padding: 0.8em 2em;
+                                /* color: #ffffff; */
+                                border-radius: 0.1em;
+                                margin: 1em auto 0 auto;
                                 cursor: pointer;
-                                border-radius: 6px;
-                                pointer-events: none;
-                                background: #6e93f7;
-                                transition: all 0.2s ease;
                             }
 
-                            .otp-container form button.active {
-                                background: #34070f4;
-                                pointer-events: auto;
+                            .show {
+                                display: block;
                             }
 
-                            .otp-container form button:hover {
-                                background: #0e4bf1;
+                            .hide {
+                                display: none;
                             }
                         </style>
                         {{-- <p>Enter your password to access the admin.</p> --}}
-                        <p class="text-danger" id="countdown"></p>
+                        {{-- <p class="text-danger" id="countdown"></p> --}}
                         <x-auth-session-status class="mb-4" :status="session('status')" />
 
                         {{-- <x-auth-validation-errors class="mb-4" :errors="$errors" /> --}}
@@ -99,40 +106,44 @@
                         @endif
 
 
-                        <div class="otp-container">
+                        {{-- <div class="otp-container">
                             <h4>Enter OTP Code</h4>
-                            <form action="{{ route('otp.login') }}" method="post">
-                                @csrf
-                                {{-- <div class="row">
-                                <div class="col-lg-12"> --}}
-                                {{-- <div class="floating-label form-group">
-                                        <label for="password" class="form-label">Password</label>
-                                        <input type="password" class="form-control" id="password"
-                                            aria-describedby="password" placeholder=" ">
-                                    </div> --}}
-                                <input type="hidden" name="user_id" value="{{ $user_id }}" />
-                                <div class="input-field">
-                                    <input type="number" name="verifyOtp[]" />
-                                    <input type="number" name="verifyOtp[]" maxlength="1" disabled />
-                                    <input type="number" name="verifyOtp[]" maxlength="1" disabled />
-                                    <input type="number" name="verifyOtp[]" maxlength="1" disabled />
-                                    <input type="number" name="verifyOtp[]" maxlength="1" disabled />
-                                    <input type="number" name="verifyOtp[]" maxlength="1" disabled />
+
+                        </div> --}}
+                        <form id="otpscreen">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="floating-label form-group">
+                                        <div class="inputfield">
+                                            <input type="number" maxlength="1" id="input1" class="input"
+                                                disabled />
+                                            <input type="number" maxlength="1" id="input2" class="input"
+                                                disabled />
+                                            <input type="number" maxlength="1" id="input3" class="input"
+                                                disabled />
+                                            <input type="number" maxlength="1" id="input4" class="input"
+                                                disabled />
+                                            <input type="number" maxlength="1" id="input5" class="input"
+                                                disabled />
+                                            <input type="number" maxlength="1" id="input6" class="input"
+                                                disabled />
+                                        </div>
+
+                                    </div>
                                 </div>
-                                {{-- <input type= --}}
-                                {{-- </div>
-                            </div> --}}
-                                {{-- <div class="text-center mt-2"><span class="d-block mobile-text">Don't receive the
-                                        code?</span><span class="font-weight-bold text-danger cursor">Resend</span>
-                                </div> --}}
-                                <div class="fw-normal text-muted mt-2">
+                                <div class="col-lg-9">
+                                    {{-- <div class="fw-normal text-muted mt-2"> --}}
                                     Didn’t get the code ? <a href="#"
                                         class="text-primary fw-bold text-decoration-none">Resend</a>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Verify OTP</button>
-                            </form>
-                        </div>
 
+                                    {{-- </div> --}}
+                                </div>
+                                <div class="col-lg-3">
+                                    <p class="text-danger" id="countdown"></p>
+                                </div>
+                            </div>
+                            <button type="button" id="submit" class="btn btn-primary hide">Verify OTP</button>
+                        </form>
 
 
 
@@ -203,69 +214,129 @@
 <script>
     $(document).ready(function() {
         //alert("hii");
-        var countdown = 300; // seconds
+        var countdown = 119; // seconds
         var timer = setInterval(function() {
             countdown--;
-            document.getElementById("countdown").innerHTML = "Time remaining: " + countdown +
-                " seconds";
-            if (countdown <= 0) {
-                clearInterval(timer);
-                // window.location.href = "{{ route('auth.signin') }}"; // replace with your main page URL
-            }
+            document.getElementById("countdown").innerHTML = "0:" + (seconds < 10 ? "0" : "") + String(countdown);
+
+            // if (countdown <= 0) {
+            //     clearInterval(timer);
+            //     // window.location.href = "{{ route('auth.signin') }}"; // replace with your main page URL
+            // }
+
         }, 1000);
 
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $('#otpscreen').on('click', function(e) {
+            e.preventDefault();
+            var input1 = $('#input1').val();
+            var input2 = $('#input2').val();
+            var input3 = $('#input3').val();
+            var input4 = $('#input4').val();
+            var input5 = $('#input5').val();
+            var input6 = $('#input6').val();
+            const otpnum = input1 + input2 + input3 + input4 + input5 + input6;
+            console.log(otpnum);
+            $.ajax({
+                url: "{{ route('otp.login') }}",
+                data: {
+                    otpnum: otpnum,
+                    _token: '{{ csrf_token() }}'
+                },
+                dataType: 'json',
+                type: 'post',
+                success: function(data) {
+                    console.log(data);
+                },
+                error: function(data, textStatus, errorThrown) {
+                    console.log(data);
+
+                },
+            });
+        });
     });
+    //Initial references
+    const input = document.querySelectorAll(".input");
+    const inputField = document.querySelector(".inputfield");
+    const submitButton = document.getElementById("submit");
+    let inputCount = 0,
+        finalInput = "",seconds = 59;
 
-    const inputs = document.querySelectorAll("input"),
-        button = document.querySelector("button");
+    //Update input
+    const updateInputConfig = (element, disabledStatus) => {
+        element.disabled = disabledStatus;
+        if (!disabledStatus) {
+            element.focus();
+        } else {
+            element.blur();
+        }
+    };
 
-    // iterate over all inputs
-    inputs.forEach((input, index1) => {
-        input.addEventListener("keyup", (e) => {
-            // This code gets the current input element and stores it in the currentInput variable
-            // This code gets the next sibling element of the current input element and stores it in the nextInput variable
-            // This code gets the previous sibling element of the current input element and stores it in the prevInput variable
-            const currentInput = input,
-                nextInput = input.nextElementSibling,
-                prevInput = input.previousElementSibling;
+    input.forEach((element) => {
+        element.addEventListener("keyup", (e) => {
+            e.target.value = e.target.value.replace(/[^0-9]/g, "");
+            let {
+                value
+            } = e.target;
 
-            // if the value has more than one character then clear it
-            console.log(currentInput.value.length);
-            if (currentInput.value.length > 1) {
-                currentInput.value = "";
-                return;
-            }
-            // if the next input is disabled and the current value is not empty
-            //  enable the next input and focus on it
-            if (nextInput && nextInput.hasAttribute("disabled") && currentInput.value !== "") {
-                nextInput.removeAttribute("disabled");
-                nextInput.focus();
-            }
-            console.log(input);
-
-            // if the backspace key is pressed
-            if (e.key === "Backspace") {
-                // iterate over all inputs again
-                inputs.forEach((input, index2) => {
-                    // if the index1 of the current input is less than or equal to the index2 of the input in the outer loop
-                    // and the previous element exists, set the disabled attribute on the input and focus on the previous element
-                    if (index1 <= index2 && prevInput) {
-                        input.setAttribute("disabled", true);
-                        input.value = "";
-                        prevInput.focus();
+            if (value.length == 1) {
+                updateInputConfig(e.target, true);
+                if (inputCount <= 5 && e.key != "Backspace") {
+                    finalInput += value;
+                    if (inputCount < 5) {
+                        updateInputConfig(e.target.nextElementSibling, false);
                     }
-                });
+                }
+                inputCount += 1;
+            } else if (value.length == 0 && e.key == "Backspace") {
+                finalInput = finalInput.substring(0, finalInput.length - 1);
+                if (inputCount == 0) {
+                    updateInputConfig(e.target, false);
+                    return false;
+                }
+                updateInputConfig(e.target, true);
+                e.target.previousElementSibling.value = "";
+                updateInputConfig(e.target.previousElementSibling, false);
+                inputCount -= 1;
+            } else if (value.length > 1) {
+                e.target.value = value.split("")[0];
             }
-            //if the fourth input( which index number is 3) is not empty and has not disable attribute then
-            //add active class if not then remove the active class.
-            if (!inputs[3].disabled && inputs[3].value !== "") {
-                button.classList.add("active");
-                return;
-            }
-            button.classList.remove("active");
+            submitButton.classList.add("hide");
         });
     });
 
-    //focus the first input which index is 0 on window load
-    window.addEventListener("load", () => inputs[0].focus());
+    window.addEventListener("keyup", (e) => {
+        if (inputCount > 5) {
+            submitButton.classList.remove("hide");
+            submitButton.classList.add("show");
+            if (e.key == "Backspace") {
+                finalInput = finalInput.substring(0, finalInput.length - 1);
+                updateInputConfig(inputField.lastElementChild, false);
+                inputField.lastElementChild.value = "";
+                inputCount -= 1;
+                submitButton.classList.add("hide");
+            }
+        }
+    });
+
+    // const validateOTP = () => {
+    //     alert("Success");
+    // };
+
+    //Start
+    const startInput = () => {
+        inputCount = 0;
+        finalInput = "";
+        input.forEach((element) => {
+            element.value = "";
+        });
+        updateInputConfig(inputField.firstElementChild, false);
+    };
+
+    window.onload = startInput();
 </script>
