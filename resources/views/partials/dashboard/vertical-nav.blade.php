@@ -20,49 +20,64 @@
         </a>
     </li>
     @foreach ($menus as $menu)
-    @if ($menu->permissions_roles!=null)
-    @php
-    $permissions_role = explode(',',$menu->permissions_roles);
-    @endphp
-    @hasanyrole($permissions_role)
-    <li class="nav-item mb-2">
-        @if (Route::has($menu->link))
-        <a class="nav-link {{activeRoute(route($menu->link))}}" aria-current="page" href="{{route($menu->link)}}">
-            @else
-            <a class="nav-link aria-current" href="#">
-                @endif
-                <i class="icon">
-                    {{-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        @if ($menu->permissions_roles != null)
+            @php
+                $permissions_role = explode(',', $menu->permissions_roles);
+            @endphp
+            @hasanyrole($permissions_role)
+                <li class="nav-item mb-2">
+                    @if (Route::has($menu->link))
+                        <a class="nav-link {{ activeRoute(route($menu->link)) }}" aria-current="page"
+                            href="{{ route($menu->link) }}">
+                        @else
+                            <a class="nav-link aria-current" href="#">
+                    @endif
+                    <i class="icon">
+                        {{-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                     </svg> --}}
-                    <x-lucide-info class="w-4 h-4 text-gray-500" />
-                </i>
-                <span class="item-name">{{$menu->title}}</span>
-            </a>
-            {{-- <br> --}}
-    </li>
-    @else
-    @canany($permissions_role)
-    <li class="nav-item mb-2">
-        @if (Route::has($menu->link))
-        <a class="nav-link {{activeRoute(route($menu->link))}}" aria-current="page" href="{{route($menu->link)}}">
+                        @if ($menu->icon)
+                            <x-icon name="{{ $menu->icon }}" class="w-5 h-5" />
+                        @else
+                            <x-icon name="link" class="w-5 h-5" />
+                        @endif
+                    </i>
+                    <span class="item-name">{{ $menu->title }}</span>
+                    </a>
+                    {{-- <br> --}}
+                </li>
             @else
-            <a class="nav-link aria-current" href="#">
-                @endif
-                <i class="icon">
-                    {{-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                @canany($permissions_role)
+                    <li class="nav-item mb-2">
+                        @if (Route::has($menu->link))
+                            <a class="nav-link {{ activeRoute(route($menu->link)) }}" aria-current="page"
+                                href="{{ route($menu->link) }}">
+                            @else
+                                <a class="nav-link aria-current" href="#">
+                        @endif
+                        <i class="icon">
+                            {{-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                     </svg> --}}
-                    <x-lucide-info class="w-4 h-4 text-gray-500" />
-                </i>
-                <span class="item-name">{{$menu->title}}</span>
-            </a>
-            {{-- <br> --}}
-    </li>
-    @endcanany
-    @endhasanyrole
-    @endif
+                            {{--
+
+                                 @if ($menu->icon)
+                                <x-icon name="{{ $menu->icon }}" class="w-5 h-5" />
+                            @else
+                                <x-icon name="link" class="w-5 h-5" />
+                            @endif
+
+
+                                --}}
+                        </i>
+                        <span class="item-name">{{ $menu->title }}</span>
+                        </a>
+                        {{-- <br> --}}
+                    </li>
+                @endcanany
+            @endhasanyrole
+        @endif
     @endforeach
 </ul>

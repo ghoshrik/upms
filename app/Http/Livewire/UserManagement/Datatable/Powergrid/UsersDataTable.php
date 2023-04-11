@@ -48,7 +48,6 @@ final class UsersDataTable extends PowerGridComponent
                 ->showPerPage()
                 ->showRecordCount(),
         ];
-
     }
 
     /*
@@ -70,9 +69,9 @@ final class UsersDataTable extends PowerGridComponent
             if (Auth::user()->office_id) {
 
                 return User::query()
-                ->join('user_types', function ($user_types) {
-                    $user_types->on('users.user_type', '=', 'user_types.id');
-                })->join('designations', 'users.designation_id', '=', 'designations.id')
+                    ->join('user_types', function ($user_types) {
+                        $user_types->on('users.user_type', '=', 'user_types.id');
+                    })->join('designations', 'users.designation_id', '=', 'designations.id')
                     ->select(
                         'users.id',
                         'users.name',
@@ -98,9 +97,9 @@ final class UsersDataTable extends PowerGridComponent
             } else {
                 // dd(User::query()->with('designation')->first());
                 return User::query()
-                ->join('user_types', function ($user_types) {
-                    $user_types->on('users.user_type', '=', 'user_types.id');
-                })->join('designations', 'users.designation_id', '=', 'designations.id')
+                    ->join('user_types', function ($user_types) {
+                        $user_types->on('users.user_type', '=', 'user_types.id');
+                    })->join('designations', 'users.designation_id', '=', 'designations.id')
                     ->select(
                         'users.id',
                         'users.name',

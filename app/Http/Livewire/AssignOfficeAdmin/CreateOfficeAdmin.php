@@ -2,21 +2,24 @@
 
 namespace App\Http\Livewire\AssignOfficeAdmin;
 
-use App\Models\District;
-use App\Models\Office;
 use App\Models\User;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Office;
 use Livewire\Component;
+use App\Models\District;
 use WireUi\Traits\Actions;
+use Illuminate\Support\Arr;
+use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth;
 
 class CreateOfficeAdmin extends Component
 {
-    use Actions;
-    public $selectedLevel, $selectedDist, $selectedOffice, $dropdownData = [], $searchCondition = [], $filtredOffices, $hooUsers, $selectedUser;
+    use Actions, WithPagination;
+    public $selectedLevel, $selectedDist, $selectedOffice, $dropdownData = [], $searchCondition = [], $filtredOffices, $hooUsers, $selectedUser, $openAssignAdminModal;
+    // public $viewMode = false;
+
     public function mount()
     {
-        $this->hooUsers = User::where([['user_type', 4], ['department_id', Auth::user()->department_id],['is_active',1]])->get();
+        $this->hooUsers = User::where([['user_type', 4], ['department_id', Auth::user()->department_id], ['is_active', 1]])->get();
         $this->dropdownData['dist'] = District::all();
     }
     public function filter()
@@ -39,7 +42,8 @@ class CreateOfficeAdmin extends Component
         })
             ->where($this->searchCondition)
             ->where('offices.department_id', Auth::user()->department_id)
-            ->select('offices.id as id', 'offices.office_name', 'offices.office_address','offices.office_code', 'offices.level_no', 'offices.dist_code', 'users.id as user_id')
+            ->select('offices.id as id', 'offices.office_name', 'offices.office_address', 'offices.office_code', 'offices.level_no', 'offices.dist_code', 'users.id as user_id')
+            ->orderBy('users.id', 'asc')
             ->get();
         $this->resetExcept('hooUsers', 'filtredOffices', 'dropdownData', 'selectedLevel', 'selectedDist', 'selectedUser');
     }
@@ -55,22 +59,33 @@ class CreateOfficeAdmin extends Component
     public function assign($office_id)
     {
         try {
-            $selectUserData = User::where('id', $this->selectedUser[$office_id]);
-            if ($selectUserData->where('office_id', null)->first()) {
-                $selectUserData->update(['office_id' => $office_id]);
-                $this->notification()->success(
-                    $title = 'User Assign successfully'
-                );
-                return;
-            }
-            $this->emit('refresh');
-            $this->notification()->error(
-                $title = 'User already assigned.'
-            );
-        } catch (\Throwable$th) {
+            // $selectUserData = User::where('id', $this->selectedUser[$office_id]);
+            // // $this->emit('')
+            // // dd($this->selectedUser[$office_id]);
+
+            // if ($selectUserData->where('office_id', null)->first()) {
+            //     $selectUserData->update(['office_id' => $office_id]);
+            //     $this->emit('assignAdmin', $office_id);
+
+            //     $this->notification()->success(
+            //         $title = 'User Assign successfully'
+            //     );
+            //     return;
+            // }
+
+            // $this->emit('refresh');
+            // $this->notification()->error(
+            //     $title = 'User already assigned.'
+            // );
+
+        } catch (\Throwable $th) {
             $this->emit('showError', $th->getMessage());
         }
-
+    }
+    public $AllofficeUsers;
+    public function assignuser($id)
+    {
+        $this->emit('assignAdmin', $id);
     }
     public function render()
     {

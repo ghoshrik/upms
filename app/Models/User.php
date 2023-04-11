@@ -70,7 +70,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function designation()
     {
         // return $this->belongsTo(Designation::class,'designation_id');
-        return $this->belongsTo(Designation::class ,'designation_id');
+        return $this->belongsTo(Designation::class, 'designation_id');
     }
     public function getDepartmentName()
     {
@@ -78,7 +78,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
     public function getDesignationName()
     {
-        return $this->hasOne(Designation::class, 'id','designation_id');
+        return $this->hasOne(Designation::class, 'id', 'designation_id');
     }
     public function getUserType()
     {
