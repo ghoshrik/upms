@@ -2,17 +2,19 @@
 
 namespace App\Http\Livewire\AssignToAnotherOffice;
 
+use App\Models\Role;
 use App\Models\Office;
 use Livewire\Component;
 use App\Models\District;
+use App\Models\OtherOfficeAssignRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
 class AssignToAnotherOfficeModal extends Component
 {
-    public $openAssignModal;
-    public $selectedUser;
-    public $selectedLevel, $selectedDist, $selectedOffice, $dropdownData = [], $searchCondition = [], $filtredOffices;
+    public $openAssignModal,$roleSelectModal;
+    public $selectedUser,$selectedOffice,$selectedRoles=[];
+    public $selectedLevel, $selectedDist, $dropdownData = [], $searchCondition = [], $filtredOffices;
     protected $listeners = ['openAssignModel'];
     public function mount()
     {
@@ -44,7 +46,25 @@ class AssignToAnotherOfficeModal extends Component
             ->where('offices.department_id', Auth::user()->department_id)
             ->select('offices.id as id', 'offices.office_name', 'offices.office_address','offices.office_code', 'offices.level_no', 'offices.dist_code', 'users.id as user_id')
             ->get();
-        $this->resetExcept('filtredOffices', 'dropdownData', 'selectedLevel', 'selectedDist','openAssignModal');
+        $this->resetExcept('filtredOffices', 'dropdownData', 'selectedLevel', 'selectedDist','openAssignModal','selectedUser');
+    }
+    public function selectRole($selectedOfficeId)
+    {
+        $this->selectedOffice = $selectedOfficeId;
+        $this->roleSelectModal = true;
+        $this->dropdownData['roles'] = Role::join('roles_order','roles.id','=','roles_order.role_id')->where('roles_order.parent_id','>',3)->get();
+    }
+    public function store()
+    {
+        $roles = implode(',', $this->selectedRoles);
+        $data = [
+            'request_from'=>Auth::user()->id,
+            'user_id'=>$this->selectedUser,
+            'office_id'=>$this->selectedOffice,
+            'roles'=> $roles
+        ];
+        $OtherOfficeAssignRequestReturn = OtherOfficeAssignRequest::create($data);
+        dd($OtherOfficeAssignRequestReturn);
     }
     public function render()
     {
