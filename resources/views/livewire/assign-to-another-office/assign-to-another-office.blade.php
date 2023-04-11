@@ -13,7 +13,7 @@
                         <h3 class="text-dark">{{$titel}}</h3>
                     <p class="text-primary mb-0">{{$subTitel}}</p>
                     </div>
-                    @canany(['create estimate', 'edit estimate'])
+                    {{-- @canany(['create estimate', 'edit estimate']) --}}
                         <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
                             @if (!$isFromOpen)
                                 <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
@@ -31,7 +31,7 @@
                                 </button>
                             @endif
                         </div>
-                    @endcanany
+                    {{-- @endcanany --}}
                 </div>
             </div>
             {{-- <div class="iq-header-img">
@@ -55,7 +55,7 @@
         <div wire:loading.delay.long.class="loading">
             @if ($isFromOpen && $openedFormType == 'create')
                 <div x-transition.duration.900ms>
-                    <livewire:estimate-project.create-estimate-project />
+                    <livewire:assign-to-another-office.assign-to-another-office-create>
                 </div>
             @elseif($isFromOpen && $openedFormType == 'edit')
                 <div x-transition.duration.900ms>

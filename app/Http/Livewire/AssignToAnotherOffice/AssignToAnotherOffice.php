@@ -6,7 +6,7 @@ use Livewire\Component;
 
 class AssignToAnotherOffice extends Component
 {
-    public $openedFormType= false,$isFromOpen=false,$subTitel = "List",$titel='Assign To Another Office',$selectedIdForEdit,$errorMessage;
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$titel='Assign To Another Office',$selectedIdForEdit,$errorMessage;
     public $selectedTab = 1,$counterData=[];
     public $updateDataTableTracker=0;
     protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'mount','showError'=>'setErrorAlert'];
