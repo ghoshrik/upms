@@ -97,7 +97,7 @@
                         </style>
                         {{-- <p>Enter your password to access the admin.</p> --}}
                         {{-- <p class="text-danger" id="countdown"></p> --}}
-                        <x-auth-session-status class="mb-4" :status="session('status')" />
+                        <x-auth-session-status class="mb-4" id="status" :status="session('status')" />
 
                         {{-- <x-auth-validation-errors class="mb-4" :errors="$errors" /> --}}
                         @if (session('error'))
@@ -114,6 +114,7 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="floating-label form-group">
+                                        <input type="hidden" id="user_id" value="{{ base64_encode($user_id) }}" />
                                         <div class="inputfield">
                                             <input type="number" maxlength="1" id="input1" class="input"
                                                 disabled />
@@ -133,8 +134,8 @@
                                 </div>
                                 <div class="col-lg-9">
                                     {{-- <div class="fw-normal text-muted mt-2"> --}}
-                                    Didn’t get the code ? <a href="#"
-                                        class="text-primary fw-bold text-decoration-none">Resend</a>
+                                    {{-- Didn’t get the code ? <a href="#"
+                                        class="text-primary fw-bold text-decoration-none">Resend</a> --}}
 
                                     {{-- </div> --}}
                                 </div>
@@ -215,16 +216,16 @@
     $(document).ready(function() {
         //alert("hii");
         var countdown = 119; // seconds
-        var timer = setInterval(function() {
-            countdown--;
-            document.getElementById("countdown").innerHTML = "0:" + (seconds < 10 ? "0" : "") + String(countdown);
+        // var timer = setInterval(function() {
+        //     countdown--;
+        //     document.getElementById("countdown").innerHTML = "0:" + (seconds < 10 ? "0" : "") + String(countdown);
 
-            // if (countdown <= 0) {
-            //     clearInterval(timer);
-            //     // window.location.href = "{{ route('auth.signin') }}"; // replace with your main page URL
-            // }
+        //     if (countdown <= 0) {
+        //         clearInterval(timer);
+        //         // window.location.href = "{{ route('auth.signin') }}"; // replace with your main page URL
+        //     }
 
-        }, 1000);
+        // }, 1000);
 
 
         $.ajaxSetup({
@@ -240,23 +241,25 @@
             var input4 = $('#input4').val();
             var input5 = $('#input5').val();
             var input6 = $('#input6').val();
+            var userId = $('#user_id').val();
             const otpnum = input1 + input2 + input3 + input4 + input5 + input6;
-            console.log(otpnum);
+            console.log(otpnum, userId);
             $.ajax({
                 url: "{{ route('otp.login') }}",
                 data: {
                     otpnum: otpnum,
+                    userId: userId,
                     _token: '{{ csrf_token() }}'
                 },
                 dataType: 'json',
                 type: 'post',
                 success: function(data) {
-                    console.log(data);
-                },
-                error: function(data, textStatus, errorThrown) {
-                    console.log(data);
-
-                },
+                    // console.log(data);
+                    if (data.success == true) {
+                        $('#status').html(data.status);
+                        window.location.href = "{{ route('dashboard') }}";
+                    }
+                }
             });
         });
     });
@@ -265,7 +268,8 @@
     const inputField = document.querySelector(".inputfield");
     const submitButton = document.getElementById("submit");
     let inputCount = 0,
-        finalInput = "",seconds = 59;
+        finalInput = "",
+        seconds = 59;
 
     //Update input
     const updateInputConfig = (element, disabledStatus) => {
