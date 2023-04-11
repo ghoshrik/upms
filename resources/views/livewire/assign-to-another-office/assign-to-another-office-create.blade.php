@@ -85,26 +85,7 @@
             </div>
         </div>
     @endisset
-    {{-- <x-modal wire:model.defer="openAssignModal">
-        <x-card title="Select Role">
-            <div class="col-md-12">
-                <div class="form-group">
-                    @isset($dropDownData['roles'])
-                        <x-select label="Role" placeholder="Select roles" wire:model.defer="newAccessData.roles_id"
-                            multiselect>
-                            @foreach ($dropDownData['roles'] as $roles)
-                                <x-select.option label="{{ $roles['name'] }}" value="{{ $roles['id'] }}" />
-                            @endforeach
-                        </x-select>
-                    @endisset
-                </div>
-            </div>
-            <x-slot name="footer">
-                <div class="flex justify-end gap-x-4">
-                    <x-button flat label="Cancel" x-on:click="close" />
-                    <x-button wire:click="store" primary label="Save" />
-                </div>
-            </x-slot>
-        </x-card>
-    </x-modal> --}}
+    <div>
+        <livewire:assign-to-another-office.assign-to-another-office-modal>
+    </div>
 </div>

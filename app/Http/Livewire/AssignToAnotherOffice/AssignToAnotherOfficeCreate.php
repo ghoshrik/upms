@@ -28,8 +28,9 @@ class AssignToAnotherOfficeCreate extends Component
     }
     public function assignOffice($userId)
     {
-        $this->newAccessData['users_id']= $userId;
-        $this->getDropdownData('roles');
+        $this->emit('openAssignModel', $userId);
+        // $this->newAccessData['users_id']= $userId;
+        // $this->getDropdownData('roles');
         // $this->openAssignModal = true;
     }
     public function getDropdownData($lookingFor)
