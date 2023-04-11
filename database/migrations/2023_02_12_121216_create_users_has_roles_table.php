@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('users_has_roles', function (Blueprint $table) {
             $table->bigInteger('user_id');
             $table->bigInteger('role_id');
+            $table->integer('office_id')->default(0);
             $table->timestamps();
         });
     }
