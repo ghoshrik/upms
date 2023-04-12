@@ -101,7 +101,7 @@
                                                 {{ $office['user_id'] ? 'disabled ' : '' }}>
                                                 Assign Admin
                                             </button> --}}
-                                            <button type="button" wire:click="assignuser({{ $office['id'] }})"
+                                            <button type="button" wire:click="$emit('assignuser',{{ $office->id }})"
                                                 class="btn btn-soft-primary btn-sm">
                                                 Assign Admin
                                             </button>

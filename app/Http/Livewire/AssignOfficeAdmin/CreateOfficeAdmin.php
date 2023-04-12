@@ -14,8 +14,9 @@ use Illuminate\Support\Facades\Auth;
 class CreateOfficeAdmin extends Component
 {
     use Actions, WithPagination;
-    public $selectedLevel, $selectedDist, $selectedOffice, $dropdownData = [], $searchCondition = [], $filtredOffices, $hooUsers, $selectedUser, $openAssignAdminModal;
+    public $selectedLevel, $selectedDist, $selectedOffice, $dropdownData = [], $searchCondition = [], $filtredOffices, $hooUsers, $selectedUser, $openAssignAdminId = '';
     // public $viewMode = false;
+    protected $listeners = ['assignuser'];
 
     public function mount()
     {
@@ -60,12 +61,10 @@ class CreateOfficeAdmin extends Component
     {
         try {
             // $selectUserData = User::where('id', $this->selectedUser[$office_id]);
-            // // $this->emit('')
-            // // dd($this->selectedUser[$office_id]);
+
 
             // if ($selectUserData->where('office_id', null)->first()) {
             //     $selectUserData->update(['office_id' => $office_id]);
-            //     $this->emit('assignAdmin', $office_id);
 
             //     $this->notification()->success(
             //         $title = 'User Assign successfully'
@@ -82,11 +81,13 @@ class CreateOfficeAdmin extends Component
             $this->emit('showError', $th->getMessage());
         }
     }
-    public $AllofficeUsers;
+
     public function assignuser($id)
     {
-        $this->emit('assignAdmin', $id);
+        $this->openAssignAdminId = $id;
     }
+
+
     public function render()
     {
         return view('livewire.assign-office-admin.create-office-admin');

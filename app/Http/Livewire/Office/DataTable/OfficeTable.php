@@ -28,37 +28,23 @@ class OfficeTable extends DataTableComponent
                 ->format(function ($value, $column, $row) {
                     switch ($value) {
                         case 1:
-                            return '<span class="badge bg-primary text-dark">Level 1 Office </span>';
+                            return '<span class="badge rounded-pill bg-primary text-dark">Level 1 Office </span>';
                             break;
                         case 2:
-                            return '<span class="badge bg-soft- secondary">Level 2 Office </span>';
+                            return '<span class="badge rounded-pill bg-secondary">Level 2 Office </span>';
                             break;
                         case 3:
-                            return '<span class="badge bg-soft-success">Level 3 Office </span>';
+                            return '<span class="badge rounded-pill bg-success">Level 3 Office </span>';
                             break;
                         case 4:
-                            return '<span class="badge bg-soft-info">Level 4 Office </span>';
+                            return '<span class="badge rounded-pill bg-info">Level 4 Office </span>';
                             break;
                         case 5:
-                            return '<span class="badge bg-soft-warning">Level 5 Office </span>';
+                            return '<span class="badge rounded-pill bg-warning">Level 5 Office </span>';
                             break;
                         default:
-                            return '<span class="badge bg-soft-dark">Level 6 Office</span>';
+                            return '<span class="badge rounded-pill bg-dark">Level 6 Office</span>';
                     }
-
-                    // if ($value == 1) {
-                    //     return '<span class="badge bg-primary text-dark">Level 1 Office </span>';
-                    // } elseif ($value == 2) {
-                    //     return '<span class="badge bg-soft- secondary">Level 2 Office </span>';
-                    // } elseif ($value == 3) {
-                    //     return '<span class="badge bg-soft-success">Level 3 Office </span>';
-                    // } elseif ($value == 4) {
-                    //     return '<span class="badge bg-soft-info">Level 4 Office </span>';
-                    // } elseif ($value == 5) {
-                    //     return '<span class="badge bg-soft-warning">Level 5 Office </span>';
-                    // } else {
-                    //     return '<span class="badge bg-soft-dark">Level 6 Office</span>';
-                    // }
                 })
                 ->html()
                 ->sortable(),
