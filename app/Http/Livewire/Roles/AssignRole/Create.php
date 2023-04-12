@@ -38,7 +38,7 @@ class Create extends Component
                     $this->dropDownData['offices'] = Office::where('id', Auth::user()->office_id)->get();
                     break;
                 case 'roles':
-                    $this->dropDownData['roles'] = Role::join('roles_order','roles.id','=','roles_order.role_id')->where('roles_order.parent_id','>',3)->get();
+                    $this->dropDownData['roles'] = Role::select('roles.id as id','roles.name as name')->join('roles_order','roles.id','=','roles_order.role_id')->where('roles_order.parent_id','>',3)->get();
                     break;
                 default:
                     // $this->allUsers = User::select('users.id','users.emp_name')->join('user_types', 'users.user_type', '=', 'user_types.id')
@@ -68,24 +68,39 @@ class Create extends Component
     {
         // dd($this->newAccessData);
         try {
-            $selectedUsers = $this->newAccessData['users_id'];
+            $userId = $this->newAccessData['users_id'];
             $selectedRoles = $this->newAccessData['roles_id'];
-            foreach ($selectedUsers as $userId) {
-                $userDetails = User::leftjoin('users_has_roles', 'users_has_roles.user_id', 'users.id')->where('users.id', $userId)->first();
-                if ($userDetails->user_id != null) {
-                    $this->notification()->error(
-                        $title = 'Error !!!',
-                        $description = $userDetails->emp_name . ' already assign to role please update.'
-                    );
-                    return;
-                }
-                foreach ($selectedRoles as $roleId) {
-                    UsersHasRoles::create([
-                        'user_id' => $userId,
-                        'role_id' => $roleId
-                    ]);
-                    $userDetails->syncRoles($roleId);
-                }
+            // foreach ($selectedUsers as $userId) {
+            //     $userDetails = User::leftjoin('users_has_roles', 'users_has_roles.user_id', 'users.id')->where('users.id', $userId)->first();
+            //     if ($userDetails->user_id != null) {
+            //         $this->notification()->error(
+            //             $title = 'Error !!!',
+            //             $description = $userDetails->emp_name . ' already assign to role please update.'
+            //         );
+            //         return;
+            //     }
+            //     foreach ($selectedRoles as $roleId) {
+            //         UsersHasRoles::create([
+            //             'user_id' => $userId,
+            //             'role_id' => $roleId
+            //         ]);
+            //         $userDetails->syncRoles($roleId);
+            //     }
+            // }
+            $userDetails = User::leftjoin('users_has_roles', 'users_has_roles.user_id', 'users.id')->where('users.id', $userId)->first();
+            if ($userDetails->user_id != null) {
+                $this->notification()->error(
+                    $title = 'Error !!!',
+                    $description = $userDetails->emp_name . ' already assign to role please update.'
+                );
+                return;
+            }
+            foreach ($selectedRoles as $roleId) {
+                UsersHasRoles::create([
+                    'user_id' => $userId,
+                    'role_id' => $roleId
+                ]);
+                $userDetails->syncRoles($roleId);
             }
             Cache::forget('user_has_roles');
             $this->emit('openEntryForm');
