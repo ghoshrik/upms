@@ -7,7 +7,7 @@ use Livewire\Component;
 class AssignToAnotherOffice extends Component
 {
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$titel='Assign To Another Office',$selectedIdForEdit,$errorMessage;
-    public $selectedTab = 1,$counterData=[];
+    public $selectedTab = 2,$counterData=[];
     public $updateDataTableTracker=0;
     protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'mount','showError'=>'setErrorAlert'];
     public function mount()
@@ -16,6 +16,11 @@ class AssignToAnotherOffice extends Component
         $this->counterData['draftDataCount']=0;
         $this->counterData['forwardedDataCount']=0;
         $this->counterData['revertedDataCount']=0;
+    }
+    public function requestData()
+    {
+        $this->selectedTab = '';
+        $this->selectedTab = 2;
     }
     public function fromEntryControl($data='')
     {
