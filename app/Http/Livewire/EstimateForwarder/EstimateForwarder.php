@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class EstimateForwarder extends Component
 {
-    protected $listeners = ['openForm' => 'formOCControl','wordDownload'=>'exportAndDownload','showError'=>'setErrorAlert','refreshData' => 'formOCControl'];
+    protected $listeners = ['openForm' => 'fromEntryControl','wordDownload'=>'exportAndDownload','showError'=>'setErrorAlert','refreshData' => 'fromEntryControl'];
     public $updateDataTableTracker, $selectedEstTab = 1, $counterData = [];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function mount()

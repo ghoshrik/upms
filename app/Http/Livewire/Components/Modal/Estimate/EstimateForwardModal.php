@@ -95,6 +95,7 @@ class EstimateForwardModal extends Component
             ->join('roles_order', 'users_has_roles.role_id', '=', 'roles_order.role_id')
             ->join('roles', 'roles.id', '=', 'users_has_roles.role_id')
             ->where('roles_order.id', $userAccess_id->parent_id)
+            ->where('users.department_id', Auth::user()->department_id)
             ->where('users.is_active', 1)
             ->select("users.emp_name", "users.designation_id", "users.id", "roles.name", "users_has_roles.role_id")
             ->get();
