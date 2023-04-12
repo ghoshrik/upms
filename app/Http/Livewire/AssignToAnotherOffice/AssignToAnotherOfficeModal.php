@@ -9,9 +9,12 @@ use App\Models\District;
 use App\Models\OtherOfficeAssignRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use WireUi\Traits\Actions;
 
 class AssignToAnotherOfficeModal extends Component
 {
+    use Actions;
+
     public $openAssignModal,$roleSelectModal;
     public $selectedUser,$selectedOffice,$selectedRoles=[];
     public $selectedLevel, $selectedDist, $dropdownData = [], $searchCondition = [], $filtredOffices;
@@ -52,7 +55,7 @@ class AssignToAnotherOfficeModal extends Component
     {
         $this->selectedOffice = $selectedOfficeId;
         $this->roleSelectModal = true;
-        $this->dropdownData['roles'] = Role::join('roles_order','roles.id','=','roles_order.role_id')->where('roles_order.parent_id','>',3)->get();
+        $this->dropdownData['roles'] = Role::select('roles.id as id','roles.name as name')->join('roles_order','roles.id','=','roles_order.role_id')->where('roles_order.parent_id','>',3)->get();
     }
     public function store()
     {
@@ -64,7 +67,13 @@ class AssignToAnotherOfficeModal extends Component
             'roles'=> $roles
         ];
         $OtherOfficeAssignRequestReturn = OtherOfficeAssignRequest::create($data);
-        dd($OtherOfficeAssignRequestReturn);
+        if($OtherOfficeAssignRequestReturn){
+            $this->notification()->success(
+                $title = 'Request sent successfully.'
+            );
+            $this->reset();
+            return;
+        }
     }
     public function render()
     {
