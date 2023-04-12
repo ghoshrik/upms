@@ -51,7 +51,7 @@
                         @isset($dropDownData['designations'])
                             <div class="col-md-4 col-lg-4 col-sm-4">
                                 <div class="form-group">
-                                    <x-select label="Designation" placeholder="Select Department"
+                                    <x-select label="Designation" placeholder="Select Designation"
                                         wire:model.defer="newUserData.designation_id">
                                         @foreach ($dropDownData['designations'] as $designation)
                                             <x-select.option label="{{ $designation['designation_name'] }}"
@@ -63,20 +63,20 @@
                         @endisset
                         <div class="col-md-4 col-lg-4 col-sm-3">
                             <div class="form-group">
-                                <x-input wire:model="newUserData.ehrms_id" label="eHrms ID(optional)"
+                                <x-input wire:model.lazy="newUserData.ehrms_id" label="eHrms ID(optional)"
                                     placeholder="Enter HRMS ID" />
                             </div>
                         </div>
                         <div class="col-md-4 col-lg-4 col-sm-4">
                             <div class="form-group">
-                                <x-input wire:model="newUserData.emp_name"
+                                <x-input wire:model.lazy="newUserData.emp_name"
                                     label="{{ trans('cruds.user-management.fields.employee_name') }}"
                                     placeholder="Enter {{ trans('cruds.user-management.fields.employee_name') }}" />
                             </div>
                         </div>
                         <div class="col-md-4 col-lg-4 col-sm-4">
                             <div class="form-group">
-                                <x-input wire:model="newUserData.username"
+                                <x-input wire:model.lazy="newUserData.username"
                                     label="{{ trans('cruds.user-management.fields.username') }}"
                                     placeholder="{{ trans('cruds.user-management.fields.username') }}" />
                             </div>
@@ -87,13 +87,13 @@
 
                         <div class="col-md-4 col-lg-4 col-sm-4">
                             <div class="form-group">
-                                <x-input wire:model="newUserData.email" label="Email"
+                                <x-input wire:model.lazy="newUserData.email" label="Email"
                                     placeholder="Enter Employee Email " />
                             </div>
                         </div>
                         <div class="col-md-4 col-lg-4 col-sm-4">
                             <div class="form-group">
-                                <x-input wire:model="newUserData.mobile" label="Mobile"
+                                <x-input wire:model.lazy="newUserData.mobile" label="Mobile"
                                     placeholder="Enter Employee Mobile No" />
                             </div>
                         </div>
@@ -101,13 +101,13 @@
                     {{-- <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <x-input wire:model="newUserData.password" type="password" label="Password"
+                                <x-input wire:model.lazy="newUserData.password" type="password" label="Password"
                                     placeholder="Enter Password" />
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <x-input wire:model="newUserData.confirm_password" type="password"
+                                <x-input wire:model.lazy="newUserData.confirm_password" type="password"
                                     label="Confirm Password" placeholder="Enter Confirm Password" />
                             </div>
                         </div>

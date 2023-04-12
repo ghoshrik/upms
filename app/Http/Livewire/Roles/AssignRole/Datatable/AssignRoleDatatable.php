@@ -4,7 +4,7 @@ namespace App\Http\Livewire\Roles\AssignRole\Datatable;
 
 use App\Models\UsersHasRoles;
 use Illuminate\Database\Eloquent\Builder;
-
+use Illuminate\Support\Facades\Auth;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 
@@ -78,7 +78,9 @@ final class AssignRoleDatatable extends PowerGridComponent
             ->join("users", "users_has_roles.user_id", '=', "users.id")
             ->join("roles", "users_has_roles.role_id", '=', "roles.id")
             ->join("departments","users.department_id",'=',"departments.id")
-            ->join("offices","users.office_id",'=',"offices.id");
+            ->join("offices","users.office_id",'=',"offices.id")
+            ->where('offices.id',Auth::user()->office_id)
+            ->where('users.user_type',6);
     }
 
     /*

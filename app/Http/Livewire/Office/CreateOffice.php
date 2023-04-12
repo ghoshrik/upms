@@ -109,7 +109,7 @@ class CreateOffice extends Component
         try {
             $insert = array_merge($this->selectedOption, $this->officeData);
             $insert = [
-                'In_area'=>$this->selectedOption['In_area'],
+                'in_area'=>$this->selectedOption['In_area'],
                 'department_id'=>$this->officeData['department_id'],
                 'office_name'=>$this->officeData['office_name'],
                 'office_address'=>$this->officeData['office_address'],
