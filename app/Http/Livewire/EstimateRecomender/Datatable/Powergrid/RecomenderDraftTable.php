@@ -63,7 +63,7 @@ final class RecomenderDraftTable extends PowerGridComponent
             'estimate_prepares.created_by',
             'estimate_user_assign_records.estimate_id as user_assign_records_estimate_id',
             'estimate_user_assign_records.estimate_user_type',
-            'estimate_user_assign_records.estimate_user_id',
+            'estimate_user_assign_records.assign_user_id',
             'estimate_user_assign_records.estimate_user_type',
             'estimate_user_assign_records.comments',
             'sor_masters.estimate_id as sor_masters_estimate_id',
@@ -72,7 +72,7 @@ final class RecomenderDraftTable extends PowerGridComponent
         )
         ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
         ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-        ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
+        ->where('estimate_user_assign_records.assign_user_id','=',Auth::user()->id)
         ->where('estimate_user_assign_records.estimate_user_type','=',3)
         ->where('sor_masters.is_verified','=',0)
         ->where('sor_masters.status','!=',9)

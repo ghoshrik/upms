@@ -31,11 +31,11 @@ class EstimateForwarder extends Component
     public function dataCounter()
     {
         $this->counterData['totalPendingDataCount'] =SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-            ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
+            ->where('estimate_user_assign_records.user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 9)
             ->count();
         $this->counterData['pendingDataCount'] = SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-            ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
+            ->where('estimate_user_assign_records.user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 9)
             ->where('sor_masters.status','!=',3)
             ->where('sor_masters.status','=',11)
@@ -43,12 +43,12 @@ class EstimateForwarder extends Component
             // ->where([['sor_masters.is_verified', '=', 0],['sor_masters.status','=',11]])
             ->count();
         $this->counterData['verifiedDataCount'] =  SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-            ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
+            ->where('estimate_user_assign_records.user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 9)
             ->where('sor_masters.is_verified', '=', 1)
             ->count();
         // $this->counterData['revertedDataCount'] = SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-        //     ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
+        //     ->where('estimate_user_assign_records.user_id', '=', Auth::user()->id)
         //     ->where('estimate_user_assign_records.estimate_user_type', '=', 1)
         //     ->where('status', '=', 3)
         //     ->count();

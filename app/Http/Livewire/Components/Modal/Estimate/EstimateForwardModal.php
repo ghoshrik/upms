@@ -15,11 +15,13 @@ class EstimateForwardModal extends Component
     use Actions;
     protected $listeners = ['openForwardModal' => 'forwardModalOpen'];
     public $forwardModal = false, $estimate_id, $assigenUsersList = [], $assignUserDetails, $userAssignRemarks, $updateDataTableTracker;
-
-    public function forwardModalOpen($estimate_id)
+    public $forwardRequestFrom;
+    public function forwardModalOpen($forwardEstimateDeatils)
     {
+        // dd($forwardEstimateDeatils);
         $this->reset();
-        $estimate_id = is_array($estimate_id) ? $estimate_id[0] : $estimate_id;
+        $estimate_id = is_array($forwardEstimateDeatils) ? $forwardEstimateDeatils['estimate_id'] : $forwardEstimateDeatils;
+        $this->forwardRequestFrom = $forwardEstimateDeatils['forward_from'];
         $this->estimate_id = $estimate_id;
         $this->forwardModal = !$this->forwardModal;
         // $userAccess_id = AccessMaster::select('access_parent_id')->join('access_types', 'access_masters.access_type_id', '=', 'access_types.id')->where('user_id', Auth::user()->id)->first();
@@ -36,20 +38,29 @@ class EstimateForwardModal extends Component
         $data = [
             'estimate_id' => (int) $forwardUserDetails[2],
             'estimate_user_type' => (int) $forwardUserDetails[1],
-            'estimate_user_id' => (int) $forwardUserDetails[0],
+            'user_id' => Auth::user()->id,
+            'assign_user_id' => (int) $forwardUserDetails[0],
             'comments' => $this->userAssignRemarks,
         ];
-        if ($forwardUserDetails[1] == 3 || $forwardUserDetails[1] == 5) {
+        if ($this->forwardRequestFrom == 'EP' || $this->forwardRequestFrom == 'PE') {
             SorMaster::where('estimate_id', $forwardUserDetails[2])->update(['status' => 2]);
-            if (EstimateUserAssignRecord::create($data)) {
+            $data['status'] = 2;
+            $assignDetails = EstimateUserAssignRecord::create($data);
+            if ($assignDetails) {
+                $returnId = $assignDetails->id;
+                EstimateUserAssignRecord::where([['estimate_id',$forwardUserDetails[2]],['id','!=',$returnId],['is_done',0]])->groupBy('estimate_id')->update(['is_done'=>1]);
                 $this->notification()->success(
                     $title = 'Success',
                     $description = 'Successfully Assign!!'
                 );
             }
-        } elseif ($forwardUserDetails[1] == 9) {
+        } elseif ($this->forwardRequestFrom == 'ER') {
+            $data['status'] = 11;
             SorMaster::where('estimate_id', $forwardUserDetails[2])->update(['status' => 11]);
-            if (EstimateUserAssignRecord::create($data)) {
+            $assignDetails = EstimateUserAssignRecord::create($data);
+            if ($assignDetails) {
+                $returnId = $assignDetails->id;
+                EstimateUserAssignRecord::where([['estimate_id',$forwardUserDetails[2]],['id','!=',$returnId],['is_done',0]])->groupBy('estimate_id')->update(['is_done'=>1]);
                 $this->notification()->success(
                     $title = 'Success',
                     $description = 'Successfully Assign!!'

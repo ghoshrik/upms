@@ -42,12 +42,18 @@ class EstimateRecomender extends Component
     public function dataCounter()
     {
         $this->counterData['totalPendingDataCount'] =SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-            ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
-            ->where('estimate_user_assign_records.estimate_user_type', '=', 3)
-            ->where('sor_masters.is_verified', '=', 0)
+            ->where(function ($query) {
+                $query->where('estimate_user_assign_records.assign_user_id', Auth::user()->id)
+                    ->orWhere('estimate_user_assign_records.user_id', Auth::user()->id);
+            })
+            ->where(function ($query) {
+                $query->where('estimate_user_assign_records.status', 2)
+                    ->orWhere('estimate_user_assign_records.status', 6);
+            })
+            ->where('estimate_user_assign_records.is_done', '=',0)
             ->count();
         $this->counterData['pendingDataCount'] = SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-            ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
+            // ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 3)
             ->where('sor_masters.is_verified', '=', 0)
             ->where('sor_masters.status','!=',3)
@@ -55,7 +61,7 @@ class EstimateRecomender extends Component
             ->where('sor_masters.status','!=',9)
             ->count();
         $this->counterData['forwardedDataCount'] =  SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-            ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
+            // ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 3)
             // ->where('sor_masters.is_verified', '=', 0)
             ->where('sor_masters.status','!=',2)
@@ -63,7 +69,7 @@ class EstimateRecomender extends Component
             ->where('sor_masters.status','!=',8)
             ->count();
         $this->counterData['revertedDataCount'] = SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-            ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
+            // ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 3)
             ->where('sor_masters.is_verified', '=', 0)
             ->where('sor_masters.status','=',9)

@@ -61,7 +61,7 @@ final class ForwardedEstimateProjectTable extends PowerGridComponent
             'estimate_prepares.created_by',
             'estimate_user_assign_records.estimate_id as user_assign_records_estimate_id',
             'estimate_user_assign_records.estimate_user_type',
-            'estimate_user_assign_records.estimate_user_id',
+            'estimate_user_assign_records.user_id',
             'estimate_user_assign_records.estimate_user_type',
             'estimate_user_assign_records.comments',
             'sor_masters.estimate_id as sor_masters_estimate_id',

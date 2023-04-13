@@ -54,7 +54,7 @@ class Create extends Component
     public function getUsers()
     {
         $this->dropDownData['users'] = User::select('users.id', 'users.emp_name','users.ehrms_id','users.designation_id','users.office_id','users.mobile','users.email')->join('user_types', 'users.user_type', '=', 'user_types.id')
-            ->where([['user_types.parent_id', Auth::user()->user_type], ['users.department_id', Auth::user()->department_id], ['users.designation_id', $this->newAccessData['designation_id']]])->get();
+            ->where([['user_types.parent_id', Auth::user()->user_type], ['users.department_id', Auth::user()->department_id], ['users.office_id', Auth::user()->office_id],['users.designation_id', $this->newAccessData['designation_id']]])->get();
     }
 
     public function assignRole($userId)

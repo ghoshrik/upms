@@ -72,11 +72,11 @@ class RecomenderDraftTable extends DataTableComponent
     }
     public function revert($estimate_id)
     {
-        $this->emit('openRevertModal',$estimate_id);
+        $this->emit('openRevertModal',['estimate_id'=>$estimate_id,'revart_from'=>'ER']);
     }
     public function forward($estimate_id)
     {
-        $this->emit('openForwardModal',$estimate_id);
+        $this->emit('openForwardModal',['estimate_id'=>$estimate_id,'forward_from'=>'ER']);
     }
     public function builder(): Builder
     {
@@ -84,7 +84,7 @@ class RecomenderDraftTable extends DataTableComponent
             ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
             ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
             ->where('operation', 'Total')
-            ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
+            ->where('estimate_user_assign_records.assign_user_id','=',Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type','=',3)
             ->where('sor_masters.is_verified','=',0)
             ->where('sor_masters.status','!=',9)

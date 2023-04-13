@@ -337,7 +337,7 @@ class EditEstimateProjectList extends Component
                     $data = [
                         'estimate_id' => $intId,
                         'estimate_user_type' => 3,
-                        'estimate_user_id' => Auth::user()->id,
+                        'user_id' => Auth::user()->id,
                     ];
                     EstimateUserAssignRecord::create($data);
 

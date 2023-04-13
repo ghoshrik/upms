@@ -56,7 +56,7 @@ class VerifiedEstimateForwardDatatable extends DataTableComponent
             ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_recomender.estimate_id')
             ->join('sor_masters','sor_masters.estimate_id','=','estimate_recomender.estimate_id')
             ->where('operation', 'Total')
-            ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
+            ->where('estimate_user_assign_records.user_id','=',Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type','=',9)
             ->where('sor_masters.is_verified','=',1);
     }
