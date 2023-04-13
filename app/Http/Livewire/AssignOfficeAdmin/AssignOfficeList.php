@@ -9,13 +9,18 @@ use Livewire\WithPagination;
 class AssignOfficeList extends Component
 {
     use WithPagination;
-    public $openAssignAdmin, $perPage = 1, $listUsers;
-    protected $listeners = ['assignuser'];
+    public $openAssignAdmin, $perPage = 1, $listUsers,$selectedItemId;
+    protected $listeners = ['assignuser','openModal'=>'openModal'];
 
     public function assignuser($id)
     {
         $this->openAssignAdmin = $id;
     }
+    public function openModal($id)
+{
+    $this->selectedItemId = $id;
+    $this->dispatchBrowserEvent('open-modal');
+}
     public function mount()
     {
         $listUsers = User::where('office_id', '!=', null)->where('office_id', $this->openAssignAdmin)

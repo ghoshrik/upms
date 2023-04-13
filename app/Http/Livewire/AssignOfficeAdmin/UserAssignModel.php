@@ -50,7 +50,7 @@ final class UserAssignModel extends PowerGridComponent
      * @return Builder<\App\Models\User>
      */
 
-    public $openAssignAdmin, $openFormModel;
+    public $openAssignAdmin, $openFormModel,$modelOpen;
     public function assignuser($id)
     {
         $this->openAssignAdmin = $id;
@@ -60,7 +60,7 @@ final class UserAssignModel extends PowerGridComponent
     {
         return array_merge(
             parent::getListeners(),
-            ['assignuser']
+            ['assignuser','openModal'=>'openModal']
         );
     }
 
@@ -101,6 +101,17 @@ final class UserAssignModel extends PowerGridComponent
         return [];
     }
 
+    public function openModal()
+{
+    // $this->openFormModel = $id;
+    $this->modelOpen = true;
+    // $this->dispatchBrowserEvent('open-modal');
+}
+
+public function accept()
+{
+    dd("yes");
+}
     /*
     |--------------------------------------------------------------------------
     |  Add Column
@@ -128,13 +139,14 @@ final class UserAssignModel extends PowerGridComponent
                 //     return '<label wire:click="toggleSelectedInactive(' . $user->id . ')" class="badge badge-pill bg-success cursor-pointer">Active</label>';
                 // }
                 // return '<label wire:click="SelectedActive(' . $user->id . ',' . $user->office_id . ')" class="badge badge-pill bg-danger cursor-pointer">Inactive</label>';
-                if ($user->office_id == null) {
-                    return '<button class="btn btn-primary cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm btn-sm" type="button" wire:click="SelectedActive(' . $user->id . ',' . $user->officeId . ')">Save</button>';
-                } else {
-                    return '<label wire:click="SelectedModify(' . $user->id . ',' . $user->officeId . ')" class="badge badge-pill bg-danger cursor-pointer">Modify</label>';
-                    // return '<label wire:click="$emit(openModal)" class="badge badge-pill bg-danger cursor-pointer">Modify</label>';
-                    // return
-                }
+                // if ($user->office_id == null) {
+                //     return '<button class="btn btn-primary cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm btn-sm" type="button" wire:click="SelectedActive(' . $user->id . ',' . $user->officeId . ')">Save</button>';
+                // } else {
+                //     return '<label wire:click="SelectedModify(' . $user->id . ',' . $user->officeId . ')" class="badge badge-pill bg-danger cursor-pointer">Modify</label>';
+                //     // return '<label wire:click="$emit(openModal)" class="badge badge-pill bg-danger cursor-pointer">Modify</label>';
+                //     // return
+                // }
+                return view('livewire.assign-office-admin.assign-office-list',['userId'=>$user->id,'officeId'=>$user->officeId,'userOffice'=>$user->office_id]);
             });
     }
 
@@ -190,7 +202,9 @@ final class UserAssignModel extends PowerGridComponent
     {
         // dd($userId, $officeId);
         $this->openFormModel = true;
+        $this->dispatchBrowserEvent('open-modal');
         // $this->emit('openModal', $userId);
+
     }
     /*
     |--------------------------------------------------------------------------
