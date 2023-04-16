@@ -100,7 +100,7 @@
                         <x-auth-session-status class="mb-4" id="status" :status="session('status')" />
 
                         {{-- <x-auth-validation-errors class="mb-4" id="error" :errors="$errors" /> --}}
-                        <div class="alert alert-danger d-block" role="alert"></div>
+                        <div class="alert alert-danger d-none" role="alert"></div>
                         @if (session('error'))
                             <div class="alert alert-danger" role="alert"> {{ session('error') }}
                             </div>
