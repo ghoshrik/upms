@@ -29,8 +29,8 @@ class EstimateRevertModal extends Component
     public function revertEstimate($value)
     {
         if ($this->revartRequestFrom == 'ER') {
-        $getUserDetails = EstimateUserAssignRecord::select('user_id', 'estimate_user_type')->where([['estimate_id', '=', $value], ['assign_user_id', '=', Auth::user()->id], ['status', '=', 2], ['is_done', 0]])->first();
-        if (SorMaster::where('estimate_id', $value)->update(['status' => 3])) {
+            $getUserDetails = EstimateUserAssignRecord::select('user_id', 'estimate_user_type')->where([['estimate_id', '=', $value], ['assign_user_id', '=', Auth::user()->id], ['status', '=', 2], ['is_done', 0]])->first();
+            if (SorMaster::where('estimate_id', $value)->update(['status' => 3])) {
                 $data = [
                     'estimate_id' => $value,
                     'user_id' => Auth::user()->id,
@@ -48,20 +48,26 @@ class EstimateRevertModal extends Component
                 }
             }
         } elseif ($this->revartRequestFrom == 'EF') {
-        $getUserDetails = EstimateUserAssignRecord::select('user_id', 'estimate_user_type')->where([['estimate_id', '=', $value], ['assign_user_id', '=', Auth::user()->id], ['status', '=', 11], ['is_done', 0]])->first();
-        $data = [
-                'estimate_id' => $value,
-                'user_id' => Auth::user()->id,
-                'assign_user_id' => (int) $getUserDetails->user_id,
-                'comments' => $this->userAssignRemarks,
-            ];
-            $data['status'] = 7;
-            $assignDetails = EstimateUserAssignRecord::create($data);
-            if ($assignDetails) {
-                $returnId = $assignDetails->id;
-                EstimateUserAssignRecord::where([['estimate_id', $value], ['id', '!=', $returnId], ['is_done', 0]])->groupBy('estimate_id')->update(['is_done' => 1]);
+            $getUserDetails = EstimateUserAssignRecord::select('user_id', 'estimate_user_type')->where([['estimate_id', '=', $value], ['assign_user_id', '=', Auth::user()->id], ['status', '=', 11], ['is_done', 0]])->first();
+            if (SorMaster::where('estimate_id', $value)->update(['status' => 7])) {
+                $data = [
+                    'estimate_id' => $value,
+                    'user_id' => Auth::user()->id,
+                    'assign_user_id' => (int) $getUserDetails->user_id,
+                    'comments' => $this->userAssignRemarks,
+                ];
+                $data['status'] = 7;
+                $assignDetails = EstimateUserAssignRecord::create($data);
+                if ($assignDetails) {
+                    $returnId = $assignDetails->id;
+                    EstimateUserAssignRecord::where([['estimate_id', $value], ['id', '!=', $returnId], ['is_done', 0]])->groupBy('estimate_id')->update(['is_done' => 1]);
+                    $this->notification()->success(
+                        $title = 'Estimate Reverted to Recomender'
+                    );
+                }
+            }else {
                 $this->notification()->success(
-                    $title = 'Estimate Reverted to Recomender'
+                    $title = 'Opps! somethig waint wrong.'
                 );
             }
         } else {

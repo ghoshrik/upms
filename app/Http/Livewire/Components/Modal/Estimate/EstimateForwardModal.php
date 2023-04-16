@@ -29,7 +29,6 @@ class EstimateForwardModal extends Component
         //     ->join('access_types', 'access_masters.access_type_id', '=', 'access_types.id')
         //     ->where('access_types.id', $userAccess_id->access_parent_id)
         //     ->get();
-        //dd($this->assigenUsersList);
     }
 
     public function forwardAssignUser()
@@ -55,8 +54,8 @@ class EstimateForwardModal extends Component
                 );
             }
         } elseif ($this->forwardRequestFrom == 'ER') {
-            $data['status'] = 11;
-            SorMaster::where('estimate_id', $forwardUserDetails[2])->update(['status' => 11]);
+            $data['status'] = 9;
+            SorMaster::where('estimate_id', $forwardUserDetails[2])->update(['status' => 9]);
             $assignDetails = EstimateUserAssignRecord::create($data);
             if ($assignDetails) {
                 $returnId = $assignDetails->id;

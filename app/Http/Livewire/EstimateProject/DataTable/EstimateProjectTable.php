@@ -57,7 +57,7 @@ class EstimateProjectTable extends DataTableComponent
     }
     public function forward($estimate_id)
     {
-        $this->emit('openForwardModal',$estimate_id);
+        $this->emit('openForwardModal',['estimate_id'=>$estimate_id,'forward_from'=>'EP']);
     }
     public function builder(): Builder
     {

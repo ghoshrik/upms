@@ -84,11 +84,17 @@ class RecomenderDraftTable extends DataTableComponent
             ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
             ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
             ->where('operation', 'Total')
-            ->where('estimate_user_assign_records.assign_user_id','=',Auth::user()->id)
-            ->where('estimate_user_assign_records.estimate_user_type','=',3)
+            ->where(function($query){
+                $query->where('estimate_user_assign_records.user_id',Auth::user()->id)
+                ->orWhere('estimate_user_assign_records.assign_user_id',Auth::user()->id);
+            })
+            // ->where('estimate_user_assign_records.estimate_user_type','=',3)
             ->where('sor_masters.is_verified','=',0)
-            ->where('sor_masters.status','!=',9)
-            ->where('sor_masters.status','!=',11)
-            ->where('sor_masters.status','!=',3);
+            ->where(function($query){
+                $query->where('sor_masters.status',2)
+                ->orWhere('sor_masters.status',4)
+                ->orWhere('sor_masters.status',6);
+            })
+            ->where('estimate_user_assign_records.is_done',0);
     }
 }

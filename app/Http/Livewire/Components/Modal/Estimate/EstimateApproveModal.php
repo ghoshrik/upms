@@ -70,12 +70,12 @@ class EstimateApproveModal extends Component
                         ];
                         Esrecommender::create($insert);
                     }
-                    if (SorMaster::where('estimate_id', $value)->update(['status' => 8])) {
+                    if (SorMaster::where('estimate_id', $value)->update(['status' => 6])) {
                         $data = [
                             'estimate_id' => $value,
                             'user_id' => Auth::user()->id,
                         ];
-                        $data['status'] = 8;
+                        $data['status'] = 6;
                         $assignDetails = EstimateUserAssignRecord::create($data);
                         if ($assignDetails) {
                             $returnId = $assignDetails->id;

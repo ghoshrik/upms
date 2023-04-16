@@ -31,10 +31,23 @@
                         @if (!empty($estimateData))
                             @if ($estimateData['item_name'] == 'SOR')
                                 <div class="row" style="transition: all 2s ease-out">
-                                    <div class="col">
+                                    {{-- <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="dept"
                                                 label="{{ trans('cruds.estimate.fields.dept') }}"
+                                                placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
+                                                wire:model.defer="estimateData.dept_id"
+                                                x-on:select="$wire.getDeptCategory()">
+                                                @foreach ($fatchDropdownData['departments'] as $department)
+                                                    <x-select.option label="{{ $department['department_name'] }}"
+                                                        value="{{ $department['id'] }}" />
+                                                @endforeach
+                                            </x-select>
+                                        </div>
+                                    </div> --}}
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
                                                 placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
                                                 wire:model.defer="estimateData.dept_id"
                                                 x-on:select="$wire.getDeptCategory()">
