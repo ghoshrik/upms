@@ -45,10 +45,10 @@
         {{-- <livewire:assign-office-admin.assign-office-list /> --}}
         {{-- @if ($openAssignAdminId) --}}
 
-        <x-cards title="">
-            <x-slot name="table">
+        {{-- <x-cards title="">
+            <x-slot name="table"> --}}
                 {{-- <livewire:assign-office-admin :openAssignAdminId="$openAssignAdminId" /> --}}
-                <livewire:assign-office-admin.user-assign-model :openAssignAdminId="$openAssignAdminId" />
+                {{-- <livewire:assign-office-admin.user-assign-model :openAssignAdminId="$openAssignAdminId" /> --}}
 
                 {{-- <x-modal wire:model.defer="openFormModel">
                     <x-card title="Select Role">
@@ -65,8 +65,8 @@
                         </x-slot>
                     </x-card>
                 </x-modal> --}}
-            </x-slot>
-        </x-cards>
+            {{-- </x-slot>
+        </x-cards> --}}
         {{-- @endif --}}
     </div>
 </div>

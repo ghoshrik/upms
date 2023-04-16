@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 class CreateOfficeAdmin extends Component
 {
     use Actions, WithPagination;
-    public $selectedLevel, $selectedDist, $selectedOffice, $dropdownData = [], $searchCondition = [], $filtredOffices, $hooUsers, $selectedUser, $openAssignAdminId = '';
+    public $selectedLevel, $selectedDist, $selectedOffice, $dropdownData = [], $searchCondition = [], $filtredOffices, $hooUsers, $selectedUser, $openAssignAdminId,$openModel=false;
     // public $viewMode = false;
     protected $listeners = ['assignuser'];
 
@@ -46,7 +46,7 @@ class CreateOfficeAdmin extends Component
             ->select('offices.id as id', 'offices.office_name', 'offices.office_address', 'offices.office_code', 'offices.level_no', 'offices.dist_code', 'users.id as user_id')
             ->orderBy('users.id', 'asc')
             ->get();
-        $this->resetExcept('hooUsers', 'filtredOffices', 'dropdownData', 'selectedLevel', 'selectedDist', 'selectedUser');
+        $this->resetExcept('hooUsers', 'dropdownData','filtredOffices', 'selectedLevel', 'selectedDist', 'selectedUser');
     }
     private function getSelectedUsers()
     {
@@ -81,12 +81,55 @@ class CreateOfficeAdmin extends Component
             $this->emit('showError', $th->getMessage());
         }
     }
+    public $alreadyAssignUserDist,$alreadyAssignUserLevel;
 
-    public function assignuser($id)
+    public function assignuser($office_id,$dist_code,$level_no)
     {
-        $this->openAssignAdminId = $id;
-    }
+        // dd($office_id,$dist_code,$level_no);
+        $this->openAssignAdminId = $office_id;
+        $this->alreadyAssignUserLevel = $level_no;
+        $this->alreadyAssignUserDist = $dist_code;
 
+        // $list = Office::select('users.emp_name','offices.id')->join('users','users.office_id','=','offices.id')
+
+        //     ->where('users.user_type',4)
+        //     ->where('offices.dist_code',$dist_code)
+        //     ->where('offices.level_no',$level_no)
+        //     ->where('offices.department_id',Auth::user()->department_id)
+        //     ->where('users.office_id',$office_id)
+        //     // ->whereNot('users.office_id',$office_id)
+
+        //     ->where('users.is_active',1)
+        //     ->exists();
+        // if($list)
+        // {
+        //     dd('exists');
+        // }
+        // else
+        // {
+        //     dd("not exists");
+        // }
+        $this->openModel = true;
+    }
+    public $selectedUserofice;
+    public function assignusertoOffice()
+    {
+        dd($this->selectedUserofice);
+        // $userexistsOffice = User::where('id',$this->selectedUserofice)->where('office_id',$this->openAssignAdminId)->exists();
+        // dd($userexistsOffice);
+        // if($userexistsOffice)
+        // {
+        //     $this->emit('refresh');
+        //     $this->notification()->error(
+        //         $title = 'User already assigned.'
+        //     );
+        // }
+        // else
+        // {
+        //     dd("yes");
+        // }
+
+    }
 
     public function render()
     {

@@ -4,15 +4,17 @@ namespace App\Http\Livewire\AssignOfficeAdmin;
 
 use App\Models\User;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\Builder;
-use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
+use WireUi\Traits\Actions;
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
+use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
 
 final class UserAssignModel extends PowerGridComponent
 {
-    use ActionButton;
+    use ActionButton,Actions;
 
     /*
     |--------------------------------------------------------------------------
@@ -50,37 +52,42 @@ final class UserAssignModel extends PowerGridComponent
      * @return Builder<\App\Models\User>
      */
 
-    public $openAssignAdmin, $openFormModel,$modelOpen;
-    public function assignuser($id)
+    public $openAssignAdminId, $openFormModel,$modelOpen;
+    public function assignuser($office_id,$dist_code,$level_no)
     {
-        $this->openAssignAdmin = $id;
+        // dd($office_id,$dist_code,$level_no);
+        $this->openAssignAdminId = $office_id;
     }
 
     protected function getListeners(): array
     {
         return array_merge(
             parent::getListeners(),
-            ['assignuser','openModal'=>'openModal']
+            ['assignuser',]
         );
     }
 
     public function datasource(): Builder
     {
         return User::query()
-            ->select(
-                'users.id',
-                'users.emp_name',
-                'users.designation_id',
-                'users.mobile',
-                'users.email',
-                'users.office_id',
-                'designations.id as designationId',
-                'designations.designation_name',
-                'offices.id as officeId'
-            )
-            ->join('designations', 'users.designation_id', '=', 'designations.id',)
-            ->join('offices', 'users.office_id', '=', 'offices.id')
-            ->where('office_id', '!=', null)->where('office_id', $this->openAssignAdmin);
+            // ->select(
+            //     'users.id',
+            //     'users.emp_name',
+            //     'users.designation_id',
+            //     'users.mobile',
+            //     'users.email',
+            //     'users.office_id',
+                // 'designations.id as designationId',
+                // 'designations.designation_name',
+            //     'offices.id as officeId'
+            // )
+            // ->join('designations', 'users.designation_id', '=', 'designations.id',)
+            // ->join('offices', 'users.office_id', '=', 'offices.id')
+            ->where('users.user_type',4)
+            ->where('users.is_active',1)
+            ->where('users.department_id',Auth::user()->department_id)
+            ->where('users.office_id', '=', 0);
+        // dd($res);
     }
 
     /*
@@ -101,17 +108,7 @@ final class UserAssignModel extends PowerGridComponent
         return [];
     }
 
-    public function openModal()
-{
-    // $this->openFormModel = $id;
-    $this->modelOpen = true;
-    // $this->dispatchBrowserEvent('open-modal');
-}
 
-public function accept()
-{
-    dd("yes");
-}
     /*
     |--------------------------------------------------------------------------
     |  Add Column
@@ -128,7 +125,7 @@ public function accept()
         return PowerGrid::eloquent()
             ->addColumn('id')
             ->addColumn('NAME OF THE HOO')
-            ->addColumn('DESIGNATION')
+            ->addColumn('getDesignationName.designation_name')
             ->addColumn('MOBILE NO')
             ->addColumn('email')
             ->addColumn('Action', function (User $user) {
@@ -146,8 +143,15 @@ public function accept()
                 //     // return '<label wire:click="$emit(openModal)" class="badge badge-pill bg-danger cursor-pointer">Modify</label>';
                 //     // return
                 // }
-                return view('livewire.assign-office-admin.assign-office-list',['userId'=>$user->id,'officeId'=>$user->officeId,'userOffice'=>$user->office_id]);
+                // if($user)
+                // {
+
+                // }
+
+            //     return view('livewire.assign-office-admin.assign-office-list',['userId'=>$user->id,'officeId'=>$user->officeId,'userOffice'=>$user->office_id]);
+                    return '<button type="button" class="btn btn-primary cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm btn-sm" wire:click="SaveUser('.$user->id.')">Save</button>';
             });
+            // ->addColumn('Action');
     }
 
     /*
@@ -174,7 +178,7 @@ public function accept()
             Column::make('NAME OF THE HOO', 'emp_name')
                 ->searchable()
                 ->sortable(),
-            Column::make('DESIGNATION', 'designation_name')
+            Column::make('DESIGNATION', 'getDesignationName.designation_name')
                 ->searchable()
                 ->sortable()
                 ->makeInputText(),
@@ -190,22 +194,7 @@ public function accept()
         ];
     }
 
-    public function SelectedActive($value, $officeid)
-    {
-        User::where('id', $value)->update(['office_id' => $officeid]);
-        $this->notification()->success(
-            $title = 'User Assign successfully'
-        );
-    }
 
-    public function SelectedModify($userId, $officeId)
-    {
-        // dd($userId, $officeId);
-        $this->openFormModel = true;
-        $this->dispatchBrowserEvent('open-modal');
-        // $this->emit('openModal', $userId);
-
-    }
     /*
     |--------------------------------------------------------------------------
     | Actions Method
@@ -229,7 +218,7 @@ public function accept()
             Button::add('View')
                 ->caption('View')
                 ->class('btn btn-primary cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm btn-sm')
-                ->emit('openModal', ['officeId']),
+                ->emit('openModal', ['id']),
             // Button::make('save', 'Save')
             //     ->class('btn btn-primary cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm btn-sm'),
 
@@ -254,7 +243,15 @@ public function accept()
      *
      * @return array<int, RuleActions>
      */
-
+    public function SaveUser($id)
+    {
+        // dd($id);
+        User::where('id',$id)->update(['office_id'=>$this->openAssignAdminId]);
+        $this->notification()->success(
+            $title = "user assign successfully"
+        );
+        return;
+    }
     /*
     public function actionRules(): array
     {
