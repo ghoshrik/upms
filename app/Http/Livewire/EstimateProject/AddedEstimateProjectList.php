@@ -331,10 +331,10 @@ class AddedEstimateProjectList extends Component
                         $data = [
                             'estimate_id' => $intId,
                             'estimate_user_type' => 5,
+                            'status' => 1,
                             'user_id' => Auth::user()->id,
                         ];
                         EstimateUserAssignRecord::create($data);
-
                         $this->notification()->success(
                             $title = 'Project Estimate Created Successfully!!'
                         );

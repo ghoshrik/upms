@@ -84,7 +84,7 @@ class EditEstimateProjectList extends Component
             $result = $stringCalc->calculate($this->expression);
             $this->insertAddEstimate($row_index, '', '', '', '', '', '', '', '', $result, 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
-            $this->expression = $tempIndex;
+            $this->expression = $row_index;
             $this->notification()->error(
                 $title = $exception->getMessage()
             );
@@ -175,9 +175,9 @@ class EditEstimateProjectList extends Component
     public function deleteEstimate($value)
     {
         unset($this->allAddedEstimatesData[$value-1]);
-        Session()->forget('editEstimateProjectData');
-        Session()->put('editEstimateProjectData', $this->allAddedEstimatesData);
-        $this->updateDataTableTracker = rand(1, 1000);
+        Session()->forget('editEstimateData');
+        Session()->put('editEstimateData', $this->allAddedEstimatesData);
+        // $this->addedEstimateUpdateTrack = rand(1, 1000);
         $this->level = [];
         $this->notification()->success(
             $title = 'Row Deleted Successfully'
@@ -301,12 +301,11 @@ class EditEstimateProjectList extends Component
     {
         try {
             if ($this->allAddedEstimatesData) {
-                dd("Store is pending");
-                $intId = random_int(100000, 999999);
-                if (SorMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
+                EstimatePrepare::where('estimate_id',$estimateStoreId)->delete();
+                if (true) {
                     foreach ($this->allAddedEstimatesData as $key => $value) {
                         $insert = [
-                            'estimate_id' => $intId,
+                            'estimate_id' => $estimateStoreId,
                             'estimate_no' => $value['estimate_no'],
                             'dept_id' => $value['dept_id'],
                             'category_id' => $value['category_id'],
@@ -320,27 +319,23 @@ class EditEstimateProjectList extends Component
                             'total_amount' => $value['total_amount'],
                             'operation' => $value['operation'],
                             'created_by' => Auth::user()->id,
-                            'comments' => $value['remarks'],
+                            'comments' => $value['comments'],
                         ];
-                        $validateData = Validator::make($insert,[
-                            'estimate_id' => 'required|integer',
-                            'dept_id' => 'required|integer',
-                            'category_id' => 'required|integer',
-                            'row_id' => 'required|integer',
-                        ]);
-                        if($validateData->fails())
-                        {
-                            // dd($validateData->messages());
-                        }
+
                         EstimatePrepare::create($insert);
                     }
+                    SorMaster::where('estimate_id',$estimateStoreId)->update(['status'=>10]);
                     $data = [
-                        'estimate_id' => $intId,
-                        'estimate_user_type' => 3,
+                        'estimate_id' => $estimateStoreId,
+                        // 'estimate_user_type' => 4,
+                        'status' => 10,
                         'user_id' => Auth::user()->id,
                     ];
-                    EstimateUserAssignRecord::create($data);
-
+                    $assignDetails = EstimateUserAssignRecord::create($data);
+                    if ($assignDetails) {
+                        $returnId = $assignDetails->id;
+                        EstimateUserAssignRecord::where([['estimate_id',$estimateStoreId],['id','!=',$returnId],['is_done',0]])->groupBy('estimate_id')->update(['is_done'=>1]);
+                    }
                     $this->notification()->success(
                         $title = 'Project Estimate Created Successfully!!'
                     );
@@ -350,7 +345,7 @@ class EditEstimateProjectList extends Component
                 }
             } else {
                 $this->notification()->error(
-                    $title = 'please insert at list one item !!'
+                    $title = 'OOPS! Something went wrong'
                 );
             }
         } catch (\Throwable $th) {

@@ -54,10 +54,17 @@ class EstimatePrepare extends Component
         ->where('user_id',Auth::user()->id)
         ->where('is_done',0)
         ->count();
-        $this->counterData['forwardedDataCount'] =  EstimateUserAssignRecord::select('status')->where('status',2)
-        ->where('user_id',Auth::user()->id)
-        ->distinct()
-        ->count('user_id');
+        $this->counterData['forwardedDataCount'] =  EstimateUserAssignRecord::query()
+        ->selectRaw('count(status)')
+        ->where('status', 2)
+        ->where('user_id', Auth::user()->id)
+        ->where('created_at', function ($query) {
+            $query->selectRaw('MAX(created_at)')
+                ->from('estimate_user_assign_records as t2')
+                ->whereColumn('estimate_user_assign_records.estimate_id', 't2.estimate_id')
+                ->where('t2.status', 2);
+        })
+        ->count();
         $this->counterData['revertedDataCount'] = EstimateUserAssignRecord::where('status',3)
         ->where('assign_user_id',Auth::user()->id)
         ->where('is_done',0)

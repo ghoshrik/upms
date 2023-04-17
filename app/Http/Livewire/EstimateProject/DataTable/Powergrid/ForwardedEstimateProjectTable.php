@@ -70,11 +70,13 @@ final class ForwardedEstimateProjectTable extends PowerGridComponent
         )
         ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
         ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-        ->where('estimate_user_assign_records.estimate_user_type','=',5)
-        ->where('sor_masters.status','=',2)
+        // ->where('estimate_user_assign_records.estimate_user_type','=',4)
+        ->where('estimate_user_assign_records.status',2)
+        // ->where('sor_masters.status','!=',1)
         // ->where('sor_masters.status','!=',3)
-        ->where('estimate_no', '!=', NULL)
+        // ->where('sor_masters.status','!=',5)
         ->where('operation', 'Total')
+        ->where('estimate_no','!=',NULL)
         ->where('created_by',Auth::user()->id);
     }
 
