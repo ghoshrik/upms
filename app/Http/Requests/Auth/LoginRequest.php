@@ -34,7 +34,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'loginId' => 'required',
-            // 'password' => 'required|string',
+            'password' => 'required|string',
         ];
     }
 
@@ -45,10 +45,10 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function sendOtp(Request $request)
-    {
-        dd($request);
-    }
+    // public function sendOtp(Request $request)
+    // {
+    //     dd($request);
+    // }
 
 
     public function authenticate()
@@ -70,7 +70,7 @@ class LoginRequest extends FormRequest
             // dd($user);
             if ($user->is_active == 1) {
 
-                $userMobile = $user->mobile;
+                // $userMobile = $user->mobile;
                 // return redirect()->route('auth.otp');
                 // if ($user) {
                 //     return redirect()->route('auth.otp')->withSuccess('Login OTP has been sent to your mobile');
@@ -80,14 +80,14 @@ class LoginRequest extends FormRequest
                 //     ]);
                 // }
 
-                // if (!$user || !Hash::check($this->password, $user->password)) {
-                //     RateLimiter::hit($this->throttleKey());
-                //     throw ValidationException::withMessages([
-                //         'loginId' => __('auth.failed'),
-                //     ]);
-                // }
-                // Auth::login($user, $this->boolean('remember'));
-                // RateLimiter::clear($this->throttleKey());
+                if (!$user || !Hash::check($this->password, $user->password)) {
+                    RateLimiter::hit($this->throttleKey());
+                    throw ValidationException::withMessages([
+                        'loginId' => __('auth.failed'),
+                    ]);
+                }
+                Auth::login($user, $this->boolean('remember'));
+                RateLimiter::clear($this->throttleKey());
             } else {
                 throw ValidationException::withMessages([
                     'loginId' => __('This user is not activated'),
