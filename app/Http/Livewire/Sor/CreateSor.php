@@ -101,7 +101,7 @@ class CreateSor extends Component
                     'cost' => $data['cost'],
                     'version' => $data['version'],
                     'effect_from' => $data['effect_from'],
-                    'created_by_level' => Auth::user()->id,
+                    'created_by' => Auth::user()->id,
                 ]);
                 foreach ($data['file_upload'] as $DataAttr) {
                     $filePath = file_get_contents($DataAttr->getRealPath());

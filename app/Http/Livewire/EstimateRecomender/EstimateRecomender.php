@@ -68,12 +68,12 @@ class EstimateRecomender extends Component
         ->count();
         $this->counterData['forwardedDataCount'] =  DB::table('estimate_user_assign_records as t1')
         ->select(DB::raw('count(t1.status)'))
-        ->where('t1.status', 2)
-        ->where('t1.user_id', 2003)
+        ->where('t1.status', 9)
+        ->where('t1.user_id', Auth::user()->id)
         ->where('t1.created_at', function ($query) {
             $query->selectRaw('max(t2.created_at)')
                 ->from('estimate_user_assign_records as t2')
-                ->where('t2.status', 2)
+                ->where('t2.status', 9)
                 ->whereColumn('t2.estimate_id', 't1.estimate_id');
         })
         ->count();
