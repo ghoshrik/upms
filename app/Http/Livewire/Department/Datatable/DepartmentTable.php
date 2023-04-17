@@ -23,7 +23,7 @@ final class DepartmentTable extends PowerGridComponent
     */
     public function setUp(): array
     {
-        $this->showCheckBox();
+        // $this->showCheckBox();
 
         return [
             Exportable::make('export')

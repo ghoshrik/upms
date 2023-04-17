@@ -31,59 +31,42 @@
             </div> --}}
         </div>
         {{-- @section('webtitle', trans('cruds.aocs.title')) --}}
-        <div wire:loading.delay.long>
+        <div wire:loading.delay.shortest>
             <div class="spinner-border text-primary loader-position" role="status"></div>
         </div>
 
 
-        <div wire:loading.delay.long.class="loading">
+        <div wire:loading.delay.shortest.class="loading">
             <div x-transition.duration.900ms>
                 <livewire:assign-office-admin.create-office-admin />
             </div>
         </div>
-        @if ($viewMode)
 
-            <div wire:loading.delay.long.class="loading">
-                <div x-transition.duration.900ms>
-                    {{-- <livewire:assign-office-admin.assign-admin :Assignusers="$Assignusers" /> --}}
-                    <x-cards title="">
-                        <x-slot name="table">
-                            <div class="table-responsive mt-4">
-                                <table id="basic-table" class="table table-striped mb-0" role="grid">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Name of the HOO</th>
-                                            <th scope="col">Designation</th>
-                                            <th scope="col">Mobile No</th>
-                                            <th scope="col">Mail ID</th>
-                                            <th scope="col">Active/Inactive flag</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @isset($Assignusers)
-                                            @foreach ($Assignusers as $list)
-                                                <tr>
-                                                    <td>
-                                                        {{ $loop->iteration }}
-                                                    </td>
-                                                    <td>{{ $list->emp_name }}</td>
-                                                    <td>{{ $list->designation->designation_name }}</td>
-                                                    <td>{{ $list->mobile }}</td>
-                                                    <td>{{ $list->email }}</td>
-                                                    <td>
-                                                        <input type="checkbox" />
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        @endisset
-                                    </tbody>
-                                </table>
+        {{-- <livewire:assign-office-admin.assign-office-list /> --}}
+        {{-- @if ($openAssignAdminId) --}}
+
+        {{-- <x-cards title="">
+            <x-slot name="table"> --}}
+                {{-- <livewire:assign-office-admin :openAssignAdminId="$openAssignAdminId" /> --}}
+                {{-- <livewire:assign-office-admin.user-assign-model :openAssignAdminId="$openAssignAdminId" /> --}}
+
+                {{-- <x-modal wire:model.defer="openFormModel">
+                    <x-card title="Select Role">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                asdfasd
+                            </div>
+                        </div>
+                        <x-slot name="footer">
+                            <div class="flex justify-end gap-x-4">
+                                <x-button flat label="Cancel" x-on:click="close" />
+                                <x-button wire:click="store" primary label="Save" />
                             </div>
                         </x-slot>
-                    </x-cards>
-                </div>
-            </div>
-        @endif
+                    </x-card>
+                </x-modal> --}}
+            {{-- </x-slot>
+        </x-cards> --}}
+        {{-- @endif --}}
     </div>
 </div>

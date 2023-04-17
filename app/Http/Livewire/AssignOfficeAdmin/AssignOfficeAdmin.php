@@ -9,19 +9,17 @@ use Livewire\WithPagination;
 class AssignOfficeAdmin extends Component
 {
     use WithPagination;
-    public $subTitel = "List", $titel, $errorMessage, $viewMode = false, $Assignusers;
-    protected $listeners = ['refresh' => 'render', 'showError' => 'setErrorAlert', 'assignAdmin' => 'officeAssignAdmin'];
+    public $subTitel = "List", $titel, $errorMessage, $viewMode = false, $selectedItemId, $openAssignAdminId;
+    protected $listeners = ['refresh' => 'render', 'showError' => 'setErrorAlert'];
 
     public function setErrorAlert($errorMessage)
     {
         $this->errorMessage = $errorMessage;
     }
-    public function officeAssignAdmin($id)
-    {
-        $this->viewMode = !$this->viewMode;
-        $this->Assignusers = User::where('office_id', $id)->get();
-        // dd($this->Assignusers);
-    }
+    // public function assignuser($id)
+    // {
+    //     $this->openAssignAdminId = $id;
+    // }
 
     public function render()
     {
