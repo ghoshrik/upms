@@ -5,6 +5,7 @@ namespace App\Http\Livewire\EstimateRecomender;
 use App\Models\EstimateUserAssignRecord;
 use App\Models\SorMaster;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -65,22 +66,21 @@ class EstimateRecomender extends Component
         })
         ->where('is_done',0)
         ->count();
-        $this->counterData['forwardedDataCount'] =  EstimateUserAssignRecord::query()
-        ->selectRaw('count(status)')
-        ->where('status', 9)
-        ->where('user_id', Auth::user()->id)
-        ->where('created_at', function ($query) {
-            $query->selectRaw('MAX(created_at)')
+        $this->counterData['forwardedDataCount'] =  DB::table('estimate_user_assign_records as t1')
+        ->select(DB::raw('count(t1.status)'))
+        ->where('t1.status', 2)
+        ->where('t1.user_id', 2003)
+        ->where('t1.created_at', function ($query) {
+            $query->selectRaw('max(t2.created_at)')
                 ->from('estimate_user_assign_records as t2')
-                ->whereColumn('estimate_user_assign_records.estimate_id', 't2.estimate_id')
-                ->where('t2.status', 9);
+                ->where('t2.status', 2)
+                ->whereColumn('t2.estimate_id', 't1.estimate_id');
         })
         ->count();
         $this->counterData['revertedDataCount'] = EstimateUserAssignRecord::where('status',7)
         ->where('assign_user_id',Auth::user()->id)
         ->where('is_done',0)
         ->count();
-        // dd($this->counterData);
     }
     public function fromEntryControl($data='')
     {

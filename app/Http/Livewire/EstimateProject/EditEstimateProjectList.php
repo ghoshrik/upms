@@ -106,7 +106,7 @@ class EditEstimateProjectList extends Component
             $result = 0;
             foreach ($this->level as $key => $array) {
                 $this->arrayStore[] = chr($array + 64);
-                $result = $result + $this->allAddedEstimatesData[$array]['total_amount'];
+                $result = $result + $this->allAddedEstimatesData[$array-1]['total_amount'];
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
             $this->insertAddEstimate($this->arrayIndex, '', '', '', '', '', '', '', '', $result, 'Total', '', '');
@@ -175,8 +175,11 @@ class EditEstimateProjectList extends Component
     public function deleteEstimate($value)
     {
         unset($this->allAddedEstimatesData[$value-1]);
-        Session()->forget('editEstimateData');
-        Session()->put('editEstimateData', $this->allAddedEstimatesData);
+        Session()->forget('editEstimateProjectData');
+        // dd(Session()->get('editEstimateProjectData'),$this->allAddedEstimatesData);
+        Session()->put('editEstimateProjectData', $this->allAddedEstimatesData);
+        // dd(Session()->get('editEstimateData'),$this->allAddedEstimatesData);
+
         // $this->addedEstimateUpdateTrack = rand(1, 1000);
         $this->level = [];
         $this->notification()->success(

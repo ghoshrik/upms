@@ -168,7 +168,7 @@ class EditEstimateList extends Component
         unset($this->allAddedEstimatesData[$value-1]);
         Session()->forget('editEstimateData');
         Session()->put('editEstimateData', $this->allAddedEstimatesData);
-        $this->addedEstimateUpdateTrack = rand(1, 1000);
+        // $this->addedEstimateUpdateTrack = rand(1, 1000);
         $this->level = [];
         $this->notification()->success(
             $title = 'Row Deleted Successfully'
