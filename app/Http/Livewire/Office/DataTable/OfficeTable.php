@@ -24,6 +24,8 @@ class OfficeTable extends DataTableComponent
             //     ->sortable(),
             Column::make("Office name", "office_name")
                 ->sortable(),
+            Column::make("Office Code", "office_code")
+                ->sortable(),
             Column::make("Office Level", "level_no")
                 ->format(function ($value, $column, $row) {
                     switch ($value) {

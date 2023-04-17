@@ -10,18 +10,18 @@ class Office extends Model
     use HasFactory;
     protected $table = "offices";
     protected $fillable = [
-        'office_name','department_id','dist_code','in_area','rural_block_code','gp_code','urban_code','ward_code','office_address','level_no'
+        'office_name', 'department_id', 'dist_code', 'in_area', 'rural_block_code', 'gp_code', 'urban_code', 'ward_code', 'office_address', 'level_no', 'office_code'
     ];
     public function getDepartmentName()
     {
-        return $this->belongsTo(Department::class,'department_id');
+        return $this->belongsTo(Department::class, 'department_id');
     }
     public function getDistrictName()
     {
-        return $this->belongsTo(District::class,'dist_code','district_code');
+        return $this->belongsTo(District::class, 'dist_code', 'district_code');
     }
     public function getUrban()
     {
-        return $this->belongsTo(Urban_body::class,'urban_code','urban_body_code');
+        return $this->belongsTo(Urban_body::class, 'urban_code', 'urban_body_code');
     }
 }
