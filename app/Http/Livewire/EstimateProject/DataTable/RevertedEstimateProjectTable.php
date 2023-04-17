@@ -43,26 +43,23 @@ class RevertedEstimateProjectTable extends DataTableComponent
 
     public function edit($id)
     {
-        $this->emit('openForm', true, $id);
+        $this->emit('openForm',['formType'=>'edit', 'id'=>$id]);
     }
     public function view($estimate_id)
     {
         $this->emit('openModal', $estimate_id);
     }
-    public function forward($estimate_id)
-    {
-        $this->emit('openForwardModal',$estimate_id);
-    }
+
     public function builder(): Builder
     {
         return EstimatePrepare::query()
         ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
         ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-        ->where('estimate_user_assign_records.estimate_user_type','=',5)
-        ->where('sor_masters.status',3)
-        ->where('operation', 'Total')
-        ->where('estimate_no', '!=', NULL)
-        ->where('created_by',Auth::user()->id);
+        ->where('estimate_user_assign_records.is_done', '=', 0)
+        // ->where('sor_masters.status','!=',1)
+            ->where('sor_masters.status', '=', 3)
+            ->where('operation', 'Total')
+            ->where('estimate_user_assign_records.assign_user_id', Auth::user()->id);
         // ->groupBy('estimate_id.estimate_id');
     }
 }

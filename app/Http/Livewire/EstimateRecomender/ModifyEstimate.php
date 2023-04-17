@@ -2,13 +2,14 @@
 
 namespace App\Http\Livewire\EstimateRecomender;
 
+use Livewire\Component;
+use App\Models\SorMaster;
+use WireUi\Traits\Actions;
 use App\Models\Esrecommender;
 use App\Models\EstimatePrepare;
-use App\Models\SorMaster;
-use ChrisKonnertz\StringCalc\StringCalc;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Component;
-use WireUi\Traits\Actions;
+use App\Models\EstimateUserAssignRecord;
+use ChrisKonnertz\StringCalc\StringCalc;
 
 class ModifyEstimate extends Component
 {
@@ -49,11 +50,11 @@ class ModifyEstimate extends Component
                     $result = $stringCalc->calculate($value['row_index']);
                     $this->currentEstimate[$value['row_id'] - 1]['total_amount'] = $result;
                     Session()->forget('editEstimateData');
-                    Session()->put('editEstimateData',  $this->currentEstimate);
-                } catch (\Exception $exception) {
+                    Session()->put('editEstimateData', $this->currentEstimate);
+                } catch (\Exception$exception) {
                     $this->dispatchBrowserEvent('alert', [
                         'type' => 'error',
-                        'message' => $exception->getMessage()
+                        'message' => $exception->getMessage(),
                     ]);
                 }
             }
@@ -101,9 +102,19 @@ class ModifyEstimate extends Component
                     Esrecommender::create($insert);
                 }
                 if (SorMaster::where('estimate_id', $value)->update(['status' => 4])) {
-                    $this->notification()->success(
-                        $title = 'Estimate Modified Successfully!!'
-                    );
+                    $data = [
+                        'estimate_id' => $value,
+                        'user_id' => Auth::user()->id,
+                    ];
+                    $data['status'] = 4;
+                    $assignDetails = EstimateUserAssignRecord::create($data);
+                    if ($assignDetails) {
+                        $returnId = $assignDetails->id;
+                        EstimateUserAssignRecord::where([['estimate_id', $value], ['id', '!=', $returnId], ['is_done', 0]])->groupBy('estimate_id')->update(['is_done' => 1]);
+                        $this->notification()->success(
+                            $title = 'Estimate Modified Successfully!!'
+                        );
+                    }
                 }
                 $this->reset();
             } elseif ($verifyEstimate != 0) {
@@ -118,7 +129,7 @@ class ModifyEstimate extends Component
                 $this->reset();
             }
             $this->emit('openForm');
-        } catch (\Throwable $th) {
+        } catch (\Throwable$th) {
             $this->emit('showError', $th->getMessage());
         }
     }

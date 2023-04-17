@@ -14,10 +14,12 @@ class EstimateRevertModal extends Component
     use Actions;
     protected $listeners = ['openRevertModal' => 'openRevertModal'];
     public $openRevertModal = false, $estimate_id, $viewEstimates = [], $userAssignRemarks, $updateDataTableTracker;
+    public $revartRequestFrom;
     public function openRevertModal($value)
     {
         $this->reset();
-        $estimate_id = is_array($value) ? $value['id'] : $value;
+        $estimate_id = is_array($value) ? $value['estimate_id'] : $value;
+        $this->revartRequestFrom = $value['revart_from'];
         $this->openRevertModal = !$this->openRevertModal;
         if ($estimate_id) {
             $this->estimate_id = $estimate_id;
@@ -26,49 +28,46 @@ class EstimateRevertModal extends Component
     }
     public function revertEstimate($value)
     {
-        $getUser = EstimateUserAssignRecord::select('estimate_user_type')->where('estimate_id', '=', $value)->where('estimate_user_id', '=', Auth::user()->id)->first();
-        if ($getUser['estimate_user_type'] == 3) {
-            $getRevertDataId = EstimateUserAssignRecord::select(
-                'estimate_user_assign_records.id as estimate_user_assign_records_id',
-                'estimate_user_assign_records.estimate_user_type',
-                'estimate_user_assign_records.estimate_user_id',
-                'estimate_user_assign_records.comments',
-                'sor_masters.id as sor_masters_id',
-                'sor_masters.estimate_id',
-                'sor_masters.status'
-            )
-                ->join('sor_masters', 'sor_masters.estimate_id', 'estimate_user_assign_records.estimate_id')
-                ->where([['estimate_user_assign_records.estimate_id', '=', $value], ['sor_masters.status', 2], ['estimate_user_assign_records.estimate_user_type', 2]])
-            // ->where('estimate_user_id', '=', Auth::user()->id)
-                ->first();
-            dd($getRevertDataId);
+        if ($this->revartRequestFrom == 'ER') {
+            $getUserDetails = EstimateUserAssignRecord::select('user_id', 'estimate_user_type')->where([['estimate_id', '=', $value], ['assign_user_id', '=', Auth::user()->id], ['status', '=', 2], ['is_done', 0]])->first();
             if (SorMaster::where('estimate_id', $value)->update(['status' => 3])) {
-                EstimateUserAssignRecord::where('id', $getRevertDataId['estimate_user_assign_records_id'])->update(['comments' => $this->userAssignRemarks]);
-                // Cache::put($value.'|recomender', $this->userAssignRemarks);
-                $this->notification()->success(
-                    $title = 'Estimate Reverted'
-                );
+                $data = [
+                    'estimate_id' => $value,
+                    'user_id' => Auth::user()->id,
+                    'assign_user_id' => (int) $getUserDetails->user_id,
+                    'comments' => $this->userAssignRemarks,
+                ];
+                $data['status'] = 3;
+                $assignDetails = EstimateUserAssignRecord::create($data);
+                if ($assignDetails) {
+                    $returnId = $assignDetails->id;
+                    EstimateUserAssignRecord::where([['estimate_id', $value], ['id', '!=', $returnId], ['is_done', 0]])->groupBy('estimate_id')->update(['is_done' => 1]);
+                    $this->notification()->success(
+                        $title = 'Estimate Reverted'
+                    );
+                }
             }
-        } elseif ($getUser['estimate_user_type'] == 9) {
-            $getRevertDataId = EstimateUserAssignRecord::select(
-                'estimate_user_assign_records.id as estimate_user_assign_records_id',
-                'estimate_user_assign_records.estimate_user_type',
-                'estimate_user_assign_records.estimate_user_id',
-                'estimate_user_assign_records.comments',
-                'sor_masters.id as sor_masters_id',
-                'sor_masters.estimate_id',
-                'sor_masters.status'
-            )
-                ->join('sor_masters', 'sor_masters.estimate_id', 'estimate_user_assign_records.estimate_id')
-                ->where([['estimate_user_assign_records.estimate_id', '=', $value], ['sor_masters.status', 11], ['estimate_user_assign_records.estimate_user_type', 1]])
-            // ->where('estimate_user_id', '=', Auth::user()->id)
-                ->first();
-            dd($getRevertDataId);
-            if (SorMaster::where('estimate_id', $value)->update(['status' => 9])) {
-                EstimateUserAssignRecord::where('id', $getRevertDataId['estimate_user_assign_records_id'])->update(['comments' => $this->userAssignRemarks]);
-                // Cache::put($value.'|forwader', $this->userAssignRemarks);
+        } elseif ($this->revartRequestFrom == 'EF') {
+            $getUserDetails = EstimateUserAssignRecord::select('user_id', 'estimate_user_type')->where([['estimate_id', '=', $value], ['assign_user_id', '=', Auth::user()->id], ['status', '=', 11], ['is_done', 0]])->first();
+            if (SorMaster::where('estimate_id', $value)->update(['status' => 7])) {
+                $data = [
+                    'estimate_id' => $value,
+                    'user_id' => Auth::user()->id,
+                    'assign_user_id' => (int) $getUserDetails->user_id,
+                    'comments' => $this->userAssignRemarks,
+                ];
+                $data['status'] = 7;
+                $assignDetails = EstimateUserAssignRecord::create($data);
+                if ($assignDetails) {
+                    $returnId = $assignDetails->id;
+                    EstimateUserAssignRecord::where([['estimate_id', $value], ['id', '!=', $returnId], ['is_done', 0]])->groupBy('estimate_id')->update(['is_done' => 1]);
+                    $this->notification()->success(
+                        $title = 'Estimate Reverted to Recomender'
+                    );
+                }
+            }else {
                 $this->notification()->success(
-                    $title = 'Estimate Reverted to Recomender'
+                    $title = 'Opps! somethig waint wrong.'
                 );
             }
         } else {

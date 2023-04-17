@@ -79,7 +79,7 @@ final class AssignRoleDatatable extends PowerGridComponent
             ->join("roles", "users_has_roles.role_id", '=', "roles.id")
             ->join("departments","users.department_id",'=',"departments.id")
             ->join("offices","users.office_id",'=',"offices.id")
-            ->where('offices.id',Auth::user()->office_id)
+            ->where('users.office_id',Auth::user()->office_id)
             ->where('users.user_type',6);
     }
 

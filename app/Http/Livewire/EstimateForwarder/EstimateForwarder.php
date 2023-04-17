@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\EstimateForwarder;
 
+use App\Models\EstimateUserAssignRecord;
 use App\Models\SorMaster;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -30,25 +31,26 @@ class EstimateForwarder extends Component
     }
     public function dataCounter()
     {
-        $this->counterData['totalPendingDataCount'] =SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-            ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
-            ->where('estimate_user_assign_records.estimate_user_type', '=', 9)
-            ->count();
-        $this->counterData['pendingDataCount'] = SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-            ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
-            ->where('estimate_user_assign_records.estimate_user_type', '=', 9)
-            ->where('sor_masters.status','!=',3)
-            ->where('sor_masters.status','=',11)
-            ->where('sor_masters.is_verified', '=', 0)
-            // ->where([['sor_masters.is_verified', '=', 0],['sor_masters.status','=',11]])
-            ->count();
+        $this->counterData['totalPendingDataCount'] =EstimateUserAssignRecord::where(function($query){
+            $query->where('status',8)
+            ->orWhere('status',9);
+        })
+        ->where(function($query){
+            $query->where('user_id',Auth::user()->id)
+            ->orWhere('assign_user_id',Auth::user()->id);
+        })
+        ->count();
+        $this->counterData['pendingDataCount'] = EstimateUserAssignRecord::where('status',9)
+        ->where('assign_user_id',Auth::user()->id)
+        ->where('is_done',0)
+        ->count();
         $this->counterData['verifiedDataCount'] =  SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-            ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
+            ->where('estimate_user_assign_records.user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 9)
             ->where('sor_masters.is_verified', '=', 1)
             ->count();
         // $this->counterData['revertedDataCount'] = SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
-        //     ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
+        //     ->where('estimate_user_assign_records.user_id', '=', Auth::user()->id)
         //     ->where('estimate_user_assign_records.estimate_user_type', '=', 1)
         //     ->where('status', '=', 3)
         //     ->count();

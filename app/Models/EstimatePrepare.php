@@ -38,6 +38,6 @@ class EstimatePrepare extends Model
     }
     public function assigningUserRemarks()
     {
-        return $this->belongsTo(EstimateUserAssignRecord::class,'created_by','estimate_user_id');
+        return $this->belongsTo(EstimateUserAssignRecord::class,'created_by','user_id');
     }
 }

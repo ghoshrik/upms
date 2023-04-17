@@ -168,7 +168,7 @@ class EditEstimateList extends Component
         unset($this->allAddedEstimatesData[$value-1]);
         Session()->forget('editEstimateData');
         Session()->put('editEstimateData', $this->allAddedEstimatesData);
-        $this->addedEstimateUpdateTrack = rand(1, 1000);
+        // $this->addedEstimateUpdateTrack = rand(1, 1000);
         $this->level = [];
         $this->notification()->success(
             $title = 'Row Deleted Successfully'
@@ -283,7 +283,8 @@ class EditEstimateList extends Component
     {
         try {
             if ($this->allAddedEstimatesData) {
-                if (count(SorMaster::where('estimate_id',$estimateStoreId)->where('status',1)->get()) == 1) {
+                // if (count(SorMaster::where('estimate_id',$estimateStoreId)->where('status',1)->get()) == 1) {
+                    if(true){
                     EstimatePrepare::where('estimate_id',$estimateStoreId)->delete();
                     foreach ($this->allAddedEstimatesData as $key => $value) {
                         $insert = [
@@ -304,13 +305,18 @@ class EditEstimateList extends Component
                         ];
                         EstimatePrepare::create($insert);
                     }
-                    // $data = [
-                    //     'estimate_id' => $intId,
-                    //     'estimate_user_type' => 2,
-                    //     'estimate_user_id' => Auth::user()->id,
-                    // ];
-                    // EstimateUserAssignRecord::create($data);
-
+                    SorMaster::where('estimate_id',$estimateStoreId)->update(['status'=>5]);
+                    $data = [
+                        'estimate_id' => $estimateStoreId,
+                        // 'estimate_user_type' => 4,
+                        'status' => 5,
+                        'user_id' => Auth::user()->id,
+                    ];
+                    $assignDetails = EstimateUserAssignRecord::create($data);
+                    if ($assignDetails) {
+                        $returnId = $assignDetails->id;
+                        EstimateUserAssignRecord::where([['estimate_id',$estimateStoreId],['id','!=',$returnId],['is_done',0]])->groupBy('estimate_id')->update(['is_done'=>1]);
+                    }
                     $this->notification()->success(
                         $title = 'Estimate Prepare Updated Successfully!!'
                     );

@@ -167,9 +167,9 @@
                             @elseif ($this->selectedEstTab == 2)
                                 <div class="card">
                                     <div class="card-body">
-                                        <livewire:estimate-recomender.datatable.recomender-verified-table :wire:key="$updateDataTableTracker" />
-                                        {{-- <livewire:estimate-recomender.datatable.powergrid.recomender-forward-table
-                                            :wire:key="$updateDataTableTracker" /> --}}
+                                        {{-- <livewire:estimate-recomender.datatable.recomender-verified-table :wire:key="$updateDataTableTracker" /> --}}
+                                        <livewire:estimate-recomender.datatable.powergrid.recomender-forward-table
+                                            :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @elseif ($this->selectedEstTab == 3)
