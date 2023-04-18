@@ -21,7 +21,7 @@ class SOR extends Model
         'effect_from',
         'effect_to',
         'is_active',
-        'created_by_level',
+        'created_by',
         'is_approved'
     ];
 

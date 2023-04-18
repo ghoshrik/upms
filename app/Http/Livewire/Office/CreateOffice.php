@@ -33,6 +33,7 @@ class CreateOffice extends Component
         $this->officeData = [
             'office_address' => '',
             'office_name' => '',
+            'office_code' => '',
             'department_id'=> Auth::user()->department_id
         ];
     }
@@ -40,6 +41,7 @@ class CreateOffice extends Component
     protected $rules = [
         'officeData.office_address'=>'required|string|max:255',
         'officeData.office_name'=>'required|string',
+        'officeData.office_code'=>'required|string|unique:offices,office_code',
         'selectedOption.dist_code'=>'required|integer',
         'selectedOption.In_area'=>'required|integer',
         'selectedOption.level'=>'required|integer',
@@ -48,6 +50,9 @@ class CreateOffice extends Component
         'officeData.office_address.required'=>'This field is required',
         'officeData.office_address.string'=>'This is not valid input',
         'officeData.office_name.required'=>'This field is required',
+        'officeData.office_code.string'=>'invalid Format',
+        'officeData.office_code.required'=>'This field is required',
+        'officeData.office_code.unique'=>'Already exists office',
         'officeData.office_name.string'=>'invalid Format',
         'selectedOption.dist_code.required'=>'This field is required',
         'selectedOption.dist_code.integer'=>'Invalid field',
@@ -105,13 +110,13 @@ class CreateOffice extends Component
     public function store()
     {
         $this->validate();
-        // dd($this->selectedOption,$this->officeData);
         try {
             $insert = array_merge($this->selectedOption, $this->officeData);
             $insert = [
                 'in_area'=>$this->selectedOption['In_area'],
                 'department_id'=>$this->officeData['department_id'],
                 'office_name'=>$this->officeData['office_name'],
+                'office_code'=>$this->officeData['office_code'],
                 'office_address'=>$this->officeData['office_address'],
                 'dist_code'=>$this->selectedOption['dist_code'],
                 'rural_block_code'=>($this->selectedOption['rural_block_code']=='') ? 0 :$this->selectedOption['dist_code'],

@@ -7,11 +7,18 @@
                 </div>
                 <div wire:loading.delay.longest.class="loading" class="card-body">
                     <div class="row">
-                        <div class="col-md-6 col-sm-6 col-lg-6">
+                        <div class="col-md-12 col-sm-6 col-lg-12">
                             <div class="form-group">
                                 <x-input label="{{ trans('cruds.office.fields.office_name') }}"
                                     placeholder="{{ trans('cruds.office.fields.office_name') }}"
                                     wire:model.defer="officeData.office_name" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-lg-6">
+                            <div class="form-group">
+                                <x-input label="Office Code"
+                                    placeholder="Office Code"
+                                    wire:model.defer="officeData.office_code" />
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-6 col-sm-6">
