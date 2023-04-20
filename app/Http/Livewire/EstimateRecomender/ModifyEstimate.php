@@ -20,7 +20,14 @@ class ModifyEstimate extends Component
     public function modifyEstimate($estimateId = 0)
     {
         $this->estimate_id = $estimateId;
-        $this->currentEstimate = EstimatePrepare::where('estimate_id', $this->estimate_id)->get()->toArray();
+        $checkForModify = SorMaster::where([['estimate_id', $this->estimate_id]])->first();
+            if ($checkForModify['status'] == 7) {
+                $this->currentEstimate = Esrecommender::where('estimate_id', $this->estimate_id)->get()->toArray();
+            }
+            if ($checkForModify['status'] == 2) {
+                $this->currentEstimate = EstimatePrepare::where('estimate_id', $this->estimate_id)->get()->toArray();
+            }
+        // $this->currentEstimate = EstimatePrepare::where('estimate_id', $this->estimate_id)->get();
     }
     public function updateEstimateData($updateValue, $id)
     {
@@ -78,7 +85,6 @@ class ModifyEstimate extends Component
     {
         try {
             $verifyEstimate = count(Esrecommender::where('estimate_id', $value)->get());
-            // dd($verifyEstimate);
             if ($verifyEstimate == 0) {
                 foreach ($this->currentEstimate as $key => $estimate) {
                     $insert = [

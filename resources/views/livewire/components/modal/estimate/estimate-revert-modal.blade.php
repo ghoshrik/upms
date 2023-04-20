@@ -16,7 +16,7 @@
                         <x-button class="btn btn-soft-secondary" flat icon="x-circle" negative label="Cancel" x-on:click="close" />
                     </div>
                     <div class="flex float-right">
-                        <x-button class="btn btn-soft-warning" flat icon="x-circle" negative label="Revert" x-on:click="$wire.revertEstimate({{ $estimate_id }})"/>
+                        <x-button class="btn btn-soft-warning" flat negative x-on:click="$wire.revertEstimate({{ $estimate_id }})"><x-lucide-corner-up-left class="w-4 h-4 text-gray-500" /> Revert</x-button>
                         {{-- <button wire:click="revertEstimate({{ $estimate_id }})" class="btn btn-soft-warning">
                             <x-lucide-corner-up-left class="w-4 h-4 text-gray-500" /> Revert
                         </button> --}}

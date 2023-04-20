@@ -49,6 +49,10 @@ class RecomenderRevertTable extends DataTableComponent
     {
         $this->emit('openForm', ['formType'=>'modify', 'id'=>$id]);
     }
+    public function revert($estimate_id)
+    {
+        $this->emit('openRevertModal',['estimate_id'=>$estimate_id,'revart_from'=>'ER']);
+    }
     public function builder(): Builder
     {
         return Esrecommender::query()
