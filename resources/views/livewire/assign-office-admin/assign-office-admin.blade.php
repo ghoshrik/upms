@@ -1,4 +1,7 @@
 <div>
+    @section('webtitle')
+        Assign Office Admins
+    @endsection
     <div class="conatiner-fluid content-inner py-0">
         <div class="iq-navbar-header" style="height: 124px;">
             @if ($errorMessage != null)
@@ -47,10 +50,10 @@
 
         {{-- <x-cards title="">
             <x-slot name="table"> --}}
-                {{-- <livewire:assign-office-admin :openAssignAdminId="$openAssignAdminId" /> --}}
-                {{-- <livewire:assign-office-admin.user-assign-model :openAssignAdminId="$openAssignAdminId" /> --}}
+        {{-- <livewire:assign-office-admin :openAssignAdminId="$openAssignAdminId" /> --}}
+        {{-- <livewire:assign-office-admin.user-assign-model :openAssignAdminId="$openAssignAdminId" /> --}}
 
-                {{-- <x-modal wire:model.defer="openFormModel">
+        {{-- <x-modal wire:model.defer="openFormModel">
                     <x-card title="Select Role">
                         <div class="col-md-12">
                             <div class="form-group">
@@ -65,7 +68,7 @@
                         </x-slot>
                     </x-card>
                 </x-modal> --}}
-            {{-- </x-slot>
+        {{-- </x-slot>
         </x-cards> --}}
         {{-- @endif --}}
     </div>
