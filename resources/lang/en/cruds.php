@@ -125,6 +125,7 @@ return [
             'description' => 'Description',
             'dept_category' => 'Department Category',
             'unit' => 'Unit',
+            'qty' => 'Quantity',
             'cost' => 'Cost',
             'version' => 'Version',
             'effect_from' => 'From Date',
