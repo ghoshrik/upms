@@ -134,12 +134,11 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-9">
-                                    <div class="text-muted mt-2" id="resend">
-                                        Didn’t get the code ? <a
-                                            href="{{ url('/resend-otp/' . base64_encode($user_id)) }}"
-                                            class="text-primary fw-bold">Resend</a>
+                                    {{-- <div class="fw-normal text-muted mt-2"> --}}
+                                    {{-- Didn’t get the code ? <a href="#"
+                                        class="text-primary fw-bold text-decoration-none">Resend</a> --}}
 
-                                    </div>
+                                    {{-- </div> --}}
                                 </div>
                                 <div class="col-lg-3">
                                     <p class="text-danger" id="countdown"></p>
@@ -147,6 +146,16 @@
                             </div>
                             <button type="button" id="submit" class="btn btn-primary hide">Verify OTP</button>
                         </form>
+
+
+
+
+
+
+
+
+
+
                         {{-- <form action="{{ route('otp.login') }}" method="post">
                             @csrf
                             <div class="row">
@@ -207,30 +216,17 @@
 <script>
     $(document).ready(function() {
         //alert("hii");
-        // var countdown = 119; // seconds
-        const resend = document.getElementById("resend");
-        const submitButton = document.getElementById("submit");
-        const status = document.getElementById("status");
-        $(resend).addClass("hide");
+        var countdown = 119; // seconds
+        // var timer = setInterval(function() {
+        //     countdown--;
+        //     document.getElementById("countdown").innerHTML = "0:" + (seconds < 10 ? "0" : "") + String(countdown);
 
-        var countdown = 120; // seconds
-        var timer = setInterval(function() {
-            let minutes = Math.floor(countdown / 60);
-            let seconds = (countdown % 60).toFixed(2);
-            document.getElementById("countdown").innerHTML = minutes + ":" + (seconds < 10 ? "0" : "") +
-                seconds;
-            countdown--;
-            if (countdown <= 0) {
-                clearInterval(timer);
-                // window.location.href = "{{ route('auth.signin') }}"; // replace with your main page URL
-                document.getElementById("countdown").innerHTML = "OTP expried";
-                $(resend).removeClass("hide");
-                $(resend).addClass("show");
-                $(resend).removeClass("show");
-                $(submitButton).addClass("hide");
-                $(status).addClass('hide');
-            }
-        }, 1000);
+        //     if (countdown <= 0) {
+        //         clearInterval(timer);
+        //         // window.location.href = "{{ route('auth.signin') }}"; // replace with your main page URL
+        //     }
+
+        // }, 1000);
 
 
         $.ajaxSetup({
@@ -238,7 +234,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('#submit').on('click', function(e) {
+        $('#otpscreen').on('click', function(e) {
             e.preventDefault();
             var input1 = $('#input1').val();
             var input2 = $('#input2').val();
@@ -248,7 +244,7 @@
             var input6 = $('#input6').val();
             var userId = $('#user_id').val();
             const otpnum = input1 + input2 + input3 + input4 + input5 + input6;
-            // console.log(otpnum, userId);
+            console.log(otpnum, userId);
             $.ajax({
                 url: "{{ route('otp.login') }}",
                 data: {
@@ -271,26 +267,6 @@
                 }
             });
         });
-        /*$('#resend > a').on('click', function() {
-            const href = $(this).attr('href');
-            const userId = $('#user_id').val();
-            $.ajax({
-                url: href,
-                data: {
-                    // href: href,
-                    userId: userId,
-                    _token: '{{ csrf_token() }}'
-                },
-                dataType: 'json',
-                type: 'post',
-                success: function(data) {
-                    // console.log(data);
-                    if (data.success == true) {
-                        $('#status').html(data.status);
-                    }
-                }
-            });
-        });*/
     });
     //Initial references
     const input = document.querySelectorAll(".input");
