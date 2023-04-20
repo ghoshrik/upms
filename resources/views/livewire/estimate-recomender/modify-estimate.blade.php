@@ -121,7 +121,7 @@
                                                     </span>
                                                 </x-button>
                                             @endif
-                                            @if ($addedEstimate['row_index'] == null && $addedEstimate['estimate_no'] == null)
+                                            @if ($addedEstimate['row_index'] == null )
                                                 <x-button wire:click="editEstimate({{ $addedEstimate['row_id'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
                                                     <span class="btn-inner">

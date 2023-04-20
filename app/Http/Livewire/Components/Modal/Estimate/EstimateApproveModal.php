@@ -23,20 +23,27 @@ class EstimateApproveModal extends Component
         $this->openApproveModal = !$this->openApproveModal;
         if ($estimate_id) {
             $this->estimate_id = $estimate_id;
-            $this->viewEstimates = EstimatePrepare::where('estimate_id', $this->estimate_id)->get();
+            $checkForModify = SorMaster::where([['estimate_id', $this->estimate_id]])->first();
+            if ($checkForModify['status'] == 4) {
+                $this->viewEstimates = Esrecommender::where('estimate_id', $this->estimate_id)->get();
+            }
+            if ($checkForModify['status'] == 2) {
+                $this->viewEstimates = EstimatePrepare::where('estimate_id', $this->estimate_id)->get();
+            }
         }
     }
     public function approveEstimate($value)
     {
         try {
-            $checkForApprove = Esrecommender::where('estimate_id', $value)->first();
+            // $checkForApprove = Esrecommender::where('estimate_id', $value)->first();
+            $checkForApprove = SorMaster::where([['estimate_id', $value], ['status', 4]])->first();
             if ($checkForApprove != null) {
-                if (SorMaster::where('estimate_id', $value)->update(['status' => 8])) {
+                if (SorMaster::where('estimate_id', $value)->update(['status' => 6])) {
                     $data = [
                         'estimate_id' => $value,
                         'user_id' => Auth::user()->id,
                     ];
-                    $data['status'] = 8;
+                    $data['status'] = 6;
                     $assignDetails = EstimateUserAssignRecord::create($data);
                     if ($assignDetails) {
                         $returnId = $assignDetails->id;
@@ -49,6 +56,7 @@ class EstimateApproveModal extends Component
             } else {
                 $approveEstimate = EstimatePrepare::where('estimate_id', $value)->get();
                 if ($approveEstimate != null) {
+                    Esrecommender::where('estimate_id', $value)->delete();
                     foreach ($approveEstimate as $key => $estimate) {
                         $insert = [
                             'estimate_id' => $value,

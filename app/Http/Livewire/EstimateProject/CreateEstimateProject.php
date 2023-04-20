@@ -255,11 +255,15 @@ class CreateEstimateProject extends Component
     {
         $this->estimateData['total_amount'] = '';
         $this->estimateData['description'] = '';
-        $this->fatchDropdownData['estimateDetails'] = EstimatePrepare::join('sor_masters', 'estimate_prepares.estimate_id', 'sor_masters.estimate_id')
-            ->where('estimate_prepares.estimate_id', $this->estimateData['estimate_no'])
-            ->where('estimate_prepares.operation', 'Total')->first();
+        $this->estimateData['qty'] = '';
+        $this->estimateData['rate'] = '';
+        $this->fatchDropdownData['estimateDetails'] = Esrecommender::join('sor_masters', 'estimate_recomender.estimate_id', 'sor_masters.estimate_id')
+            ->where('estimate_recomender.estimate_id', $this->estimateData['estimate_no'])
+            ->where('estimate_recomender.operation', 'Total')->where('sor_masters.is_verified', '=', 1)->first();
         $this->estimateData['total_amount'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
         $this->estimateData['description'] = $this->fatchDropdownData['estimateDetails']['sorMasterDesc'];
+        $this->estimateData['qty'] = 1;
+        $this->estimateData['rate'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
     }
     public function addEstimate()
     {

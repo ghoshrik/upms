@@ -51,6 +51,7 @@
                                             </th>
                                             <th>{{ trans('cruds.sor.fields.id_helper') }}</th>
                                             <th>{{ trans('cruds.sor.fields.item_number') }}</th>
+                                            <th>Description</th>
                                             <th>{{ trans('cruds.sor.fields.department') }}</th>
                                             <th>{{ trans('cruds.sor.fields.unit') }}</th>
                                             <th>{{ trans('cruds.sor.fields.cost') }}</th>
@@ -74,6 +75,7 @@
 
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $sors->Item_details }}</td>
+                                                <td>{{ $sors->description }}</td>
                                                 <td>{{ $sors->getDepartmentName->department_name }}</td>
                                                 <td>{{ $sors->unit }}</td>
                                                 <td>{{ $sors->cost }}</td>

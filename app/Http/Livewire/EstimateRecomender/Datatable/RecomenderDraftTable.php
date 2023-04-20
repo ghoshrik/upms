@@ -6,6 +6,7 @@ use App\Models\Esrecommender;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\EstimatePrepare;
+use App\Models\SorMaster;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,9 +30,6 @@ class RecomenderDraftTable extends DataTableComponent
             Column::make("DESCRIPTION", "SOR.sorMasterDesc")
                 ->searchable()
                 ->sortable(),
-            Column::make("Remarks", "SOR.userAR.comments")
-                ->searchable()
-                ->sortable(),
             Column::make("Estimator Cost", "total_amount")
                 ->format(fn ($row) => round($row, 10, 2))
                 ->sortable(),
@@ -42,6 +40,7 @@ class RecomenderDraftTable extends DataTableComponent
                 ->sortable()
                 ->format( fn($row) => '<span class="badge bg-primary fs-6">'.$row.'</span>')
                 ->html(),
+            Column::make("Remarks","comments"),
             Column::make("Actions", "estimate_id")
             ->format(
                 fn($value, $row, Column $column) => view('livewire.action-components.estimate-recomender.draft-table-buttons')->withValue($value))
@@ -60,7 +59,14 @@ class RecomenderDraftTable extends DataTableComponent
     }
     public function view($estimate_id)
     {
-        $this->emit('openModal', $estimate_id);
+        $checkForView = SorMaster::select('status')->where('estimate_id',$estimate_id)->first();
+        if($checkForView['status'] == 2)
+        {
+            $this->emit('openModal', $estimate_id);
+        }else{
+            $this->emit('openVerifiedEstimateViewModal', $estimate_id);
+        }
+
     }
     public function verify($estimate_id)
     {
@@ -81,6 +87,7 @@ class RecomenderDraftTable extends DataTableComponent
     public function builder(): Builder
     {
         return EstimatePrepare::query()
+        // $a= EstimatePrepare::query()
             ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
             ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
             ->where('operation', 'Total')
@@ -96,5 +103,6 @@ class RecomenderDraftTable extends DataTableComponent
                 ->orWhere('sor_masters.status',6);
             })
             ->where('estimate_user_assign_records.is_done',0);
+            // dd($a->get());
     }
 }

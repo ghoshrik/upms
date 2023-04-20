@@ -58,6 +58,7 @@ class ForwardedEstimateProjectTable extends DataTableComponent
     public function builder(): Builder
     {
         return EstimatePrepare::query()
+        // $a= EstimatePrepare::query()
             ->select('estimate_prepares.id', 'estimate_prepares.estimate_id', 'estimate_prepares.operation', 'estimate_prepares.total_amount', 'estimate_prepares.created_by',
                 'estimate_user_assign_records.estimate_id as user_assign_records_estimate_id', 'estimate_user_assign_records.estimate_user_type',
                 'estimate_user_assign_records.user_id', 'estimate_user_assign_records.estimate_user_type', 'estimate_user_assign_records.comments',
@@ -72,5 +73,6 @@ class ForwardedEstimateProjectTable extends DataTableComponent
             ->where('estimate_no','!=',NULL)
             ->where('created_by', '=', Auth::user()->id);
         // ->groupBy('estimate_id.estimate_id');
+        // dd($a->get());
     }
 }

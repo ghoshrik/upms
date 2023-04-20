@@ -58,7 +58,7 @@
                                 <th scope="col">Office Name</th>
                                 <th scope="col">Office Code</th>
                                 <th scope="col">Office Address</th>
-                                {{-- <th scope="col">User</th> --}}
+                                <th scope="col">User</th>
                                 <th scope="col">Actions</th>
                             </tr>
                         </thead>
@@ -73,7 +73,7 @@
                                             {{ $office['office_code'] }}
                                         </td>
                                         <td class="text-wrap" style="width: 30rem">{{ $office['office_address'] }}</td>
-                                        {{-- <td>
+                                        <td>
                                             @if ($office['user_id'])
                                                 @foreach ($hooUsers as $user)
                                                     @if ($user['id'] == $office['user_id'])
@@ -82,7 +82,7 @@
                                                     @endif
                                                 @endforeach
                                             @else
-                                                <select class="form-select" aria-label="Select user"
+                                                {{-- <select class="form-select" aria-label="Select user"
                                                     wire:key='select-{{ $key }}'
                                                     wire:model='selectedUser.{{ $office['id'] }}'>
                                                     <option wire:key='select_option-{{ $key }}'>Select User
@@ -92,9 +92,9 @@
                                                             value="{{ $user['id'] }}">{{ $user['emp_name'] }}
                                                         </option>
                                                     @endforeach
-                                                </select>
+                                                </select> --}}
                                             @endif
-                                        </td> --}}
+                                        </td>
                                         <td>
                                             {{-- <button type="button" wire:click="assign({{ $office['id'] }})"
                                                 class="btn btn-soft-primary btn-sm"

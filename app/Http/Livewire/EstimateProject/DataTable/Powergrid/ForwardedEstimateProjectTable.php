@@ -7,6 +7,7 @@ use App\Models\EstimateStatus;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
@@ -53,31 +54,19 @@ final class ForwardedEstimateProjectTable extends PowerGridComponent
     public function datasource(): Builder
     {
         return EstimatePrepare::query()
-        ->select(
-            'estimate_prepares.id',
-            'estimate_prepares.estimate_id',
-            'estimate_prepares.operation',
-            'estimate_prepares.total_amount',
-            'estimate_prepares.created_by',
-            'estimate_user_assign_records.estimate_id as user_assign_records_estimate_id',
-            'estimate_user_assign_records.estimate_user_type',
-            'estimate_user_assign_records.user_id',
-            'estimate_user_assign_records.estimate_user_type',
-            'estimate_user_assign_records.comments',
-            'sor_masters.estimate_id as sor_masters_estimate_id',
-            'sor_masters.sorMasterDesc',
-            'sor_masters.status'
-        )
-        ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
-        ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-        // ->where('estimate_user_assign_records.estimate_user_type','=',4)
-        ->where('estimate_user_assign_records.status',2)
-        // ->where('sor_masters.status','!=',1)
-        // ->where('sor_masters.status','!=',3)
-        // ->where('sor_masters.status','!=',5)
-        ->where('operation', 'Total')
-        ->where('estimate_no','!=',NULL)
-        ->where('created_by',Auth::user()->id);
+        ->select('estimate_prepares.id', 'estimate_prepares.estimate_id', 'estimate_prepares.operation', 'estimate_prepares.total_amount', 'estimate_prepares.created_by',
+                'estimate_user_assign_records.estimate_id as user_assign_records_estimate_id', 'estimate_user_assign_records.estimate_user_type',
+                'estimate_user_assign_records.user_id', 'estimate_user_assign_records.estimate_user_type', 'estimate_user_assign_records.comments',
+                'sor_masters.estimate_id as sor_masters_estimate_id', 'sor_masters.sorMasterDesc', 'sor_masters.status')
+            ->join('estimate_user_assign_records', function ($join) {
+                $join->on('estimate_user_assign_records.estimate_id', '=', 'estimate_prepares.estimate_id')
+                    ->where('estimate_user_assign_records.status', '=', 2)
+                    ->where('estimate_user_assign_records.created_at', '=', DB::raw("(SELECT max(created_at) FROM estimate_user_assign_records WHERE estimate_prepares.estimate_id = estimate_user_assign_records.estimate_id AND estimate_user_assign_records.status = 2)"));
+            })
+            ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
+            ->where('operation', '=', 'Total')
+            ->where('estimate_no','!=',NULL)
+            ->where('created_by', '=', Auth::user()->id);
     }
 
     /*

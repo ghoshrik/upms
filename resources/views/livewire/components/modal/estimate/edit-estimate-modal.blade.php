@@ -57,7 +57,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                                @if ($editEstimateRow['item_name'] == "SOR" || $editEstimateRow['item_name']== "Other")
+                                                @if ($editEstimateRow['item_name'] == "SOR" || $editEstimateRow['item_name']== "Other" || $editEstimateRow['item_name']== "Estimate")
                                                     <x-input wire:key="sor_qty" wire:model.defer="qty" wire:keyup="calculateValue" />
                                                 @else
                                                     {{ $editEstimateRow['qty'] }}
@@ -68,6 +68,8 @@
                                                 <x-input wire:key="sor_rate" placeholder="{{ round($editEstimateRow['rate'], 10, 2) }}"  wire:model.defer="" disabled/>
                                             @elseif ($editEstimateRow['item_name']== "Other")
                                             <x-input wire:key="other_rate" placeholder="{{ $editEstimateRow['rate'] }}"  wire:model.defer="rate" wire:keyup="calculateValue"/>
+                                            @else
+                                                {{ $editEstimateRow['rate'] }}
                                             @endif
                                         </td>
                                         <td>

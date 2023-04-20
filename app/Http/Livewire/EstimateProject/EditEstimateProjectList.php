@@ -130,7 +130,7 @@ class EditEstimateProjectList extends Component
             $this->reset('currentEstimateProjectData');
         }
         if ($this->addedEstimateData != null) {
-            $index = count($this->allAddedEstimatesData) + 1;
+            $index = count($this->allAddedEstimatesData) +1;
             if (!array_key_exists("operation", $this->addedEstimateData)) {
                 $this->addedEstimateData['operation'] = '';
             }
@@ -147,7 +147,7 @@ class EditEstimateProjectList extends Component
                 $this->addedEstimateData['estimate_no'] = '';
             }
             foreach ($this->addedEstimateData as $key => $estimate) {
-                $this->allAddedEstimatesData[$index][$key] = $estimate;
+                $this->allAddedEstimatesData[$index-1][$key] = $estimate;
             }
             Session()->put('editEstimateProjectData', $this->allAddedEstimatesData);
             $this->reset('addedEstimateData');

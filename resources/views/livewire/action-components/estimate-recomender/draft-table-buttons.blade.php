@@ -12,7 +12,10 @@
         @isset($checkForApprove)
             @if (count($checkForApprove) == 0)
                 @include('components.data-table-components.buttons.approve')
-                @include('components.data-table-components.buttons.revert')
+                @if (count($checkForModify) == 0)
+                    @include('components.data-table-components.buttons.revert')
+                @endif
+
             @else
                 @include('components.data-table-components.buttons.forward')
             @endif

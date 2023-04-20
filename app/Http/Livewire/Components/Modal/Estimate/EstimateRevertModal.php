@@ -29,16 +29,18 @@ class EstimateRevertModal extends Component
     public function revertEstimate($value)
     {
         if ($this->revartRequestFrom == 'ER') {
-            $getUserDetails = EstimateUserAssignRecord::select('user_id', 'estimate_user_type')->where([['estimate_id', '=', $value], ['assign_user_id', '=', Auth::user()->id], ['status', '=', 2], ['is_done', 0]])->first();
-            if (SorMaster::where('estimate_id', $value)->update(['status' => 3])) {
-                $data = [
-                    'estimate_id' => $value,
-                    'user_id' => Auth::user()->id,
-                    'assign_user_id' => (int) $getUserDetails->user_id,
-                    'comments' => $this->userAssignRemarks,
-                ];
-                $data['status'] = 3;
-                $assignDetails = EstimateUserAssignRecord::create($data);
+            $getStatus = SorMaster::select('status')->where('estimate_id',$value)->first();
+            // $getUserDetails = EstimateUserAssignRecord::select('user_id', 'estimate_user_type')->where([['estimate_id', '=', $value], ['assign_user_id', '=', Auth::user()->id], ['status', '=', $getStatus->status], ['is_done', 0]])->first();
+            $getUserDetails = EstimateUserAssignRecord::select('user_id', 'estimate_user_type')->where([['estimate_id', '=', $value], ['assign_user_id', '=', 0], ['status', '=', 1]])->first();
+            // dd($getUserDetails);
+            $data = [
+                'estimate_id' => $value,
+                'user_id' => Auth::user()->id,
+                'assign_user_id' => (int) $getUserDetails->user_id,
+                'comments' => $this->userAssignRemarks,
+            ];
+            $data['status'] = 3;
+            if ($assignDetails = EstimateUserAssignRecord::create($data)) {
                 if ($assignDetails) {
                     $returnId = $assignDetails->id;
                     EstimateUserAssignRecord::where([['estimate_id', $value], ['id', '!=', $returnId], ['is_done', 0]])->groupBy('estimate_id')->update(['is_done' => 1]);
@@ -46,18 +48,18 @@ class EstimateRevertModal extends Component
                         $title = 'Estimate Reverted'
                     );
                 }
+                SorMaster::where('estimate_id', $value)->update(['status' => 3]);
             }
         } elseif ($this->revartRequestFrom == 'EF') {
-            $getUserDetails = EstimateUserAssignRecord::select('user_id', 'estimate_user_type')->where([['estimate_id', '=', $value], ['assign_user_id', '=', Auth::user()->id], ['status', '=', 11], ['is_done', 0]])->first();
-            if (SorMaster::where('estimate_id', $value)->update(['status' => 7])) {
-                $data = [
-                    'estimate_id' => $value,
-                    'user_id' => Auth::user()->id,
-                    'assign_user_id' => (int) $getUserDetails->user_id,
-                    'comments' => $this->userAssignRemarks,
-                ];
-                $data['status'] = 7;
-                $assignDetails = EstimateUserAssignRecord::create($data);
+            $getUserDetails = EstimateUserAssignRecord::select('user_id', 'estimate_user_type')->where([['estimate_id', '=', $value], ['assign_user_id', '=', Auth::user()->id], ['status', '=', 9], ['is_done', 0]])->first();
+            $data = [
+                'estimate_id' => $value,
+                'user_id' => Auth::user()->id,
+                'assign_user_id' => (int) $getUserDetails->user_id,
+                'comments' => $this->userAssignRemarks,
+            ];
+            $data['status'] = 7;
+            if ($assignDetails = EstimateUserAssignRecord::create($data)) {
                 if ($assignDetails) {
                     $returnId = $assignDetails->id;
                     EstimateUserAssignRecord::where([['estimate_id', $value], ['id', '!=', $returnId], ['is_done', 0]])->groupBy('estimate_id')->update(['is_done' => 1]);
@@ -65,6 +67,7 @@ class EstimateRevertModal extends Component
                         $title = 'Estimate Reverted to Recomender'
                     );
                 }
+                SorMaster::where('estimate_id', $value)->update(['status' => 7]);
             }else {
                 $this->notification()->success(
                     $title = 'Opps! somethig waint wrong.'
