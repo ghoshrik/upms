@@ -129,4 +129,14 @@ class AuthController extends Controller
         // return redirect()->route('auth.signin')->with('error', 'Your OTP is Not Correct');
         // return response()->json(['success'=>false,'']);
     }
+    public function resendOTP($userid)
+    {
+        // dd();
+        $userId = base64_decode($userid);
+        $user_id = User::where('id', $userId)->first();
+        $resp = $this->generateOtp($user_id->mobile);
+        $phoneNumberMasked = preg_replace('/(\d{3})(\d{3})(\d{4})/', 'XXXXXX$3', $user_id->mobile);
+        $messageSend = "Your Mobile Number is " . $phoneNumberMasked . " " . "Your OTP is " . $resp->otp;
+        return redirect()->route('auth.verify', ['user_id' => base64_encode($resp->user_id)])->with('status', $messageSend);
+    }
 }

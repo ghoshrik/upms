@@ -74,22 +74,20 @@ require __DIR__ . '/auth.php';
 // });
 
 
-Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
+// Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
 // Route::get('otp-send/{id}', [HomeController::class, 'otpView'])->name('auth.otp');
-// Route::get('/', [AuthController::class, 'showLoginPage'])->name('auth.signin');
-// Route::post('userlogin', [AuthController::class, 'Userlogin'])->name('auth.login');
-// Route::get('verify/{user_id}', [AuthController::class, 'verifyOTP'])->name('auth.verify');
-// Route::post('otp/verify', [AuthController::class, 'LoginWithOTP'])->name('otp.login');
+Route::get('/', [AuthController::class, 'showLoginPage'])->name('auth.signin');
+Route::post('userlogin', [AuthController::class, 'Userlogin'])->name('auth.login');
+Route::get('verify/{user_id}', [AuthController::class, 'verifyOTP'])->name('auth.verify');
+Route::post('otp/verify', [AuthController::class, 'LoginWithOTP'])->name('otp.login');
+Route::get('resend-otp/{user_id}', [AuthController::class, 'resendOTP'])->name('otp.resend');
 
 Route::group(['middleware' => 'prevent-back-history'], function () {
-    Route::group(['middleware' => 'auth'], function () {
+    Route::group(['middleware' => 'auth', 'check.otp'], function () {
         // Permission Module
         // Route::get('/role-permission',[RolePermission::class, 'index'])->name('role.permission.list');
         // Route::resource('permission',PermissionController::class);
         // Route::resource('role', RoleController::class);
-
-
-
 
 
         // Dashboard Routes
