@@ -124,7 +124,9 @@ return [
             'department' => 'Department',
             'description' => 'Description',
             'dept_category' => 'Department Category',
+            // 'unit_master'
             'unit' => 'Unit',
+            'qty' => 'Quantity',
             'cost' => 'Cost',
             'version' => 'Version',
             'effect_from' => 'From Date',
@@ -293,7 +295,8 @@ return [
         'fields' => [
             'id' => 'ID',
             'id_helper' => '#',
-            'proj_id' => 'Project No',
+            'department_id' => 'Departments',
+            'proj_id' => 'UPMS Project No',
             'Govt_id' => 'GO No.',
             'go_date' => 'GO Date',
             'file_upload' => 'project file',
@@ -341,7 +344,7 @@ return [
         // 'title'=>'Award of Contacts',
         'title' => 'Tender Information',
         'title_singular' => 'Award of Contract',
-        'create_msg' => 'created success',
+        'create_msg' => 'New Tender Created',
         'fields' => [
             'id' => 'ID',
             'id_helper' => '#',
@@ -354,7 +357,8 @@ return [
 
             'title' => 'Tender Title',
             'ref_no' => 'Reference No.',
-            'category' => 'Tender Category',
+            'tender_category' => 'Tender Category',
+            'tender_amount' => 'Tender Amount',
             'actions' => 'Action',
         ],
     ],
