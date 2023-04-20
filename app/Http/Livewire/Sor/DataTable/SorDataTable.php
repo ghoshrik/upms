@@ -54,9 +54,9 @@ class SorDataTable extends DataTableComponent
             Column::make("status", "is_approved")
                 ->format(function ($value, $column, $row) {
                     if ($value) {
-                        return '<span class="badge badge-pill bg-success">Approved</span>';
+                        return '<span class="badge badge-pill rounded bg-success">Approved</span>';
                     } else {
-                        return '<span class="badge badge-pill bg-warning">Pending</span>';
+                        return '<span class="badge badge-pill rounded bg-warning">Pending</span>';
                     }
                 })
                 ->html()
