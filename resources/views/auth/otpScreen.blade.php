@@ -99,7 +99,8 @@
                         {{-- <p class="text-danger" id="countdown"></p> --}}
                         <x-auth-session-status class="mb-4" id="status" :status="session('status')" />
 
-                        {{-- <x-auth-validation-errors class="mb-4" :errors="$errors" /> --}}
+                        {{-- <x-auth-validation-errors class="mb-4" id="error" :errors="$errors" /> --}}
+                        <div class="alert alert-danger d-none" role="alert"></div>
                         @if (session('error'))
                             <div class="alert alert-danger" role="alert"> {{ session('error') }}
                             </div>
@@ -258,6 +259,10 @@
                     if (data.success == true) {
                         $('#status').html(data.status);
                         window.location.href = "{{ route('dashboard') }}";
+                    }
+                    if (data.success == false) {
+                        $('.alert-danger').html(data.error);
+                        window.location.href = "{{ route('auth.signin') }}";
                     }
                 }
             });
