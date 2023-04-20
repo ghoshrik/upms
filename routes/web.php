@@ -49,6 +49,7 @@ use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
 use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
 use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
 use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
+use App\Http\Livewire\Unitsmaster\UnitsMaster;
 
 /*
 |--------------------------------------------------------------------------
@@ -127,6 +128,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('assign-another-office', AssignToAnotherOffice::class)->name('assign-another-office');
         Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
         Route::get('sor-approver', SorApprovers::class)->name('sor-approver');
+        Route::get('unit-master', UnitsMaster::class)->name('unit-master');
 
         Route::get('change-role/{id}', function ($id) {
             $selectedRole =  Role::find($id);
