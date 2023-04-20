@@ -26,10 +26,40 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="form-group">
-                                        <x-input wire:key='unit' label="{{ trans('cruds.sor.fields.unit') }}"
-                                            placeholder="{{ trans('cruds.sor.fields.unit') }}"
-                                            wire:model.defer="editRow.unit" disabled />
+                                    <div class="row">
+                                        <div class="col md-6 col-lg-6">
+                                            <div class="form-group">
+                                                {{-- <x-select wire:key="unitmaster"
+                                                    label="{{ trans('cruds.sor.fields.unit') }}"
+                                                    placeholder="Select {{ trans('cruds.sor.fields.unit') }}"
+                                                    wire:model.defer="editRow.unit_id">
+                                                    @isset($fetchDropDownData['unitMaster'])
+                                                        @foreach ($fetchDropDownData['unitMaster'] as $units)
+                                                            <x-select.option label="{{ $units['unit_name'] }}"
+                                                                value="{{ $units['id'] }}"{{ $units['id'] == $editRow['unit_id'] ? 'selected' : '' }} />
+                                                        @endforeach
+                                                    @endisset
+                                                </x-select> --}}
+                                                <lable for="units">Unit </lable>
+                                                <select class="form-control" wire:model.defer="editRow.unit_id"
+                                                    disabled>
+                                                    @isset($fetchDropDownData['unitMaster'])
+                                                        @foreach ($fetchDropDownData['unitMaster'] as $units)
+                                                            <option value="{{ $units['id'] }}"
+                                                                {{ $units['id'] == $editRow['unit_id'] ? 'selected' : '' }}>
+                                                                {{ $units['unit_name'] }}</option>
+                                                        @endforeach
+                                                    @endisset
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col md-6 col-lg-6">
+                                            <div class="form-group">
+                                                <x-input wire:key='unit' label="{{ trans('cruds.sor.fields.qty') }}"
+                                                    placeholder="{{ trans('cruds.sor.fields.qty') }}"
+                                                    wire:model.defer="editRow.unit" disabled />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">

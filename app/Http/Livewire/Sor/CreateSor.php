@@ -9,6 +9,7 @@ use App\Models\Department;
 use WireUi\Traits\Actions;
 use Livewire\WithFileUploads;
 use App\Models\SorCategoryType;
+use App\Models\UnitMaster;
 use Illuminate\Support\Facades\Auth;
 
 class CreateSor extends Component
@@ -20,6 +21,7 @@ class CreateSor extends Component
         'inputsData.*.dept_category_id' => 'required|integer',
         'inputsData.*.item_details' => 'required|regex:/^[0-9+.]+$/',
         'inputsData.*.description' => 'required|string',
+        'inputsData.*.unit_id' => 'required|integer',
         'inputsData.*.unit' => 'required|numeric|min:1',
         'inputsData.*.cost' => 'required|numeric|min:1',
         'inputsData.*.version' => 'required|string',
@@ -34,6 +36,8 @@ class CreateSor extends Component
         'inputsData.*.item_details.regex' => 'The field invalid characters',
         'inputsData.*.description.required' => 'This field is required',
         'inputsData.*.description.string' => 'This field must be allow alphabet',
+        'inputsData.*.unit_id.required' => 'This field is required',
+        'inputsData.*.unit_id.integer' => 'This field only Allow number',
         'inputsData.*.unit.required' => 'This field is required',
         'inputsData.*.unit.numeric' => 'This field allow only numeric',
         'inputsData.*.unit.min' => 'The number must be at least 1.',
@@ -56,6 +60,7 @@ class CreateSor extends Component
                 'department_id' => Auth::user()->department_id,
                 'dept_category_id' => '',
                 'description' => '',
+                'unit_id' => '',
                 'unit' => '',
                 'cost' => '',
                 'version' => '',
@@ -64,6 +69,7 @@ class CreateSor extends Component
             ]
         ];
         $this->fetchDropDownData['departmentCategory'] = SorCategoryType::where('department_id', Auth::user()->department_id)->get();
+        $this->fetchDropDownData['unitMaster'] =  UnitMaster::select('id', 'unit_name', 'short_name', 'is_active')->where('is_active', 1)->orderBy('id', 'desc')->get();
     }
 
     public function addNewRow()
@@ -74,6 +80,7 @@ class CreateSor extends Component
                 'department_id' => Auth::user()->department_id,
                 'dept_category_id' => '',
                 'description' => '',
+                'unit_id' => '',
                 'unit' => '',
                 'cost' => '',
                 'version' => '',
@@ -97,6 +104,7 @@ class CreateSor extends Component
                     'department_id' => $data['department_id'],
                     'dept_category_id' => $data['dept_category_id'],
                     'description' => $data['description'],
+                    'unit_id' => $data['unit_id'],
                     'unit' => $data['unit'],
                     'cost' => $data['cost'],
                     'version' => $data['version'],
@@ -141,6 +149,7 @@ class CreateSor extends Component
 
     public function render()
     {
+
         return view('livewire.sor.create-sor');
     }
 }

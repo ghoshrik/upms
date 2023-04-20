@@ -36,11 +36,31 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <div class="form-group">
-                                            <x-input wire:key='unit.{{ $key }}'
-                                                label="{{ trans('cruds.sor.fields.unit') }}"
-                                                placeholder="{{ trans('cruds.sor.fields.unit') }}"
-                                                wire:model.defer="inputsData.{{ $key }}.unit" />
+                                        <div class="row">
+                                            <div class="col md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    {{-- @dd($fetchDropDownData['unitMaster']); --}}
+                                                    <x-select wire:key="unitmaster.{{ $key }}"
+                                                        label="{{ trans('cruds.sor.fields.unit') }}"
+                                                        placeholder="Select {{ trans('cruds.sor.fields.unit') }}"
+                                                        wire:model.defer="inputsData.{{ $key }}.unit_id">
+                                                        @isset($fetchDropDownData['unitMaster'])
+                                                            @foreach ($fetchDropDownData['unitMaster'] as $units)
+                                                                <x-select.option label="{{ $units['unit_name'] }}"
+                                                                    value="{{ $units['id'] }}" />
+                                                            @endforeach
+                                                        @endisset
+                                                    </x-select>
+                                                </div>
+                                            </div>
+                                            <div class="col md-6 col-lg-6">
+                                                <div class="form-group">
+                                                    <x-input wire:key='qty.{{ $key }}'
+                                                        label="{{ trans('cruds.sor.fields.qty') }}"
+                                                        placeholder="{{ trans('cruds.sor.fields.qty') }}"
+                                                        wire:model.defer="inputsData.{{ $key }}.unit" />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
