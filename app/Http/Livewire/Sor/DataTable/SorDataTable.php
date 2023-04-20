@@ -32,7 +32,9 @@ class SorDataTable extends DataTableComponent
                 ->sortable(),
             Column::make("Description", "description")
                 ->sortable(),
-            Column::make("Unit", "unit")
+            Column::make("Unit Name", "getUnitsName.unit_name")
+                ->sortable(),
+            Column::make("Quantity", "unit")
                 ->sortable(),
             Column::make("Cost", "cost")
                 ->sortable(),
@@ -77,6 +79,6 @@ class SorDataTable extends DataTableComponent
     public function builder(): Builder
     {
         return SOR::query()
-            ->where([['s_o_r_s.department_id', Auth::user()->department_id],['s_o_r_s.created_by',Auth::user()->id]]);
+            ->where([['s_o_r_s.department_id', Auth::user()->department_id], ['s_o_r_s.created_by', Auth::user()->id]]);
     }
 }

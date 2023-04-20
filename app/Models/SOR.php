@@ -15,6 +15,7 @@ class SOR extends Model
         'department_id',
         'dept_category_id',
         'description',
+        'unit_id',
         'unit',
         'cost',
         'version',
@@ -25,7 +26,7 @@ class SOR extends Model
         'is_approved'
     ];
 
-    protected $dates = ['effect_from','effect_to'];
+    protected $dates = ['effect_from', 'effect_to'];
 
     public function getMyDateAttribute($value)
     {
@@ -35,7 +36,7 @@ class SOR extends Model
     }
     public function getDepartmentName()
     {
-        return $this->belongsTo(Department::class,'department_id');
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
     public function setDueDateAttribute($value)
@@ -44,6 +45,11 @@ class SOR extends Model
     }
     public function getDeptCategoryName()
     {
-        return $this->belongsTo(SorCategoryType::class,'dept_category_id');
+
+        return $this->belongsTo(SorCategoryType::class, 'dept_category_id');
+    }
+    public function getUnitsName()
+    {
+        return $this->belongsTo(UnitMaster::class, 'unit_id');
     }
 }
