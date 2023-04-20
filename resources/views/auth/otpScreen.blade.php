@@ -134,11 +134,12 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-9">
-                                    {{-- <div class="fw-normal text-muted mt-2"> --}}
-                                    {{-- Didn’t get the code ? <a href="#"
-                                        class="text-primary fw-bold text-decoration-none">Resend</a> --}}
+                                    <div class="fw-normal text-muted mt-2" id="resend">
+                                        Didn’t get the code ? <a
+                                            href="{{ url('/resend-otp/' . base64_encode($user_id)) }}"
+                                            class="text-primary fw-bold text-decoration-none">Resend</a>
 
-                                    {{-- </div> --}}
+                                    </div>
                                 </div>
                                 <div class="col-lg-3">
                                     <p class="text-danger" id="countdown"></p>
@@ -146,48 +147,6 @@
                             </div>
                             <button type="button" id="submit" class="btn btn-primary hide">Verify OTP</button>
                         </form>
-
-
-
-
-
-
-
-
-
-
-                        {{-- <form action="{{ route('otp.login') }}" method="post">
-                            @csrf
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="floating-label form-group">
-                                        <input type="hidden" name="user_id" value="{{ $user_id }}" />
-
-                                        <label for="password" class="form-label">OTP</label> --}}
-                        {{-- <input type="password"
-                                            class="form-control @error('verifyOtp') is-invalid @enderror"
-                                            name="verifyOtp" id="password" aria-describedby="password" placeholder=" ">
-
-                                        @error('verifyOtp')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror --}}
-
-                        {{-- <div class="input-field">
-                                            <input type="number" />
-                                            <input type="number" disabled />
-                                            <input type="number" disabled />
-                                            <input type="number" disabled />
-                                            <input type="number" disabled />
-                                            <input type="number" disabled />
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Login</button>
-                        </form> --}}
                     </div>
                 </div>
                 <div class="sign-bg">
@@ -228,13 +187,38 @@
 
         // }, 1000);
 
+        const resend = document.getElementById("resend");
+        const submitButton = document.getElementById("submit");
+        const status = document.getElementById("status");
+        $(resend).addClass("hide");
+
+        var countdown = 120; // seconds
+        var timer = setInterval(function() {
+            let minutes = Math.floor(countdown / 60);
+            let seconds = (countdown % 60).toFixed(2);
+            document.getElementById("countdown").innerHTML = minutes + ":" + (seconds < 10 ? "0" : "") +
+                seconds;
+            countdown--;
+            if (countdown <= 0) {
+                clearInterval(timer);
+                // window.location.href = "{{ route('auth.signin') }}"; // replace with your main page URL
+                document.getElementById("countdown").innerHTML = "OTP expried";
+                $(resend).removeClass("hide");
+                $(resend).addClass("show");
+                $(resend).removeClass("show");
+                $(submitButton).addClass("hide");
+                $(status).addClass('hide');
+            }
+        }, 1000);
+
+
 
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('#otpscreen').on('click', function(e) {
+        $('#submit').on('click', function(e) {
             e.preventDefault();
             var input1 = $('#input1').val();
             var input2 = $('#input2').val();

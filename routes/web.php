@@ -49,6 +49,7 @@ use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
 use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
 use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
 use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
+use App\Http\Livewire\Unitsmaster\UnitsMaster;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,17 +77,23 @@ require __DIR__ . '/auth.php';
 
 // Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
 // Route::get('otp-send/{id}', [HomeController::class, 'otpView'])->name('auth.otp');
+
 Route::get('/', [AuthController::class, 'showLoginPage'])->name('auth.signin');
 Route::post('userlogin', [AuthController::class, 'Userlogin'])->name('auth.login');
 Route::get('verify/{user_id}', [AuthController::class, 'verifyOTP'])->name('auth.verify');
 Route::post('otp/verify', [AuthController::class, 'LoginWithOTP'])->name('otp.login');
+Route::get('resend-otp/{user_id}', [AuthController::class, 'resendOTP'])->name('otp.resend');
 
 Route::group(['middleware' => 'prevent-back-history'], function () {
-    Route::group(['middleware' => 'auth', '2fa.verify'], function () {
+    Route::group(['middleware' => 'auth', 'check.otp'], function () {
         // Permission Module
         // Route::get('/role-permission',[RolePermission::class, 'index'])->name('role.permission.list');
         // Route::resource('permission',PermissionController::class);
         // Route::resource('role', RoleController::class);
+
+
+
+
 
         // Dashboard Routes
         Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
@@ -101,30 +108,32 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('department', Department::class)->name("department");
         Route::get('department-category', DepartmentCategoryList::class)->name('department-category');
         Route::get('office', Office::class)->name('office');
-        Route::get('prepare-sor',Sor::class)->name('prepare-sor');
-        Route::get('user-management',UserManagement::class)->name('user-management');
-        Route::get('access-manager',AccessManager::class)->name('access-manager');
-        Route::get('assign-role',AssignRole::class)->name('assign-role');
-        Route::get('access-type',AccessType::class)->name('access-type');
-        Route::get('menu-manager',MenuManagement::class)->name('menu-manager');
-        Route::get('estimate-recommender',EstimateRecomender::class)->name('estimate-recommender');
-        Route::get('estimate-forwarder',EstimateForwarder::class)->name('estimate-forwarder');
-        Route::get('vendors',VendorList::class)->name('vendors');
-        Route::get('milestones',Milestones::class)->name('milestones');
+        Route::get('prepare-sor', Sor::class)->name('prepare-sor');
+        Route::get('user-management', UserManagement::class)->name('user-management');
+        Route::get('access-manager', AccessManager::class)->name('access-manager');
+        Route::get('assign-role', AssignRole::class)->name('assign-role');
+        Route::get('access-type', AccessType::class)->name('access-type');
+        Route::get('menu-manager', MenuManagement::class)->name('menu-manager');
+        Route::get('estimate-recommender', EstimateRecomender::class)->name('estimate-recommender');
+        Route::get('estimate-forwarder', EstimateForwarder::class)->name('estimate-forwarder');
+        Route::get('vendors', VendorList::class)->name('vendors');
+        Route::get('milestones', Milestones::class)->name('milestones');
         // Route::get('aafs-project',ProjectList::class)->name('aafs-project');
         Route::view('/powergrid', 'powergrid-demo');
-        Route::get('roles',Roles::class)->name('roles');
+        Route::get('roles', Roles::class)->name('roles');
 
-        Route::get('permissions',Permission::class)->name('permissions');
+        Route::get('permissions', Permission::class)->name('permissions');
 
         // Route::get('vendors',VendorList::class)->name('vendors');
-        Route::get('aafs-project',AafsProjects::class)->name('aafs-project');
-        Route::get('aoc',Aocs::class)->name('aoc');
-        Route::get('tenders',Tenders::class)->name('tenders');
-        Route::get('assign-office-admin',AssignOfficeAdmin::class)->name('assign-office-admin');
-        Route::get('assign-another-office',AssignToAnotherOffice::class)->name('assign-another-office');
-        Route::get('assign-dept-admin',AssignDepartmentAdmin::class)->name('assign-dept-admin');
-        Route::get('sor-approver',SorApprovers::class)->name('sor-approver');
+        Route::get('aafs-project', AafsProjects::class)->name('aafs-project');
+        Route::get('aoc', Aocs::class)->name('aoc');
+        Route::get('tenders', Tenders::class)->name('tenders');
+        Route::get('assign-office-admin', AssignOfficeAdmin::class)->name('assign-office-admin');
+        Route::get('assign-another-office', AssignToAnotherOffice::class)->name('assign-another-office');
+        Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
+        Route::get('sor-approver', SorApprovers::class)->name('sor-approver');
+        Route::get('unit-master', UnitsMaster::class)->name('unit-master');
+
         Route::get('change-role/{id}', function ($id) {
             $selectedRole =  Role::find($id);
             Auth::user()->syncRoles($selectedRole->name);
