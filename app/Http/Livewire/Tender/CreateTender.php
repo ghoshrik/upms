@@ -17,10 +17,11 @@ class CreateTender extends Component
         'InputStoreData.projID' => 'required',
         'InputStoreData.tenderNo' => 'required|numeric',
         'InputStoreData.tenderTitle' => 'required|string',
-        'InputStoreData.publishDate' => 'required|date_format:Y-m-d',
-        'InputStoreData.closeDate' => 'required|date_format:Y-m-d',
+        'InputStoreData.publishDate' => 'required',
+        'InputStoreData.closeDate' => 'required',
         'InputStoreData.BiderNo' => 'required|numeric',
-        'InputStoreData.tenderCategory' => 'required'
+        'InputStoreData.tenderCategory' => 'required',
+        'InputStoreData.tenderAmount' => 'required|numeric'
     ];
     protected $messages = [
         'InputStoreData.projID.required' => 'This projects field is required',
@@ -35,6 +36,8 @@ class CreateTender extends Component
         'InputStoreData.BiderNo.required' => 'This field is required',
         'InputStoreData.BiderNo.numeric' => 'This field must be valid number format',
         'InputStoreData.tenderCategory.required' => 'This field is required',
+        'InputStoreData.tenderAmount.required' => 'This field is required',
+        'InputStoreData.tenderAmount.numeric' => 'This field only number Allow'
     ];
 
     public function mount()
@@ -46,12 +49,18 @@ class CreateTender extends Component
         $this->InputStoreData['closeDate'] = '';
         $this->InputStoreData['BiderNo'] = '';
         $this->InputStoreData['tenderCategory'] = '';
+        $this->InputStoreData['tenderAmount'] = '';
     }
 
     public function updated($param)
     {
         $this->validateOnly($param);
     }
+    // public function getProjectDetails()
+    // {
+    //     dd($keyword['_x_bindings']['value']);
+    //     // dd($this->fetchData['project_number']['estimate_id']);
+    // }
     public function store()
     {
         $this->validate();
@@ -63,13 +72,14 @@ class CreateTender extends Component
                 'publish_date' => $this->InputStoreData['publishDate'],
                 'close_date' => $this->InputStoreData['closeDate'],
                 'bidder_name' => $this->InputStoreData['BiderNo'],
-                'tender_category' => $this->InputStoreData['tenderCategory']
+                'tender_category' => $this->InputStoreData['tenderCategory'],
+                'tender_amount' => $this->InputStoreData['tenderAmount']
             ];
             // dd($insert);
 
             Tender::create($insert);
             $this->notification()->success(
-                $title = trans('cruds.aoc.create_msg')
+                $title = trans('cruds.tenders.create_msg')
             );
             $this->reset();
             $this->emit('openEntryForm');
@@ -80,7 +90,10 @@ class CreateTender extends Component
     }
     public function render()
     {
-        $this->fetchData['project_number'] = SorMaster::where('is_verified', '=', 1)->get();
+        $this->fetchData['project_number'] = SorMaster::select('sor_masters.*', 'estimate_prepares.total_amount as total_project_cost')
+            ->join('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
+            ->where('estimate_prepares.operation', '=', 'Total')
+            ->where('is_verified', '=', 1)->get();
         return view('livewire.tender.create-tender');
     }
 }

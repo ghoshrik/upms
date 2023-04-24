@@ -22,6 +22,7 @@ class CreateTendersTable extends Migration
             $table->date('close_date');
             $table->string('bidder_name');
             $table->string('tender_category');
+            $table->float('tender_amount');
             $table->timestamps();
         });
     }

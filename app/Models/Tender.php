@@ -9,12 +9,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Tender extends Model
 {
     use HasFactory;
-    protected $table ="tenders";
+    protected $table = "tenders";
     protected $fillable = [
-        'project_no','tender_id','tender_title','publish_date','close_date','bidder_name','tender_category'
+        'project_no', 'tender_id', 'tender_title', 'publish_date', 'close_date', 'bidder_name', 'tender_category', 'tender_amount'
     ];
 
-    protected $dates = ['publish_date','close_date'];
+    protected $dates = ['publish_date', 'close_date'];
 
     public function getMyDateAttribute($value)
     {
