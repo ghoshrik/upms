@@ -70,7 +70,7 @@ class AuthController extends Controller
                     ]);
                 }
             } else {
-                return redirect()->with('errors', 'This user is not activated');
+                return redirect()->with('error', 'This user is not activated');
             }
         } else {
             return redirect()->route('auth.signin')->with('error', 'User not Exists');
