@@ -123,7 +123,7 @@ class CreateOffice extends Component
                 'gp_code'=>($this->selectedOption['gp_code']=='') ? 0 :$this->selectedOption['dist_code'],
                 'urban_code'=>($this->selectedOption['urban_code']=='') ? 0 :$this->selectedOption['urban_code'],
                 'ward_code'=>($this->selectedOption['ward_code']=='') ? 0 :$this->selectedOption['ward_code'],
-                'level'=>$this->selectedOption['level']
+                'level_no'=>$this->selectedOption['level']
             ];
             // dd($insert);
             Office::create($insert);

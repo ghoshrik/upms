@@ -357,7 +357,7 @@ return [
 
             'title' => 'Tender Title',
             'ref_no' => 'Reference No.',
-            'tender_category' => 'Tender Category',
+            'category' => 'Tender Category',
             'tender_amount' => 'Tender Amount',
             'actions' => 'Action',
         ],

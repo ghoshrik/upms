@@ -13,7 +13,7 @@
                        <h3 class="text-dark">{{$titel}}</h3>
                     <p class="text-primary mb-0">{{$subTitel}}</p>
                     </div>
-                    @canany(['create vendors','edit vendors'])
+                    @canany(['create vendor','edit vendor'])
                     <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
                         @if (!$isFromOpen)
                         <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "

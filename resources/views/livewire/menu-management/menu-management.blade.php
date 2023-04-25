@@ -13,7 +13,7 @@
                        <h3 class="text-dark">{{$titel}}</h3>
                     <p class="text-primary mb-0">{{$subTitel}}</p>
                     </div>
-                    @canany(['create'])
+                    {{-- @canany(['create menu','edit menu']) --}}
                     <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
                         @if (!$isFromOpen)
                         <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
@@ -31,22 +31,8 @@
                         </button>
                         @endif
                     </div>
-                    @endcanany
+                    {{-- @endcanany --}}
                 </div>
-            </div>
-            <div class="iq-header-img">
-                <img src="{{ asset('images/dashboard/top-header.png') }}" alt="header"
-                    class="theme-color-default-img img-fluid w-100 h-100 animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header1.png') }}" alt="header"
-                    class="theme-color-purple-img img-fluid w-100 h-100 animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header2.png') }}" alt="header"
-                    class="theme-color-blue-img img-fluid w-100 h-100 animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header3.png') }}" alt="header"
-                    class="theme-color-green-img img-fluid w-100 h-100 animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header4.png') }}" alt="header"
-                    class="theme-color-yellow-img img-fluid w-100 h-100 animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header5.png') }}" alt="header"
-                    class="theme-color-pink-img img-fluid w-100 h-100 animated-scaleX">
             </div>
         </div>
         @section('webtitle',trans('cruds.user-management.title'))
@@ -64,7 +50,7 @@
                     <div class="col-md-12 col-lg-12 col-sm-3">
                         <div class="card">
                             <div class="card-body">
-                                <livewire:menu-management.data-table.menu-table/> 
+                                <livewire:menu-management.data-table.menu-table/>
                             </div>
                         </div>
                     </div>

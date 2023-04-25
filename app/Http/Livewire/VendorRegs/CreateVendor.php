@@ -10,7 +10,7 @@ class CreateVendor extends Component
 {
 
     use Actions;
-    public $vendorRegs;
+    public $vendorRegs = [];
 
     protected $rules = [
         'vendorRegs.comp_name' => 'required',
@@ -56,7 +56,7 @@ class CreateVendor extends Component
             $insert = [
                 'comp_name' => $this->vendorRegs['comp_name'],
                 'tin_number' => $this->vendorRegs['tin_number'],
-                'pan_number' => $this->vendorRegs['tin_number'],
+                'pan_number' => $this->vendorRegs['pan_number'],
                 'mobile' => $this->vendorRegs['mobile'],
                 'address' => $this->vendorRegs['address'],
                 'gstn_no' => $this->vendorRegs['gstin'],
