@@ -93,7 +93,6 @@
                                                         </option>
                                                     @endforeach
                                                 </select> --}}
-                                                <span class="badge rounded bg-warning">No Any User Assign</span>
                                             @endif
                                         </td>
                                         <td>
