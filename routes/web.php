@@ -235,3 +235,7 @@ Route::get('cache-clear', function () {
     Artisan::call('optimize:clear');
     return 'Routes cache has been cleared';
 });
+//maintance mode enable
+Route::get('maintance', function () {
+    Artisan::call('down --render="errors::maintenance"');
+});
