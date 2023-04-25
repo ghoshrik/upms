@@ -86,6 +86,8 @@ Route::get('resend-otp/{user_id}', [AuthController::class, 'resendOTP'])->name('
 
 Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::group(['middleware' => 'auth', 'check.otp'], function () {
+
+        Route::post('logout', [AuthController::class, 'destroy'])->name('auth.destroy');
         // Permission Module
         // Route::get('/role-permission',[RolePermission::class, 'index'])->name('role.permission.list');
         // Route::resource('permission',PermissionController::class);

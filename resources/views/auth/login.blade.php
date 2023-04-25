@@ -30,7 +30,7 @@
                                 @endif
 
                                 <!-- Validation Errors -->
-                                <x-auth-validation-errors class="mb-4" :errors="$errors" />
+                                <x-auth-validation-errors class="mb-4" :error="session('error')" />
                                 <form method="POST" action="{{ route('auth.login') }}" data-toggle="validator">
                                     {{ csrf_field() }}
                                     <div class="row">
