@@ -7,7 +7,6 @@ use App\Models\EstimateUserAssignRecord;
 use App\Models\SorMaster;
 use ChrisKonnertz\StringCalc\StringCalc;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -16,7 +15,7 @@ class EditEstimateProjectList extends Component
     use Actions;
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
-    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc,$updateDataTableTracker;
+    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker;
     public $currentEstimateProjectData = [];
     public $updateEstimateprojectId;
     protected $listeners = ['updatedValue' => 'updateEstimateProjectData'];
@@ -68,8 +67,8 @@ class EditEstimateProjectList extends Component
                         $alphabet = strtoupper($info);
                         $alp_id = ord($alphabet) - 64;
                         if ($alp_id <= $count0) {
-                            if ($this->allAddedEstimatesData[$alp_id-1]['row_id']) {
-                                $this->expression = str_replace($info, $this->allAddedEstimatesData[$alp_id-1]['total_amount'], $this->expression, $key);
+                            if ($this->allAddedEstimatesData[$alp_id - 1]['row_id']) {
+                                $this->expression = str_replace($info, $this->allAddedEstimatesData[$alp_id - 1]['total_amount'], $this->expression, $key);
                             }
                         } else {
                             $this->notification()->error(
@@ -83,7 +82,7 @@ class EditEstimateProjectList extends Component
             }
             $result = $stringCalc->calculate($this->expression);
             $this->insertAddEstimate($row_index, '', '', '', '', '', '', '', '', $result, 'Exp Calculoation', '', $this->remarks);
-        } catch (\Exception $exception) {
+        } catch (\Exception$exception) {
             $this->expression = $row_index;
             $this->notification()->error(
                 $title = $exception->getMessage()
@@ -106,14 +105,14 @@ class EditEstimateProjectList extends Component
             $result = 0;
             foreach ($this->level as $key => $array) {
                 $this->arrayStore[] = chr($array + 64);
-                $result = $result + $this->allAddedEstimatesData[$array-1]['total_amount'];
+                $result = $result + $this->allAddedEstimatesData[$array - 1]['total_amount'];
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
             $this->insertAddEstimate($this->arrayIndex, '', '', '', '', '', '', '', '', $result, 'Total', '', '');
         } else {
             $this->dispatchBrowserEvent('alert', [
                 'type' => 'error',
-                'message' => "Minimum select 2 Check boxes"
+                'message' => "Minimum select 2 Check boxes",
             ]);
         }
     }
@@ -130,7 +129,7 @@ class EditEstimateProjectList extends Component
             $this->reset('currentEstimateProjectData');
         }
         if ($this->addedEstimateData != null) {
-            $index = count($this->allAddedEstimatesData) +1;
+            $index = count($this->allAddedEstimatesData) + 1;
             if (!array_key_exists("operation", $this->addedEstimateData)) {
                 $this->addedEstimateData['operation'] = '';
             }
@@ -147,7 +146,7 @@ class EditEstimateProjectList extends Component
                 $this->addedEstimateData['estimate_no'] = '';
             }
             foreach ($this->addedEstimateData as $key => $estimate) {
-                $this->allAddedEstimatesData[$index-1][$key] = $estimate;
+                $this->allAddedEstimatesData[$index - 1][$key] = $estimate;
             }
             Session()->put('editEstimateProjectData', $this->allAddedEstimatesData);
             $this->reset('addedEstimateData');
@@ -158,15 +157,15 @@ class EditEstimateProjectList extends Component
     public function confDeleteDialog($value): void
     {
         $this->dialog()->confirm([
-            'title'       => 'Are you Sure?',
-            'icon'        => 'error',
-            'accept'      => [
-                'label'  => 'Yes, Delete it',
+            'title' => 'Are you Sure?',
+            'icon' => 'error',
+            'accept' => [
+                'label' => 'Yes, Delete it',
                 'method' => 'deleteEstimate',
                 'params' => $value,
             ],
             'reject' => [
-                'label'  => 'No, cancel'
+                'label' => 'No, cancel',
                 // 'method' => 'cancel',
             ],
         ]);
@@ -174,7 +173,7 @@ class EditEstimateProjectList extends Component
 
     public function deleteEstimate($value)
     {
-        unset($this->allAddedEstimatesData[$value-1]);
+        unset($this->allAddedEstimatesData[$value - 1]);
         Session()->forget('editEstimateProjectData');
         // dd(Session()->get('editEstimateProjectData'),$this->allAddedEstimatesData);
         Session()->put('editEstimateProjectData', $this->allAddedEstimatesData);
@@ -188,11 +187,11 @@ class EditEstimateProjectList extends Component
     }
     public function editEstimate($value)
     {
-        $this->emit('openEditModal', $value,$this->allAddedEstimatesData);
+        $this->emit('openEditModal', $value, $this->allAddedEstimatesData);
     }
-    public function updateEstimateProjectData($updateValue,$id)
+    public function updateEstimateProjectData($updateValue, $id)
     {
-        $this->allAddedEstimatesData[$id-1] = $updateValue;
+        $this->allAddedEstimatesData[$id - 1] = $updateValue;
         $this->updatedEstimateRecalculate();
     }
     public function updatedEstimateRecalculate()
@@ -216,13 +215,13 @@ class EditEstimateProjectList extends Component
                         }
                     }
                     $result = $stringCalc->calculate($value['row_index']);
-                    $this->allAddedEstimatesData[$value['row_id']-1]['total_amount'] = $result;
+                    $this->allAddedEstimatesData[$value['row_id'] - 1]['total_amount'] = $result;
                     Session()->forget('editEstimateData');
-                    Session()->put('editEstimateData',  $this->allAddedEstimatesData);
-                } catch (\Exception $exception) {
+                    Session()->put('editEstimateData', $this->allAddedEstimatesData);
+                } catch (\Exception$exception) {
                     $this->dispatchBrowserEvent('alert', [
                         'type' => 'error',
-                        'message' => $exception->getMessage()
+                        'message' => $exception->getMessage(),
                     ]);
                 }
             }
@@ -252,10 +251,9 @@ class EditEstimateProjectList extends Component
             $html .= "<tr><td style='text-align: center'>" . chr($export['row_id'] + 64) . "</td>&nbsp;";
             if ($export['sor_item_number']) {
                 $html .= "<td style='text-align: center'>" . getSorItemNumber($export['sor_item_number']) . ' ( ' . $export['version'] . ' )' . "</td>&nbsp;";
-            }elseif($export['estimate_no']){
+            } elseif ($export['estimate_no']) {
                 $html .= "<td style='text-align: center'>" . $export['estimate_no'] . "</td>&nbsp;";
-            }
-            else {
+            } else {
                 $html .= "<td style='text-align: center'>--</td>&nbsp;";
             }
             if ($export['description']) {
@@ -270,7 +268,7 @@ class EditEstimateProjectList extends Component
                         $html .= "<td style='text-align: center'> " . $export['row_index'] . "</td>&nbsp;";
                     }
                 }
-            }elseif($export['other_name']){
+            } elseif ($export['other_name']) {
                 $html .= "<td style='text-align: center'>" . $export['other_name'] . "</td>&nbsp;";
             } else {
                 // $html .= "<td style='text-align: center'>" . $export['name'] . "</td>&nbsp;";
@@ -304,7 +302,7 @@ class EditEstimateProjectList extends Component
     {
         try {
             if ($this->allAddedEstimatesData) {
-                EstimatePrepare::where('estimate_id',$estimateStoreId)->delete();
+                EstimatePrepare::where('estimate_id', $estimateStoreId)->delete();
                 if (true) {
                     foreach ($this->allAddedEstimatesData as $key => $value) {
                         $insert = [
@@ -327,7 +325,7 @@ class EditEstimateProjectList extends Component
 
                         EstimatePrepare::create($insert);
                     }
-                    SorMaster::where('estimate_id',$estimateStoreId)->update(['status'=>10]);
+                    SorMaster::where('estimate_id', $estimateStoreId)->update(['status' => 10]);
                     $data = [
                         'estimate_id' => $estimateStoreId,
                         // 'estimate_user_type' => 4,
@@ -337,13 +335,13 @@ class EditEstimateProjectList extends Component
                     $assignDetails = EstimateUserAssignRecord::create($data);
                     if ($assignDetails) {
                         $returnId = $assignDetails->id;
-                        EstimateUserAssignRecord::where([['estimate_id',$estimateStoreId],['id','!=',$returnId],['is_done',0]])->groupBy('estimate_id')->update(['is_done'=>1]);
+                        EstimateUserAssignRecord::where([['estimate_id', $estimateStoreId], ['id', '!=', $returnId], ['is_done', 0]])->groupBy('estimate_id')->update(['is_done' => 1]);
                     }
                     $this->notification()->success(
                         $title = 'Project Estimate Created Successfully!!'
                     );
                     $this->resetSession();
-                    $this->updateDataTableTracker = rand(1,1000);
+                    $this->updateDataTableTracker = rand(1, 1000);
                     $this->emit('openForm');
                 }
             } else {
@@ -351,14 +349,14 @@ class EditEstimateProjectList extends Component
                     $title = 'OOPS! Something went wrong'
                 );
             }
-        } catch (\Throwable $th) {
+        } catch (\Throwable$th) {
             // session()->flash('serverError', $th->getMessage());
             $this->emit('showError', $th->getMessage());
         }
     }
     public function render()
     {
-        $this->updateDataTableTracker = rand(1,1000);
+        $this->updateDataTableTracker = rand(1, 1000);
         $this->arrayRow = count($this->allAddedEstimatesData);
         return view('livewire.estimate-project.edit-estimate-project-list');
     }

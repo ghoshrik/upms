@@ -80,8 +80,8 @@ final class RecomenderForwardTable extends PowerGridComponent
             )
             ->join('estimate_user_assign_records', function ($join) {
                 $join->on('estimate_user_assign_records.estimate_id', '=', 'estimate_recomender.estimate_id')
-                    ->where('estimate_user_assign_records.status', '=', 2)
-                    ->where('estimate_user_assign_records.created_at', '=', DB::raw("(SELECT max(created_at) FROM estimate_user_assign_records WHERE estimate_recomender.estimate_id = estimate_user_assign_records.estimate_id AND estimate_user_assign_records.status = 2)"));
+                    ->where('estimate_user_assign_records.status', '=', 9)
+                    ->where('estimate_user_assign_records.created_at', '=', DB::raw("(SELECT max(created_at) FROM estimate_user_assign_records WHERE estimate_recomender.estimate_id = estimate_user_assign_records.estimate_id AND estimate_user_assign_records.status = 9)"));
             })
             ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_recomender.estimate_id')
             ->where('operation', '=', 'Total')

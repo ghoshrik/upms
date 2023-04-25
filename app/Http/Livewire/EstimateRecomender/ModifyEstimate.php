@@ -84,8 +84,9 @@ class ModifyEstimate extends Component
     public function store($value)
     {
         try {
-            $verifyEstimate = count(Esrecommender::where('estimate_id', $value)->get());
+            $verifyEstimate = count(SorMaster::select('estimate_id','status')->where([['estimate_id',$value],['status',4]])->get());
             if ($verifyEstimate == 0) {
+                Esrecommender::where('estimate_id',$value)->delete();
                 foreach ($this->currentEstimate as $key => $estimate) {
                     $insert = [
                         'estimate_id' => $value,
