@@ -101,14 +101,18 @@
                                                 {{ $office['user_id'] ? 'disabled ' : '' }}>
                                                 Assign Admin
                                             </button> --}}
-                                            @if ($office['user_id'])
-                                            <button type="button" class="btn btn-soft-warning btn-sm">Modify</button>
+                                            @isset($office['user_id'])
+                                                @if ($office['user_id'])
+                                                    <button type="button" class="btn btn-soft-warning btn-sm">Modify</button>
+                                                @endif
                                             @else
-                                            <button type="button" wire:click="$emit('assignuser',{{ $office->id.','.$office->dist_code.','.$office->level_no }})"
-                                                class="btn btn-soft-primary btn-sm">
-                                                Assign Admin
-                                            </button>
-                                            @endif
+                                                <button type="button"
+                                                    wire:click="$emit('assignuser',{{ $office->id . ',' . $office->dist_code . ',' . $office->level_no }})"
+                                                    class="btn btn-soft-primary btn-sm">
+                                                    Assign Admin
+                                                </button>
+                                                {{-- @endif --}}
+                                            @endisset
                                             {{-- <button type="button" class="btn btn-soft-warning btn-sm"
                                                 wire:click="assignuser({{ $office['id'] }})">
                                                 <x-lucide-user-check class="w-4 h-4 text-gray-500" />
@@ -125,9 +129,10 @@
     @endif
 </div>
 <div>
-    <x-modal.card title="Users Lists" x-on:close="false" max-width="sm|md|lg|xl|2xl|6xl" blur hide-close wire:model.defer="openModel" data-backdrop="static" data-keyboard="false">
+    <x-modal.card title="Users Lists" x-on:close="false" max-width="sm|md|lg|xl|2xl|6xl" blur hide-close
+        wire:model.defer="openModel" data-backdrop="static" data-keyboard="false">
 
-            <livewire:assign-office-admin.user-assign-model :openAssignAdminId="$openAssignAdminId" />
+        <livewire:assign-office-admin.user-assign-model :openAssignAdminId="$openAssignAdminId" />
 
         </x-modal>
-    </div>
+</div>

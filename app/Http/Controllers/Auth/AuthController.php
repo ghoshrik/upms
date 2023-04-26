@@ -70,7 +70,7 @@ class AuthController extends Controller
                     ]);
                 }
             } else {
-                return redirect()->with('errors', 'This user is not activated');
+                return redirect()->with('error', 'This user is not activated');
             }
         } else {
             return redirect()->route('auth.signin')->with('error', 'User not Exists');
@@ -86,6 +86,7 @@ class AuthController extends Controller
     }
     public function LoginWithOTP(Request $request)
     {
+        // dd($request->all());
         // dd(base64_decode($request->userId));
         // dd(implode('', $request->verifyOtp));
 
@@ -103,15 +104,15 @@ class AuthController extends Controller
         // dd(VerificationCode::where('user_id', $request->user_id)->where('otp', $otpcode)->first());
         // dd($otpcode);
 
-        $verificationCode   = VerificationCode::where('user_id', base64_decode($request->userId))->where('otp', $request->otpnum)->first();
+        $verificationCode   = VerificationCode::select('verification_codes.*')->where('user_id', base64_decode($request->userId))->where('otp', $request->otpnum)->first();
         // dd($verificationCode);
         $now = Carbon::now();
         if (!$verificationCode) {
             // return redirect()->back()->with('error', 'Your OTP is not correct');
-            return response()->json(['success' => 'false', 'error' => 'Your OTP is not correct']);
+            return response()->json(['error' => false, 'message' => 'Please Enter correct OTP']);
         } elseif ($verificationCode && $now->isAfter($verificationCode->expire_at)) {
             // return redirect()->route('auth.signin')->with('error', 'Your OTP has been expired');
-            return response()->json(['success' => 'false', 'error' => 'Your OTP has been expired']);
+            return response()->json(['success' => false, 'message' => 'Your OTP has been expired']);
         }
         $user = User::whereId(base64_decode($request->userId))->first();
 
@@ -138,5 +139,15 @@ class AuthController extends Controller
         $phoneNumberMasked = preg_replace('/(\d{3})(\d{3})(\d{4})/', 'XXXXXX$3', $user_id->mobile);
         $messageSend = "Your Mobile Number is " . $phoneNumberMasked . " " . "Your OTP is " . $resp->otp;
         return redirect()->route('auth.verify', ['user_id' => base64_encode($resp->user_id)])->with('status', $messageSend);
+    }
+    public function destroy(Request $request)
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect()->route('auth.signin')->with('error', 'Logout Success !! Oops');
     }
 }

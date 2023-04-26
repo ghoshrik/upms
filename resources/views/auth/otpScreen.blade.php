@@ -195,20 +195,28 @@
         var countdown = 120; // seconds
         var timer = setInterval(function() {
             let minutes = Math.floor(countdown / 60);
-            let seconds = (countdown % 60).toFixed(2);
+            let seconds = (countdown % 60);
+            $('#countdown').css("font-size", "25px");
             document.getElementById("countdown").innerHTML = minutes + ":" + (seconds < 10 ? "0" : "") +
                 seconds;
             countdown--;
             if (countdown <= 0) {
                 clearInterval(timer);
                 // window.location.href = "{{ route('auth.signin') }}"; // replace with your main page URL
-                document.getElementById("countdown").innerHTML = "OTP expried";
+                document.getElementById("countdown").innerHTML = "OTP expired";
+                $(".alert-danger").addClass('d-none');
                 $(resend).removeClass("hide");
                 $(resend).addClass("show");
                 $(resend).removeClass("show");
                 $(submitButton).addClass("hide");
                 $(status).addClass('hide');
             }
+            // else {
+            //     $(submitButton).addClass("hide");
+            //     $(".alert-danger").removeClass('d-none');
+            //     $(".alert-danger").addClass('d-block');
+            //     $(".alert-danger").html("Your otp is Expired");
+            // }
         }, 1000);
 
 
@@ -228,7 +236,7 @@
             var input6 = $('#input6').val();
             var userId = $('#user_id').val();
             const otpnum = input1 + input2 + input3 + input4 + input5 + input6;
-            console.log(otpnum, userId);
+            // console.log(otpnum, userId);
             $.ajax({
                 url: "{{ route('otp.login') }}",
                 data: {
@@ -240,13 +248,23 @@
                 type: 'post',
                 success: function(data) {
                     // console.log(data);
+
+                    //enter otp and send otp correct
                     if (data.success == true) {
+                        $('.alert-danger').addClass('d-none');
                         $('#status').html(data.status);
                         window.location.href = "{{ route('dashboard') }}";
                     }
-                    if (data.success == false) {
-                        $('.alert-danger').html(data.error);
-                        window.location.href = "{{ route('auth.signin') }}";
+                    //enter otp incorrect
+                    else if ((data.error == false) || (data.success == false)) {
+                        $('.alert-danger').removeClass('d-none');
+                        $('.alert-danger').addClass('d-block');
+                        $('.alert-danger').html(data.message);
+                        $(submitButton).removeClass("show");
+                        $(submitButton).addClass("hide");
+                        // window.location.href = "{{ route('auth.signin') }}";
+                    } else {
+                        console.log("error return");
                     }
                 }
             });
@@ -257,8 +275,7 @@
     const inputField = document.querySelector(".inputfield");
     const submitButton = document.getElementById("submit");
     let inputCount = 0,
-        finalInput = "",
-        seconds = 59;
+        finalInput = "";
 
     //Update input
     const updateInputConfig = (element, disabledStatus) => {
@@ -279,6 +296,7 @@
 
             if (value.length == 1) {
                 updateInputConfig(e.target, true);
+
                 if (inputCount <= 5 && e.key != "Backspace") {
                     finalInput += value;
                     if (inputCount < 5) {
@@ -301,6 +319,7 @@
             }
             submitButton.classList.add("hide");
         });
+
     });
 
     window.addEventListener("keyup", (e) => {

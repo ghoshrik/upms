@@ -23,7 +23,7 @@ final class DepartmentTable extends PowerGridComponent
     */
     public function setUp(): array
     {
-        // $this->showCheckBox();
+        $this->showCheckBox();
 
         return [
             Exportable::make('export')
@@ -45,10 +45,10 @@ final class DepartmentTable extends PowerGridComponent
     */
 
     /**
-    * PowerGrid datasource.
-    *
-    * @return Builder<\App\Models\Department>
-    */
+     * PowerGrid datasource.
+     *
+     * @return Builder<\App\Models\Department>
+     */
     public function datasource(): Builder
     {
         return Department::query()->take(1);
@@ -100,7 +100,7 @@ final class DepartmentTable extends PowerGridComponent
     |
     */
 
-     /**
+    /**
      * PowerGrid Columns.
      *
      * @return array<int, Column>
@@ -130,7 +130,7 @@ final class DepartmentTable extends PowerGridComponent
     |
     */
 
-     /**
+    /**
      * PowerGrid Department Action Buttons.
      *
      * @return array<int, Button>
@@ -160,7 +160,7 @@ final class DepartmentTable extends PowerGridComponent
     |
     */
 
-     /**
+    /**
      * PowerGrid Department Action Rules.
      *
      * @return array<int, RuleActions>

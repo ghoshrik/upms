@@ -129,12 +129,12 @@ class CreateAafsProjects extends Component
             'estimate_statuses.id as estimate_status_is',
             'estimate_statuses.status as estimate_status_name'
         )
-        ->join('sor_masters', 'sor_masters.estimate_id', '=','estimate_recomender.estimate_id')
-        ->join('estimate_statuses','sor_masters.status','estimate_statuses.id')
-        // ->where([['sor_masters.status',8],['sor_masters.is_verified',1]])
-        ->where('sor_masters.estimate_id',$this->InputStore['projectId'])
-        ->where('estimate_recomender.operation','Total')
-        ->first();
+            ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_recomender.estimate_id')
+            ->join('estimate_statuses', 'sor_masters.status', 'estimate_statuses.id')
+            // ->where([['sor_masters.status',8],['sor_masters.is_verified',1]])
+            ->where('sor_masters.estimate_id', $this->InputStore['projectId'])
+            ->where('estimate_recomender.operation', 'Total')
+            ->first();
         // dd($this->projectDtls,$this->InputStore);
         // $this->InputStore['projectId'] = $this->projectDtls['projects_number'];
         $this->InputStore['progressStatus'] = $this->projectDtls['status'];
@@ -184,7 +184,7 @@ class CreateAafsProjects extends Component
 
     public function render()
     {
-        $this->projects_number = SorMaster::select('estimate_id','dept_id','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',8],['is_verified',1]])->get();
+        $this->projects_number = SorMaster::select('estimate_id', 'dept_id', 'status', 'is_verified')->where([['dept_id', Auth::user()->department_id], ['status', 8], ['is_verified', 1]])->get();
         return view('livewire.aafs.create-aafs-projects');
     }
 }
