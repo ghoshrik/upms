@@ -212,7 +212,7 @@
               @isset( Auth::user()->getRoleNames()[0])
                 <p class="mb-0 caption-sub-title text-capitalize"><span class="badge rounded-pill bg-primary">{{ Auth::user()->getRoleNames()[0] }}</span></p>
               @endisset
-
+              {{-- <p class="mb-0 caption-sub-title text-capitalize"><span class="badge rounded-pill bg-primary">{{ getDepartmentName(Auth::user()->department_id) }}</span></p> --}}
               </div>
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
