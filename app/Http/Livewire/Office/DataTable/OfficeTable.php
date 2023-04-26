@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class OfficeTable extends DataTableComponent
 {
-    protected $model = Office::class;
+    // protected $model = Office::class;
 
     public function configure(): void
     {
@@ -20,11 +20,15 @@ class OfficeTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            // Column::make("Id", "id")
-            //     ->sortable(),
+            Column::make("Id", "id")
+                ->sortable(),
             Column::make("Office name", "office_name")
+            ->searchable(function ($query, $searchTerm) {
+                $query->whereRaw("LOWER(office_name) LIKE '%".strtolower($searchTerm)."%'");
+            })
                 ->sortable(),
             Column::make("Office Code", "office_code")
+                ->searchable()
                 ->sortable(),
             Column::make("Office Level", "level_no")
                 ->format(function ($value, $column, $row) {
@@ -49,7 +53,8 @@ class OfficeTable extends DataTableComponent
                     }
                 })
                 ->html()
-                ->sortable(),
+                ->sortable()
+                ->searchable(),
             Column::make("Department Name", "getDepartmentName.department_name")
                 ->sortable(),
             Column::make("Dist Name", "getDistrictName.district_name")
