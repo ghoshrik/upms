@@ -2,7 +2,7 @@
     <x-form-section submit='store'>
         <x-slot name='form'>
             <div class="row">
-                <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
+                {{-- <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
                     <x-select label="{{ trans('cruds.aafs_project.fields.department_id') }}"
                         placeholder="Select one {{ trans('cruds.aafs_project.fields.department_id') }}"
                         wire:model.defer="InputStore.departmentId">
@@ -11,6 +11,62 @@
                                 value="{{ $department['id'] }}" />
                         @endforeach
                     </x-select>
+                </div> --}}
+                <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
+                    <x-select label="{{ trans('cruds.aafs_project.fields.proj_id') }}"
+                        placeholder="Select one {{ trans('cruds.aafs_project.fields.proj_id') }}"
+                        wire:model.defer="InputStore.projectId" x-on:select="$wire.getProjectDetails()">
+                        @foreach ($projects_number as $projects)
+                            <x-select.option label="{{ $projects['estimate_id'] }} "
+                                value="{{ $projects['estimate_id'] }}" />
+                        @endforeach
+                    </x-select>
+                    {{-- @dd($projects_number) --}}
+                </div>
+                {{-- @isset($projectDtls) --}}
+                <div class="col-md-2 col-lg-2 col-sm-3 mb-2">
+                    <x-input label="Status of Progress" wire:model.defer="currentStatus" placeholder="Status of Progress"
+                        readonly />
+                </div>
+                <div class="col-md-2 col-lg-2 col-sm-3 mb-2">
+                    <x-input right-icon="currency-rupee" label="Project Cost"
+                        wire:model.defer="InputStore.projectAmount" placeholder="Project Cost" readonly />
+                </div>
+
+                <div class="col-md-2 col-lg-2 col-sm-3 mb-2">
+                    <x-input right-icon="currency-rupee" label="Tender Cost" wire:model.defer="InputStore.tenderAmount"
+                        placeholder="Project Cost" />
+                </div>
+                {{-- @endisset --}}
+
+                <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
+                    <x-input label="AAFS Project ID(Mother project ID)" wire:model='InputStore.aafsMotherId'
+                        placeholder="Enter AAFS Project ID(Mother project ID)" />
+                </div>
+                <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
+                    <x-input label="AAFS Project ID(sub project ID)" wire:model='InputStore.aafsSubId'
+                        placeholder="Enter AAFS Project ID(sub project ID)" />
+                </div>
+                <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
+                    <x-input label="Project Type" wire:model='InputStore.projectType' placeholder="Project Type" />
+                </div>
+                <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
+                    <x-input label="Status as per AAFS" wire:model='InputStore.status'
+                        placeholder="Status as per AAFS " />
+                </div>
+                <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
+                    <x-input label="Completion Period" wire:model='InputStore.completePeriod'
+                        placeholder="Completion Period " />
+                </div>
+                <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
+                    <x-input label="UO no and Date" wire:model='InputStore.unNo' placeholder="Enter UO no and Date" />
+                </div>
+                <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
+                    <x-input label="GO no and Date" wire:model='InputStore.goNo' placeholder="GO no and Date" />
+                </div>
+                <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
+                    <x-input label="Pre AAFS Expenditure" wire:model='InputStore.preaafsExp'
+                        placeholder="Pre AAFS Expenditure" />
                 </div>
                 <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
                     <x-select label="{{ trans('cruds.aafs_project.fields.proj_id') }}"

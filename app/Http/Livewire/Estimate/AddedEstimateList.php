@@ -7,7 +7,6 @@ use App\Models\EstimateUserAssignRecord;
 use App\Models\SORMaster as ModelsSORMaster;
 use ChrisKonnertz\StringCalc\StringCalc;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use WireUi\Traits\Actions;
@@ -79,7 +78,7 @@ class AddedEstimateList extends Component
             }
             $result = $stringCalc->calculate($this->expression);
             $this->insertAddEstimate($tempIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Exp Calculoation', '', $this->remarks);
-        } catch (\Exception $exception) {
+        } catch (\Exception$exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(
                 $title = $exception->getMessage()
@@ -166,8 +165,7 @@ class AddedEstimateList extends Component
         Session()->forget('addedEstimateData');
         Session()->put('addedEstimateData', $this->allAddedEstimatesData);
         $this->level = [];
-        if($this->totalOnSelectedCount == 1)
-        {
+        if ($this->totalOnSelectedCount == 1) {
             $this->reset('totalOnSelectedCount');
         }
         $this->notification()->error(
@@ -241,11 +239,12 @@ class AddedEstimateList extends Component
 
     public function store()
     {
+        // dd(Auth::user()->department_id);
         if ($this->totalOnSelectedCount == 1) {
             try {
                 if ($this->allAddedEstimatesData) {
                     $intId = random_int(100000, 999999);
-                    if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
+                    if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1, 'dept_id' => Auth::user()->department_id])) {
                         foreach ($this->allAddedEstimatesData as $key => $value) {
                             $insert = [
                                 'estimate_id' => $intId,
@@ -293,11 +292,11 @@ class AddedEstimateList extends Component
                         $title = 'please insert at list one item !!'
                     );
                 }
-            } catch (\Throwable $th) {
+            } catch (\Throwable$th) {
                 // session()->flash('serverError', $th->getMessage());
                 $this->emit('showError', $th->getMessage());
             }
-        }else{
+        } else {
             $this->notification()->error(
                 $title = 'Please Calculate total first !!'
             );

@@ -2,6 +2,7 @@
 
 use App\Models\Esrecommender;
 use App\Models\EstimatePrepare;
+use App\Models\EstimateStatus;
 use App\Models\SOR;
 use App\Models\SorMaster;
 use App\Models\UnitType;
@@ -105,7 +106,7 @@ function getFileExistsCheck($media)
         if ($media->disk == 'public') {
             $mediaCondition = file_exists($media->getPath());
         } else {
-            $mediaCondition = Storage::disk($media->disk)->exists($media->getPath());
+            $mediaCondition = \Storage::disk($media->disk)->exists($media->getPath());
         }
     }
     return $mediaCondition;
@@ -423,4 +424,15 @@ function getAllAssigenRoles()
         }
     }
     return $generatedHtml;
+}
+
+function getStatusName($id)
+{
+    $getStatus = EstimateStatus::where('id',$id)->select('status')->first();
+    return $getStatus['status'];
+}
+function getVersion($value)
+{
+    $getVersion = SOR::where('id',$value)->select('version')->first();
+    return $getVersion['version'];
 }

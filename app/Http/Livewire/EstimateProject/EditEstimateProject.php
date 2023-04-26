@@ -10,6 +10,7 @@ use App\Models\SORCategory;
 use App\Models\SorCategoryType;
 use App\Models\SorMaster;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -245,10 +246,11 @@ class EditEstimateProject extends Component
         $this->estimateData['estimate_no'] = '';
         $this->estimateData['description'] = '';
         $this->estimateData['total_amount'] = '';
-        $this->fatchDropdownData['estimatesList'] = Esrecommender::join('sor_masters', 'estimate_recomender.estimate_id', 'sor_masters.estimate_id')
-            ->where('estimate_recomender.dept_id', $this->estimateData['dept_id'])
-            ->where('sor_masters.is_verified', '=', 1)
-            ->get();
+        // $this->fatchDropdownData['estimatesList'] = Esrecommender::join('sor_masters', 'estimate_recomender.estimate_id', 'sor_masters.estimate_id')
+        //     ->where('estimate_recomender.dept_id', $this->estimateData['dept_id'])
+        //     ->where('sor_masters.is_verified', '=', 1)
+        //     ->get();
+        $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',8],['is_verified',1]])->get();
     }
 
     public function getEstimateDetails()
