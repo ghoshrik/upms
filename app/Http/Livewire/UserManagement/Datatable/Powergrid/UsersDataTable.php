@@ -34,15 +34,18 @@ final class UsersDataTable extends PowerGridComponent
      */
     public function setUp(): array
     {
-        // $this->showCheckBox();
+        $this->showCheckBox();
 
         return [
-            Exportable::make('export')
-                ->csvSeparator('|')
-                ->csvDelimiter("'")
-                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV)
-                ->striped('A6ACCD'),
+            // Exportable::make('export')
+            //     ->csvSeparator('|')
+            //     ->csvDelimiter("'")
+            //     ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV)
+            //     ->striped('A6ACCD'),
             // ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
+            Exportable::make('export')
+                ->striped()
+                ->type(Exportable::TYPE_XLS),
             Header::make()->showToggleColumns()->showSearchInput(),
             Footer::make()
                 ->showPerPage()
@@ -67,7 +70,6 @@ final class UsersDataTable extends PowerGridComponent
     {
         if (Auth::user()->department_id) {
             if (Auth::user()->office_id) {
-
                 return User::query()
                     ->join('user_types', function ($user_types) {
                         $user_types->on('users.user_type', '=', 'user_types.id');
@@ -143,8 +145,8 @@ final class UsersDataTable extends PowerGridComponent
                     'designations.designation_name'
                 )
                 ->join('user_types', 'users.user_type', '=', 'user_types.id')
-                ->join('designations', 'users.designation_id', '=', 'designations.id')
-                ->where('user_types.parent_id', '=', Auth::user()->user_type);
+                ->join('designations', 'users.designation_id', '=', 'designations.id');
+                // ->where('user_types.parent_id', '=', Auth::user()->user_type);
         }
         // return User::query();
     }
