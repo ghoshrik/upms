@@ -38,4 +38,12 @@ class AAFS extends Model
         'Fundcty',
         'exeAuthority'
     ];
+    public function getDepartmentName()
+    {
+        return $this->belongsTo(Department::class, 'dept_id');
+    }
+    public function statusName()
+    {
+        return $this->belongsTo(EstimateStatus::class,'status_id');
+    }
 }
