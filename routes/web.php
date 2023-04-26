@@ -239,3 +239,7 @@ Route::get('cache-clear', function () {
 Route::get('maintance', function () {
     Artisan::call('down --render="errors::maintenance"');
 });
+//Live mode
+Route::get('live', function () {
+    Artisan::call('up');
+});
