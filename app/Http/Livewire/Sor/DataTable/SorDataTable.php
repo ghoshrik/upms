@@ -31,6 +31,8 @@ class SorDataTable extends DataTableComponent
             Column::make("Dept Category", "getDeptCategoryName.dept_category_name")
                 ->sortable(),
             Column::make("Description", "description")
+                ->format( fn($row) => '<span class="text-wrap" style="width: 40rem">'.$row.'</span>')
+                ->html()
                 ->sortable(),
             Column::make("Unit Name", "getUnitsName.unit_name")
                 ->sortable(),
