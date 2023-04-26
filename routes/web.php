@@ -238,8 +238,10 @@ Route::get('cache-clear', function () {
 //maintance mode enable
 Route::get('maintance', function () {
     Artisan::call('down --render="errors::maintenance"');
+    return redirect('/');
 });
 //Live mode
 Route::get('live', function () {
     Artisan::call('up');
+    return redirect('/');
 });
