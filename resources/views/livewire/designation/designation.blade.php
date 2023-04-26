@@ -66,7 +66,8 @@
             <div>
                 <x-cards title="{{ trans('cruds.designation.title') }}">
                     <x-slot name="table">
-                        <livewire:designation.designation-table />
+                        {{-- <livewire:designation.designation-table /> --}}
+                        <livewire:designation.powergrid.designation-datatable :wire:key="$updateDataTableTracker"/>
                     </x-slot>
                 </x-cards>
             </div>
