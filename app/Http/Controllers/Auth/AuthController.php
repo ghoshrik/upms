@@ -20,10 +20,8 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function generateOtp($mobile_no)
+    public function generateOtp($user)
     {
-        $user = User::where('mobile', $mobile_no)->first();
-        // dd($user);
         # User Does not Have Any Existing OTP
         $verificationCode = VerificationCode::where('user_id', $user->id)->latest()->first();
         // dd($verificationCode);
@@ -58,11 +56,11 @@ class AuthController extends Controller
         if ($user) {
             if ($user->is_active == 1) {
                 if ($user && Hash::check($request->password, $user->password)) {
-                    $resp = $this->generateOtp($user->mobile);
+                    $resp = $this->generateOtp($user);
                     $phoneNumberMasked = preg_replace('/(\d{3})(\d{3})(\d{4})/', 'XXXXXX$3', $user->mobile); // Masked phone number
                     // dd($resp->otp);
                     $messageSend = "Your Mobile Number is " . $phoneNumberMasked . " " . "Your OTP is " . $resp->otp;
-                    return redirect()->route('auth.verify', ['user_id' => base64_encode($resp->user_id)])->with('status', $messageSend);
+                    return redirect()->route('auth.verify', ['user_id' => base64_encode($user->id)])->with('status', $messageSend);
                     // dd($resp);
                 } else {
                     throw ValidationException::withMessages([
@@ -148,6 +146,6 @@ class AuthController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect()->route('auth.signin')->with('error', 'Logout Success !! Oops');
+        return redirect()->route('auth.signin')->with('success', 'Logout Successfully');
     }
 }

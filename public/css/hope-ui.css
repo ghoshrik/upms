@@ -13038,6 +13038,7 @@ thead, tbody, tfoot, tr, td, th {
   display: flex;
   padding: 1.125rem 1rem;
 }
+
 .sidebar .navbar-brand svg {
   color: #3a57e8;
 }
@@ -19173,4 +19174,25 @@ body::-webkit-scrollbar-thumb{
     background-color: rgb(255, 187, 0);
     color: #000000;
 
+}
+/* --------------------------------- */
+.top-main-head{
+    display: flex;
+}
+.header-title-left.logo-title p {
+    font-size: 18px;
+    font-weight: 600;
+    /* color: #3a57e8; */
+}
+.header-title-left span {
+    font-size: 15px;
+}
+.top-main-head img {
+    height: 50px;
+}
+.top-main-head .header-title-left {
+    margin-left: 15px;
+}
+.admin-logo a.navbar-brand{
+    padding: 11px;
 }

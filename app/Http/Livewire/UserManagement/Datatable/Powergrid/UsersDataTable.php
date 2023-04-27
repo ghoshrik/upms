@@ -7,6 +7,7 @@ use WireUi\Traits\Actions;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use PowerComponents\LivewirePowerGrid\Button;
 
 use PowerComponents\LivewirePowerGrid\Column;
@@ -37,12 +38,15 @@ final class UsersDataTable extends PowerGridComponent
         $this->showCheckBox();
 
         return [
-            Exportable::make('export')
-                ->csvSeparator('|')
-                ->csvDelimiter("'")
-                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV)
-                ->striped('A6ACCD'),
+            // Exportable::make('export')
+            //     ->csvSeparator('|')
+            //     ->csvDelimiter("'")
+            //     ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV)
+            //     ->striped('A6ACCD'),
             // ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
+            Exportable::make('export')
+                ->striped()
+                ->type(Exportable::TYPE_XLS),
             Header::make()->showToggleColumns()->showSearchInput(),
             Footer::make()
                 ->showPerPage()
@@ -67,7 +71,6 @@ final class UsersDataTable extends PowerGridComponent
     {
         if (Auth::user()->department_id) {
             if (Auth::user()->office_id) {
-
                 return User::query()
                     ->join('user_types', function ($user_types) {
                         $user_types->on('users.user_type', '=', 'user_types.id');
@@ -88,7 +91,7 @@ final class UsersDataTable extends PowerGridComponent
                         'user_types.parent_id',
                         'users.is_active',
                         'designations.id as designationId',
-                        'designations.designation_name'
+                        'designations.designation_name',DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
                     )
                     // ->join('user_types', 'users.user_type', '=', 'user_types.id')
                     ->where('user_types.parent_id', '=', Auth::user()->user_type)
@@ -116,7 +119,7 @@ final class UsersDataTable extends PowerGridComponent
                         'user_types.parent_id',
                         'users.is_active',
                         'designations.id as designationId',
-                        'designations.designation_name'
+                        'designations.designation_name',DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
                     )
 
                     ->where('user_types.parent_id', '=', Auth::user()->user_type)
@@ -140,11 +143,11 @@ final class UsersDataTable extends PowerGridComponent
                     'user_types.parent_id',
                     'users.is_active',
                     'designations.id as designationId',
-                    'designations.designation_name'
+                    'designations.designation_name',DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
                 )
                 ->join('user_types', 'users.user_type', '=', 'user_types.id')
-                ->join('designations', 'users.designation_id', '=', 'designations.id')
-                ->where('user_types.parent_id', '=', Auth::user()->user_type);
+                ->join('designations', 'users.designation_id', '=', 'designations.id');
+                // ->where('user_types.parent_id', '=', Auth::user()->user_type);
         }
         // return User::query();
     }
@@ -181,7 +184,7 @@ final class UsersDataTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-            ->addColumn('id')
+            ->addColumn('serial_no')
             ->addColumn('name')
 
             /** Example of custom column using a closure **/
@@ -291,8 +294,8 @@ final class UsersDataTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            // Column::make('ID', 'id')
-            //     ->makeInputRange(),
+            Column::make('SL. No.', 'serial_no')
+                ->makeInputRange(),
 
             // Column::make('NAME', 'name')
             //     ->sortable()

@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Http\Livewire\Department\Datatable;
+namespace App\Http\Livewire\Aafs\Datatable;
 
-use App\Models\Department;
+use App\Models\AAFS;
 use Illuminate\Support\Carbon;
-use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
 
-final class DepartmentTable extends PowerGridComponent
+final class AafsDatatable extends PowerGridComponent
 {
     use ActionButton;
 
@@ -46,14 +44,13 @@ final class DepartmentTable extends PowerGridComponent
     */
 
     /**
-     * PowerGrid datasource.
-     *
-     * @return Builder<\App\Models\Department>
-     */
+    * PowerGrid datasource.
+    *
+    * @return Builder<\App\Models\AAFS>
+    */
     public function datasource(): Builder
     {
-        return Department::query()
-        ->select('department_name','department_code',DB::raw('ROW_NUMBER() OVER (ORDER BY departments.id) as serial_no'));
+        return AAFS::query();
     }
 
     /*
@@ -88,9 +85,31 @@ final class DepartmentTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-            ->addColumn('serial_no')
-            ->addColumn('department_name')
-            ->addColumn('department_code');
+            ->addColumn('id')
+            ->addColumn('project_no')
+            ->addColumn('getDepartmentName.department_name')
+            ->addColumn('statusName.status')
+
+           /** Example of custom column using a closure **/
+            ->addColumn('status_id_lower', function (AAFS $model) {
+                return strtolower(e($model->status_id));
+            })
+
+            ->addColumn('project_cost')
+            ->addColumn('tender_cost')
+            ->addColumn('aafs_mother_id')
+            ->addColumn('aafs_sub_id')
+            ->addColumn('project_type')
+            ->addColumn('status')
+            ->addColumn('completePeriod')
+            ->addColumn('unNo')
+            ->addColumn('goNo')
+            ->addColumn('preaafsExp')
+            ->addColumn('postaafsExp')
+            ->addColumn('Fundcty')
+            ->addColumn('exeAuthority');
+            // ->addColumn('created_at_formatted', fn (AAFS $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'))
+            // ->addColumn('updated_at_formatted', fn (AAFS $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
     }
 
     /*
@@ -102,7 +121,7 @@ final class DepartmentTable extends PowerGridComponent
     |
     */
 
-    /**
+     /**
      * PowerGrid Columns.
      *
      * @return array<int, Column>
@@ -110,18 +129,91 @@ final class DepartmentTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('SL. No.', 'serial_no')
+            Column::make('ID', 'id')
+                ->makeInputRange(),
+
+            Column::make('PROJECT NO', 'project_no')
+                ->makeInputRange(),
+
+            Column::make('DEPARTMENT NAME', 'getDepartmentName.department_name')
+                ->makeInputRange(),
+
+            Column::make('CURRENT STATUS', 'statusName.status')
+                ->sortable()
                 ->searchable()
-                ->sortable(),
-            Column::make('Department Name', 'department_name')
+                ->makeInputText(),
+
+            Column::make('PROJECT COST', 'project_cost')
+                ->sortable()
+                ->searchable(),
+
+            Column::make('TENDER COST', 'tender_cost')
+                ->sortable()
+                ->searchable(),
+
+            Column::make('AAFS MOTHER ID', 'aafs_mother_id')
+                ->makeInputRange(),
+
+            Column::make('AAFS SUB ID', 'aafs_sub_id')
+                ->makeInputRange(),
+
+            Column::make('PROJECT TYPE', 'project_type')
+                ->sortable()
                 ->searchable()
-                // ->makeInputText('department_name')
-                ->sortable(),
-            Column::make('Department Code', 'department_code')
+                ->makeInputText(),
+
+            Column::make('STATUS', 'status')
+                ->sortable()
                 ->searchable()
-                // ->makeInputText('department_code')
-                ->sortable(),
-        ];
+                ->makeInputText(),
+
+            Column::make('COMPLETEPERIOD', 'completePeriod')
+                ->sortable()
+                ->searchable()
+                ->makeInputText(),
+
+            Column::make('UN NO', 'unNo')
+                ->sortable()
+                ->searchable()
+                ->makeInputText(),
+
+            Column::make('GO NO', 'goNo')
+                ->sortable()
+                ->searchable()
+                ->makeInputText(),
+
+            Column::make('PRE AAFS EXP', 'preaafsExp')
+                ->sortable()
+                ->searchable()
+                ->makeInputText(),
+
+            Column::make('POST AAFS EXP', 'postaafsExp')
+                ->sortable()
+                ->searchable()
+                ->makeInputText(),
+
+            Column::make('Fund Released', 'Fundcty')
+                ->sortable()
+                ->searchable()
+                ->makeInputText(),
+
+            Column::make('EXE AUTHORITY', 'exeAuthority')
+                ->sortable()
+                ->searchable()
+                ->makeInputText(),
+
+            // Column::make('CREATED AT', 'created_at_formatted', 'created_at')
+            //     ->searchable()
+            //     ->sortable()
+            //     ->makeInputDatePicker(),
+
+            // Column::make('UPDATED AT', 'updated_at_formatted', 'updated_at')
+            //     ->searchable()
+            //     ->sortable()
+            //     ->makeInputDatePicker(),
+
+        ]
+;
     }
 
     /*
@@ -132,8 +224,8 @@ final class DepartmentTable extends PowerGridComponent
     |
     */
 
-    /**
-     * PowerGrid Department Action Buttons.
+     /**
+     * PowerGrid AAFS Action Buttons.
      *
      * @return array<int, Button>
      */
@@ -144,11 +236,11 @@ final class DepartmentTable extends PowerGridComponent
        return [
            Button::make('edit', 'Edit')
                ->class('bg-indigo-500 cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm')
-               ->route('department.edit', ['department' => 'id']),
+               ->route('a-a-f-s.edit', ['a-a-f-s' => 'id']),
 
            Button::make('destroy', 'Delete')
                ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
-               ->route('department.destroy', ['department' => 'id'])
+               ->route('a-a-f-s.destroy', ['a-a-f-s' => 'id'])
                ->method('delete')
         ];
     }
@@ -162,8 +254,8 @@ final class DepartmentTable extends PowerGridComponent
     |
     */
 
-    /**
-     * PowerGrid Department Action Rules.
+     /**
+     * PowerGrid AAFS Action Rules.
      *
      * @return array<int, RuleActions>
      */
@@ -175,7 +267,7 @@ final class DepartmentTable extends PowerGridComponent
 
            //Hide button edit for ID 1
             Rule::button('edit')
-                ->when(fn($department) => $department->id === 1)
+                ->when(fn($a-a-f-s) => $a-a-f-s->id === 1)
                 ->hide(),
         ];
     }

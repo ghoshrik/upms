@@ -42,7 +42,7 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">EMP NAME</th>
-                                <th scope="col">EMP ID</th>
+                                {{-- <th scope="col">EMP ID</th> --}}
                                 <th scope="col">DESIGNATION</th>
                                 <th scope="col">OFFICE</th>
                                 <th scope="col">MOBILE</th>
@@ -57,12 +57,12 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td class="text-wrap" style="width: 30rem">{{ $user['emp_name'] }}</td>
-                                        <td class="text-wrap" style="width: 30rem">{{ $user['ehrms_id'] }}</td>
+                                        {{-- <td class="text-wrap" style="width: 30rem">{{ $user['ehrms_id'] }}</td> --}}
                                         <td class="text-wrap" style="width: 30rem">
-                                            {{ $user['designation_id'] }}
+                                            {{ getDesignationName($user['designation_id']) }}
                                         </td>
                                         <td class="text-wrap" style="width: 30rem">
-                                            {{ $user['office_id'] }}
+                                            {{ getOfficeName($user['office_id']) }}
                                         </td>
                                         <td class="text-wrap" style="width: 30rem">
                                             {{ $user['mobile'] }}

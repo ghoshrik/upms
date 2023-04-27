@@ -10,7 +10,7 @@ class Department extends Model
     use HasFactory;
     protected $table = "departments";
     protected $fillable = [
-        'department_name,department_code'
+        'department_name','department_code'
     ];
     public function SORCategory()
     {

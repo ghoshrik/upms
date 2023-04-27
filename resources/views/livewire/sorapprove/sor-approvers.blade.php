@@ -75,7 +75,7 @@
 
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $sors->Item_details }}</td>
-                                                <td>{{ $sors->description }}</td>
+                                                <td class="text-wrap" style="width: 40rem">{{ $sors->description }}</td>
                                                 <td>{{ $sors->getDepartmentName->department_name }}</td>
                                                 <td>{{ $sors->unit }}</td>
                                                 <td>{{ $sors->cost }}</td>

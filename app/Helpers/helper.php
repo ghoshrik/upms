@@ -1,8 +1,11 @@
 <?php
 
+use App\Models\Department;
+use App\Models\Designation;
 use App\Models\Esrecommender;
 use App\Models\EstimatePrepare;
 use App\Models\EstimateStatus;
+use App\Models\Office;
 use App\Models\SOR;
 use App\Models\SorMaster;
 use App\Models\UnitType;
@@ -435,4 +438,20 @@ function getVersion($value)
 {
     $getVersion = SOR::where('id',$value)->select('version')->first();
     return $getVersion['version'];
+}
+
+function getDesignationName($value)
+{
+    $designationName = Designation::where('id',$value)->select('designation_name')->first();
+    return $designationName['designation_name'];
+}
+function getOfficeName($value)
+{
+    $officeName = Office::where('id',$value)->select('office_name')->first();
+    return $officeName['office_name'];
+}
+function getDepartmentName($value)
+{
+    $departmentName = Department::where('id',$value)->select('department_name')->first();
+    return $departmentName['department_name'];
 }

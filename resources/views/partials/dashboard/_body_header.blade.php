@@ -1,7 +1,7 @@
 <nav class="nav navbar navbar-expand-lg navbar-light iq-navbar">
     <div class="container-fluid navbar-inner">
         <a href="{{ route('dashboard') }}" class="navbar-brand">
-            <svg width="30" class="text-primary" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {{-- <svg width="30" class="text-primary" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="-0.757324" y="19.2427" width="28" height="4" rx="2"
                     transform="rotate(-45 -0.757324 19.2427)" fill="currentColor" />
                 <rect x="7.72803" y="27.728" width="28" height="4" rx="2"
@@ -11,7 +11,16 @@
                 <rect x="10.5562" y="-0.556152" width="28" height="4" rx="2"
                     transform="rotate(45 10.5562 -0.556152)" fill="currentColor" />
             </svg>
-            <h4 class="logo-title">{{ env('APP_NAME') }}</h4>
+            <h4 class="logo-title">{{ env('APP_NAME') }}</h4> --}}
+            <div class="top-main-head">
+
+                <img src="{{ asset('images/logo/wb_logo.png') }}" alt="logo" height="50">
+
+
+                <div class="header-title-left logo-title">
+                    <h5 class="">Govt. West Bengal <br><span>UPMS</span></h5>
+                </div>
+            </div>
         </a>
         <div class="sidebar-toggle" data-toggle="sidebar" data-active="true">
             <i class="icon">

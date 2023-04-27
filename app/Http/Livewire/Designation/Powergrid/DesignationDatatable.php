@@ -1,20 +1,18 @@
 <?php
 
-namespace App\Http\Livewire\Department\Datatable;
+namespace App\Http\Livewire\Designation\Powergrid;
 
-use App\Models\Department;
+use App\Models\Designation;
 use Illuminate\Support\Carbon;
-use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
 
-final class DepartmentTable extends PowerGridComponent
+final class DesignationDatatable extends PowerGridComponent
 {
     use ActionButton;
-
     /*
     |--------------------------------------------------------------------------
     |  Features Setup
@@ -29,7 +27,8 @@ final class DepartmentTable extends PowerGridComponent
         return [
             Exportable::make('export')
                 ->striped()
-                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
+                ->type(Exportable::TYPE_XLS),
+                // ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             Header::make()->showSearchInput(),
             Footer::make()
                 ->showPerPage()
@@ -46,14 +45,13 @@ final class DepartmentTable extends PowerGridComponent
     */
 
     /**
-     * PowerGrid datasource.
-     *
-     * @return Builder<\App\Models\Department>
-     */
+    * PowerGrid datasource.
+    *
+    * @return Builder<\App\Models\Designation>
+    */
     public function datasource(): Builder
     {
-        return Department::query()
-        ->select('department_name','department_code',DB::raw('ROW_NUMBER() OVER (ORDER BY departments.id) as serial_no'));
+        return Designation::query()->select('designation_name',DB::raw('ROW_NUMBER() OVER (ORDER BY designations.id) as serial_no'));
     }
 
     /*
@@ -89,8 +87,15 @@ final class DepartmentTable extends PowerGridComponent
     {
         return PowerGrid::eloquent()
             ->addColumn('serial_no')
-            ->addColumn('department_name')
-            ->addColumn('department_code');
+            ->addColumn('designation_name')
+
+           /** Example of custom column using a closure **/
+            ->addColumn('designation_name_lower', function (Designation $model) {
+                return strtolower(e($model->designation_name));
+            });
+
+            // ->addColumn('created_at_formatted', fn (Designation $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'))
+            // ->addColumn('updated_at_formatted', fn (Designation $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
     }
 
     /*
@@ -102,7 +107,7 @@ final class DepartmentTable extends PowerGridComponent
     |
     */
 
-    /**
+     /**
      * PowerGrid Columns.
      *
      * @return array<int, Column>
@@ -110,18 +115,26 @@ final class DepartmentTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('SL. No.', 'serial_no')
+            Column::make('SL. No.', 'serial_no'),
+                // ->makeInputRange(),
+
+            Column::make('DESIGNATION NAME', 'designation_name')
+                ->sortable()
                 ->searchable()
-                ->sortable(),
-            Column::make('Department Name', 'department_name')
-                ->searchable()
-                // ->makeInputText('department_name')
-                ->sortable(),
-            Column::make('Department Code', 'department_code')
-                ->searchable()
-                // ->makeInputText('department_code')
-                ->sortable(),
-        ];
+                ->makeInputText(),
+
+            // Column::make('CREATED AT', 'created_at_formatted', 'created_at')
+            //     ->searchable()
+            //     ->sortable()
+            //     ->makeInputDatePicker(),
+
+            // Column::make('UPDATED AT', 'updated_at_formatted', 'updated_at')
+            //     ->searchable()
+            //     ->sortable()
+            //     ->makeInputDatePicker(),
+
+        ]
+;
     }
 
     /*
@@ -132,8 +145,8 @@ final class DepartmentTable extends PowerGridComponent
     |
     */
 
-    /**
-     * PowerGrid Department Action Buttons.
+     /**
+     * PowerGrid Designation Action Buttons.
      *
      * @return array<int, Button>
      */
@@ -144,11 +157,11 @@ final class DepartmentTable extends PowerGridComponent
        return [
            Button::make('edit', 'Edit')
                ->class('bg-indigo-500 cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm')
-               ->route('department.edit', ['department' => 'id']),
+               ->route('designation.edit', ['designation' => 'id']),
 
            Button::make('destroy', 'Delete')
                ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
-               ->route('department.destroy', ['department' => 'id'])
+               ->route('designation.destroy', ['designation' => 'id'])
                ->method('delete')
         ];
     }
@@ -162,8 +175,8 @@ final class DepartmentTable extends PowerGridComponent
     |
     */
 
-    /**
-     * PowerGrid Department Action Rules.
+     /**
+     * PowerGrid Designation Action Rules.
      *
      * @return array<int, RuleActions>
      */
@@ -175,7 +188,7 @@ final class DepartmentTable extends PowerGridComponent
 
            //Hide button edit for ID 1
             Rule::button('edit')
-                ->when(fn($department) => $department->id === 1)
+                ->when(fn($designation) => $designation->id === 1)
                 ->hide(),
         ];
     }

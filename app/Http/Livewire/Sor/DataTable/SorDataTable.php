@@ -6,6 +6,7 @@ use App\Models\SOR;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
@@ -53,7 +54,23 @@ final class SorDataTable extends PowerGridComponent
     {
         return SOR::query()
             ->where('s_o_r_s.department_id', Auth::user()->department_id)
-            ->where('s_o_r_s.created_by', Auth::user()->id);
+            ->where('s_o_r_s.created_by', Auth::user()->id)
+            ->select(
+                'id',
+            'Item_details',
+            'department_id',
+            'dept_category_id',
+            'description',
+            'unit_id',
+            'unit',
+            'cost',
+            'version',
+            'effect_from',
+            'effect_to',
+            'is_active',
+            'created_by',
+            'is_approved' ,DB::raw('ROW_NUMBER() OVER (ORDER BY s_o_r_s.id) as serial_no'))
+            ;
     }
 
     /*
@@ -88,7 +105,7 @@ final class SorDataTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-            // ->addColumn('id')
+            ->addColumn('serial_no')
             ->addColumn('Item_details')
 
             /** Example of custom column using a closure **/
@@ -98,7 +115,9 @@ final class SorDataTable extends PowerGridComponent
 
             ->addColumn('getDepartmentName.department_name')
             ->addColumn('getDeptCategoryName.dept_category_name')
-            ->addColumn('description')
+            ->addColumn('description', function(SOR $model){
+                return '<span class="text-wrap">' .$model->description.'</span>';
+            })
             ->addColumn('getUnitsName.unit_name')
             ->addColumn('quantity')
             ->addColumn('cost')
@@ -139,25 +158,29 @@ final class SorDataTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            // Column::make('ID', 'id')
-            //     ->makeInputRange(),
+            Column::make('SL. No.', 'serial_no'),
+                // ->makeInputRange(),
 
-            Column::make('ITEM number', 'Item_details')
+            Column::make('ITEM NUMBER', 'Item_details')
                 ->sortable()
                 ->searchable()
                 ->makeInputText(),
 
-            Column::make('DEPARTMENT ID', 'getDepartmentName.department_name')
-                ->makeInputRange(),
+            Column::make('DEPARTMENT NAME', 'getDepartmentName.department_name')
+            // ->sortable()
+            ->searchable(),
 
-            Column::make('DEPT CATEGORY ID', 'getDeptCategoryName.dept_category_name')
-                ->makeInputRange(),
+            Column::make('DEPT CATEGORY', 'getDeptCategoryName.dept_category_name')
+            // ->sortable()
+            ->searchable(),
 
             Column::make('DESCRIPTION', 'description')
                 ->sortable()
-                ->searchable(),
+                ->searchable()
+                ->makeInputText(),
 
-            Column::make('UNIT', 'getUnitsName.unit_name'),
+            Column::make('UNIT', 'getUnitsName.unit_name')
+            ->searchable(),
 
             Column::make('quantity', 'unit')
                 ->makeInputRange(),

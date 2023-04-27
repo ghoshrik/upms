@@ -61,7 +61,7 @@
                 @else
                     <x-cards title="">
                         <x-slot name="table">
-                            <livewire:data-table.aafs-data-table :wire:key="$updateDataTableTracker" />
+                            <livewire:aafs.datatable.aafs-datatable :wire:key="$updateDataTableTracker" />
                         </x-slot>
                     </x-cards>
                 @endif
