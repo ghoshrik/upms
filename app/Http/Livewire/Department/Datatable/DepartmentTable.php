@@ -6,6 +6,7 @@ use App\Models\Department;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
@@ -51,7 +52,8 @@ final class DepartmentTable extends PowerGridComponent
      */
     public function datasource(): Builder
     {
-        return Department::query()->take(1);
+        return Department::query()
+        ->select('department_name','department_code',DB::raw('ROW_NUMBER() OVER (ORDER BY departments.id) as serial_no'));
     }
 
     /*
@@ -86,7 +88,7 @@ final class DepartmentTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-            ->addColumn('id')
+            ->addColumn('serial_no')
             ->addColumn('department_name')
             ->addColumn('department_code');
     }
@@ -108,7 +110,7 @@ final class DepartmentTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('ID', 'id')
+            Column::make('SL. No.', 'serial_no')
                 ->searchable()
                 ->sortable(),
             Column::make('Department Name', 'department_name')

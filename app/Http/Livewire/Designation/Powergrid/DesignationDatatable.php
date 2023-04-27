@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Designation\Powergrid;
 use App\Models\Designation;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
@@ -50,7 +51,7 @@ final class DesignationDatatable extends PowerGridComponent
     */
     public function datasource(): Builder
     {
-        return Designation::query();
+        return Designation::query()->select('designation_name',DB::raw('ROW_NUMBER() OVER (ORDER BY designations.id) as serial_no'));
     }
 
     /*
@@ -85,7 +86,7 @@ final class DesignationDatatable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-            ->addColumn('id')
+            ->addColumn('serial_no')
             ->addColumn('designation_name')
 
            /** Example of custom column using a closure **/
@@ -114,8 +115,8 @@ final class DesignationDatatable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('ID', 'id')
-                ->makeInputRange(),
+            Column::make('SL. No.', 'serial_no'),
+                // ->makeInputRange(),
 
             Column::make('DESIGNATION NAME', 'designation_name')
                 ->sortable()
