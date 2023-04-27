@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Designation extends Model
 {
     use HasFactory;
+    protected $table = 'designations';
     protected $fillable = [
         'designation_name'
     ];
@@ -16,7 +17,7 @@ class Designation extends Model
         return $this->belongsTo(User::class, 'designation_id','id');
     }
 
-    function user()
+    public function user()
     {
         $this->hasMany(User::class,'designation_id');
     }
