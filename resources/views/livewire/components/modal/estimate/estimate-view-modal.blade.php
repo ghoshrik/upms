@@ -35,7 +35,7 @@
                                                     {{ $view['estimate_no'] }}
                                                 @endif
                                             </td>
-                                            <td>
+                                            <td class="text-wrap" style="width: 40rem">
                                                 @if ($view['sor_item_number'])
                                                     {{ getSorItemNumberDesc($view['sor_item_number']) }}
                                                     @elseif ($view['estimate_no'])

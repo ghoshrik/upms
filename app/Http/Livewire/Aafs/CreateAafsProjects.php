@@ -145,6 +145,7 @@ class CreateAafsProjects extends Component
     }
     public function store()
     {
+        // dd($this->InputStore);
         $this->validate();
         try {
             $insert = [
@@ -154,7 +155,7 @@ class CreateAafsProjects extends Component
                 // 'support_data' => base64_encode(file_get_contents($this->InputStore['photo']->getRealPath())),
                 // 'status' => 0,
                 'dept_id' => $this->InputStore['departmentId'],
-                'status_id' => $this->InputStore['currentProStatus'],
+                'status_id' => $this->InputStore['progressStatus'],
                 'project_cost' => $this->InputStore['projectAmount'],
                 'tender_cost' => $this->InputStore['tenderAmount'],
 
@@ -170,7 +171,6 @@ class CreateAafsProjects extends Component
                 'Fundcty' => $this->InputStore['Fundcty'],
                 'exeAuthority' => $this->InputStore['exeAuthority']
             ];
-            // dd($insert);
             AAFS::create($insert);
             $this->notification()->success(
                 $title = "Project Order Created Successfully"

@@ -6,6 +6,7 @@
     <div class="position-relative">
     @include('partials.dashboard._body_header')
     {{-- @include('partials.dashboard.sub-header') --}}
+    @include('partials.dashboard.user_details_bar')
     </div>
     {{-- <div class="conatiner-fluid content-inner mt-n5 py-0"> --}}
     {{ $slot }}

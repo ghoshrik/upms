@@ -71,9 +71,9 @@ final class OfficeTable extends PowerGridComponent
         $ids = implode(', ', $this->checkboxValues);
 
         $this->dispatchBrowserEvent('showAlert', ['message' => 'You have selected IDs: ' . $ids]);
-        $this->dialog()->error(
-            $title = 'Error !!!',
-            $description = 'You must select at least one item!'
+        $this->dialog()->warning(
+            // $title = 'Error !!!',
+            $description = 'PDF generation under process'
         );
     }
 

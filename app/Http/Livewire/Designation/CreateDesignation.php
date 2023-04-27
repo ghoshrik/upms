@@ -10,7 +10,7 @@ class CreateDesignation extends Component
 {
     use Actions;
 
-    public $designation_name;
+    public $designation_name ,$updatedDataTableTracker;
     protected $rules = [
         'designation_name' => 'required|string|unique:designations,designation_name|max:255',
     ];
@@ -35,6 +35,7 @@ class CreateDesignation extends Component
             $this->notification()->success(
                 $title = 'Designation Created Successfully'
             );
+            $this->updatedDataTableTracker = rand(1,1000);
             $this->emit('openEntryForm');
         } catch (\Throwable $th) {
             $this->emit('showError', $th->getMessage());

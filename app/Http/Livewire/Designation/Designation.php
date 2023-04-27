@@ -7,12 +7,12 @@ use Livewire\Component;
 class Designation extends Component
 {
     public $updateMode = false;
-    public $formOpen=false,$editFormOpen = false,$updatedDataTableTracker;
+    public $formOpen=false,$editFormOpen = false,$updateDataTableTracker;
     protected $listeners = ['openEntryForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function mount()
     {
-        $this->updatedDataTableTracker = rand(1,1000);
+        $this->updateDataTableTracker = rand(1,1000);
     }
     public function fromEntryControl($data='')
     {
@@ -33,7 +33,7 @@ class Designation extends Component
         if(isset($data['id'])){
             $this->selectedIdForEdit = $data['id'];
         }
-        $this->updatedDataTableTracker = rand(1,1000);
+        $this->updateDataTableTracker = rand(1,1000);
     }
     //
     public function setErrorAlert($errorMessage)
