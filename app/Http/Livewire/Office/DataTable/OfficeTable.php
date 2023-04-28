@@ -88,7 +88,7 @@ final class OfficeTable extends PowerGridComponent
 
 
 
-    public function bulkActionEvent(): void
+    public function bulkActionEvent()
     {
         if (count($this->checkboxValues) == 0) {
             // $this->dispatchBrowserEvent('showAlert', ['message' => 'You must select at least one item!']);
@@ -104,8 +104,7 @@ final class OfficeTable extends PowerGridComponent
             $filename = date('Y-M-d') . rand(1, 2000) . '.pdf';
             $file = $pdf->stream();
             file_put_contents($filename, $file);
-            response()->download($filename)->deleteFileAfterSend(true);
-            return;
+            return response()->download($filename)->deleteFileAfterSend(true);
         }
 
         $ids = implode(',', $this->checkboxValues);
