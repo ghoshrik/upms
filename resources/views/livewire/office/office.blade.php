@@ -63,6 +63,7 @@
                         <div class="col-md-12 col-lg-12 col-sm-3">
                             <div class="card">
                                 <div class="card-body">
+                                    <a wire:click="pdfView" href="#">Generate PDF</a>
                                     <livewire:office.data-table.office-table :wire:key="$addedOfficeUpdateTrack" />
                                 </div>
                             </div>

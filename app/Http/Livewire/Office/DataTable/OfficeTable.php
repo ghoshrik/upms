@@ -3,11 +3,13 @@
 namespace App\Http\Livewire\Office\DataTable;
 
 use App\Models\Office;
+use Barryvdh\DomPDF\PDF;
 use WireUi\Traits\Actions;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+// use PowerComponents\LivewirePowerGrid\Traits\Exportable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
@@ -20,7 +22,7 @@ final class OfficeTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     |  Features Setup
     |--------------------------------------------------------------------------
-    | Setup Table's general features
+    | Setup Table's general featuress
     |
     */
     protected function getListeners()
@@ -36,10 +38,15 @@ final class OfficeTable extends PowerGridComponent
     public function setUp(): array
     {
         $this->showCheckBox();
-
+        // $this->addColumn('id')
+        //      ->label('ID')
+        //      ->sortable()
+        //      ->format(function ($value, $column, $row, $loop) {
+        //          return 'User #' . ($loop->index + 1);
+        //      });
         return [
             Exportable::make('export')
-                ->striped()
+                ->striped('#A6ACCD')
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             Header::make()->showSearchInput(),
             Footer::make()
@@ -53,7 +60,7 @@ final class OfficeTable extends PowerGridComponent
         return [
             Button::add('bulk-demo')
                 ->caption('PDF')
-                ->class('cursor-pointer btn btn-danger btn-sm')
+                ->class('cursor-pointer btn btn-soft-primary btn-sm')
                 ->emit('bulkActionEvent', [])
         ];
     }
@@ -63,19 +70,52 @@ final class OfficeTable extends PowerGridComponent
         if (count($this->checkboxValues) == 0) {
             // $this->dispatchBrowserEvent('showAlert', ['message' => 'You must select at least one item!']);
             $this->dialog()->error(
-                $title = 'Error !!!',
                 $description = 'You must select at least one item!'
             );
             return;
         }
 
-        $ids = implode(', ', $this->checkboxValues);
+        $ids = implode(',', $this->checkboxValues);
+        // dd($ids);
+        // $this->dispatchBrowserEvent('showAlert', ['message' => 'You have selected IDs: ' . $ids]);
+        $offices = Office::whereIn('id',explode(",", $ids))->get();
+        // $offices = Office::findOrFail(3);
+        // view()->share('offices',$offices);
+        // dd($offices);
+        // $pdf = PDF::loadView('pdfView');
+        // $pdf =Pdf::loadView(public_path().'/myfile.html')->save('/path-to/my_stored_file.pdf')->stream('download.pdf');
+        // $pdf->stream();
 
-        $this->dispatchBrowserEvent('showAlert', ['message' => 'You have selected IDs: ' . $ids]);
-        $this->dialog()->warning(
-            // $title = 'Error !!!',
-            $description = 'PDF generation under process'
-        );
+
+        // $data = [
+        //     'title' => 'Welcome to Webappfix',
+        //     'date'  => date('m/d/Y'),
+        //     'offices' => $offices
+        // ];
+        $pdf = app('dompdf.wrapper');
+        $pdf = $pdf->loadView('pdfView',['offices'=>$offices]);
+        $pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+        // $decode = base64_encode($pdf->stream());
+        $file = $pdf->stream();
+        // dd($decode);
+        // file_put_contents('webappfix.pdf', $decode);
+
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+        //     header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        response()->download('abcd.pdf')->deleteFileAfterSend(true);
+        return;
+        // dd($pdf->content());
+        // dd($pdf->download('webappfix.pdf'));
+
+
+        // dd($office);
+        // $this->dialog()->error(
+        //     $description = 'You must select at least one item!'
+        // );
     }
 
 
@@ -96,6 +136,7 @@ final class OfficeTable extends PowerGridComponent
     {
         return Office::query()
             ->select(
+                'id',
                 'office_name',
                  'department_id',
                   'dist_code',
@@ -105,7 +146,7 @@ final class OfficeTable extends PowerGridComponent
                   'ward_code',
                   'office_address',
                   'level_no',
-                  'office_code',DB::raw('ROW_NUMBER() OVER (ORDER BY offices.id) as serial_no'))
+                  'office_code')
             ->where('offices.department_id', Auth::user()->department_id);;
     }
 
@@ -141,18 +182,14 @@ final class OfficeTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-            ->addColumn('serial_no')
+            ->addColumn('id')
             ->addColumn('office_name')
 
             /** Example of custom column using a closure **/
             ->addColumn('office_name_lower', function (Office $model) {
                 return strtolower(e($model->office_name));
             })
-
-            ->addColumn('getDepartmentName.department_name')
-            ->addColumn('getDistrictName.district_name')
             // ->addColumn('in_area')
-            // ->addColumn('rural_block_code')
             // ->addColumn('gp_code')
             // ->addColumn('urban_code')
             // ->addColumn('ward_code')
@@ -183,6 +220,7 @@ final class OfficeTable extends PowerGridComponent
         // ->addColumn('updated_at_formatted', fn (Office $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
     }
 
+
     /*
     |--------------------------------------------------------------------------
     |  Include Columns
@@ -200,7 +238,7 @@ final class OfficeTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('SL. No.', 'serial_no'),
+            Column::make('ID', 'id'),
             //     ->makeInputRange(),
 
             Column::make('OFFICE NAME', 'office_name')
