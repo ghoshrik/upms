@@ -47,7 +47,7 @@ final class OfficeTable extends PowerGridComponent
         return [
             Exportable::make('export')
                 ->striped('#A6ACCD')
-                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
+                ->type(Exportable::TYPE_XLS),
             Header::make()->showSearchInput(),
             Footer::make()
                 ->showPerPage()
@@ -278,10 +278,10 @@ final class OfficeTable extends PowerGridComponent
                 ->makeInputText(),
 
             Column::make('DEPARTMENT name', 'getDepartmentName.department_name')
-                ->makeInputRange(),
+            ->searchable(),
 
             Column::make('DIST name', 'getDistrictName.district_name')
-                ->makeInputRange(),
+            ->searchable(),
 
             // Column::make('IN AREA', 'in_area')
             //     ->makeInputRange(),
@@ -300,10 +300,11 @@ final class OfficeTable extends PowerGridComponent
 
             Column::make('OFFICE ADDRESS', 'office_address')
                 ->sortable()
-                ->searchable(),
+                ->searchable()
+                ->makeInputText(),
 
             Column::make('LEVEL NO', 'level_no')
-                ->makeInputRange(),
+            ->searchable(),
 
             Column::make('OFFICE CODE', 'office_code')
                 ->sortable()
