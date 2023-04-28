@@ -30,7 +30,7 @@ final class ForwardedEstimateProjectTable extends PowerGridComponent
         return [
             Exportable::make('export')
                 ->striped()
-                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
+                ->type(Exportable::TYPE_XLS),
             Header::make()->showSearchInput(),
             Footer::make()
                 ->showPerPage()
@@ -57,7 +57,7 @@ final class ForwardedEstimateProjectTable extends PowerGridComponent
         ->select('estimate_prepares.id', 'estimate_prepares.estimate_id', 'estimate_prepares.operation', 'estimate_prepares.total_amount', 'estimate_prepares.created_by',
                 'estimate_user_assign_records.estimate_id as user_assign_records_estimate_id', 'estimate_user_assign_records.estimate_user_type',
                 'estimate_user_assign_records.user_id', 'estimate_user_assign_records.estimate_user_type', 'estimate_user_assign_records.comments',
-                'sor_masters.estimate_id as sor_masters_estimate_id', 'sor_masters.sorMasterDesc', 'sor_masters.status')
+                'sor_masters.estimate_id as sor_masters_estimate_id', 'sor_masters.sorMasterDesc', 'sor_masters.status' ,DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no'))
             ->join('estimate_user_assign_records', function ($join) {
                 $join->on('estimate_user_assign_records.estimate_id', '=', 'estimate_prepares.estimate_id')
                     ->where('estimate_user_assign_records.status', '=', 2)
@@ -101,6 +101,7 @@ final class ForwardedEstimateProjectTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
+        ->addColumn('serial_no')
             ->addColumn('estimate_id')
             ->addColumn('sorMasterDesc')
             ->addColumn('total_amount', fn ($model)=>  round($model->total_amount, 10, 2))
@@ -129,6 +130,9 @@ final class ForwardedEstimateProjectTable extends PowerGridComponent
     public function columns(): array
     {
         return [
+            Column::add()
+            ->title('Sl. No')
+            ->field('serial_no'),
             Column::add()
                 ->title('ESTIMATE ID')
                 ->field('estimate_id')

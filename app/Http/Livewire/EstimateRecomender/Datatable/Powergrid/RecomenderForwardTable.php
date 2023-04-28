@@ -7,12 +7,9 @@ use App\Models\EstimateStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-
 use PowerComponents\LivewirePowerGrid\Exportable;
-
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
@@ -39,7 +36,7 @@ final class RecomenderForwardTable extends PowerGridComponent
         return [
             Exportable::make('export')
                 ->striped()
-                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
+                ->type(Exportable::TYPE_XLS),
             Header::make()->showSearchInput(),
             Footer::make()
                 ->showPerPage()
@@ -76,7 +73,7 @@ final class RecomenderForwardTable extends PowerGridComponent
                 'estimate_user_assign_records.comments',
                 'sor_masters.estimate_id as sor_masters_estimate_id',
                 'sor_masters.sorMasterDesc',
-                'sor_masters.status'
+                'sor_masters.status', DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no')
             )
             ->join('estimate_user_assign_records', function ($join) {
                 $join->on('estimate_user_assign_records.estimate_id', '=', 'estimate_recomender.estimate_id')
@@ -120,6 +117,7 @@ final class RecomenderForwardTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
+            ->addColumn('serial_no')
             ->addColumn('estimate_id')
             ->addColumn('sorMasterDesc')
             ->addColumn('total_amount', fn($model) => round($model->total_amount, 10, 2))
@@ -148,6 +146,9 @@ final class RecomenderForwardTable extends PowerGridComponent
     public function columns(): array
     {
         return [
+            Column::add()
+                ->title('Sl. No')
+                ->field('serial_no'),
             Column::add()
                 ->title('ESTIMATE ID')
                 ->field('estimate_id')

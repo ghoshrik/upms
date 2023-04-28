@@ -18,7 +18,7 @@
 
 
                 <div class="header-title-left logo-title">
-                    <h5 class="">Govt. West Bengal <br><span>UPMS</span></h5>
+                    <h5 class="">Govt. West Bengal <br><span>{{ env('APP_NAME') }}</span></h5>
                 </div>
             </div>
         </a>
