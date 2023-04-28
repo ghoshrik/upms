@@ -65,57 +65,84 @@ final class OfficeTable extends PowerGridComponent
         ];
     }
 
+
+    public function generatePDF($id)
+    {
+        $offices = Office::whereIn('id', explode(",", $id))->first();
+        $pdf = app('dompdf.wrapper');
+        $pdf = $pdf->loadView('pdfView', ['offices' => $offices]);
+        $pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+        $pdf->setPaper('A4', 'portrait');
+        $filename = date('Y-m-d');
+        $file = $pdf->stream();
+        file_put_contents($filename . '.pdf', $file);
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($filename . '.pdf') . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        response()->download($filename . '.pdf')->deleteFileAfterSend(true);
+    }
+
+
+
+
     public function bulkActionEvent(): void
     {
         if (count($this->checkboxValues) == 0) {
             // $this->dispatchBrowserEvent('showAlert', ['message' => 'You must select at least one item!']);
-            $this->dialog()->error(
-                $description = 'You must select at least one item!'
-            );
+            // $this->dialog()->error(
+            //     $description = 'You must select at least one item!'
+            // );
+            // return;
+            $offices = Office::where('department_id', Auth::user()->department_id)->get();
+            $pdf = app('dompdf.wrapper');
+            $pdf = $pdf->loadView('pdfView', ['offices' => $offices]);
+            $pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+            $pdf->setPaper('A4', 'landscape');
+            $filename = date('Y-M-d') . rand(1, 2000) . '.pdf';
+            $file = $pdf->stream();
+            file_put_contents($filename, $file);
+            response()->download($filename)->deleteFileAfterSend(true);
             return;
         }
 
         $ids = implode(',', $this->checkboxValues);
-        // dd($ids);
-        // $this->dispatchBrowserEvent('showAlert', ['message' => 'You have selected IDs: ' . $ids]);
-        $offices = Office::whereIn('id',explode(",", $ids))->get();
-        // $offices = Office::findOrFail(3);
-        // view()->share('offices',$offices);
-        // dd($offices);
-        // $pdf = PDF::loadView('pdfView');
-        // $pdf =Pdf::loadView(public_path().'/myfile.html')->save('/path-to/my_stored_file.pdf')->stream('download.pdf');
-        // $pdf->stream();
+        $offices = Office::whereIn('id', explode(",", $ids))->get();
+        // $i = 1;
+        // foreach ($offices as $office) {
+        //     $insert = [
+
+        //         'id' => $i,
+        //         'office_name' => $office->office_name,
+        //         'office_code' => $office->office_code,
+        //         'office_address' => $office->office_address,
+        //         'office_district' => $office->getDistrictName->district_name,
+        //         'office_code' => $office->level_no
+        //     ];
+        //     $i++;
+        //     dd($insert);
+        // }
 
 
-        // $data = [
-        //     'title' => 'Welcome to Webappfix',
-        //     'date'  => date('m/d/Y'),
-        //     'offices' => $offices
-        // ];
+
         $pdf = app('dompdf.wrapper');
-        $pdf = $pdf->loadView('pdfView',['offices'=>$offices]);
+        $pdf = $pdf->loadView('pdfView', ['offices' => $offices]);
         $pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
-        // $decode = base64_encode($pdf->stream());
+        $pdf->setPaper('A4', 'portrait');
+        $filename = rand(1, 2000) . '.pdf';
         $file = $pdf->stream();
-        // dd($decode);
-        // file_put_contents('webappfix.pdf', $decode);
-
+        file_put_contents($filename, $file);
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
-        //     header('Expires: 0');
+        header('Content-Disposition: attachment; filename="' . basename($filename . '.pdf') . '"');
+        header('Expires: 0');
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
-        response()->download('abcd.pdf')->deleteFileAfterSend(true);
+        response()->download($filename)->deleteFileAfterSend(true);
+        // $this->reset('offices');
         return;
-        // dd($pdf->content());
-        // dd($pdf->download('webappfix.pdf'));
-
-
-        // dd($office);
-        // $this->dialog()->error(
-        //     $description = 'You must select at least one item!'
-        // );
     }
 
 
@@ -138,15 +165,18 @@ final class OfficeTable extends PowerGridComponent
             ->select(
                 'id',
                 'office_name',
-                 'department_id',
-                  'dist_code',
-                  'in_area',
-                  'rural_block_code',
-                  'gp_code', 'urban_code',
-                  'ward_code',
-                  'office_address',
-                  'level_no',
-                  'office_code')
+                'department_id',
+                'dist_code',
+                'in_area',
+                'rural_block_code',
+                'gp_code',
+                'urban_code',
+                'ward_code',
+                'office_address',
+                'level_no',
+                'office_code',
+                DB::raw('ROW_NUMBER() OVER (ORDER BY offices.id) as serial_no')
+            )
             ->where('offices.department_id', Auth::user()->department_id);;
     }
 
@@ -182,13 +212,15 @@ final class OfficeTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-            ->addColumn('id')
+            ->addColumn('serial_no')
             ->addColumn('office_name')
 
             /** Example of custom column using a closure **/
             ->addColumn('office_name_lower', function (Office $model) {
                 return strtolower(e($model->office_name));
             })
+            ->addColumn('getDepartmentName.department_name')
+            ->addColumn('getDistrictName.district_name')
             // ->addColumn('in_area')
             // ->addColumn('gp_code')
             // ->addColumn('urban_code')
@@ -238,7 +270,7 @@ final class OfficeTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('ID', 'id'),
+            Column::make('Sl.No', 'serial_no'),
             //     ->makeInputRange(),
 
             Column::make('OFFICE NAME', 'office_name')

@@ -78,7 +78,7 @@ class AddedEstimateList extends Component
             }
             $result = $stringCalc->calculate($this->expression);
             $this->insertAddEstimate($tempIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Exp Calculoation', '', $this->remarks);
-        } catch (\Exception$exception) {
+        } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(
                 $title = $exception->getMessage()
@@ -292,7 +292,7 @@ class AddedEstimateList extends Component
                         $title = 'please insert at list one item !!'
                     );
                 }
-            } catch (\Throwable$th) {
+            } catch (\Throwable $th) {
                 // session()->flash('serverError', $th->getMessage());
                 $this->emit('showError', $th->getMessage());
             }
@@ -301,7 +301,6 @@ class AddedEstimateList extends Component
                 $title = 'Please Calculate total first !!'
             );
         }
-
     }
 
     public function render()
