@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Office;
 
 use Livewire\Component;
+use Barryvdh\DomPDF\PDF;
 
 class Office extends Component
 {
@@ -39,6 +40,14 @@ class Office extends Component
     public function setErrorAlert($errorMessage)
     {
        $this->errorMessage = $errorMessage;
+    }
+    public function pdfView()
+    {
+        $office = Office::findOrFail(3);
+            dd($office);
+        $pdf = PDF::loadView('pdfView',['office'=>$office])->setPaper('a4', 'portrait');
+    // $fileName = $report->issue_number;
+    return $pdf->stream('abcd.pdf');
     }
     public function render()
     {
