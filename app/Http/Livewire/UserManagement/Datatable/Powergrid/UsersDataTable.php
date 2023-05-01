@@ -33,6 +33,25 @@ final class UsersDataTable extends PowerGridComponent
     | Setup Table's general features
     |
      */
+    protected function getListeners()
+    {
+        return array_merge(
+            parent::getListeners(),
+            [
+                'rowActionEvent',
+                'bulkActionEvent',
+            ]
+        );
+    }
+    public function header(): array
+    {
+        return [
+            Button::add('bulk-demo')
+                ->caption('PDF')
+                ->class('cursor-pointer btn btn-soft-primary btn-sm')
+                ->emit('bulkActionEvent', [])
+        ];
+    }
     public function setUp(): array
     {
         $this->showCheckBox();
@@ -53,6 +72,171 @@ final class UsersDataTable extends PowerGridComponent
                 ->showRecordCount(),
         ];
     }
+
+    public function bulkActionEvent()
+    {
+        $ModelList = [
+            'Employee Name'=>'18%',
+            'Email'=>'23%',
+            'LoginId'=>'17%',
+            'eHRMS'=>'12%',
+            'Mobile No.'=>'11%',
+            'Designation Name'=>'15%',
+            'Department'=>'13%',
+            'status'=>'7%'
+        ];
+        // for ($i = 0; $i < count($ModelList); $i++) {
+        //     $key = key($ModelList);
+        //     $value = current($ModelList);
+        //     // dd($key .":". $value);
+        //     ddnext($ModelList);
+        // }
+
+        if(Auth::user()->user_type==3)
+        {
+            if (count($this->checkboxValues) == 0) {
+                $users = User::where('user_type', Auth::user()->user_type=3)->get();
+                // dd($users);
+                $i=1;
+                foreach($users as $key=>$user)
+                {
+                    $dataView[] = [
+                        'id'=>$i,
+                        'title'=>$user->emp_name,
+                        'email'=>$user->email,
+                        'username'=>$user->username,
+                        'ehrms'=>$user->ehrms_id,
+                        'mobile'=>$user->mobile,
+                        'designation'=>$user->getDesignationName->designation_name,
+                        'department'=>$user->getDepartmentName->department_name,
+                        'active'=>$user->is_active
+                    ];
+                    $i++;
+                }
+                return generatePDF($ModelList,$dataView,trans('cruds.user-management.title_singulars'));
+
+            }
+            $ids = implode(',', $this->checkboxValues);
+            $users = User::whereIn('id', explode(",", $ids))->get();
+            $i=1;
+                foreach($users as $key=>$user)
+                {
+                    $dataView[] = [
+                        'id'=>$i,
+                        'title'=>$user->emp_name,
+                        'email'=>$user->email,
+                        'username'=>$user->username,
+                        'ehrms'=>$user->ehrms_id,
+                        'mobile'=>$user->mobile,
+                        'designation'=>$user->getDesignationName->designation_name,
+                        'department'=>$user->getDepartmentName->department_name,
+                        'active'=>$user->is_active
+                    ];
+                    $i++;
+                }
+
+            return generatePDF($ModelList,$dataView,trans('cruds.user-management.title_singulars'));
+            $this->resetExcept('checkboxValues','dataView');
+        }
+        elseif(Auth::user()->user_type==4)
+        {
+            dd(Auth::user()->user_type=4);
+            if (count($this->checkboxValues) == 0) {
+                $users = User::where('user_type', Auth::user()->user_type=4)->get();
+                // dd($users);
+                $i=1;
+                foreach($users as $key=>$user)
+                {
+                    $dataView[] = [
+                        'id'=>$i,
+                        'title'=>$user->emp_name,
+                        'email'=>$user->email,
+                        'username'=>$user->username,
+                        'ehrms'=>$user->ehrms_id,
+                        'mobile'=>$user->mobile,
+                        'designation'=>$user->getDesignationName->designation_name,
+                        'department'=>$user->getDepartmentName->department_name,
+                        'active'=>$user->is_active
+                    ];
+                    $i++;
+                }
+                return generatePDF($ModelList,$dataView,trans('cruds.user-management.title_singulars'));
+
+            }
+            $ids = implode(',', $this->checkboxValues);
+            $users = User::whereIn('id', explode(",", $ids))->get();
+            $i=1;
+                foreach($users as $key=>$user)
+                {
+                    $dataView[] = [
+                        'id'=>$i,
+                        'title'=>$user->emp_name,
+                        'email'=>$user->email,
+                        'username'=>$user->username,
+                        'ehrms'=>$user->ehrms_id,
+                        'mobile'=>$user->mobile,
+                        'designation'=>$user->getDesignationName->designation_name,
+                        'department'=>$user->getDepartmentName->department_name,
+                        'active'=>$user->is_active
+                    ];
+                    $i++;
+                }
+
+            return generatePDF($ModelList,$dataView,trans('cruds.user-management.title_singulars'));
+            $this->resetExcept('checkboxValues','dataView');
+        }
+        else
+        {
+            if (count($this->checkboxValues) == 0) {
+                $users = User::where('user_type', Auth::user()->user_type=6)->get();
+                // dd($users);
+                $i=1;
+                foreach($users as $key=>$user)
+                {
+                    $dataView[] = [
+                        'id'=>$i,
+                        'title'=>$user->emp_name,
+                        'email'=>$user->email,
+                        'username'=>$user->username,
+                        'ehrms'=>$user->ehrms_id,
+                        'mobile'=>$user->mobile,
+                        'designation'=>$user->getDesignationName->designation_name,
+                        'department'=>$user->getDepartmentName->department_name,
+                        'active'=>$user->is_active
+                    ];
+                    $i++;
+                }
+                return generatePDF($ModelList,$dataView,trans('cruds.user-management.title_singulars'));
+
+            }
+            $ids = implode(',', $this->checkboxValues);
+            $users = User::whereIn('id', explode(",", $ids))->get();
+            $i=1;
+                foreach($users as $key=>$user)
+                {
+                    $dataView[] = [
+                        'id'=>$i,
+                        'title'=>$user->emp_name,
+                        'email'=>$user->email,
+                        'username'=>$user->username,
+                        'ehrms'=>$user->ehrms_id,
+                        'mobile'=>$user->mobile,
+                        'designation'=>$user->getDesignationName->designation_name,
+                        'department'=>$user->getDepartmentName->department_name,
+                        'active'=>$user->is_active
+                    ];
+                    $i++;
+                }
+
+            return generatePDF($ModelList,$dataView,trans('cruds.user-management.title_singulars'));
+            $this->resetExcept('checkboxValues','dataView');
+        }
+    }
+
+
+
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -126,6 +310,7 @@ final class UsersDataTable extends PowerGridComponent
                     ->where('users.department_id', Auth::user()->department_id);
             }
         } else {
+
             return User::query()
                 ->select(
                     'users.id',
@@ -145,9 +330,10 @@ final class UsersDataTable extends PowerGridComponent
                     'designations.id as designationId',
                     'designations.designation_name',DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
                 )
+                ->where('users.user_type',3)
                 ->join('user_types', 'users.user_type', '=', 'user_types.id')
                 ->join('designations', 'users.designation_id', '=', 'designations.id');
-                // ->where('user_types.parent_id', '=', Auth::user()->user_type);
+                // ->where('users.user_type', '=', Auth::user()->user_type);
         }
         // return User::query();
     }

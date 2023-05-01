@@ -117,21 +117,18 @@
                                                 @foreach ($data ?? '' as $data)
                                                     <tr width="100%">
                                                         <td width="3%">{{ $data['id'] }}</td>
+                                                        {{-- Office --}}
                                                         <td class="text-wrap">{{ $data['title'] }}</td>
                                                         @if(array_key_exists('office_code',$data))
                                                         <td class="text-wrap">{{ $data['office_code'] }}</td>
-                                                        @else
-                                                        {{-- <td >{{ $data['office_code'] }}</td> --}}
                                                         @endif
+
                                                         @if(array_key_exists('address',$data))
                                                         <td class="text-wrap">{{ $data['address'] }}</td>
-                                                        @else
-                                                        {{-- <td >{{ $data['address'] }}</td> --}}
                                                         @endif
+
                                                         @if(array_key_exists('dist',$data))
                                                         <td class="text-wrap">{{ $data['dist'] }}</td>
-                                                        @else
-                                                        {{-- <td >{{ $data['dist'] }}</td> --}}
                                                         @endif
                                                         @if(array_key_exists('level',$data))
                                                         <td class='text-center' width="7%" class="text-wrap">
@@ -160,9 +157,41 @@
                                                                     {{ __('Level 6 Office') }}
                                                             @endswitch
                                                         </td>
-                                                        @else
-
                                                         @endif
+                                                        {{-- Offices  --}}
+
+                                                        {{-- User Management  --}}
+                                                        @if(array_key_exists('email',$data))
+                                                        <td class="text-wrap">{{ $data['email'] }}</td>
+                                                        @endif
+                                                        @if(array_key_exists('username',$data))
+                                                        <td class="text-wrap">{{ $data['username'] }}</td>
+                                                        @endif
+                                                        @if(array_key_exists('ehrms',$data))
+                                                        <td class="text-wrap">{{ $data['ehrms'] }}</td>
+                                                        @endif
+                                                        @if(array_key_exists('mobile',$data))
+                                                        <td class="text-wrap">{{ $data['mobile'] }}</td>
+                                                        @endif
+                                                        @if(array_key_exists('designation',$data))
+                                                        <td class="text-wrap">{{ $data['designation'] }}</td>
+                                                        @endif
+                                                        @if(array_key_exists('department',$data))
+                                                        <td class="text-wrap">{{ $data['department'] }}</td>
+                                                        @endif
+                                                        @if(array_key_exists('active',$data))
+                                                        <td class="text-wrap">
+                                                            @switch($data['active'])
+                                                                @case(1)
+                                                                    {{__('Active')}}
+                                                                @break
+
+                                                                @default
+                                                                    {{__('Inactive')}}
+                                                            @endswitch
+                                                        </td>
+                                                        @endif
+                                                        {{-- User Management  --}}
                                                     </tr>
                                                 @endforeach
                                             </tbody>
