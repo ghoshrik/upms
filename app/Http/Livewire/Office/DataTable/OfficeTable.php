@@ -6,10 +6,13 @@ use App\Models\Office;
 use Barryvdh\DomPDF\PDF;
 use WireUi\Traits\Actions;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 // use PowerComponents\LivewirePowerGrid\Traits\Exportable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use RalphJSmit\Livewire\Urls\Facades\Url;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Database\Eloquent\Builder;
+use PhpOffice\PhpWord\Writer\RTF\Style\Font;
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
@@ -66,39 +69,87 @@ final class OfficeTable extends PowerGridComponent
     }
 
 
-    public function generatePDF($id)
-    {
-        $offices = Office::whereIn('id', explode(",", $id))->first();
-        $pdf = app('dompdf.wrapper');
-        $pdf = $pdf->loadView('pdfView', ['offices' => $offices]);
-        $pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
-        $pdf->setPaper('A4', 'portrait');
-        $filename = date('Y-m-d');
-        $file = $pdf->stream();
-        file_put_contents($filename . '.pdf', $file);
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="' . basename($filename . '.pdf') . '"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        response()->download($filename . '.pdf')->deleteFileAfterSend(true);
-    }
 
-
-
-
+    // public $dataView = [];
     public function bulkActionEvent()
     {
+        $ModelList = ['Office Name'=>'22%','Office Code'=>'10%','Office Address'=>'44%','District'=>'14%','Office Level'=>'7%'];
+        // for ($i = 0; $i < count($ModelList); $i++) {
+        //     $key = key($ModelList);
+        //     $value = current($ModelList);
+        //     // dd($key .":". $value);
+        //     ddnext($ModelList);
+        // }
+
+        if (count($this->checkboxValues) == 0) {
+            $office = Office::where('department_id', Auth::user()->department_id)->get();
+            $i=1;
+            foreach($office as $key=>$offices)
+            {
+                $dataView[] = [
+                    'id'=>$i,
+                    'title'=>$offices->office_name,
+                    'office_code'=>$offices->office_code,
+                    'address'=>$offices->office_address,
+                    'dist'=>$offices->getDistrictName->district_name,
+                    'level'=>$offices->level_no
+                ];
+                $i++;
+            }
+
+
+
+
+            // dd($office);
+
+            // $tableBody = '';
+            // $tableBody .= '<table class="table table-bordered" style="table-layout: fixed;width: 100%;">
+            // <thead>
+            //     <tr>
+            //         <th class="per2 text-center" width="3%">#</th>
+            //     </tr>
+            // </thead><tbody>';
+            // foreach($office as $key=>$offices)
+            // {
+            //     $tableBody .='<tr width="100%">';
+            //     $tableBody .='<td width="3%" >'.$i.'</td>';
+            //     $tableBody .='</tr>';
+            //     $i++;
+            // }
+            // $tableBody .= '</tbody></table>';
+            // dd($tableBody);
+            return generatePDF($ModelList,$dataView,'Office Lists');
+
+        }
+        $ids = implode(',', $this->checkboxValues);
+        $offices = Office::whereIn('id', explode(",", $ids))->get();
+        $i=1;
+            foreach($offices as $key=>$office)
+            {
+                $dataView[] = [
+                    'id'=>$i,
+                    'title'=>$office->office_name,
+                    'office_code'=>$office->office_code,
+                    'address'=>$office->office_address,
+                    'dist'=>$office->getDistrictName->district_name,
+                    'level'=>$office->level_no
+                ];
+                $i++;
+            }
+
+        return generatePDF($ModelList,$dataView,'Office Lists');
+        $this->resetExcept('checkboxValues','dataView');
+
+
+        /*
         if (count($this->checkboxValues) == 0) {
             // $this->dispatchBrowserEvent('showAlert', ['message' => 'You must select at least one item!']);
             // $this->dialog()->error(
             //     $description = 'You must select at least one item!'
             // );
-            // return;
             $offices = Office::where('department_id', Auth::user()->department_id)->get();
             $pdf = app('dompdf.wrapper');
-            $pdf = $pdf->loadView('pdfView', ['offices' => $offices]);
+            $pdf = $pdf->loadView('pdfView', ['offices' => $offices, 'title' => 'Office List']);
             $pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
             $pdf->setPaper('A4', 'landscape');
             $filename = date('Y-M-d') . rand(1, 2000) . '.pdf';
@@ -127,21 +178,19 @@ final class OfficeTable extends PowerGridComponent
 
 
         $pdf = app('dompdf.wrapper');
-        $pdf = $pdf->loadView('pdfView', ['offices' => $offices]);
-        $pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
-        $pdf->setPaper('A4', 'portrait');
-        $filename = rand(1, 2000) . '.pdf';
+        $pdf->loadView('pdfView', ['offices' => $offices, 'title' => 'Office List','pdf'=>$pdf]);
+        $pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isPhpEnabled' => true]);
+        $pdf->setPaper('A4', 'landscape');
+        $filename =  'Office.pdf';
         $file = $pdf->stream();
+        $canvas = $pdf->get_canvas();
+        // $font = Font_Metrics::get_font("helvetica", "bold");
+        // $canvas->page_text(512, 10, "Página: {PAGE_NUM} de {PAGE_COUNT}",$font, 8, array(0,0,0));
         file_put_contents($filename, $file);
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="' . basename($filename . '.pdf') . '"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        response()->download($filename)->deleteFileAfterSend(true);
-        // $this->reset('offices');
-        return;
+        return response()->download($filename)->deleteFileAfterSend(true);
+        $this->reset('checkboxValues');
+        */
+
     }
 
 
@@ -271,15 +320,12 @@ final class OfficeTable extends PowerGridComponent
         return [
             Column::make('Sl.No', 'serial_no'),
             //     ->makeInputRange(),
-
             Column::make('OFFICE NAME', 'office_name')
                 ->sortable()
                 ->searchable()
                 ->makeInputText(),
-
             Column::make('DEPARTMENT name', 'getDepartmentName.department_name')
                 ->makeInputRange(),
-
             Column::make('DIST name', 'getDistrictName.district_name')
                 ->makeInputRange(),
 
