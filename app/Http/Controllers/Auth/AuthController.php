@@ -24,7 +24,7 @@ class AuthController extends Controller
     {
         // dd(base64_decode($user->id));
         # User Does not Have Any Existing OTP
-        $verificationCode = VerificationCode::where('user_id', $user->id)->latest()->first();
+        $verificationCode = VerificationCode::where('user_id', $user)->latest()->first();
         // dd($verificationCode);
         $now = Carbon::now();
 
@@ -34,7 +34,7 @@ class AuthController extends Controller
 
         // Create a New OTP
         return VerificationCode::create([
-            'user_id' => $user->id,
+            'user_id' => $user,
             'otp' => rand(123456, 999999),
             'expire_at' => Carbon::now()->addMinutes(2)
         ]);
