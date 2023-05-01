@@ -291,9 +291,4 @@ final class SorDataTable extends PowerGridComponent
         ];
     }
     */
-    public function edit($id)
-    {
-        dd($id);
-        // $this->emit('openEntryForm', ['formType' => 'edit', 'id' => $id]);
-    }
 }
