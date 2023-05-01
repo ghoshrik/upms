@@ -22,6 +22,7 @@ class AuthController extends Controller
 
     public function generateOtp($user)
     {
+        // dd(base64_decode($user->id));
         # User Does not Have Any Existing OTP
         $verificationCode = VerificationCode::where('user_id', $user->id)->latest()->first();
         // dd($verificationCode);
@@ -56,7 +57,7 @@ class AuthController extends Controller
         if ($user) {
             if ($user->is_active == 1) {
                 if ($user && Hash::check($request->password, $user->password)) {
-                    $resp = $this->generateOtp($user);
+                    $resp = $this->generateOtp($user->id);
                     $phoneNumberMasked = preg_replace('/(\d{3})(\d{3})(\d{4})/', 'XXXXXX$3', $user->mobile); // Masked phone number
                     // dd($resp->otp);
                     $messageSend = "Your Mobile Number is " . $phoneNumberMasked . " " . "Your OTP is " . $resp->otp;
@@ -133,7 +134,7 @@ class AuthController extends Controller
         // dd();
         $userId = base64_decode($userid);
         $user_id = User::where('id', $userId)->first();
-        $resp = $this->generateOtp($user_id->mobile);
+        $resp = $this->generateOtp($user_id);
         $phoneNumberMasked = preg_replace('/(\d{3})(\d{3})(\d{4})/', 'XXXXXX$3', $user_id->mobile);
         $messageSend = "Your Mobile Number is " . $phoneNumberMasked . " " . "Your OTP is " . $resp->otp;
         return redirect()->route('auth.verify', ['user_id' => base64_encode($resp->user_id)])->with('status', $messageSend);
