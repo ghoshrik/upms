@@ -43,6 +43,65 @@ final class DesignationDatatable extends PowerGridComponent
     | Provides data to your Table using a Model or Collection
     |
     */
+    public $dataView=[];
+    protected function getListeners()
+    {
+        return array_merge(
+            parent::getListeners(),
+            [
+                'rowActionEvent',
+                'bulkActionEvent',
+            ]
+        );
+    }
+    public function header(): array
+    {
+        return [
+            Button::add('bulk-demo')
+                ->caption('PDF')
+                ->class('cursor-pointer btn btn-soft-primary btn-sm')
+                ->emit('bulkActionEvent', [])
+        ];
+    }
+
+    public function bulkActionEvent()
+    {
+        $ModelList = ['Designation Name'=>'22%'];
+        if (count($this->checkboxValues) == 0) {
+            $designation = Designation::get();
+
+            $i=1;
+            foreach($designation as $key=>$offices)
+            {
+                $this->dataView[] = [
+                    'id'=>$i,
+                    'title'=>$offices->designation_name
+                ];
+                $i++;
+            }
+            return generatePDF($ModelList,$this->dataView,'Designations');
+        }
+        else
+        {
+
+        $ids = implode(',', $this->checkboxValues);
+        $offices = Designation::whereIn('id', explode(",", $ids))->get();
+        $i=1;
+            foreach($offices as $key=>$office)
+            {
+                $dataView[] = [
+                    'id'=>$i,
+                    'title'=>$office->designation_name,
+                ];
+                $i++;
+            }
+
+        return generatePDF($ModelList,$dataView,'Designations');
+        $this->resetExcept('checkboxValues','dataView');
+        }
+    }
+
+
 
     /**
     * PowerGrid datasource.
@@ -51,7 +110,9 @@ final class DesignationDatatable extends PowerGridComponent
     */
     public function datasource(): Builder
     {
-        return Designation::query()->select('designation_name',DB::raw('ROW_NUMBER() OVER (ORDER BY designations.id) as serial_no'));
+        return Designation::query()
+        ->select('id','designation_name',
+        DB::raw('ROW_NUMBER() OVER (ORDER BY designations.id) as serial_no'));
     }
 
     /*
