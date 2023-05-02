@@ -73,7 +73,13 @@ final class OfficeTable extends PowerGridComponent
     // public $dataView = [];
     public function bulkActionEvent()
     {
-        $ModelList = ['Office Name' => '22%', 'Office Code' => '10%', 'Office Address' => '44%', 'District' => '14%', 'Office Level' => '7%'];
+        $ModelList = [
+            trans('cruds.office.fields.office_name') => '22%',
+            trans('cruds.office.fields.office_code') => '10%',
+            trans('cruds.office.fields.office_address') => '44%',
+            trans('cruds.office.fields.office_district') => '14%',
+            trans('cruds.office.fields.level') => '7%'
+        ];
         // for ($i = 0; $i < count($ModelList); $i++) {
         //     $key = key($ModelList);
         //     $value = current($ModelList);
@@ -117,7 +123,7 @@ final class OfficeTable extends PowerGridComponent
             // }
             // $tableBody .= '</tbody></table>';
             // dd($tableBody);
-            return generatePDF($ModelList, $dataView, 'Office Lists');
+            return generatePDF($ModelList, $dataView, trans('cruds.office.title_singular'));
         }
         $ids = implode(',', $this->checkboxValues);
         $offices = Office::whereIn('id', explode(",", $ids))->get();
@@ -134,7 +140,7 @@ final class OfficeTable extends PowerGridComponent
             $i++;
         }
 
-        return generatePDF($ModelList, $dataView, 'Office Lists');
+        return generatePDF($ModelList, $dataView, trans('cruds.office.title_singular'));
         $this->resetExcept('checkboxValues', 'dataView');
 
 

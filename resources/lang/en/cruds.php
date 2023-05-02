@@ -7,7 +7,7 @@ return [
         'create_btn_name' => 'Add New Designation',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'designation_name' => 'Designation Name',
             'status' => 'Status',
             'actions' => 'Actions'
@@ -20,7 +20,7 @@ return [
         'create_msg' => 'Department Created Successfully!!',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'department_name' => 'Department Name',
             'department_code' => 'Department Code',
             'status' => 'Status',
@@ -34,8 +34,9 @@ return [
         'create_msg' => 'Office Created Successfully!!',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'office_name' => 'Office Name',
+            'office_code' => 'Office Code',
             'office_district' => 'District',
             'area' => 'Area',
             'office_department' => 'Department',
@@ -44,6 +45,7 @@ return [
             'urban_body_name' => 'Urban Body Name',
             'word_no' => 'Ward No.',
             'office_address' => 'Office Address',
+            'level' => 'Office Level',
             'status' => 'Status',
             'actions' => 'Actions'
         ],
@@ -54,7 +56,7 @@ return [
         'create_btn_name' => 'Add User Type Name',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'name' => ' User Type Name',
             'status' => 'Status',
             'actions' => 'Actions',
@@ -67,11 +69,14 @@ return [
         'create_msg' => 'New User created successfully',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'employee_id' => 'Employee ID',
+            'email_id' => 'Email',
             'employee_name' => 'Employee Name(User Name)',
             'office_name' => 'Office Name',
             'username' => 'Login Id',
+            'ehrms_id' => 'eHRMS',
+            'mobile' => 'Mobile No',
             'designation' => 'Designation',
             'department' => 'Department',
             'user_type' => 'User Type',
@@ -87,7 +92,7 @@ return [
         'create_btn_name' => 'Add New Access',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'title' => 'Access Management',
             'title_singulars' => 'Access Managements',
             'user_name' => 'User Name',
@@ -106,7 +111,7 @@ return [
         'create_msg' => 'New Aceess Type Created!',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'name' => 'Access Type Name',
             'actions' => 'Actions',
             'status' => 'Status'
@@ -119,7 +124,7 @@ return [
         'create_msg' => 'SOR Created Successfully!!',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'item_number' => 'Item Number',
             'department' => 'Department',
             'description' => 'Description',
@@ -155,7 +160,7 @@ return [
         'create_btn_name' => 'Add New Category',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'dept' => 'Department Name',
             'category' => 'Category',
             'action' => 'Actions'
@@ -168,7 +173,7 @@ return [
         'add_button' => 'Add New Estimate Prepare',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'estimate_no' => 'Estimate No',
             'category' => 'Category',
             'dept' => 'Department',
@@ -200,7 +205,7 @@ return [
         'title_singular' => 'Estimate recommenders',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'estimate_no' => 'Estimate No(Project ID)',
             'estimate_total' => 'Estimate Cost',
             'estimate_recommender_cost' => 'Estimate Recommender Cost',
@@ -218,7 +223,7 @@ return [
         'title_singular' => 'Estimate Projects',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'description' => 'Description',
             'estimate_no' => 'Estimate No',
             'estimate_total' => 'Estimate Total',
@@ -250,7 +255,7 @@ return [
         'title_singular' => 'Menu Permissions',
         'fields' => [
             'Id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'user_type' => 'User Type',
             'menu_access' => 'Menu Access',
             'actions' => 'Actions',
@@ -262,7 +267,7 @@ return [
         'create_msg' => 'New Milestone Created',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'project_num' => 'Project Number',
             'desc' => 'Project Description',
             'm_name' => 'Milestone name',
@@ -277,7 +282,7 @@ return [
         'create_msg' => 'Vendor created!',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'comp_name' => 'Company Name',
             'tin' => 'TAN Number',
             'pan' => 'PAN Number',
@@ -294,7 +299,7 @@ return [
         'title_singular' => 'AAFS Projects',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'department_id' => 'Departments',
             'proj_id' => 'UPMS Project No',
             'Govt_id' => 'GO No.',
@@ -309,7 +314,7 @@ return [
         'title_singular' => 'Settings',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'slug' => 'Slug',
             'unit_type' => 'Unit Type',
             'sor_category' => 'SOR Category',
@@ -324,7 +329,7 @@ return [
         'create_mgs' => 'New permission created!',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'permission_name' => 'Permission Name',
             'actions' => 'Action',
         ],
@@ -335,7 +340,7 @@ return [
         'create_msg' => 'Role created!',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'role_name' => 'Role Name',
             'actions' => 'Actions',
         ],
@@ -347,7 +352,7 @@ return [
         'create_msg' => 'New Tender Created',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'project_id' => 'Project No.',
             'tender_id' => 'Tender No.',
             'tender_title' => 'Tender Title',
@@ -369,7 +374,7 @@ return [
         'create_msg' => 'New created',
         'fields' => [
             'id' => 'ID',
-            'id_helper' => '#',
+            'id_helper' => 'Sl.No',
             'project_id' => 'Project No',
             'go_id' => 'Go Number',
             'vendor_id' => 'Vendor',
