@@ -74,20 +74,26 @@ final class UsersDataTable extends PowerGridComponent
     public function bulkActionEvent()
     {
         $ModelList = [
-            'Employee Name' => '18%',
-            'Email' => '23%',
-            'LoginId' => '17%',
-            'eHRMS' => '12%',
-            'Mobile No.' => '11%',
-            'Designation Name' => '15%',
-            'Department' => '13%',
-            'status' => '7%',
+            trans('cruds.user-management.fields.employee_name') => '20%',
+            trans('cruds.user-management.fields.email_id') => '24%',
+            trans('cruds.user-management.fields.username') => '11%',
+            trans('cruds.user-management.fields.ehrms_id') => '12%',
+            trans('cruds.user-management.fields.mobile') => '11%',
+            trans('cruds.user-management.fields.designation') => '19%',
+            trans('cruds.user-management.fields.department') => '13%',
+            //if(Auth::user()->user_type == 4)
+            trans('cruds.user-management.fields.office_name') => '18%',
+            trans('cruds.user-management.fields.status') => '6%',
         ];
         $getChild_id = UserType::where('parent_id', Auth::user()->user_type)->select('id')->first();
         if (count($this->checkboxValues) == 0) {
-            if (Auth::user()->user_type == 3) {
-                $users = User::where([['user_type', $getChild_id['id']], ['department_id', Auth::user()->department_id], ['is_active', 1]])->get();
+            if (Auth::user()->user_type == 2) {
+
+                $users = User::where('user_type', $getChild_id->id)
+                    // ->where('department_id', Auth::user()->department_id)
+                    ->where('is_active', 1)->get();
                 $i = 1;
+
                 foreach ($users as $key => $user) {
                     $dataView[] = [
                         'id' => $i,
@@ -98,13 +104,17 @@ final class UsersDataTable extends PowerGridComponent
                         'mobile' => $user->mobile,
                         'designation' => $user->getDesignationName->designation_name,
                         'department' => $user->getDepartmentName->department_name,
+                        'office' => 'N/A',
                         'active' => $user->is_active,
                     ];
                     $i++;
                 }
                 return generatePDF($ModelList, $dataView, trans('cruds.user-management.title_singulars'));
-            } elseif (Auth::user()->user_type == 4) {
-                $users = User::where([['user_type', $getChild_id['id']], ['department_id', Auth::user()->department_id], ['office_id', Auth::user()->office_id], ['is_active', 1]])->get();
+            } elseif (Auth::user()->user_type == 3) {
+                $users = User::where('user_type', $getChild_id->id)
+                    ->where('department_id', Auth::user()->department_id)
+                    ->where('is_active', 1)
+                    ->get();
                 $i = 1;
                 foreach ($users as $key => $user) {
                     $dataView[] = [
@@ -116,6 +126,30 @@ final class UsersDataTable extends PowerGridComponent
                         'mobile' => $user->mobile,
                         'designation' => $user->getDesignationName->designation_name,
                         'department' => $user->getDepartmentName->department_name,
+                        'office' => $user->getOfficeName->office_name,
+                        'active' => $user->is_active,
+                    ];
+                    $i++;
+                }
+                return generatePDF($ModelList, $dataView, trans('cruds.user-management.title_singulars'));
+            } else {
+                $users = User::where('user_type', $getChild_id->id)
+                    ->where('department_id', Auth::user()->department_id)
+                    ->where('office_id', Auth::user()->office_id)
+                    ->where('is_active', 1)
+                    ->get();
+                $i = 1;
+                foreach ($users as $key => $user) {
+                    $dataView[] = [
+                        'id' => $i,
+                        'title' => $user->emp_name,
+                        'email' => $user->email,
+                        'username' => $user->username,
+                        'ehrms' => $user->ehrms_id,
+                        'mobile' => $user->mobile,
+                        'designation' => $user->getDesignationName->designation_name,
+                        'department' => $user->getDepartmentName->department_name,
+                        'office' => $user->getOfficeName->office_name,
                         'active' => $user->is_active,
                     ];
                     $i++;
@@ -124,7 +158,10 @@ final class UsersDataTable extends PowerGridComponent
             }
         } else {
             $ids = implode(',', $this->checkboxValues);
-            $users = User::whereIn('id', explode(",", $ids))->where([['user_type', $getChild_id['id']], ['department_id', Auth::user()->department_id], ['is_active', 1]])->get();
+            $users = User::whereIn('id', explode(",", $ids))
+                ->where('user_type', $getChild_id->id)
+                // ->where('department_id', Auth::user()->department_id)
+                ->where('is_active', 1)->get();
             $i = 1;
             foreach ($users as $key => $user) {
                 $dataView[] = [
@@ -136,14 +173,19 @@ final class UsersDataTable extends PowerGridComponent
                     'mobile' => $user->mobile,
                     'designation' => $user->getDesignationName->designation_name,
                     'department' => $user->getDepartmentName->department_name,
+                    'office' => $user->office_id ? $user->getOfficeName->office_name : 'N/A',
                     'active' => $user->is_active,
                 ];
                 $i++;
             }
             return generatePDF($ModelList, $dataView, trans('cruds.user-management.title_singulars'));
+            $this->resetExcept('checkboxValues', 'dataView');
         }
-        $this->resetExcept('checkboxValues', 'dataView');
     }
+
+
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -162,6 +204,7 @@ final class UsersDataTable extends PowerGridComponent
     {
         if (Auth::user()->department_id) {
             if (Auth::user()->office_id) {
+
                 return User::query()
                     ->join('user_types', function ($user_types) {
                         $user_types->on('users.user_type', '=', 'user_types.id');
