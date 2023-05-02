@@ -455,3 +455,21 @@ function getDepartmentName($value)
     $departmentName = Department::where('id',$value)->select('department_name')->first();
     return $departmentName['department_name'];
 }
+function generatePDF($list,$data,$title)
+{
+    // dd($list,$data,$title);
+    // dd($data);
+    $pdf = app('dompdf.wrapper');
+    $pdf->loadView('pdfView', ['ModelList'=>$list,'data'=>$data,'Pdfitle' =>$title]);
+    // $pdf->loadHtml($data);
+    // $pdf->render();
+    $pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isPhpEnabled' => true]);
+    $pdf->setPaper('A4', 'landscape');
+    $filename = $title . '.pdf';
+    $file = $pdf->stream();
+    $canvas = $pdf->get_canvas();
+    // $font = Font_Metrics::get_font("helvetica", "bold");
+    // $canvas->page_text(512, 10, "Página: {PAGE_NUM} de {PAGE_COUNT}",$font, 8, array(0,0,0));
+    file_put_contents($filename, $file);
+    return response()->download($filename)->deleteFileAfterSend(true);
+}

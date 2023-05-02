@@ -3,24 +3,22 @@
 namespace App\Http\Livewire\UserManagement\Datatable\Powergrid;
 
 use App\Models\User;
-use WireUi\Traits\Actions;
-use Illuminate\Support\Facades\Auth;
-
+use App\Models\UserType;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use PowerComponents\LivewirePowerGrid\Button;
-
 use PowerComponents\LivewirePowerGrid\Column;
-
+use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\Exportable;
-use PowerComponents\LivewirePowerGrid\Rules\Rule;
-use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
-use PowerComponents\LivewirePowerGrid\Rules\RuleActions;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
+use PowerComponents\LivewirePowerGrid\Rules\Rule;
+use PowerComponents\LivewirePowerGrid\Rules\RuleActions;
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
+use WireUi\Traits\Actions;
 
 final class UsersDataTable extends PowerGridComponent
 {
@@ -33,6 +31,25 @@ final class UsersDataTable extends PowerGridComponent
     | Setup Table's general features
     |
      */
+    protected function getListeners()
+    {
+        return array_merge(
+            parent::getListeners(),
+            [
+                'rowActionEvent',
+                'bulkActionEvent',
+            ]
+        );
+    }
+    public function header(): array
+    {
+        return [
+            Button::add('bulk-demo')
+                ->caption('PDF')
+                ->class('cursor-pointer btn btn-soft-primary btn-sm')
+                ->emit('bulkActionEvent', [])
+        ];
+    }
     public function setUp(): array
     {
         $this->showCheckBox();
@@ -52,6 +69,80 @@ final class UsersDataTable extends PowerGridComponent
                 ->showPerPage()
                 ->showRecordCount(),
         ];
+    }
+
+    public function bulkActionEvent()
+    {
+        $ModelList = [
+            'Employee Name' => '18%',
+            'Email' => '23%',
+            'LoginId' => '17%',
+            'eHRMS' => '12%',
+            'Mobile No.' => '11%',
+            'Designation Name' => '15%',
+            'Department' => '13%',
+            'status' => '7%',
+        ];
+        $getChild_id = UserType::where('parent_id', Auth::user()->user_type)->select('id')->first();
+        if (count($this->checkboxValues) == 0) {
+            if (Auth::user()->user_type == 3) {
+                $users = User::where([['user_type', $getChild_id['id']], ['department_id', Auth::user()->department_id], ['is_active', 1]])->get();
+                $i = 1;
+                foreach ($users as $key => $user) {
+                    $dataView[] = [
+                        'id' => $i,
+                        'title' => $user->emp_name,
+                        'email' => $user->email,
+                        'username' => $user->username,
+                        'ehrms' => $user->ehrms_id,
+                        'mobile' => $user->mobile,
+                        'designation' => $user->getDesignationName->designation_name,
+                        'department' => $user->getDepartmentName->department_name,
+                        'active' => $user->is_active,
+                    ];
+                    $i++;
+                }
+                return generatePDF($ModelList, $dataView, trans('cruds.user-management.title_singulars'));
+            } elseif (Auth::user()->user_type == 4) {
+                $users = User::where([['user_type', $getChild_id['id']], ['department_id', Auth::user()->department_id], ['office_id', Auth::user()->office_id], ['is_active', 1]])->get();
+                $i = 1;
+                foreach ($users as $key => $user) {
+                    $dataView[] = [
+                        'id' => $i,
+                        'title' => $user->emp_name,
+                        'email' => $user->email,
+                        'username' => $user->username,
+                        'ehrms' => $user->ehrms_id,
+                        'mobile' => $user->mobile,
+                        'designation' => $user->getDesignationName->designation_name,
+                        'department' => $user->getDepartmentName->department_name,
+                        'active' => $user->is_active,
+                    ];
+                    $i++;
+                }
+                return generatePDF($ModelList, $dataView, trans('cruds.user-management.title_singulars'));
+            }
+        } else {
+            $ids = implode(',', $this->checkboxValues);
+            $users = User::whereIn('id', explode(",", $ids))->where([['user_type', $getChild_id['id']], ['department_id', Auth::user()->department_id], ['is_active', 1]])->get();
+            $i = 1;
+            foreach ($users as $key => $user) {
+                $dataView[] = [
+                    'id' => $i,
+                    'title' => $user->emp_name,
+                    'email' => $user->email,
+                    'username' => $user->username,
+                    'ehrms' => $user->ehrms_id,
+                    'mobile' => $user->mobile,
+                    'designation' => $user->getDesignationName->designation_name,
+                    'department' => $user->getDepartmentName->department_name,
+                    'active' => $user->is_active,
+                ];
+                $i++;
+            }
+            return generatePDF($ModelList, $dataView, trans('cruds.user-management.title_singulars'));
+        }
+        $this->resetExcept('checkboxValues','dataView');
     }
 
     /*
@@ -91,9 +182,9 @@ final class UsersDataTable extends PowerGridComponent
                         'user_types.parent_id',
                         'users.is_active',
                         'designations.id as designationId',
-                        'designations.designation_name',DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
+                        'designations.designation_name', DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
                     )
-                    // ->join('user_types', 'users.user_type', '=', 'user_types.id')
+                // ->join('user_types', 'users.user_type', '=', 'user_types.id')
                     ->where('user_types.parent_id', '=', Auth::user()->user_type)
                     ->where('users.department_id', Auth::user()->department_id)
                     ->where('users.office_id', Auth::user()->office_id);
@@ -119,13 +210,14 @@ final class UsersDataTable extends PowerGridComponent
                         'user_types.parent_id',
                         'users.is_active',
                         'designations.id as designationId',
-                        'designations.designation_name',DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
+                        'designations.designation_name', DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
                     )
 
                     ->where('user_types.parent_id', '=', Auth::user()->user_type)
                     ->where('users.department_id', Auth::user()->department_id);
             }
         } else {
+
             return User::query()
                 ->select(
                     'users.id',
@@ -143,11 +235,12 @@ final class UsersDataTable extends PowerGridComponent
                     'user_types.parent_id',
                     'users.is_active',
                     'designations.id as designationId',
-                    'designations.designation_name',DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
+                    'designations.designation_name', DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
                 )
+                ->where('users.user_type', 3)
                 ->join('user_types', 'users.user_type', '=', 'user_types.id')
                 ->join('designations', 'users.designation_id', '=', 'designations.id');
-                // ->where('user_types.parent_id', '=', Auth::user()->user_type);
+            // ->where('users.user_type', '=', Auth::user()->user_type);
         }
         // return User::query();
     }
@@ -187,7 +280,7 @@ final class UsersDataTable extends PowerGridComponent
             ->addColumn('serial_no')
             ->addColumn('name')
 
-            /** Example of custom column using a closure **/
+        /** Example of custom column using a closure **/
             ->addColumn('name_lower', function (User $model) {
                 return strtolower(e($model->name));
             })
@@ -289,7 +382,6 @@ final class UsersDataTable extends PowerGridComponent
     {
         User::where('id', $value)->update(['is_active' => 1]);
     }
-
 
     public function columns(): array
     {
@@ -397,20 +489,20 @@ final class UsersDataTable extends PowerGridComponent
      */
 
     /*
-    public function actionRules(): array
-    {
-        return [
+public function actionRules(): array
+{
+return [
 
-            //Hide button edit for ID 1
-            // Rule::button('edit')
-            // ->when(fn($user) => $user->id === 1)
-            // ->hide(),
+//Hide button edit for ID 1
+// Rule::button('edit')
+// ->when(fn($user) => $user->id === 1)
+// ->hide(),
 
-            Rule::rows()
-                ->when(fn ($dish) => $dish->in_stock == false)
-                ->hide()
+Rule::rows()
+->when(fn ($dish) => $dish->in_stock == false)
+->hide()
 
-        ];
-    }
-    */
+];
+}
+ */
 }
