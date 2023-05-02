@@ -50,7 +50,7 @@ final class OfficeTable extends PowerGridComponent
         return [
             Exportable::make('export')
                 ->striped('#A6ACCD')
-                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
+                ->type(Exportable::TYPE_XLS),
             Header::make()->showSearchInput(),
             Footer::make()
                 ->showPerPage()
@@ -73,7 +73,7 @@ final class OfficeTable extends PowerGridComponent
     // public $dataView = [];
     public function bulkActionEvent()
     {
-        $ModelList = ['Office Name'=>'22%','Office Code'=>'10%','Office Address'=>'44%','District'=>'14%','Office Level'=>'7%'];
+        $ModelList = ['Office Name' => '22%', 'Office Code' => '10%', 'Office Address' => '44%', 'District' => '14%', 'Office Level' => '7%'];
         // for ($i = 0; $i < count($ModelList); $i++) {
         //     $key = key($ModelList);
         //     $value = current($ModelList);
@@ -83,16 +83,15 @@ final class OfficeTable extends PowerGridComponent
 
         if (count($this->checkboxValues) == 0) {
             $office = Office::where('department_id', Auth::user()->department_id)->get();
-            $i=1;
-            foreach($office as $key=>$offices)
-            {
+            $i = 1;
+            foreach ($office as $key => $offices) {
                 $dataView[] = [
-                    'id'=>$i,
-                    'title'=>$offices->office_name,
-                    'office_code'=>$offices->office_code,
-                    'address'=>$offices->office_address,
-                    'dist'=>$offices->getDistrictName->district_name,
-                    'level'=>$offices->level_no
+                    'id' => $i,
+                    'title' => $offices->office_name,
+                    'office_code' => $offices->office_code,
+                    'address' => $offices->office_address,
+                    'dist' => $offices->getDistrictName->district_name,
+                    'level' => $offices->level_no
                 ];
                 $i++;
             }
@@ -118,27 +117,25 @@ final class OfficeTable extends PowerGridComponent
             // }
             // $tableBody .= '</tbody></table>';
             // dd($tableBody);
-            return generatePDF($ModelList,$dataView,'Office Lists');
-
+            return generatePDF($ModelList, $dataView, 'Office Lists');
         }
         $ids = implode(',', $this->checkboxValues);
         $offices = Office::whereIn('id', explode(",", $ids))->get();
-        $i=1;
-            foreach($offices as $key=>$office)
-            {
-                $dataView[] = [
-                    'id'=>$i,
-                    'title'=>$office->office_name,
-                    'office_code'=>$office->office_code,
-                    'address'=>$office->office_address,
-                    'dist'=>$office->getDistrictName->district_name,
-                    'level'=>$office->level_no
-                ];
-                $i++;
-            }
+        $i = 1;
+        foreach ($offices as $key => $office) {
+            $dataView[] = [
+                'id' => $i,
+                'title' => $office->office_name,
+                'office_code' => $office->office_code,
+                'address' => $office->office_address,
+                'dist' => $office->getDistrictName->district_name,
+                'level' => $office->level_no
+            ];
+            $i++;
+        }
 
-        return generatePDF($ModelList,$dataView,'Office Lists');
-        $this->resetExcept('checkboxValues','dataView');
+        return generatePDF($ModelList, $dataView, 'Office Lists');
+        $this->resetExcept('checkboxValues', 'dataView');
 
 
         /*
@@ -190,7 +187,6 @@ final class OfficeTable extends PowerGridComponent
         return response()->download($filename)->deleteFileAfterSend(true);
         $this->reset('checkboxValues');
         */
-
     }
 
 
@@ -325,9 +321,9 @@ final class OfficeTable extends PowerGridComponent
                 ->searchable()
                 ->makeInputText(),
             Column::make('DEPARTMENT name', 'getDepartmentName.department_name')
-                ->makeInputRange(),
+                ->searchable(),
             Column::make('DIST name', 'getDistrictName.district_name')
-                ->makeInputRange(),
+                ->searchable(),
 
             // Column::make('IN AREA', 'in_area')
             //     ->makeInputRange(),
@@ -346,10 +342,11 @@ final class OfficeTable extends PowerGridComponent
 
             Column::make('OFFICE ADDRESS', 'office_address')
                 ->sortable()
-                ->searchable(),
+                ->searchable()
+                ->makeInputText(),
 
             Column::make('LEVEL NO', 'level_no')
-                ->makeInputRange(),
+                ->searchable(),
 
             Column::make('OFFICE CODE', 'office_code')
                 ->sortable()
