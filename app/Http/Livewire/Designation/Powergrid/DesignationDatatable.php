@@ -28,7 +28,7 @@ final class DesignationDatatable extends PowerGridComponent
             Exportable::make('export')
                 ->striped()
                 ->type(Exportable::TYPE_XLS),
-                // ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
+            // ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             Header::make()->showSearchInput(),
             Footer::make()
                 ->showPerPage()
@@ -43,7 +43,7 @@ final class DesignationDatatable extends PowerGridComponent
     | Provides data to your Table using a Model or Collection
     |
     */
-    public $dataView=[];
+    public $dataView = [];
     protected function getListeners()
     {
         return array_merge(
@@ -66,53 +66,52 @@ final class DesignationDatatable extends PowerGridComponent
 
     public function bulkActionEvent()
     {
-        $ModelList = ['Designation Name'=>'22%'];
+        $ModelList = [trans('cruds.designation.fields.designation_name') => '22%'];
         if (count($this->checkboxValues) == 0) {
             $designation = Designation::get();
 
-            $i=1;
-            foreach($designation as $key=>$offices)
-            {
+            $i = 1;
+            foreach ($designation as $key => $offices) {
                 $this->dataView[] = [
-                    'id'=>$i,
-                    'title'=>$offices->designation_name
+                    'id' => $i,
+                    'title' => $offices->designation_name
                 ];
                 $i++;
             }
-            return generatePDF($ModelList,$this->dataView,'Designations');
-        }
-        else
-        {
+            return generatePDF($ModelList, $this->dataView, trans('cruds.designation.title_singulars'));
+        } else {
 
-        $ids = implode(',', $this->checkboxValues);
-        $offices = Designation::whereIn('id', explode(",", $ids))->get();
-        $i=1;
-            foreach($offices as $key=>$office)
-            {
+            $ids = implode(',', $this->checkboxValues);
+            $offices = Designation::whereIn('id', explode(",", $ids))->get();
+            $i = 1;
+            foreach ($offices as $key => $office) {
                 $dataView[] = [
-                    'id'=>$i,
-                    'title'=>$office->designation_name,
+                    'id' => $i,
+                    'title' => $office->designation_name,
                 ];
                 $i++;
             }
 
-        return generatePDF($ModelList,$dataView,'Designations');
-        $this->resetExcept('checkboxValues','dataView');
+            return generatePDF($ModelList, $dataView, trans('cruds.designation.title'));
+            $this->resetExcept('checkboxValues', 'dataView');
         }
     }
 
 
 
     /**
-    * PowerGrid datasource.
-    *
-    * @return Builder<\App\Models\Designation>
-    */
+     * PowerGrid datasource.
+     *
+     * @return Builder<\App\Models\Designation>
+     */
     public function datasource(): Builder
     {
         return Designation::query()
-        ->select('id','designation_name',
-        DB::raw('ROW_NUMBER() OVER (ORDER BY designations.id) as serial_no'));
+            ->select(
+                'id',
+                'designation_name',
+                DB::raw('ROW_NUMBER() OVER (ORDER BY designations.id) as serial_no')
+            );
     }
 
     /*
@@ -150,13 +149,13 @@ final class DesignationDatatable extends PowerGridComponent
             ->addColumn('serial_no')
             ->addColumn('designation_name')
 
-           /** Example of custom column using a closure **/
+            /** Example of custom column using a closure **/
             ->addColumn('designation_name_lower', function (Designation $model) {
                 return strtolower(e($model->designation_name));
             });
 
-            // ->addColumn('created_at_formatted', fn (Designation $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'))
-            // ->addColumn('updated_at_formatted', fn (Designation $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
+        // ->addColumn('created_at_formatted', fn (Designation $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'))
+        // ->addColumn('updated_at_formatted', fn (Designation $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
     }
 
     /*
@@ -168,7 +167,7 @@ final class DesignationDatatable extends PowerGridComponent
     |
     */
 
-     /**
+    /**
      * PowerGrid Columns.
      *
      * @return array<int, Column>
@@ -177,7 +176,7 @@ final class DesignationDatatable extends PowerGridComponent
     {
         return [
             Column::make('SL. No.', 'serial_no'),
-                // ->makeInputRange(),
+            // ->makeInputRange(),
 
             Column::make('DESIGNATION NAME', 'designation_name')
                 ->sortable()
@@ -194,8 +193,7 @@ final class DesignationDatatable extends PowerGridComponent
             //     ->sortable()
             //     ->makeInputDatePicker(),
 
-        ]
-;
+        ];
     }
 
     /*
@@ -206,7 +204,7 @@ final class DesignationDatatable extends PowerGridComponent
     |
     */
 
-     /**
+    /**
      * PowerGrid Designation Action Buttons.
      *
      * @return array<int, Button>
@@ -236,7 +234,7 @@ final class DesignationDatatable extends PowerGridComponent
     |
     */
 
-     /**
+    /**
      * PowerGrid Designation Action Rules.
      *
      * @return array<int, RuleActions>
