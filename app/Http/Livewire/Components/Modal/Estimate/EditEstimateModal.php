@@ -25,7 +25,7 @@ class EditEstimateModal extends Component
     public function calculateValue()
     {
         if (floatval($this->qty) >= 0 && floatval($this->rate) >= 0) {
-            $this->total_amount = floatval($this->qty) * floatval($this->rate);
+            $this->total_amount = round(floatval($this->qty) * floatval($this->rate),2);
         }
     }
     public function updateEstimateRow()

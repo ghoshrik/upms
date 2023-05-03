@@ -38,7 +38,7 @@
                                                 {{ $editEstimateRow['estimate_no'] }}
                                             @endif
                                         </td>
-                                        <td>
+                                        <td class="text-wrap">
                                             @if ($editEstimateRow['sor_item_number'])
                                                 {{ getSorItemNumberDesc($editEstimateRow['sor_item_number']) }}
                                             @elseif ($editEstimateRow['estimate_no'])
