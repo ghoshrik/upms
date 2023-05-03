@@ -48,24 +48,38 @@
                                                 @if ($view['comments'] != '')
                                                     {{ '( ' . $view['comments'] . ' )' }}
                                                 @endif
+                                    </td>
+                                    <td class="text-wrap">
+                                        @if ($view['sor_item_number'])
+                                            {{ getSorItemNumberDesc($view['sor_item_number']) }}
+                                        @elseif ($view['estimate_no'])
+                                            {{ getEstimateDescription($view['estimate_no']) }}
+                                        @elseif($view['operation'])
+                                            @if ($view['operation'] == 'Total')
+                                                {{ 'Total of ( ' . $view['row_index'] . ' )' }}
+                                            @else
+                                                {{ $view['row_index'] }}
+                                                @if ($view['comments'] != '')
+                                                    {{ '( ' . $view['comments'] . ' )' }}
+                                                @endif
                                             @endif
                                         @else
                                             {{ $view['other_name'] }}
                                         @endif
                                     </td>
-                                    <td style="text-align:center;" class="text-wrap">
+                                    <td style="text-align:center;">
                                         @if ($view['qty'] == 0)
                                         @else
                                             {{ $view['qty'] }}
                                         @endif
                                     </td>
-                                    <td style="text-align:center;" class="text-wrap">
+                                    <td style="text-align:center;">
                                         @if ($view['rate'] == 0)
                                         @else
                                             {{ round($view['rate'], 10, 2) }}
                                         @endif
                                     </td>
-                                    <td style="text-align:center;">{{ round($view['total_amount'], 2) }}</td>
+                                    <td style="text-align:center;">{{ round($view['total_amount'], 10, 2) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

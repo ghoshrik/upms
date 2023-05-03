@@ -48,6 +48,20 @@
                                                 @if ($view['comments'] != '')
                                                     {{ '( ' . $view['comments'] . ' )' }}
                                                 @endif
+                                    </td>
+                                    <td class="text-wrap">
+                                        @if ($view['sor_item_number'])
+                                            {{ getSorItemNumberDesc($view['sor_item_number']) }}
+                                        @elseif ($view['estimate_no'])
+                                            {{ getEstimateDescription($view['estimate_no']) }}
+                                        @elseif($view['operation'])
+                                            @if ($view['operation'] == 'Total')
+                                                {{ 'Total of ( ' . $view['row_index'] . ' )' }}
+                                            @else
+                                                {{ $view['row_index'] }}
+                                                @if ($view['comments'] != '')
+                                                    {{ '( ' . $view['comments'] . ' )' }}
+                                                @endif
                                             @endif
                                         @else
                                             {{ $view['other_name'] }}
