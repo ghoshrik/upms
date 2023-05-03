@@ -77,9 +77,9 @@
                                                 --
                                             @endif
                                         </td>
-                                        <td>
+                                        <td class="text-wrap">
                                             @if ($addedEstimate['sor_item_number'])
-                                            {{ getSorItemNumberDesc($addedEstimate['sor_item_number']) }}
+                                                {{ getSorItemNumberDesc($addedEstimate['sor_item_number']) }}
                                             @elseif ($addedEstimate['estimate_no'])
                                                 {{ getEstimateDescription($addedEstimate['estimate_no']) }}
                                                 {{-- {{ $addedEstimate->SOR->sorMasterDesc }} --}}
@@ -97,31 +97,30 @@
 
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['qty']!=0)
+                                            @if ($addedEstimate['qty'] != 0)
                                                 {{ $addedEstimate['qty'] }}
                                             @else
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['rate']!=0)
+                                            @if ($addedEstimate['rate'] != 0)
                                                 {{ $addedEstimate['rate'] }}
                                             @else
                                             @endif
                                         </td>
                                         <td>
-                                            {{ round($addedEstimate['total_amount'],10,2) }}
+                                            {{ round($addedEstimate['total_amount'], 10, 2) }}
                                         </td>
                                         <td>
                                             @if ($addedEstimate['estimate_no'])
-                                                <x-button
-                                                    wire:click="viewModal({{ $addedEstimate['estimate_no'] }})"
+                                                <x-button wire:click="viewModal({{ $addedEstimate['estimate_no'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
                                                     </span>
                                                 </x-button>
                                             @endif
-                                            @if ($addedEstimate['row_index'] == null )
+                                            @if ($addedEstimate['row_index'] == null)
                                                 <x-button wire:click="editEstimate({{ $addedEstimate['row_id'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
                                                     <span class="btn-inner">
