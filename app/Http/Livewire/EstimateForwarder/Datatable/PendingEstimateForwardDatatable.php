@@ -65,7 +65,7 @@ class PendingEstimateForwardDatatable extends DataTableComponent
     }
     public function revert($estimate_id)
     {
-        $this->emit('openRevertModal',$estimate_id);
+        $this->emit('openRevertModal',['estimate_id'=>$estimate_id,'revart_from'=>'EF']);
     }
     public function forward($estimate_id)
     {
@@ -77,10 +77,9 @@ class PendingEstimateForwardDatatable extends DataTableComponent
             ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_recomender.estimate_id')
             ->join('sor_masters','sor_masters.estimate_id','=','estimate_recomender.estimate_id')
             ->where('operation', 'Total')
-            ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
-            ->where('estimate_user_assign_records.estimate_user_type','=',4)
-            ->where('sor_masters.status','!=',3)
-            ->where('sor_masters.status','!=',9)
-            ->where('sor_masters.is_verified','=',0);
+            ->where('estimate_user_assign_records.assign_user_id','=',Auth::user()->id)
+            // ->where('estimate_user_assign_records.estimate_user_type','=',9)
+            ->where('estimate_user_assign_records.status','=',9)
+            ->where('estimate_user_assign_records.is_done','=',0);
     }
 }

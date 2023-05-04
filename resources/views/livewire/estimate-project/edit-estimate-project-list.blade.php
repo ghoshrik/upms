@@ -79,7 +79,7 @@
                                                 --
                                             @endif
                                         </td>
-                                        <td>
+                                        <td class="text-wrap" style="width: 40rem">
                                             @if ($addedEstimate['sor_item_number'])
                                             {{ getSorItemNumberDesc($addedEstimate['sor_item_number']) }}
                                             @elseif ($addedEstimate['estimate_no'])

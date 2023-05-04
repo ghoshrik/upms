@@ -2,44 +2,54 @@
 
 namespace App\Http\Livewire\Sor;
 
-use App\Models\Department;
+use App\Models\AttachDoc;
 use App\Models\SOR;
-use App\Models\SorCategoryType;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use App\Models\Department;
 use WireUi\Traits\Actions;
+use Livewire\WithFileUploads;
+use App\Models\SorCategoryType;
+use App\Models\UnitMaster;
+use Illuminate\Support\Facades\Auth;
 
 class CreateSor extends Component
 {
-    use Actions;
+    use Actions, WithFileUploads;
     public $inputsData = [], $fetchDropDownData = [];
-
+    //|regex:/^\d{2}\.\d{2}/
     protected $rules = [
-        'inputsData.*.dept_category_id'=>'required|integer',
-        'inputsData.*.item_details'=>'required',
-        'inputsData.*.description'=>'required|string',
-        'inputsData.*.unit'=>'required|numeric',
-        'inputsData.*.cost'=>'required|numeric',
-        'inputsData.*.version'=>'required|string',
-        'inputsData.*.effect_from'=>'required'
+        'inputsData.*.dept_category_id' => 'required|integer',
+        'inputsData.*.item_details' => 'required|regex:/^[0-9+.]+$/',
+        'inputsData.*.description' => 'required|string',
+        'inputsData.*.unit_id' => 'required|integer',
+        'inputsData.*.unit' => 'required|numeric|min:1',
+        'inputsData.*.cost' => 'required|numeric|min:1',
+        'inputsData.*.version' => 'required|string',
+        'inputsData.*.effect_from' => 'required',
+        'inputsData.*.file_upload' => 'required'
     ];
     protected $messages = [
-        'inputsData.*.dept_category_id.required'=>'This field is required',
-        'inputsData.*.dept_category_id.required'=>'Invalid format',
-        'inputsData.*.item_details.required'=> 'This field is required',
-        // 'inputsData.*.item_details.numeric'=>'Only allow number',
-        'inputsData.*.description.required'=>'This field is required',
-        'inputsData.*.description.string'=>'This field must be allow alphabet',
-        'inputsData.*.unit.required'=>'This field is required',
-        'inputsData.*.unit.numeric'=>'This field allow only numeric',
-        'inputsData.*.unit.max:0'=>'Not allow any negative number',
-        'inputsData.*.cost.required'=>'This field is required',
-        'inputsData.*.cost.numeric'=>'This field allow only numeric',
-        // 'inputsData.*.cost.max:0'=>'Not allow any negative number',
-        'inputsData.*.version.required'=>'This field is required',
-        'inputsData.*.version.string'=>'This field allow only alphabet',
-        'inputsData.*.effect_from.required'=>'This field is required',
-        // 'inputsData.*.effect_from.date_format'=>'This field must be valid only date format'
+        'inputsData.*.dept_category_id.required' => 'This field is required',
+        'inputsData.*.dept_category_id.required' => 'Invalid format',
+        'inputsData.*.item_details.required' => 'This field is required',
+        'inputsData.*.item_details.numeric' => 'Only allow number',
+        'inputsData.*.item_details.regex' => 'The field invalid characters',
+        'inputsData.*.description.required' => 'This field is required',
+        'inputsData.*.description.string' => 'This field must be allow alphabet',
+        'inputsData.*.unit_id.required' => 'This field is required',
+        'inputsData.*.unit_id.integer' => 'This field only Allow number',
+        'inputsData.*.unit.required' => 'This field is required',
+        'inputsData.*.unit.numeric' => 'This field allow only numeric',
+        'inputsData.*.unit.min' => 'The number must be at least 1.',
+        'inputsData.*.cost.required' => 'This field is required',
+        'inputsData.*.cost.numeric' => 'This field allow only numeric',
+        'inputsData.*.cost.min' => 'The number must be at least 1.',
+        'inputsData.*.version.required' => 'This field is required',
+        'inputsData.*.version.string' => 'This field allow only alphabet',
+        'inputsData.*.effect_from.required' => 'This field is required',
+        // 'inputsData.*.effect_from.date_format' => 'This field must be valid only date format',
+        'inputsData.*.file_upload.required' => 'This field is required',
+        // 'inputsData.*.file_upload' => 'The uploaded file must be a PDF document.',
 
     ];
     public function mount()
@@ -50,28 +60,33 @@ class CreateSor extends Component
                 'department_id' => Auth::user()->department_id,
                 'dept_category_id' => '',
                 'description' => '',
+                'unit_id' => '',
                 'unit' => '',
                 'cost' => '',
                 'version' => '',
                 'effect_from' => '',
+                'file_upload' => ''
             ]
         ];
         $this->fetchDropDownData['departmentCategory'] = SorCategoryType::where('department_id', Auth::user()->department_id)->get();
+        $this->fetchDropDownData['unitMaster'] =  UnitMaster::select('id', 'unit_name', 'short_name', 'is_active')->where('is_active', 1)->orderBy('id', 'desc')->get();
     }
 
     public function addNewRow()
     {
         $this->inputsData[] =
-        [
-            'item_details' => '',
-            'department_id' => Auth::user()->department_id,
-            'dept_category_id' => '',
-            'description' => '',
-            'unit' => '',
-            'cost' => '',
-            'version' => '',
-            'effect_from' => '',
-        ];
+            [
+                'item_details' => '',
+                'department_id' => Auth::user()->department_id,
+                'dept_category_id' => '',
+                'description' => '',
+                'unit_id' => '',
+                'unit' => '',
+                'cost' => '',
+                'version' => '',
+                'effect_from' => '',
+                'file_upload' => ''
+            ];
     }
     public function updated($param)
     {
@@ -79,18 +94,46 @@ class CreateSor extends Component
     }
     public function store()
     {
+        // dd($this->inputsData);
         $this->validate();
-
         try {
+
             foreach ($this->inputsData as $key => $data) {
-                SOR::create($data);
+                $last = SOR::create([
+                    'Item_details' => $data['item_details'],
+                    'department_id' => $data['department_id'],
+                    'dept_category_id' => $data['dept_category_id'],
+                    'description' => $data['description'],
+                    'unit_id' => $data['unit_id'],
+                    'unit' => $data['unit'],
+                    'cost' => $data['cost'],
+                    'version' => $data['version'],
+                    'effect_from' => $data['effect_from'],
+                    'created_by' => Auth::user()->id,
+                ]);
+                foreach ($data['file_upload'] as $DataAttr) {
+                    $filePath = file_get_contents($DataAttr->getRealPath());
+                    $fileSize = $DataAttr->getSize();
+                    $filExt = $DataAttr->getClientOriginalExtension();
+                    $mimeType = $DataAttr->getMimeType();
+                    AttachDoc::create([
+                        'sor_docu_id' => $last->id,
+                        'document_type' => $filExt,
+                        'document_mime' => $mimeType,
+                        'document_size' => $fileSize,
+                        'docfile' => base64_encode($filePath)
+                    ]);
+                }
+                // dd($data['file_upload']);
             }
             $this->notification()->success(
-                $title = 'SOR Created Successfully!!'
+                $title = trans('cruds.sor.create_msg')
             );
             $this->reset();
-            $this->emit('openForm');
+            $this->emit('openEntryForm');
         } catch (\Throwable $th) {
+
+            // dd($th->getMessage());
             $this->emit('showError', $th->getMessage());
         }
     }

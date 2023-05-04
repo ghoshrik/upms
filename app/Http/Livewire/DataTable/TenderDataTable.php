@@ -20,19 +20,21 @@ class TenderDataTable extends DataTableComponent
         return [
             Column::make("Id", "id")
                 ->sortable(),
-            Column::make("Project no", "project_no")
+            Column::make(trans('cruds.tenders.fields.project_id'), "project_no")
                 ->sortable(),
-            Column::make("Tender id", "tender_id")
+            Column::make(trans('cruds.tenders.fields.tender_id'), "tender_id")
                 ->sortable(),
-            Column::make("Tender title", "tender_title")
+            Column::make(trans('cruds.tenders.fields.tender_title'), "tender_title")
                 ->sortable(),
-            Column::make("Publish date", "publish_date")
+            Column::make(trans('cruds.tenders.fields.tender_amount'), "tender_amount")
                 ->sortable(),
-            Column::make("Close date", "close_date")
+            Column::make(trans('cruds.tenders.fields.date_of_pub'), "publish_date")
                 ->sortable(),
-            Column::make("Bidder name", "bidder_name")
+            Column::make(trans('cruds.tenders.fields.date_of_close'), "close_date")
                 ->sortable(),
-            Column::make("Tender category", "tender_category")
+            Column::make(trans('cruds.tenders.fields.num_bider'), "bidder_name")
+                ->sortable(),
+            Column::make(trans('cruds.tenders.fields.tender_category'), "tender_category")
                 ->sortable(),
             // Column::make("Created at", "created_at")
             //     ->sortable(),

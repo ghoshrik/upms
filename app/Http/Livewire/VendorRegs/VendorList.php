@@ -7,7 +7,7 @@ use Livewire\Component;
 class VendorList extends Component
 {
     public $formOpen = false,$updateDataTableTracker;
-    protected $listeners = ['openForm' => 'formOCControl'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function fromEntryControl($data='')
     {
@@ -28,10 +28,15 @@ class VendorList extends Component
         if(isset($data['id'])){
             $this->selectedIdForEdit = $data['id'];
         }
+        $this->updateDataTableTracker = rand(1,1000);
     }
     public function mount()
     {
         $this->updateDataTableTracker = rand(1,1000);
+    }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
     }
     public function render()
     {

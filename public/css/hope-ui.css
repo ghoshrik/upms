@@ -12888,7 +12888,7 @@ thead, tbody, tfoot, tr, td, th {
   position: absolute;
   top: 0;
   z-index: -1;
-  height: 264px;
+  /* height: 264px; */
   /* width: 100%; */
   transition: all 400ms;
   transform-origin: center left;
@@ -13038,6 +13038,7 @@ thead, tbody, tfoot, tr, td, th {
   display: flex;
   padding: 1.125rem 1rem;
 }
+
 .sidebar .navbar-brand svg {
   color: #3a57e8;
 }
@@ -13452,9 +13453,9 @@ thead, tbody, tfoot, tr, td, th {
 .navs-rounded-all .sidebar-body {
   padding-right: 1rem;
 }
-.navs-rounded-all .navbar-nav .nav-item:not(.static-item) {
+/* .navs-rounded-all .navbar-nav .nav-item:not(.static-item) {
   padding-left: 1rem;
-}
+} */
 .navs-rounded-all .navbar-nav .nav-item .nav-link {
   padding: 0.625rem 1rem;
 }
@@ -19152,3 +19153,46 @@ body::-webkit-scrollbar-thumb{
 /* body::-webkit-scrollbar-thumb:hover{
     background-color:;
 } */
+
+.notification {
+    /* background-color: #555; */
+    /* color: white; */
+    text-decoration: none;
+    padding: 15px 26px;
+    position: relative;
+    display: inline-block;
+    border-radius: 2px;
+}
+.notification .badge {
+    position: absolute;
+    /* inset-block-start: -10px; */
+    top: -10px;
+    /* inset-block-end: -10px; */
+    right: -10px;
+    padding: 5px 10px;
+    border-radius: 50%;
+    background-color: rgb(255, 187, 0);
+    color: #000000;
+
+}
+/* --------------------------------- */
+.top-main-head{
+    display: flex;
+}
+.header-title-left.logo-title p {
+    font-size: 18px;
+    font-weight: 600;
+    /* color: #3a57e8; */
+}
+.header-title-left span {
+    font-size: 15px;
+}
+.top-main-head img {
+    height: 50px;
+}
+.top-main-head .header-title-left {
+    margin-left: 15px;
+}
+.admin-logo a.navbar-brand{
+    padding: 11px;
+}

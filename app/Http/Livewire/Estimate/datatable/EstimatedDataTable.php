@@ -53,15 +53,18 @@ class EstimatedDataTable extends DataTableComponent
     }
     public function forward($estimate_id)
     {
-        $this->emit('openForwardModal',$estimate_id);
+        $this->emit('openForwardModal',['estimate_id'=>$estimate_id,'forward_from'=>'EP']);
     }
     public function builder(): Builder
     {
         return EstimatePrepare::query()
             ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
             ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-            ->where('estimate_user_assign_records.estimate_user_type','=',2)
-            ->where('sor_masters.status',1)
+            ->where('estimate_user_assign_records.estimate_user_type','=',4)
+            ->where(function ($query) {
+                $query->where('sor_masters.status', '=', 1)
+                      ->orWhere('sor_masters.status', '=', 5);
+            })
             ->where('operation', 'Total')
             ->where('created_by',Auth::user()->id);
         // ->groupBy('estimate_id.estimate_id');

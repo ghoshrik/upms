@@ -45,16 +45,24 @@ class RecomenderRevertTable extends DataTableComponent
     {
         $this->emit('openVerifiedEstimateViewModal', $estimate_id);
     }
+    public function modify($id)
+    {
+        $this->emit('openForm', ['formType'=>'modify', 'id'=>$id]);
+    }
+    public function revert($estimate_id)
+    {
+        $this->emit('openRevertModal',['estimate_id'=>$estimate_id,'revart_from'=>'ER']);
+    }
     public function builder(): Builder
     {
         return Esrecommender::query()
             ->join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'estimate_recomender.estimate_id')
             ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_recomender.estimate_id')
             ->where('operation', 'Total')
-            ->where('estimate_user_assign_records.estimate_user_id', '=', Auth::user()->id)
-            ->where('estimate_user_assign_records.estimate_user_type', '=', 1)
+            ->where('estimate_user_assign_records.assign_user_id', '=', Auth::user()->id)
+            // ->where('estimate_user_assign_records.estimate_user_type', '=', 3)
             // ->where('sor_masters.is_verified','=',0);
-            ->where([['sor_masters.status', '=', 9], ['sor_masters.is_verified', '=', 0]]);
+            ->where([['estimate_user_assign_records.status', '=', 7], ['estimate_user_assign_records.is_done', '=', 0]]);
         // ->groupBy('estimate_id.estimate_id');
     }
 }

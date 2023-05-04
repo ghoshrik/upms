@@ -6,6 +6,8 @@ use App\Models\Menu;
 use Livewire\Component;
 use Spatie\Permission\Models\Permission;
 use WireUi\Traits\Actions;
+use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 class CreateMenu extends Component
 {
@@ -18,24 +20,30 @@ class CreateMenu extends Component
     {
         $this->newMenuData = [
             'title' => '',
-            'parent_id' => '',
+            'parent_id' => 0,
             'icon' => '',
             'link' => '',
             'link_type' => '',
-            'permission' => '',
+            'piority'=>0,
+            'permission_or_role'=>'',
+            'permissions_roles' => '',
         ];
         $this->getDropdownData('menus');
-        $this->getDropdownData('permission');
+        // $this->getDropdownData('permission');
     }
     public function getDropdownData($lookingFor)
     {
+        $lookingFor=is_array($lookingFor) ? $lookingFor['_x_bindings']['value']:$lookingFor;
         try {
-            switch ($lookingFor) {
+            switch (Str::lower($lookingFor)) {
                 case 'menus':
                     $this->dropDownData['menus'] = Menu::all();
                     break;
                 case 'permission':
                     $this->formatingPermission();
+                    break;
+                case 'role':
+                    $this->dropDownData['permissionsRoles'] = Role::all();
                     break;
                 default:
                     $this->dropDownData['menus'] = Menu::all();
@@ -47,22 +55,32 @@ class CreateMenu extends Component
     }
     public function formatingPermission()
     {
-        $currentKey = '';
         $permissions = Permission::all();
-        foreach ($permissions as  $permission) {
-            $permissionArray = explode(' ', $permission->name);
-            if ($permissionArray[1] != $currentKey) {
-                $currentKey = $permissionArray[1];
-                $this->dropDownData['permissions'][] = $currentKey;
-                $this->formatedPermission[$currentKey] = $permission->name;
+        $groupedPermissions = $permissions->groupBy(function ($permission) {
+            // extract the role from the permission name without the action prefix
+            return str_replace(['create ', 'update '], '', $permission['name']);
+        });
+        
+        $formatedPermissions = $groupedPermissions->reduce(function ($result, $permissions, $role) {
+            // concatenate the permission names for each role
+            $permissionsArray = $permissions->pluck('name')->toArray();
+            $roleWords = explode(' ', $role);
+            $roleName = end($roleWords);
+            if (isset($result[$roleName])) {
+                $result[$roleName] .= ',' . implode(',', $permissionsArray);
             } else {
-                $this->formatedPermission[$currentKey] = $this->formatedPermission[$currentKey] . ',' . $permission->name;
+                $result[$roleName] = implode(',', $permissionsArray);
             }
-        }
+            return $result;
+        }, []);
+        $this->dropDownData['permissionsRoles']=$formatedPermissions;
     }
     public function store()
     {
-        $this->newMenuData['permission'] = $this->formatedPermission[$this->newMenuData['permission']] ;
+        $permissionsRoles = $this->dropDownData['permissionsRoles'];
+        $selectedIndex = $this->newMenuData['permissions_roles'];
+        $selectedPermissionRole = $permissionsRoles[$selectedIndex];
+        $this->newMenuData['permissions_roles'] = (is_array($selectedPermissionRole))?$selectedPermissionRole['name']:$selectedPermissionRole;
         // dd($this->newMenuData);
         if (Menu::create($this->newMenuData)) {
             $this->notification()->success(
@@ -70,7 +88,7 @@ class CreateMenu extends Component
                 $description =  'New Menu created successfully!'
             );
             $this->reset();
-            $this->emit('openForm');
+            $this->emit('openEntryForm');
             return;
         }
         $this->notification()->error(

@@ -14,12 +14,14 @@ class CreateOfficesTable extends Migration
     public function up()
     {
         Schema::create('offices', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->autoIncrement();
             $table->string('office_name')->unique();
+            $table->string('office_code')->unique();
             $table->longText('office_address');
-            $table->unsignedBigInteger('department_id')->nullable();
+            $table->string('department_code');
             $table->bigInteger('dist_code');
-            $table->bigInteger('In_area');
+            $table->integer('level_no')->nullable();
+            $table->bigInteger('in_area')->nullable();
             $table->bigInteger('rural_block_code')->nullable();
             $table->bigInteger('gp_code')->nullable();
             $table->bigInteger('urban_code')->nullable();

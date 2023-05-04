@@ -14,7 +14,7 @@ class CreateMilestonesTable extends Migration
     public function up()
     {
         Schema::create('milestones', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->autoIncrement();
             $table->bigInteger('index');
             $table->unsignedBigInteger('milestone_id')->nullable();
             $table->bigInteger('project_id');

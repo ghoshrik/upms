@@ -8,7 +8,7 @@ use Psy\Readline\Transient;
 class Aocs extends Component
 {
     public $updateDataTableTracker;
-    protected $listeners = ['openForm' => 'formOCControl'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
 
 
@@ -32,11 +32,15 @@ class Aocs extends Component
             $this->selectedIdForEdit = $data['id'];
         }
     }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
+    }
     public function render()
     {
-        $this->updateDataTableTracker = rand(1,1000);
-        $this->titel = trans('cruds.aocs.title');
-        $assets = ['chart', 'animation'];
+            $this->updateDataTableTracker = rand(1,1000);
+            $this->titel = trans('cruds.aocs.title');
+            $assets = ['chart', 'animation'];
         return view('livewire.aoc.aocs',compact('assets'));
     }
 }

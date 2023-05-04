@@ -6,22 +6,19 @@ use App\Models\Category;
 use App\Models\MileStone;
 use App\Models\testCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
     /*
      * Dashboard Pages Routs
-     */
+    */
     public function index(Request $request)
     {
         // $this->emit('changeTitleSubTitle');
 
         $assets = ['chart', 'animation'];
         return view('dashboards.dashboard', compact('assets'));
-    }
-    public function changeTitleSubTitle()
-    {
-        dd("asdas");
     }
 
     // public function testMileStone()
@@ -46,7 +43,7 @@ class HomeController extends Controller
         }
         $rootNodes = array();
         foreach ($children as $child) {
-            if ($child['parent_id']==0) {
+            if ($child['parent_id'] == 0) {
                 $rootNodes[] = $child;
             }
         }
@@ -59,14 +56,14 @@ class HomeController extends Controller
 
 
         $categories = Category::whereNull('category_id')
-        ->with('childrenCategories')
-        ->get();
+            ->with('childrenCategories')
+            ->get();
 
         // dd($milestone);
         // $milestone =
         // buildTree($milestone);
         $assets = ['chart', 'animation'];
-        return view('testMileStone',compact('assets','categories'));
+        return view('testMileStone', compact('assets', 'categories'));
     }
 
 
@@ -77,27 +74,27 @@ class HomeController extends Controller
     public function horizontal(Request $request)
     {
         $assets = ['chart', 'animation'];
-        return view('menu-style.horizontal',compact('assets'));
+        return view('menu-style.horizontal', compact('assets'));
     }
     public function dualhorizontal(Request $request)
     {
         $assets = ['chart', 'animation'];
-        return view('menu-style.dual-horizontal',compact('assets'));
+        return view('menu-style.dual-horizontal', compact('assets'));
     }
     public function dualcompact(Request $request)
     {
         $assets = ['chart', 'animation'];
-        return view('menu-style.dual-compact',compact('assets'));
+        return view('menu-style.dual-compact', compact('assets'));
     }
     public function boxed(Request $request)
     {
         $assets = ['chart', 'animation'];
-        return view('menu-style.boxed',compact('assets'));
+        return view('menu-style.boxed', compact('assets'));
     }
     public function boxedfancy(Request $request)
     {
         $assets = ['chart', 'animation'];
-        return view('menu-style.boxed-fancy',compact('assets'));
+        return view('menu-style.boxed-fancy', compact('assets'));
     }
 
     /*
@@ -111,7 +108,7 @@ class HomeController extends Controller
     public function calender(Request $request)
     {
         $assets = ['calender'];
-        return view('special-pages.calender',compact('assets'));
+        return view('special-pages.calender', compact('assets'));
     }
 
     public function kanban(Request $request)
@@ -171,6 +168,12 @@ class HomeController extends Controller
     {
         return view('auth.login');
     }
+
+    public function otpView()
+    {
+        return view('auth.otpScreen');
+    }
+
     public function signup(Request $request)
     {
         return view('auth.register');
@@ -236,7 +239,7 @@ class HomeController extends Controller
         return view('forms.validation');
     }
 
-     /*
+    /*
      * Table Page Routs
      */
     public function bootstraptable(Request $request)

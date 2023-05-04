@@ -34,6 +34,10 @@ class AppServiceProvider extends ServiceProvider
         });
         Schema::defaultStringLength(191);
         view()->composer('*', function ($menus) {
+            // dd(Menu::where(['title','Estimate Prepare'])->orderBy('piority')->get());
+            // $m = Menu::where('parent_id', '=', '0')->orderBy('piority')->get();
+            // dd($m);
+            // dd($m[0]->permission_or_role);
             $menus->with('menus', Menu::where('parent_id', '=', '0')->orderBy('piority')->get());
         });
     }

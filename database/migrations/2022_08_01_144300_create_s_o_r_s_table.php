@@ -14,7 +14,7 @@ class CreateSORSTable extends Migration
     public function up()
     {
         Schema::create('s_o_r_s', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->autoIncrement();
             $table->string('Item_details');
             $table->bigInteger('department_id');
             $table->integer('dept_category_id');
@@ -25,7 +25,10 @@ class CreateSORSTable extends Migration
             $table->string('version');
             $table->date('effect_from');
             $table->date('effect_to')->nullable();
+            // $table->string('support_data')->nullable();
             $table->enum('IsActive',[0,1])->default('0');
+            $table->tinyInteger('created_by_level')->default('0');
+            $table->enum('IsApproved',[0,1])->default('0');
             $table->timestamps();
         });
     }

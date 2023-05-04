@@ -2,23 +2,62 @@
 
 namespace App\Http\Livewire\Office\DataTable;
 
-use Rappasoft\LaravelLivewireTables\DataTableComponent;
-use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Office;
-use Illuminate\Database\Eloquent\Builder;
+use Barryvdh\DomPDF\PDF;
+use WireUi\Traits\Actions;
+use Illuminate\Support\Carbon;
+// use PowerComponents\LivewirePowerGrid\Traits\Exportable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use RalphJSmit\Livewire\Urls\Facades\Url;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Database\Eloquent\Builder;
+use PhpOffice\PhpWord\Writer\RTF\Style\Font;
+use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
+use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
+use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
 
-class OfficeTable extends DataTableComponent
+final class OfficeTable extends PowerGridComponent
 {
-    protected $model = Office::class;
+    use ActionButton, Actions;
 
-    public function configure(): void
+    /*
+    |--------------------------------------------------------------------------
+    |  Features Setup
+    |--------------------------------------------------------------------------
+    | Setup Table's general featuress
+    |
+    */
+    protected function getListeners()
     {
-        $this->setPrimaryKey('id');
+        return array_merge(
+            parent::getListeners(),
+            [
+                'rowActionEvent',
+                'bulkActionEvent',
+            ]
+        );
+    }
+    public function setUp(): array
+    {
+        $this->showCheckBox();
+        // $this->addColumn('id')
+        //      ->label('ID')
+        //      ->sortable()
+        //      ->format(function ($value, $column, $row, $loop) {
+        //          return 'User #' . ($loop->index + 1);
+        //      });
+        return [
+            Exportable::make('export')
+                ->striped('#A6ACCD')
+                ->type(Exportable::TYPE_XLS),
+            Header::make()->showSearchInput(),
+            Footer::make()
+                ->showPerPage()
+                ->showRecordCount(),
+        ];
     }
 
-<<<<<<< Updated upstream
-=======
     public function header(): array
     {
         return [
@@ -278,39 +317,116 @@ class OfficeTable extends DataTableComponent
      *
      * @return array<int, Column>
      */
->>>>>>> Stashed changes
+
     public function columns(): array
     {
         return [
-            // Column::make("Id", "id")
-            //     ->sortable(),
-            Column::make("Office name", "office_name")
-                ->sortable(),
-            Column::make("Department Name", "getDepartmentName.department_name")
-                ->sortable(),
-            Column::make("Dist Name", "getDistrictName.district_name")
-                ->sortable(),
-            // Column::make("In area", "In_area")
-            //     ->sortable(),
-            // Column::make("Rural block Name", "rural_block_code")
-            //     ->sortable(),
-            // Column::make("Gp Name", "gp_code")
-            //     ->sortable(),
-            // Column::make("Urban Name", "getUrban.urban_body_name")
-            //     ->sortable(),
-            // Column::make("Ward Name", "ward_code")
-            //     ->sortable(),
-            Column::make("Office address", "office_address")
-                ->sortable(),
-            // Column::make("Created at", "created_at")
-            //     ->sortable(),
-            // Column::make("Updated at", "updated_at")
-            //     ->sortable(),
+            Column::make('Sl.No', 'serial_no'),
+            //     ->makeInputRange(),
+            Column::make('OFFICE NAME', 'office_name')
+                ->sortable()
+                ->searchable()
+                ->makeInputText(),
+            Column::make('DEPARTMENT name', 'getDepartmentName.department_name')
+                ->searchable(),
+            Column::make('DIST name', 'getDistrictName.district_name')
+                ->searchable(),
+
+            // Column::make('IN AREA', 'in_area')
+            //     ->makeInputRange(),
+
+            // Column::make('RURAL BLOCK CODE', 'rural_block_code')
+            //     ->makeInputRange(),
+
+            // Column::make('GP CODE', 'gp_code')
+            //     ->makeInputRange(),
+
+            // Column::make('URBAN CODE', 'urban_code')
+            //     ->makeInputRange(),
+
+            // Column::make('WARD CODE', 'ward_code')
+            //     ->makeInputRange(),
+
+            Column::make('OFFICE ADDRESS', 'office_address')
+                ->sortable()
+                ->searchable()
+                ->makeInputText(),
+
+            Column::make('LEVEL NO', 'level_no')
+                ->searchable(),
+
+            Column::make('OFFICE CODE', 'office_code')
+                ->sortable()
+                ->searchable()
+                ->makeInputText(),
+
+            // Column::make('CREATED AT', 'created_at_formatted', 'created_at')
+            //     ->searchable()
+            //     ->sortable()
+            //     ->makeInputDatePicker(),
+
+            // Column::make('UPDATED AT', 'updated_at_formatted', 'updated_at')
+            //     ->searchable()
+            //     ->sortable()
+            //     ->makeInputDatePicker(),
+
         ];
     }
-    public function builder(): Builder
+
+    /*
+    |--------------------------------------------------------------------------
+    | Actions Method
+    |--------------------------------------------------------------------------
+    | Enable the method below only if the Routes below are defined in your app.
+    |
+    */
+
+    /**
+     * PowerGrid Office Action Buttons.
+     *
+     * @return array<int, Button>
+     */
+
+    /*
+    public function actions(): array
     {
-        return Office::query()
-                    ->where('offices.department_id', Auth::user()->department_id);
+       return [
+           Button::make('edit', 'Edit')
+               ->class('bg-indigo-500 cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm')
+               ->route('office.edit', ['office' => 'id']),
+
+           Button::make('destroy', 'Delete')
+               ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
+               ->route('office.destroy', ['office' => 'id'])
+               ->method('delete')
+        ];
     }
+    */
+
+    /*
+    |--------------------------------------------------------------------------
+    | Actions Rules
+    |--------------------------------------------------------------------------
+    | Enable the method below to configure Rules for your Table and Action Buttons.
+    |
+    */
+
+    /**
+     * PowerGrid Office Action Rules.
+     *
+     * @return array<int, RuleActions>
+     */
+
+    /*
+    public function actionRules(): array
+    {
+       return [
+
+           //Hide button edit for ID 1
+            Rule::button('edit')
+                ->when(fn($office) => $office->id === 1)
+                ->hide(),
+        ];
+    }
+    */
 }

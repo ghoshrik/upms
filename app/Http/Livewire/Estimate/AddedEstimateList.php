@@ -7,7 +7,6 @@ use App\Models\EstimateUserAssignRecord;
 use App\Models\SORMaster as ModelsSORMaster;
 use ChrisKonnertz\StringCalc\StringCalc;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use WireUi\Traits\Actions;
@@ -78,7 +77,7 @@ class AddedEstimateList extends Component
                 }
             }
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddEstimate($tempIndex, '', '', '', '', '', '', '', '', $result, 'Exp Calculoation', '', $this->remarks);
+            $this->insertAddEstimate($tempIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(
@@ -105,7 +104,7 @@ class AddedEstimateList extends Component
                 $result = $result + $this->allAddedEstimatesData[$array]['total_amount'];
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
-            $this->insertAddEstimate($this->arrayIndex, '', '', '', '', '', '', '', '', $result, 'Total', '', '');
+            $this->insertAddEstimate($this->arrayIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Total', '', '');
             $this->totalOnSelectedCount++;
         } else {
             $this->notification()->error(
@@ -166,8 +165,7 @@ class AddedEstimateList extends Component
         Session()->forget('addedEstimateData');
         Session()->put('addedEstimateData', $this->allAddedEstimatesData);
         $this->level = [];
-        if($this->totalOnSelectedCount == 1)
-        {
+        if ($this->totalOnSelectedCount == 1) {
             $this->reset('totalOnSelectedCount');
         }
         $this->notification()->error(
@@ -241,11 +239,12 @@ class AddedEstimateList extends Component
 
     public function store()
     {
+        // dd(Auth::user()->department_id);
         if ($this->totalOnSelectedCount == 1) {
             try {
                 if ($this->allAddedEstimatesData) {
                     $intId = random_int(100000, 999999);
-                    if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
+                    if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1, 'dept_id' => Auth::user()->department_id])) {
                         foreach ($this->allAddedEstimatesData as $key => $value) {
                             $insert = [
                                 'estimate_id' => $intId,
@@ -276,8 +275,9 @@ class AddedEstimateList extends Component
                         }
                         $data = [
                             'estimate_id' => $intId,
-                            'estimate_user_type' => 2,
-                            'estimate_user_id' => Auth::user()->id,
+                            'estimate_user_type' => 4,
+                            'status' => 1,
+                            'user_id' => Auth::user()->id,
                         ];
                         EstimateUserAssignRecord::create($data);
                         $this->notification()->success(
@@ -296,12 +296,11 @@ class AddedEstimateList extends Component
                 // session()->flash('serverError', $th->getMessage());
                 $this->emit('showError', $th->getMessage());
             }
-        }else{
+        } else {
             $this->notification()->error(
                 $title = 'Please Calculate total first !!'
             );
         }
-
     }
 
     public function render()
@@ -310,10 +309,10 @@ class AddedEstimateList extends Component
         return view('livewire.estimate.added-estimate-list');
     }
 
-    public function logView($data, $of)
-    {
-        Log::alert('-----------------[Start OF' . $of . ']');
-        Log::info(json_encode($data));
-        Log::alert('-----------------[END OF' . $of . ']');
-    }
+    // public function logView($data, $of)
+    // {
+    //     Log::alert('-----------------[Start OF' . $of . ']');
+    //     Log::info(json_encode($data));
+    //     Log::alert('-----------------[END OF' . $of . ']');
+    // }
 }

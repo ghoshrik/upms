@@ -2,8 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use Illuminate\Database\Seeder;
+use Database\Seeders\MenuSeeder;
+use Database\Seeders\UnitSeeder;
+use Database\Seeders\EstimateStatusSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,15 +18,18 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            // PermissionTableSeeder::class,
-            // RoleTableSeeder::class,
-            // UserTableSeeder::class,
-            AdminSeeder::class
+            // AdminSeeder::class,
+            // EstimateStatusSeeder::class,
+            MenuSeeder::class,
+            // UnitSeeder::class,
+            // DepartmentSeeder::class,
+            // AccessTypeSeeder::class,
+            // DepartmentSeeder::class,
+            // DesignationSeeder::class,
+            // sorCategoryTypeSeeder::class,
+            // UserTypeSeeder::class,
+            // OfficeSeeder::class,
+            // SorCategoriesSeeder::class
         ]);
-        // \App\Models\User::factory(40)->create()->each(function($user) {
-        //     $user->assignRole('user');
-        // });
-        // \App\Models\UserProfile::factory(43)->create();
-        // $this->call();
     }
 }

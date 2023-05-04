@@ -14,6 +14,26 @@
                                     wire:model.defer="officeData.office_name" />
                             </div>
                         </div>
+                        <div class="col-md-6 col-sm-6 col-lg-6">
+                            <div class="form-group">
+                                <x-input label="Office Code"
+                                    placeholder="Office Code"
+                                    wire:model.defer="officeData.office_code" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-sm-6">
+                            <x-select label="Select Office Level" placeholder="Select Office Level" :options="[
+                                        ['name' => 'L1 Level',  'id' => 1],
+                                        ['name' => 'L2 Level', 'id' => 2],
+                                        ['name' => 'L3 Level',   'id' => 3],
+                                        ['name' => 'L4 Level',    'id' => 4],
+                                        ['name' => 'L5 Level',    'id' => 5],
+                                        ['name' => 'L6 Level',    'id' => 6],
+                                    ]"
+                                option-label="name"
+                                option-value="id"
+                                wire:model.defer="selectedOption.level" />
+                        </div>
                         <div class="col-md-6 col-sm-3 col-lg-6">
                             <div class="form-group">
                                 <x-select wire:key="district"

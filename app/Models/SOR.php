@@ -11,21 +11,32 @@ class SOR extends Model
     use HasFactory;
     protected $table = "s_o_r_s";
     protected $fillable = [
-        'item_details',
+        'Item_details',
         'department_id',
         'dept_category_id',
         'description',
+        'unit_id',
         'unit',
         'cost',
         'version',
         'effect_from',
         'effect_to',
-        'IsActive'
+        'is_active',
+        'created_by',
+        'is_approved'
     ];
 
+    protected $dates = ['effect_from', 'effect_to'];
+
+    public function getMyDateAttribute($value)
+    {
+        $carbonDate = Carbon::createFromFormat('d/m/Y', $value); // Create a Carbon instance from the input date
+        $this->attributes['effect_from'] = $carbonDate->format('Y-m-d'); // Convert the date to the desired format and set the attribute// Convert the date to the desired format
+        $this->attributes['effect_to'] = $carbonDate->format('Y-m-d');
+    }
     public function getDepartmentName()
     {
-        return $this->belongsTo(Department::class,'department_id');
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
     public function setDueDateAttribute($value)
@@ -34,6 +45,11 @@ class SOR extends Model
     }
     public function getDeptCategoryName()
     {
-        return $this->belongsTo(SorCategoryType::class,'dept_category_id');
+
+        return $this->belongsTo(SorCategoryType::class, 'dept_category_id');
+    }
+    public function getUnitsName()
+    {
+        return $this->belongsTo(UnitMaster::class, 'unit_id');
     }
 }

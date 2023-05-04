@@ -7,12 +7,12 @@ use Livewire\Component;
 class Designation extends Component
 {
     public $updateMode = false;
-    public $formOpen=false,$editFormOpen = false,$updatedDataTableTracker;
-    protected $listeners = ['openForm' => 'formOCControl'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel = "Designations";
+    public $formOpen=false,$editFormOpen = false,$updateDataTableTracker;
+    protected $listeners = ['openEntryForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function mount()
     {
-        $this->updatedDataTableTracker = rand(1,1000);
+        $this->updateDataTableTracker = rand(1,1000);
     }
     public function fromEntryControl($data='')
     {
@@ -33,26 +33,17 @@ class Designation extends Component
         if(isset($data['id'])){
             $this->selectedIdForEdit = $data['id'];
         }
+        $this->updateDataTableTracker = rand(1,1000);
     }
-    public function formOCControl($isEditFrom = false, $editId = null)
+    //
+    public function setErrorAlert($errorMessage)
     {
-        if ($isEditFrom) {
-            $this->editFormOpen = !$this->editFormOpen;
-            $this->emit('changeSubTitel', ($this->editFormOpen) ? 'Edit' : 'List');
-            if ($editId != null) {
-                $this->emit('editDesignationRow',$editId);
-            }
-            return;
-        }
-        $this->editFormOpen = false;
-        $this->formOpen = !$this->formOpen;
-        $this->emit('changeSubTitle', ($this->formOpen)?'Create new':'List');
-        $this->updatedDataTableTracker = rand(1,1000);
+       $this->errorMessage = $errorMessage;
     }
     public function render()
     {
         $assets = ['chart', 'animation'];
-        $this->emit('changeTitle', 'Designation');
+        $this->titel = 'Designation';
         return view('livewire.designation.designation',compact('assets'));
     }
 }

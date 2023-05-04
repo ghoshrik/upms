@@ -2,13 +2,14 @@
 
 namespace App\Http\Livewire\EstimateRecomender;
 
+use Livewire\Component;
+use App\Models\SorMaster;
+use WireUi\Traits\Actions;
 use App\Models\Esrecommender;
 use App\Models\EstimatePrepare;
-use App\Models\SorMaster;
-use ChrisKonnertz\StringCalc\StringCalc;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Component;
-use WireUi\Traits\Actions;
+use App\Models\EstimateUserAssignRecord;
+use ChrisKonnertz\StringCalc\StringCalc;
 
 class ModifyEstimate extends Component
 {
@@ -19,7 +20,14 @@ class ModifyEstimate extends Component
     public function modifyEstimate($estimateId = 0)
     {
         $this->estimate_id = $estimateId;
-        $this->currentEstimate = EstimatePrepare::where('estimate_id', $this->estimate_id)->get()->toArray();
+        $checkForModify = SorMaster::where([['estimate_id', $this->estimate_id]])->first();
+            if ($checkForModify['status'] == 7) {
+                $this->currentEstimate = Esrecommender::where('estimate_id', $this->estimate_id)->get()->toArray();
+            }
+            if ($checkForModify['status'] == 2) {
+                $this->currentEstimate = EstimatePrepare::where('estimate_id', $this->estimate_id)->get()->toArray();
+            }
+        // $this->currentEstimate = EstimatePrepare::where('estimate_id', $this->estimate_id)->get();
     }
     public function updateEstimateData($updateValue, $id)
     {
@@ -49,11 +57,11 @@ class ModifyEstimate extends Component
                     $result = $stringCalc->calculate($value['row_index']);
                     $this->currentEstimate[$value['row_id'] - 1]['total_amount'] = $result;
                     Session()->forget('editEstimateData');
-                    Session()->put('editEstimateData',  $this->currentEstimate);
-                } catch (\Exception $exception) {
+                    Session()->put('editEstimateData', $this->currentEstimate);
+                } catch (\Exception$exception) {
                     $this->dispatchBrowserEvent('alert', [
                         'type' => 'error',
-                        'message' => $exception->getMessage()
+                        'message' => $exception->getMessage(),
                     ]);
                 }
             }
@@ -69,16 +77,16 @@ class ModifyEstimate extends Component
     }
     public function close()
     {
-        return redirect('/estimate-recommender');
-        // $this->emit('openForm');
+        // return redirect('/estimate-recommender');
+        $this->emit('openForm');
         // $this->emit('refreshData');
     }
     public function store($value)
     {
         try {
-            $verifyEstimate = count(Esrecommender::where('estimate_id', $value)->get());
-            // dd($verifyEstimate);
+            $verifyEstimate = count(SorMaster::select('estimate_id','status')->where([['estimate_id',$value],['status',4]])->get());
             if ($verifyEstimate == 0) {
+                Esrecommender::where('estimate_id',$value)->delete();
                 foreach ($this->currentEstimate as $key => $estimate) {
                     $insert = [
                         'estimate_id' => $value,
@@ -101,9 +109,19 @@ class ModifyEstimate extends Component
                     Esrecommender::create($insert);
                 }
                 if (SorMaster::where('estimate_id', $value)->update(['status' => 4])) {
-                    $this->notification()->success(
-                        $title = 'Estimate Modified Successfully!!'
-                    );
+                    $data = [
+                        'estimate_id' => $value,
+                        'user_id' => Auth::user()->id,
+                    ];
+                    $data['status'] = 4;
+                    $assignDetails = EstimateUserAssignRecord::create($data);
+                    if ($assignDetails) {
+                        $returnId = $assignDetails->id;
+                        EstimateUserAssignRecord::where([['estimate_id', $value], ['id', '!=', $returnId], ['is_done', 0]])->groupBy('estimate_id')->update(['is_done' => 1]);
+                        $this->notification()->success(
+                            $title = 'Estimate Modified Successfully!!'
+                        );
+                    }
                 }
                 $this->reset();
             } elseif ($verifyEstimate != 0) {
@@ -118,7 +136,7 @@ class ModifyEstimate extends Component
                 $this->reset();
             }
             $this->emit('openForm');
-        } catch (\Throwable $th) {
+        } catch (\Throwable$th) {
             $this->emit('showError', $th->getMessage());
         }
     }

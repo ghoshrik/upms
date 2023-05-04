@@ -5,24 +5,26 @@ namespace App\Http\Livewire\EstimateRecomender\Datatable\Powergrid;
 use App\Models\Esrecommender;
 use App\Models\EstimatePrepare;
 use App\Models\EstimateStatus;
-use Illuminate\Support\Carbon;
-use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
+
+use PowerComponents\LivewirePowerGrid\Exportable;
+
+use PowerComponents\LivewirePowerGrid\Footer;
+use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
-use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
+use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
 use PowerComponents\LivewirePowerGrid\Rules\Rule;
+use PowerComponents\LivewirePowerGrid\Rules\RuleActions;use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 
 final class RecomenderDraftTable extends PowerGridComponent
 {
     use ActionButton;
-
-    //Messages informing success/error data is updated.
-    public bool $showUpdateMessages = true;
 
     /*
     |--------------------------------------------------------------------------
@@ -30,13 +32,20 @@ final class RecomenderDraftTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Setup Table's general features
     |
-    */
-    public function setUp(): void
+     */
+    public function setUp(): array
     {
-        $this->showCheckBox()
-            ->showPerPage()
-            ->showSearchInput()
-            ->showExportOption('download', ['excel', 'csv']);
+        $this->showCheckBox();
+
+        return [
+            Exportable::make('export')
+                ->striped()
+                ->type(Exportable::TYPE_XLS),
+            Header::make()->showSearchInput(),
+            Footer::make()
+                ->showPerPage()
+                ->showRecordCount(),
+        ];
     }
 
     /*
@@ -45,40 +54,40 @@ final class RecomenderDraftTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Provides data to your Table using a Model or Collection
     |
-    */
+     */
 
     /**
-    * PowerGrid datasource.
-    *
-    * @return  \Illuminate\Database\Eloquent\Builder<\App\Models\EstimatePrepare>|null
-    */
-    public function datasource(): ?Builder
+     * PowerGrid datasource.
+     *
+     * @return Builder<\App\Models\Esrecommender>
+     */
+    public function datasource(): Builder
     {
         return EstimatePrepare::query()
-        ->select(
-            'estimate_prepares.id',
-            'estimate_prepares.estimate_id',
-            'estimate_prepares.operation',
-            'estimate_prepares.total_amount',
-            'estimate_prepares.created_by',
-            'estimate_user_assign_records.estimate_id as user_assign_records_estimate_id',
-            'estimate_user_assign_records.estimate_user_type',
-            'estimate_user_assign_records.estimate_user_id',
-            'estimate_user_assign_records.estimate_user_type',
-            'estimate_user_assign_records.comments',
-            'sor_masters.estimate_id as sor_masters_estimate_id',
-            'sor_masters.sorMasterDesc',
-            'sor_masters.status'
-        )
-        ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
-        ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-        ->where('estimate_user_assign_records.estimate_user_id','=',Auth::user()->id)
-        ->where('estimate_user_assign_records.estimate_user_type','=',1)
-        ->where('sor_masters.is_verified','=',0)
-        ->where('sor_masters.status','!=',9)
-        ->where('sor_masters.status','!=',11)
-        ->where('sor_masters.status','!=',3)
-        ->where('operation', 'Total');
+            ->select(
+                'estimate_prepares.id',
+                'estimate_prepares.estimate_id',
+                'estimate_prepares.operation',
+                'estimate_prepares.total_amount',
+                'estimate_prepares.created_by',
+                'estimate_user_assign_records.estimate_id as user_assign_records_estimate_id',
+                'estimate_user_assign_records.estimate_user_type',
+                'estimate_user_assign_records.assign_user_id',
+                'estimate_user_assign_records.estimate_user_type',
+                'estimate_user_assign_records.comments',
+                'sor_masters.estimate_id as sor_masters_estimate_id',
+                'sor_masters.sorMasterDesc',
+                'sor_masters.status', DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no')
+            )
+            ->join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'estimate_prepares.estimate_id')
+            ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
+            ->where('estimate_user_assign_records.assign_user_id', '=', Auth::user()->id)
+            ->where('estimate_user_assign_records.estimate_user_type', '=', 3)
+            ->where('sor_masters.is_verified', '=', 0)
+            ->where('sor_masters.status', '!=', 9)
+            ->where('sor_masters.status', '!=', 11)
+            ->where('sor_masters.status', '!=', 3)
+            ->where('operation', 'Total');
     }
 
     /*
@@ -87,7 +96,7 @@ final class RecomenderDraftTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Configure here relationships to be used by the Search and Table Filters.
     |
-    */
+     */
 
     /**
      * Relationship search.
@@ -106,22 +115,26 @@ final class RecomenderDraftTable extends PowerGridComponent
     | Make Datasource fields available to be used as columns.
     | You can pass a closure to transform/modify the data.
     |
-    */
-    public function addColumns(): ?PowerGridEloquent
+    | ❗ IMPORTANT: When using closures, you must escape any value coming from
+    |    the database using the `e()` Laravel Helper function.
+    |
+     */
+    public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
+            ->addColumn('serial_no')
             ->addColumn('estimate_id')
             ->addColumn('sorMasterDesc')
-            ->addColumn('total_amount', fn ($model)=>  round($model->total_amount, 10, 2))
-            ->addColumn('recomender_cost',function($model){
-                $recomenderCost = Esrecommender::where('estimate_id',$model->estimate_id)->where('operation', 'Total')->first();
-                $recomenderCost = ($recomenderCost)?$recomenderCost->total_amount:'';
+            ->addColumn('total_amount', fn($model) => round($model->total_amount, 10, 2))
+            ->addColumn('recomender_cost', function ($model) {
+                $recomenderCost = Esrecommender::where('estimate_id', $model->estimate_id)->where('operation', 'Total')->first();
+                $recomenderCost = ($recomenderCost) ? $recomenderCost->total_amount : '';
                 return $recomenderCost;
             })
-            ->addColumn('status',function ($model){
-                $statusName =EstimateStatus::where('id',$model->status)->select('status')->first();
+            ->addColumn('status', function ($model) {
+                $statusName = EstimateStatus::where('id', $model->status)->select('status')->first();
                 $statusName = $statusName->status;
-                return '<span class="badge bg-soft-info fs-6"><x-lucide-eye class="w-4 h-4 text-gray-500" />'.$statusName.'</span>';
+                return '<span class="badge bg-soft-info fs-6"><x-lucide-eye class="w-4 h-4 text-gray-500" />' . $statusName . '</span>';
             })
             ->addColumn('comments');
     }
@@ -133,9 +146,9 @@ final class RecomenderDraftTable extends PowerGridComponent
     | Include the columns added columns, making them visible on the Table.
     | Each column can be configured with properties, filters, actions...
     |
-    */
+     */
 
-     /**
+    /**
      * PowerGrid Columns.
      *
      * @return array<int, Column>
@@ -143,6 +156,9 @@ final class RecomenderDraftTable extends PowerGridComponent
     public function columns(): array
     {
         return [
+            Column::add()
+                ->title('Sl. No')
+                ->field('serial_no'),
             Column::add()
                 ->title('ESTIMATE ID')
                 ->field('estimate_id')
@@ -177,18 +193,19 @@ final class RecomenderDraftTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Enable the method below only if the Routes below are defined in your app.
     |
-    */
-
-     /**
-     * PowerGrid EstimatePrepare Action Buttons.
-     *
-     * @return array<int, \PowerComponents\LivewirePowerGrid\Button>
      */
 
+    /**
+     * PowerGrid Esrecommender Action Buttons.
+     *
+     * @return array<int, Button>
+     */
 
     public function actions(): array
     {
         return [
+            // Button::add('custom')
+            // ->bladeComponent('action-components.estimate-recomender.draft-table-buttons', ['value'=>'estimate_id']),
             Button::add('view')
                 ->caption('View')
                 ->class('btn btn-soft-primary btn-sm')
@@ -196,22 +213,21 @@ final class RecomenderDraftTable extends PowerGridComponent
             Button::add('approve')
                 ->caption('Approve')
                 ->class('btn btn-soft-primary btn-sm')
-                ->emit('openApproveModal', ['id'=>'estimate_id']),
+                ->emit('openApproveModal', ['estimate_id']),
             Button::add('revert')
                 ->caption('Revert')
                 ->class('btn btn-soft-primary btn-sm')
-                ->emit('openRevertModal', ['id'=>'estimate_id']),
+                ->emit('openRevertModal', ['estimate_id']),
             Button::add('forward')
                 ->caption('Forward')
                 ->class('btn btn-soft-primary btn-sm')
-                ->emit('openForm', ['id'=>'estimate_id']),
+                ->emit('openForm', ['estimate_id']),
             Button::add('modify')
                 ->caption('Modify')
                 ->class('btn btn-soft-primary btn-sm')
-                ->emit('openForm', ['formType'=>'modify', 'id'=>'estimate_id']),
-         ];
+                ->emit('openForm', ['formType' => 'modify', 'id' => 'estimate_id']),
+        ];
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -219,71 +235,27 @@ final class RecomenderDraftTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Enable the method below to configure Rules for your Table and Action Buttons.
     |
-    */
-
-     /**
-     * PowerGrid EstimatePrepare Action Rules.
-     *
-     * @return array<int, \PowerComponents\LivewirePowerGrid\Rules\RuleActions>
      */
 
+    /**
+     * PowerGrid Esrecommender Action Rules.
+     *
+     * @return array<int, RuleActions>
+     */
 
     public function actionRules(): array
     {
-       return [
+        return [
             Rule::button('forward')
                 ->when(fn($model) => $model->status == 2 || $model->status == 4)
                 ->hide(),
+            Rule::button('approve')
+                ->when(fn($model) => $model->status == 6)
+                ->hide(),
+            Rule::button('revert')
+                ->when(fn($model) => $model->status == 6 || $model->status == 4)
+                ->hide(),
         ];
-
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | Edit Method
-    |--------------------------------------------------------------------------
-    | Enable the method below to use editOnClick() or toggleable() methods.
-    | Data must be validated and treated (see "Update Data" in PowerGrid doc).
-    |
-    */
-
-     /**
-     * PowerGrid EstimatePrepare Update.
-     *
-     * @param array<string,string> $data
-     */
-
-    /*
-    public function update(array $data ): bool
-    {
-       try {
-           $updated = EstimatePrepare::query()
-                ->update([
-                    $data['field'] => $data['value'],
-                ]);
-       } catch (QueryException $exception) {
-           $updated = false;
-       }
-       return $updated;
-    }
-
-    public function updateMessages(string $status = 'error', string $field = '_default_message'): string
-    {
-        $updateMessages = [
-            'success'   => [
-                '_default_message' => __('Data has been updated successfully!'),
-                //'custom_field'   => __('Custom Field updated successfully!'),
-            ],
-            'error' => [
-                '_default_message' => __('Error updating the data.'),
-                //'custom_field'   => __('Error updating custom field.'),
-            ]
-        ];
-
-        $message = ($updateMessages[$status][$field] ?? $updateMessages[$status]['_default_message']);
-
-        return (is_string($message)) ? $message : 'Error!';
-    }
-    */
 }

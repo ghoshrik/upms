@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Components\Modal\Estimate;
 
 use App\Models\Esrecommender;
 use App\Models\EstimatePrepare;
+use App\Models\EstimateUserAssignRecord;
 use App\Models\SorMaster;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -18,25 +19,44 @@ class EstimateApproveModal extends Component
     public function openApproveModal($estimate_id)
     {
         $this->reset();
+        $estimate_id = is_array($estimate_id) ? $estimate_id[0] : $estimate_id;
         $this->openApproveModal = !$this->openApproveModal;
         if ($estimate_id) {
             $this->estimate_id = $estimate_id;
-            $this->viewEstimates = EstimatePrepare::where('estimate_id', $this->estimate_id)->get();
+            $checkForModify = SorMaster::where([['estimate_id', $this->estimate_id]])->first();
+            if ($checkForModify['status'] == 4) {
+                $this->viewEstimates = Esrecommender::where('estimate_id', $this->estimate_id)->get();
+            }
+            if ($checkForModify['status'] == 2) {
+                $this->viewEstimates = EstimatePrepare::where('estimate_id', $this->estimate_id)->get();
+            }
         }
     }
     public function approveEstimate($value)
     {
         try {
-            $checkForApprove = Esrecommender::where('estimate_id', $value)->first();
-            if ($checkForApprove != NULL) {
-                if (SorMaster::where('estimate_id', $value)->update(['status' => 8])) {
-                    $this->notification()->success(
-                        $title = 'Approved Estimate Successfully !!'
-                    );
+            // $checkForApprove = Esrecommender::where('estimate_id', $value)->first();
+            $checkForApprove = SorMaster::where([['estimate_id', $value], ['status', 4]])->first();
+            if ($checkForApprove != null) {
+                if (SorMaster::where('estimate_id', $value)->update(['status' => 6])) {
+                    $data = [
+                        'estimate_id' => $value,
+                        'user_id' => Auth::user()->id,
+                    ];
+                    $data['status'] = 6;
+                    $assignDetails = EstimateUserAssignRecord::create($data);
+                    if ($assignDetails) {
+                        $returnId = $assignDetails->id;
+                        EstimateUserAssignRecord::where([['estimate_id', $value], ['id', '!=', $returnId], ['is_done', 0]])->groupBy('estimate_id')->update(['is_done' => 1]);
+                        $this->notification()->success(
+                            $title = 'Approved Estimate Successfully !!'
+                        );
+                    }
                 }
             } else {
                 $approveEstimate = EstimatePrepare::where('estimate_id', $value)->get();
-                if ($approveEstimate != NULL) {
+                if ($approveEstimate != null) {
+                    Esrecommender::where('estimate_id', $value)->delete();
                     foreach ($approveEstimate as $key => $estimate) {
                         $insert = [
                             'estimate_id' => $value,
@@ -58,17 +78,27 @@ class EstimateApproveModal extends Component
                         ];
                         Esrecommender::create($insert);
                     }
-                    if (SorMaster::where('estimate_id', $value)->update(['status' => 8])) {
-                        $this->notification()->success(
-                            $title = 'Estimate Approved Successfully!!'
-                        );
+                    if (SorMaster::where('estimate_id', $value)->update(['status' => 6])) {
+                        $data = [
+                            'estimate_id' => $value,
+                            'user_id' => Auth::user()->id,
+                        ];
+                        $data['status'] = 6;
+                        $assignDetails = EstimateUserAssignRecord::create($data);
+                        if ($assignDetails) {
+                            $returnId = $assignDetails->id;
+                            EstimateUserAssignRecord::where([['estimate_id', $value], ['id', '!=', $returnId], ['is_done', 0]])->groupBy('estimate_id')->update(['is_done' => 1]);
+                            $this->notification()->success(
+                                $title = 'Estimate Approved Successfully!!'
+                            );
+                        }
                     }
                 }
             }
             $this->reset();
             $this->updateDataTableTracker = rand(1, 1000);
-            $this->emit('refreshData',$this->updateDataTableTracker);
-        } catch (\Throwable $th) {
+            $this->emit('refreshData', $this->updateDataTableTracker);
+        } catch (\Throwable$th) {
             $this->emit('showError', $th->getMessage());
         }
     }

@@ -38,7 +38,7 @@
                                                 {{ $editEstimateRow['estimate_no'] }}
                                             @endif
                                         </td>
-                                        <td>
+                                        <td class="text-wrap">
                                             @if ($editEstimateRow['sor_item_number'])
                                                 {{ getSorItemNumberDesc($editEstimateRow['sor_item_number']) }}
                                             @elseif ($editEstimateRow['estimate_no'])
@@ -51,13 +51,13 @@
                                                     @if ($editEstimateRow['comments'] != '')
                                                         {{ '( ' . $editEstimateRow['comments'] . ' )' }}
                                                     @endif
-                                                @endif
+                                                @endif  
                                             @else
                                                 {{ $editEstimateRow['other_name'] }}
                                             @endif
                                         </td>
                                         <td>
-                                                @if ($editEstimateRow['item_name'] == "SOR" || $editEstimateRow['item_name']== "Other")
+                                                @if ($editEstimateRow['item_name'] == "SOR" || $editEstimateRow['item_name']== "Other" || $editEstimateRow['item_name']== "Estimate")
                                                     <x-input wire:key="sor_qty" wire:model.defer="qty" wire:keyup="calculateValue" />
                                                 @else
                                                     {{ $editEstimateRow['qty'] }}
@@ -65,13 +65,16 @@
                                         </td>
                                         <td>
                                             @if ($editEstimateRow['item_name'] == "SOR")
-                                                <x-input wire:key="sor_rate" placeholder="{{ round($editEstimateRow['rate'], 10, 2) }}"  wire:model.defer="" disabled/>
+                                           
+                                                <x-input wire:key="sor_rate" placeholder="{{ $editEstimateRow['rate'] }}"  wire:model.defer="" disabled/>
                                             @elseif ($editEstimateRow['item_name']== "Other")
                                             <x-input wire:key="other_rate" placeholder="{{ $editEstimateRow['rate'] }}"  wire:model.defer="rate" wire:keyup="calculateValue"/>
+                                            @else
+                                                {{ $editEstimateRow['rate'] }}
                                             @endif
                                         </td>
                                         <td>
-                                            <x-input wire:key="total_amount" placeholder="{{ round($editEstimateRow['total_amount'], 10, 2) }}"  wire:model.defer="total_amount" disabled/>
+                                            <x-input wire:key="total_amount" placeholder="{{ $editEstimateRow['total_amount'] }}"  wire:model.defer="total_amount" disabled/>
                                             {{-- {{ round($editEstimateRow['total_amount'], 10, 2) }} --}}
                                         </td>
                                     </tr>
