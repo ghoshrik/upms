@@ -74,7 +74,7 @@
                                         </td>
                                         <td class="text-wrap" style="width: 30rem">{{ $office['office_address'] }}</td>
                                         <td>
-                                            {{-- @if ($office['user_id']) --}}
+                                            @if ($office['user_id'])
                                             @foreach ($hooUsers as $user)
                                                 @if ($user['id'] == $office['user_id'])
                                                     {{-- <input class="form-group" type="text"
@@ -82,8 +82,7 @@
                                                     <label wire:ignore disabled readonly>{{ $user['emp_name'] }}</label>
                                                 @endif
                                             @endforeach
-                                            {{-- @else --}}
-                                            {{ __('dfdsfsdf') }}
+                                            @else
                                             {{-- <select class="form-select" aria-label="Select user"
                                                     wire:key='select-{{ $key }}'
                                                     wire:model='selectedUser.{{ $office['id'] }}' wire:ignore>
@@ -96,14 +95,14 @@
                                                         </option>
                                                     @endforeach
                                                 </select> --}}
-                                            {{-- @endif --}}
+                                            @endif
 
 
                                         </td>
                                         <td>
                                             <button type="button"
                                                 wire:click="$emit({{ $office['user_id'] ? '"Modify",' . $office['user_id'] . ',' . $office->id . ',' . $office->dist_code . ',' . $office->level_no . '' : '"assignuser",' . $office->id . ',' . $office->dist_code . ',' . $office->level_no . '' }})"
-                                                class="btn btn-soft-{{ $office['user_id'] ? 'warning' : 'primary' }} btn-sm text-dark">
+                                                class="btn btn-soft-{{ $office['user_id'] ? 'warning' : 'primary' }} btn-sm text-dark" wire:ignore>
                                                 {{ $office['user_id'] ? 'Already Assign' : 'Assign Admin' }}
                                             </button>
                                             {{-- @isset($office['user_id'])
