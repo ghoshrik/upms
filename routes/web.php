@@ -3,53 +3,48 @@
 // Controllers
 
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Models\User;
-use App\Http\Livewire\Sor\Sor;
-use App\Http\Livewire\Aoc\Aocs;
-use App\Http\Livewire\Fund\Funds;
-use Spatie\Permission\Models\Role;
-use App\Http\Livewire\Office\Office;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Livewire\Tender\Tenders;
-// use App\Http\Livewire\Designation\CreateDesignation;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Livewire\Aafs\AafsProjects;
-// use App\Http\Livewire\TestALL\TestSearch;
-use App\Http\Livewire\UserType\UserType;
-use App\Http\Livewire\Milestone\Milestones;
+use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\AccessType\AccessType;
+// use App\Http\Livewire\Designation\CreateDesignation;
+use App\Http\Livewire\Aoc\Aocs;
+use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
+use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
+use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
+use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
+// use App\Http\Livewire\TestALL\TestSearch;
 use App\Http\Livewire\Department\Department;
-use App\Http\Livewire\VendorRegs\VendorList;
-use App\Http\Livewire\Permission\Permissions;
 use App\Http\Livewire\Designation\Designation;
-use App\Http\Livewire\Permission\Permission;
+use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
+use App\Http\Livewire\EstimateProject\EstimateProject;
+use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
+use App\Http\Livewire\Estimate\EstimatePrepare;
+use App\Http\Livewire\MenuManagement\MenuManagement;
 // use App\Http\Livewire\Permission\Permissions;
+use App\Http\Livewire\Milestone\Milestones;
+use App\Http\Livewire\Office\Office;
+use App\Http\Livewire\Permission\Permission;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\Roles\Roles;
 use App\Http\Livewire\Sorapprove\SorApprovers;
-use App\Http\Livewire\Estimate\EstimatePrepare;
-use App\Http\Controllers\Security\RoleController;
-use App\Http\Controllers\Security\RolePermission;
-use App\Http\Livewire\AccessManager\AccessManager;
-use App\Http\Livewire\MenuManagement\MenuManagement;
-use App\Http\Livewire\UserManagement\UserManagement;
+use App\Http\Livewire\Sor\Sor;
+use App\Http\Livewire\Tender\Tenders;
 // use App\Http\Livewire\Permission\Permissions;
 // use App\Http\Livewire\Role\Roles;
 // use App\Http\Livewire\Setting\SettingLists;
-use App\Http\Livewire\EstimateProject\EstimateProject;
-use App\Http\Controllers\Security\PermissionController;
-use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
-use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
-// Packages
-use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
-use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
-use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
-use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
 use App\Http\Livewire\Unitsmaster\UnitsMaster;
+use App\Http\Livewire\UserManagement\UserManagement;
+use App\Http\Livewire\UserType\UserType;
+use App\Http\Livewire\VendorRegs\VendorList;
+// Packages
+use App\Models\User;
+use App\Models\UsersHasRoles;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,7 +55,7 @@ use App\Http\Livewire\Unitsmaster\UnitsMaster;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
 require __DIR__ . '/auth.php';
 // Route::get('set-role', function () {
@@ -73,7 +68,6 @@ require __DIR__ . '/auth.php';
 //     $user = User::where('id',$user)->first();
 //     $user->syncRoles("Department Admin");
 // });
-
 
 // Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
 // Route::get('otp-send/{id}', [HomeController::class, 'otpView'])->name('auth.otp');
@@ -92,10 +86,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         // Route::get('/role-permission',[RolePermission::class, 'index'])->name('role.permission.list');
         // Route::resource('permission',PermissionController::class);
         // Route::resource('role', RoleController::class);
-
-
-
-
 
         // Dashboard Routes
         Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
@@ -137,17 +127,16 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('unit-master', UnitsMaster::class)->name('unit-master');
 
         Route::get('change-role/{id}', function ($id) {
-            $selectedRole =  Role::find($id);
-            Auth::user()->syncRoles($selectedRole->name);
-            return redirect('/dashboard');
+            if (UsersHasRoles::where([['user_id', Auth::user()->id], ['role_id', $id]])->first()) {
+                $selectedRole = Role::find($id);
+                Auth::user()->syncRoles($selectedRole->name);
+                return redirect('/dashboard');
+            } else {
+                return redirect('/dashboard');
+            }
         })->name('change-role');
     });
 });
-
-
-
-
-
 
 //App Details Page => 'Dashboard'], function() {
 Route::group(['prefix' => 'menu-style'], function () {
@@ -199,14 +188,12 @@ Route::group(['prefix' => 'errors'], function () {
     Route::get('maintenance', [HomeController::class, 'maintenance'])->name('errors.maintenance');
 });
 
-
 //Forms Pages Routs
 // Route::group(['prefix' => 'forms'], function() {
 //     Route::get('element', [HomeController::class, 'element'])->name('forms.element');
 //     Route::get('wizard', [HomeController::class, 'wizard'])->name('forms.wizard');
 //     Route::get('validation', [HomeController::class, 'validation'])->name('forms.validation');
 // });
-
 
 //Table Page Routs
 // Route::group(['prefix' => 'table'], function() {
@@ -225,7 +212,6 @@ Route::group(['prefix' => 'errors'], function () {
 //Extra Page Routs
 // Route::get('privacy-policy', [HomeController::class, 'privacypolicy'])->name('pages.privacy-policy');
 // Route::get('terms-of-use', [HomeController::class, 'termsofuse'])->name('pages.term-of-use');
-
 
 //clear cache url
 Route::get('cache-clear', function () {

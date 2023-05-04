@@ -27,7 +27,7 @@
             @hasanyrole($permissions_role)
                 <li class="nav-item mb-2">
                     @if (Route::has($menu->link))
-                        <a class="nav-link {{ activeRoute(route($menu->link)) }}" aria-current="page"
+                        <a class="nav-link {{ Request::routeIs($menu->link) ? 'active' : '' }}" aria-current="page"
                             href="{{ route($menu->link) }}">
                         @else
                             <a class="nav-link aria-current" href="#">
@@ -51,7 +51,7 @@
                 @canany($permissions_role)
                     <li class="nav-item mb-2">
                         @if (Route::has($menu->link))
-                            <a class="nav-link {{ activeRoute(route($menu->link)) }}" aria-current="page"
+                            <a class="nav-link {{  Request::routeIs($menu->link) ? 'active' : ''}}" aria-current="page"
                                 href="{{ route($menu->link) }}">
                             @else
                                 <a class="nav-link aria-current" href="#">
