@@ -92,11 +92,11 @@ final class OfficeTable extends PowerGridComponent
             $i = 1;
             foreach ($office as $key => $offices) {
                 $dataView[] = [
-                    'id' => $i,
-                    'title' => $offices->office_name,
-                    'office_code' => $offices->office_code,
-                    'address' => $offices->office_address,
-                    'dist' => $offices->getDistrictName->district_name,
+                    '1' => $i,
+                    '2' => $offices->office_name,
+                    '3' => $offices->office_code,
+                    '4' => $offices->office_address,
+                    '5' => $offices->getDistrictName->district_name,
                     'level' => $offices->level_no
                 ];
                 $i++;
@@ -130,11 +130,11 @@ final class OfficeTable extends PowerGridComponent
         $i = 1;
         foreach ($offices as $key => $office) {
             $dataView[] = [
-                'id' => $i,
-                'title' => $office->office_name,
-                'office_code' => $office->office_code,
-                'address' => $office->office_address,
-                'dist' => $office->getDistrictName->district_name,
+                '1' => $i,
+                '2' => $office->office_name,
+                '3' => $office->office_code,
+                '4' => $office->office_address,
+                '5' => $office->getDistrictName->district_name,
                 'level' => $office->level_no
             ];
             $i++;
@@ -317,6 +317,7 @@ final class OfficeTable extends PowerGridComponent
      *
      * @return array<int, Column>
      */
+
     public function columns(): array
     {
         return [

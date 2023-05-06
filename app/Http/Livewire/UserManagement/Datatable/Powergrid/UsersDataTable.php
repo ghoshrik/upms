@@ -4,21 +4,23 @@ namespace App\Http\Livewire\UserManagement\Datatable\Powergrid;
 
 use App\Models\User;
 use App\Models\UserType;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
+use WireUi\Traits\Actions;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridComponent;
-use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
+use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Rules\Rule;
+use PowerComponents\LivewirePowerGrid\Traits\Filter;
+use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
 use PowerComponents\LivewirePowerGrid\Rules\RuleActions;
+use PowerComponents\LivewirePowerGrid\Helpers\Collection;
+use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
-use WireUi\Traits\Actions;
 
 final class UsersDataTable extends PowerGridComponent
 {
@@ -64,7 +66,7 @@ final class UsersDataTable extends PowerGridComponent
             Exportable::make('export')
                 ->striped()
                 ->type(Exportable::TYPE_XLS),
-            Header::make()->showToggleColumns()->showSearchInput(),
+            Header::make()->showSearchInput(),
             Footer::make()
                 ->showPerPage()
                 ->showRecordCount(),
@@ -96,15 +98,15 @@ final class UsersDataTable extends PowerGridComponent
 
                 foreach ($users as $key => $user) {
                     $dataView[] = [
-                        'id' => $i,
-                        'title' => $user->emp_name,
-                        'email' => $user->email,
-                        'username' => $user->username,
-                        'ehrms' => $user->ehrms_id,
-                        'mobile' => $user->mobile,
-                        'designation' => $user->getDesignationName->designation_name,
-                        'department' => $user->getDepartmentName->department_name,
-                        'office' => 'N/A',
+                        '1' => $i,
+                        '2' => $user->emp_name,
+                        '3' => $user->email,
+                        '4' => $user->username,
+                        '5' => $user->ehrms_id,
+                        '6' => $user->mobile,
+                        '7' => $user->getDesignationName->designation_name,
+                        '8' => $user->getDepartmentName->department_name,
+                        '9' => 'N/A',
                         'active' => $user->is_active,
                     ];
                     $i++;
@@ -118,15 +120,15 @@ final class UsersDataTable extends PowerGridComponent
                 $i = 1;
                 foreach ($users as $key => $user) {
                     $dataView[] = [
-                        'id' => $i,
-                        'title' => $user->emp_name,
-                        'email' => $user->email,
-                        'username' => $user->username,
-                        'ehrms' => $user->ehrms_id,
-                        'mobile' => $user->mobile,
-                        'designation' => $user->getDesignationName->designation_name,
-                        'department' => $user->getDepartmentName->department_name,
-                        'office' => $user->getOfficeName->office_name,
+                        '1' => $i,
+                        '2' => $user->emp_name,
+                        '3' => $user->email,
+                        '4' => $user->username,
+                        '5' => $user->ehrms_id,
+                        '6' => $user->mobile,
+                        '7' => $user->getDesignationName->designation_name,
+                        '8' => $user->getDepartmentName->department_name,
+                        '9' => $user->getOfficeName->office_name,
                         'active' => $user->is_active,
                     ];
                     $i++;
@@ -141,15 +143,15 @@ final class UsersDataTable extends PowerGridComponent
                 $i = 1;
                 foreach ($users as $key => $user) {
                     $dataView[] = [
-                        'id' => $i,
-                        'title' => $user->emp_name,
-                        'email' => $user->email,
-                        'username' => $user->username,
-                        'ehrms' => $user->ehrms_id,
-                        'mobile' => $user->mobile,
-                        'designation' => $user->getDesignationName->designation_name,
-                        'department' => $user->getDepartmentName->department_name,
-                        'office' => $user->getOfficeName->office_name,
+                        '1' => $i,
+                        '2' => $user->emp_name,
+                        '3' => $user->email,
+                        '4' => $user->username,
+                        '5' => $user->ehrms_id,
+                        '6' => $user->mobile,
+                        '7' => $user->getDesignationName->designation_name,
+                        '8' => $user->getDepartmentName->department_name,
+                        '9' => $user->getOfficeName->office_name,
                         'active' => $user->is_active,
                     ];
                     $i++;
@@ -165,15 +167,15 @@ final class UsersDataTable extends PowerGridComponent
             $i = 1;
             foreach ($users as $key => $user) {
                 $dataView[] = [
-                    'id' => $i,
-                    'title' => $user->emp_name,
-                    'email' => $user->email,
-                    'username' => $user->username,
-                    'ehrms' => $user->ehrms_id,
-                    'mobile' => $user->mobile,
-                    'designation' => $user->getDesignationName->designation_name,
-                    'department' => $user->getDepartmentName->department_name,
-                    'office' => $user->office_id ? $user->getOfficeName->office_name : 'N/A',
+                    '1' => $i,
+                    '2' => $user->emp_name,
+                    '3' => $user->email,
+                    '4' => $user->username,
+                    '5' => $user->ehrms_id,
+                    '6' => $user->mobile,
+                    '7' => $user->getDesignationName->designation_name,
+                    '8' => $user->getDepartmentName->department_name,
+                    '9' => $user->office_id ? $user->getOfficeName->office_name : 'N/A',
                     'active' => $user->is_active,
                 ];
                 $i++;
@@ -200,7 +202,7 @@ final class UsersDataTable extends PowerGridComponent
      *
      * @return Builder<\App\Models\User>
      */
-    public function datasource(): Builder
+    public function datasource(): ?Builder
     {
         if (Auth::user()->department_id) {
             if (Auth::user()->office_id) {
@@ -288,8 +290,31 @@ final class UsersDataTable extends PowerGridComponent
                 ->join('designations', 'users.designation_id', '=', 'designations.id');
             // ->where('users.user_type', '=', Auth::user()->user_type);
         }
-        // return User::query();
     }
+
+    public function map(): array
+    {
+        return $this->dataSource()->map(function ($user) {
+            return [
+                'serial_no' => $user->id,
+                'Name' => $user->name,
+                'LOGIN ID' => $user->username,
+                'EMAIL' => $user->email,
+                'MOBILE' => $user->mobile,
+                'EHRMS ID' => $user->ehrms_id,
+                'EMP NAME' => $user->emp_name,
+                'DESIGNATION NAME' => $user->designation_name,
+                'DEPARTMENT NAME' => $user->getDepartmentName->department_name,
+                'OFFICE NAME' => $user->getOfficeName->office_name,
+                'USER TYPE' => $user->getUserType->type,
+                'STATUS' => $user->is_active ? 'active' : 'Inactive', // Remove HTML tags
+            ];
+        })->toArray();
+    }
+
+
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -320,6 +345,15 @@ final class UsersDataTable extends PowerGridComponent
     |    the database using the `e()` Laravel Helper function.
     |
      */
+
+
+    /*public function filters(): array
+    {
+        return [
+            Filter::boolean('is_active')
+                ->label('yes', 'no')
+        ];
+    }*/
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
@@ -485,7 +519,11 @@ final class UsersDataTable extends PowerGridComponent
                 ->searchable(),
 
             Column::make('STATUS', 'is_active')
-                ->sortable(),
+                ->sortable()
+                // ->closure(function ($value) {
+                //     return $value ? 'active' : 'Inactive';
+                // }),
+                ->makeBooleanFilter(dataField: 'is_active', trueLabel: 'active', falseLabel: 'Inactive'),
 
         ];
     }

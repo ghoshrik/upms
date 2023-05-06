@@ -4,9 +4,10 @@ namespace App\Http\Livewire\Aafs\Datatable;
 
 use App\Models\AAFS;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
-use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
+use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
 
 final class AafsDatatable extends PowerGridComponent
@@ -20,6 +21,103 @@ final class AafsDatatable extends PowerGridComponent
     | Setup Table's general features
     |
     */
+
+    protected function getListeners()
+    {
+        return array_merge(
+            parent::getListeners(),
+            [
+                'rowActionEvent',
+                'bulkActionEvent',
+            ]
+        );
+    }
+
+    public function header(): array
+    {
+        return [
+            Button::add('bulk-demo')
+                ->caption('PDF')
+                ->class('cursor-pointer btn btn-soft-primary btn-sm')
+                ->emit('bulkActionEvent', [])
+        ];
+    }
+
+    public function bulkActionEvent()
+    {
+        $ModelList = [
+            'Project No' => '5%',
+            'Department Name' => '5%',
+            'Surrent Status' => '5%',
+            'Project Cost' => '4%',
+            'Tender Cost' => '4%',
+            'AAFS Mother ID' => '4%',
+            'AAFS Sub ID' => '4%',
+            'Project Type' => '5%',
+            'Status' => '4%',
+            'Complete Period' => '4%',
+            'Un No' => '4%',
+            'Go No' => '4%',
+            'Pre aafs Exp' => '5%',
+            'Post aafs Exp' => '5%',
+            'Fund cty' => '5%',
+            'Exe Authority' => '5%'
+        ];
+        if (count($this->checkboxValues) == 0) {
+            $AAFS = AAFS::where('dept_id', Auth::user()->department_id)->get();
+            $i = 1;
+            foreach ($AAFS as $key => $list) {
+                $dataView[] = [
+                    '1' => $i,
+                    '2' => $list->project_no,
+                    '3' => $list->getDepartmentName->department_name,
+                    '4' => $list->statusName->status,
+                    '5' => $list->project_cost,
+                    '6' => $list->tender_cost,
+                    '7' => $list->aafs_mother_id,
+                    '8' => $list->aafs_sub_id,
+                    '9' => $list->status,
+                    '10' => $list->project_type,
+                    '11' => $list->completePeriod,
+                    '12' => $list->unNo,
+                    '13' => $list->goNo,
+                    '14' => $list->preaafsExp,
+                    '15' => $list->postaafsExp,
+                    '16' => $list->Fundcty,
+                    '17' => $list->exeAuthority,
+                ];
+                $i++;
+            }
+            return generatePDF($ModelList, $dataView, trans('cruds.aafs_project.title_singular'));
+        }
+        $ids = implode(',', $this->checkboxValues);
+        $AAFS = AAFS::whereIn('id', explode(",", $ids))->where('dept_id', Auth::user()->department_id)->get();
+        $i = 1;
+        foreach ($AAFS as $key => $list) {
+            $dataView[] = [
+                '1' => $i,
+                '2' => $list->project_no,
+                '3' => $list->getDepartmentName->department_name,
+                '4' => $list->statusName->status,
+                '5' => $list->project_cost,
+                '6' => $list->tender_cost,
+                '7' => $list->aafs_mother_id,
+                '8' => $list->aafs_sub_id,
+                '9' => $list->status,
+                '10' => $list->completePeriod,
+                '11' => $list->unNo,
+                '12' => $list->goNo,
+                '13' => $list->preaafsExp,
+                '14' => $list->postaafsExp,
+                '15' => $list->Fundcty,
+                '16' => $list->exeAuthority,
+            ];
+            $i++;
+        }
+        return generatePDF($ModelList, $dataView, trans('cruds.aafs_project.title_singular'));
+        $this->resetExcept('checkboxValues', 'dataView');
+    }
+
     public function setUp(): array
     {
         $this->showCheckBox();
@@ -44,10 +142,10 @@ final class AafsDatatable extends PowerGridComponent
     */
 
     /**
-    * PowerGrid datasource.
-    *
-    * @return Builder<\App\Models\AAFS>
-    */
+     * PowerGrid datasource.
+     *
+     * @return Builder<\App\Models\AAFS>
+     */
     public function datasource(): Builder
     {
         return AAFS::query();
@@ -90,7 +188,7 @@ final class AafsDatatable extends PowerGridComponent
             ->addColumn('getDepartmentName.department_name')
             ->addColumn('statusName.status')
 
-           /** Example of custom column using a closure **/
+            /** Example of custom column using a closure **/
             ->addColumn('status_id_lower', function (AAFS $model) {
                 return strtolower(e($model->status_id));
             })
@@ -101,15 +199,15 @@ final class AafsDatatable extends PowerGridComponent
             ->addColumn('aafs_sub_id')
             ->addColumn('project_type')
             ->addColumn('status')
-            ->addColumn('completePeriod')
+            ->addColumn('complete Period')
             ->addColumn('unNo')
             ->addColumn('goNo')
-            ->addColumn('preaafsExp')
-            ->addColumn('postaafsExp')
-            ->addColumn('Fundcty')
-            ->addColumn('exeAuthority');
-            // ->addColumn('created_at_formatted', fn (AAFS $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'))
-            // ->addColumn('updated_at_formatted', fn (AAFS $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
+            ->addColumn('pre aafs Exp')
+            ->addColumn('post aafs Exp')
+            ->addColumn('Fund cty')
+            ->addColumn('Exe Authority');
+        // ->addColumn('created_at_formatted', fn (AAFS $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'))
+        // ->addColumn('updated_at_formatted', fn (AAFS $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
     }
 
     /*
@@ -121,7 +219,7 @@ final class AafsDatatable extends PowerGridComponent
     |
     */
 
-     /**
+    /**
      * PowerGrid Columns.
      *
      * @return array<int, Column>
@@ -212,8 +310,7 @@ final class AafsDatatable extends PowerGridComponent
             //     ->sortable()
             //     ->makeInputDatePicker(),
 
-        ]
-;
+        ];
     }
 
     /*
@@ -224,7 +321,7 @@ final class AafsDatatable extends PowerGridComponent
     |
     */
 
-     /**
+    /**
      * PowerGrid AAFS Action Buttons.
      *
      * @return array<int, Button>
@@ -254,7 +351,7 @@ final class AafsDatatable extends PowerGridComponent
     |
     */
 
-     /**
+    /**
      * PowerGrid AAFS Action Rules.
      *
      * @return array<int, RuleActions>

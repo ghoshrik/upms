@@ -151,20 +151,24 @@
                                             <tbody>
                                                 @foreach ($data ?? '' as $data)
                                                     <tr width="100%">
-                                                        <td width="4%">{{ $data['id'] }}</td>
+                                                        <td width="4%">{{ $data['1'] }}</td>
                                                         {{-- Office --}}
-                                                        <td class="text-wrap">{{ $data['title'] }}</td>
-                                                        @if (array_key_exists('office_code', $data))
-                                                            <td class="text-wrap">{{ $data['office_code'] }}</td>
+                                                        <td class="text-wrap">{{ $data['2'] }}</td>
+                                                        @if (array_key_exists('3', $data))
+                                                            <td class="text-wrap">{{ $data['3'] }}</td>
                                                         @endif
 
-                                                        @if (array_key_exists('address', $data))
-                                                            <td class="text-wrap">{{ $data['address'] }}</td>
+                                                        @if (array_key_exists('4', $data))
+                                                            <td class="text-wrap">{{ $data['4'] }}</td>
                                                         @endif
 
-                                                        @if (array_key_exists('dist', $data))
-                                                            <td class="text-wrap">{{ $data['dist'] }}</td>
+                                                        @if (array_key_exists('5', $data))
+                                                            <td class="text-wrap">{{ $data['5'] }}</td>
                                                         @endif
+
+
+
+
                                                         @if (array_key_exists('level', $data))
                                                             <td class='text-center' width="7%" class="text-wrap">
                                                                 @switch($data['level'])
@@ -196,27 +200,42 @@
                                                         {{-- Offices  --}}
 
                                                         {{-- User Management  --}}
-                                                        @if (array_key_exists('email', $data))
-                                                            <td class="text-wrap">{{ $data['email'] }}</td>
+                                                        @if (array_key_exists('6', $data))
+                                                            <td class="text-wrap">{{ $data['6'] }}</td>
                                                         @endif
-                                                        @if (array_key_exists('username', $data))
-                                                            <td class="text-wrap">{{ $data['username'] }}</td>
+                                                        @if (array_key_exists('7', $data))
+                                                            <td class="text-wrap">{{ $data['7'] }}</td>
                                                         @endif
-                                                        @if (array_key_exists('ehrms', $data))
-                                                            <td class="text-wrap">{{ $data['ehrms'] }}</td>
+                                                        @if (array_key_exists('8', $data))
+                                                            <td class="text-wrap">{{ $data['8'] }}</td>
                                                         @endif
-                                                        @if (array_key_exists('mobile', $data))
-                                                            <td class="text-wrap">{{ $data['mobile'] }}</td>
-                                                        @endif
-                                                        @if (array_key_exists('designation', $data))
-                                                            <td class="text-wrap">{{ $data['designation'] }}</td>
-                                                        @endif
-                                                        @if (array_key_exists('department', $data))
-                                                            <td class="text-wrap">{{ $data['department'] }}</td>
+                                                        @if (array_key_exists('9', $data))
+                                                            <td class="text-wrap">{{ $data['9'] }}</td>
                                                         @endif
 
-                                                        @if (array_key_exists('office', $data))
-                                                            <td class="text-wrap">{{ $data['office'] }}</td>
+                                                        @if (array_key_exists('10', $data))
+                                                            <td class="text-wrap">{{ $data['10'] }}</td>
+                                                        @endif
+                                                        @if (array_key_exists('11', $data))
+                                                            <td class="text-wrap">{{ $data['11'] }}</td>
+                                                        @endif
+                                                        @if (array_key_exists('12', $data))
+                                                            <td class="text-wrap">{{ $data['12'] }}</td>
+                                                        @endif
+                                                        @if (array_key_exists('13', $data))
+                                                            <td class="text-wrap">{{ $data['13'] }}</td>
+                                                        @endif
+                                                        @if (array_key_exists('14', $data))
+                                                            <td class="text-wrap">{{ $data['14'] }}</td>
+                                                        @endif
+                                                        @if (array_key_exists('15', $data))
+                                                            <td class="text-wrap">{{ $data['15'] }}</td>
+                                                        @endif
+                                                        @if (array_key_exists('16', $data))
+                                                            <td class="text-wrap">{{ $data['16'] }}</td>
+                                                        @endif
+                                                        @if (array_key_exists('17', $data))
+                                                            <td class="text-wrap">{{ $data['17'] }}</td>
                                                         @endif
                                                         @if (array_key_exists('active', $data))
                                                             <td class="text-wrap">

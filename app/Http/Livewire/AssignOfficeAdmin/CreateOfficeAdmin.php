@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Auth;
 class CreateOfficeAdmin extends Component
 {
     use Actions, WithPagination;
-    public $selectedLevel, $selectedDist, $selectedOffice, $dropdownData = [], $searchCondition = [], $filtredOffices, $hooUsers, $selectedUser, $openAssignAdminId,$openModel=false;
+    public $selectedLevel, $selectedDist, $selectedOffice, $dropdownData = [], $searchCondition = [], $filtredOffices, $hooUsers, $selectedUser, $openAssignAdminId, $openModel = false;
     // public $viewMode = false;
-    protected $listeners = ['assignuser'];
+    protected $listeners = ['assignuser', 'filter'];
 
     public function mount()
     {
@@ -25,12 +25,15 @@ class CreateOfficeAdmin extends Component
     }
     public function filter()
     {
+        // dd("dsds");
         if ($this->selectedLevel) {
             $this->searchCondition = Arr::add($this->searchCondition, 'level_no', $this->selectedLevel);
         }
         if ($this->selectedDist) {
             $this->searchCondition = Arr::add($this->searchCondition, 'dist_code', $this->selectedDist);
         }
+        // dd($this->searchCondition);
+        // $this->emit('filterOfficeAssign', $this->searchCondition);
         $this->getOffices();
         $this->getSelectedUsers();
     }
@@ -46,7 +49,7 @@ class CreateOfficeAdmin extends Component
             ->select('offices.id as id', 'offices.office_name', 'offices.office_address', 'offices.office_code', 'offices.level_no', 'offices.dist_code', 'users.id as user_id')
             ->orderBy('users.id', 'asc')
             ->get();
-        $this->resetExcept('hooUsers', 'dropdownData','filtredOffices', 'selectedLevel', 'selectedDist', 'selectedUser');
+        $this->resetExcept('hooUsers', 'dropdownData', 'filtredOffices', 'selectedLevel', 'selectedDist', 'selectedUser');
     }
     private function getSelectedUsers()
     {
@@ -81,10 +84,11 @@ class CreateOfficeAdmin extends Component
             $this->emit('showError', $th->getMessage());
         }
     }
-    public $alreadyAssignUserDist,$alreadyAssignUserLevel;
+    public $alreadyAssignUserDist, $alreadyAssignUserLevel;
 
-    public function assignuser($office_id,$dist_code,$level_no)
+    public function assignuser($office_id, $dist_code, $level_no)
     {
+        // dd("dsd");
         // dd($office_id,$dist_code,$level_no);
         $this->openAssignAdminId = $office_id;
         $this->alreadyAssignUserLevel = $level_no;
@@ -111,6 +115,15 @@ class CreateOfficeAdmin extends Component
         // }
         $this->openModel = true;
     }
+
+    public function Modify($userid, $office_id, $dist_code, $level_no)
+    {
+        dd($userid, $office_id, $dist_code, $level_no);
+    }
+
+
+
+
     public $selectedUserofice;
     public function assignusertoOffice()
     {

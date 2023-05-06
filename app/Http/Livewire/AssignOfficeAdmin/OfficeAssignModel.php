@@ -1,18 +1,20 @@
 <?php
 
-namespace App\Http\Livewire\Designation\Powergrid;
+namespace App\Http\Livewire\AssignOfficeAdmin;
 
-use App\Models\Designation;
+use App\Models\Menu;
+use App\Models\Office;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
-use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
+use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
 
-final class DesignationDatatable extends PowerGridComponent
+final class OfficeAssignModel extends PowerGridComponent
 {
     use ActionButton;
+
     /*
     |--------------------------------------------------------------------------
     |  Features Setup
@@ -20,6 +22,25 @@ final class DesignationDatatable extends PowerGridComponent
     | Setup Table's general features
     |
     */
+    protected function getListeners()
+    {
+        return array_merge(
+            parent::getListeners(),
+            [
+                'filterOfficeAssign',
+                'bulkActionEvent',
+            ]
+        );
+    }
+    // public $searchCondition;
+    public function filterOfficeAssign($levelNo)
+    {
+        dd($levelNo);
+        // $this->searchCondition = $levelNo;
+        // dd($this->searchCondition);
+    }
+
+
     public function setUp(): array
     {
         $this->showCheckBox();
@@ -27,8 +48,7 @@ final class DesignationDatatable extends PowerGridComponent
         return [
             Exportable::make('export')
                 ->striped()
-                ->type(Exportable::TYPE_XLS),
-            // ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
+                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             Header::make()->showSearchInput(),
             Footer::make()
                 ->showPerPage()
@@ -43,75 +63,25 @@ final class DesignationDatatable extends PowerGridComponent
     | Provides data to your Table using a Model or Collection
     |
     */
-    public $dataView = [];
-    protected function getListeners()
-    {
-        return array_merge(
-            parent::getListeners(),
-            [
-                'rowActionEvent',
-                'bulkActionEvent',
-            ]
-        );
-    }
-    public function header(): array
-    {
-        return [
-            Button::add('bulk-demo')
-                ->caption('PDF')
-                ->class('cursor-pointer btn btn-soft-primary btn-sm')
-                ->emit('bulkActionEvent', [])
-        ];
-    }
-
-    public function bulkActionEvent()
-    {
-        $ModelList = [trans('cruds.designation.fields.designation_name') => '22%'];
-        if (count($this->checkboxValues) == 0) {
-            $designation = Designation::get();
-
-            $i = 1;
-            foreach ($designation as $key => $offices) {
-                $this->dataView[] = [
-                    '1' => $i,
-                    '2' => $offices->designation_name
-                ];
-                $i++;
-            }
-            return generatePDF($ModelList, $this->dataView, trans('cruds.designation.title_singulars'));
-        } else {
-
-            $ids = implode(',', $this->checkboxValues);
-            $offices = Designation::whereIn('id', explode(",", $ids))->get();
-            $i = 1;
-            foreach ($offices as $key => $office) {
-                $dataView[] = [
-                    '1' => $i,
-                    '2' => $office->designation_name,
-                ];
-                $i++;
-            }
-
-            return generatePDF($ModelList, $dataView, trans('cruds.designation.title'));
-            $this->resetExcept('checkboxValues', 'dataView');
-        }
-    }
-
-
 
     /**
      * PowerGrid datasource.
      *
-     * @return Builder<\App\Models\Designation>
+     * @return Builder<\App\Models\Menu>
      */
     public function datasource(): Builder
     {
-        return Designation::query()
-            ->select(
-                'id',
-                'designation_name',
-                DB::raw('ROW_NUMBER() OVER (ORDER BY designations.id) as serial_no')
-            );
+        dd($this->searchCondition);
+        $office = Office::leftJoin('users', function ($join) {
+            $join->on('offices.id', '=', 'users.office_id')
+                ->where('users.user_type', 4);
+        })
+            ->where($this->searchCondition)
+            ->where('offices.department_id', Auth::user()->department_id)
+            ->select('offices.id as id', 'offices.office_name', 'offices.office_address', 'offices.office_code', 'offices.level_no', 'offices.dist_code', 'users.id as user_id')
+            ->orderBy('users.id', 'asc')
+            ->get();
+        return dd($office);
     }
 
     /*
@@ -146,16 +116,12 @@ final class DesignationDatatable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-            ->addColumn('serial_no')
-            ->addColumn('designation_name')
-
-            /** Example of custom column using a closure **/
-            ->addColumn('designation_name_lower', function (Designation $model) {
-                return strtolower(e($model->designation_name));
-            });
-
-        // ->addColumn('created_at_formatted', fn (Designation $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'))
-        // ->addColumn('updated_at_formatted', fn (Designation $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
+            ->addColumn('id')
+            ->addColumn('office_name')
+            ->addColumn('office_address')
+            ->addColumn('level_no')
+            ->addColumn('dist_code')
+            ->addColumn('user_id');
     }
 
     /*
@@ -175,24 +141,31 @@ final class DesignationDatatable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('SL. No.', 'serial_no'),
-            // ->makeInputRange(),
+            Column::make('ID', 'id')
+                ->makeInputRange(),
 
-            Column::make('DESIGNATION NAME', 'designation_name')
+            Column::make('TITLE', 'office_name')
                 ->sortable()
                 ->searchable()
                 ->makeInputText(),
 
-            // Column::make('CREATED AT', 'created_at_formatted', 'created_at')
-            //     ->searchable()
-            //     ->sortable()
-            //     ->makeInputDatePicker(),
+            Column::make('PARENT ID', 'office_address')
+                ->makeInputRange(),
 
-            // Column::make('UPDATED AT', 'updated_at_formatted', 'updated_at')
-            //     ->searchable()
-            //     ->sortable()
-            //     ->makeInputDatePicker(),
+            Column::make('ICON', 'level_no')
+                ->sortable()
+                ->searchable()
+                ->makeInputText(),
 
+            Column::make('LINK', 'dist_code')
+                ->sortable()
+                ->searchable()
+                ->makeInputText(),
+
+            Column::make('LINK TYPE', 'user_id')
+                ->sortable()
+                ->searchable()
+                ->makeInputText(),
         ];
     }
 
@@ -205,7 +178,7 @@ final class DesignationDatatable extends PowerGridComponent
     */
 
     /**
-     * PowerGrid Designation Action Buttons.
+     * PowerGrid Menu Action Buttons.
      *
      * @return array<int, Button>
      */
@@ -216,11 +189,11 @@ final class DesignationDatatable extends PowerGridComponent
        return [
            Button::make('edit', 'Edit')
                ->class('bg-indigo-500 cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm')
-               ->route('designation.edit', ['designation' => 'id']),
+               ->route('menu.edit', ['menu' => 'id']),
 
            Button::make('destroy', 'Delete')
                ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
-               ->route('designation.destroy', ['designation' => 'id'])
+               ->route('menu.destroy', ['menu' => 'id'])
                ->method('delete')
         ];
     }
@@ -235,7 +208,7 @@ final class DesignationDatatable extends PowerGridComponent
     */
 
     /**
-     * PowerGrid Designation Action Rules.
+     * PowerGrid Menu Action Rules.
      *
      * @return array<int, RuleActions>
      */
@@ -247,7 +220,7 @@ final class DesignationDatatable extends PowerGridComponent
 
            //Hide button edit for ID 1
             Rule::button('edit')
-                ->when(fn($designation) => $designation->id === 1)
+                ->when(fn($menu) => $menu->id === 1)
                 ->hide(),
         ];
     }

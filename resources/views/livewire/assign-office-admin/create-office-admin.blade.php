@@ -36,7 +36,7 @@
 
                         <div class="col col-md-2 col-lg-2 col-sm-12 col-xs-12 mb-2">
                             <div class="form-group pt-4">
-                                <button type="button" wire:click='filter' class="btn btn-soft-primary ">
+                                <button type="button" wire:click="$emit('filter',[])" class="btn btn-soft-primary ">
                                     Search
                                 </button>
                             </div>
@@ -48,6 +48,7 @@
     </div>
 
     @if ($filtredOffices != null)
+        {{-- <livewire:assign-office-admin.office-assign-model :filterOfficeAssign="$filterOfficeAssign" /> --}}
         <div class="card" wire:loading.delay.longest.class="loading">
             <div class="card-body p-2">
                 <div class="table-responsive mt-4">
@@ -64,7 +65,6 @@
                         </thead>
                         <tbody>
                             @isset($filtredOffices)
-                                {{-- @dd($filtredOffices) --}}
                                 @foreach ($filtredOffices as $key => $office)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
@@ -74,36 +74,42 @@
                                         </td>
                                         <td class="text-wrap" style="width: 30rem">{{ $office['office_address'] }}</td>
                                         <td>
-                                            @if ($office['user_id'])
-                                                @foreach ($hooUsers as $user)
-                                                    @if ($user['id'] == $office['user_id'])
-                                                        <input class="form-group" type="text"
-                                                            value="{{ $user['emp_name'] }}" readonly>
-                                                    @endif
-                                                @endforeach
-                                            @else
-                                                {{-- <select class="form-select" aria-label="Select user"
+                                            {{-- @if ($office['user_id']) --}}
+                                            @foreach ($hooUsers as $user)
+                                                @if ($user['id'] == $office['user_id'])
+                                                    {{-- <input class="form-group" type="text"
+                                                            value="{{ $user['emp_name'] }}" wire:ignore disabled> --}}
+                                                    <label wire:ignore disabled readonly>{{ $user['emp_name'] }}</label>
+                                                @endif
+                                            @endforeach
+                                            {{-- @else --}}
+                                            {{ __('dfdsfsdf') }}
+                                            {{-- <select class="form-select" aria-label="Select user"
                                                     wire:key='select-{{ $key }}'
-                                                    wire:model='selectedUser.{{ $office['id'] }}'>
+                                                    wire:model='selectedUser.{{ $office['id'] }}' wire:ignore>
                                                     <option wire:key='select_option-{{ $key }}'>Select User
                                                     </option>
                                                     @foreach ($hooUsers as $user)
                                                         <option wire:key='user-{{ $user['id'] }}'
-                                                            value="{{ $user['id'] }}">{{ $user['emp_name'] }}
+                                                            value="{{ $user['id'] }}" wire:ignore>
+                                                            {{ $user['emp_name'] }}
                                                         </option>
                                                     @endforeach
                                                 </select> --}}
-                                            @endif
+                                            {{-- @endif --}}
+
+
                                         </td>
                                         <td>
-                                            {{-- <button type="button" wire:click="assign({{ $office['id'] }})"
-                                                class="btn btn-soft-primary btn-sm"
-                                                {{ $office['user_id'] ? 'disabled ' : '' }}>
-                                                Assign Admin
-                                            </button> --}}
-                                            @isset($office['user_id'])
+                                            <button type="button"
+                                                wire:click="$emit({{ $office['user_id'] ? '"Modify",' . $office['user_id'] . ',' . $office->id . ',' . $office->dist_code . ',' . $office->level_no . '' : '"assignuser",' . $office->id . ',' . $office->dist_code . ',' . $office->level_no . '' }})"
+                                                class="btn btn-soft-{{ $office['user_id'] ? 'warning' : 'primary' }} btn-sm text-dark">
+                                                {{ $office['user_id'] ? 'Already Assign' : 'Assign Admin' }}
+                                            </button>
+                                            {{-- @isset($office['user_id'])
                                                 @if ($office['user_id'])
-                                                    <button type="button" class="btn btn-soft-warning btn-sm">Modify</button>
+                                                <button type="button" class="btn btn-soft-warning btn-sm test-dark" wire:ignore
+                                                    disabled>Modify</button>
                                                 @endif
                                             @else
                                                 <button type="button"
@@ -111,8 +117,7 @@
                                                     class="btn btn-soft-primary btn-sm">
                                                     Assign Admin
                                                 </button>
-                                                {{-- @endif --}}
-                                            @endisset
+                                            @endisset --}}
                                             {{-- <button type="button" class="btn btn-soft-warning btn-sm"
                                                 wire:click="assignuser({{ $office['id'] }})">
                                                 <x-lucide-user-check class="w-4 h-4 text-gray-500" />
