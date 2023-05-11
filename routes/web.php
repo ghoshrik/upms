@@ -28,6 +28,7 @@ use App\Http\Livewire\Office\Office;
 use App\Http\Livewire\Permission\Permission;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\Roles\Roles;
+use App\Http\Livewire\Setting\SettingLists;
 use App\Http\Livewire\Sorapprove\SorApprovers;
 use App\Http\Livewire\Sor\Sor;
 use App\Http\Livewire\Tender\Tenders;
@@ -126,6 +127,11 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('sor-approver', SorApprovers::class)->name('sor-approver');
         Route::get('unit-master', UnitsMaster::class)->name('unit-master');
 
+
+        // Route::prefix('admin',function(){
+           Route::get('admin/settings',SettingLists::class)->name('admin.settings');
+        // });
+
         Route::get('change-role/{id}', function ($id) {
             if (UsersHasRoles::where([['user_id', Auth::user()->id], ['role_id', $id]])->first()) {
                 $selectedRole = Role::find($id);
@@ -136,6 +142,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             }
         })->name('change-role');
     });
+
 });
 
 //App Details Page => 'Dashboard'], function() {
