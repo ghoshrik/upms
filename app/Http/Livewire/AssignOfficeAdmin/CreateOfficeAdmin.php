@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Auth;
 class CreateOfficeAdmin extends Component
 {
     use Actions, WithPagination;
-    public $selectedLevel, $selectedDist, $selectedOffice, $dropdownData = [], $searchCondition = [], $filtredOffices, $hooUsers, $selectedUser, $openAssignAdminId, $openModel = false;
+    public $selectedLevel, $selectedDist, $selectedOffice, $dropdownData = [], $searchCondition = [], $filtredOffices, $hooUsers, $selectedUser, $openAssignAdminId = '', $openModel = false, $emp_name;
     // public $viewMode = false;
-    protected $listeners = ['assignuser', 'filter'];
+    protected $listeners = ['assignuser', 'filter', 'Modify'];
 
     public function mount()
     {
@@ -84,8 +84,8 @@ class CreateOfficeAdmin extends Component
             $this->emit('showError', $th->getMessage());
         }
     }
-    public $alreadyAssignUserDist, $alreadyAssignUserLevel;
-
+    public $alreadyAssignUserDist = '', $alreadyAssignUserLevel = '';
+    public $modifyOffice = [];
     public function assignuser($office_id, $dist_code, $level_no)
     {
         // dd("dsd");
@@ -118,7 +118,13 @@ class CreateOfficeAdmin extends Component
 
     public function Modify($userid, $office_id, $dist_code, $level_no)
     {
-        dd($userid, $office_id, $dist_code, $level_no);
+        // dd($userid, $office_id, $dist_code, $level_no);
+        $this->modifyOffice['userId'] = $userid;
+        $this->modifyOffice['officeId'] = $office_id;
+        $this->modifyOffice['distCode'] = $dist_code;
+        $this->modifyOffice['levelNo'] = $level_no;
+        // $this->openAssignAdminId = $office_id;
+        $this->openModel = true;
     }
 
 

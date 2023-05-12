@@ -14,7 +14,7 @@ use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Heade
 
 final class UserAssignModel extends PowerGridComponent
 {
-    use ActionButton,Actions;
+    use ActionButton, Actions;
 
     /*
     |--------------------------------------------------------------------------
@@ -52,8 +52,8 @@ final class UserAssignModel extends PowerGridComponent
      * @return Builder<\App\Models\User>
      */
 
-    public $openAssignAdminId, $openFormModel,$modelOpen;
-    public function assignuser($office_id,$dist_code,$level_no)
+    public $openAssignAdminId, $openFormModel, $modelOpen;
+    public function assignuser($office_id, $dist_code, $level_no)
     {
         // dd($office_id,$dist_code,$level_no);
         $this->openAssignAdminId = $office_id;
@@ -77,15 +77,15 @@ final class UserAssignModel extends PowerGridComponent
             //     'users.mobile',
             //     'users.email',
             //     'users.office_id',
-                // 'designations.id as designationId',
-                // 'designations.designation_name',
+            // 'designations.id as designationId',
+            // 'designations.designation_name',
             //     'offices.id as officeId'
             // )
             // ->join('designations', 'users.designation_id', '=', 'designations.id',)
             // ->join('offices', 'users.office_id', '=', 'offices.id')
-            ->where('users.user_type',4)
-            ->where('users.is_active',1)
-            ->where('users.department_id',Auth::user()->department_id)
+            ->where('users.user_type', 4)
+            ->where('users.is_active', 1)
+            ->where('users.department_id', Auth::user()->department_id)
             ->where('users.office_id', '=', 0);
         // dd($res);
     }
@@ -148,10 +148,10 @@ final class UserAssignModel extends PowerGridComponent
 
                 // }
 
-            //     return view('livewire.assign-office-admin.assign-office-list',['userId'=>$user->id,'officeId'=>$user->officeId,'userOffice'=>$user->office_id]);
-                    return '<button type="button" class="btn btn-primary cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm btn-sm" wire:click="SaveUser('.$user->id.')">Save</button>';
+                //     return view('livewire.assign-office-admin.assign-office-list',['userId'=>$user->id,'officeId'=>$user->officeId,'userOffice'=>$user->office_id]);
+                return '<button type="button" class="btn btn-primary cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm btn-sm" wire:click="SaveUser(' . $user->id . ')">Save</button>';
             });
-            // ->addColumn('Action');
+        // ->addColumn('Action');
     }
 
     /*
@@ -246,11 +246,11 @@ final class UserAssignModel extends PowerGridComponent
     public function SaveUser($id)
     {
         // dd($id);
-        User::where('id',$id)->update(['office_id'=>$this->openAssignAdminId]);
+        User::where('id', $id)->update(['office_id' => $this->openAssignAdminId]);
         $this->notification()->success(
             $title = "user assign successfully"
         );
-        return;
+        return redirect()->back();
     }
     /*
     public function actionRules(): array

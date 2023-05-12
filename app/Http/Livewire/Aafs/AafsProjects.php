@@ -9,13 +9,13 @@ class AafsProjects extends Component
 {
 
     public $updateDataTableTracker;
-    protected $listeners = ['openEntryForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
+    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert'];
+    public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel, $proj;
 
-    public function fromEntryControl($data='')
+    public function fromEntryControl($data = '')
     {
         // dd($data);
-        $this->openedFormType = is_array($data) ? $data['formType']:$data;
+        $this->openedFormType = is_array($data) ? $data['formType'] : $data;
         $this->isFromOpen = !$this->isFromOpen;
         switch ($this->openedFormType) {
             case 'create':
@@ -28,20 +28,25 @@ class AafsProjects extends Component
                 $this->subTitel = 'List';
                 break;
         }
-        if(isset($data['id'])){
+        if (isset($data['id'])) {
             $this->selectedIdForEdit = $data['id'];
         }
     }
     public function setErrorAlert($errorMessage)
     {
-       $this->errorMessage = $errorMessage;
+        $this->errorMessage = $errorMessage;
+    }
+
+    public function hydrate()
+    {
+        $this->proj = AAFS::all();
     }
     public function render()
     {
-        $this->updateDataTableTracker = rand(1,1000);
+        $this->updateDataTableTracker = rand(1, 1000);
         $this->titel = trans('cruds.aafs_project.title');
-        $this-> proj = AAFS::all();
+        $this->proj = AAFS::all();
         $assets = ['chart', 'animation'];
-        return view('livewire.aafs.aafs-projects',compact('assets'));
+        return view('livewire.aafs.aafs-projects', compact('assets'));
     }
 }

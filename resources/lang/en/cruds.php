@@ -200,6 +200,14 @@ return [
             'No_listMsg' => 'No Items Added Yet !'
         ],
     ],
+    'estimate_forward' => [
+        'title' => 'Estimate Forward',
+        'title_singulars' => 'Estimates Forwards',
+        'fields' => [
+            'id' => 'ID',
+            'id_helper' => 'SL No.',
+        ],
+    ],
     'estimate_recommender' => [
         'title' => 'Estimate recommender',
         'title_singular' => 'Estimate recommenders',

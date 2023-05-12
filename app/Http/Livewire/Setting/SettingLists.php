@@ -13,10 +13,12 @@ class SettingLists extends Component
         if (!Auth::check()) {
             return redirect()->route('auth.signin');
         }
+        $this->inputField['title'] = '';
+        $this->inputField['subtitle'] = '';
     }
 
-    public $formOpen = false,$errorMessage,$titel,$subTitel = "List";
-    protected $listeners = ['openForm' => 'formOCControl','showError'=>'setErrorAlert'];
+    public $formOpen = false, $errorMessage, $titel, $subTitel = "List", $inputField = [];
+    protected $listeners = ['openForm' => 'formOCControl', 'showError' => 'setErrorAlert'];
 
     public function formOCControl()
     {
@@ -25,13 +27,19 @@ class SettingLists extends Component
     }
     public function setErrorAlert($errorMessage)
     {
-       $this->errorMessage = $errorMessage;
+        $this->errorMessage = $errorMessage;
     }
+    public function store()
+    {
+        dd($this->inputField['title'], $this->inputField['subtitle']);
+    }
+
+
     public function render()
     {
         // $this->emit('changeTitle', 'Settings');
         $this->titel = "Settings";
         $assets = ['chart', 'animation'];
-        return view('livewire.setting.setting-lists',compact('assets'));
+        return view('livewire.setting.setting-lists', compact('assets'));
     }
 }

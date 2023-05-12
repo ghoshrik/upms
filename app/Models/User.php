@@ -89,6 +89,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo(Office::class, 'office_id', 'id');
     }
+    public function assignOfficeUser()
+    {
+        return $this->hasOne(Office::class, 'id', 'office_id');
+    }
     public function getUserTypeName()
     {
         return $this->hasMany(Role::class);
