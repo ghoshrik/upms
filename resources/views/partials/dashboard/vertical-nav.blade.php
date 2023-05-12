@@ -19,12 +19,6 @@
             <span class="item-name">{{ __('Dashboard') }}</span>
         </a>
     </li>
-    @php
-        $user = Auth::user();
-        $roles = $user->getRoleNames();
-        echo $roles;
-        //user roles => super Admin,state admin,department admin,office admin,office admin
-    @endphp
     @foreach ($menus as $menu)
         @if ($menu->permissions_roles != null)
             @php
@@ -57,7 +51,7 @@
                 @canany($permissions_role)
                     <li class="nav-item mb-2">
                         @if (Route::has($menu->link))
-                            <a class="nav-link {{ Request::routeIs($menu->link) ? 'active' : '' }}" aria-current="page"
+                            <a class="nav-link {{  Request::routeIs($menu->link) ? 'active' : ''}}" aria-current="page"
                                 href="{{ route($menu->link) }}">
                             @else
                                 <a class="nav-link aria-current" href="#">

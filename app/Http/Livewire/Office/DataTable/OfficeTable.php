@@ -64,7 +64,6 @@ final class OfficeTable extends PowerGridComponent
             Button::add('bulk-demo')
                 ->caption('PDF')
                 ->class('cursor-pointer btn btn-soft-primary btn-sm')
-                ->tooltip('PDF download')
                 ->emit('bulkActionEvent', [])
         ];
     }

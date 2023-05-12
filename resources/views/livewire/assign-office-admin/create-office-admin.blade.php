@@ -64,19 +64,8 @@
                             </tr>
                         </thead>
                         <tbody>
-
                             @isset($filtredOffices)
-                                @forelse ($filtredOffices as $key => $office)
-                                    @php
-                                        $assignOfficeUser = DB::table('users')
-                                            ->select('emp_name')
-                                            ->where('user_type', 3)
-                                            ->where('id', $office->user_id)
-                                            ->where('department_id', Auth::user()->department_id)
-                                            ->where('is_active', 1)
-                                            ->get();
-                                        // echo $assignOfficeUser;
-                                    @endphp
+                                @foreach ($filtredOffices as $key => $office)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td class="text-wrap" style="width: 30rem">{{ $office['office_name'] }}</td>
@@ -85,25 +74,16 @@
                                         </td>
                                         <td class="text-wrap" style="width: 30rem">{{ $office['office_address'] }}</td>
                                         <td>
-                                            {{-- {{ $officeUser }} --}}
-                                            @foreach ($assignOfficeUser as $user)
-                                                <label wire:key="" wire:ignore>{{ $user->emp_name }}</label>
-                                            @endforeach
-
                                             {{-- @if ($office['user_id']) --}}
-                                            {{-- @foreach ($hooUsers as $user)
-                                                @if ($user['id'] == $office['user_id']) --}}
-                                            {{-- <input class="form-group" type="text"
-                                                        value="{{ $user['emp_name'] }} wire:key="{{ $user['id'] }}""
-                                                        wire:ignore> --}}
-                                            {{-- <label wire:key="{{ $user['id'] }}"
-                                                        wire:ignore>{{ $user['emp_name'] }}</label> --}}
-                                            {{-- @else
-                                                    {{ __('Not Exists') }} --}}
-                                            {{-- @endif
-                                            @endforeach --}}
+                                            @foreach ($hooUsers as $user)
+                                                @if ($user['id'] == $office['user_id'])
+                                                    {{-- <input class="form-group" type="text"
+                                                            value="{{ $user['emp_name'] }}" wire:ignore disabled> --}}
+                                                    <label wire:ignore disabled readonly>{{ $user['emp_name'] }}</label>
+                                                @endif
+                                            @endforeach
                                             {{-- @else --}}
-                                            {{-- {{ __('dfdsfsdf') }} --}}
+                                            {{ __('dfdsfsdf') }}
                                             {{-- <select class="form-select" aria-label="Select user"
                                                     wire:key='select-{{ $key }}'
                                                     wire:model='selectedUser.{{ $office['id'] }}' wire:ignore>
@@ -123,30 +103,15 @@
                                         <td>
                                             <button type="button"
                                                 wire:click="$emit({{ $office['user_id'] ? '"Modify",' . $office['user_id'] . ',' . $office->id . ',' . $office->dist_code . ',' . $office->level_no . '' : '"assignuser",' . $office->id . ',' . $office->dist_code . ',' . $office->level_no . '' }})"
-                                                class="btn btn-soft-{{ $office['user_id'] ? 'warning' : 'primary' }} btn-sm text-dark"
-                                                wire:loading.attr="disabled" wire:target="user-name-{{ $office->id }}"
-                                                wire:model="emp_name">
+                                                class="btn btn-soft-{{ $office['user_id'] ? 'warning' : 'primary' }} btn-sm text-dark">
                                                 {{ $office['user_id'] ? 'Already Assign' : 'Assign Admin' }}
                                             </button>
-                                            {{-- @isset($office['user_id']) --}}
-
-                                            {{-- <button type="button" class="btn btn-soft-warning btn-sm text-dark"
-                                                wire:click="$emit({{ $office['user_id'] ? '"Modify",' . $office['user_id'] . ',' . $office->id . ',' . $office->dist_code . ',' . $office->level_no . '' : '"assignuser",' . $office->id . ',' . $office->dist_code . ',' . $office->level_no . '' }})"
-                                                {{ $office['user_id'] ? 'disabled' : '' }} wire:ignore>Re-Assign</button>
-
-
-                                            <button type="button" class="btn btn-soft-primary btn-sm text-dark"
-                                                wire:click="$emit('assignuser',{{ $office->id . ',' . $office->dist_code . ',' . $office->level_no }})"
-                                                {{ $office['user_id'] == 0 ? '' : 'disabled' }} wire:ignore>Assign
-                                                Admin</button> --}}
-
-                                            {{-- @if ($office['user_id'])
-                                                <button type="button" class="btn btn-soft-warning btn-sm test-dark"
-                                                    wire:click="$emit('assignuser',{{ $office->id . ',' . $office->dist_code . ',' . $office->level_no }})"
-                                                    {{ $office['user_id'] == 0 ? '' : 'disabled' }} wire:ignore
+                                            {{-- @isset($office['user_id'])
+                                                @if ($office['user_id'])
+                                                <button type="button" class="btn btn-soft-warning btn-sm test-dark" wire:ignore
                                                     disabled>Modify</button>
-                                            @endif --}}
-                                            {{-- @else
+                                                @endif
+                                            @else
                                                 <button type="button"
                                                     wire:click="$emit('assignuser',{{ $office->id . ',' . $office->dist_code . ',' . $office->level_no }})"
                                                     class="btn btn-soft-primary btn-sm">
@@ -159,11 +124,7 @@
                                             </button> --}}
                                         </td>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="text-center">{{ trans('global.table_data_msg') }}</td>
-                                    </tr>
-                                @endforelse
+                                @endforeach
                             @endisset
                         </tbody>
                     </table>
@@ -173,12 +134,10 @@
     @endif
 </div>
 <div>
-    <x-modal.card title="Users Lists" x-on:close="false" max-width="sm|md|lg|xl|2xl|6xl" blur
-        wire:click.away="hideElement" hide-close wire:model.defer="openModel" data-backdrop="static"
-        data-keyboard="false" wire:click="hideModal">
+    <x-modal.card title="Users Lists" x-on:close="false" max-width="sm|md|lg|xl|2xl|6xl" blur hide-close
+        wire:model.defer="openModel" data-backdrop="static" data-keyboard="false">
 
         <livewire:assign-office-admin.user-assign-model :openAssignAdminId="$openAssignAdminId" />
 
         </x-modal>
-
 </div>

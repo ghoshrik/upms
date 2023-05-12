@@ -28,11 +28,6 @@
             }, 3000);
             $('[data-toggle="tooltip"]').tooltip();
         });
-        // document.addEventListener('livewire:load', () => {
-        //     Livewire.onPageExpired((response, message) => {
-
-        //     })
-        // })
     </script>
 </body>
 
