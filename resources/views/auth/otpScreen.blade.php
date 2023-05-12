@@ -117,7 +117,8 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="floating-label form-group">
-                                        <input type="hidden" id="user_id" value="{{ base64_encode($user_id) }}" />
+                                        <input type="hidden" id="user_id"
+                                            value="{{ Crypt::encryptString($user_id) }}" />
                                         <div class="inputfield">
                                             <input type="number" maxlength="1" id="input1" class="input"
                                                 disabled />
@@ -138,7 +139,7 @@
                                 <div class="col-lg-9">
                                     <div class="fw-normal text-muted mt-2" id="resend">
                                         Didn’t get the code ? <a
-                                            href="{{ url('/resend-otp/' . base64_encode($user_id)) }}"
+                                            href="{{ url('/resend-otp/' . Crypt::encryptString($user_id)) }}"
                                             class="text-primary fw-bold text-decoration-none">Resend</a>
 
                                     </div>

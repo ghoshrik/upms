@@ -9,6 +9,7 @@ use App\Models\VerificationCode;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
 use App\Http\Requests\AuthLoginrequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -56,8 +57,7 @@ class AuthController extends Controller
             ->first();
         if ($user) {
             /* Super Admin*/
-            if($user->is_active == 1 && $user->is_admin==1)
-            {
+            if ($user->is_active == 1 && $user->is_admin == 1) {
                 if ($user && Hash::check($request->password, $user->password)) {
                     Auth::login($user);
                     // dd($request->session()->put('user', $user));
@@ -68,14 +68,13 @@ class AuthController extends Controller
                     ]);
                 }
             }
-            /* Super Admin*/
-            elseif ($user->is_active == 1) {
+            /* Super Admin*/ elseif ($user->is_active == 1) {
                 if ($user && Hash::check($request->password, $user->password)) {
                     $resp = $this->generateOtp($user->id);
                     $phoneNumberMasked = preg_replace('/(\d{3})(\d{3})(\d{4})/', 'XXXXXX$3', $user->mobile); // Masked phone number
                     // dd($resp->otp);
                     $messageSend = "Your Mobile Number is " . $phoneNumberMasked . " " . "Your OTP is " . $resp->otp;
-                    return redirect()->route('auth.verify', ['user_id' => base64_encode($user->id)])->with('status', $messageSend);
+                    return redirect()->route('auth.verify', ['user_id' => Crypt::encryptString($user->id)])->with('status', $messageSend);
                     // dd($resp);
                 } else {
                     throw ValidationException::withMessages([
@@ -94,8 +93,8 @@ class AuthController extends Controller
 
         // dd(base64_decode($userId));
 
-        $userdtls = User::select('emp_name')->where('id', base64_decode($userId))->first();
-        return view('auth.otpScreen')->with(['user_id' => base64_decode($userId), 'userdtls' => $userdtls]);
+        $userdtls = User::select('emp_name')->where('id', Crypt::decryptString($userId))->first();
+        return view('auth.otpScreen')->with(['user_id' => Crypt::decryptString($userId), 'userdtls' => $userdtls]);
     }
     public function LoginWithOTP(Request $request)
     {
@@ -117,7 +116,7 @@ class AuthController extends Controller
         // dd(VerificationCode::where('user_id', $request->user_id)->where('otp', $otpcode)->first());
         // dd($otpcode);
 
-        $verificationCode   = VerificationCode::select('verification_codes.*')->where('user_id', base64_decode($request->userId))->where('otp', $request->otpnum)->first();
+        $verificationCode   = VerificationCode::select('verification_codes.*')->where('user_id', Crypt::decryptString($request->userId))->where('otp', $request->otpnum)->first();
         // dd($verificationCode);
         $now = Carbon::now();
         if (!$verificationCode) {
@@ -127,7 +126,7 @@ class AuthController extends Controller
             // return redirect()->route('auth.signin')->with('error', 'Your OTP has been expired');
             return response()->json(['success' => false, 'message' => 'Your OTP has been expired']);
         }
-        $user = User::whereId(base64_decode($request->userId))->first();
+        $user = User::whereId(Crypt::decryptString($request->userId))->first();
 
         if ($user) {
             $user->update(['is_verified' => true]);
@@ -146,12 +145,12 @@ class AuthController extends Controller
     public function resendOTP($userid)
     {
         // dd();
-        $userId = base64_decode($userid);
+        $userId = Crypt::decryptString($userid);
         $user_id = User::where('id', $userId)->first();
         $resp = $this->generateOtp($user_id);
         $phoneNumberMasked = preg_replace('/(\d{3})(\d{3})(\d{4})/', 'XXXXXX$3', $user_id->mobile);
         $messageSend = "Your Mobile Number is " . $phoneNumberMasked . " " . "Your OTP is " . $resp->otp;
-        return redirect()->route('auth.verify', ['user_id' => base64_encode($resp->user_id)])->with('status', $messageSend);
+        return redirect()->route('auth.verify', ['user_id' => Crypt::encryptString($resp->user_id)])->with('status', $messageSend);
     }
     public function destroy(Request $request)
     {
