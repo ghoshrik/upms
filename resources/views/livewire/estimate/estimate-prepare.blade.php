@@ -164,8 +164,10 @@
                             @if ($this->selectedTab == 1)
                                 <div class="card">
                                     <div class="card-body">
-                                        <livewire:estimate.datatable.estimated-data-table
-                                            :wire:key="$updateDataTableTracker" />
+                                        {{-- <livewire:estimate.datatable.estimated-data-table
+                                             /> --}}
+                                        <livewire:estimate.datatable.power-grid.estimate-data-table :wire:key="$updateDataTableTracker"/>
+                                        {{-- <livewire:estiate-project.data-table.powergrid.estimate-project-table :wire:key="$updateDataTableTracker" /> --}}
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 2)
