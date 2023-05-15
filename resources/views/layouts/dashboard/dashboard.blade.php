@@ -28,6 +28,15 @@
             }, 3000);
             $('[data-toggle="tooltip"]').tooltip();
         });
+        document.addEventListener('livewire:load', function() {
+            Livewire.on('refreshCSRFToken', function() {
+                // axios.get('/refresh-csrf').then(function(response) {
+                //     document.querySelector('meta[name="csrf-token"]').setAttribute('content',
+                //         response.data.csrfToken);
+                // });
+                window.location.href = '/';
+            });
+        });
     </script>
 </body>
 
