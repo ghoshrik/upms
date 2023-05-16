@@ -20,6 +20,7 @@ class CreateOfficeAdmin extends Component
 
     public function mount()
     {
+        // $this->modifyUsers['userList'] = '';
         $this->hooUsers = User::where([['user_type', 4], ['department_id', Auth::user()->department_id], ['is_active', 1]])->get();
         $this->dropdownData['dist'] = District::all();
     }
@@ -116,10 +117,6 @@ class CreateOfficeAdmin extends Component
         $this->openModel = true;
     }
 
-    public function Modify($userid, $office_id, $dist_code, $level_no)
-    {
-        dd($userid, $office_id, $dist_code, $level_no);
-    }
 
 
 
@@ -144,8 +141,30 @@ class CreateOfficeAdmin extends Component
 
     }
 
+    public $modifyUsers, $listUser;
+    public function assignModify($userid, $office_id, $dist_code, $level_no)
+    {
+        // dd(Auth::user()->department_id);
+        $this->modifyUsers = Office::select('users.emp_name as name', 'users.office_id as id')
+            ->join('users', 'offices.id', '=', 'users.office_id')
+            ->where('offices.dist_code', $dist_code)
+            ->where('offices.level_no', $level_no)
+            ->where('users.department_id', Auth::user()->department_id)
+            ->where('users.user_type', 4)
+        //     // ->where('users.office_id', $office_id)
+        //     // ->where('users.office_id', 0)
+            ->whereNotIn('users.id', explode(',', $userid))
+            ->get();
+        $this->openModel = true;
+        // dd($this->modifyUsers['userList']);
+    }
+
+
+
+
     public function render()
     {
+        // $this->modifyUsers['userList'] = '';
         return view('livewire.assign-office-admin.create-office-admin');
     }
 }
