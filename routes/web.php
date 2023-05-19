@@ -26,6 +26,7 @@ use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\Milestone\Milestones;
 use App\Http\Livewire\Office\Office;
 use App\Http\Livewire\Permission\Permission;
+use App\Http\Livewire\Report\MisReport;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\Roles\Roles;
 use App\Http\Livewire\Setting\SettingLists;
@@ -42,6 +43,7 @@ use App\Http\Livewire\VendorRegs\VendorList;
 // Packages
 use App\Models\User;
 use App\Models\UsersHasRoles;
+use FontLib\Table\Type\name;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -129,9 +131,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
 
         // Route::prefix('admin',function(){
-           Route::get('admin/settings',SettingLists::class)->name('admin.settings');
+        Route::get('admin/settings', SettingLists::class)->name('admin.settings');
         // });
-
+        Route::get('mis-report', MisReport::class)->name('mis-report');
         Route::get('change-role/{id}', function ($id) {
             if (UsersHasRoles::where([['user_id', Auth::user()->id], ['role_id', $id]])->first()) {
                 $selectedRole = Role::find($id);
@@ -142,7 +144,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             }
         })->name('change-role');
     });
-
 });
 
 //App Details Page => 'Dashboard'], function() {
