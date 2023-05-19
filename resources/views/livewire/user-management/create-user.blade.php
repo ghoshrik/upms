@@ -20,6 +20,19 @@
                                 </div>
                             </div>
                         @endisset
+                        @isset($dropDownData['designations'])
+                            <div class="col-md-4 col-lg-4 col-sm-4">
+                                <div class="form-group">
+                                    <x-select label="Designation" placeholder="Select Designation"
+                                        wire:model.defer="newUserData.designation_id">
+                                        @foreach ($dropDownData['designations'] as $designation)
+                                            <x-select.option label="{{ $designation['designation_name'] }}"
+                                                value="{{ $designation['id'] }}" />
+                                        @endforeach
+                                    </x-select>
+                                </div>
+                            </div>
+                        @endisset
                         @isset($dropDownData['level'])
                             <div class="col-md-4 col-lg-4 col-sm-4">
                                 <x-select label="Select Office Level" placeholder="Select Office Level" :options="[
@@ -48,19 +61,7 @@
                                 </div>
                             </div>
                         @endisset
-                        @isset($dropDownData['designations'])
-                            <div class="col-md-4 col-lg-4 col-sm-4">
-                                <div class="form-group">
-                                    <x-select label="Designation" placeholder="Select Designation"
-                                        wire:model.defer="newUserData.designation_id">
-                                        @foreach ($dropDownData['designations'] as $designation)
-                                            <x-select.option label="{{ $designation['designation_name'] }}"
-                                                value="{{ $designation['id'] }}" />
-                                        @endforeach
-                                    </x-select>
-                                </div>
-                            </div>
-                        @endisset
+
                         <div class="col-md-4 col-lg-4 col-sm-3">
                             <div class="form-group">
                                 <x-input wire:model.lazy="newUserData.ehrms_id" label="eHrms ID(optional)"
