@@ -73,7 +73,7 @@
                                     @isset($filtredOffices)
                                         @foreach ($filtredOffices as $key => $office)
                                             @php
-                                                
+
                                                 $users = \App\Models\User::select('users.emp_name as employeeName', 'designations.designation_name as desg_name', 'users.mobile as mob', 'users.email as email_id')
                                                     ->join('designations', 'users.designation_id', '=', 'designations.id')
                                                     ->where('office_id', $office->id)
