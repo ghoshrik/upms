@@ -105,7 +105,7 @@ class RateAnalysis extends Component
     public function render()
     {
         $this->updateDataTableTracker = rand(1,1000);
-        $this->titel = 'Project Estimate';
+        $this->titel = 'Rate Analysis';
         $assets = ['chart', 'animation'];
         return view('livewire.rate-analysis.rate-analysis');
 

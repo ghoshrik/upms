@@ -4,7 +4,7 @@
             <div class="card overflow-hidden">
                 <div class="card-header d-flex justify-content-between flex-wrap">
                     <div class="header-title">
-                        <h4 class="card-title mb-2">Added Estimates List</h4>
+                        <h4 class="card-title mb-2">Added Rates List</h4>
                     </div>
                 </div>
                 <div>
