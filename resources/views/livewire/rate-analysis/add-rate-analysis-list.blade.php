@@ -28,7 +28,7 @@
                         <div class="col col-md-6 col-lg-6 mb-2">
                             <div class="btn-group float-right" role="group" aria-label="Basic example">
                                 <button type="button" class="btn btn-soft-primary" wire:click="totalOnSelected"
-                                    @if ($openTotalButton && $totalOnSelectedCount!=1) {{ '' }}@else {{ 'disabled' }} @endif>{{ trans('cruds.estimate.fields.total_on_selected') }}
+                                    @if ($openTotalButton && $totalOnSelectedCount!=1||true) {{ '' }}@else {{ 'disabled' }} @endif>{{ trans('cruds.estimate.fields.total_on_selected') }}
                                 </button>
                                 <button type="button" class="btn btn-soft-info" wire:click="exportWord">
                                     <span class="btn-inner">
@@ -83,7 +83,8 @@
                                             @if ($addedEstimate['sor_item_number'])
                                                 {{ $addedEstimate['description'] }}
                                             @elseif ($addedEstimate['estimate_no'])
-                                                {{ getEstimateDescription($addedEstimate['estimate_no']) }}
+                                                {{-- {{ getEstimateDescription($addedEstimate['estimate_no']) }} --}}
+                                                {{$addedEstimate['description']}}
                                                 {{-- {{ $addedEstimate->SOR->sorMasterDesc }} --}}
                                             @elseif ($addedEstimate['arrayIndex'])
                                                 @if ($addedEstimate['remarks'])

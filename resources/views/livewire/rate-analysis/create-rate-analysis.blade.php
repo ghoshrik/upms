@@ -22,7 +22,7 @@
                                         x-on:select="$wire.changeCategory($event.target)" :options="[
                                             ['name' => 'SOR', 'id' => 1],
                                             ['name' => 'Other', 'id' => 2],
-                                            ['name' => 'Estimate', 'id' => 3],
+                                            ['name' => 'Rate', 'id' => 3],
                                         ]"
                                         option-label="name" option-value="id" />
                                 </div>
@@ -187,19 +187,32 @@
                                     </div>
                                 </div>
                             @endif
-                            @if ($estimateData['item_name'] == 'Estimate')
+                            @if ($estimateData['item_name'] == 'Rate')
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group">
-                                            <x-select wire:key="dept"
-                                                label="{{ trans('cruds.estimate.fields.dept') }}"
+                                            <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
                                                 placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
                                                 wire:model.defer="estimateData.dept_id"
+                                                x-on:select="$wire.getDeptCategory()">
+                                                @foreach ($fatchDropdownData['departments'] as $department)
+                                                    <x-select.option label="{{ $department['department_name'] }}"
+                                                        value="{{ $department['id'] }}" />
+                                                @endforeach
+                                            </x-select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                         <div class="form-group">
+                                            <x-select wire:key="category"
+                                                label="{{ trans('cruds.estimate.fields.category') }}"
+                                                placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
+                                                wire:model.defer="estimateData.dept_category_id"
                                                 x-on:select="$wire.getDeptEstimates()">
-                                                @isset($fatchDropdownData['departments'])
-                                                    @foreach ($fatchDropdownData['departments'] as $department)
-                                                        <x-select.option label="{{ $department['department_name'] }}"
-                                                            value="{{ $department['id'] }}" />
+                                                @isset($fatchDropdownData['departmentsCategory'])
+                                                    @foreach ($fatchDropdownData['departmentsCategory'] as $deptCategory)
+                                                        <x-select.option label="{{ $deptCategory['dept_category_name'] }}"
+                                                            value="{{ $deptCategory['id'] }}" />
                                                     @endforeach
                                                 @endisset
                                             </x-select>
@@ -213,8 +226,8 @@
                                                 x-on:select="$wire.getEstimateDetails()">
                                                 @isset($fatchDropdownData['estimatesList'])
                                                     @foreach ($fatchDropdownData['estimatesList'] as $estimate)
-                                                        <x-select.option label="{{ $estimate['estimate_id'].' - '.$estimate['sorMasterDesc'] }}"
-                                                            value="{{ $estimate['estimate_id'] }}" />
+                                                        <x-select.option label="{{ $estimate['rate_id'].' - '.$estimate['description'] }}"
+                                                            value="{{ $estimate['rate_id'] }}" />
                                                     @endforeach
                                                 @endisset
                                             </x-select>
@@ -283,8 +296,10 @@
         @endif --}}
         @if ($addedEstimate != null || Session::has('addedProjectEstimateData'))
             <div x-transition.duration.500ms>
-                <livewire:estimate-project.added-estimate-project-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
-                    :wire:key="$addedEstimateUpdateTrack" />
+                {{-- <livewire:estimate-project.added-estimate-project-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
+                    :wire:key="$addedEstimateUpdateTrack" /> --}}
+                    <livewire:rate-analysis.add-rate-analysis-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
+                    :wire:key="$addedEstimateUpdateTrack">
             </div>
         @endif
     </div>

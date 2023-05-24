@@ -49,13 +49,13 @@
                     class="theme-color-pink-img  w-100  animated-scaleX">
             </div> --}}
         </div>
-        <div wire:loading.delay.long>
+        <div wire:loading.delay.longest>
             <div class="spinner-border text-primary loader-position" role="status"></div>
         </div>
-        <div wire:loading.delay.long.class="loading">
+        <div wire:loading.delay.longest.class="loading">
             @if ($isFromOpen && $openedFormType == 'create')
                 <div x-transition.duration.900ms>
-                    <livewire:estimate-project.create-estimate-project />
+                    <livewire:rate-analysis.create-rate-analysis />
                 </div>
             @elseif($isFromOpen && $openedFormType == 'edit')
                 <div x-transition.duration.900ms>

@@ -9,6 +9,7 @@ use ChrisKonnertz\StringCalc\StringCalc;
 use App\Models\SORMaster as ModelsSORMaster;
 use Illuminate\Support\Facades\Auth;
 use App\Models\EstimateUserAssignRecord;
+use App\Models\RatesAnalysis;
 use ChrisKonnertz\StringCalc\Exceptions\StringCalcException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -103,7 +104,7 @@ class AddRateAnalysisList extends Component
 
     public function totalOnSelected()
     {
-        if (count($this->level) >= 2) {
+        if (count($this->level) >= 2||true) {
             $result = 0;
             foreach ($this->level as $key => $array) {
                 $this->arrayStore[] = chr($array + 64);
@@ -298,11 +299,11 @@ class AddRateAnalysisList extends Component
                 // dd($this->allAddedEstimatesData);
                 if ($this->allAddedEstimatesData) {
                     $intId = random_int(100000, 999999);
-                    if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
+                    // if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
                         foreach ($this->allAddedEstimatesData as $key => $value) {
                             $insert = [
-                                'estimate_id' => $intId,
-                                'estimate_no' => $value['estimate_no'],
+                                'rate_id' => $intId,
+                                'rate_no' => $value['estimate_no'],
                                 'dept_id' => $value['dept_id'],
                                 'category_id' => $value['category_id'],
                                 'row_id' => $value['array_id'],
@@ -318,7 +319,7 @@ class AddRateAnalysisList extends Component
                                 'comments' => $value['remarks'],
                             ];
                             $validateData = Validator::make($insert, [
-                                'estimate_id' => 'required|integer',
+                                'rate_id' => 'required|integer',
                                 'dept_id' => 'required|integer',
                                 'category_id' => 'required|integer',
                                 'row_id' => 'required|integer',
@@ -326,23 +327,16 @@ class AddRateAnalysisList extends Component
                             if ($validateData->fails()) {
                                 // dd($validateData->messages());
                             }
-                            EstimatePrepare::create($insert);
+                            RatesAnalysis::create($insert);
                         }
-                        $data = [
-                            'estimate_id' => $intId,
-                            'estimate_user_type' => 5,
-                            'status' => 1,
-                            'user_id' => Auth::user()->id,
-                        ];
-                        EstimateUserAssignRecord::create($data);
                         $this->notification()->success(
-                            $title = 'Project Estimate Created Successfully!!'
+                            $title = 'Created Successfully!!'
                         );
                         $this->resetSession();
                         $this->updateDataTableTracker = rand(1, 1000);
                         $this->emit('openForm');
                         $this->emit('refreshData');
-                    }
+                    // }
                 } else {
                     $this->notification()->error(
                         $title = 'please insert at list one item !!'
