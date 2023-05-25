@@ -31,7 +31,7 @@
                                 {{-- @foreach ($editEstimateRow) --}}
                                     <tr>
                                         <td>{{ chr($editEstimateRow['row_id'] + 64) }}</td>
-                                        <td>
+                                        <td class="text-wrap">
                                             @if ($editEstimateRow['sor_item_number'])
                                                 {{ getSorItemNumber($editEstimateRow['sor_item_number']) }}
                                             @elseif ($editEstimateRow['estimate_no'])
