@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class SettingLists extends Component
 {
 
-    protected function rules()
+    public function mount()
     {
         if (!Auth::check()) {
             return redirect()->route('auth.signin');
@@ -29,7 +29,8 @@ class SettingLists extends Component
     }
     public function render()
     {
-        $this->emit('changeTitle', 'Settings');
+        // $this->emit('changeTitle', 'Settings');
+        $this->titel = "Settings";
         $assets = ['chart', 'animation'];
         return view('livewire.setting.setting-lists',compact('assets'));
     }

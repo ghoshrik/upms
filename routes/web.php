@@ -8,7 +8,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Livewire\Aafs\AafsProjects;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\AccessType\AccessType;
-// use App\Http\Livewire\Designation\CreateDesignation;
 use App\Http\Livewire\Aoc\Aocs;
 use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
 use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
@@ -26,15 +25,13 @@ use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\Milestone\Milestones;
 use App\Http\Livewire\Office\Office;
 use App\Http\Livewire\Permission\Permission;
-use App\Http\Livewire\RateAnalysis\RateAnalysis;
+use App\Http\Livewire\Report\MisReport;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\Roles\Roles;
+use App\Http\Livewire\Setting\SettingLists;
 use App\Http\Livewire\Sorapprove\SorApprovers;
 use App\Http\Livewire\Sor\Sor;
 use App\Http\Livewire\Tender\Tenders;
-// use App\Http\Livewire\Permission\Permissions;
-// use App\Http\Livewire\Role\Roles;
-// use App\Http\Livewire\Setting\SettingLists;
 use App\Http\Livewire\Unitsmaster\UnitsMaster;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\UserType\UserType;
@@ -42,6 +39,7 @@ use App\Http\Livewire\VendorRegs\VendorList;
 // Packages
 use App\Models\User;
 use App\Models\UsersHasRoles;
+use FontLib\Table\Type\name;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -91,27 +89,75 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         // Dashboard Routes
         Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
-        // Users Module
-        Route::resource('users', UserController::class);
 
-        Route::get('estimate-prepare', EstimatePrepare::class)->name('estimate-prepare');
-        Route::get('estimate-project', EstimateProject::class)->name('estimate-project');
-        Route::get('rate-analysis', RateAnalysis::class)->name('rate-analysis');
-        Route::get('designation', Designation::class)->name('designation');
-        Route::get('user-type', UserType::class)->name("user-type");
-        Route::get('department', Department::class)->name("department");
-        Route::get('department-category', DepartmentCategoryList::class)->name('department-category');
-        Route::get('office', Office::class)->name('office');
-        Route::get('prepare-sor', Sor::class)->name('prepare-sor');
         Route::get('user-management', UserManagement::class)->name('user-management');
+
+        //state Admin
+        Route::get('user-management', UserManagement::class)->name('user-management');
+        // Route::group(['middleware' => ['role:State Admin']], function () {
+            Route::get('department', Department::class)->name("department");
+
+            Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
+            Route::get('mis-report', MisReport::class)->name('mis-report');
+        // });
+
+        //Department Admin
+        Route::group(['middleware' => ['role:Department Admin']], function () {
+            // Route::get('user-management', UserManagement::class)->name('user-management');
+            Route::get('designation', Designation::class)->name('designation');
+            Route::get('office', Office::class)->name('office');
+            Route::get('assign-office-admin', AssignOfficeAdmin::class)->name('assign-office-admin');
+            Route::get('sor-approver', SorApprovers::class)->name('sor-approver');
+            Route::get('unit-master', UnitsMaster::class)->name('unit-master');
+            Route::get('department-category', DepartmentCategoryList::class)->name('department-category');
+        });
+
+        //Office Admin
+        Route::group(['middleware' => ['role:Office Admin']], function () {
+
+            Route::get('assign-role', AssignRole::class)->name('assign-role');
+            Route::get('milestones', Milestones::class)->name('milestones');
+            Route::get('vendors', VendorList::class)->name('vendors');
+            Route::get('tenders', Tenders::class)->name('tenders');
+            Route::get('aafs-project', AafsProjects::class)->name('aafs-project');
+            Route::get('aoc', Aocs::class)->name('aoc');
+        });
+
+        // Office User
+        Route::group(['middleware' => ['role:Estimate Recommender (ER)']], function () {
+            Route::get('estimate-recommender', EstimateRecomender::class)->name('estimate-recommender');
+        });
+
+
+        Route::group(['middleware' => ['role:Estimate Preparer (EP)']], function () {
+            Route::get('estimate-prepare', EstimatePrepare::class)->name('estimate-prepare');
+        });
+        Route::group(['middleware' => ['role:Estimate Forwarder (EF)']], function () {
+            Route::get('estimate-forwarder', EstimateForwarder::class)->name('estimate-forwarder');
+        });
+
+        Route::group(['middleware' => ['role:Project Estimate (EP)']], function () {
+            Route::get('estimate-project', EstimateProject::class)->name('estimate-project');
+        });
+
+        Route::group(['middleware' => ['role:SOR Preparer']], function () {
+            Route::get('prepare-sor', Sor::class)->name('prepare-sor');
+        });
+
+        Route::get('user-type', UserType::class)->name("user-type");
+
+
+
+
+
         Route::get('access-manager', AccessManager::class)->name('access-manager');
-        Route::get('assign-role', AssignRole::class)->name('assign-role');
+
         Route::get('access-type', AccessType::class)->name('access-type');
         Route::get('menu-manager', MenuManagement::class)->name('menu-manager');
-        Route::get('estimate-recommender', EstimateRecomender::class)->name('estimate-recommender');
-        Route::get('estimate-forwarder', EstimateForwarder::class)->name('estimate-forwarder');
-        Route::get('vendors', VendorList::class)->name('vendors');
-        Route::get('milestones', Milestones::class)->name('milestones');
+
+
+
+
         // Route::get('aafs-project',ProjectList::class)->name('aafs-project');
         Route::view('/powergrid', 'powergrid-demo');
         Route::get('roles', Roles::class)->name('roles');
@@ -119,16 +165,19 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('permissions', Permission::class)->name('permissions');
 
         // Route::get('vendors',VendorList::class)->name('vendors');
-        Route::get('aafs-project', AafsProjects::class)->name('aafs-project');
-        Route::get('aoc', Aocs::class)->name('aoc');
-        Route::get('tenders', Tenders::class)->name('tenders');
-        Route::get('assign-office-admin', AssignOfficeAdmin::class)->name('assign-office-admin');
-        Route::get('assign-another-office', AssignToAnotherOffice::class)->name('assign-another-office');
-        Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
-        Route::get('sor-approver', SorApprovers::class)->name('sor-approver');
-        Route::get('unit-master', UnitsMaster::class)->name('unit-master');
-        Route::get('qty-analysis', AnalysisList::class)->name('qty-analysis');
 
+
+
+
+        Route::get('assign-another-office', AssignToAnotherOffice::class)->name('assign-another-office');
+
+
+
+
+
+        // Route::prefix('admin',function(){
+        Route::get('admin/settings', SettingLists::class)->name('admin.settings');
+        // });
 
         Route::get('change-role/{id}', function ($id) {
             if (UsersHasRoles::where([['user_id', Auth::user()->id], ['role_id', $id]])->first()) {

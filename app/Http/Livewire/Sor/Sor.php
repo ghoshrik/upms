@@ -65,17 +65,34 @@ class Sor extends Component
     public function generatePdf($value)
     {
         $sor = ModelsSOR::join('attach_docs', 'attach_docs.sor_docu_id', '=', 's_o_r_s.id')->where('s_o_r_s.id', $value)->first();
-        $decoded = base64_decode($sor->docfile);
-        $file = $sor->Item_details . '.pdf';
-        file_put_contents($file, $decoded);
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
-        //     header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        return response()->download($file)->deleteFileAfterSend(true);
-        $this->reset('sor');
+        try
+        {
+            if($sor->docfile)
+            {
+                $decoded = base64_decode($sor->docfile);
+                $file = $sor->Item_details . '.pdf';
+                file_put_contents($file, $decoded);
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+                //     header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                return response()->download($file)->deleteFileAfterSend(true);
+                $this->reset('sor');
+            }
+            else
+            {
+                $this->notification()->error(
+                    $title = "File Not Exists"
+                );
+            }
+        }
+        catch (\Throwable $th) {
+
+            // dd($th->getMessage());
+            $this->emit('showError', $th->getMessage());
+        }
     }
     public function setErrorAlert($errorMessage)
     {

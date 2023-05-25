@@ -106,16 +106,17 @@
                                         </td>
                                         <td>
                                             @if ($addedEstimate['row_index'] == null)
-                                                <x-button wire:click="editEstimate({{ $addedEstimate['row_id'] }})"
-                                                    type="button" class="btn btn-soft-primary btn-sm">
+                                                {{-- <x-button wire:click="editEstimate({{ $addedEstimate['row_id'] }})"
+                                                    type="button" class="btn btn-soft-primary btn-sm px-3 py-2.5 m-1 rounded">
                                                     <span class="btn-inner">
                                                         <x-lucide-edit class="w-4 h-4 text-gray-500" /> {{ trans('global.edit_btn') }}
                                                     </span>
-                                                </x-button>
+                                                </x-button> --}}
+                                                <x-edit-button wire:click="editEstimate({{ $addedEstimate['row_id'] }})" id action/>
                                             @endif
                                             @if ($arrayRow == $addedEstimate['row_id'])
                                                 <x-button wire:click="confDeleteDialog({{ $addedEstimate['row_id'] }})"
-                                                    type="button" class="btn btn-soft-danger btn-sm">
+                                                    type="button" class="btn btn-soft-danger btn-sm px-3 py-2.5 m-1 rounded">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> {{ trans('global.delete_btn') }}
                                                     </span>

@@ -10,8 +10,8 @@
             <div class="container-fluid iq-container">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                     <div class="d-flex flex-column">
-                        <h3 class="text-dark">{{ $titel }}</h3>
-                        <p class="text-primary mb-0">{{ $subTitel }}</p>
+                        <h6 class="text-dark">{{$titel}}</h6>
+                    <p class="text-primary mb-0">{{$subTitel}}</p>
                     </div>
                     @canany(['create estimate', 'edit estimate'])
                         <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
@@ -164,8 +164,10 @@
                             @if ($this->selectedTab == 1)
                                 <div class="card">
                                     <div class="card-body">
-                                        <livewire:estimate.datatable.estimated-data-table
-                                            :wire:key="$updateDataTableTracker" />
+                                        {{-- <livewire:estimate.datatable.estimated-data-table
+                                             /> --}}
+                                        <livewire:estimate.datatable.power-grid.estimate-data-table :wire:key="$updateDataTableTracker"/>
+                                        {{-- <livewire:estiate-project.data-table.powergrid.estimate-project-table :wire:key="$updateDataTableTracker" /> --}}
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 2)
@@ -226,7 +228,6 @@
                 <livewire:components.modal.estimate.estimate-forward-modal />
                 <livewire:components.modal.estimate.edit-estimate-modal />
             </div>
-
         </div>
     </div>
 </div>
