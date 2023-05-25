@@ -127,6 +127,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
         Route::get('sor-approver', SorApprovers::class)->name('sor-approver');
         Route::get('unit-master', UnitsMaster::class)->name('unit-master');
+        Route::get('qty-analysis', AnalysisList::class)->name('qty-analysis');
+
 
         Route::get('change-role/{id}', function ($id) {
             if (UsersHasRoles::where([['user_id', Auth::user()->id], ['role_id', $id]])->first()) {

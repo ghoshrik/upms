@@ -10,8 +10,8 @@
             <div class="container-fluid iq-container">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                     <div class="d-flex flex-column">
-                        <h3 class="text-dark">{{$titel}}</h3>
-                    <p class="text-primary mb-0">{{$subTitel}}</p>
+                        <h3 class="text-dark">{{ $titel }}</h3>
+                        <p class="text-primary mb-0">{{ $subTitel }}</p>
                     </div>
                     @canany(['create estimate', 'edit estimate'])
                         <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">

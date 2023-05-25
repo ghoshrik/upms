@@ -16,15 +16,13 @@
                     {{-- @canany(['create sor']) --}}
                     <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
                         @if (!$isFromOpen)
-                            <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
-                                x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
+                            <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill ">
                                 <span class="btn-inner">
                                     <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
                                 </span>
                             </button>
                         @else
-                            <button wire:click="fromEntryControl" class="btn btn-danger rounded-pill "
-                                x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
+                            <button wire:click="fromEntryControl" class="btn btn-danger rounded-pill ">
                                 <span class="btn-inner">
                                     <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
                                 </span>
@@ -49,13 +47,13 @@
                     class="theme-color-pink-img  w-100  animated-scaleX">
             </div> --}}
         </div>
-        <div wire:loading.delay.long>
+        {{-- <div wire:loading.delay.long>
             <div class="spinner-border text-primary loader-position" role="status"></div>
-        </div>
+        </div> --}}
         {{-- x-data="{ formOpen: @entangle('formOpen'), editFormOpen: @entangle('editFormOpen') }" --}}
 
-        <div wire:loading.delay.long.class="loading">
-            <div x-show="formOpen" x-transition.duration.900ms>
+        <div>
+            <div x-show="formOpen">
                 @if ($isFromOpen && $openedFormType == 'create')
                     <livewire:unitsmaster.create-units />
                 @elseif($isFromOpen && $openedFormType == 'edit')
