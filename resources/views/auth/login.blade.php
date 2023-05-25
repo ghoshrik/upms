@@ -38,7 +38,7 @@
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="form-group">
-                                                <label for="email" class="form-label">Login ID/HRMS ID</label>
+                                                <label for="email" class="form-label" style="color:#000000;">Login ID/HRMS ID</label>
                                                 <input type="text" name="loginId"
                                                     class="form-control @error('loginId') is-invalid @enderror"
                                                     autocomplete="off" placeholder="{{ __('enter Login ID/HRMS ID') }}"
@@ -53,7 +53,7 @@
                                         {{-- @isset($userMobile) --}}
                                         <div class="col-lg-12">
                                             <div class="form-group">
-                                                <label for="password" class="form-label">Password</label>
+                                                <label for="password" class="form-label" style="color:#000000;">Password</label>
                                                 <input class="form-control @error('password') is-invalid @enderror"
                                                     type="password" autocomplete="off" placeholder="enter your password"
                                                     name="password" autocomplete="current-password">
