@@ -26,6 +26,7 @@ use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\Milestone\Milestones;
 use App\Http\Livewire\Office\Office;
 use App\Http\Livewire\Permission\Permission;
+use App\Http\Livewire\RateAnalysis\RateAnalysis;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\Roles\Roles;
 use App\Http\Livewire\Sorapprove\SorApprovers;
@@ -95,6 +96,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::get('estimate-prepare', EstimatePrepare::class)->name('estimate-prepare');
         Route::get('estimate-project', EstimateProject::class)->name('estimate-project');
+        Route::get('rate-analysis', RateAnalysis::class)->name('rate-analysis');
         Route::get('designation', Designation::class)->name('designation');
         Route::get('user-type', UserType::class)->name("user-type");
         Route::get('department', Department::class)->name("department");
@@ -125,6 +127,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
         Route::get('sor-approver', SorApprovers::class)->name('sor-approver');
         Route::get('unit-master', UnitsMaster::class)->name('unit-master');
+        Route::get('qty-analysis', AnalysisList::class)->name('qty-analysis');
+
 
         Route::get('change-role/{id}', function ($id) {
             if (UsersHasRoles::where([['user_id', Auth::user()->id], ['role_id', $id]])->first()) {

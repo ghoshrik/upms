@@ -4,7 +4,7 @@
             <div class="card overflow-hidden">
                 <div class="card-header d-flex justify-content-between flex-wrap">
                     <div class="header-title">
-                        <h6 class="card-title mb-2">Added Estimates List</h6>
+                        <h4 class="card-title mb-2">Added Estimates List</h4>
                     </div>
                 </div>
                 <div>
@@ -28,25 +28,13 @@
                         <div class="col col-md-6 col-lg-6 mb-2">
                             <div class="btn-group float-right" role="group" aria-label="Basic example">
                                 <button type="button" class="btn btn-soft-primary" wire:click="totalOnSelected"
-                                    @if ($openTotalButton && $totalOnSelectedCount != 1) {{ '' }}@else {{ 'disabled' }} @endif>{{ trans('cruds.estimate.fields.total_on_selected') }}
+                                    @if ($openTotalButton && $totalOnSelectedCount!=1||true) {{ '' }}@else {{ 'disabled' }} @endif>{{ trans('cruds.estimate.fields.total_on_selected') }}
                                 </button>
                                 <button type="button" class="btn btn-soft-info" wire:click="exportWord">
                                     <span class="btn-inner">
                                         <x-lucide-sheet class="w-4 h-4 text-gray-500" />
                                     </span>
                                     {{ trans('cruds.estimate.fields.export_word') }}</button>
-                            </div>
-                        </div>
-                        <div class="col col-md-6 col-lg-6 mb-2">
-                            <div class="row">
-                                <div class="input-group mb-3">
-                                    <x-input label="Height" placeholder="height" wire:model="height" />
-                                    <x-input label="Weight" placeholder="Weight" wire:model="weight" />
-                                    <x-input label="breath" placeholder="breath" wire:model="breath" />
-                                    {{-- <x-input label="Height" placeholder="height" wire:model="height" /> --}}
-                                    <button type="button" wire:click="calc"
-                                        class="btn btn-soft-primary">Calculate</button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -81,27 +69,23 @@
                                             </div>
                                         </td>
                                         <td>
-                                            {{-- {{ $addedEstimate['sor_item_number'] ? getSorItemNumber($addedEstimate['sor_item_number']) : '---' }} --}}
+                                            {{-- {{ $addedEstimate['sor_item_number'] ?  $addedEstimate['sor_item_number'] : '---'}} --}}
 
                                             @if ($addedEstimate['sor_item_number'])
                                                 {{ getSorItemNumber($addedEstimate['sor_item_number']) }}
+                                            @elseif ($addedEstimate['estimate_no'])
+                                                {{ $addedEstimate['estimate_no'] }}
                                             @else
-                                                @if ($addedEstimate['height'])
-                                                    {{ __('height') }}
-                                                @elseif($addedEstimate['weight'])
-                                                    {{ __('weight') }}
-                                                @elseif($addedEstimate['breath'])
-                                                    {{ __('breath') }}
-                                                @endif
+                                                --
                                             @endif
-
-
-
-
                                         </td>
                                         <td class="text-wrap" style="width: 40rem">
                                             @if ($addedEstimate['sor_item_number'])
                                                 {{ $addedEstimate['description'] }}
+                                            @elseif ($addedEstimate['estimate_no'])
+                                                {{-- {{ getEstimateDescription($addedEstimate['estimate_no']) }} --}}
+                                                {{$addedEstimate['description']}}
+                                                {{-- {{ $addedEstimate->SOR->sorMasterDesc }} --}}
                                             @elseif ($addedEstimate['arrayIndex'])
                                                 @if ($addedEstimate['remarks'])
                                                     {{ $addedEstimate['arrayIndex'] . ' ( ' . $addedEstimate['remarks'] . ' ) ' }}
@@ -116,27 +100,24 @@
 
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['qty'])
-                                                {{ $addedEstimate['qty'] }}
-                                            @endif
+                                            {{ $addedEstimate['qty'] }}
                                         </td>
                                         <td>
                                             {{ $addedEstimate['rate'] }}
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['total_amount'])
-                                                {{ $addedEstimate['total_amount'] }}
-                                            @else
-                                                @if ($addedEstimate['height'])
-                                                    {{ $addedEstimate['height'] }}
-                                                @elseif($addedEstimate['weight'])
-                                                    {{ $addedEstimate['weight'] }}
-                                                @elseif($addedEstimate['breath'])
-                                                    {{ $addedEstimate['breath'] }}
-                                                @endif
-                                            @endif
+                                            {{ $addedEstimate['total_amount'] }}
                                         </td>
                                         <td>
+                                            @if ($addedEstimate['estimate_no'])
+                                                <x-button
+                                                    wire:click="viewModal({{ $addedEstimate['estimate_no'] }})"
+                                                    type="button" class="btn btn-soft-primary btn-sm">
+                                                    <span class="btn-inner">
+                                                        <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
+                                                    </span>
+                                                </x-button>
+                                            @endif
                                             @if ($arrayRow == $key)
                                                 <x-button
                                                     wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"

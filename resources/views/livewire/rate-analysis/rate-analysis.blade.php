@@ -10,8 +10,8 @@
             <div class="container-fluid iq-container">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                     <div class="d-flex flex-column">
-                        <h3 class="text-dark">{{ $titel }}</h3>
-                        <p class="text-primary mb-0">{{ $subTitel }}</p>
+                        <h3 class="text-dark">{{$titel}}</h3>
+                    <p class="text-primary mb-0">{{$subTitel}}</p>
                     </div>
                     @canany(['create estimate', 'edit estimate'])
                         <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
@@ -49,21 +49,20 @@
                     class="theme-color-pink-img  w-100  animated-scaleX">
             </div> --}}
         </div>
-        @section('webtitle', trans('cruds.estimate.title_singular'))
-        <div wire:loading.delay.long>
+        <div wire:loading.delay.longest>
             <div class="spinner-border text-primary loader-position" role="status"></div>
         </div>
-        <div wire:loading.delay.long.class="loading">
+        <div wire:loading.delay.longest.class="loading">
             @if ($isFromOpen && $openedFormType == 'create')
                 <div x-transition.duration.900ms>
-                    <livewire:estimate.create-estimate />
+                    <livewire:rate-analysis.create-rate-analysis />
                 </div>
             @elseif($isFromOpen && $openedFormType == 'edit')
                 <div x-transition.duration.900ms>
-                    <livewire:estimate.edit-estimate />
+                    <livewire:estimate-project.edit-estimate-project />
                 </div>
             @else
-                <div>
+                <div x-transition.duration.500ms>
                     <div class="row">
                         <div class="col-md-12 col-lg-12">
                             <div class="row row-cols-1">
@@ -91,7 +90,7 @@
                                                                 <path d="M10 13h4"></path>
                                                             </svg>
                                                         </div>
-                                                        <div class="progress-detail">
+                                                        <div class="progress-detail" wire:key="$updateDataTableTracker">
                                                             <p class="mb-2">Total Draft</p>
                                                             <h4 class="counter" style="visibility: visible;">
                                                                 {{ $counterData['draftDataCount'] }}</h4>
@@ -121,7 +120,8 @@
                                                         </div>
                                                         <div class="progress-detail">
                                                             <p class="mb-2"> Total Forwarded</p>
-                                                            <h4 class="counter" style="visibility: visible;">
+                                                            <h4 class="counter" style="visibility: visible;"
+                                                                wire:key="$updateDataTableTracker">
                                                                 {{ $counterData['forwardedDataCount'] }}</h4>
                                                         </div>
                                                     </div>
@@ -149,7 +149,8 @@
                                                         </div>
                                                         <div class="progress-detail">
                                                             <p class="mb-2">Total Reverted</p>
-                                                            <h4 class="counter" style="visibility: visible;">
+                                                            <h4 class="counter" style="visibility: visible;"
+                                                                wire:key="$updateDataTableTracker">
                                                                 {{ $counterData['revertedDataCount'] }}</h4>
                                                         </div>
                                                     </div>
@@ -164,25 +165,16 @@
                             @if ($this->selectedTab == 1)
                                 <div class="card">
                                     <div class="card-body">
-                                        <livewire:estimate.datatable.estimated-data-table
-                                            :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 2)
                                 <div class="card">
                                     <div class="card-body">
-                                        {{-- <livewire:estimate.datatable.forwarded-data-table :wire:key="$updateDataTableTracker" /> --}}
-                                        <livewire:estimate.datatable.power-grid.estimate-forwarded-datatable
-                                            :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 3)
                                 <div class="card">
                                     <div class="card-body">
-                                        {{-- <livewire:estimate.datatable.reverted-data-table
-                                            :wire:key="$updateDataTableTracker" /> --}}
-                                        <livewire:estimate.datatable.power-grid.estimate-revert-table
-                                            :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @else
@@ -221,12 +213,11 @@
                 </div>
             @endif
 
-            <div>
-                <livewire:components.modal.estimate.estimate-view-modal />
-                <livewire:components.modal.estimate.estimate-forward-modal />
-                <livewire:components.modal.estimate.edit-estimate-modal />
-            </div>
-
         </div>
     </div>
+</div>
+<div>
+    <livewire:components.modal.estimate.estimate-view-modal />
+    <livewire:components.modal.estimate.estimate-forward-modal />
+    <livewire:components.modal.estimate.edit-estimate-modal />
 </div>

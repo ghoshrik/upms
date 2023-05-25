@@ -1,10 +1,8 @@
 <div>
-
     <x-form-section submit='store'>
         <x-slot name='form'>
             <div class="row">
                 <div class="col-md-3 col-lg-3 col-sm-3">
-                    {{-- <x-input label="{{ trans('cruds.aoc.fields.ref_no') }}" wire:model.defer="refcNo" placeholder="{{ trans('cruds.aoc.fields.ref_no') }}"/> --}}
                     <x-select label="{{ trans('cruds.tenders.fields.project_id') }}"
                         placeholder="Select {{ trans('cruds.tenders.fields.project_id') }}"
                         wire:model.defer="InputStoreData.projID">
@@ -15,9 +13,7 @@
                         @endforeach
                     </x-select>
                 </div>
-                {{-- <div class="col-md-3 col-lg-3 col-sm-3">
 
-                </div> --}}
                 <div class="col-md-3 col-lg-3 col-sm-3">
                     <x-input label="{{ trans('cruds.tenders.fields.tender_id') }}"
                         wire:model.defer="InputStoreData.tenderNo"

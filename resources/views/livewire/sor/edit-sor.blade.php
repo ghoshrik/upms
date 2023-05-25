@@ -2,10 +2,10 @@
     <div class="row">
         <div class="col-sm-12 col-lg-12">
             <div class="card">
-                <div wire:loading.delay.longest>
+                {{-- <div wire:loading.delay.longest>
                     <div class="spinner-border text-primary loader-position" role="status"></div>
-                </div>
-                <div wire:loading.delay.longest.class="loading" class="card-body">
+                </div> --}}
+                <div class="card-body">
                     <div class="row mutipal-add-row">
                         <div class="col-md-12 col-sm-6 col-lg-12">
                             <div class="row">

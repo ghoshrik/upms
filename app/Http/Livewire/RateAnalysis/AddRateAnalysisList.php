@@ -1,22 +1,27 @@
 <?php
 
-namespace App\Http\Livewire\Estimate;
+namespace App\Http\Livewire\RateAnalysis;
 
-use App\Models\EstimatePrepare;
-use App\Models\EstimateUserAssignRecord;
-use App\Models\SORMaster as ModelsSORMaster;
-use ChrisKonnertz\StringCalc\StringCalc;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
+use App\Models\EstimatePrepare;
+use Illuminate\Support\Facades\Log;
+use ChrisKonnertz\StringCalc\StringCalc;
+use App\Models\SORMaster as ModelsSORMaster;
+use Illuminate\Support\Facades\Auth;
+use App\Models\EstimateUserAssignRecord;
+use App\Models\RatesAnalysis;
+use ChrisKonnertz\StringCalc\Exceptions\StringCalcException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use WireUi\Traits\Actions;
 
-class AddedEstimateList extends Component
+class AddRateAnalysisList extends Component
 {
     use Actions;
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
-    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $totalOnSelectedCount = 0;
+    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
 
     public function mount()
     {
@@ -25,12 +30,15 @@ class AddedEstimateList extends Component
 
     public function resetSession()
     {
-        Session()->forget('addedEstimateData');
+        Session()->forget('addedProjectEstimateData');
         $this->reset();
     }
-
+    public function viewModal($estimate_id)
+    {
+        $this->emit('openModal', $estimate_id);
+    }
     //calculate estimate list
-    public function insertAddEstimate($arrayIndex, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks, $height, $weight, $breath)
+    public function insertAddEstimate($arrayIndex, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks)
     {
         $this->addedEstimateData['arrayIndex'] = $arrayIndex;
         $this->addedEstimateData['dept_id'] = $dept_id;
@@ -45,16 +53,12 @@ class AddedEstimateList extends Component
         $this->addedEstimateData['operation'] = $operation;
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
-        $this->addedEstimateData['height'] = $height;
-        $this->addedEstimateData['weight'] = $weight;
-        $this->addedEstimateData['breath'] = $breath;
         $this->setEstimateDataToSession();
         $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount');
     }
 
     public function expCalc()
     {
-        dd($this->allAddedEstimatesData);
         $result = 0;
         $tempIndex = strtoupper($this->expression);
         $stringCalc = new StringCalc();
@@ -62,7 +66,6 @@ class AddedEstimateList extends Component
             if ($this->expression) {
                 foreach (str_split($this->expression) as $key => $info) {
                     $count0 = count($this->allAddedEstimatesData);
-                    // dd($count0);
                     if (ctype_alpha($info)) {
                         $alphabet = strtoupper($info);
                         $alp_id = ord($alphabet) - 64;
@@ -72,8 +75,7 @@ class AddedEstimateList extends Component
                             }
                         } else {
                             $this->notification()->error(
-                                $title = 'Error !!!',
-                                $description = $alphabet . ' is a invalid input'
+                                $title = $alphabet . ' is a invalid input'
                             );
                         }
                     } elseif (htmlspecialchars($info) == "%") {
@@ -82,8 +84,7 @@ class AddedEstimateList extends Component
                 }
             }
             $result = $stringCalc->calculate($this->expression);
-            // dd($result);
-            $this->insertAddEstimate($tempIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Exp Calculoation', '', $this->remarks, 0, 0, 0);
+            $this->insertAddEstimate($tempIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(
@@ -91,14 +92,6 @@ class AddedEstimateList extends Component
             );
         }
     }
-
-    public $height, $weight, $breath;
-    public function calc()
-    {
-        $this->insertAddEstimate(0, 0, 0, 0, '', '', '', 0, 0, 0, '', '', 0, $this->height, $this->weight, $this->breath);
-    }
-
-
 
     public function showTotalButton()
     {
@@ -111,31 +104,28 @@ class AddedEstimateList extends Component
 
     public function totalOnSelected()
     {
-        if (count($this->level) >= 2) {
+        if (count($this->level) >= 2||true) {
             $result = 0;
-            // dd($this->level);
             foreach ($this->level as $key => $array) {
                 $this->arrayStore[] = chr($array + 64);
-                // dd($this->arrayStore);
                 $result = $result + $this->allAddedEstimatesData[$array]['total_amount'];
-                // dd($this->allAddedEstimatesData[$array]['total_amount']);
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
-            $this->insertAddEstimate($this->arrayIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Total', '', '', $this->height, $this->weight, $this->breath);
+            $this->insertAddEstimate($this->arrayIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Total', '', '');
             $this->totalOnSelectedCount++;
         } else {
-            $this->notification()->error(
-                $title = 'Error !!!',
-                $description = 'Minimum select 2 Check boxes'
-            );
+            $this->dispatchBrowserEvent('alert', [
+                'type' => 'error',
+                'message' => "Minimum select 2 Check boxes"
+            ]);
         }
     }
 
     public function setEstimateDataToSession()
     {
         $this->reset('allAddedEstimatesData');
-        if (Session()->has('addedEstimateData')) {
-            $this->allAddedEstimatesData = Session()->get('addedEstimateData');
+        if (Session()->has('addedProjectEstimateData')) {
+            $this->allAddedEstimatesData = Session()->get('addedProjectEstimateData');
         }
         if ($this->addedEstimateData != null) {
             $index = count($this->allAddedEstimatesData) + 1;
@@ -151,10 +141,13 @@ class AddedEstimateList extends Component
             if (!array_key_exists("remarks", $this->addedEstimateData)) {
                 $this->addedEstimateData['remarks'] = '';
             }
+            if (!array_key_exists("estimate_no", $this->addedEstimateData)) {
+                $this->addedEstimateData['estimate_no'] = 0;
+            }
             foreach ($this->addedEstimateData as $key => $estimate) {
                 $this->allAddedEstimatesData[$index][$key] = $estimate;
             }
-            Session()->put('addedEstimateData', $this->allAddedEstimatesData);
+            Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
             $this->reset('addedEstimateData');
         }
     }
@@ -162,15 +155,15 @@ class AddedEstimateList extends Component
     public function confDeleteDialog($value): void
     {
         $this->dialog()->confirm([
-            'title' => 'Are you Sure?',
-            'icon' => 'error',
-            'accept' => [
-                'label' => 'Yes, Delete it',
+            'title'       => 'Are you Sure?',
+            'icon'        => 'error',
+            'accept'      => [
+                'label'  => 'Yes, Delete it',
                 'method' => 'deleteEstimate',
                 'params' => $value,
             ],
             'reject' => [
-                'label' => 'No, cancel',
+                'label'  => 'No, cancel'
                 // 'method' => 'cancel',
             ],
         ]);
@@ -179,29 +172,35 @@ class AddedEstimateList extends Component
     public function deleteEstimate($value)
     {
         unset($this->allAddedEstimatesData[$value]);
-        Session()->forget('addedEstimateData');
-        Session()->put('addedEstimateData', $this->allAddedEstimatesData);
+        Session()->forget('addedProjectEstimateData');
+        Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
         $this->level = [];
-        if ($this->totalOnSelectedCount == 1) {
+        if($this->totalOnSelectedCount == 1)
+        {
             $this->reset('totalOnSelectedCount');
         }
         $this->notification()->error(
             $title = 'Row Deleted Successfully'
         );
     }
-
+    // TODO::export word on project estimate
     public function exportWord()
     {
         $exportDatas = array_values($this->allAddedEstimatesData);
         // dd($exportDatas);
         $date = date('Y-m-d');
         $pw = new \PhpOffice\PhpWord\PhpWord();
-        $section = $pw->addSection();
-        $html = "<h1 style='font-size:24px;font-weight:600;text-align: center;'>Estimate Preparation Details</h1>";
-        $html .= "<p>This is for test purpose</p>";
+        $section = $pw->addSection(
+            array(
+                'marginLeft' => 600, 'marginRight' => 200,
+                'marginTop' => 600, 'marginBottom' => 200
+            )
+        );
+        $html = "<h1 style='font-size:24px;font-weight:600;text-align: center;'>Project Estimate Preparation Details</h1>";
+        $html .= "<p>Projected Estimate Details List</p>";
         $html .= "<table style='border: 1px solid black;width:auto'><tr>";
         $html .= "<th scope='col' style='text-align: center'>Serial No.</th>";
-        $html .= "<th scope='col' style='text-align: center'>Item Number(Ver.)</th>";
+        $html .= "<th scope='col' style='text-align: center'>Item Number/<br/>Project No(Ver.)</th>";
         $html .= "<th scope='col' style='text-align: center'>Description</th>";
         $html .= "<th scope='col' style='text-align: center'>Quantity</th>";
         $html .= "<th scope='col' style='text-align: center'>Unit Price</th>";
@@ -210,11 +209,13 @@ class AddedEstimateList extends Component
             $html .= "<tr><td style='text-align: center'>" . chr($export['array_id'] + 64) . "</td>&nbsp;";
             if ($export['sor_item_number']) {
                 $html .= "<td style='text-align: center'>" . getSorItemNumber($export['sor_item_number']) . ' ( ' . $export['version'] . ' )' . "</td>&nbsp;";
+            } elseif ($export['estimate_no']) {
+                $html .= "<td style='text-align: center'>" . $export['estimate_no'] . "</td>&nbsp;";
             } else {
                 $html .= "<td style='text-align: center'>--</td>&nbsp;";
             }
             if ($export['description']) {
-                $html .= "<td style='text-align: center'>" . ($export['description']) . "</td>&nbsp;";
+                $html .= "<td style='text-align: center'>" . $export['description'] . "</td>&nbsp;";
             } elseif ($export['operation']) {
                 if ($export['operation'] == 'Total') {
                     $html .= "<td style='text-align: center'> Total of (" . $export['arrayIndex'] . " )</td>&nbsp;";
@@ -225,24 +226,61 @@ class AddedEstimateList extends Component
                         $html .= "<td style='text-align: center'> " . $export['arrayIndex'] . "</td>&nbsp;";
                     }
                 }
-            } else {
+            } elseif ($export['other_name']) {
                 $html .= "<td style='text-align: center'>" . $export['other_name'] . "</td>&nbsp;";
+            } else {
+                // $html .= "<td style='text-align: center'>" . $export['name'] . "</td>&nbsp;";
+                $html .= "<td style='text-align: center'>--</td>&nbsp;";
             }
             $html .= "<td style='text-align: center'>" . $export['qty'] . "</td>&nbsp;";
             $html .= "<td style='text-align: center'>" . $export['rate'] . "</td>&nbsp;";
             $html .= "<td style=''>" . $export['total_amount'] . "</td></tr>";
         }
-        // $html .= "<tr align='right'><td colspan='5' align='right'>Total</td>";
-        // foreach ($exportDatas as $key => $export) {
-        //     if ($export['operation'] == 'Total') {
-        //         $estTotal =  $export['total_amount'];
-        //     } else {
-        //         $estTotal = '--';
-        //     }
-        // }
-        // $html .= "<td colspan='1' align='right'>" . $estTotal . "</td>";
-        // $html .= "</tr>";
         $html .= "</table>";
+        foreach ($exportDatas as $key => $export) {
+            if ($export['estimate_no']) {
+                $html .= "<p>Estimate Packege ".$export['estimate_no']."</p>";
+                $getEstimateDetails = EstimatePrepare::where('estimate_id', '=', $export['estimate_no'])->get();
+                $html .= "<table style='border: 1px solid black;width:auto'><tr>";
+                $html .= "<th scope='col' style='text-align: center'>Serial No.</th>";
+                $html .= "<th scope='col' style='text-align: center'>Item Number(Ver.)</th>";
+                $html .= "<th scope='col' style='text-align: center'>Description</th>";
+                $html .= "<th scope='col' style='text-align: center'>Quantity</th>";
+                $html .= "<th scope='col' style='text-align: center'>Unit Price</th>";
+                $html .= "<th scope='col' style='text-align: center' >Cost</th></tr>";
+                if (isset($getEstimateDetails)) {
+                    foreach ($getEstimateDetails as $estimateDetails) {
+                        $html .= "<tr><td style='text-align: center'>" . chr($estimateDetails['row_id'] + 64) . "</td>&nbsp;";
+                        if ($estimateDetails['sor_item_number']) {
+                            $html .= "<td style='text-align: center'>" . getSorItemNumber($estimateDetails['sor_item_number']) . ' ( ' . $estimateDetails['version'] . ' )' . "</td>&nbsp;";
+                        } else {
+                            $html .= "<td style='text-align: center'>--</td>&nbsp;";
+                        }
+                        if ($estimateDetails['sor_item_number']) {
+                            $html .= "<td style='text-align: center'>" . getSorItemNumberDesc($estimateDetails['sor_item_number']) . "</td>&nbsp;";
+                        } elseif ($estimateDetails['operation']) {
+                            if ($estimateDetails['operation'] == 'Total') {
+                                $html .= "<td style='text-align: center'> Total of (" . $estimateDetails['row_index'] . " )</td>&nbsp;";
+                            } else {
+                                if ($estimateDetails['comments'] != '') {
+                                    $html .= "<td style='text-align: center'> " . $estimateDetails['row_index'] . " ( " . $estimateDetails['comments'] . " )" . "</td>&nbsp;";
+                                } else {
+                                    $html .= "<td style='text-align: center'> " . $estimateDetails['row_index'] . "</td>&nbsp;";
+                                }
+                            }
+                        } else {
+                            $html .= "<td style='text-align: center'>" . $estimateDetails['other_name'] . "</td>&nbsp;";
+                        }
+                        $html .= "<td style='text-align: center'>" . $estimateDetails['qty'] . "</td>&nbsp;";
+                        $html .= "<td style='text-align: center'>" . $estimateDetails['rate'] . "</td>&nbsp;";
+                        $html .= "<td style=''>" . $estimateDetails['total_amount'] . "</td></tr>";
+                    }
+                }
+
+                $html .= "</table>";
+            }
+        }
+
         \PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
         $pw->save($date . ".docx", "Word2007");
         header("Content-Type: application/octet-stream");
@@ -256,15 +294,16 @@ class AddedEstimateList extends Component
 
     public function store()
     {
-        // dd(Auth::user()->department_id);
         if ($this->totalOnSelectedCount == 1) {
             try {
+                // dd($this->allAddedEstimatesData);
                 if ($this->allAddedEstimatesData) {
                     $intId = random_int(100000, 999999);
-                    if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1, 'dept_id' => Auth::user()->department_id])) {
+                    // if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
                         foreach ($this->allAddedEstimatesData as $key => $value) {
                             $insert = [
-                                'estimate_id' => $intId,
+                                'rate_id' => $intId,
+                                'rate_no' => $value['estimate_no'],
                                 'dept_id' => $value['dept_id'],
                                 'category_id' => $value['category_id'],
                                 'row_id' => $value['array_id'],
@@ -280,7 +319,7 @@ class AddedEstimateList extends Component
                                 'comments' => $value['remarks'],
                             ];
                             $validateData = Validator::make($insert, [
-                                'estimate_id' => 'required|integer',
+                                'rate_id' => 'required|integer',
                                 'dept_id' => 'required|integer',
                                 'category_id' => 'required|integer',
                                 'row_id' => 'required|integer',
@@ -288,22 +327,16 @@ class AddedEstimateList extends Component
                             if ($validateData->fails()) {
                                 // dd($validateData->messages());
                             }
-                            EstimatePrepare::create($insert);
+                            RatesAnalysis::create($insert);
                         }
-                        $data = [
-                            'estimate_id' => $intId,
-                            'estimate_user_type' => 4,
-                            'status' => 1,
-                            'user_id' => Auth::user()->id,
-                        ];
-                        EstimateUserAssignRecord::create($data);
                         $this->notification()->success(
-                            $title = 'Estimate Prepare Created Successfully!!'
+                            $title = 'Created Successfully!!'
                         );
                         $this->resetSession();
+                        $this->updateDataTableTracker = rand(1, 1000);
                         $this->emit('openForm');
                         $this->emit('refreshData');
-                    }
+                    // }
                 } else {
                     $this->notification()->error(
                         $title = 'please insert at list one item !!'
@@ -313,23 +346,17 @@ class AddedEstimateList extends Component
                 // session()->flash('serverError', $th->getMessage());
                 $this->emit('showError', $th->getMessage());
             }
-        } else {
+        }else{
             $this->notification()->error(
                 $title = 'Please Calculate total first !!'
             );
         }
-    }
 
+    }
     public function render()
     {
+        $this->updateDataTableTracker = rand(1, 1000);
         $this->arrayRow = count($this->allAddedEstimatesData);
-        return view('livewire.estimate.added-estimate-list');
+        return view('livewire.rate-analysis.add-rate-analysis-list');
     }
-
-    // public function logView($data, $of)
-    // {
-    //     Log::alert('-----------------[Start OF' . $of . ']');
-    //     Log::info(json_encode($data));
-    //     Log::alert('-----------------[END OF' . $of . ']');
-    // }
 }
