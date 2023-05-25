@@ -144,15 +144,17 @@ return [
         'title' => 'SOR Approver List',
         'title_singular' => 'SOR Approver Lists',
         'create_msg' => 'SOR Approved',
-        // 'fields'=>[
-        //     'id'=>'ID',
-        //     'id_helper'=>'#',
-        //     'name'=>'Name',
-        //     'email'=>'Email',
-        //     'phone'=>'Phone',
-        //     'address'=>'Address',
-        //     'action'=>'Actions'
-        // ],
+        'fields' => [
+            'id' => 'ID',
+            'id_helper' => 'Sl.No',
+            'item_number' => 'Item No',
+            'desc' => 'Description',
+            'unit' => 'unit',
+            'cost' => 'cost',
+            'status' => 'status',
+            'file' => 'File',
+            'action' => 'Actions'
+        ],
     ],
     'dept_category' => [
         'title' => 'Department Category',

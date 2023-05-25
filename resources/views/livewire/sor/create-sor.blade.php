@@ -2,10 +2,10 @@
     <div class="row">
         <div class="col-sm-12 col-lg-12">
             <div class="card">
-                <div wire:loading.delay.longest>
+                {{-- <div wire:loading.delay.longest>
                     <div class="spinner-border text-primary loader-position" role="status"></div>
-                </div>
-                <div wire:loading.delay.longest.class="loading" class="card-body">
+                </div> --}}
+                <div class="card-body">
                     @foreach ($inputsData as $key => $inputData)
                         <div class="row mutipal-add-row">
                             <div class="col-md-11 col-sm-6 col-lg-11">
@@ -13,7 +13,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <x-select wire:key="deptCategory.{{ $key }}"
-                                                label="{{ trans('cruds.sor.fields.dept_category') }}"
+                                                label="{{ trans('cruds.sor.fields.dept_category') }} * "
                                                 placeholder="Select {{ trans('cruds.sor.fields.dept_category') }}"
                                                 wire:model.defer="inputsData.{{ $key }}.dept_category_id">
                                                 @isset($fetchDropDownData['departmentCategory'])
@@ -28,7 +28,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <x-input wire:key='item_details.{{ $key }}'
-                                                label="{{ trans('cruds.sor.fields.item_number') }}"
+                                                label="{{ trans('cruds.sor.fields.item_number') }} * "
                                                 placeholder="{{ trans('cruds.sor.fields.item_number') }}"
                                                 wire:model.defer="inputsData.{{ $key }}.item_details"
                                                 placeholder="12.34" />
@@ -42,7 +42,7 @@
                                                     {{-- @dd($fetchDropDownData['unitMaster']); --}}
                                                     <x-select wire:key="unitmaster.{{ $key }}"
                                                         label="{{ trans('cruds.sor.fields.unit') }}"
-                                                        placeholder="Select {{ trans('cruds.sor.fields.unit') }}"
+                                                        placeholder="Select {{ trans('cruds.sor.fields.unit') }} *"
                                                         wire:model.defer="inputsData.{{ $key }}.unit_id">
                                                         @isset($fetchDropDownData['unitMaster'])
                                                             @foreach ($fetchDropDownData['unitMaster'] as $units)
@@ -56,7 +56,7 @@
                                             <div class="col md-6 col-lg-6">
                                                 <div class="form-group">
                                                     <x-input wire:key='qty.{{ $key }}'
-                                                        label="{{ trans('cruds.sor.fields.qty') }}"
+                                                        label="{{ trans('cruds.sor.fields.qty') }} *"
                                                         placeholder="{{ trans('cruds.sor.fields.qty') }}"
                                                         wire:model.defer="inputsData.{{ $key }}.unit" />
                                                 </div>
@@ -66,7 +66,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <x-input wire:key='cost.{{ $key }}'
-                                                label="{{ trans('cruds.sor.fields.cost') }}"
+                                                label="{{ trans('cruds.sor.fields.cost') }} *"
                                                 placeholder="{{ trans('cruds.sor.fields.cost') }}"
                                                 wire:model.defer="inputsData.{{ $key }}.cost" />
                                         </div>
@@ -76,7 +76,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <x-select wire:key="version.{{ $key }}"
-                                                label="{{ trans('cruds.sor.fields.version') }}"
+                                                label="{{ trans('cruds.sor.fields.version') }} *"
                                                 placeholder="Select {{ trans('cruds.sor.fields.version') }}"
                                                 wire:model.defer="inputsData.{{ $key }}.version"
                                                 :options="[
@@ -90,17 +90,16 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <x-datetime-picker without-time wire:key="effect_from.{{ $key }}"
-                                                label="{{ trans('cruds.sor.fields.effect_from') }}"
+                                                label="{{ trans('cruds.sor.fields.effect_from') }} *"
                                                 placeholder="{{ trans('cruds.sor.fields.effect_from') }}"
-                                                wire:model.defer="inputsData.{{ $key }}.effect_from"
-                                                min="{{ now() }}" />
+                                                wire:model.defer="inputsData.{{ $key }}.effect_from" />
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <x-textarea rows="2" wire:key="description.{{ $key }}"
                                                 wire:model="inputsData.{{ $key }}.description"
-                                                label="{{ trans('cruds.sor.fields.description') }}"
+                                                label="{{ trans('cruds.sor.fields.description') }} *"
                                                 placeholder="{{ trans('cruds.sor.fields.description') }}" />
                                         </div>
                                     </div>
@@ -118,7 +117,8 @@
                                                 <div class="relative rounded-md shadow-sm">
                                                     <x-input type="file"
                                                         wire:model="inputsData.{{ $key }}.file_upload"
-                                                        label="Choose file" autocomplete="off" multiple accept=".pdf"
+                                                        label="Choose file * " autocomplete="off" multiple
+                                                        accept=".pdf"
                                                         class="placeholder-secondary-400 dark:bg-secondary-800 dark:text-secondary-400 dark:placeholder-secondary-500 border border-secondary-300 focus:ring-primary-500 focus:border-primary-500 dark:border-secondary-600 form-input block w-full sm:text-sm rounded-md transition ease-in-out duration-100 focus:outline-none shadow-sm" />
                                                     {{-- @error('InputStore.photo')
                                                         <span class="error" style="color: red;">{{ $message }}</span>

@@ -26,6 +26,7 @@ use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\Milestone\Milestones;
 use App\Http\Livewire\Office\Office;
 use App\Http\Livewire\Permission\Permission;
+use App\Http\Livewire\Qtyanalysis\AnalysisList;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\Roles\Roles;
 use App\Http\Livewire\Sorapprove\SorApprovers;
@@ -125,6 +126,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
         Route::get('sor-approver', SorApprovers::class)->name('sor-approver');
         Route::get('unit-master', UnitsMaster::class)->name('unit-master');
+        Route::get('qty-analysis', AnalysisList::class)->name('qty-analysis');
+
 
         Route::get('change-role/{id}', function ($id) {
             if (UsersHasRoles::where([['user_id', Auth::user()->id], ['role_id', $id]])->first()) {

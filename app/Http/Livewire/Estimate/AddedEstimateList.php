@@ -30,7 +30,7 @@ class AddedEstimateList extends Component
     }
 
     //calculate estimate list
-    public function insertAddEstimate($arrayIndex, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks)
+    public function insertAddEstimate($arrayIndex, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks, $height, $weight, $breath)
     {
         $this->addedEstimateData['arrayIndex'] = $arrayIndex;
         $this->addedEstimateData['dept_id'] = $dept_id;
@@ -45,12 +45,16 @@ class AddedEstimateList extends Component
         $this->addedEstimateData['operation'] = $operation;
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
+        $this->addedEstimateData['height'] = $height;
+        $this->addedEstimateData['weight'] = $weight;
+        $this->addedEstimateData['breath'] = $breath;
         $this->setEstimateDataToSession();
         $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount');
     }
 
     public function expCalc()
     {
+        dd($this->allAddedEstimatesData);
         $result = 0;
         $tempIndex = strtoupper($this->expression);
         $stringCalc = new StringCalc();
@@ -58,6 +62,7 @@ class AddedEstimateList extends Component
             if ($this->expression) {
                 foreach (str_split($this->expression) as $key => $info) {
                     $count0 = count($this->allAddedEstimatesData);
+                    // dd($count0);
                     if (ctype_alpha($info)) {
                         $alphabet = strtoupper($info);
                         $alp_id = ord($alphabet) - 64;
@@ -77,7 +82,8 @@ class AddedEstimateList extends Component
                 }
             }
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddEstimate($tempIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Exp Calculoation', '', $this->remarks);
+            // dd($result);
+            $this->insertAddEstimate($tempIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Exp Calculoation', '', $this->remarks, 0, 0, 0);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(
@@ -85,6 +91,14 @@ class AddedEstimateList extends Component
             );
         }
     }
+
+    public $height, $weight, $breath;
+    public function calc()
+    {
+        $this->insertAddEstimate(0, 0, 0, 0, '', '', '', 0, 0, 0, '', '', 0, $this->height, $this->weight, $this->breath);
+    }
+
+
 
     public function showTotalButton()
     {
@@ -99,12 +113,15 @@ class AddedEstimateList extends Component
     {
         if (count($this->level) >= 2) {
             $result = 0;
+            // dd($this->level);
             foreach ($this->level as $key => $array) {
                 $this->arrayStore[] = chr($array + 64);
+                // dd($this->arrayStore);
                 $result = $result + $this->allAddedEstimatesData[$array]['total_amount'];
+                // dd($this->allAddedEstimatesData[$array]['total_amount']);
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
-            $this->insertAddEstimate($this->arrayIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Total', '', '');
+            $this->insertAddEstimate($this->arrayIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Total', '', '', $this->height, $this->weight, $this->breath);
             $this->totalOnSelectedCount++;
         } else {
             $this->notification()->error(

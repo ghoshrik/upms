@@ -20,7 +20,7 @@
                             <img src="{{ asset('images/logo/wb_logo.png') }}" alt="logo">
                             <h4 class="logo-title ms-3">Govt. West Bengal <br><span>UPMS</span></h4>
                         </a>
-                        <img src="{{ asset('images/avatars/01.png') }}" class="rounded avatar-80 mb-3" alt="">
+                        {{-- <img src="{{ asset('images/avatars/01.png') }}" class="rounded avatar-80 mb-3" alt=""> --}}
                         <h2 class="mb-2">Hi ! {{ $userdtls->emp_name }}</h2>
                         <style>
                             /* :where(.otp-container, form, .input-field) {
