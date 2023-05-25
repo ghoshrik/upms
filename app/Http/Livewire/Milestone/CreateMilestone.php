@@ -2,12 +2,14 @@
 
 namespace App\Http\Livewire\Milestone;
 
-use App\Models\Milestone;
 use Livewire\Component;
+use App\Models\Milestone;
 use App\Models\SorMaster;
+use WireUi\Traits\Actions;
 
 class CreateMilestone extends Component
 {
+    use Actions;
     public $mileStoneData = [], $Index = 0,$treeView,$arrayData=[],$projectId,$projects_number=[],$description;
 
 

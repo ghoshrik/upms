@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\UserManagement\Datatable\Powergrid;
 
+use App\Models\Designation;
 use App\Models\User;
 use App\Models\UserType;
 use WireUi\Traits\Actions;
@@ -95,8 +96,13 @@ final class UsersDataTable extends PowerGridComponent
                     // ->where('department_id', Auth::user()->department_id)
                     ->where('is_active', 1)->get();
                 $i = 1;
-
+                // dd($users);
                 foreach ($users as $key => $user) {
+                    $getDesignationName =  Designation::select('designation_name')->where('id',$user->designation_id)->get();
+                    foreach($getDesignationName as $designation)
+                    {
+                        $designationName = $designation->designation_name;
+                    }
                     $dataView[] = [
                         '1' => $i,
                         '2' => $user->emp_name,
@@ -104,13 +110,14 @@ final class UsersDataTable extends PowerGridComponent
                         '4' => $user->username,
                         '5' => $user->ehrms_id,
                         '6' => $user->mobile,
-                        '7' => $user->getDesignationName->designation_name,
+                        '7' => $designationName,
                         '8' => $user->getDepartmentName->department_name,
                         '9' => 'N/A',
                         'active' => $user->is_active,
                     ];
                     $i++;
                 }
+                // dd($dataView);
                 return generatePDF($ModelList, $dataView, trans('cruds.user-management.title_singulars'));
             } elseif (Auth::user()->user_type == 3) {
                 $users = User::where('user_type', $getChild_id->id)
@@ -119,6 +126,11 @@ final class UsersDataTable extends PowerGridComponent
                     ->get();
                 $i = 1;
                 foreach ($users as $key => $user) {
+                    $getDesignationName =  Designation::select('designation_name')->where('id',$user->designation_id)->get();
+                    foreach($getDesignationName as $designation)
+                    {
+                        $designationName = $designation->designation_name;
+                    }
                     $dataView[] = [
                         '1' => $i,
                         '2' => $user->emp_name,
@@ -126,7 +138,7 @@ final class UsersDataTable extends PowerGridComponent
                         '4' => $user->username,
                         '5' => $user->ehrms_id,
                         '6' => $user->mobile,
-                        '7' => $user->getDesignationName->designation_name,
+                        '7' => $designationName,
                         '8' => $user->getDepartmentName->department_name,
                         '9' => $user->getOfficeName->office_name,
                         'active' => $user->is_active,
@@ -142,6 +154,11 @@ final class UsersDataTable extends PowerGridComponent
                     ->get();
                 $i = 1;
                 foreach ($users as $key => $user) {
+                    $getDesignationName =  Designation::select('designation_name')->where('id',$user->designation_id)->get();
+                    foreach($getDesignationName as $designation)
+                    {
+                        $designationName = $designation->designation_name;
+                    }
                     $dataView[] = [
                         '1' => $i,
                         '2' => $user->emp_name,
@@ -149,7 +166,7 @@ final class UsersDataTable extends PowerGridComponent
                         '4' => $user->username,
                         '5' => $user->ehrms_id,
                         '6' => $user->mobile,
-                        '7' => $user->getDesignationName->designation_name,
+                        '7' => $designationName,
                         '8' => $user->getDepartmentName->department_name,
                         '9' => $user->getOfficeName->office_name,
                         'active' => $user->is_active,
@@ -173,7 +190,7 @@ final class UsersDataTable extends PowerGridComponent
                     '4' => $user->username,
                     '5' => $user->ehrms_id,
                     '6' => $user->mobile,
-                    '7' => $user->getDesignationName->designation_name,
+                    '7' => $user->getDesignationName->designation_name ? :'',
                     '8' => $user->getDepartmentName->department_name,
                     '9' => $user->office_id ? $user->getOfficeName->office_name : 'N/A',
                     'active' => $user->is_active,

@@ -7,7 +7,7 @@
     </li> --}}
 
     <li class="nav-item">
-        <a class="nav-link {{ Request::route('dashboard') ? 'active' : '' }}" aria-current="page"
+        <a class="nav-link {{ Request::routeIs('dashboard') ? 'active' : '' }}" aria-current="page"
             href="{{ route('dashboard') }}">
             <i class="icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"

@@ -18,7 +18,15 @@ class AuthController extends Controller
 {
     public function showLoginPage()
     {
-        return view('auth.login');
+        if(Auth::check())
+        {
+            return redirect()->route('dashboard');
+        }
+        else
+        {
+            return view('auth.login');
+        }
+
     }
 
     public function generateOtp($user)
