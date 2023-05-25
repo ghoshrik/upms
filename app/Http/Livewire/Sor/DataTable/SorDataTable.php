@@ -57,20 +57,21 @@ final class SorDataTable extends PowerGridComponent
             ->where('s_o_r_s.created_by', Auth::user()->id)
             ->select(
                 'id',
-            'Item_details',
-            'department_id',
-            'dept_category_id',
-            'description',
-            'unit_id',
-            'unit',
-            'cost',
-            'version',
-            'effect_from',
-            'effect_to',
-            'is_active',
-            'created_by',
-            'is_approved' ,DB::raw('ROW_NUMBER() OVER (ORDER BY s_o_r_s.id) as serial_no'))
-            ;
+                'Item_details',
+                // 'department_id',
+                'dept_category_id',
+                'description',
+                'unit_id',
+                'unit',
+                'cost',
+                'version',
+                'effect_from',
+                'effect_to',
+                'is_active',
+                'created_by',
+                'is_approved',
+                DB::raw('ROW_NUMBER() OVER (ORDER BY s_o_r_s.id) as serial_no')
+            );
     }
 
     /*
@@ -113,10 +114,10 @@ final class SorDataTable extends PowerGridComponent
                 return strtolower(e($model->Item_details));
             })
 
-            ->addColumn('getDepartmentName.department_name')
+            // ->addColumn('getDepartmentName.department_name')
             ->addColumn('getDeptCategoryName.dept_category_name')
-            ->addColumn('description', function(SOR $model){
-                return '<span class="text-wrap">' .$model->description.'</span>';
+            ->addColumn('description', function (SOR $model) {
+                return '<span class="text-wrap">' . $model->description . '</span>';
             })
             ->addColumn('getUnitsName.unit_name')
             ->addColumn('quantity')
@@ -159,20 +160,20 @@ final class SorDataTable extends PowerGridComponent
     {
         return [
             Column::make('SL. No.', 'serial_no'),
-                // ->makeInputRange(),
+            // ->makeInputRange(),
 
             Column::make('ITEM NUMBER', 'Item_details')
                 ->sortable()
                 ->searchable()
                 ->makeInputText(),
 
-            Column::make('DEPARTMENT NAME', 'getDepartmentName.department_name')
-            // ->sortable()
-            ->searchable(),
+            /*Column::make('DEPARTMENT NAME', 'getDepartmentName.department_name')
+                // ->sortable()
+                ->searchable(),*/
 
             Column::make('DEPT CATEGORY', 'getDeptCategoryName.dept_category_name')
-            // ->sortable()
-            ->searchable(),
+                // ->sortable()
+                ->searchable(),
 
             Column::make('DESCRIPTION', 'description')
                 ->sortable()
@@ -180,7 +181,7 @@ final class SorDataTable extends PowerGridComponent
                 ->makeInputText(),
 
             Column::make('UNIT', 'getUnitsName.unit_name')
-            ->searchable(),
+                ->searchable(),
 
             Column::make('quantity', 'unit')
                 ->makeInputRange(),

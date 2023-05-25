@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 class CreateSor extends Component
 {
     use Actions, WithFileUploads;
-    public $inputsData = [], $fetchDropDownData = [];
+    public $inputsData = [], $fetchDropDownData = [], $file_upload;
     //|regex:/^\d{2}\.\d{2}/
     protected $rules = [
         'inputsData.*.dept_category_id' => 'required|integer',
@@ -26,7 +26,8 @@ class CreateSor extends Component
         'inputsData.*.cost' => 'required|numeric|min:1',
         'inputsData.*.version' => 'required|string',
         'inputsData.*.effect_from' => 'required',
-        'inputsData.*.file_upload' => 'required'
+        // 'inputsData.*.file_upload' => 'required'
+        'file_upload' => 'required'
     ];
     protected $messages = [
         'inputsData.*.dept_category_id.required' => 'This field is required',
@@ -45,12 +46,12 @@ class CreateSor extends Component
         'inputsData.*.cost.numeric' => 'This field allow only numeric',
         'inputsData.*.cost.min' => 'The number must be at least 1.',
         'inputsData.*.version.required' => 'This field is required',
-        'inputsData.*.version.string' => 'This field allow only alphabet',
+        // 'inputsData.*.version.string' => 'This field allow only alphabet',
         'inputsData.*.effect_from.required' => 'This field is required',
         // 'inputsData.*.effect_from.date_format' => 'This field must be valid only date format',
-        'inputsData.*.file_upload.required' => 'This field is required',
+        // 'inputsData.*.file_upload.required' => 'This field is required',
         // 'inputsData.*.file_upload' => 'The uploaded file must be a PDF document.',
-
+        'file_upload.required' => 'This field is required'
     ];
     public function mount()
     {
@@ -65,7 +66,7 @@ class CreateSor extends Component
                 'cost' => '',
                 'version' => '',
                 'effect_from' => '',
-                'file_upload' => ''
+                // 'file_upload' => ''
             ]
         ];
         $this->fetchDropDownData['departmentCategory'] = SorCategoryType::where('department_id', Auth::user()->department_id)->get();
@@ -85,7 +86,7 @@ class CreateSor extends Component
                 'cost' => '',
                 'version' => '',
                 'effect_from' => '',
-                'file_upload' => ''
+                // 'file_upload' => ''
             ];
     }
     public function updated($param)
@@ -95,9 +96,10 @@ class CreateSor extends Component
     public function store()
     {
         // dd($this->inputsData);
+
         $this->validate();
         try {
-
+            // dd()
             foreach ($this->inputsData as $key => $data) {
                 $last = SOR::create([
                     'Item_details' => $data['item_details'],
@@ -111,20 +113,33 @@ class CreateSor extends Component
                     'effect_from' => $data['effect_from'],
                     'created_by' => Auth::user()->id,
                 ]);
-                foreach ($data['file_upload'] as $DataAttr) {
-                    $filePath = file_get_contents($DataAttr->getRealPath());
-                    $fileSize = $DataAttr->getSize();
-                    $filExt = $DataAttr->getClientOriginalExtension();
-                    $mimeType = $DataAttr->getMimeType();
-                    AttachDoc::create([
-                        'sor_docu_id' => $last->id,
-                        'document_type' => $filExt,
-                        'document_mime' => $mimeType,
-                        'document_size' => $fileSize,
-                        'docfile' => base64_encode($filePath)
-                    ]);
-                }
+                /* Multiple file upload*/
+                // foreach ($data['file_upload'] as $DataAttr) {
+                //     $filePath = file_get_contents($DataAttr->getRealPath());
+                //     $fileSize = $DataAttr->getSize();
+                //     $filExt = $DataAttr->getClientOriginalExtension();
+                //     $mimeType = $DataAttr->getMimeType();
+                //     AttachDoc::create([
+                //         'sor_docu_id' => $last->id,
+                //         'document_type' => $filExt,
+                //         'document_mime' => $mimeType,
+                //         'document_size' => $fileSize,
+                //         'docfile' => base64_encode($filePath)
+                //     ]);
+                // }
                 // dd($data['file_upload']);
+                /*Single file Upload */
+                $filePath = file_get_contents($this->file_upload->getRealPath());
+                $fileSize = $this->file_upload->getSize();
+                $filExt = $this->file_upload->getClientOriginalExtension();
+                $mimeType = $this->file_upload->getMimeType();
+                AttachDoc::create([
+                    'sor_docu_id' => $last->id,
+                    'document_type' => $filExt,
+                    'document_mime' => $mimeType,
+                    'document_size' => $fileSize,
+                    'docfile' => base64_encode($filePath)
+                ]);
             }
             $this->notification()->success(
                 $title = trans('cruds.sor.create_msg')
