@@ -42,10 +42,9 @@
             </div>
         </div>
         <div wire:loading.delay.long.class="loading">
-
             <x-cards title="">
                 <x-slot name="table">
-                    <div class="table-responsive mt-4">
+                    {{-- <div class="table-responsive mt-4">
                         <table id="basic-table" class="table table-striped mb-0" role="grid">
                             <thead>
                                 <tr>
@@ -82,11 +81,10 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    </div>
+                    </div> --}}
+                    <livewire:data-table.mis-report />
                 </x-slot>
             </x-cards>
         </div>
     </div>
-
-
 </div>
