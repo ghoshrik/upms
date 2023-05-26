@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\UserManagement\Datatable\Powergrid;
 
+use App\Models\Designation;
 use App\Models\User;
 use App\Models\UserType;
 use WireUi\Traits\Actions;
@@ -78,14 +79,14 @@ final class UsersDataTable extends PowerGridComponent
         $ModelList = [
             trans('cruds.user-management.fields.employee_name') => '20%',
             trans('cruds.user-management.fields.email_id') => '24%',
-            trans('cruds.user-management.fields.username') => '11%',
+            trans('cruds.user-management.fields.username') => '15%',
             trans('cruds.user-management.fields.ehrms_id') => '12%',
-            trans('cruds.user-management.fields.mobile') => '11%',
+            trans('cruds.user-management.fields.mobile') => '8%',
             trans('cruds.user-management.fields.designation') => '19%',
             trans('cruds.user-management.fields.department') => '13%',
             //if(Auth::user()->user_type == 4)
-            trans('cruds.user-management.fields.office_name') => '18%',
-            trans('cruds.user-management.fields.status') => '6%',
+            trans('cruds.user-management.fields.office_name') => '16%',
+            trans('cruds.user-management.fields.status') => '5%',
         ];
         $getChild_id = UserType::where('parent_id', Auth::user()->user_type)->select('id')->first();
         if (count($this->checkboxValues) == 0) {
@@ -97,6 +98,10 @@ final class UsersDataTable extends PowerGridComponent
                 $i = 1;
 
                 foreach ($users as $key => $user) {
+                    $desg = Designation::select('designation_name')->where('id', $user->designation_id)->get();
+                    foreach ($desg as $designation) {
+                        $designationName = $designation->designation_name;
+                    }
                     $dataView[] = [
                         '1' => $i,
                         '2' => $user->emp_name,
@@ -104,7 +109,7 @@ final class UsersDataTable extends PowerGridComponent
                         '4' => $user->username,
                         '5' => $user->ehrms_id,
                         '6' => $user->mobile,
-                        '7' => $user->getDesignationName->designation_name,
+                        '7' => $designationName,
                         '8' => $user->getDepartmentName->department_name,
                         '9' => 'N/A',
                         'active' => $user->is_active,
@@ -119,6 +124,10 @@ final class UsersDataTable extends PowerGridComponent
                     ->get();
                 $i = 1;
                 foreach ($users as $key => $user) {
+                    $desg = Designation::select('designation_name')->where('id', $user->designation_id)->get();
+                    foreach ($desg as $designation) {
+                        $designationName = $designation->designation_name;
+                    }
                     $dataView[] = [
                         '1' => $i,
                         '2' => $user->emp_name,
@@ -126,7 +135,7 @@ final class UsersDataTable extends PowerGridComponent
                         '4' => $user->username,
                         '5' => $user->ehrms_id,
                         '6' => $user->mobile,
-                        '7' => $user->getDesignationName->designation_name,
+                        '7' => $designationName,
                         '8' => $user->getDepartmentName->department_name,
                         '9' => $user->getOfficeName->office_name,
                         'active' => $user->is_active,
@@ -141,6 +150,43 @@ final class UsersDataTable extends PowerGridComponent
                     ->where('is_active', 1)
                     ->get();
                 $i = 1;
+
+                // if (count($users) > 0) {
+                foreach ($users as $key => $user) {
+                    $desg = Designation::select('designation_name')->where('id', $user->designation_id)->get();
+                    foreach ($desg as $designation) {
+                        $designationName = $designation->designation_name;
+                    }
+                    $dataView[] = [
+                        '1' => $i,
+                        '2' => $user->emp_name,
+                        '3' => $user->email,
+                        '4' => $user->username,
+                        '5' => $user->ehrms_id,
+                        '6' => $user->mobile,
+                        '7' => $designationName,
+                        '8' => $user->getDepartmentName->department_name,
+                        '9' => $user->getOfficeName->office_name,
+                        'active' => $user->is_active,
+                    ];
+                    $i++;
+                }
+                // } else {
+                //     $this->notification()->error(
+                //         $title = 'User Not Activated',
+                //     );
+                // }
+                return generatePDF($ModelList, $dataView, trans('cruds.user-management.title_singulars'));
+            }
+        } else {
+            $ids = implode(',', $this->checkboxValues);
+            $users = User::whereIn('id', explode(",", $ids))
+                ->where('user_type', $getChild_id->id)
+                // ->where('department_id', Auth::user()->department_id)
+                ->where('is_active', 1)->get();
+            $i = 1;
+            // dd($users);
+            if (count($users) > 0) {
                 foreach ($users as $key => $user) {
                     $dataView[] = [
                         '1' => $i,
@@ -151,34 +197,15 @@ final class UsersDataTable extends PowerGridComponent
                         '6' => $user->mobile,
                         '7' => $user->getDesignationName->designation_name,
                         '8' => $user->getDepartmentName->department_name,
-                        '9' => $user->getOfficeName->office_name,
+                        '9' => $user->office_id ? $user->getOfficeName->office_name : 'N/A',
                         'active' => $user->is_active,
                     ];
                     $i++;
                 }
-                return generatePDF($ModelList, $dataView, trans('cruds.user-management.title_singulars'));
-            }
-        } else {
-            $ids = implode(',', $this->checkboxValues);
-            $users = User::whereIn('id', explode(",", $ids))
-                ->where('user_type', $getChild_id->id)
-                // ->where('department_id', Auth::user()->department_id)
-                ->where('is_active', 1)->get();
-            $i = 1;
-            foreach ($users as $key => $user) {
-                $dataView[] = [
-                    '1' => $i,
-                    '2' => $user->emp_name,
-                    '3' => $user->email,
-                    '4' => $user->username,
-                    '5' => $user->ehrms_id,
-                    '6' => $user->mobile,
-                    '7' => $user->getDesignationName->designation_name,
-                    '8' => $user->getDepartmentName->department_name,
-                    '9' => $user->office_id ? $user->getOfficeName->office_name : 'N/A',
-                    'active' => $user->is_active,
-                ];
-                $i++;
+            } else {
+                $this->notification()->error(
+                    $title = 'User Not Activated',
+                );
             }
             return generatePDF($ModelList, $dataView, trans('cruds.user-management.title_singulars'));
             $this->resetExcept('checkboxValues', 'dataView');
@@ -467,7 +494,7 @@ final class UsersDataTable extends PowerGridComponent
     {
         return [
             Column::make('SL. No.', 'serial_no'),
-                // ->makeInputRange(),
+            // ->makeInputRange(),
 
             // Column::make('NAME', 'name')
             //     ->sortable()

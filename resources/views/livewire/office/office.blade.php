@@ -10,7 +10,7 @@
                 @endif
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                     <div class="d-flex flex-column">
-                        <h3 class="text-dark">{{ $titel }}</h3>
+                        <h6 class="text-dark">{{ $titel }}</h6>
                         <p class="text-primary mb-0">{{ $subTitel }}</p>
                     </div>
                     @canany(['create office', 'edit office'])

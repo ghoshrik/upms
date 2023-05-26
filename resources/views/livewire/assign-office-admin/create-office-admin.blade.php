@@ -74,18 +74,18 @@
                                         </td>
                                         <td class="text-wrap" style="width: 30rem">{{ $office['office_address'] }}</td>
                                         <td>
-                                            {{-- @if ($office['user_id']) --}}
-                                            @foreach ($hooUsers as $user)
-                                                @if ($user['id'] == $office['user_id'])
-                                                    {{-- <input class="form-group" type="text"
+                                            @if ($office['user_id'])
+                                                @foreach ($hooUsers as $user)
+                                                    @if ($user['id'] == $office['user_id'])
+                                                        {{-- <input class="form-group" type="text"
                                                             value="{{ $user['emp_name'] }}" wire:ignore disabled> --}}
-                                                    <label wire:ignore disabled readonly>{{ $user['emp_name'] }}</label>
-                                                @endif
-                                            @endforeach
+                                                        <label wire:ignore disabled readonly>{{ $user['emp_name'] }}</label>
+                                                    @endif
+                                                @endforeach
                                             @else
-                                            {{-- @else --}}
-                                            {{ __('dfdsfsdf') }}
-                                            {{-- <select class="form-select" aria-label="Select user"
+                                                {{-- @else --}}
+                                                {{ __('dfdsfsdf') }}
+                                                {{-- <select class="form-select" aria-label="Select user"
                                                     wire:key='select-{{ $key }}'
                                                     wire:model='selectedUser.{{ $office['id'] }}' wire:ignore>
                                                     <option wire:key='select_option-{{ $key }}'>Select User
@@ -104,8 +104,9 @@
                                         <td>
                                             <button type="button"
                                                 wire:click="$emit({{ $office['user_id'] ? '"Modify",' . $office['user_id'] . ',' . $office->id . ',' . $office->dist_code . ',' . $office->level_no . '' : '"assignuser",' . $office->id . ',' . $office->dist_code . ',' . $office->level_no . '' }})"
-                                                class="btn btn-soft-{{ $office['user_id'] ? 'warning' : 'primary' }} btn-sm text-dark" wire:ignore>
-                                                {{$office['user_id'] ? 'Modify':'Assign Admin'}}
+                                                class="btn btn-soft-{{ $office['user_id'] ? 'warning' : 'primary' }} btn-sm text-dark"
+                                                wire:ignore>
+                                                {{ $office['user_id'] ? 'Modify' : 'Assign Admin' }}
                                             </button>
 
                                             {{-- @isset($office['user_id'])

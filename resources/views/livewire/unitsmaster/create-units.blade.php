@@ -5,12 +5,12 @@
             <div class="row">
                 <div class="col-md-6 col-sm-3 col-lg-6">
                     <div class="form-group">
-                        <x-input label="Unit Name" wire:model.defer="InputStoreData.unitName" />
+                        <x-input label="Unit Name *" wire:model.defer="InputStoreData.unitName" />
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-3 col-lg-6">
                     <div class="form-group">
-                        <x-input label="Unit Short Name" wire:model.defer="InputStoreData.unitShortName" />
+                        <x-input label="Unit Short Name *" wire:model.defer="InputStoreData.unitShortName" />
                     </div>
                 </div>
             </div>
