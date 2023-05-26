@@ -4,7 +4,7 @@
             <div class="card overflow-hidden">
                 <div class="card-header d-flex justify-content-between flex-wrap">
                     <div class="header-title">
-                        <h4 class="card-title mb-2">Added Rates List</h4>
+                        <h4 class="card-title mb-2">Quantity Evaluation</h4>
                     </div>
                 </div>
                 <div>
@@ -44,14 +44,18 @@
                         <table id="basic-table" class="table table-striped mb-0" role="grid">
                             <thead>
                                 <tr>
-                                    <th></th>
-                                    <th>{{ trans('cruds.estimate.fields.id_helper') }}</th>
-                                    <th>{{ trans('cruds.estimate.fields.item_number') }}</th>
+                                    <th>#</th>
+                                    {{-- <th>{{ trans('cruds.estimate.fields.id_helper') }}</th> --}}
+                                    <th>Label</th>
+                                    <th>Unit</th>
+                                    <th>Value</th>
+                                    <th>Action</th>
+                                    {{-- <th>{{ trans('cruds.estimate.fields.item_number') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.description') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.quantity') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.per_unit_cost') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.cost') }}</th>
-                                    <th>{{ trans('cruds.estimate.fields.action') }}</th>
+                                    <th>{{ trans('cruds.estimate.fields.action') }}</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -75,38 +79,14 @@
                                                 {{ getSorItemNumber($addedEstimate['sor_item_number']) }}
                                             @elseif ($addedEstimate['estimate_no'])
                                                 {{ $addedEstimate['estimate_no'] }}
+                                            @elseif(isset($addedEstimate['lable']))
+                                                {{ $addedEstimate['lable'] }}
                                             @else
                                                 --
                                             @endif
                                         </td>
-                                        <td class="text-wrap" style="width: 40rem">
-                                            @if ($addedEstimate['sor_item_number'])
-                                                {{ $addedEstimate['description'] }}
-                                            @elseif ($addedEstimate['estimate_no'])
-                                                {{-- {{ getEstimateDescription($addedEstimate['estimate_no']) }} --}}
-                                                {{$addedEstimate['description']}}
-                                                {{-- {{ $addedEstimate->SOR->sorMasterDesc }} --}}
-                                            @elseif ($addedEstimate['arrayIndex'])
-                                                @if ($addedEstimate['remarks'])
-                                                    {{ $addedEstimate['arrayIndex'] . ' ( ' . $addedEstimate['remarks'] . ' ) ' }}
-                                                @elseif ($addedEstimate['operation'] == 'Total')
-                                                    {{ 'Total of ' . $addedEstimate['arrayIndex'] }}
-                                                @else
-                                                    {{ $addedEstimate['arrayIndex'] }}
-                                                @endif
-                                            @else
-                                                {{ $addedEstimate['other_name'] }}
-                                            @endif
-
-                                        </td>
                                         <td>
                                             {{ $addedEstimate['qty'] }}
-                                        </td>
-                                        <td>
-                                            {{ $addedEstimate['rate'] }}
-                                        </td>
-                                        <td>
-                                            {{ $addedEstimate['total_amount'] }}
                                         </td>
                                         <td>
                                             @if ($addedEstimate['estimate_no'])

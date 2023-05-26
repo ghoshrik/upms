@@ -1,26 +1,27 @@
 <?php
 
-namespace App\Http\Livewire\EstimateProject;
+namespace App\Http\Livewire\QuantityEvaluation;
 
+use Livewire\Component;
 use App\Models\Department;
 use App\Models\Esrecommender;
 use App\Models\EstimatePrepare;
-use App\Models\QultiyEvaluation;
+use App\Models\RatesAnalysis;
 use App\Models\SOR;
 use App\Models\SorCategoryType;
 use App\Models\SorMaster;
+use App\Models\UnitMaster;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Component;
 use WireUi\Traits\Actions;
 
-class CreateEstimateProject extends Component
+class CreateQuantityEvaluation extends Component
 {
     use Actions;
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc;
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
-    public $searchDtaCount, $searchStyle, $searchResData,$quntity_type='menual',$quntity_type_id = 2,$qc_value;
+    public $searchDtaCount, $searchStyle, $searchResData,$unite;
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -58,36 +59,36 @@ class CreateEstimateProject extends Component
     ];
     public function booted()
     {
-        if ($this->selectedCategoryId == 1) {
-            $this->rules = Arr::collapse([$this->rules, [
-                'estimateData.dept_id' => 'required|integer',
-                'estimateData.dept_category_id' => 'required|integer',
-                'estimateData.version' => 'required',
-                'selectedSORKey' => 'required|string',
+        // if ($this->selectedCategoryId == 1) {
+        //     $this->rules = Arr::collapse([$this->rules, [
+        //         'estimateData.dept_id' => 'required|integer',
+        //         'estimateData.dept_category_id' => 'required|integer',
+        //         'estimateData.version' => 'required',
+        //         'selectedSORKey' => 'required|string',
 
-            ]]);
-        }
-        if ($this->selectedCategoryId == 2) {
-            $this->rules = Arr::collapse([$this->rules, [
-                'estimateData.other_name' => 'required|string',
-            ]]);
-        }
-        if ($this->selectedCategoryId == 3) {
-            $this->rules = Arr::collapse([$this->rules, [
-                'estimateData.dept_id' => 'required|integer',
-                'estimateData.estimate_no' => 'required|integer',
-                // 'estimateData.estimate_desc' => 'required|string',
-                'estimateData.total_amount' => 'required|numeric',
-            ]]);
-        }
-        if ($this->selectedCategoryId == 1 || $this->selectedCategoryId == 2) {
-            $this->rules = Arr::collapse([$this->rules, [
-                'estimateData.qty' => 'required|numeric',
-                'estimateData.rate' => 'required|numeric',
-                'estimateData.total_amount' => 'required|numeric',
+        //     ]]);
+        // }
+        // if ($this->selectedCategoryId == 2) {
+        //     $this->rules = Arr::collapse([$this->rules, [
+        //         'estimateData.other_name' => 'required|string',
+        //     ]]);
+        // }
+        // if ($this->selectedCategoryId == 3) {
+        //     $this->rules = Arr::collapse([$this->rules, [
+        //         'estimateData.dept_id' => 'required|integer',
+        //         'estimateData.estimate_no' => 'required|integer',
+        //         // 'estimateData.estimate_desc' => 'required|string',
+        //         'estimateData.total_amount' => 'required|numeric',
+        //     ]]);
+        // }
+        // if ($this->selectedCategoryId == 1 || $this->selectedCategoryId == 2) {
+        //     $this->rules = Arr::collapse([$this->rules, [
+        //         'estimateData.qty' => 'required|numeric',
+        //         'estimateData.rate' => 'required|numeric',
+        //         'estimateData.total_amount' => 'required|numeric',
 
-            ]]);
-        }
+        //     ]]);
+        // }
     }
     public function updated($param)
     {
@@ -95,74 +96,27 @@ class CreateEstimateProject extends Component
     }
     public function mount()
     {
+        $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+        $this->unite =  UnitMaster::select('id', 'unit_name', 'short_name', 'is_active')->where('is_active', 1)->orderBy('id', 'desc')->get();
         if (Session()->has('addedEstimateData')) {
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
-    }
-    public function changeCategory($value)
-    {
-        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc']);
-        $value = $value['_x_bindings']['value'];
-        $this->estimateData['item_name'] = $value;
-        if ($this->estimateData['item_name'] == 'SOR') {
-            $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
-            $this->estimateData['estimate_no'] = null;
-            $this->estimateData['dept_id'] = '';
-            $this->estimateData['dept_category_id'] = '';
-            $this->estimateData['version'] = '';
-            $this->estimateData['item_number'] = '';
-            $this->estimateData['description'] = '';
-            $this->estimateData['other_name'] = '';
-            $this->estimateData['qty'] = '';
-            $this->estimateData['rate'] = '';
-            $this->estimateData['total_amount'] = '';
-        } elseif ($this->estimateData['item_name'] == 'Other') {
-            $this->estimateData['estimate_no'] = null;
-            $this->estimateData['dept_id'] = '';
-            $this->estimateData['dept_category_id'] = '';
-            $this->estimateData['version'] = '';
-            $this->estimateData['item_number'] = '';
-            $this->estimateData['description'] = '';
-            $this->estimateData['other_name'] = '';
-            $this->estimateData['qty'] = '';
-            $this->estimateData['rate'] = '';
-            $this->estimateData['total_amount'] = '';
-        } elseif ($this->estimateData['item_name'] == 'Estimate') {
-            $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
-            $this->estimateData['estimate_no'] = '';
-            // $this->estimateData['estimate_desc'] = '';
-            $this->estimateData['dept_id'] = '';
-            $this->estimateData['dept_category_id'] = '';
-            $this->estimateData['version'] = '';
-            $this->estimateData['item_number'] = '';
-            $this->estimateData['description'] = '';
-            $this->estimateData['other_name'] = '';
-            $this->estimateData['qty'] = '';
-            $this->estimateData['rate'] = '';
-            $this->estimateData['total_amount'] = '';
-        }elseif ($this->estimateData['item_name'] == 'Rate') {
-            $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
-            $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
-            $this->estimateData['estimate_no'] = '';
-            // $this->estimateData['estimate_desc'] = '';
-            $this->estimateData['dept_id'] = '';
-            $this->estimateData['dept_category_id'] = '';
-            $this->estimateData['version'] = '';
-            $this->estimateData['item_number'] = '';
-            $this->estimateData['description'] = '';
-            $this->estimateData['other_name'] = '';
-            $this->estimateData['qty'] = '';
-            $this->estimateData['rate'] = '';
-            $this->estimateData['total_amount'] = '';
-        }
-    }
+        $this->estimateData['estimate_no'] = null;
+        $this->estimateData['dept_id'] = '';
+        $this->estimateData['dept_category_id'] = '';
+        $this->estimateData['version'] = '';
+        $this->estimateData['item_number'] = '';
+        $this->estimateData['description'] = '';
+        $this->estimateData['other_name'] = '';
+        $this->estimateData['qty'] = '';
+        $this->estimateData['rate'] = '';
+        $this->estimateData['total_amount'] = '';
+        $this->estimateData['item_name'] = 'Other';
+        
+        $this->estimateData['unite'] ='';
+        $this->estimateData['leble'] ='';
+        $this->estimateData['value'] ='';
 
-    public function changeQuntity($value){
-        $value = $value['_x_bindings']['value'];
-        $this->quntity_type = $value;
-        if ($value == 'Qutity Evaluation') {
-            $this->fatchDropdownData['qultiyEvaluation'] = QultiyEvaluation::select('total_amount')->where('estimate_id',$this->estimateData['estimate_no'])->get();
-        }
     }
 
     public function getDeptCategory()
@@ -274,28 +228,11 @@ class CreateEstimateProject extends Component
         //     ->where('estimate_recomender.dept_id', $this->estimateData['dept_id'])
         //     ->where('sor_masters.is_verified', '=', 1)
         //     ->get();
-        $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',8],['is_verified',1]])->get();
-    }
-    public function getDeptRates()
-    {
-        $this->fatchDropdownData['estimatesList'] = '';
-        $this->estimateData['estimate_no'] = '';
-        $this->estimateData['description'] = '';
-        $this->estimateData['total_amount'] = '';
-        // $this->fatchDropdownData['estimatesList'] = EstimatePrepare::select('estimate_id')->where('dept_id',$this->estimateData['dept_id'])->groupBy('estimate_id')->get();
-        // $this->fatchDropdownData['estimatesList'] = EstimatePrepare::join('sor_masters','estimate_prepares.estimate_id','sor_masters.estimate_id')
-        //                                             ->where('estimate_prepares.dept_id',$this->estimateData['dept_id'])
-        //                                             ->where('sor_masters.is_verified','=',1)
-        //                                             ->get();
-        // $this->fatchDropdownData['estimatesList'] = Esrecommender::join('sor_masters', 'estimate_recomender.estimate_id', 'sor_masters.estimate_id')
-        //     ->where('estimate_recomender.dept_id', $this->estimateData['dept_id'])
-        //     ->where('sor_masters.is_verified', '=', 1)
-        //     ->get();
         $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',1],['is_verified',1]])->get();
-        // $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',8],['is_verified',1]])->get();
+        // $this->fatchDropdownData['estimatesList'] = RatesAnalysis::select('description', 'rate_id', 'total_amount')->where([['operation', 'Total'], ['dept_id', Auth::user()->department_id], ['category_id', $this->estimateData['dept_category_id']]])->get();
     }
 
-    public function getRateDetails()
+    public function getEstimateDetails()
     {
         // $rateId = (int)$this->estimateData['estimate_no'];
 
@@ -326,24 +263,9 @@ class CreateEstimateProject extends Component
         $this->estimateData['qty'] = 1;
         $this->estimateData['rate'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
     }
-
-    public function getEstimateDetails()
-    {
-        $this->estimateData['total_amount'] = '';
-        $this->estimateData['description'] = '';
-        $this->estimateData['qty'] = '';
-        $this->estimateData['rate'] = '';
-        $this->fatchDropdownData['estimateDetails'] = Esrecommender::join('sor_masters', 'estimate_recomender.estimate_id', 'sor_masters.estimate_id')
-            ->where('estimate_recomender.estimate_id', $this->estimateData['estimate_no'])
-            ->where('estimate_recomender.operation', 'Total')->where('sor_masters.is_verified', '=', 1)->first();
-        $this->estimateData['total_amount'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
-        $this->estimateData['description'] = $this->fatchDropdownData['estimateDetails']['sorMasterDesc'];
-        $this->estimateData['qty'] = 1;
-        $this->estimateData['rate'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
-    }
     public function addEstimate()
     {
-        $validatee = $this->validate();
+        // $validatee = $this->validate();
         $this->reset('addedEstimate');
         $this->showTableOne = !$this->showTableOne;
         $this->addedEstimate['estimate_no'] = ($this->estimateData['estimate_no'] == '') ? 0 : $this->estimateData['estimate_no'];
@@ -358,10 +280,10 @@ class CreateEstimateProject extends Component
         $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
         $this->addedEstimate['version'] = $this->estimateData['version'];
         $this->addedEstimateUpdateTrack = rand(1, 1000);
-        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc']);
+        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc','unite']);
     }
     public function render()
     {
-        return view('livewire.estimate-project.create-estimate-project');
+        return view('livewire.quantity-evaluation.create-quantity-evaluation');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\RateAnalysis;
+namespace App\Http\Livewire\QuantityEvaluation;
 
 use Livewire\Component;
 use App\Models\EstimatePrepare;
@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use WireUi\Traits\Actions;
 
-class AddRateAnalysisList extends Component
+class AddQuantityEvaluation extends Component
 {
     use Actions;
     public $addedEstimateData = [];
@@ -355,8 +355,6 @@ class AddRateAnalysisList extends Component
     }
     public function render()
     {
-        $this->updateDataTableTracker = rand(1, 1000);
-        $this->arrayRow = count($this->allAddedEstimatesData);
-        return view('livewire.rate-analysis.add-rate-analysis-list');
+        return view('livewire.quantity-evaluation.add-quantity-evaluation');
     }
 }

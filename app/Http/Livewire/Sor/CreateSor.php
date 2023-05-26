@@ -75,18 +75,21 @@ class CreateSor extends Component
 
     public function addNewRow()
     {
+        $currentInputData =$this->inputsData;
+        $inpuDataCount = count($currentInputData);
+        $key = $inpuDataCount-1;
         $this->inputsData[] =
             [
-                'item_details' => '',
+                'item_details' => $currentInputData[$key]['item_details'],
                 'department_id' => Auth::user()->department_id,
-                'dept_category_id' => '',
-                'description' => '',
-                'unit_id' => '',
-                'unit' => '',
-                'cost' => '',
-                'version' => '',
-                'effect_from' => '',
-                // 'file_upload' => ''
+                'dept_category_id' => $currentInputData[$key]['dept_category_id'],
+                'description' => $currentInputData[$key]['description'],
+                'unit_id' => $currentInputData[$key]['unit_id'],
+                'unit' => $currentInputData[$key]['unit'],
+                'cost' => $currentInputData[$key]['cost'],
+                'version' => $currentInputData[$key]['version'],
+                'effect_from' => $currentInputData[$key]['effect_from'],
+                'file_upload' => ''
             ];
     }
     public function updated($param)
