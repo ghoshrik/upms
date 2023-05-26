@@ -94,16 +94,16 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         //state Admin
         Route::get('user-management', UserManagement::class)->name('user-management');
-        // Route::group(['middleware' => ['role:State Admin']], function () {
+        Route::group(['middleware' => ['role:State Admin', 'role:Department Admin', 'role:Office Admin']], function () {
             Route::get('department', Department::class)->name("department");
 
             Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
             Route::get('mis-report', MisReport::class)->name('mis-report');
-        // });
+        });
 
         //Department Admin
-        Route::group(['middleware' => ['role:Department Admin']], function () {
-            // Route::get('user-management', UserManagement::class)->name('user-management');
+        Route::group(['middleware' => ['role:Department Admin', 'role:State Admin', 'role:Office Admin']], function () {
+            Route::get('user-management', UserManagement::class)->name('user-management');
             Route::get('designation', Designation::class)->name('designation');
             Route::get('office', Office::class)->name('office');
             Route::get('assign-office-admin', AssignOfficeAdmin::class)->name('assign-office-admin');
@@ -113,8 +113,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         });
 
         //Office Admin
-        Route::group(['middleware' => ['role:Office Admin']], function () {
-
+        Route::group(['middleware' => ['role:Office Admin', 'role:State Admin', 'role:Department Admin']], function () {
+            Route::get('user-management', UserManagement::class)->name('user-management');
             Route::get('assign-role', AssignRole::class)->name('assign-role');
             Route::get('milestones', Milestones::class)->name('milestones');
             Route::get('vendors', VendorList::class)->name('vendors');
