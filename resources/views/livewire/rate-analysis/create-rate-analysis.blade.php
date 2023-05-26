@@ -6,6 +6,7 @@
                     <div class="spinner-border text-primary loader-position" role="status"></div>
                 </div>
                 <div wire:loading.delay.longest.class="loading" class="card-body">
+                    {{-- <div class="card-body"> --}}
                     <div class="row">
                         <div class="row">
                             <div class="col col-md-8 col-lg-8 col-sm-12 col-xs-12 mb-2">
@@ -191,28 +192,15 @@
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group">
-                                            <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
+                                            <x-select wire:key="dept"
+                                                label="{{ trans('cruds.estimate.fields.dept') }}"
                                                 placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
                                                 wire:model.defer="estimateData.dept_id"
-                                                x-on:select="$wire.getDeptCategory()">
-                                                @foreach ($fatchDropdownData['departments'] as $department)
-                                                    <x-select.option label="{{ $department['department_name'] }}"
-                                                        value="{{ $department['id'] }}" />
-                                                @endforeach
-                                            </x-select>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                         <div class="form-group">
-                                            <x-select wire:key="category"
-                                                label="{{ trans('cruds.estimate.fields.category') }}"
-                                                placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
-                                                wire:model.defer="estimateData.dept_category_id"
                                                 x-on:select="$wire.getDeptEstimates()">
-                                                @isset($fatchDropdownData['departmentsCategory'])
-                                                    @foreach ($fatchDropdownData['departmentsCategory'] as $deptCategory)
-                                                        <x-select.option label="{{ $deptCategory['dept_category_name'] }}"
-                                                            value="{{ $deptCategory['id'] }}" />
+                                                @isset($fatchDropdownData['departments'])
+                                                    @foreach ($fatchDropdownData['departments'] as $department)
+                                                        <x-select.option label="{{ $department['department_name'] }}"
+                                                            value="{{ $department['id'] }}" />
                                                     @endforeach
                                                 @endisset
                                             </x-select>
@@ -226,8 +214,8 @@
                                                 x-on:select="$wire.getEstimateDetails()">
                                                 @isset($fatchDropdownData['estimatesList'])
                                                     @foreach ($fatchDropdownData['estimatesList'] as $estimate)
-                                                        <x-select.option label="{{ $estimate['rate_id'].' - '.$estimate['description'] }}"
-                                                            value="{{ $estimate['rate_id'] }}" />
+                                                        <x-select.option label="{{ $estimate['estimate_id'].' - '.$estimate['sorMasterDesc'] }}"
+                                                            value="{{ $estimate['estimate_id'] }}" />
                                                     @endforeach
                                                 @endisset
                                             </x-select>

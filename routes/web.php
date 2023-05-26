@@ -26,6 +26,7 @@ use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\Milestone\Milestones;
 use App\Http\Livewire\Office\Office;
 use App\Http\Livewire\Permission\Permission;
+use App\Http\Livewire\QuantityEvaluation\QuantityEvaluation;
 use App\Http\Livewire\RateAnalysis\RateAnalysis;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\Roles\Roles;
@@ -97,6 +98,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('estimate-prepare', EstimatePrepare::class)->name('estimate-prepare');
         Route::get('estimate-project', EstimateProject::class)->name('estimate-project');
         Route::get('rate-analysis', RateAnalysis::class)->name('rate-analysis');
+        Route::get('quantity-evaluation', QuantityEvaluation::class)->name('quantity-evaluation');
         Route::get('designation', Designation::class)->name('designation');
         Route::get('user-type', UserType::class)->name("user-type");
         Route::get('department', Department::class)->name("department");

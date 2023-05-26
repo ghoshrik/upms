@@ -48,6 +48,8 @@
                                                 @if ($view['comments'] != '')
                                                     {{ '( ' . $view['comments'] . ' )' }}
                                                 @endif
+                                            @endif
+                                        @endif
                                     </td>
                                     <td class="text-wrap">
                                         @if ($view['sor_item_number'])
