@@ -17,7 +17,7 @@
                             <td width="40%">
                                 <div class="row">
                                     <div class="col-8">
-                                        <select wire:key='select-{{$key}}' {{ ($department['user_id'])?'disabled wire:ignore'  :'' }}  class="form-select" aria-label="Default select example" wire:model='selectedUser.{{$department['id']}}'>
+                                        <select wire:key='select-{{$key}}' {{ ($department['user_id'])?'disabled wire:ignore'  :'' }}  class="form-select" aria-label="Default select example" wire:model.defer='selectedUser.{{$department['id']}}'>
                                             <option wire:key='select_option-{{$key}}'selected>Select HOD</option>
                                             @foreach ($hodUsers as $user)
                                                 <option wire:key='user-{{$user['id']}}' {{ ($user['department_id']==$department['id'])? 'selected':'' }} value="{{ $user['id']}}" >{{ $user['emp_name'] }}

@@ -5,7 +5,7 @@
                 <div wire:loading.delay.longest>
                     <div class="spinner-border text-primary loader-position" role="status"></div>
                 </div>
-                <div wire:loading.delay.longest.class="loading" class="card-body">
+                <div  class="card-body">
                     <div class="row">
                         <div class="col-md-6 col-sm-6 col-lg-6">
                             <div class="form-group">

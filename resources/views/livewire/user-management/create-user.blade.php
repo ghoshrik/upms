@@ -64,20 +64,20 @@
 
                         <div class="col-md-4 col-lg-4 col-sm-3">
                             <div class="form-group">
-                                <x-input wire:model.lazy="newUserData.ehrms_id" label="eHrms ID(optional)"
+                                <x-input wire:model.defer="newUserData.ehrms_id" label="eHrms ID(optional)"
                                     placeholder="Enter HRMS ID" />
                             </div>
                         </div>
                         <div class="col-md-4 col-lg-4 col-sm-4">
                             <div class="form-group">
-                                <x-input wire:model.lazy="newUserData.emp_name"
+                                <x-input wire:model.defer="newUserData.emp_name"
                                     label="{{ trans('cruds.user-management.fields.employee_name') }}"
                                     placeholder="Enter {{ trans('cruds.user-management.fields.employee_name') }}" />
                             </div>
                         </div>
                         <div class="col-md-4 col-lg-4 col-sm-4">
                             <div class="form-group">
-                                <x-input wire:model.lazy="newUserData.username"
+                                <x-input wire:model.defer="newUserData.username"
                                     label="{{ trans('cruds.user-management.fields.username') }}"
                                     placeholder="{{ trans('cruds.user-management.fields.username') }}" />
                             </div>
@@ -88,13 +88,13 @@
 
                         <div class="col-md-4 col-lg-4 col-sm-4">
                             <div class="form-group">
-                                <x-input wire:model.lazy="newUserData.email" label="Email"
+                                <x-input wire:model.defer="newUserData.email" label="Email"
                                     placeholder="Enter Employee Email " />
                             </div>
                         </div>
                         <div class="col-md-4 col-lg-4 col-sm-4">
                             <div class="form-group">
-                                <x-input wire:model.lazy="newUserData.mobile" label="Mobile"
+                                <x-input wire:model.defer="newUserData.mobile" label="Mobile"
                                     placeholder="Enter Employee Mobile No" />
                             </div>
                         </div>

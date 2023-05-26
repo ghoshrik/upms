@@ -47,31 +47,28 @@
                     class="theme-color-pink-img  w-100  animated-scaleX">
             </div> --}}
         </div>
-        {{-- <div wire:loading.delay.long>
+        <div wire:loading.delay.shortest>
             <div class="spinner-border text-primary loader-position" role="status"></div>
-        </div> --}}
+        </div>
         <div>
-
-            <div>
-                @if ($isFromOpen && $openedFormType == 'create')
-                    <livewire:user-management.create-user>
-                    @elseif ($isFromOpen && $openedFormType == 'edit')
-                    @else
-                        <div class="row">
-                            <div class="col-md-12 col-lg-12 col-sm-3">
-                                <div class="card">
-                                    <div class="card-body">
-                                        {{-- TODO:: CHANGE --}}
-                                        {{-- <h2>Designation wise user data list sorting pending</h2> --}}
-                                        {{-- <livewire:user-management.datatable.users-datatable :wire:key='$updateDataTableTracker' /> --}}
-                                        <livewire:user-management.datatable.powergrid.users-data-table
-                                            :wire:key='$updateDataTableTracker' />
-                                    </div>
+            @if ($isFromOpen && $openedFormType == 'create')
+                <livewire:user-management.create-user>
+                @elseif ($isFromOpen && $openedFormType == 'edit')
+                @else
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12 col-sm-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    {{-- TODO:: CHANGE --}}
+                                    {{-- <h2>Designation wise user data list sorting pending</h2> --}}
+                                    {{-- <livewire:user-management.datatable.users-datatable :wire:key='$updateDataTableTracker' /> --}}
+                                    <livewire:user-management.datatable.powergrid.users-data-table
+                                        :wire:key='$updateDataTableTracker' />
                                 </div>
                             </div>
                         </div>
-                @endif
-            </div>
+                    </div>
+            @endif
         </div>
     </div>
 </div>

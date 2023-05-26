@@ -12,11 +12,11 @@
                         <div class="col col-md-6 col-lg-6 mb-2">
                             <div class="row">
                                 <div class="input-group mb-3">
-                                    <input type="text" wire:model="expression" class="form-control"
+                                    <input type="text" wire:model.defer="expression" class="form-control"
                                         placeholder="{{ trans('cruds.estimate.fields.operation') }}"
                                         aria-label="{{ trans('cruds.estimate.fields.operation') }}"
                                         aria-describedby="basic-addon1">
-                                    <input type="text" wire:model="remarks" class="form-control"
+                                    <input type="text" wire:model.defer="remarks" class="form-control"
                                         placeholder="{{ trans('cruds.estimate.fields.remarks') }}"
                                         aria-label="{{ trans('cruds.estimate.fields.remarks') }}"
                                         aria-describedby="basic-addon1">
