@@ -95,9 +95,11 @@ class CreateUser extends Component
         ];
         if (Auth::user()->user_type == 2) {
             $this->getDropdownData('DEPT');
+            $this->getDropdownData('DES');
         }
         if (Auth::user()->user_type == 3) {
             $this->getDropdownData('LEVEL');
+            $this->getDropdownData('DES');
         }
         if (Auth::user()->user_type == 4) {
             $this->getDropdownData('DES');
@@ -111,8 +113,10 @@ class CreateUser extends Component
             } elseif ($lookingFor === 'DEPT') {
                 if (Auth::user()->department_id) {
                     $this->dropDownData['departments'] = Department::where('id', Auth::user()->department_id)->get();
+                    $this->dropDownData['designations'] = Designation::all();
                 } else {
                     $this->dropDownData['departments'] = Department::all();
+                    $this->dropDownData['designations'] = Designation::all();
                 }
             } elseif ($lookingFor === 'LEVEL') {
                 $this->dropDownData['level'] = true;

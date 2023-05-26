@@ -1,14 +1,18 @@
 <?php
 
-namespace App\Http\Livewire\Estimate\Datatable;
+namespace App\Http\Livewire\EstimateProject\DataTable;
 
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
+use Rappasoft\LaravelLivewireTables\Views\Columns\LinkColumn;
+use Rappasoft\LaravelLivewireTables\Views\Columns\ButtonGroupColumn;
 use App\Models\EstimatePrepare;
+use App\Models\SorMaster;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Rappasoft\LaravelLivewireTables\Views\Filter;
 
-class EstimatedDataTable extends DataTableComponent
+class EstimateProjectTable extends DataTableComponent
 {
     // protected $model = EstimatePrepare::class;
 
@@ -58,15 +62,14 @@ class EstimatedDataTable extends DataTableComponent
     public function builder(): Builder
     {
         return EstimatePrepare::query()
-            ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
-            ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-            ->where('estimate_user_assign_records.estimate_user_type','=',4)
-            ->where(function ($query) {
-                $query->where('sor_masters.status', '=', 1)
-                      ->orWhere('sor_masters.status', '=', 5);
-            })
-            ->where('operation', 'Total')
-            ->where('created_by',Auth::user()->id);
-        // ->groupBy('estimate_id.estimate_id');
+        ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
+        ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
+        ->where('estimate_user_assign_records.estimate_user_type','=',5)
+        ->where(function ($query) {
+            $query->where('sor_masters.status', '=', 1)
+                  ->orWhere('sor_masters.status', '=', 10);
+        })
+        ->where('operation', 'Total')
+        ->where('created_by',Auth::user()->id);
     }
 }

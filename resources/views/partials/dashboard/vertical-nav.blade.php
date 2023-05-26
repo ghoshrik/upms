@@ -7,7 +7,8 @@
     </li> --}}
 
     <li class="nav-item">
-        <a class="nav-link {{ activeRoute(route('dashboard')) }}" aria-current="page" href="{{ route('dashboard') }}">
+        <a class="nav-link {{ Request::routeIs('dashboard') ? 'active' : '' }}" aria-current="page"
+            href="{{ route('dashboard') }}">
             <i class="icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -51,7 +52,7 @@
                 @canany($permissions_role)
                     <li class="nav-item mb-2">
                         @if (Route::has($menu->link))
-                            <a class="nav-link {{  Request::routeIs($menu->link) ? 'active' : ''}}" aria-current="page"
+                            <a class="nav-link {{ Request::routeIs($menu->link) ? 'active' : '' }}" aria-current="page"
                                 href="{{ route($menu->link) }}">
                             @else
                                 <a class="nav-link aria-current" href="#">
@@ -63,11 +64,11 @@
                     </svg> --}}
 
 
-                            @if ($menu->icon)
+                            @isset($menu->icon)
                                 <x-icon name="{{ $menu->icon }}" class="w-5 h-5" />
                             @else
                                 <x-icon name="link" class="w-5 h-5" />
-                            @endif
+                            @endisset
 
 
 

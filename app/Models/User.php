@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Designation;
+use App\Models\Department;
 use Spatie\MediaLibrary\HasMedia;
 use App\Traits\HasPermissionsTrait;
 use Illuminate\Support\Facades\Auth;
@@ -45,7 +47,8 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
-        'is_verified'
+        'is_verified',
+        'is_admin'
     ];
 
     /**
@@ -67,18 +70,18 @@ class User extends Authenticatable implements MustVerifyEmail
     // public function userProfile() {
     //     return $this->hasOne(UserProfile::class, 'user_id', 'id');
     // }
-    public function designation()
-    {
-        // return $this->belongsTo(Designation::class,'designation_id');
-        return $this->belongsTo(Designation::class, 'designation_id');
-    }
+    // public function getDesignationName()
+    // {
+    //     return $this->belongsTo(Designation::class,'designation_id');
+    //     // return $this->belongsTo(Designation::class,'designation_id','id');
+    // }
     public function getDepartmentName()
     {
         return $this->belongsTo(Department::class, 'department_id');
     }
     public function getDesignationName()
     {
-        return $this->hasOne(Designation::class, 'id', 'designation_id');
+        return $this->hasOne('App\Models\Designation', 'id', 'designation_id');
     }
     public function getUserType()
     {

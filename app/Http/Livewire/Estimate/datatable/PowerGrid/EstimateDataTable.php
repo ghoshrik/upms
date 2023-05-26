@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\EstimateProject\DataTable;
+namespace App\Http\Livewire\Estimate\datatable\PowerGrid;
 
 use Illuminate\Support\Carbon;
 use App\Models\EstimatePrepare;
@@ -11,7 +11,7 @@ use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
 
-final class EstimateProjectTable extends PowerGridComponent
+final class EstimateDataTable extends PowerGridComponent
 {
     use ActionButton;
 
@@ -45,9 +45,14 @@ final class EstimateProjectTable extends PowerGridComponent
     |
     */
 
+    /**
+    * PowerGrid datasource.
+    *
+    * @return Builder<\App\Models\EstimatePrepare>
+    */
     public function datasource(): Builder
     {
-       return EstimatePrepare::query()
+        return EstimatePrepare::query()
         ->select(
             'sor_masters.id',
             'sor_masters.estimate_id',
@@ -56,17 +61,15 @@ final class EstimateProjectTable extends PowerGridComponent
             DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no'),
             )
         ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
-        ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-        ->join('estimate_statuses','estimate_statuses.id','=','sor_masters.status')
-        ->where('estimate_user_assign_records.estimate_user_type','=',5)
-        ->where('sor_masters.status','=',1)
-        ->where(function ($query) {
-            $query->where('sor_masters.status', '=', 1)
-                  ->orWhere('sor_masters.status', '=', 10);
-        })
-        ->where('estimate_prepares.operation','=', 'Total')
-        ->where('estimate_prepares.created_by',Auth::user()->id);
-        // return $ss;
+            ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
+            ->join('estimate_statuses','estimate_statuses.id','=','sor_masters.status')
+            ->where('estimate_user_assign_records.estimate_user_type','=',4)
+            ->where(function ($query) {
+                $query->where('sor_masters.status', '=', 1)
+                      ->orWhere('sor_masters.status', '=', 5);
+            })
+            ->where('operation', 'Total')
+            ->where('created_by',Auth::user()->id);;
     }
 
     /*
@@ -101,13 +104,14 @@ final class EstimateProjectTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-            ->addColumn('id')
-            ->addColumn('sor_masters.estimate_id')
-            ->addColumn('SOR.sorMasterDesc')
-            ->addColumn('total_amount')
-            ->addColumn('SOR.getEstimateStatus.status',function ($row){
-                return '<span class="badge badge-pill bg-success">'.$row->status.'</span>';
-            });
+        ->addColumn('id')
+        ->addColumn('sor_masters.estimate_id')
+        ->addColumn('SOR.sorMasterDesc')
+        ->addColumn('total_amount')
+        ->addColumn('SOR.getEstimateStatus.status',function ($row){
+            return '<span class="badge badge-pill bg-success">'.$row->status.'</span>';
+        });
+
     }
 
     /*
@@ -141,8 +145,6 @@ final class EstimateProjectTable extends PowerGridComponent
             Column::make('Status', 'SOR.getEstimateStatus.status')
             ->sortable(),
 
-            // Column::make("Actions", "estimate_id"),
-
         ]
 ;
     }
@@ -165,27 +167,28 @@ final class EstimateProjectTable extends PowerGridComponent
     public function actions(): array
     {
        return [
-
-        //    Button::make('edit', 'Edit')
-        //        ->class('bg-indigo-500 cursor-pointer text-dark px-3 py-2.5 m-1 rounded text-sm'),
-            //    ->route('estimate-prepare.edit', ['estimate-prepare' => 'id']),
-/*
-           Button::make('destroy', 'Delete')
-               ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
-               ->route('estimate-prepare.destroy', ['estimate-prepare' => 'id'])
-               ->method('delete')
-               */
         Button::add('View')
-            ->bladeComponent('view', ['id' => 'estimate_id']),
-        Button::add('Forward')
-            ->bladeComponent('forward-button', ['id' => 'estimate_id']),
-        Button::add('Edit')
-        ->bladeComponent('edit-button', ['id' => 'estimate_id','action'=>'edit']),
+        ->bladeComponent('view', ['id' => 'estimate_id']),
+    Button::add('Forward')
+        ->bladeComponent('forward-button', ['id' => 'estimate_id']),
+    Button::add('Edit')
+    ->bladeComponent('edit-button', ['id' => 'estimate_id','action'=>'edit']),
         ];
-
-
     }
 
+
+    public function edit($id)
+    {
+        $this->emit('openForm', ['formType'=>'edit', 'id'=>$id]);
+    }
+    public function view($estimate_id)
+    {
+        $this->emit('openModal', $estimate_id);
+    }
+    public function forward($estimate_id)
+    {
+        $this->emit('openForwardModal',['estimate_id'=>$estimate_id,'forward_from'=>'EP']);
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -207,24 +210,10 @@ final class EstimateProjectTable extends PowerGridComponent
        return [
 
            //Hide button edit for ID 1
-            /*Rule::button('edit')
+            Rule::button('edit')
                 ->when(fn($estimate-prepare) => $estimate-prepare->id === 1)
                 ->hide(),
-            Rule::button('View')
-            ->when()
-            ->bladeComponent('components.data-table-components.buttons.view',['estimate_id'=>'estimate_id']),
         ];
-    }*/
-    public function view($estimate_id)
-    {
-        $this->emit('openModal', $estimate_id);
     }
-    public function forward($estimate_id)
-    {
-        $this->emit('openForwardModal',['estimate_id'=>$estimate_id,'forward_from'=>'EP']);
-    }
-    public function edit($id)
-    {
-        $this->emit('openForm', ['formType'=>'edit', 'id'=>$id]);
-    }
+    */
 }

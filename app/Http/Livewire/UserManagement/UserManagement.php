@@ -8,7 +8,7 @@ class UserManagement extends Component
 {
     public $formOpen = false, $updateDataTableTracker;
 
-    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert','refreshCSRFToken' => '$refresh'];
     public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel;
 
     public function fromEntryControl($data = '')
@@ -29,6 +29,14 @@ class UserManagement extends Component
         if (isset($data['id'])) {
             $this->selectedIdForEdit = $data['id'];
         }
+    }
+    public function updated()
+    {
+        $this->dispatchBrowserEvent('refreshCSRFToken');
+    }
+    public function updatedRefreshCSRFToken()
+    {
+        $this->emit('$refresh');
     }
     public function setErrorAlert($errorMessage)
     {
