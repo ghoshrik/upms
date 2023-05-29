@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateComposerSorsTable extends Migration
+class CreateCompositSorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateComposerSorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('composer_sors', function (Blueprint $table) {
+        Schema::create('composit_sors', function (Blueprint $table) {
             $table->bigInteger('id')->autoIncrement();
             $table->integer('dept_category_id');
             $table->integer('sor_itemno_parent_id');
@@ -32,6 +32,6 @@ class CreateComposerSorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('composer_sors');
+        Schema::dropIfExists('composit_sors');
     }
 }

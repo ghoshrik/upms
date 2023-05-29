@@ -147,7 +147,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::group(['middleware' => ['role:SOR Preparer']], function () {
             Route::get('prepare-sor', Sor::class)->name('prepare-sor');
-            Route::get('composor-sor',ComposerSors::class)->name('composor-sor');
+            Route::get('composit-sor', ComposerSors::class)->name('composit-sor');
         });
 
         Route::get('user-type', UserType::class)->name("user-type");
@@ -155,7 +155,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('access-type', AccessType::class)->name('access-type');
         Route::get('menu-manager', MenuManagement::class)->name('menu-manager');
 
-        Route::get('rate-analycis',RateAnalysis::class)->name('rate-analycis');
+        Route::get('rate-analycis', RateAnalysis::class)->name('rate-analycis');
 
 
         // Route::get('aafs-project',ProjectList::class)->name('aafs-project');

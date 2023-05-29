@@ -4,9 +4,10 @@ namespace App\Http\Livewire\Sor\DataTable;
 
 use App\Models\SOR;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
+// use PowerComponents\LivewirePowerGrid\Traits\Exportable;
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
@@ -259,7 +260,7 @@ final class SorDataTable extends PowerGridComponent
             // ->bladeComponent('download-button', ['id' => 'id','iconName'=>'download']),
 
             Button::add('Edit')
-            ->bladeComponent('edit-button', ['id' => 'id','action'=>'edit']),
+                ->bladeComponent('edit-button', ['id' => 'id', 'action' => 'edit']),
             // ->route('s-o-r.edit', ['s-o-r' => 'id']),
 
 

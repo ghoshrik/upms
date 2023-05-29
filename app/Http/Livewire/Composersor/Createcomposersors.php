@@ -7,6 +7,7 @@ use Livewire\Component;
 use App\Models\UnitMaster;
 use WireUi\Traits\Actions;
 use App\Models\ComposerSor;
+use App\Models\CompositSor;
 use Livewire\WithFileUploads;
 use App\Models\SorCategoryType;
 use Illuminate\Support\Facades\DB;
@@ -19,9 +20,10 @@ class Createcomposersors extends Component
 
     protected $rules = [
         'storeItem.dept_category_id' => 'required',
-        'storeItem.parentSorItemNo' => 'required|integer',
+        'storeItem.parentSorItemNo' => 'required',
         'storeItem.file_upload' => 'required',
-        // 'selectedCategoryId'=>'required|integer'
+        'storeItem.sor_Itemid' => 'required',
+        // 'selectedCategoryId' => 'required|integer',
         'inputsData.*.childSorItemNo' => 'required',
         'inputsData.*.description' => 'required',
         'inputsData.*.unit_id' => 'required|integer',
@@ -32,8 +34,11 @@ class Createcomposersors extends Component
         // 'selectedCategoryId.required' => 'Selected at least one ',
         // 'selectedCategoryId.integer' => 'This Selected field is Invalid',
         'storeItem.dept_category_id.required' => 'This is required field',
-        'storeItem.parentSorItemNo.required'=>'This is required field',
+        // 'storeItem.parentSorItemNo.required' => 'This is required field',
         'storeItem.file_upload.required' => 'This is required field',
+        'storeItem.sor_Itemid.required' => 'This field is required',
+
+
 
         'inputsData.*.childSorItemNo.required' => 'This field is required',
         // 'inputsData.*.sorItemNo.integer' => 'Invalid format',
@@ -114,20 +119,78 @@ class Createcomposersors extends Component
         $this->fetchDropDownData['SORItemNo'] = SOR::select('id', 'Item_details')->where('dept_category_id', $this->storeItem['dept_category_id'])->get();
         //$this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
     }
+    public $searchDtaCount, $searchStyle, $searchResData;
+    public function autoSearch()
+    {
+        if ($this->storeItem['parentSorItemNo']) {
+            $this->fetchDropDownData['items_number'] = SOR::select('Item_details', 'id')
+                ->where('department_id', Auth::user()->department_id)
+                ->where('dept_category_id', $this->storeItem['dept_category_id'])
+                // ->where('version', $this->estimateData['version'])
+                ->where('Item_details', 'like', $this->storeItem['parentSorItemNo'] . '%')
+                ->where('is_approved', 1)
+                ->get();
+
+            // dd($this->fetchDropDownData['items_number']);
+            // dd($this->fatchDropdownData['items_number']);
+
+            if (count($this->fetchDropDownData['items_number']) > 0) {
+                $this->searchDtaCount = (count($this->fetchDropDownData['items_number']) > 0);
+                $this->searchStyle = 'block';
+            } else {
+                // $this->estimateData['description'] = '';
+                // $this->estimateData['qty'] = '';
+                // $this->estimateData['rate'] = '';
+                $this->searchStyle = 'none';
+                $this->notification()->error(
+                    $title = 'Not data found !!' . $this->storeItem['parentSorItemNo']
+                );
+            }
+        } else {
+            $this->notification()->error(
+                $title = 'Not found !!' . $this->storeItem['parentSorItemNo']
+            );
+        }
+    }
+
+    public function getItemDetails($value)
+    {
+        $this->searchResData = SOR::where('id', $value)->get();
+        $this->searchDtaCount = count($this->searchResData) > 0;
+        $this->searchStyle = 'none';
+        if (count($this->searchResData) > 0) {
+            foreach ($this->searchResData as $list) {
+                // $this->estimateData['description'] = $list['description'];
+                // $this->estimateData['qty'] = $list['unit'];
+                // $this->estimateData['rate'] = $list['cost'];
+                $this->storeItem['sor_Itemid'] = $list['id'];
+                $this->storeItem['parentSorItemNo'] = $list['Item_details'];
+            }
+            // $this->calculateValue();
+        } else {
+            // $this->estimateData['description'] = '';
+            // $this->estimateData['qty'] = '';
+            // $this->estimateData['rate'] = '';
+            $this->notification()->error(
+                $title = "Not Found"
+            );
+        }
+    }
+
     public function store()
     {
         $this->validate();
         try {
-            // dd($this->inputsData,$this->storeItem);
+            // dd($this->inputsData, $this->storeItem);
             foreach ($this->inputsData as $key => $data) {
 
-                $last = ComposerSor::create([
-                    'dept_category_id'=> $this->storeItem['dept_category_id'],
-                    'sor_itemno_parent_id'=>$this->storeItem['parentSorItemNo'],
-                    'sor_itemno_child'=>$data['childSorItemNo'],
-                    'description'=>$data['description'],
-                    'unit_id'=>$data['unit_id'],
-                    'rate'=>$data['qty']
+                $last = CompositSor::create([
+                    'dept_category_id' => $this->storeItem['dept_category_id'],
+                    'sor_itemno_parent_id' => $this->storeItem['sor_Itemid'],
+                    'sor_itemno_child' => $data['childSorItemNo'],
+                    'description' => $data['description'],
+                    'unit_id' => $data['unit_id'],
+                    'rate' => $data['qty']
                 ]);
 
                 /* Single File Upload*/
@@ -137,7 +200,7 @@ class Createcomposersors extends Component
                 $mimeType = $this->storeItem['file_upload']->getMimeType();
 
                 $db_ext = DB::connection('pgsql_docu_External');
-                $db_ext->table('docu_composer_sors')->insert([
+                $db_ext->table('docu_composit_sors')->insert([
                     'composer_sor_id' => $last->id,
                     'document_type' => $filExt,
                     'document_mime' => $mimeType,

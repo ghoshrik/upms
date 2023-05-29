@@ -31,19 +31,38 @@
                     </div>
                 </div> --}}
                 <div class="col-md-9 col-lg-9 col-sm-3">
-                    <div class="form-group">
-                        <x-select wire:key="deptCategory" label="SOR Item No" placeholder="Select SOR Item No"
+                    <div class="form-group search-sor">
+                        {{-- <x-select wire:key="deptCategory" label="SOR Item No" placeholder="Select SOR Item No"
                             wire:model.defer="storeItem.parentSorItemNo">
                             @isset($fetchDropDownData['SORItemNo'])
                                 @foreach ($fetchDropDownData['SORItemNo'] as $sor)
                                     <x-select.option label="{{ $sor['Item_details'] }}" value="{{ $sor['id'] }}" />
                                 @endforeach
                             @endisset
-                        </x-select>
+                        </x-select> --}}
+                        <div class="dropdown">
+                            <x-input wire:key="sor" label="{{ trans('cruds.estimate.fields.sor') }}"
+                                placeholder="{{ trans('cruds.estimate.fields.sor') }}"
+                                wire:model.defer="storeItem.parentSorItemNo" value="{{ $storeItem['parentSorItemNo'] }}"
+                                wire:keydown.escape="resetValus" wire:keydown.tab="autoSearch" class="dropbtn" />
+
+
+                            @isset($this->fetchDropDownData['items_number'])
+                                @if (count($this->fetchDropDownData['items_number']) > 0)
+                                    <div class="dropdown-content"
+                                        style="display:{{ $searchDtaCount ? $searchStyle : $searchStyle }}">
+                                        @foreach ($this->fetchDropDownData['items_number'] as $list)
+                                            <a href="javascript:void(0);"
+                                                wire:click="getItemDetails({{ $list['id'] }})">{{ $list['Item_details'] }}</a>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            @endisset
+                        </div>
                     </div>
                 </div>
             </div>
-            @isset($fetchDropDownData['SORItemNo'])
+            @isset($this->fetchDropDownData['items_number'])
                 @foreach ($inputsData as $key => $inputData)
                     <div class="row mutipal-add-row">
                         {{-- <div class="col-md-2 col-lg-2 col-sm-3">
@@ -66,9 +85,10 @@
                                         @endforeach
                                     @endisset
                                 </x-select> --}}
-                                <x-input wire:key='childSorItemNo.{{ $key }}' label="{{ trans('cruds.sor.fields.item_number') }}"
-                                placeholder="{{ trans('cruds.sor.fields.item_number') }}"
-                                wire:model="inputsData.{{ $key }}.childSorItemNo" />
+                                <x-input wire:key='childSorItemNo.{{ $key }}'
+                                    label="{{ trans('cruds.sor.fields.item_number') }}"
+                                    placeholder="{{ trans('cruds.sor.fields.item_number') }}"
+                                    wire:model="inputsData.{{ $key }}.childSorItemNo" />
                             </div>
                         </div>
                         <div class="col-md-4 col-lg-4 col-sm-3">
