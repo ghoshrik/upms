@@ -55,7 +55,7 @@
         <div wire:loading.delay.longest.class="loading">
             @if ($isFromOpen && $openedFormType == 'create')
                 <div x-transition.duration.900ms>
-                    <livewire:rate-analysis.create-rate-analysis />
+                    <livewire:quantity-evaluation.create-quantity-evaluation >
                 </div>
             @elseif($isFromOpen && $openedFormType == 'edit')
                 <div x-transition.duration.900ms>
@@ -162,13 +162,11 @@
                             </div>
                         </div> --}}
                         <div class="col-md-12 col-lg-12 col-sm-3">
-                            @if ($this->selectedTab == 1)
+                            @if (true)
                                 <div class="card">
                                     <div class="card-body">
-                                        {{-- <livewire:estimate.datatable.estimated-data-table
-                                            :wire:key="$updateDataTableTracker" /> --}}
-                                            <livewire:rate-analysis.datatable.estimated-data-table
-                                            :wire:key="$updateDataTableTracker" >
+                                            <livewire:quantity-evaluation.datatable.quantity-evaluation-table
+                                            :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 2)
@@ -221,6 +219,7 @@
     </div>
 </div>
 <div>
-    <livewire:components.modal.rate-analysis.rate-analysis-view-modal />
+    <livewire:components.modal.estimate.estimate-view-modal />
+    <livewire:components.modal.estimate.estimate-forward-modal />
     <livewire:components.modal.estimate.edit-estimate-modal />
 </div>

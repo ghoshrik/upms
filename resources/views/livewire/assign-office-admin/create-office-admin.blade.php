@@ -76,9 +76,8 @@
                                                     @endif
                                                 @endforeach
                                             @else
-                                                {{-- @else --}}
-                                                {{ __('dfdsfsdf') }}
-                                                {{-- <select class="form-select" aria-label="Select user"
+                                            {{-- @else --}}
+                                            {{-- <select class="form-select" aria-label="Select user"
                                                     wire:key='select-{{ $key }}'
                                                     wire:model='selectedUser.{{ $office['id'] }}' wire:ignore>
                                                     <option wire:key='select_option-{{ $key }}'>Select User

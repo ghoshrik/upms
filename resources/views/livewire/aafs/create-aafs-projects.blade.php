@@ -40,48 +40,48 @@
                 {{-- @endisset --}}
 
                 <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
-                    <x-input label="AAFS Project ID(Mother project ID)" wire:model='InputStore.aafsMotherId'
+                    <x-input label="AAFS Project ID(Mother project ID)" wire:model.defer='InputStore.aafsMotherId'
                         placeholder="Enter AAFS Project ID(Mother project ID)" />
                 </div>
                 <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
-                    <x-input label="AAFS Project ID(sub project ID)" wire:model='InputStore.aafsSubId'
+                    <x-input label="AAFS Project ID(sub project ID)" wire:model.defer='InputStore.aafsSubId'
                         placeholder="Enter AAFS Project ID(sub project ID)" />
                 </div>
                 <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
-                    <x-input label="Project Type" wire:model='InputStore.projectType' placeholder="Project Type" />
+                    <x-input label="Project Type" wire:model.defer='InputStore.projectType' placeholder="Project Type" />
                 </div>
                 <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
-                    <x-input label="Status as per AAFS" wire:model='InputStore.status'
+                    <x-input label="Status as per AAFS" wire:model.defer='InputStore.status'
                         placeholder="Status as per AAFS " />
                 </div>
                 <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
-                    <x-input label="Completion Period" wire:model='InputStore.completePeriod'
+                    <x-input label="Completion Period" wire:model.defer='InputStore.completePeriod'
                         placeholder="Completion Period " />
                 </div>
                 <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
-                    <x-input label="UO no and Date" wire:model='InputStore.unNo' placeholder="Enter UO no and Date" />
+                    <x-input label="UO no and Date" wire:model.defer='InputStore.unNo' placeholder="Enter UO no and Date" />
                 </div>
                 <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
-                    <x-input label="GO no and Date" wire:model='InputStore.goNo' placeholder="GO no and Date" />
+                    <x-input label="GO no and Date" wire:model.defer='InputStore.goNo' placeholder="GO no and Date" />
                 </div>
                 <div class="col-md-3 col-lg-3 col-sm-3 mb-2">
-                    <x-input label="Pre AAFS Expenditure" wire:model='InputStore.preaafsExp'
+                    <x-input label="Pre AAFS Expenditure" wire:model.defer='InputStore.preaafsExp'
                         placeholder="Pre AAFS Expenditure" />
                 </div>
 
 
 
                 <div class="col-md-4 col-lg-4 col-sm-3 mb-2">
-                    <x-input label="Post Expenditure Incurred" wire:model='InputStore.postaafsExp'
+                    <x-input label="Post Expenditure Incurred" wire:model.defer='InputStore.postaafsExp'
                         placeholder="Post Expenditure Incurred" />
                 </div>
                 <div class="col-md-4 col-lg-4 col-sm-3 mb-2">
                     <x-input label="Fund released in CFY but Expenditure not yet incurred"
-                        wire:model='InputStore.Fundcty'
+                        wire:model.defer='InputStore.Fundcty'
                         placeholder="Fund released in CFY but Expenditure not yet incurred" />
                 </div>
                 <div class="col-md-4 col-lg-4 col-sm-3 mb-2">
-                    <x-input label="Executing Authority" wire:model='InputStore.exeAuthority'
+                    <x-input label="Executing Authority" wire:model.defer='InputStore.exeAuthority'
                         placeholder="Executing Authority" />
                 </div>
 
@@ -90,7 +90,7 @@
 
 
                 {{-- <div class="col-md-4 col-lg-4 col-sm-3 mb-2">
-                    <x-input label="{{ trans('cruds.aafs_project.fields.Govt_id') }}" wire:model='InputStore.goId'
+                    <x-input label="{{ trans('cruds.aafs_project.fields.Govt_id') }}" wire:model.defer='InputStore.goId'
                         placeholder="Enter {{ trans('cruds.aafs_project.fields.Govt_id') }}" />
                 </div>
                 <div class="col-md-4 col-lg-4 col-sm-3 mb-2">

@@ -1,20 +1,17 @@
 <?php
 
-namespace App\Http\Livewire\RateAnalysis;
+namespace App\Http\Livewire\QuantityEvaluation;
 
 use Livewire\Component;
-use App\Models\EstimateUserAssignRecord;
-use App\Models\SorMaster;
-use Illuminate\Support\Facades\Auth;
 
-class RateAnalysis extends Component
+class QuantityEvaluation extends Component
 {
     public $formOpen = false, $editFormOpen = false,$updateDataTableTracker,$selectedTab = 1,$counterData=[];
     protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'mount','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function mount()
     {
-        $this->draftData();
+        // $this->draftData();
     }
     public function draftData()
     {
@@ -34,33 +31,37 @@ class RateAnalysis extends Component
         $this->selectedTab = 3;
         $this->dataCounter();
     }
-    public function dataCounter()
+    // public function dataCounter()
+    // {
+    //     $this->counterData['totalDataCount'] = EstimateUserAssignRecord::where('status',1)
+    //     ->where('user_id',Auth::user()->id)
+    //     ->count();
+    //     $this->counterData['draftDataCount'] = EstimateUserAssignRecord::where(function($query){
+    //         $query->where('status',1)
+    //         ->orWhere('status',10);
+    //     })
+    //     ->where('user_id',Auth::user()->id)
+    //     ->where('is_done',0)
+    //     ->count();
+    //     $this->counterData['forwardedDataCount'] =  EstimateUserAssignRecord::query()
+    //     ->selectRaw('count(status)')
+    //     ->where('status', 2)
+    //     ->where('user_id', Auth::user()->id)
+    //     ->where('created_at', function ($query) {
+    //         $query->selectRaw('MAX(created_at)')
+    //             ->from('estimate_user_assign_records as t2')
+    //             ->whereColumn('estimate_user_assign_records.estimate_id', 't2.estimate_id')
+    //             ->where('t2.status', 2);
+    //     })
+    //     ->count();
+    //     $this->counterData['revertedDataCount'] = EstimateUserAssignRecord::where('status',3)
+    //     ->where('assign_user_id',Auth::user()->id)
+    //     ->where('is_done',0)
+    //     ->count();
+    // }
+    public function setErrorAlert($errorMessage)
     {
-        $this->counterData['totalDataCount'] = EstimateUserAssignRecord::where('status',1)
-        ->where('user_id',Auth::user()->id)
-        ->count();
-        $this->counterData['draftDataCount'] = EstimateUserAssignRecord::where(function($query){
-            $query->where('status',1)
-            ->orWhere('status',10);
-        })
-        ->where('user_id',Auth::user()->id)
-        ->where('is_done',0)
-        ->count();
-        $this->counterData['forwardedDataCount'] =  EstimateUserAssignRecord::query()
-        ->selectRaw('count(status)')
-        ->where('status', 2)
-        ->where('user_id', Auth::user()->id)
-        ->where('created_at', function ($query) {
-            $query->selectRaw('MAX(created_at)')
-                ->from('estimate_user_assign_records as t2')
-                ->whereColumn('estimate_user_assign_records.estimate_id', 't2.estimate_id')
-                ->where('t2.status', 2);
-        })
-        ->count();
-        $this->counterData['revertedDataCount'] = EstimateUserAssignRecord::where('status',3)
-        ->where('assign_user_id',Auth::user()->id)
-        ->where('is_done',0)
-        ->count();
+       $this->errorMessage = $errorMessage;
     }
     public function fromEntryControl($data='')
     {
@@ -98,17 +99,8 @@ class RateAnalysis extends Component
         $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
 
     }
-    public function setErrorAlert($errorMessage)
-    {
-       $this->errorMessage = $errorMessage;
-    }
     public function render()
     {
-        $this->updateDataTableTracker = rand(1,1000);
-        $this->titel = 'Rate Analysis';
-        $assets = ['chart', 'animation'];
-        return view('livewire.rate-analysis.rate-analysis');
-
+        return view('livewire.quantity-evaluation.quantity-evaluation');
     }
-
 }

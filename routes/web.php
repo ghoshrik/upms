@@ -28,6 +28,7 @@ use App\Http\Livewire\Office\Office;
 use App\Http\Livewire\Permission\Permission;
 use App\Http\Livewire\RateAnalysis\RateAnalysis;
 use App\Http\Livewire\Report\MisReport;
+use App\Http\Livewire\QuantityEvaluation\QuantityEvaluation;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\Roles\Roles;
 use App\Http\Livewire\Setting\SettingLists;
@@ -95,7 +96,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
 
 
-
         //state Admin
 
         Route::group(['middleware' => ['role:State Admin']], function () {
@@ -147,15 +147,15 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::group(['middleware' => ['role:SOR Preparer']], function () {
             Route::get('prepare-sor', Sor::class)->name('prepare-sor');
-            Route::get('composit-sor', ComposerSors::class)->name('composit-sor');
         });
+        Route::get('composit-sor', ComposerSors::class)->name('composit-sor');
 
         Route::get('user-type', UserType::class)->name("user-type");
         Route::get('access-manager', AccessManager::class)->name('access-manager');
         Route::get('access-type', AccessType::class)->name('access-type');
         Route::get('menu-manager', MenuManagement::class)->name('menu-manager');
 
-        Route::get('rate-analycis', RateAnalysis::class)->name('rate-analycis');
+        Route::get('rate-analysis', RateAnalysis::class)->name('rate-analysis');
 
 
         // Route::get('aafs-project',ProjectList::class)->name('aafs-project');

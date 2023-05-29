@@ -4,7 +4,7 @@
             <div class="card overflow-hidden">
                 <div class="card-header d-flex justify-content-between flex-wrap">
                     <div class="header-title">
-                        <h4 class="card-title mb-2">Edit Estimates List</h4>
+                        <h4 class="card-title mb-2">Quantity Evaluation</h4>
                     </div>
                 </div>
                 <div>
@@ -12,11 +12,11 @@
                         <div class="col col-md-6 col-lg-6 mb-2">
                             <div class="row">
                                 <div class="input-group mb-3">
-                                    <input type="text" wire:model.defer="expression" class="form-control"
+                                    <input type="text" wire:model="expression" class="form-control"
                                         placeholder="{{ trans('cruds.estimate.fields.operation') }}"
                                         aria-label="{{ trans('cruds.estimate.fields.operation') }}"
                                         aria-describedby="basic-addon1">
-                                    <input type="text" wire:model.defer="remarks" class="form-control"
+                                    <input type="text" wire:model="remarks" class="form-control"
                                         placeholder="{{ trans('cruds.estimate.fields.remarks') }}"
                                         aria-label="{{ trans('cruds.estimate.fields.remarks') }}"
                                         aria-describedby="basic-addon1">
@@ -28,7 +28,7 @@
                         <div class="col col-md-6 col-lg-6 mb-2">
                             <div class="btn-group float-right" role="group" aria-label="Basic example">
                                 <button type="button" class="btn btn-soft-primary" wire:click="totalOnSelected"
-                                    @if ($openTotalButton) {{ '' }}@else {{ 'disabled' }} @endif>{{ trans('cruds.estimate.fields.total_on_selected') }}
+                                    @if ($openTotalButton && $totalOnSelectedCount!=1||true) {{ '' }}@else {{ 'disabled' }} @endif>Final Selected
                                 </button>
                                 <button type="button" class="btn btn-soft-info" wire:click="exportWord">
                                     <span class="btn-inner">
@@ -44,81 +44,67 @@
                         <table id="basic-table" class="table table-striped mb-0" role="grid">
                             <thead>
                                 <tr>
-                                    <th></th>
+                                    <th>#</th>
                                     <th>{{ trans('cruds.estimate.fields.id_helper') }}</th>
-                                    <th>{{ trans('cruds.estimate.fields.item_number') }}</th>
+                                    <th>Description</th>
+                                    <th>Unit</th>
+                                    <th>Value</th>
+                                    <th>Action</th>
+                                    {{-- <th>{{ trans('cruds.estimate.fields.item_number') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.description') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.quantity') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.per_unit_cost') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.cost') }}</th>
-                                    <th>{{ trans('cruds.estimate.fields.action') }}</th>
+                                    <th>{{ trans('cruds.estimate.fields.action') }}</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
                                 {{-- @dd($allAddedEstimatesData) --}}
                                 @foreach ($allAddedEstimatesData as $key => $addedEstimate)
-                                    {{-- @dd($addedEstimate) --}}
-                                    @php
-                                        // $sorDesc = \App\Models\
-                                    @endphp
                                     <tr>
                                         <td>
                                             <x-checkbox wire:key="{{ $key . 'checkbox' }}" id="checkbox"
-                                                wire:model.defer="level" value="{{ $addedEstimate['row_id'] }}"
+                                                wire:model.defer="level" value="{{ $addedEstimate['array_id'] }}"
                                                 wire:click="showTotalButton" />
                                         </td>
                                         <td>
                                             <div wire:key="{{ $key . 'iNo' }}" class="d-flex align-items-center">
-                                                {{ chr($addedEstimate['row_id'] + 64) }}
+                                                {{ chr($key + 64) }}
                                             </div>
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['sor_item_number'])
-                                                {{ getSorItemNumber($addedEstimate['sor_item_number']) }}
+                                            {{-- {{ $addedEstimate['sor_item_number'] ?  $addedEstimate['sor_item_number'] : '---'}} --}}
+
+                                            @if ($addedEstimate['label'])
+                                                {{ $addedEstimate['label'] }}
+                                            @elseif ($addedEstimate['arrayIndex'])
+                                                {{ $addedEstimate['arrayIndex'] }}
                                             @else
                                                 --
                                             @endif
                                         </td>
-                                        <td class="text-wrap" style="width: 40rem">
-                                            @if ($addedEstimate['sor_item_number'])
-                                                {{ getSorItemNumberDesc($addedEstimate['sor_item_number']) }}
-                                            @elseif ($addedEstimate['row_index'])
-                                                @if ($addedEstimate['comments'])
-                                                    {{ $addedEstimate['row_index'] . ' ( ' . $addedEstimate['comments'] . ' ) ' }}
-                                                @elseif ($addedEstimate['operation'] == 'Total')
-                                                    {{ 'Total of ' . $addedEstimate['row_index'] }}
-                                                @else
-                                                    {{ $addedEstimate['row_index'] }}
-                                                @endif
-                                            @else
-                                                {{ $addedEstimate['other_name'] }}
+                                        <td>
+                                            @if($addedEstimate['unite'] != null)
+                                            {{ getunitName($addedEstimate['unite']) }}
                                             @endif
-
                                         </td>
+                                        <td>{{ $addedEstimate['value'] }}</td>
                                         <td>
-                                            {{ $addedEstimate['qty'] }}
-                                        </td>
-                                        <td>
-                                            {{ $addedEstimate['rate'] }}
-                                        </td>
-                                        <td>
-                                            {{ round($addedEstimate['total_amount'],10,2) }}
-                                        </td>
-                                        <td>
-                                            @if ($addedEstimate['row_index'] == null)
-                                                {{-- <x-button wire:click="editEstimate({{ $addedEstimate['row_id'] }})"
-                                                    type="button" class="btn btn-soft-primary btn-sm px-3 py-2.5 m-1 rounded">
+                                            {{-- @if ($addedEstimate['estimate_no'])
+                                                <x-button
+                                                    wire:click="viewModal({{ $addedEstimate['estimate_no'] }})"
+                                                    type="button" class="btn btn-soft-primary btn-sm">
                                                     <span class="btn-inner">
-                                                        <x-lucide-edit class="w-4 h-4 text-gray-500" /> {{ trans('global.edit_btn') }}
+                                                        <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
                                                     </span>
-                                                </x-button> --}}
-                                                <x-edit-button wire:click="editEstimate({{ $addedEstimate['row_id'] }})" id action/>
-                                            @endif
-                                            @if ($arrayRow == $addedEstimate['row_id'])
-                                                <x-button wire:click="confDeleteDialog({{ $addedEstimate['row_id'] }})"
-                                                    type="button" class="btn btn-soft-danger btn-sm px-3 py-2.5 m-1 rounded">
+                                                </x-button>
+                                            @endif --}}
+                                            @if ($arrayRow == $key)
+                                                <x-button
+                                                    wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
+                                                    type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
-                                                        <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> {{ trans('global.delete_btn') }}
+                                                        <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                     </span>
                                                 </x-button>
                                             @endif
@@ -133,7 +119,7 @@
                     <div class="row">
                         <div class="col-6"> <button type="button" wire:click='resetSession'
                                 class="btn btn-soft-danger rounded-pill float-left">Reset</button></div>
-                        <div class="col-6"><button type="submit" wire:click='store({{ $updateEstimate_id }})'
+                        <div class="col-6"><button type="submit" wire:click='store'
                                 class="btn btn-success rounded-pill float-right">Save</button></div>
                     </div>
                 </div>
