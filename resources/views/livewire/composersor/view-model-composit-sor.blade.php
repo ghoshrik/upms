@@ -11,7 +11,7 @@
                         <th class="whitespace-nowrap" style="width:40%;text-align:center;">
                             DESCRIPTION</th>
 
-                        <th class="whitespace-nowrap" style="text-align:center;">QUANTITY
+                        <th class="whitespace-nowrap" style="text-align:center;">child ID
                         </th>
                         <th class="whitespace-nowrap" style="text-align:right;">UNIT
                             PRICE</th>
@@ -19,8 +19,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($viewCompositSOR as $lists)
-                    @endforeach
+                    @isset($this->viewCompositSOR['parent'])
+                        @foreach ($viewCompositSOR['parent'] as $lists)
+                            <tr>
+                                <td> {{ $lists->Item_details }}</td>
+                                <td>
+                                    {{ $lists->description }}
+                                </td>
+                                <td>
+                                    <ul>
+                                        @foreach ($viewCompositSOR['child'] as $data)
+                                            <li>{{ $data['Item_details'] }}</li>
+                                            <li>{{ $data['description'] }}</li>
+                                        @endforeach
+                                    </ul>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endisset
                 </tbody>
             </table>
         </x-card>

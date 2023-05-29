@@ -42,9 +42,9 @@
                         </x-select> --}}
                         <div class="dropdown">
                             <x-input wire:key="sor" label="{{ trans('cruds.estimate.fields.sor') }}"
-                                placeholder="{{ trans('cruds.estimate.fields.sor') }}"
-                                wire:model.defer="storeItem.parentSorItemNo" value="{{ $storeItem['parentSorItemNo'] }}"
-                                wire:keydown.escape="resetValus" wire:keydown.tab="autoSearch" class="dropbtn" />
+                                placeholder="{{ trans('cruds.estimate.fields.sor') }}" wire:model="selectSOR"
+                                value="{{ $selectSOR }}" wire:keydown.escape="resetValus"
+                                wire:keydown.tab="autoSearch" class="dropbtn" />
 
 
                             @isset($this->fetchDropDownData['items_number'])
@@ -85,10 +85,21 @@
                                         @endforeach
                                     @endisset
                                 </x-select> --}}
-                                <x-input wire:key='childSorItemNo.{{ $key }}'
+                                {{-- <x-input wire:key='childSorItemNo.{{ $key }}'
                                     label="{{ trans('cruds.sor.fields.item_number') }}"
                                     placeholder="{{ trans('cruds.sor.fields.item_number') }}"
-                                    wire:model="inputsData.{{ $key }}.childSorItemNo" />
+                                    wire:model="inputsData.{{ $key }}.childSorItemNo" /> --}}
+
+                                <x-select wire:key="sorItemNo.{{ $key }}" label="SOR Item No"
+                                    placeholder="Select SOR Item No"
+                                    wire:model.defer="inputsData.{{ $key }}.childSorItemNo"
+                                    x-on:select="$wire.getSORItem({{ $key }})">
+                                    @isset($fetchDropDownData['SORItemNo'])
+                                        @foreach ($fetchDropDownData['SORItemNo'] as $sor)
+                                            <x-select.option label="{{ $sor['Item_details'] }}" value="{{ $sor['id'] }}" />
+                                        @endforeach
+                                    @endisset
+                                </x-select>
                             </div>
                         </div>
                         <div class="col-md-4 col-lg-4 col-sm-3">

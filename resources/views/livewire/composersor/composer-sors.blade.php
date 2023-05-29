@@ -61,7 +61,8 @@
                                             <tr>
                                                 <th>{{ trans('cruds.sor.fields.id_helper') }}</th>
                                                 <th>Dept Category</th>
-                                                <th>SOR Item No</th>
+                                                <th>SOR Item No Parent</th>
+                                                <th>SOR Item No child</th>
                                                 <th>Description</th>
                                                 <th>{{ trans('cruds.sor.fields.unit') }}</th>
                                                 <th>{{ trans('cruds.sor.fields.cost') }}</th>
@@ -76,12 +77,13 @@
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $lists->getDeptCategoryName->dept_category_name }}</td>
                                                     <td>{{ $lists->ParentSORItemNo->Item_details }}</td>
+                                                    <td>{{ $lists->ChildSORItemNo->Item_details }}</td>
                                                     <td>{{ $lists->description }} </td>
                                                     <td>{{ $lists->getUnit->unit_name }} </td>
                                                     <td>{{ $lists->rate }} </td>
                                                     <td>
                                                         <button class="btn btn-soft-primary btn-sm"
-                                                            wire:click='$emit("viewModal",{{ $lists->id }})'>
+                                                            wire:click='$emit("viewModal",{{ $lists->sor_itemno_parent_id }},{{ $lists->sor_itemno_child }})'>
                                                             <x-icon name="eye" class="w-5 h-5" />View
                                                         </button>
                                                     </td>

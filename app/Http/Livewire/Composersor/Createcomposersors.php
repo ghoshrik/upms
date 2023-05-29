@@ -20,10 +20,15 @@ class Createcomposersors extends Component
 
     protected $rules = [
         'storeItem.dept_category_id' => 'required',
-        'storeItem.parentSorItemNo' => 'required',
+        // 'storeItem.parentSorItemNo' => 'required',
         'storeItem.file_upload' => 'required',
         'storeItem.sor_Itemid' => 'required',
         // 'selectedCategoryId' => 'required|integer',
+        // 'storeItem.getdetails'=
+
+
+
+
         'inputsData.*.childSorItemNo' => 'required',
         'inputsData.*.description' => 'required',
         'inputsData.*.unit_id' => 'required|integer',
@@ -84,7 +89,7 @@ class Createcomposersors extends Component
             ]
         ];
         $this->storeItem['dept_category_id'] = '';
-        $this->storeItem['parentSorItemNo'] = '';
+        // $this->storeItem['parentSorItemNo'] = '';
         $this->storeItem['file_upload'] = '';
         $this->fetchDropDownData['departmentCategory'] = SorCategoryType::where('department_id', Auth::user()->department_id)->get();
         $this->fetchDropDownData['unitMaster'] =  UnitMaster::select('id', 'unit_name', 'short_name', 'is_active')->where('is_active', 1)->orderBy('id', 'desc')->get();
@@ -119,15 +124,15 @@ class Createcomposersors extends Component
         $this->fetchDropDownData['SORItemNo'] = SOR::select('id', 'Item_details')->where('dept_category_id', $this->storeItem['dept_category_id'])->get();
         //$this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
     }
-    public $searchDtaCount, $searchStyle, $searchResData;
+    public $searchDtaCount, $searchStyle, $searchResData, $selectSOR;
     public function autoSearch()
     {
-        if ($this->storeItem['parentSorItemNo']) {
+        if ($this->selectSOR) {
             $this->fetchDropDownData['items_number'] = SOR::select('Item_details', 'id')
                 ->where('department_id', Auth::user()->department_id)
                 ->where('dept_category_id', $this->storeItem['dept_category_id'])
                 // ->where('version', $this->estimateData['version'])
-                ->where('Item_details', 'like', $this->storeItem['parentSorItemNo'] . '%')
+                ->where('Item_details', 'like', $this->selectSOR . '%')
                 ->where('is_approved', 1)
                 ->get();
 
@@ -143,12 +148,12 @@ class Createcomposersors extends Component
                 // $this->estimateData['rate'] = '';
                 $this->searchStyle = 'none';
                 $this->notification()->error(
-                    $title = 'Not data found !!' . $this->storeItem['parentSorItemNo']
+                    $title = 'Not data found !!' . $this->selectSOR
                 );
             }
         } else {
             $this->notification()->error(
-                $title = 'Not found !!' . $this->storeItem['parentSorItemNo']
+                $title = 'Not found !!' . $this->selectSOR
             );
         }
     }
@@ -164,7 +169,7 @@ class Createcomposersors extends Component
                 // $this->estimateData['qty'] = $list['unit'];
                 // $this->estimateData['rate'] = $list['cost'];
                 $this->storeItem['sor_Itemid'] = $list['id'];
-                $this->storeItem['parentSorItemNo'] = $list['Item_details'];
+                $this->selectSOR = $list['Item_details'];
             }
             // $this->calculateValue();
         } else {
@@ -176,13 +181,19 @@ class Createcomposersors extends Component
             );
         }
     }
-
+    public function getSORItem($key)
+    {
+        // dd($this->inputsData[$key]['childSorItemNo']);
+        $sor = SOR::select('id', 'Item_details', 'description')->where('id', $this->inputsData[$key]['childSorItemNo'])->first();
+        $this->inputsData[$key]['description'] = $sor->description;
+    }
     public function store()
     {
+        // dd($this->inputsData, $this->storeItem);
         $this->validate();
         try {
-            // dd($this->inputsData, $this->storeItem);
-            foreach ($this->inputsData as $key => $data) {
+
+            foreach ($this->inputsData as $data) {
 
                 $last = CompositSor::create([
                     'dept_category_id' => $this->storeItem['dept_category_id'],
