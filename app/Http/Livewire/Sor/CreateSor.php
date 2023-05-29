@@ -2,14 +2,16 @@
 
 namespace App\Http\Livewire\Sor;
 
-use App\Models\AttachDoc;
 use App\Models\SOR;
+use App\Models\DocuSor;
 use Livewire\Component;
+use App\Models\AttachDoc;
 use App\Models\Department;
+use App\Models\UnitMaster;
 use WireUi\Traits\Actions;
 use Livewire\WithFileUploads;
 use App\Models\SorCategoryType;
-use App\Models\UnitMaster;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class CreateSor extends Component
@@ -98,11 +100,12 @@ class CreateSor extends Component
     }
     public function store()
     {
-        // dd($this->inputsData);
-
         $this->validate();
-        try {
-            // dd()
+        try
+        {
+            // $db_ext = DB::connection('pgsql_docu_External');
+            //     dd($db_ext->table('docu_sors')->get());
+
             foreach ($this->inputsData as $key => $data) {
                 $last = SOR::create([
                     'Item_details' => $data['item_details'],
@@ -136,12 +139,13 @@ class CreateSor extends Component
                 $fileSize = $this->file_upload->getSize();
                 $filExt = $this->file_upload->getClientOriginalExtension();
                 $mimeType = $this->file_upload->getMimeType();
-                AttachDoc::create([
+                $db_ext = DB::connection('pgsql_docu_External');
+                $db_ext->table('docu_sors')->insert([
                     'sor_docu_id' => $last->id,
                     'document_type' => $filExt,
                     'document_mime' => $mimeType,
                     'document_size' => $fileSize,
-                    'docfile' => base64_encode($filePath)
+                    'docufile' => base64_encode($filePath)
                 ]);
             }
             $this->notification()->success(
@@ -167,7 +171,6 @@ class CreateSor extends Component
 
     public function render()
     {
-
         return view('livewire.sor.create-sor');
     }
 }

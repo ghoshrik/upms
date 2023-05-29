@@ -9,8 +9,8 @@
                     <div class="row">
                         <div class="col-md-12 col-sm-6 col-lg-12">
                             <div class="form-group">
-                                <x-input label="{{ trans('cruds.designation.title') }}"
-                                    placeholder="{{ trans('cruds.designation.title') }}"
+                                <x-input label="{{ trans('cruds.designation.fields.designation_name') }}"
+                                    placeholder="{{ trans('cruds.designation.fields.designation_name') }}"
                                     wire:model.defer="designation_name" />
                             </div>
                         </div>
