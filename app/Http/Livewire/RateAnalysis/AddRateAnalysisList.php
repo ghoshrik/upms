@@ -2,14 +2,15 @@
 
 namespace App\Http\Livewire\RateAnalysis;
 
-use App\Models\EstimatePrepare;
-use App\Models\RatesAnalysis;
-use ChrisKonnertz\StringCalc\StringCalc;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use WireUi\Traits\Actions;
+use App\Models\RatesAnalysis;
+use App\Models\EstimatePrepare;
+use App\Services\CommonFunction;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use ChrisKonnertz\StringCalc\StringCalc;
+use Illuminate\Support\Facades\Validator;
 
 class AddRateAnalysisList extends Component
 {
@@ -125,10 +126,10 @@ class AddRateAnalysisList extends Component
     {
         $this->reset('allAddedEstimatesData');
         if (Session()->has('addedRateAnalysisData')) {
-            //$this->allAddedEstimatesData = Session()->get('addedRateAnalysisData');
+            $this->allAddedEstimatesData = Session()->get('addedRateAnalysisData');
         }
         if ($this->addedEstimateData != null) {
-            if (is_array($this->addedEstimateData)) {
+            if (CommonFunction::hasNestedArrays($this->addedEstimateData)) {
                 foreach ($this->addedEstimateData as $key => $addedEstimate) {
                     $index = count($this->allAddedEstimatesData) + 1;
                     if (!array_key_exists("operation", $addedEstimate)) {
