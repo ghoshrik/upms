@@ -147,8 +147,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::group(['middleware' => ['role:SOR Preparer']], function () {
             Route::get('prepare-sor', Sor::class)->name('prepare-sor');
-            Route::get('composit-sor', ComposerSors::class)->name('composit-sor');
         });
+        Route::get('composit-sor', ComposerSors::class)->name('composit-sor');
 
         Route::get('user-type', UserType::class)->name("user-type");
         Route::get('access-manager', AccessManager::class)->name('access-manager');

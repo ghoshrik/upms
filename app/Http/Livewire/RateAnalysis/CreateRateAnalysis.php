@@ -2,17 +2,19 @@
 
 namespace App\Http\Livewire\RateAnalysis;
 
-use Livewire\Component;
-use App\Models\Department;
-use App\Models\Esrecommender;
-use App\Models\EstimatePrepare;
-use App\Models\RatesAnalysis;
 use App\Models\SOR;
-use App\Models\SorCategoryType;
+use Livewire\Component;
 use App\Models\SorMaster;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Department;
 use WireUi\Traits\Actions;
+use App\Models\CompositSor;
+use Illuminate\Support\Arr;
+use App\Models\Esrecommender;
+use App\Models\RatesAnalysis;
+use App\Models\EstimatePrepare;
+use App\Models\SorCategoryType;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 
 class CreateRateAnalysis extends Component
@@ -110,7 +112,7 @@ class CreateRateAnalysis extends Component
         $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc','dropdownData','selectSor']);
         $value = $value['_x_bindings']['value'];
         $this->estimateData['item_name'] = $value;
-        if ($this->estimateData['item_name'] == 'SOR') {
+        if ($this->selectedCategoryId == 1) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = '';
@@ -122,7 +124,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
-        } elseif ($this->estimateData['item_name'] == 'Other') {
+        } elseif ($this->selectedCategoryId == 2) {
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = '';
             $this->estimateData['dept_category_id'] = '';
@@ -133,10 +135,22 @@ class CreateRateAnalysis extends Component
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
-        } elseif ($this->estimateData['item_name'] == 'Rate') {
+        } elseif ($this->selectedCategoryId == 3) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['rate_no'] = '';
             // $this->estimateData['estimate_desc'] = '';
+            $this->estimateData['dept_id'] = '';
+            $this->estimateData['dept_category_id'] = '';
+            $this->estimateData['version'] = '';
+            $this->estimateData['item_number'] = '';
+            $this->estimateData['description'] = '';
+            $this->estimateData['other_name'] = '';
+            $this->estimateData['qty'] = '';
+            $this->estimateData['rate'] = '';
+            $this->estimateData['total_amount'] = '';
+        }elseif ($this->selectedCategoryId == 4) {
+            $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+            $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
@@ -283,7 +297,40 @@ class CreateRateAnalysis extends Component
             $this->estimateData['rate'] = '';
         }
     }
+    public function getCompositSorItemDetails($id)
+    {
+        // $this->estimateData['description'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['description'];
+        // $this->estimateData['qty'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['unit'];
+        // $this->estimateData['rate'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['cost'];
+        // $this->estimateData['item_number'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['id'];
+        // $this->calculateValue();
 
+        $getCompositSorList = CompositSor::where('sor_itemno_parent_id', $id)->get();
+        // $getRateList = RatesAnalysis::where('operation','Total')->get();
+        foreach($getCompositSorList as $key => $sor){
+            $this->estimateData['rate_no'] = '';
+            $this->estimateData['dept_id'] = '';
+            $this->estimateData['dept_category_id'] = $sor['dept_category_id'];
+            $this->estimateData['version'] = '';
+            $this->estimateData['item_number'] = $sor['sor_itemno_child'];
+            $this->estimateData['description'] = getSorItemNumberDesc($sor['sor_itemno_child']);
+            $this->estimateData['other_name'] = '';
+            $this->estimateData['qty'] = $sor['rate'];
+            Log::alert($sor['sor_itemno_child']);
+            $rateDetails = RatesAnalysis::where([['sor_item_number',$sor['sor_itemno_child']],['operation','Total']])->first();
+            Log::alert(json_encode($rateDetails));
+            $this->estimateData['rate'] = $rateDetails->total_amount;
+            $this->estimateData['total_amount'] = $rateDetails->total_amount * $sor['rate'];
+            // foreach($getRateList as $rate)
+            // {
+            //     // if($sor['sor_itemno_child'] == $rate['sor_item_number']){
+            //         $this->estimateData['rate'] = $rate['total_amount'];
+            //         $this->estimateData['total_amount'] = $rate['total_amount'] * $sor['rate'];
+            //     // }
+            // }
+            $this->addEstimate($key+1);
+        }
+    }
     public function calculateValue()
     {
         if ($this->estimateData['item_name'] == 'SOR') {
@@ -396,25 +443,44 @@ class CreateRateAnalysis extends Component
         $this->estimateData['qty'] = 1;
         $this->estimateData['rate'] = $this->fatchDropdownData['rateDetails']['total_amount'];
     }
-    public function addEstimate()
+    public function addEstimate($key=null)
     {
         // $validatee = $this->validate();
-        $this->reset('addedEstimate');
-        $this->showTableOne = !$this->showTableOne;
-        $this->addedEstimate['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];
-        // $this->addedEstimate['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
-        $this->addedEstimate['dept_id'] = Auth::user()->department_id;
-        $this->addedEstimate['category_id'] = ($this->estimateData['dept_category_id'] == '') ? 0 : $this->estimateData['dept_category_id'];
-        $this->addedEstimate['sor_item_number'] = ($this->estimateData['item_number'] == '') ? 0 : $this->estimateData['item_number'];
-        $this->addedEstimate['item_name'] = $this->estimateData['item_name'];
-        $this->addedEstimate['other_name'] = $this->estimateData['other_name'];
-        $this->addedEstimate['description'] = $this->estimateData['description'];
-        $this->addedEstimate['qty'] = ($this->estimateData['qty'] == '') ? 0 : $this->estimateData['qty'];
-        $this->addedEstimate['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
-        $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
-        $this->addedEstimate['version'] = $this->estimateData['version'];
-        $this->addedEstimateUpdateTrack = rand(1, 1000);
-        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc','dropdownData','selectSor']);
+        if(isset($key)){
+            $this->showTableOne = !$this->showTableOne;
+            $this->addedEstimate[$key]['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];
+            // $this->addedEstimate[$key]['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
+            $this->addedEstimate[$key]['dept_id'] = Auth::user()->department_id;
+            $this->addedEstimate[$key]['category_id'] = ($this->estimateData['dept_category_id'] == '') ? 0 : $this->estimateData['dept_category_id'];
+            $this->addedEstimate[$key]['sor_item_number'] = ($this->estimateData['item_number'] == '') ? 0 : $this->estimateData['item_number'];
+            $this->addedEstimate[$key]['item_name'] = $this->estimateData['item_name'];
+            $this->addedEstimate[$key]['other_name'] = $this->estimateData['other_name'];
+            $this->addedEstimate[$key]['description'] = $this->estimateData['description'];
+            $this->addedEstimate[$key]['qty'] = ($this->estimateData['qty'] == '') ? 0 : $this->estimateData['qty'];
+            $this->addedEstimate[$key]['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
+            $this->addedEstimate[$key]['total_amount'] = $this->estimateData['total_amount'];
+            $this->addedEstimate[$key]['version'] = $this->estimateData['version'];
+            $this->addedEstimateUpdateTrack = rand(1, 1000);
+            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc','dropdownData','selectSor','estimateData']);
+        }else{
+            Log::error('ehere');
+            $this->reset('addedEstimate');
+            $this->showTableOne = !$this->showTableOne;
+            $this->addedEstimate['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];
+            // $this->addedEstimate['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
+            $this->addedEstimate['dept_id'] = Auth::user()->department_id;
+            $this->addedEstimate['category_id'] = ($this->estimateData['dept_category_id'] == '') ? 0 : $this->estimateData['dept_category_id'];
+            $this->addedEstimate['sor_item_number'] = ($this->estimateData['item_number'] == '') ? 0 : $this->estimateData['item_number'];
+            $this->addedEstimate['item_name'] = $this->estimateData['item_name'];
+            $this->addedEstimate['other_name'] = $this->estimateData['other_name'];
+            $this->addedEstimate['description'] = $this->estimateData['description'];
+            $this->addedEstimate['qty'] = ($this->estimateData['qty'] == '') ? 0 : $this->estimateData['qty'];
+            $this->addedEstimate['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
+            $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
+            $this->addedEstimate['version'] = $this->estimateData['version'];
+            $this->addedEstimateUpdateTrack = rand(1, 1000);
+            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc','dropdownData','selectSor','estimateData']);
+        }
         // dd($this->addedEstimate);
     }
     public function render()

@@ -52,7 +52,6 @@
                                     <span>Pending Approval</span>
                                     <span class="badge">{{ $CountSorListPending }}</span>
                                 </button> --}}
-                                {{-- <livewire:composersor.datatable.composer-lists :wire:key="$updateDataTableTracker" /> --}}
 
                             </div>
                             <div class="card-body">

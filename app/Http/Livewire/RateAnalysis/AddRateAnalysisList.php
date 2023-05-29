@@ -2,18 +2,13 @@
 
 namespace App\Http\Livewire\RateAnalysis;
 
-use Livewire\Component;
 use App\Models\EstimatePrepare;
-use Illuminate\Support\Facades\Log;
-use ChrisKonnertz\StringCalc\StringCalc;
-use App\Models\SORMaster as ModelsSORMaster;
-use Illuminate\Support\Facades\Auth;
-use App\Models\EstimateUserAssignRecord;
 use App\Models\RatesAnalysis;
-use ChrisKonnertz\StringCalc\Exceptions\StringCalcException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use ChrisKonnertz\StringCalc\StringCalc;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Livewire\Component;
 use WireUi\Traits\Actions;
 
 class AddRateAnalysisList extends Component
@@ -25,6 +20,7 @@ class AddRateAnalysisList extends Component
     public $selectSor;
     public function mount()
     {
+        Log::alert(json_encode($this->addedEstimateData));
         $this->setEstimateDataToSession();
     }
 
@@ -54,7 +50,7 @@ class AddRateAnalysisList extends Component
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
         $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount','selectSor');
+        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'selectSor');
     }
 
     public function expCalc()
@@ -105,15 +101,14 @@ class AddRateAnalysisList extends Component
     public function totalOnSelected()
     {
         // dd($this->selectSor);
-        if (count($this->level) >= 2||true) {
+        if (count($this->level) >= 2 || true) {
             $result = 0;
             foreach ($this->level as $key => $array) {
                 $this->arrayStore[] = chr($array + 64);
                 $result = $result + $this->allAddedEstimatesData[$array]['total_amount'];
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
-            if(!isset($this->selectSor['item_number']))
-            {
+            if (!isset($this->selectSor['item_number'])) {
                 $this->selectSor['item_number'] = 0;
             }
             $this->insertAddEstimate($this->arrayIndex, Auth::user()->department_id, 0, $this->selectSor['item_number'], '', '', $this->sorMasterDesc, 0, 0, $result, 'Total', '', '');
@@ -121,7 +116,7 @@ class AddRateAnalysisList extends Component
         } else {
             $this->dispatchBrowserEvent('alert', [
                 'type' => 'error',
-                'message' => "Minimum select 2 Check boxes"
+                'message' => "Minimum select 2 Check boxes",
             ]);
         }
     }
@@ -130,45 +125,70 @@ class AddRateAnalysisList extends Component
     {
         $this->reset('allAddedEstimatesData');
         if (Session()->has('addedRateAnalysisData')) {
-            $this->allAddedEstimatesData = Session()->get('addedRateAnalysisData');
+            //$this->allAddedEstimatesData = Session()->get('addedRateAnalysisData');
         }
         if ($this->addedEstimateData != null) {
-            $index = count($this->allAddedEstimatesData) + 1;
-            if (!array_key_exists("operation", $this->addedEstimateData)) {
-                $this->addedEstimateData['operation'] = '';
+            if (is_array($this->addedEstimateData)) {
+                foreach ($this->addedEstimateData as $key => $addedEstimate) {
+                    $index = count($this->allAddedEstimatesData) + 1;
+                    if (!array_key_exists("operation", $addedEstimate)) {
+                        $addedEstimate['operation'] = '';
+                    }
+                    if (!array_key_exists("array_id", $addedEstimate)) {
+                        $addedEstimate['array_id'] = $index;
+                    }
+                    if (!array_key_exists("arrayIndex", $addedEstimate)) {
+                        $addedEstimate['arrayIndex'] = '';
+                    }
+                    if (!array_key_exists("remarks", $addedEstimate)) {
+                        $addedEstimate['remarks'] = '';
+                    }
+                    if (!array_key_exists("rate_no", $addedEstimate)) {
+                        $addedEstimate['rate_no'] = 0;
+                    }
+                    foreach ($addedEstimate as $key => $estimate) {
+                        $this->allAddedEstimatesData[$index][$key] = $estimate;
+                    }
+                    Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
+                }
+            } else {
+                $index = count($this->allAddedEstimatesData) + 1;
+                if (!array_key_exists("operation", $this->addedEstimateData)) {
+                    $this->addedEstimateData['operation'] = '';
+                }
+                if (!array_key_exists("array_id", $this->addedEstimateData)) {
+                    $this->addedEstimateData['array_id'] = $index;
+                }
+                if (!array_key_exists("arrayIndex", $this->addedEstimateData)) {
+                    $this->addedEstimateData['arrayIndex'] = '';
+                }
+                if (!array_key_exists("remarks", $this->addedEstimateData)) {
+                    $this->addedEstimateData['remarks'] = '';
+                }
+                if (!array_key_exists("rate_no", $this->addedEstimateData)) {
+                    $this->addedEstimateData['rate_no'] = 0;
+                }
+                foreach ($this->addedEstimateData as $key => $estimate) {
+                    $this->allAddedEstimatesData[$index][$key] = $estimate;
+                }
+                Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
+                $this->reset('addedEstimateData');
             }
-            if (!array_key_exists("array_id", $this->addedEstimateData)) {
-                $this->addedEstimateData['array_id'] = $index;
-            }
-            if (!array_key_exists("arrayIndex", $this->addedEstimateData)) {
-                $this->addedEstimateData['arrayIndex'] = '';
-            }
-            if (!array_key_exists("remarks", $this->addedEstimateData)) {
-                $this->addedEstimateData['remarks'] = '';
-            }
-            if (!array_key_exists("rate_no", $this->addedEstimateData)) {
-                $this->addedEstimateData['rate_no'] = 0;
-            }
-            foreach ($this->addedEstimateData as $key => $estimate) {
-                $this->allAddedEstimatesData[$index][$key] = $estimate;
-            }
-            Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
-            $this->reset('addedEstimateData');
         }
     }
 
     public function confDeleteDialog($value): void
     {
         $this->dialog()->confirm([
-            'title'       => 'Are you Sure?',
-            'icon'        => 'error',
-            'accept'      => [
-                'label'  => 'Yes, Delete it',
+            'title' => 'Are you Sure?',
+            'icon' => 'error',
+            'accept' => [
+                'label' => 'Yes, Delete it',
                 'method' => 'deleteEstimate',
                 'params' => $value,
             ],
             'reject' => [
-                'label'  => 'No, cancel'
+                'label' => 'No, cancel',
                 // 'method' => 'cancel',
             ],
         ]);
@@ -180,8 +200,7 @@ class AddRateAnalysisList extends Component
         Session()->forget('addedRateAnalysisData');
         Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
         $this->level = [];
-        if($this->totalOnSelectedCount == 1)
-        {
+        if ($this->totalOnSelectedCount == 1) {
             $this->reset('totalOnSelectedCount');
         }
         $this->notification()->error(
@@ -194,11 +213,11 @@ class AddRateAnalysisList extends Component
         $exportDatas = array_values($this->allAddedEstimatesData);
         // dd($exportDatas);
         $date = date('Y-m-d');
-        $pw = new \PhpOffice\PhpWord\PhpWord();
+        $pw = new \PhpOffice\PhpWord\PhpWord ();
         $section = $pw->addSection(
             array(
                 'marginLeft' => 600, 'marginRight' => 200,
-                'marginTop' => 600, 'marginBottom' => 200
+                'marginTop' => 600, 'marginBottom' => 200,
             )
         );
         $html = "<h1 style='font-size:24px;font-weight:600;text-align: center;'>Project Estimate Preparation Details</h1>";
@@ -244,7 +263,7 @@ class AddRateAnalysisList extends Component
         $html .= "</table>";
         foreach ($exportDatas as $key => $export) {
             if ($export['rate_no']) {
-                $html .= "<p>Estimate Packege ".$export['rate_no']."</p>";
+                $html .= "<p>Estimate Packege " . $export['rate_no'] . "</p>";
                 $getEstimateDetails = EstimatePrepare::where('rate_id', '=', $export['rate_no'])->get();
                 $html .= "<table style='border: 1px solid black;width:auto'><tr>";
                 $html .= "<th scope='col' style='text-align: center'>Serial No.</th>";
@@ -302,7 +321,7 @@ class AddRateAnalysisList extends Component
     }
     public function store()
     {
-        if ($this->totalOnSelectedCount == 1||true) {
+        if ($this->totalOnSelectedCount == 1 || true) {
             try {
                 // dd($this->allAddedEstimatesData);
                 if ($this->allAddedEstimatesData) {
@@ -355,7 +374,7 @@ class AddRateAnalysisList extends Component
                 // session()->flash('serverError', $th->getMessage());
                 $this->emit('showError', $th->getMessage());
             }
-        }else{
+        } else {
             $this->notification()->error(
                 $title = 'Please Calculate total first !!'
             );
