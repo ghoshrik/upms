@@ -18,8 +18,13 @@ class ViewModelCompositSor extends Component
             ->where('s_o_r_s.id', $parent_id)
             ->join('composit_sors', 's_o_r_s.id', '=', 'composit_sors.sor_itemno_parent_id')->groupBy('s_o_r_s.id')->get();
 
+        $this->viewCompositSOR['child'] = SOR::select('s_o_r_s.id', 's_o_r_s.Item_details', 's_o_r_s.description')->where('s_o_r_s.id', $child_id)
+            ->join('composit_sors', 's_o_r_s.id', '=', 'composit_sors.sor_itemno_parent_id')->get();
         // $this->viewCompositSOR['child'] = SOR::select('s_o_r_s.id', 's_o_r_s.Item_details', 's_o_r_s.description')->where('s_o_r_s.id', $parent_id)
         //     ->join('composit_sors', 's_o_r_s.id', '=', 'composit_sors.sor_itemno_parent_id')->groupBy('s_o_r_s.id')->get();
+
+
+        // dd($this->viewCompositSOR['child']);
     }
     public function render()
     {

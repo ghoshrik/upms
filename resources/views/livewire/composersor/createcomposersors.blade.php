@@ -16,20 +16,6 @@
                         </x-select>
                     </div>
                 </div>
-
-                {{-- <div class="col-md-3 col-sm-3 col-lg-3">
-                    <div class="form-group">
-                        <x-select wire:key="categoryType"
-                        label="{{ trans('cruds.estimate.fields.category') }}"
-                        placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
-                        wire:model.defer="selectedCategoryId"
-                        x-on:select="$wire.changeCategory($event.target)" :options="[
-                            ['name' => 'SOR', 'id' => 1],
-                            ['name' => 'Other', 'id' => 2],
-                        ]"
-                        option-label="name" option-value="id" />
-                    </div>
-                </div> --}}
                 <div class="col-md-9 col-lg-9 col-sm-3">
                     <div class="form-group search-sor">
                         {{-- <x-select wire:key="deptCategory" label="SOR Item No" placeholder="Select SOR Item No"
@@ -76,7 +62,7 @@
                         {{-- @if (!empty($estimateData))
                         @if ($estimateData['item_name'] == 'SOR') --}}
                         <div class="col-md-3 col-lg-3 col-sm-3">
-                            <div class="form-group">
+                            <div class="form-group search-sor">
                                 {{-- <x-select wire:key="deptCategory.{{$key}}" label="SOR Item No" placeholder="Select SOR Item No"
                                     wire:model.defer="inputsData.{{$key}}.sorItemNo">
                                     @isset($fetchDropDownData['SORItemNo'])
@@ -90,7 +76,7 @@
                                     placeholder="{{ trans('cruds.sor.fields.item_number') }}"
                                     wire:model="inputsData.{{ $key }}.childSorItemNo" /> --}}
 
-                                <x-select wire:key="sorItemNo.{{ $key }}" label="SOR Item No"
+                                {{-- <x-select wire:key="sorItemNo.{{ $key }}" label="SOR Item No"
                                     placeholder="Select SOR Item No"
                                     wire:model.defer="inputsData.{{ $key }}.childSorItemNo"
                                     x-on:select="$wire.getSORItem({{ $key }})">
@@ -99,7 +85,26 @@
                                             <x-select.option label="{{ $sor['Item_details'] }}" value="{{ $sor['id'] }}" />
                                         @endforeach
                                     @endisset
-                                </x-select>
+                                </x-select> --}}
+                                <div class="dropdown">
+                                    <x-input wire:key="sor" label="{{ trans('cruds.estimate.fields.sor') }}"
+                                        placeholder="{{ trans('cruds.estimate.fields.sor') }}"
+                                        wire:model="inputsData.{{ $key }}.childSorItemNo"
+                                        wire:keydown.escape="resetValus" value="{{ $inputsData[$key]['childSorItemNo'] }}"
+                                        wire:keydown.tab="autoQSearch({{ $key }})" class="dropbtn" />
+
+                                    @isset($this->fetchDropDownData['loop_items_number'])
+                                        @if (count($this->fetchDropDownData['loop_items_number']) > 0)
+                                            <div class="dropdown-content"
+                                                style="display:{{ $searchloopDtaCount ? $searchloopStyle : $searchloopStyle }}">
+                                                @foreach ($this->fetchDropDownData['loop_items_number'] as $list)
+                                                    <a href="javascript:void(0);"
+                                                        wire:click="getLoopItemDetails({{ $list['id'] . ',' . $key }})">{{ $list['Item_details'] . ',' . $key }}</a>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    @endisset
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-4 col-lg-4 col-sm-3">

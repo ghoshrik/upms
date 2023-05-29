@@ -124,6 +124,13 @@ class Createcomposersors extends Component
         $this->fetchDropDownData['SORItemNo'] = SOR::select('id', 'Item_details')->where('dept_category_id', $this->storeItem['dept_category_id'])->get();
         //$this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
     }
+    public function resetValus($resetAll = false)
+    {
+        if ($resetAll) {
+            $this->selectSOR = "";
+        }
+        $this->resetExcept(['selectSOR']);
+    }
     public $searchDtaCount, $searchStyle, $searchResData, $selectSOR;
     public function autoSearch()
     {
@@ -158,6 +165,37 @@ class Createcomposersors extends Component
         }
     }
 
+    public $searchloopDtaCount, $searchloopStyle, $searchloopResData;
+
+    public function autoQSearch($key)
+    {
+        // dd($this->inputsData[$key]['childSorItemNo']);
+        if ($this->inputsData[$key]['childSorItemNo']) {
+            $this->fetchDropDownData['loop_items_number'] = SOR::select('Item_details', 'id')
+                ->where('department_id', Auth::user()->department_id)
+                ->where('dept_category_id', $this->storeItem['dept_category_id'])
+                // ->where('version', $this->estimateData['version'])
+                ->where('Item_details', 'like', $this->inputsData[$key]['childSorItemNo'] . '%')
+                ->where('is_approved', 1)
+                ->get();
+            if (count($this->fetchDropDownData['loop_items_number']) > 0) {
+                $this->searchloopDtaCount = (count($this->fetchDropDownData['loop_items_number']) > 0);
+                $this->searchloopStyle = 'block';
+            } else {
+                // $this->estimateData['description'] = '';
+                // $this->estimateData['qty'] = '';
+                // $this->estimateData['rate'] = '';
+                $this->searchloopStyle = 'none';
+                $this->notification()->error(
+                    $title = 'Not data found !!' . $this->inputsData[$key]['childSorItemNo']
+                );
+            }
+        } else {
+            $this->notification()->error(
+                $title = 'Not found !!' . $this->inputsData[$key]['childSorItemNo']
+            );
+        }
+    }
     public function getItemDetails($value)
     {
         $this->searchResData = SOR::where('id', $value)->get();
@@ -173,6 +211,44 @@ class Createcomposersors extends Component
             }
             // $this->calculateValue();
         } else {
+            // $this->estimateData['description'] = '';
+            // $this->estimateData['qty'] = '';
+            // $this->estimateData['rate'] = '';
+            $this->notification()->error(
+                $title = "Not Found"
+            );
+        }
+    }
+    public function getLoopItemDetails($value, $key)
+    {
+        $this->searchloopResData = SOR::where('id', $value)->get();
+        $this->searchloopDtaCount = count($this->searchloopResData) > 0;
+        $this->searchloopStyle = 'none';
+        if (count($this->searchloopResData) > 0) {
+            foreach ($this->searchloopResData as $list) {
+                // $this->estimateData['description'] = $list['description'];
+                // $this->estimateData['qty'] = $list['unit'];
+                // $this->estimateData['rate'] = $list['cost'];
+                $this->storeItem['sor_Itemid'] = $list['id'];
+                $this->inputsData[$key]['description'] = $list->description;
+                // $this->selectSOR = $list['Item_details'];
+
+                $this->inputsData[$key]['childSorItemNo'] = $list['Item_details'];
+                // $this->inputsData
+            }
+            // $this->calculateValue();
+        } else {
+
+            $this->inputsData[] =
+                [
+                    'childSorItemNo' => '',
+                    'description' => '',
+                    'unit_id' => '',
+                    'qty' => ''
+                ];
+
+
+
             // $this->estimateData['description'] = '';
             // $this->estimateData['qty'] = '';
             // $this->estimateData['rate'] = '';

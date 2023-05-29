@@ -28,7 +28,7 @@
                                 </td>
                                 <td>
                                     <ul>
-                                        @foreach ($viewCompositSOR['child'] as $data)
+                                        @foreach ($this->viewCompositSOR['child'] as $data)
                                             <li>{{ $data['Item_details'] }}</li>
                                             <li>{{ $data['description'] }}</li>
                                         @endforeach
