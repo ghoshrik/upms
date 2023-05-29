@@ -281,14 +281,14 @@
                                     </div>
                                     <div class="col">
                                         <div class="form-group">
-                                            <x-select wire:key="estimate_no" label="{{ __('Select Estimate') }}"
-                                                placeholder="Select {{ __('Estimate') }}"
-                                                wire:model.defer="estimateData.estimate_no"
+                                            <x-select wire:key="rate_no" label="{{ __('Select Rate') }}"
+                                                placeholder="Select {{ __('Rate') }}"
+                                                wire:model.defer="estimateData.rate_no"
                                                 x-on:select="$wire.getRateDetails()">
-                                                @isset($fatchDropdownData['estimatesList'])
-                                                    @foreach ($fatchDropdownData['estimatesList'] as $estimate)
-                                                        <x-select.option label="{{ $estimate['estimate_id'].' - '.$estimate['sorMasterDesc'] }}"
-                                                            value="{{ $estimate['estimate_id'] }}" />
+                                                @isset($fatchDropdownData['ratesList'])
+                                                    @foreach ($fatchDropdownData['ratesList'] as $rate)
+                                                        <x-select.option label="{{ $rate['rate_id'].' - '.$rate['description'] }}"
+                                                            value="{{ $rate['rate_id'] }}" />
                                                     @endforeach
                                                 @endisset
                                             </x-select>
@@ -334,15 +334,15 @@
                                                 @isset($fatchDropdownData['qultiyEvaluation'])
                                                     @foreach ($fatchDropdownData['qultiyEvaluation'] as $estimate)
                                                         {{-- <x-select.option label="{{ $estimate['estimate_id'].' - '.$estimate['sorMasterDesc'] }}" --}}
-                                                        <x-select.option label="{{ $estimate['total_amount']}}"
-                                                            value="{{ $estimate['total_amount'] }}" />
+                                                        <x-select.option label="{{ $estimate['value']}}"
+                                                            value="{{ $estimate['value'] }}" />
                                                     @endforeach
                                                 @endisset
                                             </x-select>
                                         </div>
                                     </div>
                                     @endif
-                                    
+
                                     </div>
                                     <div class="col">
                                         <div class="form-group">
@@ -356,8 +356,8 @@
                                         <div class="form-group">
                                             <x-input wire:key="total_amount"
                                                 wire:model.defer="estimateData.total_amount"
-                                                label="{{ trans('cruds.estimate.fields.estimate_total') }}" disabled
-                                                placeholder="{{ trans('cruds.estimate.fields.estimate_total') }}" />
+                                                label="Rate Total" disabled
+                                                placeholder="Rate Total" />
                                         </div>
                                     </div>
                                     {{-- @endisset --}}

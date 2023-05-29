@@ -6,6 +6,7 @@ use App\Models\Department;
 use App\Models\Esrecommender;
 use App\Models\EstimatePrepare;
 use App\Models\QultiyEvaluation;
+use App\Models\RatesAnalysis;
 use App\Models\SOR;
 use App\Models\SorCategoryType;
 use App\Models\SorMaster;
@@ -144,6 +145,7 @@ class CreateEstimateProject extends Component
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['estimate_no'] = '';
+            $this->estimateData['rate_no'] = '';
             // $this->estimateData['estimate_desc'] = '';
             $this->estimateData['dept_id'] = '';
             $this->estimateData['dept_category_id'] = '';
@@ -161,8 +163,9 @@ class CreateEstimateProject extends Component
         $value = $value['_x_bindings']['value'];
         $this->quntity_type = $value;
         if ($value == 'Qutity Evaluation') {
-            $this->fatchDropdownData['qultiyEvaluation'] = QultiyEvaluation::select('total_amount')->where('estimate_id',$this->estimateData['estimate_no'])->get();
+            $this->fatchDropdownData['qultiyEvaluation'] = QultiyEvaluation::select('value')->where('rate_id',$this->estimateData['rate_no'])->where('operation','=','Final')->get();
         }
+        // dd($this->fatchDropdownData['qultiyEvaluation']);
     }
 
     public function getDeptCategory()
@@ -291,7 +294,7 @@ class CreateEstimateProject extends Component
         //     ->where('estimate_recomender.dept_id', $this->estimateData['dept_id'])
         //     ->where('sor_masters.is_verified', '=', 1)
         //     ->get();
-        $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',1],['is_verified',1]])->get();
+        $this->fatchDropdownData['ratesList'] = RatesAnalysis::select('description', 'rate_id')->where([['operation', 'Total'], ['dept_id', $this->estimateData['dept_id']]])->get();
         // $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',8],['is_verified',1]])->get();
     }
 
@@ -318,13 +321,11 @@ class CreateEstimateProject extends Component
         $this->estimateData['description'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
-        $this->fatchDropdownData['estimateDetails'] = EstimatePrepare::join('sor_masters', 'estimate_prepares.estimate_id', 'sor_masters.estimate_id')
-            ->where('estimate_prepares.estimate_id', $this->estimateData['estimate_no'])
-            ->where('estimate_prepares.operation', 'Total')->where([['sor_masters.is_verified', 1],['sor_masters.status', 1]])->first();
-        $this->estimateData['total_amount'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
-        $this->estimateData['description'] = $this->fatchDropdownData['estimateDetails']['sorMasterDesc'];
+        $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id', 'total_amount')->where([['rate_id',$this->estimateData['rate_no']],['operation', 'Total'], ['dept_id', Auth::user()->department_id]])->first();
+        $this->estimateData['total_amount'] = $this->fatchDropdownData['rateDetails']['total_amount'];
+        $this->estimateData['description'] = $this->fatchDropdownData['rateDetails']['description'];
         $this->estimateData['qty'] = 1;
-        $this->estimateData['rate'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
+        $this->estimateData['rate'] = $this->fatchDropdownData['rateDetails']['total_amount'];
     }
 
     public function getEstimateDetails()

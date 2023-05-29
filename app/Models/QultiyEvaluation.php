@@ -9,6 +9,10 @@ class QultiyEvaluation extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'estimate_id','lable','unit','value'
+        'rate_id','dept_id','row_id','row_index','label','unit','value','operation','created_by','remarks'
     ];
+    public function getDepartmentName()
+    {
+        return $this->belongsTo(Department::class, 'dept_id');
+    }
 }

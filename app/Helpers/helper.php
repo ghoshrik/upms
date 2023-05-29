@@ -10,6 +10,8 @@ use App\Models\Esrecommender;
 use App\Models\UsersHasRoles;
 use App\Models\EstimateStatus;
 use App\Models\EstimatePrepare;
+use App\Models\RatesAnalysis;
+use App\Models\UnitMaster;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -120,6 +122,15 @@ function getEstimateDescription($estimate_no)
         $estimateDescription = SorMaster::select('sorMasterDesc')->where('estimate_id', $estimate_no)->first();
     }
     return $estimateDescription['sorMasterDesc'];
+}
+
+function getRateDescription($rate_no)
+{
+    if ($rate_no)
+    {
+        $rateDescription = RatesAnalysis::where('rate_id',$rate_no)->first();
+    }
+    return $rateDescription['description'];
 }
 
 function getSorItemNumber($sor_item_number)
@@ -460,4 +471,10 @@ function generatePDF($list, $data, $title)
     // $canvas->page_text(512, 10, "Página: {PAGE_NUM} de {PAGE_COUNT}",$font, 8, array(0,0,0));
     file_put_contents($filename, $file);
     return response()->download($filename)->deleteFileAfterSend(true);
+}
+
+function getunitName($unit_id)
+{
+    $unit_name = UnitMaster::select('unit_name')->where('id',$unit_id)->first();
+    return $unit_name['unit_name'];
 }

@@ -16,6 +16,7 @@ class CreateRatesAnalysesTable extends Migration
         Schema::create('rates_analyses', function (Blueprint $table) {
             $table->bigIncrements('id')->autoIncrement();
             $table->integer('rate_id');
+            $table->longText('description');
             $table->integer('dept_id')->nullable();
             $table->integer('category_id')->nullable();
             $table->integer('row_id');

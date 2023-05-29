@@ -15,10 +15,16 @@ class CreateQultiyEvaluationsTable extends Migration
     {
         Schema::create('qultiy_evaluations', function (Blueprint $table) {
             $table->id();
-            $table->integer('estimate_id');
-            $table->string('lable')->default(0);
-            $table->string('unit')->default(0);
-            $table->integer('value');
+            $table->integer('rate_id');
+            $table->integer('row_id');
+            $table->string('row_index')->nullable();
+            $table->integer('dept_id');
+            $table->string('label')->default(0);
+            $table->integer('unit')->default(0);
+            $table->float('value');
+            $table->string('operation')->nullable();
+            $table->string('remarks')->nullable();
+            $table->integer('created_by');
             $table->timestamps();
         });
     }

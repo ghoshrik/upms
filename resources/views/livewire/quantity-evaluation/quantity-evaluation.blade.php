@@ -162,11 +162,11 @@
                             </div>
                         </div> --}}
                         <div class="col-md-12 col-lg-12 col-sm-3">
-                            @if ($this->selectedTab == 1)
+                            @if (true)
                                 <div class="card">
                                     <div class="card-body">
-                                            {{-- <livewire:rate-analysis.datatable.estimated-data-table
-                                            :wire:key="$updateDataTableTracker" > --}}
+                                            <livewire:quantity-evaluation.datatable.quantity-evaluation-table
+                                            :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 2)

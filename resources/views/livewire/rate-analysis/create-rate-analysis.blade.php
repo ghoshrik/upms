@@ -10,7 +10,7 @@
                     <div class="row">
                         <div class="row">
                             <div class="col col-md-8 col-lg-8 col-sm-12 col-xs-12 mb-2">
-                                <x-textarea wire:model="sorMasterDesc" rows="2"
+                                <x-textarea wire:model.defer="sorMasterDesc" rows="2"
                                     label="{{ trans('cruds.estimate.fields.description') }}"
                                     placeholder="Your project {{ trans('cruds.estimate.fields.description') }}" />
                             </div>
@@ -196,7 +196,7 @@
                                                 label="{{ trans('cruds.estimate.fields.dept') }}"
                                                 placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
                                                 wire:model.defer="estimateData.dept_id"
-                                                x-on:select="$wire.getDeptEstimates()">
+                                                x-on:select="$wire.getDeptRates()">
                                                 @isset($fatchDropdownData['departments'])
                                                     @foreach ($fatchDropdownData['departments'] as $department)
                                                         <x-select.option label="{{ $department['department_name'] }}"
@@ -208,14 +208,14 @@
                                     </div>
                                     <div class="col">
                                         <div class="form-group">
-                                            <x-select wire:key="estimate_no" label="{{ __('Select Estimate') }}"
-                                                placeholder="Select {{ __('Estimate') }}"
-                                                wire:model.defer="estimateData.estimate_no"
-                                                x-on:select="$wire.getEstimateDetails()">
-                                                @isset($fatchDropdownData['estimatesList'])
-                                                    @foreach ($fatchDropdownData['estimatesList'] as $estimate)
-                                                        <x-select.option label="{{ $estimate['estimate_id'].' - '.$estimate['sorMasterDesc'] }}"
-                                                            value="{{ $estimate['estimate_id'] }}" />
+                                            <x-select wire:key="rate_no" label="{{ __('Select Rate') }}"
+                                                placeholder="Select {{ __('Rate') }}"
+                                                wire:model.defer="estimateData.rate_no"
+                                                x-on:select="$wire.getRateDetails()">
+                                                @isset($fatchDropdownData['ratesList'])
+                                                    @foreach ($fatchDropdownData['ratesList'] as $rate)
+                                                        <x-select.option label="{{ $rate['rate_id'].' - '.$rate['description'] }}"
+                                                            value="{{ $rate['rate_id'] }}" />
                                                     @endforeach
                                                 @endisset
                                             </x-select>

@@ -11,6 +11,7 @@ class RatesAnalysis extends Model
     protected $fillable = [
         'rate_id',
         'dept_id',
+        'description',
         'category_id',
         'row_id',
         'row_index',

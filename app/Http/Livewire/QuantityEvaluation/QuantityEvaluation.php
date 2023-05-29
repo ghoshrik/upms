@@ -59,6 +59,10 @@ class QuantityEvaluation extends Component
     //     ->where('is_done',0)
     //     ->count();
     // }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
+    }
     public function fromEntryControl($data='')
     {
         $this->openedFormType = is_array($data) ? $data['formType']:$data;

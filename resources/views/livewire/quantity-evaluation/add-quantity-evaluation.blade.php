@@ -28,7 +28,7 @@
                         <div class="col col-md-6 col-lg-6 mb-2">
                             <div class="btn-group float-right" role="group" aria-label="Basic example">
                                 <button type="button" class="btn btn-soft-primary" wire:click="totalOnSelected"
-                                    @if ($openTotalButton && $totalOnSelectedCount!=1||true) {{ '' }}@else {{ 'disabled' }} @endif>{{ trans('cruds.estimate.fields.total_on_selected') }}
+                                    @if ($openTotalButton && $totalOnSelectedCount!=1||true) {{ '' }}@else {{ 'disabled' }} @endif>Final Selected
                                 </button>
                                 <button type="button" class="btn btn-soft-info" wire:click="exportWord">
                                     <span class="btn-inner">
@@ -45,8 +45,8 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    {{-- <th>{{ trans('cruds.estimate.fields.id_helper') }}</th> --}}
-                                    <th>Label</th>
+                                    <th>{{ trans('cruds.estimate.fields.id_helper') }}</th>
+                                    <th>Description</th>
                                     <th>Unit</th>
                                     <th>Value</th>
                                     <th>Action</th>
@@ -75,21 +75,22 @@
                                         <td>
                                             {{-- {{ $addedEstimate['sor_item_number'] ?  $addedEstimate['sor_item_number'] : '---'}} --}}
 
-                                            @if ($addedEstimate['sor_item_number'])
-                                                {{ getSorItemNumber($addedEstimate['sor_item_number']) }}
-                                            @elseif ($addedEstimate['estimate_no'])
-                                                {{ $addedEstimate['estimate_no'] }}
-                                            @elseif(isset($addedEstimate['lable']))
-                                                {{ $addedEstimate['lable'] }}
+                                            @if ($addedEstimate['label'])
+                                                {{ $addedEstimate['label'] }}
+                                            @elseif ($addedEstimate['arrayIndex'])
+                                                {{ $addedEstimate['arrayIndex'] }}
                                             @else
                                                 --
                                             @endif
                                         </td>
                                         <td>
-                                            {{ $addedEstimate['qty'] }}
+                                            @if($addedEstimate['unite'] != null)
+                                            {{ getunitName($addedEstimate['unite']) }}
+                                            @endif
                                         </td>
+                                        <td>{{ $addedEstimate['value'] }}</td>
                                         <td>
-                                            @if ($addedEstimate['estimate_no'])
+                                            {{-- @if ($addedEstimate['estimate_no'])
                                                 <x-button
                                                     wire:click="viewModal({{ $addedEstimate['estimate_no'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
@@ -97,7 +98,7 @@
                                                         <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
                                                     </span>
                                                 </x-button>
-                                            @endif
+                                            @endif --}}
                                             @if ($arrayRow == $key)
                                                 <x-button
                                                     wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"

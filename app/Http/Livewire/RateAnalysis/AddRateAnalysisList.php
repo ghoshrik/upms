@@ -30,12 +30,12 @@ class AddRateAnalysisList extends Component
 
     public function resetSession()
     {
-        Session()->forget('addedProjectEstimateData');
+        Session()->forget('addedRateAnalysisData');
         $this->reset();
     }
-    public function viewModal($estimate_id)
+    public function viewModal($rate_id)
     {
-        $this->emit('openModal', $estimate_id);
+        $this->emit('openModal', $rate_id);
     }
     //calculate estimate list
     public function insertAddEstimate($arrayIndex, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks)
@@ -84,7 +84,7 @@ class AddRateAnalysisList extends Component
                 }
             }
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddEstimate($tempIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Exp Calculoation', '', $this->remarks);
+            $this->insertAddEstimate($tempIndex, Auth::user()->department_id, 0, 0, '', '', '', 0, 0, $result, 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(
@@ -111,7 +111,7 @@ class AddRateAnalysisList extends Component
                 $result = $result + $this->allAddedEstimatesData[$array]['total_amount'];
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
-            $this->insertAddEstimate($this->arrayIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Total', '', '');
+            $this->insertAddEstimate($this->arrayIndex, Auth::user()->department_id, 0, 0, '', '', '', 0, 0, $result, 'Total', '', '');
             $this->totalOnSelectedCount++;
         } else {
             $this->dispatchBrowserEvent('alert', [
@@ -124,8 +124,8 @@ class AddRateAnalysisList extends Component
     public function setEstimateDataToSession()
     {
         $this->reset('allAddedEstimatesData');
-        if (Session()->has('addedProjectEstimateData')) {
-            $this->allAddedEstimatesData = Session()->get('addedProjectEstimateData');
+        if (Session()->has('addedRateAnalysisData')) {
+            $this->allAddedEstimatesData = Session()->get('addedRateAnalysisData');
         }
         if ($this->addedEstimateData != null) {
             $index = count($this->allAddedEstimatesData) + 1;
@@ -141,13 +141,13 @@ class AddRateAnalysisList extends Component
             if (!array_key_exists("remarks", $this->addedEstimateData)) {
                 $this->addedEstimateData['remarks'] = '';
             }
-            if (!array_key_exists("estimate_no", $this->addedEstimateData)) {
-                $this->addedEstimateData['estimate_no'] = 0;
+            if (!array_key_exists("rate_no", $this->addedEstimateData)) {
+                $this->addedEstimateData['rate_no'] = 0;
             }
             foreach ($this->addedEstimateData as $key => $estimate) {
                 $this->allAddedEstimatesData[$index][$key] = $estimate;
             }
-            Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
+            Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
             $this->reset('addedEstimateData');
         }
     }
@@ -172,8 +172,8 @@ class AddRateAnalysisList extends Component
     public function deleteEstimate($value)
     {
         unset($this->allAddedEstimatesData[$value]);
-        Session()->forget('addedProjectEstimateData');
-        Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
+        Session()->forget('addedRateAnalysisData');
+        Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
         $this->level = [];
         if($this->totalOnSelectedCount == 1)
         {
@@ -209,8 +209,8 @@ class AddRateAnalysisList extends Component
             $html .= "<tr><td style='text-align: center'>" . chr($export['array_id'] + 64) . "</td>&nbsp;";
             if ($export['sor_item_number']) {
                 $html .= "<td style='text-align: center'>" . getSorItemNumber($export['sor_item_number']) . ' ( ' . $export['version'] . ' )' . "</td>&nbsp;";
-            } elseif ($export['estimate_no']) {
-                $html .= "<td style='text-align: center'>" . $export['estimate_no'] . "</td>&nbsp;";
+            } elseif ($export['rate_no']) {
+                $html .= "<td style='text-align: center'>" . $export['rate_no'] . "</td>&nbsp;";
             } else {
                 $html .= "<td style='text-align: center'>--</td>&nbsp;";
             }
@@ -238,9 +238,9 @@ class AddRateAnalysisList extends Component
         }
         $html .= "</table>";
         foreach ($exportDatas as $key => $export) {
-            if ($export['estimate_no']) {
-                $html .= "<p>Estimate Packege ".$export['estimate_no']."</p>";
-                $getEstimateDetails = EstimatePrepare::where('estimate_id', '=', $export['estimate_no'])->get();
+            if ($export['rate_no']) {
+                $html .= "<p>Estimate Packege ".$export['rate_no']."</p>";
+                $getEstimateDetails = EstimatePrepare::where('rate_id', '=', $export['rate_no'])->get();
                 $html .= "<table style='border: 1px solid black;width:auto'><tr>";
                 $html .= "<th scope='col' style='text-align: center'>Serial No.</th>";
                 $html .= "<th scope='col' style='text-align: center'>Item Number(Ver.)</th>";
@@ -291,7 +291,10 @@ class AddRateAnalysisList extends Component
         return response()->download($date . '.docx')->deleteFileAfterSend(true);
         $this->reset('exportDatas');
     }
-
+    public function viewRateModal($rate_id)
+    {
+        $this->emit('openRateAnalysisModal', $rate_id);
+    }
     public function store()
     {
         if ($this->totalOnSelectedCount == 1||true) {
@@ -299,11 +302,12 @@ class AddRateAnalysisList extends Component
                 // dd($this->allAddedEstimatesData);
                 if ($this->allAddedEstimatesData) {
                     $intId = random_int(100000, 999999);
-                    if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1,'is_verified'=>1,'dept_id'=>Auth::user()->department_id])) {
+                    if (true) {
                         foreach ($this->allAddedEstimatesData as $key => $value) {
                             $insert = [
-                                'estimate_id' => $intId,
-                                'estimate_no' => $value['estimate_no'],
+                                'rate_id' => $intId,
+                                'description' => $this->sorMasterDesc,
+                                'rate_no' => $value['rate_no'],
                                 'dept_id' => $value['dept_id'],
                                 'category_id' => $value['category_id'],
                                 'row_id' => $value['array_id'],
@@ -319,7 +323,7 @@ class AddRateAnalysisList extends Component
                                 'comments' => $value['remarks'],
                             ];
                             $validateData = Validator::make($insert, [
-                                'estimate_id' => 'required|integer',
+                                'rate_id' => 'required|integer',
                                 'dept_id' => 'required|integer',
                                 'category_id' => 'required|integer',
                                 'row_id' => 'required|integer',
@@ -327,7 +331,7 @@ class AddRateAnalysisList extends Component
                             if ($validateData->fails()) {
                                 // dd($validateData->messages());
                             }
-                            EstimatePrepare::create($insert);
+                            RatesAnalysis::create($insert);
                         }
                         $this->notification()->success(
                             $title = 'Created Successfully!!'
