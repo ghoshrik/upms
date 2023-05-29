@@ -255,11 +255,11 @@ final class SorDataTable extends PowerGridComponent
                 ->class('btn-soft-warning btn-sm cursor-pointer text-dark px-3 py-2.5 m-1 rounded text-sm')
                 ->emit('openEntryForm', ['formType' => 'edit', 'id' => 'id']),
             */
-            Button::add('Download')
-            ->bladeComponent('download-button', ['id' => 'id','iconName'=>'download']),
+            // Button::add('Download')
+            // ->bladeComponent('download-button', ['id' => 'id','iconName'=>'download']),
 
             Button::add('Edit')
-            ->bladeComponent('edit-button', ['id' => 'id']),
+            ->bladeComponent('edit-button', ['id' => 'id','action'=>'edit']),
             // ->route('s-o-r.edit', ['s-o-r' => 'id']),
 
 

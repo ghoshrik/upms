@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAttachDocsTable extends Migration
+class CreateDocuComposerSorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,14 @@ class CreateAttachDocsTable extends Migration
      */
     public function up()
     {
-        Schema::create('attach_docs', function (Blueprint $table) {
+        Schema::connection('pgsql_docu_External')->create('docu_composer_sors', function (Blueprint $table) {
             $table->bigIncrements('id')->autoIncrement();
-            $table->unsignedBigInteger('sor_docu_id');
+            $table->unsignedBigInteger('composer_sor_id');
             $table->string('document_type');
             $table->string('document_mime');
             $table->string('document_size');
-            $table->longText('docfile');
-            $table->foreign('sor_docu_id')->references('id')->on('s_o_r_s')->onDelete('cascade');
+            $table->longText('docufile');
+            // $table->foreign('composer_sor_id')->references('id')->on('composer_sors')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -32,6 +32,6 @@ class CreateAttachDocsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attach_docs');
+        Schema::dropIfExists('docu_composer_sors');
     }
 }

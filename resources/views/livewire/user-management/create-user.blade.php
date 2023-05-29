@@ -21,9 +21,7 @@
                                 </div>
                             </div>
                         @endisset
-<<<<<<< HEAD
 
-=======
                         @isset($dropDownData['designations'])
                             <div class="col-md-4 col-lg-4 col-sm-4">
                                 <div class="form-group">
@@ -37,7 +35,6 @@
                                 </div>
                             </div>
                         @endisset
->>>>>>> 50b027376714ae5ed5455ce177cc77b7b716c7c1
                         @isset($dropDownData['level'])
                             <div class="col-md-4 col-lg-4 col-sm-4">
                                 <x-select label="{{ trans('cruds.user-management.fields.office_lvl') }}"
@@ -68,24 +65,7 @@
                                 </div>
                             </div>
                         @endisset
-<<<<<<< HEAD
-                        @isset($dropDownData['designations'])
-                            <div class="col-md-4 col-lg-4 col-sm-4">
-                                <div class="form-group">
-                                    <x-select label="{{ trans('cruds.user-management.fields.designation') }}"
-                                        placeholder="Select {{ trans('cruds.user-management.fields.designation') }}"
-                                        wire:model.defer="newUserData.designation_id">
-                                        @foreach ($dropDownData['designations'] as $designation)
-                                            <x-select.option label="{{ $designation['designation_name'] }}"
-                                                value="{{ $designation['id'] }}" />
-                                        @endforeach
-                                    </x-select>
-                                </div>
-                            </div>
-                        @endisset
-=======
 
->>>>>>> 50b027376714ae5ed5455ce177cc77b7b716c7c1
                         <div class="col-md-4 col-lg-4 col-sm-3">
                             <div class="form-group">
                                 <x-input wire:model.lazy="newUserData.ehrms_id"

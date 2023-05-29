@@ -126,7 +126,7 @@ return [
         'fields' => [
             'id' => 'ID',
             'id_helper' => 'Sl.No',
-            'item_number' => 'Item Number',
+            'item_number' => 'SOR Item Number',
             'department' => 'Department',
             'description' => 'Description',
             'dept_category' => 'Department Category',

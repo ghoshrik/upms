@@ -16,13 +16,15 @@
                     {{-- @canany(['create tender', 'edit tender']) --}}
                     <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
                         @if (!$isFromOpen)
-                            <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill ">
+                            <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill"
+                            x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
                                 <span class="btn-inner">
                                     <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
                                 </span>
                             </button>
                         @else
-                            <button wire:click="fromEntryControl" class="btn btn-danger rounded-pill ">
+                            <button wire:click="fromEntryControl" class="btn btn-danger rounded-pill"
+                            x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
                                 <span class="btn-inner">
                                     <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
                                 </span>

@@ -217,7 +217,7 @@
     </div>
 </div>
 <div>
-    <livewire:components.modal.estimate.estimate-view-modal />
-    <livewire:components.modal.estimate.estimate-forward-modal />
+    {{-- <livewire:components.modal.estimate.estimate-view-modal />
+    <livewire:components.modal.estimate.estimate-forward-modal /> --}}
     <livewire:components.modal.estimate.edit-estimate-modal />
 </div>

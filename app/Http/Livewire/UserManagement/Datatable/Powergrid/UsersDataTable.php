@@ -98,14 +98,8 @@ final class UsersDataTable extends PowerGridComponent
                 $i = 1;
                 // dd($users);
                 foreach ($users as $key => $user) {
-<<<<<<< HEAD
                     $desg = Designation::select('designation_name')->where('id', $user->designation_id)->get();
                     foreach ($desg as $designation) {
-=======
-                    $getDesignationName =  Designation::select('designation_name')->where('id',$user->designation_id)->get();
-                    foreach($getDesignationName as $designation)
-                    {
->>>>>>> 50b027376714ae5ed5455ce177cc77b7b716c7c1
                         $designationName = $designation->designation_name;
                     }
                     $dataView[] = [
@@ -131,14 +125,8 @@ final class UsersDataTable extends PowerGridComponent
                     ->get();
                 $i = 1;
                 foreach ($users as $key => $user) {
-<<<<<<< HEAD
                     $desg = Designation::select('designation_name')->where('id', $user->designation_id)->get();
                     foreach ($desg as $designation) {
-=======
-                    $getDesignationName =  Designation::select('designation_name')->where('id',$user->designation_id)->get();
-                    foreach($getDesignationName as $designation)
-                    {
->>>>>>> 50b027376714ae5ed5455ce177cc77b7b716c7c1
                         $designationName = $designation->designation_name;
                     }
                     $dataView[] = [
@@ -220,36 +208,10 @@ final class UsersDataTable extends PowerGridComponent
                     ];
                     $i++;
                 }
-<<<<<<< HEAD
             } else {
                 $this->notification()->error(
                     $title = 'User Not Activated',
                 );
-=======
-                return generatePDF($ModelList, $dataView, trans('cruds.user-management.title_singulars'));
-            }
-        } else {
-            $ids = implode(',', $this->checkboxValues);
-            $users = User::whereIn('id', explode(",", $ids))
-                ->where('user_type', $getChild_id->id)
-                // ->where('department_id', Auth::user()->department_id)
-                ->where('is_active', 1)->get();
-            $i = 1;
-            foreach ($users as $key => $user) {
-                $dataView[] = [
-                    '1' => $i,
-                    '2' => $user->emp_name,
-                    '3' => $user->email,
-                    '4' => $user->username,
-                    '5' => $user->ehrms_id,
-                    '6' => $user->mobile,
-                    '7' => $user->getDesignationName->designation_name ? :'',
-                    '8' => $user->getDepartmentName->department_name,
-                    '9' => $user->office_id ? $user->getOfficeName->office_name : 'N/A',
-                    'active' => $user->is_active,
-                ];
-                $i++;
->>>>>>> 50b027376714ae5ed5455ce177cc77b7b716c7c1
             }
             return generatePDF($ModelList, $dataView, trans('cruds.user-management.title_singulars'));
             $this->resetExcept('checkboxValues', 'dataView');

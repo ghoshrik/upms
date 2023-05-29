@@ -10,10 +10,10 @@
             <div class="container-fluid iq-container">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                     <div class="d-flex flex-column">
-                        <h6 class="text-dark">{{ $titel }}</h6>
+                        <h3 class="text-dark">{{ $titel }}</h3>
                         <p class="text-primary mb-0">{{ $subTitel }}</p>
                     </div>
-                    @canany(['create user', 'edit user'])
+                    @canany(['create sor','edit estimate'])
                         <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
                             @if (!$isFromOpen)
                                 <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill"
@@ -34,44 +34,30 @@
                     @endcanany
                 </div>
             </div>
-            {{-- <div class="iq-header-img">
-                <img src="{{ asset('images/dashboard/top-header.png') }}" alt="header"
-                    class="theme-color-default-img  w-100  animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header1.png') }}" alt="header"
-                    class="theme-color-purple-img  w-100  animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header2.png') }}" alt="header"
-                    class="theme-color-blue-img  w-100  animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header3.png') }}" alt="header"
-                    class="theme-color-green-img  w-100  animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header4.png') }}" alt="header"
-                    class="theme-color-yellow-img  w-100  animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header5.png') }}" alt="header"
-                    class="theme-color-pink-img  w-100  animated-scaleX">
-            </div> --}}
         </div>
         <div wire:loading.delay.long>
             <div class="spinner-border text-primary loader-position" role="status"></div>
         </div>
-        <div wire:loading.delay.long.class="loading">
-
-            <div x-show="formOpen" x-transition.duration.300ms>
+        <div>
+            <div x-show="formOpen">
                 @if ($isFromOpen && $openedFormType == 'create')
-                    <livewire:user-management.create-user>
-                    @elseif ($isFromOpen && $openedFormType == 'edit')
-                    @else
-                        <div class="row">
-                            <div class="col-md-12 col-lg-12 col-sm-3">
-                                <div class="card">
-                                    <div class="card-body">
-                                        {{-- TODO:: CHANGE --}}
-                                        {{-- <h2>Designation wise user data list sorting pending</h2> --}}
-                                        {{-- <livewire:user-management.datatable.users-datatable :wire:key='$updateDataTableTracker' /> --}}
-                                        <livewire:user-management.datatable.powergrid.users-data-table
-                                            :wire:key='$updateDataTableTracker' />
-                                    </div>
-                                </div>
+                    <livewire:composersor.createcomposersors />
+                @elseif($isFromOpen && $openedFormType == 'edit')
+                @else
+                    <div class="col-md-12 col-lg-12 col-sm-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <button type="button" class="btn btn-sm btn-soft-warning px-2 py-2 notification"
+                                    :wire:key="$updateDataTableTracker">
+                                    <span>Pending Approval</span>
+                                    <span class="badge">{{ $CountSorListPending }}</span>
+                                </button>
+
+                            </div>
+                            <div class="card-body">
                             </div>
                         </div>
+                    </div>
                 @endif
             </div>
         </div>
