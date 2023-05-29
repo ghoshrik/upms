@@ -143,6 +143,9 @@ class AddedEstimateProjectList extends Component
             if (!array_key_exists("estimate_no", $this->addedEstimateData)) {
                 $this->addedEstimateData['estimate_no'] = 0;
             }
+            if (!array_key_exists("rate_no", $this->addedEstimateData)) {
+                $this->addedEstimateData['rate_no'] = 0;
+            }
             foreach ($this->addedEstimateData as $key => $estimate) {
                 $this->allAddedEstimatesData[$index][$key] = $estimate;
             }

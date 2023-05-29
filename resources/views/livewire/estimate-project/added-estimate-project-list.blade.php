@@ -75,12 +75,14 @@
                                                 {{ getSorItemNumber($addedEstimate['sor_item_number']) }}
                                             @elseif ($addedEstimate['estimate_no'])
                                                 {{ $addedEstimate['estimate_no'] }}
+                                            @elseif($addedEstimate['rate_no'])
+                                                {{ $addedEstimate['rate_no'] }}
                                             @else
                                                 --
                                             @endif
                                         </td>
                                         <td class="text-wrap" style="width: 40rem">
-                                            @if ($addedEstimate['sor_item_number'])
+                                            @if ($addedEstimate['sor_item_number'] || $addedEstimate['rate_no'])
                                                 {{ $addedEstimate['description'] }}
                                             @elseif ($addedEstimate['estimate_no'])
                                                 {{ getEstimateDescription($addedEstimate['estimate_no']) }}
