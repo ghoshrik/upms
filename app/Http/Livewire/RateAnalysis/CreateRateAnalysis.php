@@ -85,7 +85,7 @@ class CreateRateAnalysis extends Component
         }
         if ($this->selectedCategoryId == 1 || $this->selectedCategoryId == 2) {
             $this->rules = Arr::collapse([$this->rules, [
-                'estimateData.qty' => 'required|numeric',
+                'estimateData.qty' => 'required',
                 'estimateData.rate' => 'required|numeric',
                 'estimateData.total_amount' => 'required|numeric',
 

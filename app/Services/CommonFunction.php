@@ -120,4 +120,13 @@ class CommonFunction extends Controller
         $objWriter->save($date . '.docx');
         return public_path().'\\'.$date . '.docx';
     }
+
+    static function hasNestedArrays($array) {
+        foreach ($array as $element) {
+            if (is_array($element)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

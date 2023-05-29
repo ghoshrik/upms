@@ -32,7 +32,7 @@ class Createcomposersors extends Component
         'inputsData.*.childSorItemNo' => 'required',
         'inputsData.*.description' => 'required',
         'inputsData.*.unit_id' => 'required|integer',
-        'inputsData.*.qty' => 'required|numeric|min:1',
+        'inputsData.*.qty' => 'required|numeric',
 
     ];
     protected $messages = [
@@ -52,7 +52,7 @@ class Createcomposersors extends Component
         'inputsData.*.unit_id.integer' => 'Invalid format',
         'inputsData.*.qty.required' => 'This field is required',
         'inputsData.*.qty.numeric' => 'This field allow only numeric',
-        'inputsData.*.qty.min' => 'The number must be at least 1.',
+        // 'inputsData.*.qty.min' => 'The number must be at least 1.',
     ];
 
 

@@ -47,6 +47,11 @@
                     <div class="col-md-12 col-lg-12 col-sm-3">
                         <div class="card">
                             <div class="card-header">
+                                {{-- <button type="button" class="btn btn-sm btn-soft-warning px-2 py-2 notification"
+                                    :wire:key="$updateDataTableTracker">
+                                    <span>Pending Approval</span>
+                                    <span class="badge">{{ $CountSorListPending }}</span>
+                                </button> --}}
 
                             </div>
                             <div class="card-body">

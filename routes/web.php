@@ -156,7 +156,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('menu-manager', MenuManagement::class)->name('menu-manager');
 
         Route::get('rate-analysis', RateAnalysis::class)->name('rate-analysis');
-
+        Route::get('quantity-evaluation', QuantityEvaluation::class)->name('quantity-evaluation');
 
         // Route::get('aafs-project',ProjectList::class)->name('aafs-project');
         Route::get('roles', Roles::class)->name('roles');
