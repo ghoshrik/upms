@@ -21,6 +21,10 @@ class CompositSor extends Model
     {
         return $this->belongsTo(SOR::class, 'sor_itemno_parent_id', 'id');
     }
+    public function ChildSORItemNo()
+    {
+        return $this->belongsTo(SOR::class, 'sor_itemno_child', 'id');
+    }
     public function getUnit()
     {
         return $this->belongsTo(UnitMaster::class, 'unit_id', 'id');
