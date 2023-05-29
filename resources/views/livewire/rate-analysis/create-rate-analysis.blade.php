@@ -8,6 +8,76 @@
                 <div wire:loading.delay.longest.class="loading" class="card-body">
                     {{-- <div class="card-body"> --}}
                     <div class="row">
+                        <div class="row" style="transition: all 2s ease-out">
+                            <div class="col">
+                                <div class="form-group">
+                                    <x-select wire:key="sordept" label="{{ trans('cruds.estimate.fields.dept') }}"
+                                        placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
+                                        wire:model.defer="selectSor.dept_id"
+                                        x-on:select="$wire.getSorDeptCategory()">
+                                        @foreach ($dropdownData['allDept'] as $department)
+                                            <x-select.option label="{{ $department['department_name'] }}"
+                                                value="{{ $department['id'] }}" />
+                                        @endforeach
+                                    </x-select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <x-select wire:key="sorcategory"
+                                        label="{{ trans('cruds.estimate.fields.category') }}"
+                                        placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
+                                        wire:model.defer="selectSor.dept_category_id"
+                                        x-on:select="$wire.getSorVersion()">
+                                        @isset($dropdownData['sorDepartmentsCategory'])
+                                            @foreach ($dropdownData['sorDepartmentsCategory'] as $deptCategory)
+                                                <x-select.option label="{{ $deptCategory['dept_category_name'] }}"
+                                                    value="{{ $deptCategory['id'] }}" />
+                                            @endforeach
+                                        @endisset
+                                    </x-select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <x-select wire:key="sorversion"
+                                        label="{{ trans('cruds.estimate.fields.version') }}"
+                                        placeholder="Select {{ trans('cruds.estimate.fields.version') }}"
+                                        wire:model.defer="selectSor.version"
+                                        >
+                                        @isset($dropdownData['sorVersions'])
+                                            @foreach ($dropdownData['sorVersions'] as $version)
+                                                <x-select.option label="{{ $version['version'] }}"
+                                                    value="{{ $version['version'] }}" />
+                                            @endforeach
+                                        @endisset
+                                    </x-select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group search-sor">
+                                    <div class="dropdown">
+                                        <x-input wire:key="sorsor"
+                                            label="{{ trans('cruds.estimate.fields.sor') }}"
+                                            placeholder="{{ trans('cruds.estimate.fields.sor') }}"
+                                            wire:model.defer="selectSor.selectedSOR" value="{{ $selectSor['selectedSOR'] }}"
+                                            wire:keydown.escape="resetValus" wire:keydown.tab="autoSorSearch"
+                                            class="dropbtn" />
+                                        @isset($this->dropdownData['sor_items_number'])
+                                            @if (count($this->dropdownData['sor_items_number']) > 0)
+                                                <div class="dropdown-content"
+                                                    style="display:{{ $searchDtaCount ? $searchStyle : $searchStyle }}">
+                                                    @foreach ($this->dropdownData['sor_items_number'] as $list)
+                                                        <a href="javascript:void(0);"
+                                                            wire:click="getSorItemDetails({{ $list['id'] }})">{{ $list['Item_details'] }}</a>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        @endisset
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col col-md-8 col-lg-8 col-sm-12 col-xs-12 mb-2">
                                 <x-textarea wire:model.defer="sorMasterDesc" rows="2"
@@ -252,8 +322,8 @@
                                         <div class="form-group">
                                             <x-input wire:key="total_amount"
                                                 wire:model.defer="estimateData.total_amount"
-                                                label="{{ trans('cruds.estimate.fields.estimate_total') }}" disabled
-                                                placeholder="{{ trans('cruds.estimate.fields.estimate_total') }}" />
+                                                label="Rate Total" disabled
+                                                placeholder="Rate Total" />
                                         </div>
                                     </div>
                                     {{-- @endisset --}}
@@ -286,7 +356,7 @@
             <div x-transition.duration.500ms>
                 {{-- <livewire:estimate-project.added-estimate-project-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
                     :wire:key="$addedEstimateUpdateTrack" /> --}}
-                    <livewire:rate-analysis.add-rate-analysis-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
+                    <livewire:rate-analysis.add-rate-analysis-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc" :selectSor="$selectSor"
                     :wire:key="$addedEstimateUpdateTrack">
             </div>
         @endif

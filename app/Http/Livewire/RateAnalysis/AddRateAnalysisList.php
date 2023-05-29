@@ -22,7 +22,7 @@ class AddRateAnalysisList extends Component
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
-
+    public $selectSor;
     public function mount()
     {
         $this->setEstimateDataToSession();
@@ -54,7 +54,7 @@ class AddRateAnalysisList extends Component
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
         $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount');
+        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount','selectSor');
     }
 
     public function expCalc()
@@ -104,6 +104,7 @@ class AddRateAnalysisList extends Component
 
     public function totalOnSelected()
     {
+        // dd($this->selectSor);
         if (count($this->level) >= 2||true) {
             $result = 0;
             foreach ($this->level as $key => $array) {
@@ -111,7 +112,11 @@ class AddRateAnalysisList extends Component
                 $result = $result + $this->allAddedEstimatesData[$array]['total_amount'];
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
-            $this->insertAddEstimate($this->arrayIndex, Auth::user()->department_id, 0, 0, '', '', '', 0, 0, $result, 'Total', '', '');
+            if(!isset($this->selectSor['item_number']))
+            {
+                $this->selectSor['item_number'] = 0;
+            }
+            $this->insertAddEstimate($this->arrayIndex, Auth::user()->department_id, 0, $this->selectSor['item_number'], '', '', $this->sorMasterDesc, 0, 0, $result, 'Total', '', '');
             $this->totalOnSelectedCount++;
         } else {
             $this->dispatchBrowserEvent('alert', [

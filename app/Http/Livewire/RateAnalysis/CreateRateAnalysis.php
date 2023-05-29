@@ -18,7 +18,7 @@ use WireUi\Traits\Actions;
 class CreateRateAnalysis extends Component
 {
     use Actions;
-    public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc;
+    public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc, $selectSor = [],$dropdownData = [];
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
     public $searchDtaCount, $searchStyle, $searchResData;
@@ -96,13 +96,18 @@ class CreateRateAnalysis extends Component
     }
     public function mount()
     {
+        $this->dropdownData['allDept'] = Department::select('id','department_name')->get();
+        $this->selectSor['dept_id'] = '';
+        $this->selectSor['dept_category_id'] = '';
+        $this->selectSor['version'] = '';
+        $this->selectSor['selectedSOR'] = '';
         if (Session()->has('addedEstimateData')) {
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
     }
     public function changeCategory($value)
     {
-        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc']);
+        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc','dropdownData','selectSor']);
         $value = $value['_x_bindings']['value'];
         $this->estimateData['item_name'] = $value;
         if ($this->estimateData['item_name'] == 'SOR') {
@@ -148,14 +153,69 @@ class CreateRateAnalysis extends Component
     {
         $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
     }
-
+    public function getSorDeptCategory()
+    {
+        $this->dropdownData['sorDepartmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->selectSor['dept_id'])->get();
+    }
     public function getVersion()
     {
         $this->fatchDropdownData['versions'] = SOR::select('version')->where('department_id', $this->estimateData['dept_id'])
             ->where('dept_category_id', $this->estimateData['dept_category_id'])->groupBy('version')
             ->get();
     }
+    public function getSorVersion()
+    {
+        $this->dropdownData['sorVersions'] = SOR::select('version')->where('department_id', $this->selectSor['dept_id'])
+            ->where('dept_category_id', $this->selectSor['dept_category_id'])->groupBy('version')
+            ->get();
+    }
 
+    public function autoSorSearch()
+    {
+        if ($this->selectSor['selectedSOR']) {
+            $this->dropdownData['sor_items_number'] = SOR::select('Item_details', 'id')
+                ->where('department_id', $this->selectSor['dept_id'])
+                ->where('dept_category_id', $this->selectSor['dept_category_id'])
+                ->where('version', $this->selectSor['version'])
+                ->where('Item_details', 'like', $this->selectSor['selectedSOR'] . '%')
+                ->where('is_approved', 1)
+                ->get();
+
+            // dd($this->fatchDropdownData['items_number']);
+            if (count($this->dropdownData['sor_items_number']) > 0) {
+                $this->searchDtaCount = (count($this->dropdownData['sor_items_number']) > 0);
+                $this->searchStyle = 'block';
+            } else {
+                $this->selectSor['description'] = '';
+                $this->searchStyle = 'none';
+                $this->notification()->error(
+                    $title = 'Not data found !!' . $this->selectSor['selectedSOR']
+                );
+            }
+        } else {
+            $this->selectSor['description'] = '';
+            $this->searchStyle = 'none';
+            $this->notification()->error(
+                $title = 'Not found !!' . $this->selectSor['selectedSOR']
+            );
+        }
+    }
+    public function getSorItemDetails($id)
+    {
+        $this->searchResData = SOR::where('id', $id)->get();
+        $this->searchDtaCount = count($this->searchResData) > 0;
+        $this->searchStyle = 'none';
+        if (count($this->searchResData) > 0) {
+            foreach ($this->searchResData as $list) {
+                // $this->selectSor['description'] = $list['description'];
+                $this->sorMasterDesc = $list['description'];
+                $this->selectSor['item_number'] = $list['id'];
+                $this->selectSor['selectedSOR'] = $list['Item_details'];
+            }
+        } else {
+            $this->selectSor['description'] = '';
+        }
+    }
     public function autoSearch()
     {
         // $keyword = $keyword['_x_bindings']['value'];
@@ -196,7 +256,6 @@ class CreateRateAnalysis extends Component
             );
         }
     }
-
     public function getItemDetails($id)
     {
         // $this->estimateData['description'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['description'];
@@ -339,7 +398,7 @@ class CreateRateAnalysis extends Component
     }
     public function addEstimate()
     {
-        $validatee = $this->validate();
+        // $validatee = $this->validate();
         $this->reset('addedEstimate');
         $this->showTableOne = !$this->showTableOne;
         $this->addedEstimate['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];
@@ -355,7 +414,8 @@ class CreateRateAnalysis extends Component
         $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
         $this->addedEstimate['version'] = $this->estimateData['version'];
         $this->addedEstimateUpdateTrack = rand(1, 1000);
-        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc']);
+        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc','dropdownData','selectSor']);
+        // dd($this->addedEstimate);
     }
     public function render()
     {
