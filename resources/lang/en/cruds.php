@@ -119,8 +119,8 @@ return [
         ],
     ],
     'sor' => [
-        'title' => 'SOR List',
-        'title_singular' => 'SOR Lists',
+        'title' => 'SOR(schedule of rates)',
+        'title_singular' => 'SOR(schedule of rates)',
         'create_btn_name' => 'Add New Sor',
         'create_msg' => 'SOR Created Successfully!!',
         'fields' => [

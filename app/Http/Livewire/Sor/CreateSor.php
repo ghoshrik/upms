@@ -77,9 +77,9 @@ class CreateSor extends Component
 
     public function addNewRow()
     {
-        $currentInputData =$this->inputsData;
+        $currentInputData = $this->inputsData;
         $inpuDataCount = count($currentInputData);
-        $key = $inpuDataCount-1;
+        $key = $inpuDataCount - 1;
         $this->inputsData[] =
             [
                 'item_details' => $currentInputData[$key]['item_details'],
@@ -101,10 +101,9 @@ class CreateSor extends Component
     public function store()
     {
         $this->validate();
-        try
-        {
+        try {
             // $db_ext = DB::connection('pgsql_docu_External');
-            //     dd($db_ext->table('docu_sors')->get());
+            // dd($db_ext->table('docu_sors')->get());
 
             foreach ($this->inputsData as $key => $data) {
                 $last = SOR::create([
@@ -139,13 +138,17 @@ class CreateSor extends Component
                 $fileSize = $this->file_upload->getSize();
                 $filExt = $this->file_upload->getClientOriginalExtension();
                 $mimeType = $this->file_upload->getMimeType();
-                $db_ext = DB::connection('pgsql_docu_External');
-                $db_ext->table('docu_sors')->insert([
+
+
+                DocuSor::create([
+                    // $db_ext = DB::connection('pgsql_docu_External');
+                    // $db_ext->table('docu_sors')->insert([
                     'sor_docu_id' => $last->id,
                     'document_type' => $filExt,
                     'document_mime' => $mimeType,
                     'document_size' => $fileSize,
                     'docufile' => base64_encode($filePath)
+
                 ]);
             }
             $this->notification()->success(
@@ -168,7 +171,6 @@ class CreateSor extends Component
             return;
         }
     }
-
     public function render()
     {
         return view('livewire.sor.create-sor');

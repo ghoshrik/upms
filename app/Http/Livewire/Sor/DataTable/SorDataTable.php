@@ -246,21 +246,21 @@ final class SorDataTable extends PowerGridComponent
     {
         return [
 
-            Button::add('download')
-                ->caption('Download')
-                ->class('btn-soft-primary btn-sm cursor-pointer text-dark px-3 py-2.5 m-1 rounded text-sm')
-                ->emit('sorFileDownload', ['value' => 'id']),
+            // Button::add('download')
+            //     ->caption('Download')
+            //     ->class('btn-soft-primary btn-sm cursor-pointer text-dark px-3 py-2.5 m-1 rounded text-sm')
+            //     ->emit('sorFileDownload', ['value' => 'id']),
             /*
             Button::add('edit')
                 ->caption('Edit')
                 ->class('btn-soft-warning btn-sm cursor-pointer text-dark px-3 py-2.5 m-1 rounded text-sm')
                 ->emit('openEntryForm', ['formType' => 'edit', 'id' => 'id']),
             */
-            // Button::add('Download')
-            // ->bladeComponent('download-button', ['id' => 'id','iconName'=>'download']),
+            Button::add('Download')
+                ->bladeComponent('download-button', ['id' => 'id', 'iconName' => 'download']),
 
             Button::add('Edit')
-                ->bladeComponent('edit-button', ['id' => 'id', 'action' => 'edit']),
+                ->bladeComponent('edit-button', ['id' => 'id', 'action' => 'edit'])->can('edit sor'),
             // ->route('s-o-r.edit', ['s-o-r' => 'id']),
 
 
