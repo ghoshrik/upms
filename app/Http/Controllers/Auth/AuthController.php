@@ -18,19 +18,16 @@ class AuthController extends Controller
 {
     public function showLoginPage()
     {
-        if(Auth::check())
-        {
+        if (Auth::check()) {
             return redirect()->route('dashboard');
-        }
-        else
-        {
+        } else {
             return view('auth.login');
         }
-
     }
 
     public function generateOtp($user)
     {
+        // dd($user);
         // dd(base64_decode($user->id));
         # User Does not Have Any Existing OTP
         $verificationCode = VerificationCode::where('user_id', $user)->latest()->first();
@@ -152,10 +149,11 @@ class AuthController extends Controller
     }
     public function resendOTP($userid)
     {
-        // dd();
+        // dd("ff");
         $userId = Crypt::decryptString($userid);
         $user_id = User::where('id', $userId)->first();
-        $resp = $this->generateOtp($user_id);
+        // dd($user_id);
+        $resp = $this->generateOtp($user_id->id);
         $phoneNumberMasked = preg_replace('/(\d{3})(\d{3})(\d{4})/', 'XXXXXX$3', $user_id->mobile);
         $messageSend = "Your Mobile Number is " . $phoneNumberMasked . " " . "Your OTP is " . $resp->otp;
         return redirect()->route('auth.verify', ['user_id' => Crypt::encryptString($resp->user_id)])->with('status', $messageSend);
