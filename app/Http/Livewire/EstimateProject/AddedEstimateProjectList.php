@@ -298,7 +298,7 @@ class AddedEstimateProjectList extends Component
     {
         if ($this->totalOnSelectedCount == 1) {
             try {
-                dd($this->allAddedEstimatesData);
+                // dd($this->allAddedEstimatesData);
                 if ($this->allAddedEstimatesData) {
                     $intId = random_int(100000, 999999);
                     if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {

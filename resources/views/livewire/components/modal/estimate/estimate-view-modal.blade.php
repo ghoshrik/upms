@@ -14,6 +14,8 @@
                                         <th class="whitespace-nowrap" style="padding-right:4rem;">#</th>
                                         <th class="whitespace-nowrap">ITEM
                                             NUMBER</th>
+                                        <th class="whitespace-nowrap">ITEM
+                                                NAME</th>
                                         <th class="whitespace-nowrap" style="width:40%;text-align:center;">
                                             DESCRIPTION</th>
 
@@ -31,15 +33,22 @@
                                             <td>
                                                 @if ($view['sor_item_number'])
                                                     {{ getSorItemNumber($view['sor_item_number']) }}
-                                                    @elseif ($view['estimate_no'])
+                                                @elseif ($view['estimate_no'])
                                                     {{ $view['estimate_no'] }}
+                                                @elseif ($view['rate_id'])
+                                                    {{$view['rate_id']}}
                                                 @endif
+                                            </td>
+                                            <td>
+                                                {{ $view['item_name'] }}
                                             </td>
                                             <td class="text-wrap" style="width: 40rem">
                                                 @if ($view['sor_item_number'])
                                                     {{ getSorItemNumberDesc($view['sor_item_number']) }}
-                                                    @elseif ($view['estimate_no'])
+                                                @elseif ($view['estimate_no'])
                                                     {{ getEstimateDescription($view['estimate_no']) }}
+                                                @elseif ($view['rate_id'])
+                                                    {{ getRateDesc($view['rate_id']) }}
                                                 @elseif($view['operation'])
                                                     @if ($view['operation'] == 'Total')
                                                         {{ 'Total of ( ' . $view['row_index'] . ' )' }}
@@ -62,10 +71,10 @@
                                             <td style="text-align:center;">
                                                 @if ($view['rate'] == 0)
                                                 @else
-                                                    {{ round($view['rate'],10,2) }}
+                                                    {{ round($view['rate'],2) }}
                                                 @endif
                                             </td>
-                                            <td style="text-align:center;">{{ round($view['total_amount'],10,2) }}</td>
+                                            <td style="text-align:center;">{{ round($view['total_amount'],2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

@@ -104,7 +104,9 @@ final class EstimateProjectTable extends PowerGridComponent
             ->addColumn('id')
             ->addColumn('sor_masters.estimate_id')
             ->addColumn('SOR.sorMasterDesc')
-            ->addColumn('total_amount')
+            ->addColumn('total_amount', function ($row) {
+                return round($row->total_amount, 2);
+            })
             ->addColumn('SOR.getEstimateStatus.status',function ($row){
                 return '<span class="badge badge-pill bg-success">'.$row->status.'</span>';
             });

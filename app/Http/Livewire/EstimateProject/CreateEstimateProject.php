@@ -108,6 +108,7 @@ class CreateEstimateProject extends Component
         if ($this->estimateData['item_name'] == 'SOR') {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['estimate_no'] = null;
+            $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
@@ -119,6 +120,7 @@ class CreateEstimateProject extends Component
             $this->estimateData['total_amount'] = '';
         } elseif ($this->estimateData['item_name'] == 'Other') {
             $this->estimateData['estimate_no'] = null;
+            $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
@@ -132,6 +134,7 @@ class CreateEstimateProject extends Component
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['estimate_no'] = '';
             // $this->estimateData['estimate_desc'] = '';
+            $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
@@ -360,6 +363,7 @@ class CreateEstimateProject extends Component
         $this->addedEstimate['version'] = $this->estimateData['version'];
         $this->addedEstimateUpdateTrack = rand(1, 1000);
         $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc']);
+
     }
     public function render()
     {

@@ -8,7 +8,7 @@
                 <div wire:loading.delay.longest.class="loading" class="card-body">
                     {{-- <div class="card-body"> --}}
                     <div class="row">
-                        <div class="row" style="transition: all 2s ease-out">
+                        <div class="row">
                             <div class="col">
                                 <div class="form-group">
                                     <x-select wire:key="sordept" label="{{ trans('cruds.estimate.fields.dept') }}"
@@ -25,8 +25,8 @@
                             <div class="col">
                                 <div class="form-group">
                                     <x-select wire:key="sorcategory"
-                                        label="{{ trans('cruds.estimate.fields.category') }}"
-                                        placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
+                                        label="Department {{ trans('cruds.estimate.fields.category') }}"
+                                        placeholder="Select Department {{ trans('cruds.estimate.fields.category') }}"
                                         wire:model.defer="selectSor.dept_category_id"
                                         x-on:select="$wire.getSorVersion()">
                                         @isset($dropdownData['sorDepartmentsCategory'])
@@ -119,8 +119,8 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="category"
-                                                label="{{ trans('cruds.estimate.fields.category') }}"
-                                                placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
+                                                label="Department {{ trans('cruds.estimate.fields.category') }}"
+                                                placeholder="Select Department {{ trans('cruds.estimate.fields.category') }}"
                                                 wire:model.defer="estimateData.dept_category_id"
                                                 x-on:select="$wire.getVersion()">
                                                 @isset($fatchDropdownData['departmentsCategory'])
@@ -263,7 +263,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group">
-                                            <x-select wire:key="dept"
+                                            <x-select wire:key="rateDept"
                                                 label="{{ trans('cruds.estimate.fields.dept') }}"
                                                 placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
                                                 wire:model.defer="estimateData.dept_id"
@@ -335,7 +335,7 @@
                                 <div class="row" style="transition: all 2s ease-out">
                                     <div class="col">
                                         <div class="form-group">
-                                            <x-select wire:key="compositdept" label="{{ trans('cruds.estimate.fields.dept') }}"
+                                            <x-select wire:key="compositeDept" label="{{ trans('cruds.estimate.fields.dept') }}"
                                                 placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
                                                 wire:model.defer="estimateData.dept_id"
                                                 x-on:select="$wire.getDeptCategory()">
@@ -348,9 +348,9 @@
                                     </div>
                                     <div class="col">
                                         <div class="form-group">
-                                            <x-select wire:key="compositcategory"
-                                                label="{{ trans('cruds.estimate.fields.category') }}"
-                                                placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
+                                            <x-select wire:key="compositeCategory"
+                                                label="Department {{ trans('cruds.estimate.fields.category') }}"
+                                                placeholder="Select Department {{ trans('cruds.estimate.fields.category') }}"
                                                 wire:model.defer="estimateData.dept_category_id"
                                                 x-on:select="$wire.getVersion()">
                                                 @isset($fatchDropdownData['departmentsCategory'])
@@ -426,7 +426,7 @@
         @if (!$showTableOne && $addedEstimate != null)
         <livewire:estimate.added-estimate-list :addedEstimateData="$addedEstimate" :key="2" />
         @endif --}}
-        @if ($addedEstimate != null || Session::has('addedProjectEstimateData'))
+        @if ($addedEstimate != null || Session::has('addedRateAnalysisData'))
             <div x-transition.duration.500ms>
                 {{-- <livewire:estimate-project.added-estimate-project-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
                     :wire:key="$addedEstimateUpdateTrack" /> --}}

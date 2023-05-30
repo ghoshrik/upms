@@ -18,6 +18,7 @@ class EstimatePrepare extends Model
         'row_index',
         'sor_item_number',
         'estimate_no',
+        'rate_id',
         'item_name',
         'other_name',
         'qty',

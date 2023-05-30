@@ -478,3 +478,9 @@ function getunitName($unit_id)
     $unit_name = UnitMaster::select('unit_name')->where('id',$unit_id)->first();
     return $unit_name['unit_name'];
 }
+
+function getRateDesc($rate_id)
+{
+    $getRateDesc = RatesAnalysis::where('rate_id',$rate_id)->where('operation','Total')->first();
+    return $getRateDesc['description'];
+}

@@ -461,7 +461,6 @@ class CreateRateAnalysis extends Component
             $this->addedEstimateUpdateTrack = rand(1, 1000);
             $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc','dropdownData','selectSor','estimateData']);
         }else{
-            Log::error('ehere');
             $this->reset('addedEstimate');
             $this->showTableOne = !$this->showTableOne;
             $this->addedEstimate['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];

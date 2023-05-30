@@ -21,7 +21,6 @@ class AddRateAnalysisList extends Component
     public $selectSor;
     public function mount()
     {
-        Log::alert(json_encode($this->addedEstimateData));
         $this->setEstimateDataToSession();
     }
 

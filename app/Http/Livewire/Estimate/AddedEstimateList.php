@@ -54,7 +54,6 @@ class AddedEstimateList extends Component
 
     public function expCalc()
     {
-        dd($this->allAddedEstimatesData);
         $result = 0;
         $tempIndex = strtoupper($this->expression);
         $stringCalc = new StringCalc();
