@@ -239,6 +239,6 @@ final class QuantityEvaluationTable extends PowerGridComponent
     */
     public function view($rate_id)
     {
-        $this->emit('openRateModal', $rate_id);
+        $this->emit('openQuantityEvaluationModal', $rate_id);
     }
 }

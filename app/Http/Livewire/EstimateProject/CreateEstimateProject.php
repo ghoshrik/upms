@@ -90,10 +90,10 @@ class CreateEstimateProject extends Component
             ]]);
         }
     }
-    public function updated($param)
-    {
-        $this->validateOnly($param);
-    }
+    // public function updated($param)
+    // {
+    //     $this->validateOnly($param);
+    // }
     public function mount()
     {
         if (Session()->has('addedEstimateData')) {
@@ -142,7 +142,6 @@ class CreateEstimateProject extends Component
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
         }elseif ($this->estimateData['item_name'] == 'Rate') {
-            $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['estimate_no'] = '';
             $this->estimateData['rate_no'] = '';
@@ -325,7 +324,7 @@ class CreateEstimateProject extends Component
         $this->estimateData['total_amount'] = $this->fatchDropdownData['rateDetails']['total_amount'];
         $this->estimateData['description'] = $this->fatchDropdownData['rateDetails']['description'];
         $this->estimateData['qty'] = 1;
-        $this->estimateData['rate'] = $this->fatchDropdownData['rateDetails']['total_amount'];
+        $this->estimateData['rate'] = round($this->fatchDropdownData['rateDetails']['total_amount'],10,2);
     }
 
     public function getEstimateDetails()

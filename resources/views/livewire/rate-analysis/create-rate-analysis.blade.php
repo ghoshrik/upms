@@ -94,7 +94,7 @@
                                             ['name' => 'SOR', 'id' => 1],
                                             ['name' => 'Other', 'id' => 2],
                                             ['name' => 'Rate', 'id' => 3],
-                                            ['name' => 'Composit SOR', 'id' => 4],
+                                            ['name' => 'Composite SOR', 'id' => 4],
                                         ]"
                                         option-label="name" option-value="id" />
                                 </div>
@@ -202,7 +202,7 @@
                                                 <x-input wire:key="sor_qty"
                                                     label="{{ trans('cruds.estimate.fields.quantity') }}"
                                                     placeholder="{{ trans('cruds.estimate.fields.quantity') }}"
-                                                    wire:model.defer="estimateData.qty" wire:keyup="calculateValue" />
+                                                    wire:model.defer="estimateData.qty" wire:blur="calculateValue" />
                                             </div>
                                         </div>
                                         <div class="col">
@@ -236,7 +236,7 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <x-input wire:key="other_qty" wire:model.defer="estimateData.qty"
-                                                wire:keyup="calculateValue"
+                                                wire:blur="calculateValue"
                                                 label="{{ trans('cruds.estimate.fields.quantity') }}"
                                                 placeholder="{{ trans('cruds.estimate.fields.quantity') }}" />
                                         </div>
@@ -244,7 +244,7 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <x-input wire:key="other_rate" wire:model.defer="estimateData.rate"
-                                                wire:keyup="calculateValue"
+                                                wire:blur="calculateValue"
                                                 label="{{ trans('cruds.estimate.fields.per_unit_cost') }}"
                                                 placeholder="{{ trans('cruds.estimate.fields.per_unit_cost') }}" />
                                         </div>
@@ -297,7 +297,7 @@
                                         <div class="form-group">
                                             <x-textarea rows="2" wire:key="other_rate"
                                                 wire:model.defer="estimateData.description"
-                                                wire:keyup="calculateValue"
+                                                wire:blur="calculateValue"
                                                 label="Estimate {{ trans('cruds.estimate.fields.description') }}"
                                                 placeholder="Estimate {{ trans('cruds.estimate.fields.description') }}"
                                                 disabled />
@@ -306,7 +306,7 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <x-input wire:key="other_qty" wire:model.defer="estimateData.qty"
-                                                wire:keyup="calculateValue"
+                                                wire:blur="calculateValue"
                                                 label="{{ trans('cruds.estimate.fields.quantity') }}"
                                                 placeholder="{{ trans('cruds.estimate.fields.quantity') }}" />
                                         </div>
@@ -403,44 +403,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                {{-- @if (!empty($searchResData))
-                                        @if (count($searchResData) > 0)
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <x-input wire:key="sor_desc"
-                                                    label="{{ trans('cruds.estimate.fields.description') }}"
-                                                    placeholder="{{ trans('cruds.estimate.fields.description') }}"
-                                                    disabled wire:model.defer="estimateData.description" />
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <x-input wire:key="sor_qty"
-                                                    label="{{ trans('cruds.estimate.fields.quantity') }}"
-                                                    placeholder="{{ trans('cruds.estimate.fields.quantity') }}"
-                                                    wire:model.defer="estimateData.qty" wire:keyup="calculateValue" />
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <x-input wire:key="sor_rate"
-                                                    label="{{ trans('cruds.estimate.fields.per_unit_cost') }}"
-                                                    placeholder="{{ trans('cruds.estimate.fields.per_unit_cost') }}"
-                                                    readonly wire:model.defer="estimateData.rate" />
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <x-input wire:key="sor_cost"
-                                                    label="{{ trans('cruds.estimate.fields.cost') }}"
-                                                    placeholder="{{ trans('cruds.estimate.fields.cost') }}" disabled
-                                                    wire:model.defer="estimateData.total_amount" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endif
-                                @endif --}}
                             @endif
                         @endif
                         <div class="row">

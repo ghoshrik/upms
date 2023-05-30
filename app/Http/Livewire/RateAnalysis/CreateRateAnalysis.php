@@ -85,17 +85,17 @@ class CreateRateAnalysis extends Component
         }
         if ($this->selectedCategoryId == 1 || $this->selectedCategoryId == 2) {
             $this->rules = Arr::collapse([$this->rules, [
-                'estimateData.qty' => 'required',
+                'estimateData.qty' => 'required|numeric',
                 'estimateData.rate' => 'required|numeric',
                 'estimateData.total_amount' => 'required|numeric',
 
             ]]);
         }
     }
-    public function updated($param)
-    {
-        $this->validateOnly($param);
-    }
+    // public function updated($param)
+    // {
+    //     $this->validateOnly($param);
+    // }
     public function mount()
     {
         $this->dropdownData['allDept'] = Department::select('id','department_name')->get();
@@ -316,9 +316,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['description'] = getSorItemNumberDesc($sor['sor_itemno_child']);
             $this->estimateData['other_name'] = '';
             $this->estimateData['qty'] = $sor['rate'];
-            Log::alert($sor['sor_itemno_child']);
             $rateDetails = RatesAnalysis::where([['sor_item_number',$sor['sor_itemno_child']],['operation','Total']])->first();
-            Log::alert(json_encode($rateDetails));
             $this->estimateData['rate'] = $rateDetails->total_amount;
             $this->estimateData['total_amount'] = $rateDetails->total_amount * $sor['rate'];
             // foreach($getRateList as $rate)

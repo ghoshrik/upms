@@ -132,7 +132,7 @@
                                                 <x-input wire:key="sor_qty"
                                                     label="{{ trans('cruds.estimate.fields.quantity') }}"
                                                     placeholder="{{ trans('cruds.estimate.fields.quantity') }}"
-                                                    wire:model.defer="estimateData.qty" wire:keyup="calculateValue" />
+                                                    wire:model.defer="estimateData.qty" wire:blur="calculateValue" />
                                             </div>
                                         </div>
                                         <div class="col">
@@ -166,7 +166,7 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <x-input wire:key="other_qty" wire:model.defer="estimateData.qty"
-                                                wire:keyup="calculateValue"
+                                                wire:blur="calculateValue"
                                                 label="{{ trans('cruds.estimate.fields.quantity') }}"
                                                 placeholder="{{ trans('cruds.estimate.fields.quantity') }}" />
                                         </div>
@@ -174,7 +174,7 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <x-input wire:key="other_rate" wire:model.defer="estimateData.rate"
-                                                wire:keyup="calculateValue"
+                                                wire:blur="calculateValue"
                                                 label="{{ trans('cruds.estimate.fields.per_unit_cost') }}"
                                                 placeholder="{{ trans('cruds.estimate.fields.per_unit_cost') }}" />
                                         </div>
@@ -227,7 +227,7 @@
                                         <div class="form-group">
                                             <x-textarea rows="2" wire:key="other_rate"
                                                 wire:model.defer="estimateData.description"
-                                                wire:keyup="calculateValue"
+                                                wire:blur="calculateValue"
                                                 label="Estimate {{ trans('cruds.estimate.fields.description') }}"
                                                 placeholder="Estimate {{ trans('cruds.estimate.fields.description') }}"
                                                 disabled />
@@ -236,7 +236,7 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <x-input wire:key="other_qty" wire:model.defer="estimateData.qty"
-                                                wire:keyup="calculateValue"
+                                                wire:blur="calculateValue"
                                                 label="{{ trans('cruds.estimate.fields.quantity') }}"
                                                 placeholder="{{ trans('cruds.estimate.fields.quantity') }}" />
                                         </div>
@@ -299,7 +299,7 @@
                                         <div class="form-group">
                                             <x-textarea rows="2" wire:key="other_rate"
                                                 wire:model.defer="estimateData.description"
-                                                wire:keyup="calculateValue"
+                                                wire:blur="calculateValue"
                                                 label="Estimate {{ trans('cruds.estimate.fields.description') }}"
                                                 placeholder="Estimate {{ trans('cruds.estimate.fields.description') }}"
                                                 disabled />
@@ -320,7 +320,7 @@
                                         <div class="col">
                                         <div class="form-group">
                                             <x-input wire:key="qty_menual" wire:model.defer="estimateData.qty"
-                                                wire:keyup="calculateValue"
+                                                wire:blur="calculateValue"
                                                 label="{{ trans('cruds.estimate.fields.quantity') }}"
                                                 placeholder="{{ trans('cruds.estimate.fields.quantity') }}" />
                                         </div>
