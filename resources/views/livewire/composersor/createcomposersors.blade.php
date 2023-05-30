@@ -99,7 +99,7 @@
                                                 style="display:{{ $searchloopDtaCount ? $searchloopStyle : $searchloopStyle }}">
                                                 @foreach ($this->fetchDropDownData['loop_items_number'] as $list)
                                                     <a href="javascript:void(0);"
-                                                        wire:click="getLoopItemDetails({{ $list['id'] . ',' . $key }})">{{ $list['Item_details'] . ',' . $key }}</a>
+                                                        wire:click="getLoopItemDetails({{ $list['id'] . ',' . $key }})">{{ $list['Item_details'] }}</a>
                                                 @endforeach
                                             </div>
                                         @endif
