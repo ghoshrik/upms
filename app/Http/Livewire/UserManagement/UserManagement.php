@@ -2,14 +2,59 @@
 
 namespace App\Http\Livewire\UserManagement;
 
+use App\Models\User;
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
 class UserManagement extends Component
 {
     public $formOpen = false, $updateDataTableTracker;
 
-    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert','refreshCSRFToken' => '$refresh'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'refreshCSRFToken' => '$refresh'];
     public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel;
+    public $activeTab, $tabs = [];
+
+
+    public function mount()
+    {
+        // $InputData = [];
+        // $departmentUsers = 3;
+        // $i = 1;
+        // foreach ($departmentUsers as $user) {
+        //     $InputData[] = [
+        //         'Sl No' => $i,
+        //         'name' => $user->emp_name,
+        //         'email' => $user->email,
+
+        //     ];
+        // }
+        // $i++;
+        $this->tabs = [
+            [
+                'title' => 'Departments Users',
+                'id' => 'department',
+                'data' => 3,
+            ],
+            [
+                'title' => 'Office Admin Users',
+                'id' => 'office-admin',
+                'data' => 4,
+            ],
+            [
+                'title' => 'Office Users',
+                'id' => 'office-user',
+                'data' => 6,
+            ]
+        ];
+
+        // dd($this->tabs[1]['data']);
+        $this->activeTab = $this->tabs[0]['title'];
+        // dd($this->activeTab);
+    }
+    public function setActiveTab($title)
+    {
+        $this->activeTab = $title;
+    }
 
     public function fromEntryControl($data = '')
     {
