@@ -64,7 +64,7 @@
                                             wire:keydown.escape="resetValus" wire:keydown.tab="autoSorSearch"
                                             class="dropbtn" />
                                         @isset($this->dropdownData['sor_items_number'])
-                                            @if (count($this->dropdownData['sor_items_number']) > 0)
+                                            @if (count($this->dropdownData['sor_items_number']) > 0 && $selectedSORKey==null)
                                                 <div class="dropdown-content"
                                                     style="display:{{ $searchDtaCount ? $searchStyle : $searchStyle }}">
                                                     @foreach ($this->dropdownData['sor_items_number'] as $list)

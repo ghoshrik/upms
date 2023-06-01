@@ -109,7 +109,8 @@ class CreateEstimateProject extends Component
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['estimate_no'] = null;
             $this->estimateData['rate_no'] = '';
-            $this->estimateData['dept_id'] = '';
+            $this->estimateData['dept_id'] = Auth::user()->department_id;
+            $this->getDeptCategory();
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
             $this->estimateData['item_number'] = '';
@@ -135,7 +136,8 @@ class CreateEstimateProject extends Component
             $this->estimateData['estimate_no'] = '';
             // $this->estimateData['estimate_desc'] = '';
             $this->estimateData['rate_no'] = '';
-            $this->estimateData['dept_id'] = '';
+            $this->estimateData['dept_id'] = Auth::user()->department_id;
+            $this->getDeptEstimates();
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
             $this->estimateData['item_number'] = '';
@@ -149,7 +151,8 @@ class CreateEstimateProject extends Component
             $this->estimateData['estimate_no'] = '';
             $this->estimateData['rate_no'] = '';
             // $this->estimateData['estimate_desc'] = '';
-            $this->estimateData['dept_id'] = '';
+            $this->estimateData['dept_id'] = Auth::user()->department_id;
+            $this->getDeptRates();
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
             $this->estimateData['item_number'] = '';
@@ -279,7 +282,7 @@ class CreateEstimateProject extends Component
         //     ->where('estimate_recomender.dept_id', $this->estimateData['dept_id'])
         //     ->where('sor_masters.is_verified', '=', 1)
         //     ->get();
-        $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',8],['is_verified',1]])->get();
+        $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',$this->estimateData['dept_id']],['status',8],['is_verified',1]])->get();
     }
     public function getDeptRates()
     {
@@ -362,7 +365,13 @@ class CreateEstimateProject extends Component
         $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
         $this->addedEstimate['version'] = $this->estimateData['version'];
         $this->addedEstimateUpdateTrack = rand(1, 1000);
-        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc']);
+        $this->estimateData['item_number'] = '';
+        $this->estimateData['estimate_no'] = '';
+        $this->estimateData['rate_no'] = '';
+        $this->estimateData['qty'] = '';
+        $this->estimateData['rate'] = '';
+        $this->estimateData['total_amount'] = '';
+        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc','estimateData','fatchDropdownData','selectedCategoryId']);
 
     }
     public function render()

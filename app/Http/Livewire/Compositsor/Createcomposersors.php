@@ -107,7 +107,7 @@ class Createcomposersors extends Component
     }
     public function updated($param)
     {
-        $this->validateOnly($param);
+        // $this->validateOnly($param);
     }
 
     public function removeRow($index)
@@ -229,11 +229,14 @@ class Createcomposersors extends Component
                 // $this->estimateData['description'] = $list['description'];
                 // $this->estimateData['qty'] = $list['unit'];
                 // $this->estimateData['rate'] = $list['cost'];
-                $this->storeItem['sor_Itemid'] = $list['id'];
+                if($this->storeItem['sor_Itemid']==null){
+                    $this->storeItem['sor_Itemid'] = $list['id'];
+                }
                 $this->inputsData[$key]['description'] = $list->description;
                 // $this->selectSOR = $list['Item_details'];
 
                 $this->inputsData[$key]['childSorItemNo'] = $list['Item_details'];
+                $this->inputsData[$key]['childSorItemId'] = $list['id'];
                 // $this->inputsData
             }
             // $this->calculateValue();
@@ -274,7 +277,7 @@ class Createcomposersors extends Component
                 $last = CompositSor::create([
                     'dept_category_id' => $this->storeItem['dept_category_id'],
                     'sor_itemno_parent_id' => $this->storeItem['sor_Itemid'],
-                    'sor_itemno_child' => $data['childSorItemNo'],
+                    'sor_itemno_child' => $data['childSorItemId'],
                     'description' => $data['description'],
                     'unit_id' => $data['unit_id'],
                     'rate' => $data['qty']
