@@ -18,8 +18,7 @@
                                                 @isset($fatchDropdownData['departments'])
                                                     @foreach ($fatchDropdownData['departments'] as $department)
                                                         <x-select.option label="{{ $department['department_name'] }}"
-                                                            value="{{ $department['id'] }}"
-                                                            {{ ($department['id'] == $selectedDept) ? 'selected' : '' }} />
+                                                            value="{{ $department['id'] }}" />
                                                     @endforeach
                                                 @endisset
                                             </x-select>
@@ -34,7 +33,8 @@
                                                     @foreach ($fatchDropdownData['ratesList'] as $estimate)
                                                         <x-select.option
                                                             label="{{ $estimate['rate_id'] . ' - ' . $estimate['description'] }}"
-                                                            value="{{ $estimate['rate_id'] }}" {{ ($estimate['rate_id'] == $selectedRate)?'selected':'' }}/>
+                                                            value="{{ $estimate['rate_id'] }}"
+                                                            {{ $estimate['rate_id'] == $selectedRate ? 'selected' : '' }} />
                                                     @endforeach
                                                 @endisset
                                             </x-select>

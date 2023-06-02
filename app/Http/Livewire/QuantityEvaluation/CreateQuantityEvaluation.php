@@ -18,10 +18,10 @@ use WireUi\Traits\Actions;
 class CreateQuantityEvaluation extends Component
 {
     use Actions;
-    public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $selectedDept,$selectedRate;
+    public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $selectedDept, $selectedRate;
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
-    public $searchDtaCount, $searchStyle, $searchResData,$unite;
+    public $searchDtaCount, $searchStyle, $searchResData, $unite;
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -29,7 +29,7 @@ class CreateQuantityEvaluation extends Component
     protected $rules = [
         // 'sorMasterDesc' => 'required|string',
         // 'selectedCategoryId' => 'required|integer',
-        'unite' =>'required'
+        'unite' => 'required'
 
     ];
     protected $messages = [
@@ -60,6 +60,7 @@ class CreateQuantityEvaluation extends Component
     ];
     public function booted()
     {
+        /*
         // if ($this->selectedCategoryId == 1) {
         //     $this->rules = Arr::collapse([$this->rules, [
         //         'estimateData.dept_id' => 'required|integer',
@@ -90,6 +91,7 @@ class CreateQuantityEvaluation extends Component
 
         //     ]]);
         // }
+        */
     }
     // public function updated($param)
     // {
@@ -97,11 +99,12 @@ class CreateQuantityEvaluation extends Component
     // }
     public function mount()
     {
-        $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+        $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->where('id', Auth::user()->department_id)->get();
         $this->unite =  UnitMaster::select('id', 'unit_name', 'short_name', 'is_active')->where('is_active', 1)->orderBy('id', 'desc')->get();
         if (Session()->has('addedQuantityEvaluationData')) {
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
+        /*
         // $this->estimateData['estimate_no'] = null;
         // $this->estimateData['dept_id'] = '';
         // $this->estimateData['dept_category_id'] = '';
@@ -113,11 +116,10 @@ class CreateQuantityEvaluation extends Component
         // $this->estimateData['rate'] = '';
         // $this->estimateData['total_amount'] = '';
         // $this->estimateData['item_name'] = 'Other';
-
-        $this->estimateData['unite'] ='';
-        $this->estimateData['label'] ='';
-        $this->estimateData['value'] ='';
-
+        */
+        $this->estimateData['unite'] = '';
+        $this->estimateData['label'] = '';
+        $this->estimateData['value'] = '';
     }
 
     public function getDeptCategory()
@@ -134,12 +136,14 @@ class CreateQuantityEvaluation extends Component
 
     public function autoSearch()
     {
+        /*
         // $keyword = $keyword['_x_bindings']['value'];
         // $this->kword = $keyword;
         // $this->fatchDropdownData['items_number'] = SOR::where('department_id', $this->estimateData['dept_id'])
         //     ->where('dept_category_id', $this->estimateData['dept_category_id'])
         //     ->where('version', $this->estimateData['version'])
         //     ->where('Item_details', 'like', '%' . $keyword . '%')->get();
+        */
         if ($this->selectedSORKey) {
             $this->fatchDropdownData['items_number'] = SOR::select('Item_details', 'id')
                 ->where('department_id', $this->estimateData['dept_id'])
@@ -175,12 +179,13 @@ class CreateQuantityEvaluation extends Component
 
     public function getItemDetails($id)
     {
+        /*
         // $this->estimateData['description'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['description'];
         // $this->estimateData['qty'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['unit'];
         // $this->estimateData['rate'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['cost'];
         // $this->estimateData['item_number'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['id'];
         // $this->calculateValue();
-
+        */
         $this->searchResData = SOR::where('id', $id)->get();
         // dd($this->searchResData);
         $this->searchDtaCount = count($this->searchResData) > 0;
@@ -220,6 +225,7 @@ class CreateQuantityEvaluation extends Component
         $this->estimateData['estimate_no'] = '';
         $this->estimateData['description'] = '';
         $this->estimateData['total_amount'] = '';
+        /*
         // $this->fatchDropdownData['estimatesList'] = EstimatePrepare::select('estimate_id')->where('dept_id',$this->estimateData['dept_id'])->groupBy('estimate_id')->get();
         // $this->fatchDropdownData['estimatesList'] = EstimatePrepare::join('sor_masters','estimate_prepares.estimate_id','sor_masters.estimate_id')
         //                                             ->where('estimate_prepares.dept_id',$this->estimateData['dept_id'])
@@ -229,7 +235,8 @@ class CreateQuantityEvaluation extends Component
         //     ->where('estimate_recomender.dept_id', $this->estimateData['dept_id'])
         //     ->where('sor_masters.is_verified', '=', 1)
         //     ->get();
-        $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',1],['is_verified',1]])->get();
+        */
+        $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id', 'dept_id', 'sorMasterDesc', 'status', 'is_verified')->where([['dept_id', Auth::user()->department_id], ['status', 1], ['is_verified', 1]])->get();
         // $this->fatchDropdownData['estimatesList'] = RatesAnalysis::select('description', 'rate_id', 'total_amount')->where([['operation', 'Total'], ['dept_id', Auth::user()->department_id], ['category_id', $this->estimateData['dept_category_id']]])->get();
     }
     public function getDeptRates()
@@ -238,6 +245,7 @@ class CreateQuantityEvaluation extends Component
         $this->estimateData['rate_no'] = '';
         $this->estimateData['description'] = '';
         $this->estimateData['total_amount'] = '';
+        /*
         // $this->fatchDropdownData['estimatesList'] = EstimatePrepare::select('estimate_id')->where('dept_id',$this->estimateData['dept_id'])->groupBy('estimate_id')->get();
         // $this->fatchDropdownData['estimatesList'] = EstimatePrepare::join('sor_masters','estimate_prepares.estimate_id','sor_masters.estimate_id')
         //                                             ->where('estimate_prepares.dept_id',$this->estimateData['dept_id'])
@@ -248,11 +256,13 @@ class CreateQuantityEvaluation extends Component
         //     ->where('sor_masters.is_verified', '=', 1)
         //     ->get();
         // $this->fatchDropdownData['ratesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',1],['is_verified',1]])->get();
+        */
         $this->fatchDropdownData['ratesList'] = RatesAnalysis::select('description', 'rate_id')->where([['operation', 'Total'], ['dept_id', $this->selectedDept]])->get();
         // $this->fatchDropdownData['ratesList'] = RatesAnalysis::all();
     }
     public function getEstimateDetails()
     {
+        /*
         // $rateId = (int)$this->estimateData['estimate_no'];
 
         // if ($rateId) {
@@ -269,14 +279,14 @@ class CreateQuantityEvaluation extends Component
         //     $this->estimateData['qty'] = 1;
         //     $this->estimateData['rate'] = $details['total_amount'];
         // }
-
+            */
         $this->estimateData['total_amount'] = '';
         $this->estimateData['description'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
         $this->fatchDropdownData['estimateDetails'] = EstimatePrepare::join('sor_masters', 'estimate_prepares.estimate_id', 'sor_masters.estimate_id')
             ->where('estimate_prepares.estimate_id', $this->estimateData['estimate_no'])
-            ->where('estimate_prepares.operation', 'Total')->where([['sor_masters.is_verified', 1],['sor_masters.status', 1]])->first();
+            ->where('estimate_prepares.operation', 'Total')->where([['sor_masters.is_verified', 1], ['sor_masters.status', 1]])->first();
         $this->estimateData['total_amount'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
         $this->estimateData['description'] = $this->fatchDropdownData['estimateDetails']['sorMasterDesc'];
         $this->estimateData['qty'] = 1;
@@ -286,6 +296,7 @@ class CreateQuantityEvaluation extends Component
     {
         // $validatee = $this->validate();
         $this->reset('addedEstimate');
+        /*
         // $this->showTableOne = !$this->showTableOne;
         // $this->addedEstimate['estimate_no'] = ($this->estimateData['estimate_no'] == '') ? 0 : $this->estimateData['estimate_no'];
         // $this->addedEstimate['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
@@ -298,13 +309,14 @@ class CreateQuantityEvaluation extends Component
         // $this->addedEstimate['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
         // $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
         // $this->addedEstimate['version'] = $this->estimateData['version'];
+        */
         $this->addedEstimate['label'] = $this->estimateData['label'];
         $this->addedEstimate['value'] = $this->estimateData['value'];
         $this->addedEstimate['unite'] = $this->estimateData['unite'];
         $this->addedEstimate['rate_id'] = (int) $this->selectedRate;
         $this->addedEstimate['dept_id'] = (int) $this->selectedDept;
         $this->addedEstimateUpdateTrack = rand(1, 1000);
-        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'selectedRate','selectedDept','unite','fatchDropdownData']);
+        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'selectedRate', 'selectedDept', 'unite', 'fatchDropdownData']);
         // dd($this->addedEstimate);
     }
     public function render()
