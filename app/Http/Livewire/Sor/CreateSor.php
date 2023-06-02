@@ -59,6 +59,7 @@ class CreateSor extends Component
     {
         $this->inputsData = [
             [
+                'is_parent' => false,
                 'item_details' => '',
                 'department_id' => Auth::user()->department_id,
                 'dept_category_id' => '',
@@ -82,6 +83,7 @@ class CreateSor extends Component
         $key = $inpuDataCount - 1;
         $this->inputsData[] =
             [
+                'is_parent' => false,
                 'item_details' => $currentInputData[$key]['item_details'],
                 'department_id' => Auth::user()->department_id,
                 'dept_category_id' => $currentInputData[$key]['dept_category_id'],
@@ -91,7 +93,7 @@ class CreateSor extends Component
                 'cost' => $currentInputData[$key]['cost'],
                 'version' => $currentInputData[$key]['version'],
                 'effect_from' => $currentInputData[$key]['effect_from'],
-                'file_upload' => ''
+                // 'file_upload' => ''
             ];
     }
     public function updated($param)
