@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Composersor;
+namespace App\Http\Livewire\Compositsor;
 
 use App\Models\SOR;
 use Livewire\Component;
@@ -28,6 +28,6 @@ class ViewModelCompositSor extends Component
     }
     public function render()
     {
-        return view('livewire.composersor.view-model-composit-sor');
+        return view('livewire.compositsor.view-model-composit-sor');
     }
 }

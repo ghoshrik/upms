@@ -74,13 +74,16 @@
                                         <tbody>
                                             @foreach ($composerSor as $lists)
                                                 <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $lists->getDeptCategoryName->dept_category_name }}</td>
-                                                    <td>{{ $lists->ParentSORItemNo->Item_details }}</td>
-                                                    <td>{{ $lists->ChildSORItemNo->Item_details }}</td>
-                                                    <td>{{ $lists->description }} </td>
-                                                    <td>{{ $lists->getUnit->unit_name }} </td>
-                                                    <td>{{ $lists->rate }} </td>
+                                                    <td class="text-wrap">{{ $loop->iteration }}</td>
+                                                    <td class="text-wrap">
+                                                        {{ $lists->getDeptCategoryName->dept_category_name }}</td>
+                                                    <td class="text-wrap">{{ $lists->ParentSORItemNo->Item_details }}
+                                                    </td>
+                                                    <td class="text-wrap">{{ $lists->ChildSORItemNo->Item_details }}
+                                                    </td>
+                                                    <td class="text-wrap">{{ $lists->description }} </td>
+                                                    <td class="text-wrap">{{ $lists->getUnit->unit_name }} </td>
+                                                    <td class="text-wrap">{{ $lists->rate }} </td>
                                                     <td>
                                                         <button class="btn btn-soft-primary btn-sm"
                                                             wire:click='$emit("viewModal",{{ $lists->sor_itemno_parent_id }},{{ $lists->sor_itemno_child }})'>
@@ -94,9 +97,10 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
                 @endif
             </div>
         </div>
     </div>
-    <livewire:composersor.view-model-composit-sor />
+    <livewire:compositsor.view-model-composit-sor />
 </div>

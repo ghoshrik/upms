@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Composersor;
+namespace App\Http\Livewire\Compositsor;
 
 use App\Models\SOR;
 use Livewire\Component;
@@ -59,6 +59,6 @@ class ComposerSors extends Component
     {
         $this->titel = 'Composit SOR';
         $assets = ['chart', 'animation'];
-        return view('livewire.composersor.composer-sors', compact('assets'));
+        return view('livewire.compositsor.composer-sors', compact('assets'));
     }
 }
