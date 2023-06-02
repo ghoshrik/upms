@@ -87,19 +87,19 @@
                                     @endisset
                                 </x-select> --}}
                                 <div class="dropdown">
-                                    <x-input wire:key="sor" label="{{ trans('cruds.estimate.fields.sor') }}"
+                                    <x-input wire:key="sor.{{$key}}" label="{{ trans('cruds.estimate.fields.sor') }}"
                                         placeholder="{{ trans('cruds.estimate.fields.sor') }}"
                                         wire:model="inputsData.{{ $key }}.childSorItemNo"
                                         wire:keydown.escape="resetValus" value="{{ $inputsData[$key]['childSorItemNo'] }}"
                                         wire:keydown.tab="autoQSearch({{ $key }})" class="dropbtn" />
 
                                     @isset($this->fetchDropDownData['loop_items_number'])
-                                        @if (count($this->fetchDropDownData['loop_items_number']) > 0)
+                                        @if (count($this->fetchDropDownData['loop_items_number']) > 0 && (count($inputsData)==$key+1))
                                             <div class="dropdown-content"
                                                 style="display:{{ $searchloopDtaCount ? $searchloopStyle : $searchloopStyle }}">
                                                 @foreach ($this->fetchDropDownData['loop_items_number'] as $list)
                                                     <a href="javascript:void(0);"
-                                                        wire:click="getLoopItemDetails({{ $list['id'] . ',' . $key }})">{{ $list['Item_details'] . ',' . $key }}</a>
+                                                        wire:click="getLoopItemDetails({{ $list['id'] . ',' . $key }})">{{ $list['Item_details'] }}</a>
                                                 @endforeach
                                             </div>
                                         @endif

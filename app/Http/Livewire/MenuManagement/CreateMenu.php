@@ -20,7 +20,7 @@ class CreateMenu extends Component
     {
         $this->newMenuData = [
             'title' => '',
-            'parent_id' => 0,
+            'parent_id' => '',
             'icon' => '',
             'link' => '',
             'link_type' => '',
@@ -60,7 +60,7 @@ class CreateMenu extends Component
             // extract the role from the permission name without the action prefix
             return str_replace(['create ', 'update '], '', $permission['name']);
         });
-        
+
         $formatedPermissions = $groupedPermissions->reduce(function ($result, $permissions, $role) {
             // concatenate the permission names for each role
             $permissionsArray = $permissions->pluck('name')->toArray();
@@ -77,6 +77,7 @@ class CreateMenu extends Component
     }
     public function store()
     {
+        $this->newMenuData['parent_id'] = 0;
         $permissionsRoles = $this->dropDownData['permissionsRoles'];
         $selectedIndex = $this->newMenuData['permissions_roles'];
         $selectedPermissionRole = $permissionsRoles[$selectedIndex];
