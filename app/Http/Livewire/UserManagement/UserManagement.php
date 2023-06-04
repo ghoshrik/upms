@@ -29,12 +29,15 @@ class UserManagement extends Component
         //     ];
         // }
         // $i++;
-        $this->tabs = [
+        /*$this->tabs = [
             [
-                'title' => 'Departments Users',
-                'id' => 'department',
-                'data' => 3,
+
+                    'title' => 'Departments Users',
+                    'id' => 'department',
+                    'data' => 3,
+
             ],
+
             [
                 'title' => 'Office Admin Users',
                 'id' => 'office-admin',
@@ -45,7 +48,38 @@ class UserManagement extends Component
                 'id' => 'office-user',
                 'data' => 6,
             ]
-        ];
+        ];*/
+        if(Auth::user()->user_type==2)
+        {
+            $this->tabs[] =
+                [
+
+                    'title' => 'Departments Users',
+                    'id' => 'department',
+                    'data' => 2,
+
+                ];
+        }
+        // else if(Auth::user()->user_type==3)
+        // {
+
+            $this->tabs[]=
+            [
+                'title' => 'Office Admin Users',
+                'id' => 'office-admin',
+                'data' => 3,
+            ];
+        // }
+        // else{
+
+            $this->tabs[]=
+            [
+                'title' => 'Office Users',
+                'id' => 'office-user',
+                'data' => 4,
+            ];
+
+        // }*/
 
         // dd($this->tabs[1]['data']);
         $this->activeTab = $this->tabs[0]['title'];

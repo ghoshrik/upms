@@ -92,6 +92,7 @@ final class UsersDataTable extends PowerGridComponent
             trans('cruds.user-management.fields.status') => '5%',
         ];
         $getChild_id = UserType::where('parent_id', Auth::user()->user_type)->select('id')->first();
+        dd(Auth::user()->user_type);
         if (count($this->checkboxValues) == 0) {
             if (Auth::user()->user_type == 2) {
 
@@ -327,13 +328,14 @@ final class UsersDataTable extends PowerGridComponent
             // ->where('users.user_type', '=', Auth::user()->user_type);
         }
         */
-        if (Auth::user()->department_id) {
-            if (Auth::user()->office_id) {
 
+        if (Auth::user()->department_id) {
+            /*if (Auth::user()->office_id) {
+                */
                 return User::query()
-                    ->join('user_types', function ($user_types) {
+                    /*->join('user_types', function ($user_types) {
                         $user_types->on('users.user_type', '=', 'user_types.id');
-                    })->join('designations', 'users.designation_id', '=', 'designations.id')
+                    })->join('designations', 'users.designation_id', '=', 'designations.id')*/
                     ->select(
                         'users.id',
                         'users.name',
@@ -353,11 +355,12 @@ final class UsersDataTable extends PowerGridComponent
                         'designations.designation_name',
                         DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
                     )
-                    // ->join('user_types', 'users.user_type', '=', 'user_types.id')
-                    ->where('user_types.parent_id', '=', $this->userData)
-                    ->where('users.department_id', Auth::user()->department_id)
+                    ->join('user_types', 'users.user_type', '=', 'user_types.id')
+                    ->join('designations', 'users.designation_id', '=', 'designations.id')
+                    ->where('user_types.parent_id', '=', $this->userData);
+                    /*->where('users.department_id', Auth::user()->department_id)
                     ->where('users.office_id', Auth::user()->office_id);
-            } else {
+            /*} else {
                 // dd(User::query()->with('designation')->first());
                 return User::query()
                     ->join('user_types', function ($user_types) {
@@ -385,7 +388,7 @@ final class UsersDataTable extends PowerGridComponent
 
                     ->where('user_types.parent_id', '=', $this->userData)
                     ->where('users.department_id', Auth::user()->department_id);
-            }
+            }*/
         } else {
             return User::query()
                 ->select(
@@ -407,7 +410,7 @@ final class UsersDataTable extends PowerGridComponent
                     'designations.designation_name',
                     DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
                 )
-                ->where('user_type', $this->userData)
+                ->where('user_types.parent_id', $this->userData)
                 ->join('user_types', 'users.user_type', '=', 'user_types.id')
                 ->join('designations', 'users.designation_id', '=', 'designations.id');
         }
