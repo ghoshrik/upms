@@ -11,6 +11,7 @@ use App\Models\SORCategory;
 use Illuminate\Support\Arr;
 use App\Models\SorCategoryType;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class CreateEstimate extends Component
 {
@@ -89,7 +90,8 @@ class CreateEstimate extends Component
         $this->estimateData['item_name'] = $value;
         if ($this->estimateData['item_name'] == 'SOR') {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
-            $this->estimateData['dept_id'] = '';
+            $this->estimateData['dept_id'] = Auth::user()->department_id;
+            $this->getDeptCategory();
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
             $this->estimateData['item_number'] = '';
@@ -274,7 +276,7 @@ class CreateEstimate extends Component
     }
     public function addEstimate()
     {
-        $validatee = $this->validate();
+        $this->validate();
         $this->reset('addedEstimate');
         $this->showTableOne = !$this->showTableOne;
         $this->addedEstimate['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
@@ -290,7 +292,11 @@ class CreateEstimate extends Component
         $this->addedEstimateUpdateTrack = rand(1, 1000);
         // dd($this->sorMasterDesc);
         // dd($this->addedEstimate);
-        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc']);
+        $this->estimateData['item_number'] = '';
+        $this->estimateData['qty'] = '';
+        $this->estimateData['rate'] = '';
+        $this->estimateData['total_amount'] = '';
+        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'selectedCategoryId', 'estimateData', 'fatchDropdownData']);
     }
 
     public function render()

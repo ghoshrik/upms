@@ -19,15 +19,17 @@
                                         label="{{ trans('cruds.estimate.fields.category') }}"
                                         placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
                                         wire:model.defer="selectedCategoryId"
-                                        x-on:select="$wire.changeCategory($event.target)">
-                                        @foreach ($getCategory as $category)
+                                        x-on:select="$wire.changeCategory($event.target)" {{-- @foreach ($getCategory as $category)
                                             <x-select.option label="{{ $category['item_name'] }}"
                                                 value="{{ $category['id'] }}" />
-                                        @endforeach
-                                    </x-select>
+                                        @endforeach --}}
+                                        :options="[['name' => 'SOR', 'id' => 1], ['name' => 'Other', 'id' => 2]]" option-label="name" option-value="id" />
+                                    {{-- </x-select> --}}
                                 </div>
                             </div>
                         </div>
+
+
                         @if (!empty($estimateData))
                             @if ($estimateData['item_name'] == 'SOR')
                                 <div class="row" style="transition: all 2s ease-out">
