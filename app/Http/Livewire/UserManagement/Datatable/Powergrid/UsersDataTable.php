@@ -34,6 +34,9 @@ final class UsersDataTable extends PowerGridComponent
     | Setup Table's general features
     |
      */
+
+
+    public $userData;
     protected function getListeners()
     {
         return array_merge(
@@ -89,6 +92,7 @@ final class UsersDataTable extends PowerGridComponent
             trans('cruds.user-management.fields.status') => '5%',
         ];
         $getChild_id = UserType::where('parent_id', Auth::user()->user_type)->select('id')->first();
+        // dd(Auth::user()->user_type);
         if (count($this->checkboxValues) == 0) {
             if (Auth::user()->user_type == 2) {
 
@@ -189,9 +193,8 @@ final class UsersDataTable extends PowerGridComponent
             // dd($users);
             if (count($users) > 0) {
                 foreach ($users as $key => $user) {
-                    $getDesignationName =  Designation::select('designation_name')->where('id',$user->designation_id)->get();
-                    foreach($getDesignationName as $designation)
-                    {
+                    $getDesignationName =  Designation::select('designation_name')->where('id', $user->designation_id)->get();
+                    foreach ($getDesignationName as $designation) {
                         $designationName = $designation->designation_name;
                     }
                     $dataView[] = [
@@ -237,6 +240,7 @@ final class UsersDataTable extends PowerGridComponent
      */
     public function datasource(): ?Builder
     {
+        /*
         if (Auth::user()->department_id) {
             if (Auth::user()->office_id) {
 
@@ -322,6 +326,93 @@ final class UsersDataTable extends PowerGridComponent
                 ->join('user_types', 'users.user_type', '=', 'user_types.id')
                 ->join('designations', 'users.designation_id', '=', 'designations.id');
             // ->where('users.user_type', '=', Auth::user()->user_type);
+        }
+        */
+
+        if (Auth::user()->department_id) {
+            /*if (Auth::user()->office_id) {
+                */
+                return User::query()
+                    /*->join('user_types', function ($user_types) {
+                        $user_types->on('users.user_type', '=', 'user_types.id');
+                    })->join('designations', 'users.designation_id', '=', 'designations.id')*/
+                    ->select(
+                        'users.id',
+                        'users.name',
+                        'users.email',
+                        'users.username',
+                        'users.ehrms_id',
+                        'users.emp_name',
+                        'users.mobile',
+                        'users.designation_id',
+                        'users.department_id',
+                        'users.user_type',
+                        'users.office_id',
+                        'user_types.id as userType_id',
+                        'user_types.parent_id',
+                        'users.is_active',
+                        'designations.id as designationId',
+                        'designations.designation_name',
+                        DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
+                    )
+                    ->join('user_types', 'users.user_type', '=', 'user_types.id')
+                    ->join('designations', 'users.designation_id', '=', 'designations.id')
+                    ->where('user_types.parent_id', '=', $this->userData);
+                    /*->where('users.department_id', Auth::user()->department_id)
+                    ->where('users.office_id', Auth::user()->office_id);
+            /*} else {
+                // dd(User::query()->with('designation')->first());
+                return User::query()
+                    ->join('user_types', function ($user_types) {
+                        $user_types->on('users.user_type', '=', 'user_types.id');
+                    })->join('designations', 'users.designation_id', '=', 'designations.id')
+                    ->select(
+                        'users.id',
+                        'users.name',
+                        'users.email',
+                        'users.username',
+                        'users.ehrms_id',
+                        'users.emp_name',
+                        'users.mobile',
+                        'users.designation_id',
+                        'users.department_id',
+                        'users.user_type',
+                        'users.office_id',
+                        'user_types.id as userType_id',
+                        'user_types.parent_id',
+                        'users.is_active',
+                        'designations.id as designationId',
+                        'designations.designation_name',
+                        DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
+                    )
+
+                    ->where('user_types.parent_id', '=', $this->userData)
+                    ->where('users.department_id', Auth::user()->department_id);
+            }*/
+        } else {
+            return User::query()
+                ->select(
+                    'users.id',
+                    'users.name',
+                    'users.email',
+                    'users.username',
+                    'users.ehrms_id',
+                    'users.emp_name',
+                    'users.mobile',
+                    'users.designation_id',
+                    'users.department_id',
+                    'users.user_type',
+                    'users.office_id',
+                    'user_types.id as userType_id',
+                    'user_types.parent_id',
+                    'users.is_active',
+                    'designations.id as designationId',
+                    'designations.designation_name',
+                    DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
+                )
+                ->where('user_types.parent_id', $this->userData)
+                ->join('user_types', 'users.user_type', '=', 'user_types.id')
+                ->join('designations', 'users.designation_id', '=', 'designations.id');
         }
     }
 

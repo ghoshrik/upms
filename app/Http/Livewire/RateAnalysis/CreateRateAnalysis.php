@@ -456,8 +456,9 @@ class CreateRateAnalysis extends Component
         if(isset($key)){
             $this->showTableOne = !$this->showTableOne;
             $this->addedEstimate[$key]['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];
-            // $this->addedEstimate[$key]['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
-            $this->addedEstimate[$key]['dept_id'] = $this->estimateData['dept_id'];
+            $this->addedEstimate[$key]['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
+            // $this->addedEstimate[$key]['dept_id'] = $this->estimateData['dept_id'];
+            $this->addedEstimate[$key]['dept_id'] = Auth::user()->department_id;
             $this->addedEstimate[$key]['category_id'] = ($this->estimateData['dept_category_id'] == '') ? 0 : $this->estimateData['dept_category_id'];
             $this->addedEstimate[$key]['sor_item_number'] = ($this->estimateData['item_number'] == '') ? 0 : $this->estimateData['item_number'];
             $this->addedEstimate[$key]['item_name'] = $this->estimateData['item_name'];
@@ -480,8 +481,8 @@ class CreateRateAnalysis extends Component
             $this->reset('addedEstimate');
             $this->showTableOne = !$this->showTableOne;
             $this->addedEstimate['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];
-            // $this->addedEstimate['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
-            $this->addedEstimate['dept_id'] = $this->estimateData['dept_id'];
+            $this->addedEstimate['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
+            // $this->addedEstimate['dept_id'] = $this->estimateData['dept_id'];
             $this->addedEstimate['category_id'] = ($this->estimateData['dept_category_id'] == '') ? 0 : $this->estimateData['dept_category_id'];
             $this->addedEstimate['sor_item_number'] = ($this->estimateData['item_number'] == '') ? 0 : $this->estimateData['item_number'];
             $this->addedEstimate['item_name'] = $this->estimateData['item_name'];

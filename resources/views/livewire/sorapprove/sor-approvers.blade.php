@@ -42,8 +42,8 @@
                             <button type="button" class="btn btn-sm btn btn-soft-danger"
                                 wire:click="approvedSOR()">({{ count($selectedSors) }}) selected</button>
                         @endif
-                        <livewire:sor-approve.datatable.sor-approver-list />
-                        {{-- <div class="table-responsive mt-4">
+                        {{-- <livewire:sor-approve.datatable.sor-approver-list /> --}}
+                        <div class="table-responsive mt-4">
                             <table id="basic-table" class="table table-striped mb-0" role="grid">
                                 <thead>
                                     <tr>
@@ -104,7 +104,7 @@
                                     @endforelse
                                 </tbody>
                             </table>
-                        </div> --}}
+                        </div>
                     </div>
                 </div>
             </div>

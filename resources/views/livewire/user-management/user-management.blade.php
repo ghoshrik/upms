@@ -17,14 +17,14 @@
                         <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
                             @if (!$isFromOpen)
                                 <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill"
-                                x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
+                                    x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
                                     <span class="btn-inner">
                                         <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
                                     </span>
                                 </button>
                             @else
                                 <button wire:click="fromEntryControl" class="btn btn-danger rounded-pill"
-                                x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
+                                    x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
                                     <span class="btn-inner">
                                         <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
                                     </span>
@@ -53,6 +53,11 @@
             <div class="spinner-border text-primary loader-position" role="status"></div>
         </div>
         <div>
+            <style>
+                ul>li>button {
+                    border-radius: 30px;
+                }
+            </style>
             @if ($isFromOpen && $openedFormType == 'create')
                 <livewire:user-management.create-user>
                 @elseif ($isFromOpen && $openedFormType == 'edit')
@@ -61,11 +66,54 @@
                         <div class="col-md-12 col-lg-12 col-sm-3">
                             <div class="card">
                                 <div class="card-body">
+
+                                    <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+                                        @foreach ($tabs as $tab)
+                                            <li class="nav-item" role="presentation">
+                                                <button
+                                                    class="nav-link rounded-pill {{ $activeTab === $tab['title'] ? 'active' : '' }}"
+                                                    id="{{ $tab['id'] }}-tab" data-bs-toggle="tab"
+                                                    data-bs-target="#{{ $tab['id'] }}" type="button" role="tab"
+                                                    aria-controls="{{ $tab['id'] }}"
+                                                    aria-selected="true">{{ $tab['title'] }}</button>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        @foreach ($tabs as $tab)
+                                            <div class="tab-pane fade show {{ $activeTab === $tab['title'] ? 'active' : '' }}"
+                                                id="{{ $tab['id'] }}" role="tabpanel"
+                                                aria-labelledby="{{ $tab['id'] }}-tab">
+                                                {{-- @foreach ($tab['data'] as $user)
+                                    <tr>
+                                        <td>
+                                            {{ $user['Sl No'] }}
+                                        </td>
+                                        <td>
+                                            {{ $user['name'] }}
+                                        </td>
+                                        <td>
+                                            {{ $user['email'] }}
+                                        </td>
+                                    </tr>
+                                @endforeach --}}
+                                                <livewire:user-management.datatable.powergrid.users-data-table
+                                                    :userData="$tab['data']" :wire:key='$updateDataTableTracker' />
+                                            </div>
+                                        @endforeach
+                                    </div>
+
+
+
+
+
+
+
                                     {{-- TODO:: CHANGE --}}
                                     {{-- <h2>Designation wise user data list sorting pending</h2> --}}
                                     {{-- <livewire:user-management.datatable.users-datatable :wire:key='$updateDataTableTracker' /> --}}
-                                    <livewire:user-management.datatable.powergrid.users-data-table
-                                        :wire:key='$updateDataTableTracker' />
+                                    {{-- <livewire:user-management.datatable.powergrid.users-data-table
+                                        :wire:key='$updateDataTableTracker' /> --}}
                                 </div>
                             </div>
                         </div>

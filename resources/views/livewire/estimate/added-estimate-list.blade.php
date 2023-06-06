@@ -37,18 +37,6 @@
                                     {{ trans('cruds.estimate.fields.export_word') }}</button>
                             </div>
                         </div>
-                        <div class="col col-md-6 col-lg-6 mb-2">
-                            <div class="row">
-                                <div class="input-group mb-3">
-                                    <x-input label="Height" placeholder="height" wire:model="height" />
-                                    <x-input label="Weight" placeholder="Weight" wire:model="weight" />
-                                    <x-input label="breath" placeholder="breath" wire:model="breath" />
-                                    {{-- <x-input label="Height" placeholder="height" wire:model="height" /> --}}
-                                    <button type="button" wire:click="calc"
-                                        class="btn btn-soft-primary">Calculate</button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="card-body p-0">
@@ -81,23 +69,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            {{-- {{ $addedEstimate['sor_item_number'] ? getSorItemNumber($addedEstimate['sor_item_number']) : '---' }} --}}
-
-                                            @if ($addedEstimate['sor_item_number'])
-                                                {{ getSorItemNumber($addedEstimate['sor_item_number']) }}
-                                            @else
-                                                @if ($addedEstimate['height'])
-                                                    {{ __('height') }}
-                                                @elseif($addedEstimate['weight'])
-                                                    {{ __('weight') }}
-                                                @elseif($addedEstimate['breath'])
-                                                    {{ __('breath') }}
-                                                @endif
-                                            @endif
-
-
-
-
+                                            {{ $addedEstimate['sor_item_number'] ? getSorItemNumber($addedEstimate['sor_item_number']) : '---' }}
                                         </td>
                                         <td class="text-wrap" style="width: 40rem">
                                             @if ($addedEstimate['sor_item_number'])
@@ -126,14 +98,6 @@
                                         <td>
                                             @if ($addedEstimate['total_amount'])
                                                 {{ $addedEstimate['total_amount'] }}
-                                            @else
-                                                @if ($addedEstimate['height'])
-                                                    {{ $addedEstimate['height'] }}
-                                                @elseif($addedEstimate['weight'])
-                                                    {{ $addedEstimate['weight'] }}
-                                                @elseif($addedEstimate['breath'])
-                                                    {{ $addedEstimate['breath'] }}
-                                                @endif
                                             @endif
                                         </td>
                                         <td>
