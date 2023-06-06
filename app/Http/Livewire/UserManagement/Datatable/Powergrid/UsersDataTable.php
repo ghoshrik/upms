@@ -92,7 +92,7 @@ final class UsersDataTable extends PowerGridComponent
             trans('cruds.user-management.fields.status') => '5%',
         ];
         $getChild_id = UserType::where('parent_id', Auth::user()->user_type)->select('id')->first();
-        dd(Auth::user()->user_type);
+        // dd(Auth::user()->user_type);
         if (count($this->checkboxValues) == 0) {
             if (Auth::user()->user_type == 2) {
 
