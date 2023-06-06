@@ -41,7 +41,7 @@
         <div>
             <div x-show="formOpen">
                 @if ($isFromOpen && $openedFormType == 'create')
-                    <livewire:composersor.createcomposersors />
+                    <livewire:compositsor.createcomposersors />
                 @elseif($isFromOpen && $openedFormType == 'edit')
                 @else
                     <div class="col-md-12 col-lg-12 col-sm-3">
