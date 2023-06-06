@@ -10,8 +10,8 @@
             <div class="container-fluid iq-container">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                     <div class="d-flex flex-column">
-                        <h6 class="text-dark">{{ $titel }}</h6>
-                        <p class="text-primary mb-0">{{ $subTitel }}</p>
+                        <h6 class="text-dark">{{$titel}}</h6>
+                    <p class="text-primary mb-0">{{$subTitel}}</p>
                     </div>
                     @canany(['create estimate', 'edit estimate'])
                         <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
@@ -71,7 +71,7 @@
                                     <div class="row">
                                         <div class="col-md-4">
                                             <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab == 1 ? 'active' : '' }}"
-                                                wire:click="draftData()" wire:ignore>
+                                                wire:click="draftData()">
                                                 <div class="card-body">
                                                     <div class="progress-widget">
                                                         <div id="circle-progress-01"
@@ -102,7 +102,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab == 2 ? 'active' : '' }}"
-                                                wire:click='forwardedData()' wire:ignore>
+                                                wire:click='forwardedData()'>
                                                 <div class="card-body">
                                                     <div class="progress-widget">
                                                         <div id="circle-progress-02"
@@ -130,7 +130,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab == 3 ? 'active' : '' }}"
-                                                wire:click="revertedData()" wire:ignore>
+                                                wire:click="revertedData()">
                                                 <div class="card-body">
                                                     <div class="progress-widget">
                                                         <div id="circle-progress-03"
@@ -166,8 +166,7 @@
                                     <div class="card-body">
                                         {{-- <livewire:estimate.datatable.estimated-data-table
                                              /> --}}
-                                        <livewire:estimate.datatable.power-grid.estimate-data-table
-                                            :wire:key="$updateDataTableTracker" />
+                                        <livewire:estimate.datatable.power-grid.estimate-data-table :wire:key="$updateDataTableTracker"/>
                                         {{-- <livewire:estiate-project.data-table.powergrid.estimate-project-table :wire:key="$updateDataTableTracker" /> --}}
                                     </div>
                                 </div>

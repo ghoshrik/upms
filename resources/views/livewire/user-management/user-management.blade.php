@@ -53,6 +53,11 @@
             <div class="spinner-border text-primary loader-position" role="status"></div>
         </div>
         <div>
+            <style>
+                ul>li>button {
+                    border-radius: 30px;
+                }
+            </style>
             @if ($isFromOpen && $openedFormType == 'create')
                 <livewire:user-management.create-user>
                 @elseif ($isFromOpen && $openedFormType == 'edit')
@@ -97,6 +102,18 @@
                                             </div>
                                         @endforeach
                                     </div>
+
+
+
+
+
+
+
+                                    {{-- TODO:: CHANGE --}}
+                                    {{-- <h2>Designation wise user data list sorting pending</h2> --}}
+                                    {{-- <livewire:user-management.datatable.users-datatable :wire:key='$updateDataTableTracker' /> --}}
+                                    {{-- <livewire:user-management.datatable.powergrid.users-data-table
+                                        :wire:key='$updateDataTableTracker' /> --}}
                                 </div>
                             </div>
                         </div>

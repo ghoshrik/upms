@@ -23073,11 +23073,7 @@ pre[class*=language-] {
   margin-top: 10px;
   transition: all .5s;
   color: #fff;
-  background-color: var(--bs-primary-tint-40);
-}
-
-div#myTabContent .active {
-  background: none;
+  /* background-color: var(--bs-primary-tint-40); */
 }
 
 .d-slider1 .card-tab {
