@@ -102,7 +102,7 @@
                         </div>
                         @if (!empty($estimateData))
                             @if ($selectedCategoryId == 1)
-                                <div class="row" style="transition: all 2s ease-out">
+                                <div class="row" wire:key='SOR' style="transition: all 2s ease-out">
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
@@ -226,7 +226,7 @@
                                 @endif
                             @endif
                             @if ($selectedCategoryId == 2)
-                                <div class="row">
+                                <div class="row" wire:key='others'>
                                     <div class="col">
                                         <div class="form-group">
                                             <x-input wire:key="other_name" wire:model.defer="estimateData.other_name"
@@ -260,7 +260,7 @@
                                 </div>
                             @endif
                             @if ($selectedCategoryId == 3)
-                                <div class="row">
+                                <div class="row" wire:key='Rate'>
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="rateDept"
@@ -332,7 +332,7 @@
                                 </div>
                             @endif
                             @if ($selectedCategoryId == 4)
-                                <div class="row" style="transition: all 2s ease-out">
+                                <div class="row" wire:key='C-SOR' style="transition: all 2s ease-out">
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="compositeDept" label="{{ trans('cruds.estimate.fields.dept') }}"
@@ -386,8 +386,6 @@
                                                     wire:model.defer="selectedSORKey" value="{{ $selectedSORKey }}"
                                                     wire:keydown.escape="resetValus" wire:keydown.tab="autoSearch"
                                                     class="dropbtn" />
-
-
                                                 @isset($this->fatchDropdownData['items_number'])
                                                     @if (count($this->fatchDropdownData['items_number']) > 0)
                                                         <div class="dropdown-content"

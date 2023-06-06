@@ -30,67 +30,67 @@ class CreateRateAnalysis extends Component
 
     protected $rules = [
         'sorMasterDesc' => 'required|string',
-        'selectedCategoryId' => 'required|integer',
+        // 'selectedCategoryId' => 'required|integer',
 
     ];
     protected $messages = [
         'sorMasterDesc.required' => 'The description cannot be empty.',
         'sorMasterDesc.string' => 'The description format is not valid.',
-        'selectedCategoryId.required' => 'Selected at least one ',
-        'selectedCategoryId.integer' => 'This Selected field is Invalid',
-        'estimateData.other_name.required' => 'selected other name required',
-        'estimateData.other_name.string' => 'This field is must be character',
-        'estimateData.dept_id.required' => 'This field is required',
-        'estimateData.dept_id.integer' => 'This Selected field is invalid',
-        'estimateData.dept_category_id.required' => 'This field is required',
-        'estimateData.dept_category_id.integer' => 'This Selected field is invalid',
-        'estimateData.version.required' => 'This Selected field is required',
-        'estimateData.version.integer' => 'This Selected field is invalid',
-        'selectedSORKey.required' => 'This field is required',
-        'selectedSORKey.string' => 'This field is must be string',
-        'estimateData.qty.required' => 'This field is not empty',
-        'estimateData.qty.numeric' => 'This field is must be numeric',
-        'estimateData.rate.required' => 'This field is not empty',
-        'estimateData.rate.numeric' => 'This field is must be numeric',
-        'estimateData.total_amount.required' => 'This field is not empty',
-        'estimateData.total_amount.numeric' => 'This field is must be numeric',
-        'estimateData.rate_no.required' => 'This field is required',
-        'estimateData.rate_no.numeric' => 'This field is must be numeric',
-        'estimateData.estimate_desc.required' => 'This field is required',
-        'estimateData.estimate_desc.string' => 'Invalid format input',
+        // 'selectedCategoryId.required' => 'Selected at least one ',
+        // 'selectedCategoryId.integer' => 'This Selected field is Invalid',
+        // 'estimateData.other_name.required' => 'selected other name required',
+        // 'estimateData.other_name.string' => 'This field is must be character',
+        // 'estimateData.dept_id.required' => 'This field is required',
+        // 'estimateData.dept_id.integer' => 'This Selected field is invalid',
+        // 'estimateData.dept_category_id.required' => 'This field is required',
+        // 'estimateData.dept_category_id.integer' => 'This Selected field is invalid',
+        // 'estimateData.version.required' => 'This Selected field is required',
+        // 'estimateData.version.integer' => 'This Selected field is invalid',
+        // 'selectedSORKey.required' => 'This field is required',
+        // 'selectedSORKey.string' => 'This field is must be string',
+        // 'estimateData.qty.required' => 'This field is not empty',
+        // 'estimateData.qty.numeric' => 'This field is must be numeric',
+        // 'estimateData.rate.required' => 'This field is not empty',
+        // 'estimateData.rate.numeric' => 'This field is must be numeric',
+        // 'estimateData.total_amount.required' => 'This field is not empty',
+        // 'estimateData.total_amount.numeric' => 'This field is must be numeric',
+        // 'estimateData.rate_no.required' => 'This field is required',
+        // 'estimateData.rate_no.numeric' => 'This field is must be numeric',
+        // 'estimateData.estimate_desc.required' => 'This field is required',
+        // 'estimateData.estimate_desc.string' => 'Invalid format input',
     ];
     public function booted()
     {
-        if ($this->selectedCategoryId == 1) {
-            $this->rules = Arr::collapse([$this->rules, [
-                'estimateData.dept_id' => 'required|integer',
-                'estimateData.dept_category_id' => 'required|integer',
-                'estimateData.version' => 'required',
-                'selectedSORKey' => 'required|string',
+        // if ($this->selectedCategoryId == 1) {
+        //     $this->rules = Arr::collapse([$this->rules, [
+        //         'estimateData.dept_id' => 'required|integer',
+        //         'estimateData.dept_category_id' => 'required|integer',
+        //         'estimateData.version' => 'required',
+        //         'selectedSORKey' => 'required|string',
 
-            ]]);
-        }
-        if ($this->selectedCategoryId == 2) {
-            $this->rules = Arr::collapse([$this->rules, [
-                'estimateData.other_name' => 'required|string',
-            ]]);
-        }
-        if ($this->selectedCategoryId == 3) {
-            $this->rules = Arr::collapse([$this->rules, [
-                'estimateData.dept_id' => 'required|integer',
-                'estimateData.rate_no' => 'required|integer',
-                // 'estimateData.estimate_desc' => 'required|string',
-                'estimateData.total_amount' => 'required|numeric',
-            ]]);
-        }
-        if ($this->selectedCategoryId == 1 || $this->selectedCategoryId == 2) {
-            $this->rules = Arr::collapse([$this->rules, [
-                'estimateData.qty' => 'required|numeric',
-                'estimateData.rate' => 'required|numeric',
-                'estimateData.total_amount' => 'required|numeric',
+        //     ]]);
+        // }
+        // if ($this->selectedCategoryId == 2) {
+        //     $this->rules = Arr::collapse([$this->rules, [
+        //         'estimateData.other_name' => 'required|string',
+        //     ]]);
+        // }
+        // if ($this->selectedCategoryId == 3) {
+        //     $this->rules = Arr::collapse([$this->rules, [
+        //         'estimateData.dept_id' => 'required|integer',
+        //         'estimateData.rate_no' => 'required|integer',
+        //         // 'estimateData.estimate_desc' => 'required|string',
+        //         'estimateData.total_amount' => 'required|numeric',
+        //     ]]);
+        // }
+        // if ($this->selectedCategoryId == 1 || $this->selectedCategoryId == 2) {
+        //     $this->rules = Arr::collapse([$this->rules, [
+        //         'estimateData.qty' => 'required|numeric',
+        //         'estimateData.rate' => 'required|numeric',
+        //         'estimateData.total_amount' => 'required|numeric',
 
-            ]]);
-        }
+        //     ]]);
+        // }
     }
     // public function updated($param)
     // {
@@ -115,7 +115,10 @@ class CreateRateAnalysis extends Component
         if ($this->selectedCategoryId == 1) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['rate_no'] = '';
-            $this->estimateData['dept_id'] = '';
+            $this->estimateData['dept_id'] = Auth::user()->department_id;
+            if(!empty($this->estimateData['dept_id'])){
+                $this->getDeptCategory();
+            }
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
             $this->estimateData['item_number'] = '';
@@ -137,9 +140,12 @@ class CreateRateAnalysis extends Component
             $this->estimateData['total_amount'] = '';
         } elseif ($this->selectedCategoryId == 3) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+            $this->estimateData['dept_id'] = Auth::user()->department_id;
+            if(!empty($this->estimateData['dept_id'])){
+                $this->getDeptRates();
+            }
             $this->estimateData['rate_no'] = '';
             // $this->estimateData['estimate_desc'] = '';
-            $this->estimateData['dept_id'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
             $this->estimateData['item_number'] = '';
@@ -151,7 +157,10 @@ class CreateRateAnalysis extends Component
         }elseif ($this->selectedCategoryId == 4) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['rate_no'] = '';
-            $this->estimateData['dept_id'] = '';
+            $this->estimateData['dept_id'] = Auth::user()->department_id;
+            if(!empty($this->estimateData['dept_id'])){
+                $this->getDeptCategory();
+            }
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
             $this->estimateData['item_number'] = '';
@@ -443,12 +452,12 @@ class CreateRateAnalysis extends Component
     }
     public function addEstimate($key=null)
     {
-        // $validatee = $this->validate();
+        $this->validate();
         if(isset($key)){
             $this->showTableOne = !$this->showTableOne;
             $this->addedEstimate[$key]['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];
             // $this->addedEstimate[$key]['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
-            $this->addedEstimate[$key]['dept_id'] = Auth::user()->department_id;
+            $this->addedEstimate[$key]['dept_id'] = $this->estimateData['dept_id'];
             $this->addedEstimate[$key]['category_id'] = ($this->estimateData['dept_category_id'] == '') ? 0 : $this->estimateData['dept_category_id'];
             $this->addedEstimate[$key]['sor_item_number'] = ($this->estimateData['item_number'] == '') ? 0 : $this->estimateData['item_number'];
             $this->addedEstimate[$key]['item_name'] = $this->estimateData['item_name'];
@@ -459,13 +468,20 @@ class CreateRateAnalysis extends Component
             $this->addedEstimate[$key]['total_amount'] = $this->estimateData['total_amount'];
             $this->addedEstimate[$key]['version'] = $this->estimateData['version'];
             $this->addedEstimateUpdateTrack = rand(1, 1000);
+            // $this->estimateData['item_number'] = '';
+            // $this->estimateData['other_name'] = '';
+            // $this->estimateData['estimate_no'] = '';
+            // $this->estimateData['rate_no'] = '';
+            // $this->estimateData['qty'] = '';
+            // $this->estimateData['rate'] = '';
+            // $this->estimateData['total_amount'] = '';
             $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc','dropdownData','selectSor','estimateData']);
         }else{
             $this->reset('addedEstimate');
             $this->showTableOne = !$this->showTableOne;
             $this->addedEstimate['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];
             // $this->addedEstimate['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
-            $this->addedEstimate['dept_id'] = Auth::user()->department_id;
+            $this->addedEstimate['dept_id'] = $this->estimateData['dept_id'];
             $this->addedEstimate['category_id'] = ($this->estimateData['dept_category_id'] == '') ? 0 : $this->estimateData['dept_category_id'];
             $this->addedEstimate['sor_item_number'] = ($this->estimateData['item_number'] == '') ? 0 : $this->estimateData['item_number'];
             $this->addedEstimate['item_name'] = $this->estimateData['item_name'];
@@ -476,7 +492,14 @@ class CreateRateAnalysis extends Component
             $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
             $this->addedEstimate['version'] = $this->estimateData['version'];
             $this->addedEstimateUpdateTrack = rand(1, 1000);
-            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc','dropdownData','selectSor','estimateData']);
+            $this->estimateData['item_number'] = '';
+            $this->estimateData['other_name'] = '';
+            $this->estimateData['estimate_no'] = '';
+            $this->estimateData['rate_no'] = '';
+            $this->estimateData['qty'] = '';
+            $this->estimateData['rate'] = '';
+            $this->estimateData['total_amount'] = '';
+            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc','dropdownData','selectSor','estimateData','selectedCategoryId','fatchDropdownData']);
         }
         // dd($this->addedEstimate);
     }
