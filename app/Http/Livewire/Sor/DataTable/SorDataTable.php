@@ -23,6 +23,42 @@ final class SorDataTable extends PowerGridComponent
     | Setup Table's general features
     |
     */
+    public $openAssignModal = false;
+    protected function getListeners()
+    {
+        return array_merge(
+            parent::getListeners(),
+            [
+                'rowActionEvent',
+                'bulkActionEvent',
+            ]
+        );
+    }
+    public function header(): array
+    {
+        return [
+            Button::add('bulk-demo')
+                ->caption('PDF')
+                ->class('cursor-pointer btn btn-soft-primary btn-sm')
+                ->emit('bulkActionEvent', []),
+
+            Button::add('bulk-demo')
+                ->caption('Import')
+                ->class('cursor-pointer btn btn-soft-primary btn-sm')
+                ->emit('rowActionEvent', [])
+        ];
+    }
+    public function rowActionEvent()
+    {
+        return $this->emit('OpenImportFile');
+    }
+    public function bulkActionEvent()
+    {
+        dd("pdf View");
+    }
+
+
+
     public function setUp(): array
     {
         $this->showCheckBox();
@@ -111,9 +147,7 @@ final class SorDataTable extends PowerGridComponent
             ->addColumn('Item_details')
 
             /** Example of custom column using a closure **/
-            ->addColumn('Item_details', function (SOR $model) {
-                return strtolower(e($model->Item_details));
-            })
+            ->addColumn('Item_details')
 
             // ->addColumn('getDepartmentName.department_name')
             ->addColumn('getDeptCategoryName.dept_category_name')

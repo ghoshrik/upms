@@ -21,7 +21,7 @@ class CreateSor extends Component
     //|regex:/^\d{2}\.\d{2}/
     protected $rules = [
         'inputsData.*.dept_category_id' => 'required|integer',
-        'inputsData.*.item_details' => 'required|regex:/^[0-9+.]+$/',
+        'inputsData.*.item_details' => 'required|regex:/^[A-Za-z0-9.]+$/',
         'inputsData.*.description' => 'required|string',
         'inputsData.*.unit_id' => 'required|integer',
         'inputsData.*.unit' => 'required|numeric|min:1',
