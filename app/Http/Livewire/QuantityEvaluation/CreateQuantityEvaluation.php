@@ -98,6 +98,7 @@ class CreateQuantityEvaluation extends Component
     public function mount()
     {
         $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+        $this->selectedDept = Auth::user()->department_id;
         $this->unite =  UnitMaster::select('id', 'unit_name', 'short_name', 'is_active')->where('is_active', 1)->orderBy('id', 'desc')->get();
         if (Session()->has('addedQuantityEvaluationData')) {
             $this->addedEstimateUpdateTrack = rand(1, 1000);
@@ -113,11 +114,12 @@ class CreateQuantityEvaluation extends Component
         // $this->estimateData['rate'] = '';
         // $this->estimateData['total_amount'] = '';
         // $this->estimateData['item_name'] = 'Other';
-
         $this->estimateData['unite'] ='';
         $this->estimateData['label'] ='';
         $this->estimateData['value'] ='';
-
+        if(!empty($this->selectedDept)){
+            $this->getDeptRates();
+        }
     }
 
     public function getDeptCategory()
@@ -235,9 +237,9 @@ class CreateQuantityEvaluation extends Component
     public function getDeptRates()
     {
         $this->fatchDropdownData['ratesList'] = '';
-        $this->estimateData['rate_no'] = '';
-        $this->estimateData['description'] = '';
-        $this->estimateData['total_amount'] = '';
+        // $this->estimateData['rate_no'] = '';
+        // $this->estimateData['description'] = '';
+        // $this->estimateData['total_amount'] = '';
         // $this->fatchDropdownData['estimatesList'] = EstimatePrepare::select('estimate_id')->where('dept_id',$this->estimateData['dept_id'])->groupBy('estimate_id')->get();
         // $this->fatchDropdownData['estimatesList'] = EstimatePrepare::join('sor_masters','estimate_prepares.estimate_id','sor_masters.estimate_id')
         //                                             ->where('estimate_prepares.dept_id',$this->estimateData['dept_id'])

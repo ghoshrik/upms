@@ -23073,7 +23073,8 @@ pre[class*=language-] {
   margin-top: 10px;
   transition: all .5s;
   color: #fff;
-  /* background-color: var(--bs-primary-tint-40); */
+  background-color: var(--bs-primary-tint-40);
+
 }
 
 .d-slider1 .card-tab {
@@ -23151,6 +23152,10 @@ body::-webkit-scrollbar-thumb {
 
 .top-main-head .header-title-left {
   margin-left: 15px;
+}
+
+.admin-logo a.navbar-brand {
+  padding: 11px;
 }
 
 .admin-logo a.navbar-brand {

@@ -7,7 +7,7 @@ use Livewire\Component;
 class QuantityEvaluation extends Component
 {
     public $formOpen = false, $editFormOpen = false,$updateDataTableTracker,$selectedTab = 1,$counterData=[];
-    protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'mount','showError'=>'setErrorAlert'];
+    protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'render','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function mount()
     {
