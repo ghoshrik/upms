@@ -121,7 +121,7 @@ final class UsersDataTable extends PowerGridComponent
                     $i++;
                 }
                 // dd($dataView);
-                return generatePDF($ModelList, $dataView, trans('cruds.user-management.title_singulars'));
+                return generatePDF($ModelList, $dataView, "Department Users");
             } elseif (Auth::user()->user_type == 3) {
                 $users = User::where('user_type', $getChild_id->id)
                     ->where('department_id', Auth::user()->department_id)
@@ -147,7 +147,7 @@ final class UsersDataTable extends PowerGridComponent
                     ];
                     $i++;
                 }
-                return generatePDF($ModelList, $dataView, trans('cruds.user-management.title_singulars'));
+                return generatePDF($ModelList, $dataView, "Office Admin Users");
             } else {
                 $users = User::where('user_type', $getChild_id->id)
                     ->where('department_id', Auth::user()->department_id)
@@ -181,7 +181,7 @@ final class UsersDataTable extends PowerGridComponent
                 //         $title = 'User Not Activated',
                 //     );
                 // }
-                return generatePDF($ModelList, $dataView, trans('cruds.user-management.title_singulars'));
+                return generatePDF($ModelList, $dataView, "Office Users ");
             }
         } else {
             $ids = implode(',', $this->checkboxValues);
@@ -216,7 +216,7 @@ final class UsersDataTable extends PowerGridComponent
                     $title = 'User Not Activated',
                 );
             }
-            return generatePDF($ModelList, $dataView, trans('cruds.user-management.title_singulars'));
+            return generatePDF($ModelList, $dataView, "users");
             $this->resetExcept('checkboxValues', 'dataView');
         }
     }
@@ -332,33 +332,33 @@ final class UsersDataTable extends PowerGridComponent
         if (Auth::user()->department_id) {
             /*if (Auth::user()->office_id) {
                 */
-                return User::query()
-                    /*->join('user_types', function ($user_types) {
+            return User::query()
+                /*->join('user_types', function ($user_types) {
                         $user_types->on('users.user_type', '=', 'user_types.id');
                     })->join('designations', 'users.designation_id', '=', 'designations.id')*/
-                    ->select(
-                        'users.id',
-                        'users.name',
-                        'users.email',
-                        'users.username',
-                        'users.ehrms_id',
-                        'users.emp_name',
-                        'users.mobile',
-                        'users.designation_id',
-                        'users.department_id',
-                        'users.user_type',
-                        'users.office_id',
-                        'user_types.id as userType_id',
-                        'user_types.parent_id',
-                        'users.is_active',
-                        'designations.id as designationId',
-                        'designations.designation_name',
-                        DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
-                    )
-                    ->join('user_types', 'users.user_type', '=', 'user_types.id')
-                    ->join('designations', 'users.designation_id', '=', 'designations.id')
-                    ->where('user_types.parent_id', '=', $this->userData);
-                    /*->where('users.department_id', Auth::user()->department_id)
+                ->select(
+                    'users.id',
+                    'users.name',
+                    'users.email',
+                    'users.username',
+                    'users.ehrms_id',
+                    'users.emp_name',
+                    'users.mobile',
+                    'users.designation_id',
+                    'users.department_id',
+                    'users.user_type',
+                    'users.office_id',
+                    'user_types.id as userType_id',
+                    'user_types.parent_id',
+                    'users.is_active',
+                    'designations.id as designationId',
+                    'designations.designation_name',
+                    DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
+                )
+                ->join('user_types', 'users.user_type', '=', 'user_types.id')
+                ->join('designations', 'users.designation_id', '=', 'designations.id')
+                ->where('user_types.parent_id', '=', $this->userData);
+            /*->where('users.department_id', Auth::user()->department_id)
                     ->where('users.office_id', Auth::user()->office_id);
             /*} else {
                 // dd(User::query()->with('designation')->first());
