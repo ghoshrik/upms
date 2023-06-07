@@ -23074,8 +23074,12 @@ pre[class*=language-] {
   transition: all .5s;
   color: #fff;
   background-color: var(--bs-primary-tint-40);
-
 }
+
+div#myTabContent .active {
+  background: none;
+}
+
 
 .d-slider1 .card-tab {
   transition: all .5s;
