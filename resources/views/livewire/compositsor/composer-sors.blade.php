@@ -77,9 +77,9 @@
                                                     <td class="text-wrap">{{ $loop->iteration }}</td>
                                                     <td class="text-wrap">
                                                         {{ $lists->getDeptCategoryName->dept_category_name }}</td>
-                                                    <td class="text-wrap">{{ $lists->ParentSORItemNo->Item_details }}
+                                                    <td class="text-wrap">{{$lists->sor_itemno_parent_id ?? $lists->ParentSORItemNo->Item_details }}
                                                     </td>
-                                                    <td class="text-wrap">{{ $lists->ChildSORItemNo->Item_details }}
+                                                    <td class="text-wrap">{{ $lists->sor_itemno_child ?? $lists->ChildSORItemNo->Item_details }}
                                                     </td>
                                                     <td class="text-wrap">{{ $lists->description }} </td>
                                                     <td class="text-wrap">{{ $lists->getUnit->unit_name }} </td>

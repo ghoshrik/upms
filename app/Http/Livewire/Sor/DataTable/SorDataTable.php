@@ -45,12 +45,12 @@ final class SorDataTable extends PowerGridComponent
             Button::add('bulk-demo')
                 ->caption('Import')
                 ->class('cursor-pointer btn btn-soft-primary btn-sm')
-                ->emit('rowActionEvent', [])
+                ->emit('rowActionEvent', ['id'=>'hi'])
         ];
     }
-    public function rowActionEvent()
+    public function rowActionEvent($value)
     {
-        return $this->emit('OpenImportFile');
+        $this->emit('OpenImportFile');
     }
     public function bulkActionEvent()
     {
