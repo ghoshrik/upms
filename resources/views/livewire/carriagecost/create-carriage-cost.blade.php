@@ -93,14 +93,14 @@
                                                 wire:model.defer="estimateData.description" />
                                         </div>
                                     </div>
-                                    <div class="col-md-3 col-lg-3 col-sm-3">
+                                    {{-- <div class="col-md-3 col-lg-3 col-sm-3">
                                         <div class="form-group">
                                             <x-input wire:key="sor_qty"
                                                 label="{{ trans('cruds.estimate.fields.quantity') }}"
                                                 placeholder="{{ trans('cruds.estimate.fields.quantity') }}"
                                                 wire:model.defer="estimateData.qty" wire:blur="calculateValue" />
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-md-3 col-lg-3 col-sm-3">
                                         <div class="form-group">
                                             <x-input wire:key="sor_rate"
@@ -109,14 +109,14 @@
                                                 readonly wire:model.defer="estimateData.rate" />
                                         </div>
                                     </div>
-                                    <div class="col-md-3 col-lg-3 col-sm-3">
+                                    {{-- <div class="col-md-3 col-lg-3 col-sm-3">
                                         <div class="form-group">
                                             <x-input wire:key="sor_cost"
                                                 label="{{ trans('cruds.estimate.fields.cost') }}"
                                                 placeholder="{{ trans('cruds.estimate.fields.cost') }}" disabled
                                                 wire:model.defer="estimateData.total_amount" />
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             @endif
                         @endif
@@ -131,10 +131,16 @@
                 </div>
             </div>
         </div>
-        @if ($addedEstimate != null || Session::has('addedRateAnalysisData'))
+        {{-- @if ($addedEstimate != null || Session::has('addedCarriageCostData'))
             <div x-transition.duration.500ms>
-                <livewire:carriagecost.rate-analysis.add-rate-analysis-list :addedEstimateData="$addedEstimate"
+                <livewire:carriagecost.add-carriage-cost-list :addedEstimateData="$addedEstimate"
                     :wire:key="$addedEstimateUpdateTrack">
+            </div>
+        @endif --}}
+        @if ($addedEstimate != null || Session::has('addedCarriageEstimateData'))
+            <div x-transition.duration.500ms>
+                <livewire:carriagecost.add-carriage-cost-list :addedEstimateData="$addedEstimate"
+                    :wire:key="$addedEstimateUpdateTrack" />
             </div>
         @endif
     </div>

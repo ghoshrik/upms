@@ -14,7 +14,7 @@ class CreateCarriageCost extends Component
     use Actions;
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $dropdownData = [], $selectSor = [];
     public $addedEstimate = [], $addedEstimateUpdateTrack, $selectedSORKey,$InputText=[];
-    public $searchDtaCount, $searchStyle, $searchResData;
+    public $searchDtaCount, $searchStyle, $searchResData,$showTableOne;
 
     public function mount()
     {
@@ -31,6 +31,7 @@ class CreateCarriageCost extends Component
         $this->InputText['Desc']='';
         $this->InputText['distance']='';
         $this->InputText['unit']='';
+
         if (Session()->has('addedEstimateData')) {
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
@@ -49,11 +50,11 @@ class CreateCarriageCost extends Component
                 ->where('department_id', Auth::user()->department_id)
                 ->where('dept_category_id', $this->estimateData['dept_category_id'])
                 ->where('version', $this->estimateData['version'])
-                ->where('Item_details', 'like', $this->selectedSORKey . '%')
+                ->where('Item_details', 'like', '1.230.'.$this->selectedSORKey . '%')
                 ->where('is_approved', 1)
                 ->get();
 
-            // dd($this->fatchDropdownData['items_number']);
+            dd($this->fatchDropdownData['items_number']);
             if (count($this->fatchDropdownData['items_number']) > 0) {
                 $this->searchDtaCount = (count($this->fatchDropdownData['items_number']) > 0);
                 $this->searchStyle = 'block';
@@ -102,6 +103,65 @@ class CreateCarriageCost extends Component
         if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
             $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
         }
+    }
+    public function addEstimate()
+    {
+        // $this->reset('addedEstimate');
+        // /*assign all data variable one to another*/
+        // $this->addedEstimate['description'] = $this->InputText['Desc'] ?? '';
+        // $this->addedEstimate['distance'] = $this->InputText['distance'] ?? '';
+        // $this->addedEstimate['unit'] = $this->InputText['unit'] ?? '';
+        // $this->addedEstimate['dept_id'] = Auth::user()->department_id;
+        // $this->addedEstimate['dept_category_id'] = $this->estimateData['dept_category_id'];
+        // $this->addedEstimate['version'] = $this->estimateData['version'];
+        // $this->addedEstimate['Item_details'] = $this->estimateData['item_number'];
+        // $this->resetExcept(['addedEstimate','InputText','estimateData']);
+        // dd($this->addedEstimate);
+
+        // dd($this->estimateData['total_amount']);
+        // $validatee = $this->validate();
+        $this->reset('addedEstimate');
+        $this->showTableOne = !$this->showTableOne;
+        $this->addedEstimate['description'] = ($this->InputText['Desc'] == '') ? 0 : $this->InputText['Desc'];
+        $this->addedEstimate['distance'] = ($this->InputText['distance'] == '') ? 0 :$this->InputText['distance'];
+        $this->addedEstimate['unit'] = ($this->InputText['unit']=='')? 0 : $this->InputText['unit'] ;
+        $this->addedEstimate['dept_id'] = Auth::user()->department_id;
+        $this->addedEstimate['dept_category_id'] = ($this->estimateData['dept_category_id'] == '') ? 0 :$this->InputText['unit'];
+        $this->addedEstimate['version'] = ($this->estimateData['version'] =='') ? 0 : $this->estimateData['version'];
+        $this->addedEstimate['Item_details'] = ($this->estimateData['item_number'] =='') ? 0 : $this->estimateData['item_number'];
+        $this->addedEstimate['description'] = ($this->estimateData['description']=='')? 0 : $this->estimateData['description'];
+        $this->addedEstimate['qty'] = ($this->estimateData['qty'] =='')? 0 : $this->estimateData['qty'];
+        $this->addedEstimate['rate'] = ($this->estimateData['rate']=='')? 0 : $this->estimateData['rate'];
+        $this->addedEstimate['total_amount'] = ($this->estimateData['total_amount'] =='')? 0 : $this->estimateData['total_amount'];
+        $this->addedEstimateUpdateTrack = rand(1, 1000);
+
+
+
+
+
+        // $this->addedEstimate['estimate_no'] = ($this->estimateData['estimate_no'] == '') ? 0 : $this->estimateData['estimate_no'];
+        // $this->addedEstimate['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];
+        // $this->addedEstimate['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
+        // $this->addedEstimate['category_id'] = ($this->estimateData['dept_category_id'] == '') ? 0 : $this->estimateData['dept_category_id'];
+        // $this->addedEstimate['sor_item_number'] = ($this->estimateData['item_number'] == '') ? 0 : $this->estimateData['item_number'];
+        // $this->addedEstimate['item_name'] = $this->estimateData['item_name'];
+        // $this->addedEstimate['other_name'] = $this->estimateData['other_name'];
+        // $this->addedEstimate['description'] = $this->estimateData['description'];
+        // $this->addedEstimate['qty'] = ($this->estimateData['qty'] == '') ? 0 : $this->estimateData['qty'];
+        // $this->addedEstimate['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
+        // $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
+        // $this->addedEstimate['version'] = $this->estimateData['version'];
+        // $this->addedEstimateUpdateTrack = rand(1, 1000);
+        // $this->estimateData['item_number'] = '';
+        // $this->estimateData['estimate_no'] = '';
+        // $this->estimateData['rate_no'] = '';
+        // $this->estimateData['qty'] = '';
+        // $this->estimateData['rate'] = '';
+        // $this->estimateData['total_amount'] = '';
+        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'estimateData','fatchDropdownData','selectedSORKey','InputText']);
+
+
+
     }
     public function render()
     {
