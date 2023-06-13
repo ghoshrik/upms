@@ -13,6 +13,7 @@ use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
 use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
 use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
 use App\Http\Livewire\Carriagecost\CarriageCosts;
+use App\Http\Livewire\Carriages\Carriagesors;
 use App\Http\Livewire\Compositsor\ComposerSors;
 use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
 // use App\Http\Livewire\TestALL\TestSearch;
@@ -146,6 +147,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::group(['middleware' => ['role:SOR Preparer']], function () {
             Route::get('prepare-sor', Sor::class)->name('prepare-sor');
+            Route::get('carriageSor',Carriagesors::class)->name('carriageSor');
         });
         Route::get('composit-sor', ComposerSors::class)->name('composit-sor');
 
