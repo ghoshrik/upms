@@ -12,6 +12,7 @@ use App\Http\Livewire\Aoc\Aocs;
 use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
 use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
 use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
+use App\Http\Livewire\Carriagecost\CarriageCosts;
 use App\Http\Livewire\Compositsor\ComposerSors;
 use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
 // use App\Http\Livewire\TestALL\TestSearch;
@@ -155,6 +156,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::get('rate-analysis', RateAnalysis::class)->name('rate-analysis');
         Route::get('quantity-evaluation', QuantityEvaluation::class)->name('quantity-evaluation');
+        Route::get('carriage-cost',CarriageCosts::class)->name('carriage-cost');
 
         // Route::get('aafs-project',ProjectList::class)->name('aafs-project');
         Route::get('roles', Roles::class)->name('roles');

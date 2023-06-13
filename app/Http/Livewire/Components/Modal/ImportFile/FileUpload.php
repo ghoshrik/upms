@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Livewire\Components\Modal\ImportFile;
 
 use Livewire\Component;
@@ -9,7 +8,7 @@ class FileUpload extends Component
 {
 
     protected $listeners = ['OpenImportFile'];
-    public $viewModal = false,$file_upload;
+    public $viewModal = false,$bluk_file_upload;
     public $show;
 
     use WithFileUploads;
@@ -32,6 +31,7 @@ class FileUpload extends Component
     }
     public function blukUploadFile()
     {
+        dd($this->bluk_file_upload);
         // dd(file_put_contents($this->file_upload));
     }
     public function render()
