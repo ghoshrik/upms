@@ -28,6 +28,7 @@
                                                     </x-select>
                                                 </div>
                                             </div>
+
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <x-input wire:key='item_details.{{ $key }}'
@@ -38,7 +39,7 @@
                                                     <!--only maskable 12 number -->
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-2">
                                                 <div class="form-group">
                                                     <x-select wire:key="unitmaster.{{ $key }}"
                                                         label="{{ trans('cruds.sor.fields.unit') }}"
@@ -53,6 +54,15 @@
                                                     </x-select>
                                                 </div>
                                             </div>
+                                            {{-- <div class="col-md-1 col-lg-1 col-sm-1">
+                                                <div class="form-group">
+                                                    <h6>
+                                                        <x-checkbox id="right-label" label="Normal Sor" wire:model.defer="" />
+                                                        <x-checkbox id="right-label" label="Carriage Sor" wire:model.defer="model" />
+                                                    </h6>
+
+                                                </div>
+                                            </div> --}}
                                             <div class="col-md-3">
                                                 <div class="row">
                                                     <div class="col md-6 col-lg-6">
@@ -73,6 +83,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+
                                         </div>
                                         <div class="row">
                                             <div class="col-md-3">

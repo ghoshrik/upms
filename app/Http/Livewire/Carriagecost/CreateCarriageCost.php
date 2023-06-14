@@ -50,11 +50,11 @@ class CreateCarriageCost extends Component
                 ->where('department_id', Auth::user()->department_id)
                 ->where('dept_category_id', $this->estimateData['dept_category_id'])
                 ->where('version', $this->estimateData['version'])
-                ->where('Item_details', 'like', '1.230.'.$this->selectedSORKey . '%')
+                ->where('Item_details', 'like', $this->selectedSORKey . '%')
                 ->where('is_approved', 1)
                 ->get();
 
-            dd($this->fatchDropdownData['items_number']);
+            // dd($this->fatchDropdownData['items_number']);
             if (count($this->fatchDropdownData['items_number']) > 0) {
                 $this->searchDtaCount = (count($this->fatchDropdownData['items_number']) > 0);
                 $this->searchStyle = 'block';

@@ -101,6 +101,9 @@ class QuantityEvaluation extends Component
     }
     public function render()
     {
-        return view('livewire.quantity-evaluation.quantity-evaluation');
+        $this->updateDataTableTracker = rand(1,1000);
+        $this->titel = "Quantity Evaluation";
+        $assets = ['chart', 'animation'];
+        return view('livewire.quantity-evaluation.quantity-evaluation',compact('assets'));
     }
 }

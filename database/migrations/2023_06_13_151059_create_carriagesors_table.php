@@ -15,9 +15,15 @@ class CreateCarriagesorsTable extends Migration
     {
         Schema::create('carriagesors', function (Blueprint $table) {
             $table->bigIncrements('id')->autoIncrement();
+            // $table->integer('dept_id');
+            $table->integer('dept_category_id');
+            // $table->longText('description');
+            // $table->integer('unit_id');
+            // $table->string('zone');
+            $table->integer('sor_parent_id');
+            $table->integer('child_Item_no');
+            // $table->string('start_sor_item_no');
             $table->longText('description');
-            $table->integer('unit_id');
-            $table->string('zone');
             $table->integer('start_distance')->default(0);
             $table->integer('upto_distance')->default(0);
             $table->float('cost');
