@@ -33,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('Super Admin') ? true : null;
         });
         Schema::defaultStringLength(191);
+        \URL::forceScheme('http');
         view()->composer('*', function ($menus) {
             // dd(Menu::where(['title','Estimate Prepare'])->orderBy('piority')->get());
             // $m = Menu::where('parent_id', '=', '0')->orderBy('piority')->get();
@@ -48,8 +49,6 @@ class AppServiceProvider extends ServiceProvider
                 fie export new table (table not exists create and file upload)
                 different permission to reflect different type of users
                 different api endpoint creditionals pu here
-
-
 
             */
 
