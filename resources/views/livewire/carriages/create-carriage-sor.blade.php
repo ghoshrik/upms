@@ -58,7 +58,7 @@
                                     </x-select>
                                 </div>
                             </div>
-                            <div class="col-md-4 col-lg-4 col-sm-3">
+                            <div class="col-md-3 col-lg-3 col-sm-3">
                                 <div class="form-group">
                                     {{-- <x-select wire:key="ItemNo.{{ $key }}"
                                         label="Parent {{ trans('cruds.sor.fields.item_number') }}"
@@ -85,21 +85,30 @@
                                         wire:model.defer="inputsData.{{ $key }}.cost" disabled/>
                                 </div>
                             </div>
-                            <div class="col-md-2 col-lg-2 col-sm-3">
+                            <div class="col-md-1 col-lg-1 col-sm-3">
                                 <div class="form-group">
                                     <x-input label="Any Distance" wire:key='start-distance.{{ $key }}'
                                         placeholder="Any starting distance"
-                                        wire:model.defer="inputsData.{{ $key }}.anyDistance" />
+                                        wire:model.defer="inputsData.{{ $key }}.anyDistance" wire:keyup="calculateValue({{$key}})"/>
                                 </div>
                             </div>
                             <div class="col-md-2 col-lg-2 col-sm-3">
                                 <div class="form-group">
                                     <x-input label="Above Distance" wire:key='end-distance.{{ $key }}'
                                         placeholder="Any starting distance"
+                                        wire:keyup="calculateValue({{$key}})"
                                         wire:model.defer="inputsData.{{ $key }}.aboveDistance" />
+
                                 </div>
                             </div>
-
+                            <div class="col-md-1 col-lg-1 col-sm-3">
+                                <div class="form-group">
+                                    <x-input wire:key="sor_cost.{{$key}}"
+                                        label="{{ trans('cruds.estimate.fields.cost') }}"
+                                        placeholder="{{ trans('cruds.estimate.fields.cost') }}"
+                                        disabled wire:model.defer="inputsData.{{$key}}.total_amount" />
+                                </div>
+                            </div>
                             <div class="col-md-1 col-lg-1 col-sm-3 mt-4">
                                 <div class="form-group">
                                     <button wire:click="removeRow({{ $key }})"

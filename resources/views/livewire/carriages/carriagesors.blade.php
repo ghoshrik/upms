@@ -45,7 +45,7 @@
             @if ($isFromOpen && $openedFormType == 'create')
                 <livewire:carriages.create-carriage-sor/>
             @elseif($isFromOpen && $openedFormType == 'edit')
-                <livewire:sor.edit-sor />
+                {{-- <livewire:sor.edit-sor /> --}}
             @else
             <div class="col-md-12 col-lg-12 col-sm-3">
                 <div class="card">

@@ -14,10 +14,11 @@ class Carriagesor extends Model
         "dept_category_id",
         "sor_parent_id",
         "child_sor_id",
-        "descrption",
+        "description",
         "start_distance",
         "upto_distance",
-        "cost"
+        "cost",
+        "total_amount"
     ];
 
 }

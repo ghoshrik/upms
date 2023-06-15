@@ -19,10 +19,11 @@ class CreateCarriagesorsTable extends Migration
             $table->integer('dept_category_id');
             $table->integer('sor_parent_id');
             $table->integer('child_sor_id');
-            $table->longText('descrption');
+            $table->longText('description');
             $table->integer('start_distance')->default(0);
             $table->integer('upto_distance')->default(0);
             $table->float('cost');
+            $table->float('total_amount');
             $table->timestamps();
         });
     }

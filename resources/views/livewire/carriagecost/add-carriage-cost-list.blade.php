@@ -55,7 +55,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- @dd($allAddedEstimatesData) --}}
+                                @dd($allAddedEstimatesData)
                                 @foreach ($allAddedEstimatesData as $key => $addedEstimate)
                                     <tr>
                                         <td>
@@ -69,7 +69,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            {{ $addedEstimate['Item_details'] ?  getSorItemNumber($addedEstimate['Item_details']) : '---'}}
+                                            {{-- {{ $addedEstimate['Item_details'] ?  getSorItemNumber($addedEstimate['Item_details']) : '---'}} --}}
 
                                             {{-- @if ($addedEstimate['sor_item_number'])
                                                 {{ getSorItemNumber($addedEstimate['sor_item_number']) }}
@@ -98,16 +98,16 @@
                                                 {{ $addedEstimate['other_name'] }}
                                             @endif --}}
 
-                                            @if($addedEstimate['Item_details'])
+                                            {{-- @if($addedEstimate['Item_details'])
                                             {{$addedEstimate['description']}}
-                                            @endif
-
+                                            @endif --}}
+                                            {{ $addedEstimate['description'] }}
                                         </td>
                                         <td>
                                             {{-- {{ $addedEstimate['qty'] }} --}}
                                         </td>
                                         <td>
-                                            {{ round($addedEstimate['rate'],10,2) }}
+                                            {{-- {{ round($addedEstimate['rate'],10,2) }} --}}
                                         </td>
                                         <td>
                                             {{-- {{ round($addedEstimate['total_amount'],10,2) }} --}}

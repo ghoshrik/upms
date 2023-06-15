@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Carriagecost;
 
+use App\Models\Carriagesor;
 use App\Models\SOR;
 use Livewire\Component;
 use App\Models\Department;
@@ -19,7 +20,12 @@ class CreateCarriageCost extends Component
     public function mount()
     {
         $this->dropdownData['allDept'] = Department::select('id', 'department_name')->where('id', Auth::user()->department_id)->get();
-        $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', Auth::user()->department_id)->get();
+        $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('sor_category_types.id', 'sor_category_types.dept_category_name')
+                                                        // ->join('')
+                                                        ->join('carriagesors','carriagesors.dept_category_id','=','sor_category_types.id')
+                                                        ->where('carriagesors.dept_id', '=', Auth::user()->department_id)
+                                                        ->groupBy('sor_category_types.id')
+                                                        ->get();
         // dd($this->fatchDropdownData['departmentsCategory']);
         $this->selectSor['dept_id'] = '';
         $this->selectSor['dept_category_id'] = '';
@@ -28,9 +34,11 @@ class CreateCarriageCost extends Component
         $this->estimateData['dept_category_id'] = '';
         $this->estimateData['version'] = '';
         $this->estimateData['item_number'] = '';
-        $this->InputText['Desc']='';
-        $this->InputText['distance']='';
-        $this->InputText['unit']='';
+        $this->estimateData['SelectSOR'] = '';
+        $this->estimateData['distance'] = '';
+        $this->estimateData['Desc']='';
+        $this->estimateData['unit']='';
+        // $this->fatchDropdownData['selectSOR'] = '';
 
         if (Session()->has('addedEstimateData')) {
             $this->addedEstimateUpdateTrack = rand(1, 1000);
@@ -42,6 +50,49 @@ class CreateCarriageCost extends Component
             ->where('dept_category_id', $this->estimateData['dept_category_id'])->groupBy('version')
             ->get();
     }
+
+    public function getDistSor()
+    {
+        // dd($this->estimateData['dept_category_id']);
+        $this->fatchDropdownData['selectSOR'] =  Carriagesor::select('s_o_r_s.Item_details as ItemNo','s_o_r_s.id as sl_no')->join('s_o_r_s','s_o_r_s.id','=','carriagesors.sor_parent_id')
+        ->where('carriagesors.dept_category_id',$this->estimateData['dept_category_id'])
+        ->where('carriagesors.dept_id',Auth::user()->department_id)
+        ->groupBy('s_o_r_s.id')
+        ->get();
+        // dd($this->fatchDropdownData['selectSOR']);
+    }
+
+    public function getlistData()
+    {
+        // dd($this->estimateData['SelectSOR']);
+        // dd($this->estimateData['distance']);
+
+        $res = Carriagesor::where(function ($query) {
+            $query->where('start_distance', '>=', 0)
+                  ->where('upto_distance', '<=', $this->estimateData['distance']);
+        })
+        ->orWhere(function($query){
+            $query->where('start_distance', '>=', 0)
+            ->where('upto_distance', '<=', $this->estimateData['distance']);
+        })
+        ->where('dept_id',Auth::user()->department_id)
+        ->where('dept_category_id',$this->estimateData['dept_category_id'])
+        ->where('sor_parent_id',$this->estimateData['SelectSOR'])
+        ->get();
+        // dd($res);
+
+        foreach($res as $key =>$resp)
+        {
+            $this->estimateData['dept_category_id'] = '';
+            $this->estimateData['version'] = '';
+            $this->estimateData['item_number'] = SOR::select('Item_details')->where('id',$resp['child_sor_id'])->first();
+            $this->estimateData['distance'] = '';
+        }
+        $this->addEstimate($key + 1);
+    }
+
+
+
 
     public function autoSearch()
     {
@@ -104,8 +155,26 @@ class CreateCarriageCost extends Component
             $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
         }
     }
-    public function addEstimate()
+    public function addEstimate($key = null)
     {
+
+        if (isset($key))
+        {
+            $this->reset('addedEstimate');
+            $this->showTableOne = !$this->showTableOne;
+            $this->addedEstimate[$key]['Item_details'] = ($this->estimateData['item_number'] == '') ? 0 : $this->estimateData['item_number'];
+        }
+        else
+        {
+            $this->reset('addedEstimate');
+            $this->showTableOne = !$this->showTableOne;
+            $this->addedEstimate['Item_details'] = ($this->estimateData['item_number'] == '') ? 0 : $this->estimateData['item_number'];
+        }
+
+
+
+
+
         // $this->reset('addedEstimate');
         // /*assign all data variable one to another*/
         // $this->addedEstimate['description'] = $this->InputText['Desc'] ?? '';
@@ -120,20 +189,26 @@ class CreateCarriageCost extends Component
 
         // dd($this->estimateData['total_amount']);
         // $validatee = $this->validate();
-        $this->reset('addedEstimate');
-        $this->showTableOne = !$this->showTableOne;
-        $this->addedEstimate['description'] = ($this->InputText['Desc'] == '') ? 0 : $this->InputText['Desc'];
-        $this->addedEstimate['distance'] = ($this->InputText['distance'] == '') ? 0 :$this->InputText['distance'];
-        $this->addedEstimate['unit'] = ($this->InputText['unit']=='')? 0 : $this->InputText['unit'] ;
-        $this->addedEstimate['dept_id'] = Auth::user()->department_id;
-        $this->addedEstimate['dept_category_id'] = ($this->estimateData['dept_category_id'] == '') ? 0 :$this->InputText['unit'];
-        $this->addedEstimate['version'] = ($this->estimateData['version'] =='') ? 0 : $this->estimateData['version'];
-        $this->addedEstimate['Item_details'] = ($this->estimateData['item_number'] =='') ? 0 : $this->estimateData['item_number'];
-        $this->addedEstimate['description'] = ($this->estimateData['description']=='')? 0 : $this->estimateData['description'];
-        $this->addedEstimate['qty'] = ($this->estimateData['qty'] =='')? 0 : $this->estimateData['qty'];
-        $this->addedEstimate['rate'] = ($this->estimateData['rate']=='')? 0 : $this->estimateData['rate'];
-        $this->addedEstimate['total_amount'] = ($this->estimateData['total_amount'] =='')? 0 : $this->estimateData['total_amount'];
-        $this->addedEstimateUpdateTrack = rand(1, 1000);
+        // $this->reset('addedEstimate');
+        // $this->showTableOne = !$this->showTableOne;
+        // $this->addedEstimate['description'] = ($this->InputText['Desc'] == '') ? 0 : $this->InputText['Desc'];
+        // $this->addedEstimate['distance'] = ($this->InputText['distance'] == '') ? 0 :$this->InputText['distance'];
+        // $this->addedEstimate['unit'] = ($this->InputText['unit']=='')? 0 : $this->InputText['unit'] ;
+        // $this->addedEstimate['dept_id'] = Auth::user()->department_id;
+        // $this->addedEstimate['dept_category_id'] = ($this->estimateData['dept_category_id'] == '') ? 0 :$this->InputText['unit'];
+        // $this->addedEstimate['version'] = ($this->estimateData['version'] =='') ? 0 : $this->estimateData['version'];
+        // $this->addedEstimate['Item_details'] = ($this->estimateData['item_number'] =='') ? 0 : $this->estimateData['item_number'];
+        // $this->addedEstimate['description'] = ($this->estimateData['description']=='')? 0 : $this->estimateData['description'];
+        // $this->addedEstimate['qty'] = ($this->estimateData['qty'] =='')? 0 : $this->estimateData['qty'];
+        // $this->addedEstimate['rate'] = ($this->estimateData['rate']=='')? 0 : $this->estimateData['rate'];
+        // $this->addedEstimate['total_amount'] = ($this->estimateData['total_amount'] =='')? 0 : $this->estimateData['total_amount'];
+
+
+
+
+
+
+        // $this->addedEstimateUpdateTrack = rand(1, 1000);
 
 
 
@@ -158,7 +233,7 @@ class CreateCarriageCost extends Component
         // $this->estimateData['qty'] = '';
         // $this->estimateData['rate'] = '';
         // $this->estimateData['total_amount'] = '';
-        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'estimateData','fatchDropdownData','selectedSORKey','InputText']);
+        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'estimateData','fatchDropdownData']);
 
 
 

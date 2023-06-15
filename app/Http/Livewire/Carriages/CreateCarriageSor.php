@@ -50,9 +50,9 @@ class CreateCarriageSor extends Component
         'inputsData.*.anyDistance.integer'=>'Data Type Mismatched',
         'inputsData.*.anyDistance.numeric'=>'Data must be need numberic value',
 
-        'inputsData.*.aboveDistance.required' => 'This field is required',
-        'inputsData.*.aboveDistance.integer'=>'Data Type Mismatched',
-        'inputsData.*.aboveDistance.numeric'=>'Data must be need numberic value',
+        // 'inputsData.*.aboveDistance.required' => 'This field is required',
+        // 'inputsData.*.aboveDistance.integer'=>'Data Type Mismatched',
+        // 'inputsData.*.aboveDistance.numeric'=>'Data must be need numberic value',
 
         'inputsData.*.cost.required' => 'This field is required',
         'inputsData.*.cost.numeric'=>'Only Allow Numeric Value'
@@ -70,9 +70,10 @@ class CreateCarriageSor extends Component
                 'item_no'=>'',
                 // 'Item_no'=>'',
                 'description'=>'',
-                'anyDistance'=>0,
-                'aboveDistance'=>0,
-                'cost'=>''
+                'anyDistance'=>'',
+                'aboveDistance'=>'',
+                'cost'=>'',
+                'total_amount'=>0
             ]
         ];
         // $this->fetchDropDownData['carriageSor'] = '';
@@ -118,9 +119,10 @@ class CreateCarriageSor extends Component
                 'item_no'=>'',
                 // 'Item_no'=>'',
                 'description'=>'',
-                'anyDistance' => $currentInputData[$key]['anyDistance'],
+                'anyDistance' => $currentInputData[$key]['aboveDistance'],
                 'aboveDistance' => $currentInputData[$key]['aboveDistance'],
-                'cost' => $currentInputData[$key]['cost']
+                'cost' => $currentInputData[$key]['cost'],
+                'total_amount'=>0,
             ];
     }
     public function updated($param)
@@ -128,7 +130,73 @@ class CreateCarriageSor extends Component
         $this->validateOnly($param);
     }
 
+    public function calculateValue($key)
+    {
+        // if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
+        //     $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
+        // }
 
+        /*
+            0 - 5
+            5 - 10
+            10 -20
+            20 - 50
+            50- 100
+            100 >
+
+        */
+            // dd($this->inputsData[$key]['anyDistance']);
+
+        // switch($this->inputsData[$key]['anyDistance'])
+        // {
+        //     case ($this->inputsData[$key]['anyDistance'] >= 0 && $this->inputsData[$key]['aboveDistance'] <=5):
+        //         $this->inputsData[$key]['total_amount'] = $this->inputsData[$key]['cost'];
+        //         break;
+        //     case ($this->inputsData[$key]['anyDistance'] >=5 && $this->inputsData[$key]['aboveDistance'] <=10):
+        //         echo $this->inputsData[$key]['total_amount'] = $this->inputsData[$key]['cost'] * $this->inputsData[$key]['anyDistance'];
+        //         break;
+        //     case ($this->inputsData[$key]['anyDistance'] >=10 && $this->inputsData[$key]['aboveDistance'] <=20):
+        //         echo $this->inputsData[$key]['total_amount'] = $this->inputsData[$key]['anyDistance'] * $this->inputsData[$key]['cost'];
+        //         break;
+        //     case ($this->inputsData[$key]['anyDistance'] >=20 && $this->inputsData[$key]['aboveDistance'] <=50):
+        //         echo $this->inputsData[$key]['total_amount'] = $this->inputsData[$key]['anyDistance'] * $this->inputsData[$key]['cost'];
+        //         break;
+        //     case ($this->inputsData[$key]['anyDistance'] >=50 && $this->inputsData[$key]['aboveDistance'] <=100):
+        //         echo $this->inputsData[$key]['total_amount'] = $this->inputsData[$key]['anyDistance'] * $this->inputsData[$key]['cost'];
+        //         break;
+        //     default:
+        //         echo $this->inputsData[$key]['total_amount'] = $this->inputsData[$key]['cost']*10;
+
+        // }
+
+        if($this->inputsData[$key]['anyDistance'] >= 0 && $this->inputsData[$key]['aboveDistance'] <=5)
+        {
+            $this->inputsData[$key]['total_amount'] = $this->inputsData[$key]['cost'];
+        }
+        else if($this->inputsData[$key]['anyDistance'] >=5 && $this->inputsData[$key]['aboveDistance'] <=10)
+        {
+            $this->inputsData[$key]['total_amount'] = 5 * $this->inputsData[$key]['cost'] ;
+        }
+        else if($this->inputsData[$key]['anyDistance'] >=10 && $this->inputsData[$key]['aboveDistance'] <=20)
+        {
+            $this->inputsData[$key]['total_amount'] = 10 * $this->inputsData[$key]['cost'];
+        }
+        else if($this->inputsData[$key]['anyDistance'] >=20 && $this->inputsData[$key]['aboveDistance'] <=50)
+        {
+            $this->inputsData[$key]['total_amount'] = 30 * $this->inputsData[$key]['cost'];
+        }
+        else if($this->inputsData[$key]['anyDistance'] >=50 && $this->inputsData[$key]['aboveDistance'] <=100)
+        {
+            $this->inputsData[$key]['total_amount'] = 50 * $this->inputsData[$key]['cost'];
+        }
+
+        else
+        {
+            $this->inputsData[$key]['total_amount'] = 10*$this->inputsData[$key]['cost'];
+        }
+
+
+    }
     public function store()
     {
         try {
@@ -137,16 +205,17 @@ class CreateCarriageSor extends Component
             {
                 $insert=[
                     'dept_id'=>Auth::user()->department_id,
-                    'dept_cate_id'=>$this->inputText['dept_cate_id'],
+                    'dept_category_id'=>$this->inputText['dept_cate_id'],
                     'sor_parent_id'=>$this->inputText['item_Parent_no'],
                     'child_sor_id'=>$data['item_no'],
-                    'descrption'=>$data['descrption'],
+                    'description'=>$data['description'],
                     'start_distance'=>$data['anyDistance'],
                     'upto_distance'=>$data['aboveDistance'],
+                    'total_amount'=>$data['total_amount'],
                     'cost'=>$data['cost']
                 ];
 
-                dd($insert);
+                // dd($insert);
                 Carriagesor::create($insert);
             }
             $this->notification()->success(
