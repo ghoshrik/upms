@@ -145,7 +145,7 @@
                     </div>
                 </div>
             </div> --}}
-            <livewire:components.modal.import-file.file-upload />
+            {{-- <livewire:components.modal.import-file.file-upload /> --}}
         </div>
     </div>
 </div>

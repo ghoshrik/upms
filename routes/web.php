@@ -23,6 +23,7 @@ use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
 use App\Http\Livewire\EstimateProject\EstimateProject;
 use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
 use App\Http\Livewire\Estimate\EstimatePrepare;
+use App\Http\Livewire\ExcelImport\Imports;
 use App\Http\Livewire\MenuManagement\MenuManagement;
 // use App\Http\Livewire\Permission\Permissions;
 use App\Http\Livewire\Milestone\Milestones;
@@ -54,12 +55,7 @@ use Spatie\Permission\Models\Role;
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
- */
+*/
 
 require __DIR__ . '/auth.php';
 // Route::get('set-role', function () {
@@ -94,10 +90,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         // Dashboard Routes
         Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
-
-
         //state Admin
-
         Route::group(['middleware' => ['role:State Admin']], function () {
             Route::get('department', Department::class)->name("department");
             Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
@@ -158,11 +151,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::get('rate-analysis', RateAnalysis::class)->name('rate-analysis');
         Route::get('quantity-evaluation', QuantityEvaluation::class)->name('quantity-evaluation');
-        Route::get('carriage-cost',CarriageCosts::class)->name('carriage-cost');
-
-        // Route::get('aafs-project',ProjectList::class)->name('aafs-project');
-        Route::get('roles', Roles::class)->name('roles');
-        Route::get('permissions', Permission::class)->name('permissions');
+        Route::get('carriage-cost',CarriageCosts::class)->name('carriage-cost'); // Route::get('aafs-project',ProjectList::class)->name('aafs-project'); Route::get('roles', Roles::class)->name('roles'); Route::get('permissions', Permission::class)->name('permissions');
+        Route::get('import',Imports::class)->name('import');
 
         // Route::get('vendors',VendorList::class)->name('vendors');
 
@@ -177,10 +167,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         // Route::get('qty-analysis', AnalysisList::class)->name('qty-analysis');
 
         Route::get('assign-another-office', AssignToAnotherOffice::class)->name('assign-another-office');
-
-
-
-
 
         // Route::prefix('admin',function(){
         Route::get('admin/settings', SettingLists::class)->name('admin.settings');

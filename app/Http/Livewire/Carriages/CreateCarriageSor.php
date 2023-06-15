@@ -17,14 +17,14 @@ class CreateCarriageSor extends Component
     use Actions, WithFileUploads;
     public $inputsData = [], $fetchDropDownData = [], $file_upload,$inputText=[];
     protected $rules = [
-        // 'inputText.description'=>'required',
+        'inputText.dept_cate_id'=>'required',
         // 'inputText.unit_id'=>'required|integer',
         // 'inputText.zone'=>'required',
         // 'inputsData.*.dept_id'=>'required',
-        'inputsData.*.dept_cate_id'=>'required',
-        'inputsData.*.sor_parent_id'=>'required',
+        // 'inputsData.*.dept_cate_id'=>'required',
+        // 'inputsData.*.sor_parent_id'=>'required',
         'inputsData.*.Item_no'=>'required',
-        'inputsData.*.start_sor_item_no'=>'required',
+        // 'inputsData.*.start_sor_item_no'=>'required',
         'inputsData.*.description'=>'required',
         'inputsData.*.anyDistance' => 'required|integer|numeric',
         'inputsData.*.aboveDistance' => 'required|integer|numeric',
@@ -32,17 +32,17 @@ class CreateCarriageSor extends Component
     ];
     protected $messages = [
 
-        // 'inputText.description.required'=>'This field is required',
+        'inputText.dept_cate_id.required'=>'This field is required',
         // 'inputText.unit_id.required'=>'This field id required',
         // 'inputText.unit_id.integer'=>'This field id required',
         // 'inputText.zone.required'=>'This field id required',
 
 
         // 'inputsData.*.dept_id.required'=>'This field is required',
-        'inputsData.*.dept_cate_id.required'=>'This field is required',
-        'inputsData.*.sor_parent_id.required'=>'This field is required',
+        // 'inputsData.*.dept_cate_id.required'=>'This field is required',
+        // 'inputsData.*.sor_parent_id.required'=>'This field is required',
         'inputsData.*.Item_no.required'=>'This field is required',
-        'inputsData.*.start_sor_item_no.required'=>'This field is required',
+        // 'inputsData.*.start_sor_item_no.required'=>'This field is required',
         'inputsData.*.description.required'=>'This field is required',
 
 
@@ -60,16 +60,16 @@ class CreateCarriageSor extends Component
     ];
     public function mount()
     {
-        // $this->inputText['description']='';
-        // $this->inputText['unit_id']='';
+        $this->inputText['dept_cate_id']='';
+        $this->inputText['item_Parent_no']='';
         // $this->inputText['zone']='';
 
         $this->inputsData = [
             [
-                'dept_cate_id'=>SorCategoryType::where('department_id', Auth::user()->department_id)->get(),
-                'sor_parent_id'=>'',
+                // 'dept_cate_id'=>SorCategoryType::where('department_id', Auth::user()->department_id)->get(),
+                'item_no'=>'',
                 // 'Item_no'=>'',
-                'child_Item_no'=>'',
+                'description'=>'',
                 'anyDistance'=>0,
                 'aboveDistance'=>0,
                 'cost'=>''
@@ -82,21 +82,30 @@ class CreateCarriageSor extends Component
         $this->fetchDropDownData['unitMaster'] =  UnitMaster::select('id', 'unit_name', 'short_name', 'is_active')->where('is_active', 1)->orderBy('id', 'desc')->get();
     }
 
-    public function getDeptCategory($key)
+    public function getDeptCategory()
     {
-        $this->fetchDropDownData['sorParent_no'] = SOR::select('id','Item_details')->where('department_id',Auth::user()->department_id)->where('dept_category_id',$this->inputsData[$key]['dept_cate_id'])->get();
+        $this->fetchDropDownData['sorParent_no'] = SOR::select('id','Item_details')->where('department_id',Auth::user()->department_id)->where('dept_category_id',$this->inputText['dept_cate_id'])->get();
+    }
 
-        // dd($this->inputsData[$key]['dept_cate_id']);
+    public function getFilterItemNo()
+    {
+        $res = SOR::select('Item_details')->where('id',$this->inputText['item_Parent_no'])->first();
+        $this->fetchDropDownData['carriageSor'] = SOR::select('Item_details','id')->where('Item_details','LIKE',$res['Item_details']."%")->get();
+
     }
 
     public function getItemNo($key)
     {
         $res = SOR::select('Item_details')->where('id',$this->inputsData[$key]['sor_parent_id'])->first();
         $this->fetchDropDownData['carriageSor'] = SOR::select('Item_details','id')->where('Item_details','LIKE',$res['Item_details']."%")->get();
-
-
-        // dd($res['Item_details']." ".$resp);
-        // $this->inputsData[$key]['child_Item_no'] = $res;/
+    }
+    public function getItemDetails($key)
+    {
+        // dd($this->inputsData[$key]['item_no']);
+        $sorDesc = SOR::select('description','cost')->where('id',$this->inputsData[$key]['item_no'])->first();
+        $this->inputsData[$key]['description'] = $sorDesc['description'];
+        $this->inputsData[$key]['cost'] = $sorDesc['cost'];
+        // dd($sorDesc['description']);
     }
     public function addNewRow()
     {
@@ -105,10 +114,9 @@ class CreateCarriageSor extends Component
         $key = $inpuDataCount - 1;
         $this->inputsData[] =
             [
-                'dept_cate_id'=>SorCategoryType::where('department_id', Auth::user()->department_id)->get(),
-                'sor_parent_id'=>'',
+                // 'dept_cate_id'=>SorCategoryType::where('department_id', Auth::user()->department_id)->get(),
+                'item_no'=>'',
                 // 'Item_no'=>'',
-                'child_Item_no'=>'',
                 'description'=>'',
                 'anyDistance' => $currentInputData[$key]['anyDistance'],
                 'aboveDistance' => $currentInputData[$key]['aboveDistance'],
@@ -124,21 +132,23 @@ class CreateCarriageSor extends Component
     public function store()
     {
         try {
-
+            // dd($this->inputsData);
             foreach ($this->inputsData as $key => $data)
             {
-                Carriagesor::create(
-                    [
-                        'description'=>$this->inputText['description'],
-                        'unit_id'=>$this->inputText['unit_id'],
-                        'zone'=>$this->inputText['zone'],
-                        'start_distance'=>$data['anyDistance'],
-                        'upto_distance'=>$data['aboveDistance'],
-                        'cost'=>$data['cost']
-                    ]);
+                $insert=[
+                    'dept_id'=>Auth::user()->department_id,
+                    'dept_cate_id'=>$this->inputText['dept_cate_id'],
+                    'sor_parent_id'=>$this->inputText['item_Parent_no'],
+                    'child_sor_id'=>$data['item_no'],
+                    'descrption'=>$data['descrption'],
+                    'start_distance'=>$data['anyDistance'],
+                    'upto_distance'=>$data['aboveDistance'],
+                    'cost'=>$data['cost']
+                ];
+
+                dd($insert);
+                Carriagesor::create($insert);
             }
-
-
             $this->notification()->success(
                 $title = trans('cruds.sor.create_msg')
             );
@@ -146,8 +156,6 @@ class CreateCarriageSor extends Component
             $this->emit('openEntryForm');
         }
         catch (\Throwable $th) {
-
-            // dd($th->getMessage());
             $this->emit('showError', $th->getMessage());
         }
     }

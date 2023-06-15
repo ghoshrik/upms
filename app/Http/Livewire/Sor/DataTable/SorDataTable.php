@@ -3,11 +3,12 @@
 namespace App\Http\Livewire\Sor\DataTable;
 
 use App\Models\SOR;
+use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\Builder;
 // use PowerComponents\LivewirePowerGrid\Traits\Exportable;
+use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};

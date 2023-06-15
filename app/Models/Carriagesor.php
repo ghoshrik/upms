@@ -10,12 +10,11 @@ class Carriagesor extends Model
     use HasFactory;
     protected $table = "carriagesors";
     protected $fillable = [
-        // "dept_id",
+        "dept_id",
         "dept_category_id",
         "sor_parent_id",
-        "child_Item_no",
-        // "start_sor_item_no",
-        "description",
+        "child_sor_id",
+        "descrption",
         "start_distance",
         "upto_distance",
         "cost"
