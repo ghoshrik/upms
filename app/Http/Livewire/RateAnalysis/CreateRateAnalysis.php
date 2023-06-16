@@ -20,37 +20,35 @@ use Illuminate\Support\Facades\Auth;
 class CreateRateAnalysis extends Component
 {
     use Actions;
-    public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc, $selectSor = [], $dropdownData = [];
+    public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc, $selectSor = [],$dropdownData = [];
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
     public $searchDtaCount, $searchStyle, $searchResData;
-
-
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
 
     protected $rules = [
         'sorMasterDesc' => 'required|string',
-        'selectedCategoryId' => 'required|integer',
+        // 'selectedCategoryId' => 'required|integer',
 
     ];
     protected $messages = [
         'sorMasterDesc.required' => 'The description cannot be empty.',
         'sorMasterDesc.string' => 'The description format is not valid.',
-        'selectedCategoryId.required' => 'Selected at least one ',
-        'selectedCategoryId.integer' => 'This Selected field is Invalid',
-        'estimateData.other_name.required' => 'selected other name required',
-        'estimateData.other_name.string' => 'This field is must be character',
-        'estimateData.dept_id.required' => 'This field is required',
-        'estimateData.dept_id.integer' => 'This Selected field is invalid',
-        'estimateData.dept_category_id.required' => 'This field is required',
-        'estimateData.dept_category_id.integer' => 'This Selected field is invalid',
-        'estimateData.version.required' => 'This Selected field is required',
-        'estimateData.version.integer' => 'This Selected field is invalid',
-        'selectedSORKey.required' => 'This field is required',
-        'selectedSORKey.string' => 'This field is must be string',
-        'estimateData.qty.required' => 'This field is not empty',
+        // 'selectedCategoryId.required' => 'Selected at least one ',
+        // 'selectedCategoryId.integer' => 'This Selected field is Invalid',
+        // 'estimateData.other_name.required' => 'selected other name required',
+        // 'estimateData.other_name.string' => 'This field is must be character',
+        // 'estimateData.dept_id.required' => 'This field is required',
+        // 'estimateData.dept_id.integer' => 'This Selected field is invalid',
+        // 'estimateData.dept_category_id.required' => 'This field is required',
+        // 'estimateData.dept_category_id.integer' => 'This Selected field is invalid',
+        // 'estimateData.version.required' => 'This Selected field is required',
+        // 'estimateData.version.integer' => 'This Selected field is invalid',
+        // 'selectedSORKey.required' => 'This field is required',
+        // 'selectedSORKey.string' => 'This field is must be string',
+        // 'estimateData.qty.required' => 'This field is not empty',
         // 'estimateData.qty.numeric' => 'This field is must be numeric',
         // 'estimateData.rate.required' => 'This field is not empty',
         // 'estimateData.rate.numeric' => 'This field is must be numeric',
@@ -63,15 +61,15 @@ class CreateRateAnalysis extends Component
     ];
     public function booted()
     {
-        if ($this->selectedCategoryId == "SOR") {
-            $this->rules = Arr::collapse([$this->rules, [
-                'estimateData.dept_id' => 'required|integer',
-                'estimateData.dept_category_id' => 'required|integer',
-                'estimateData.version' => 'required',
-                'selectedSORKey' => 'required|string',
+        // if ($this->selectedCategoryId == 1) {
+        //     $this->rules = Arr::collapse([$this->rules, [
+        //         'estimateData.dept_id' => 'required|integer',
+        //         'estimateData.dept_category_id' => 'required|integer',
+        //         'estimateData.version' => 'required',
+        //         'selectedSORKey' => 'required|string',
 
-            ]]);
-        }
+        //     ]]);
+        // }
         // if ($this->selectedCategoryId == 2) {
         //     $this->rules = Arr::collapse([$this->rules, [
         //         'estimateData.other_name' => 'required|string',
@@ -100,7 +98,7 @@ class CreateRateAnalysis extends Component
     // }
     public function mount()
     {
-        $this->dropdownData['allDept'] = Department::select('id', 'department_name')->get();
+        $this->dropdownData['allDept'] = Department::select('id','department_name')->get();
         $this->selectSor['dept_id'] = '';
         $this->selectSor['dept_category_id'] = '';
         $this->selectSor['version'] = '';
@@ -111,14 +109,14 @@ class CreateRateAnalysis extends Component
     }
     public function changeCategory($value)
     {
-        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor']);
+        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc','dropdownData','selectSor']);
         $value = $value['_x_bindings']['value'];
         $this->estimateData['item_name'] = $value;
         if ($this->selectedCategoryId == 1) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = Auth::user()->department_id;
-            if (!empty($this->estimateData['dept_id'])) {
+            if(!empty($this->estimateData['dept_id'])){
                 $this->getDeptCategory();
             }
             $this->estimateData['dept_category_id'] = '';
@@ -143,7 +141,7 @@ class CreateRateAnalysis extends Component
         } elseif ($this->selectedCategoryId == 3) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['dept_id'] = Auth::user()->department_id;
-            if (!empty($this->estimateData['dept_id'])) {
+            if(!empty($this->estimateData['dept_id'])){
                 $this->getDeptRates();
             }
             $this->estimateData['rate_no'] = '';
@@ -156,11 +154,11 @@ class CreateRateAnalysis extends Component
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
-        } elseif ($this->selectedCategoryId == 4) {
+        }elseif ($this->selectedCategoryId == 4) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = Auth::user()->department_id;
-            if (!empty($this->estimateData['dept_id'])) {
+            if(!empty($this->estimateData['dept_id'])){
                 $this->getDeptCategory();
             }
             $this->estimateData['dept_category_id'] = '';
@@ -318,7 +316,7 @@ class CreateRateAnalysis extends Component
 
         $getCompositSorList = CompositSor::where('sor_itemno_parent_id', $id)->get();
         // $getRateList = RatesAnalysis::where('operation','Total')->get();
-        foreach ($getCompositSorList as $key => $sor) {
+        foreach($getCompositSorList as $key => $sor){
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = '';
             $this->estimateData['dept_category_id'] = $sor['dept_category_id'];
@@ -327,7 +325,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['description'] = getSorItemNumberDesc($sor['sor_itemno_child']);
             $this->estimateData['other_name'] = '';
             $this->estimateData['qty'] = $sor['rate'];
-            $rateDetails = RatesAnalysis::where([['sor_item_number', $sor['sor_itemno_child']], ['operation', 'Total']])->first();
+            $rateDetails = RatesAnalysis::where([['sor_item_number',$sor['sor_itemno_child']],['operation','Total']])->first();
             $this->estimateData['rate'] = $rateDetails->total_amount;
             $this->estimateData['total_amount'] = $rateDetails->total_amount * $sor['rate'];
             // foreach($getRateList as $rate)
@@ -337,7 +335,7 @@ class CreateRateAnalysis extends Component
             //         $this->estimateData['total_amount'] = $rate['total_amount'] * $sor['rate'];
             //     // }
             // }
-            $this->addEstimate($key + 1);
+            $this->addEstimate($key+1);
         }
     }
     public function calculateValue()
@@ -368,7 +366,7 @@ class CreateRateAnalysis extends Component
         //     ->where('estimate_recomender.dept_id', $this->estimateData['dept_id'])
         //     ->where('sor_masters.is_verified', '=', 1)
         //     ->get();
-        $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id', 'dept_id', 'sorMasterDesc', 'status', 'is_verified')->where([['dept_id', Auth::user()->department_id], ['status', 1], ['is_verified', 1]])->get();
+        $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',1],['is_verified',1]])->get();
         // $this->fatchDropdownData['estimatesList'] = RatesAnalysis::select('description', 'rate_id', 'total_amount')->where([['operation', 'Total'], ['dept_id', Auth::user()->department_id], ['category_id', $this->estimateData['dept_category_id']]])->get();
     }
 
@@ -416,7 +414,7 @@ class CreateRateAnalysis extends Component
         $this->estimateData['rate'] = '';
         $this->fatchDropdownData['estimateDetails'] = EstimatePrepare::join('sor_masters', 'estimate_prepares.estimate_id', 'sor_masters.estimate_id')
             ->where('estimate_prepares.estimate_id', $this->estimateData['rate_no'])
-            ->where('estimate_prepares.operation', 'Total')->where([['sor_masters.is_verified', 1], ['sor_masters.status', 1]])->first();
+            ->where('estimate_prepares.operation', 'Total')->where([['sor_masters.is_verified', 1],['sor_masters.status', 1]])->first();
         $this->estimateData['total_amount'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
         $this->estimateData['description'] = $this->fatchDropdownData['estimateDetails']['sorMasterDesc'];
         $this->estimateData['qty'] = 1;
@@ -446,16 +444,16 @@ class CreateRateAnalysis extends Component
         $this->estimateData['description'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
-        $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id', 'total_amount')->where([['rate_id', $this->estimateData['rate_no']], ['operation', 'Total'], ['dept_id', Auth::user()->department_id]])->first();
+        $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id', 'total_amount')->where([['rate_id',$this->estimateData['rate_no']],['operation', 'Total'], ['dept_id', Auth::user()->department_id]])->first();
         $this->estimateData['total_amount'] = $this->fatchDropdownData['rateDetails']['total_amount'];
         $this->estimateData['description'] = $this->fatchDropdownData['rateDetails']['description'];
         $this->estimateData['qty'] = 1;
         $this->estimateData['rate'] = $this->fatchDropdownData['rateDetails']['total_amount'];
     }
-    public function addEstimate($key = null)
+    public function addEstimate($key=null)
     {
         $this->validate();
-        if (isset($key)) {
+        if(isset($key)){
             $this->showTableOne = !$this->showTableOne;
             $this->addedEstimate[$key]['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];
             $this->addedEstimate[$key]['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
@@ -478,8 +476,8 @@ class CreateRateAnalysis extends Component
             // $this->estimateData['qty'] = '';
             // $this->estimateData['rate'] = '';
             // $this->estimateData['total_amount'] = '';
-            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor', 'estimateData']);
-        } else {
+            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc','dropdownData','selectSor','estimateData']);
+        }else{
             $this->reset('addedEstimate');
             $this->showTableOne = !$this->showTableOne;
             $this->addedEstimate['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];
@@ -502,7 +500,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
-            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor', 'estimateData', 'selectedCategoryId', 'fatchDropdownData']);
+            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc','dropdownData','selectSor','estimateData','selectedCategoryId','fatchDropdownData']);
         }
         // dd($this->addedEstimate);
     }
