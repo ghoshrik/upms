@@ -18,7 +18,14 @@ class Carriagesor extends Model
         "start_distance",
         "upto_distance",
         "cost",
-        "total_amount"
+        "total_number"
     ];
-
+    public function getSORParentDetails()
+    {
+        return $this->belongsTo(SOR::class,'sor_parent_id','id');
+    }
+    public function getSORChildDetails()
+    {
+        return $this->belongsTo(SOR::class,'child_sor_id','id');
+    }
 }
