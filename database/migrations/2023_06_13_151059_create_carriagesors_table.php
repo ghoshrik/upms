@@ -23,7 +23,7 @@ class CreateCarriagesorsTable extends Migration
             $table->integer('start_distance')->default(0);
             $table->integer('upto_distance')->default(0);
             $table->float('cost');
-            $table->float('total_amount');
+            $table->float('total_number');
             $table->timestamps();
         });
     }

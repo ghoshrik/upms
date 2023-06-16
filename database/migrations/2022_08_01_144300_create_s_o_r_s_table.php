@@ -19,16 +19,16 @@ class CreateSORSTable extends Migration
             $table->bigInteger('department_id');
             $table->integer('dept_category_id');
             $table->integer('unit');
-            // $table->enum('unit_type',['KG','CM'])
+            $table->integer('unit_id');
             $table->longText('description');
             $table->float('cost');
             $table->string('version');
             $table->date('effect_from');
             $table->date('effect_to')->nullable();
             // $table->string('support_data')->nullable();
-            $table->enum('IsActive',[0,1])->default('0');
-            $table->tinyInteger('created_by_level')->default('0');
-            $table->enum('IsApproved',[0,1])->default('0');
+            $table->enum('is_active',[0,1])->default('0');
+            $table->tinyInteger('created_by')->default('0');
+            $table->enum('is_approved',[0,1])->default('0');
             $table->timestamps();
         });
     }
