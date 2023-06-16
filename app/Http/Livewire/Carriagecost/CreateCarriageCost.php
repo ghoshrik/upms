@@ -83,10 +83,12 @@ class CreateCarriageCost extends Component
 
         foreach($res as $key =>$resp)
         {
-            $this->estimateData['dept_category_id'] = '';
-            $this->estimateData['version'] = '';
-            $this->estimateData['item_number'] = SOR::select('Item_details')->where('id',$resp['child_sor_id'])->first();
-            $this->estimateData['distance'] = '';
+            $this->estimateData['item_number'] = $resp->child_sor_id;
+            $this->estimateData['description'] = $resp->description;
+            // $this->estimateData['distance'] = '';
+            $this->estimateData['start_distance'] = $resp->start_distance;
+            $this->estimateData['Upto_distance'] = $resp->upto_distance;
+            $this->estimateData['cost'] = $resp->total_number;
         }
         $this->addEstimate($key + 1);
     }
@@ -157,18 +159,29 @@ class CreateCarriageCost extends Component
     }
     public function addEstimate($key = null)
     {
-
         if (isset($key))
         {
             $this->reset('addedEstimate');
             $this->showTableOne = !$this->showTableOne;
             $this->addedEstimate[$key]['Item_details'] = ($this->estimateData['item_number'] == '') ? 0 : $this->estimateData['item_number'];
+            $this->addedEstimate[$key]['description'] = ($this->estimateData['description'] == '') ? 0 : $this->estimateData['description'];
+            $this->addedEstimate[$key]['start_distance'] = ($this->estimateData['start_distance'] == '') ? 0 : $this->estimateData['start_distance'];
+            $this->addedEstimate[$key]['end_distance'] = ($this->estimateData['Upto_distance'] == '') ? 0 : $this->estimateData['Upto_distance'];
+            $this->addedEstimate[$key]['total_amount'] = ($this->estimateData['cost'] == '')? 0 : $this->estimateData['cost'];
+            $this->addedEstimate[$key]['version'] =  '';
+            $this->addedEstimate[$key]['operation'] = '';
+            $this->addedEstimate[$key]['arrayIndex'] = '';
+            $this->addedEstimate[$key]['remarks']='';
+            $this->addedEstimate[$key]['array_id']='';
+
+            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack','estimateData']);
         }
         else
         {
-            $this->reset('addedEstimate');
-            $this->showTableOne = !$this->showTableOne;
-            $this->addedEstimate['Item_details'] = ($this->estimateData['item_number'] == '') ? 0 : $this->estimateData['item_number'];
+            // $this->reset('addedEstimate');
+            // $this->showTableOne = !$this->showTableOne;
+            // $this->addedEstimate['Item_details'] = ($this->estimateData['item_number'] == '') ? 0 : $this->estimateData['item_number'];
+            dd("asdas");
         }
 
 

@@ -119,18 +119,18 @@ class AddCarriageCostList extends Component
         }
         if ($this->addedEstimateData != null) {
             $index = count($this->allAddedEstimatesData) + 1;
-            if (!array_key_exists("operation", $this->addedEstimateData)) {
-                $this->addedEstimateData['operation'] = '';
-            }
+            // if (!array_key_exists("operation", $this->addedEstimateData)) {
+            //     $this->addedEstimateData['operation'] = '';
+            // }
             if (!array_key_exists("array_id", $this->addedEstimateData)) {
                 $this->addedEstimateData['array_id'] = $index;
             }
             if (!array_key_exists("arrayIndex", $this->addedEstimateData)) {
                 $this->addedEstimateData['arrayIndex'] = '';
             }
-            if (!array_key_exists("remarks", $this->addedEstimateData)) {
-                $this->addedEstimateData['remarks'] = '';
-            }
+            // if (!array_key_exists("remarks", $this->addedEstimateData)) {
+            //     $this->addedEstimateData['remarks'] = '';
+            // }
             // if (!array_key_exists("estimate_no", $this->addedEstimateData)) {
             //     $this->addedEstimateData['estimate_no'] = 0;
             // }

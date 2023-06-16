@@ -211,7 +211,7 @@ class CreateCarriageSor extends Component
                     'description'=>$data['description'],
                     'start_distance'=>$data['anyDistance'],
                     'upto_distance'=>$data['aboveDistance'],
-                    'total_amount'=>$data['total_amount'],
+                    'total_number'=>$data['total_amount'],
                     'cost'=>$data['cost']
                 ];
 

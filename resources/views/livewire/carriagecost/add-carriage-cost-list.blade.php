@@ -55,8 +55,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @dd($allAddedEstimatesData)
+                                {{-- @dd($allAddedEstimatesData) --}}
                                 @foreach ($allAddedEstimatesData as $key => $addedEstimate)
+                                    @dd($addedEstimate)
                                     <tr>
                                         <td>
                                             <x-checkbox wire:key="{{ $key . 'checkbox' }}" id="checkbox"
@@ -70,7 +71,7 @@
                                         </td>
                                         <td>
                                             {{-- {{ $addedEstimate['Item_details'] ?  getSorItemNumber($addedEstimate['Item_details']) : '---'}} --}}
-
+                                            {{$addedEstimate['array_id']}}
                                             {{-- @if ($addedEstimate['sor_item_number'])
                                                 {{ getSorItemNumber($addedEstimate['sor_item_number']) }}
                                             @elseif ($addedEstimate['estimate_no'])
@@ -101,16 +102,16 @@
                                             {{-- @if($addedEstimate['Item_details'])
                                             {{$addedEstimate['description']}}
                                             @endif --}}
-                                            {{ $addedEstimate['description'] }}
+                                            {{-- {{ $addedEstimate['description'] }} --}}
                                         </td>
                                         <td>
-                                            {{-- {{ $addedEstimate['qty'] }} --}}
+                                            {{-- {{ $addedEstimate['start_distance'] }} --}}
                                         </td>
                                         <td>
-                                            {{-- {{ round($addedEstimate['rate'],10,2) }} --}}
+                                            {{-- {{ $addedEstimate['end_distance'] }} --}}
                                         </td>
                                         <td>
-                                            {{-- {{ round($addedEstimate['total_amount'],10,2) }} --}}
+                                            {{-- {{ $addedEstimate['total_amount'] }} --}}
                                         </td>
                                         <td>
                                             {{-- @if ($addedEstimate['estimate_no'])

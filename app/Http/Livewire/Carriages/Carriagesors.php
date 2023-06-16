@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Carriages;
 
+use App\Models\Carriagesor;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -9,7 +10,7 @@ class Carriagesors extends Component
 {
 
     use Actions;
-    public $formOpen = false, $editFormOpen = false, $updateDataTableTracker;
+    public $formOpen = false, $editFormOpen = false, $updateDataTableTracker,$CarriageSor;
     protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'sorFileDownload' => 'generatePdf'];
     public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel, $editId = null, $CountSorListPending;
 
@@ -52,6 +53,8 @@ class Carriagesors extends Component
     }
     public function render()
     {
+
+        $this->CarriageSor = Carriagesor::orderBy('id','asc')->get();
         $this->updateDataTableTracker = rand(1, 1000);
         $this->titel = trans('cruds.sor.title');
         $assets = ['chart', 'animation'];

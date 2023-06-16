@@ -47,13 +47,41 @@
             @elseif($isFromOpen && $openedFormType == 'edit')
                 {{-- <livewire:sor.edit-sor /> --}}
             @else
-            <div class="col-md-12 col-lg-12 col-sm-3">
-                <div class="card">
-                    <div class="card-body">
-
+            <x-cards title="">
+                <x-slot name="table">
+                    <div class="table-responsive mt-4">
+                        <table id="basic-table" class="table table-striped mb-0" role="grid">
+                            <thead>
+                                <tr>
+                                    <th>{{ trans('cruds.sor.fields.id_helper') }}</th>
+                                    <th> parent {{ trans('cruds.sor.fields.item_number') }}</th>
+                                    <th>Child {{ trans('cruds.sor.fields.item_number') }}</th>
+                                    <th>{{ trans('cruds.sor.fields.description') }}</th>
+                                    <th>Distance Range</th>
+                                    <th>{{ trans('cruds.sor.fields.cost') }}</th>
+                                    <th>Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($CarriageSor as $lists)
+                                    @php
+                                        $sor_item = DB::table('s_o_r_s')->select('Item_details')->where('id',$lists->sor_parent_id)->first();
+                                    @endphp
+                                <tr>
+                                    <td>{{$loop->iteration}}</td>
+                                    <td>{{$lists->getSORParentDetails->Item_details}}</td>
+                                    <td>{{$lists->getSORChildDetails->Item_details}}</td>
+                                    <td>{{$lists->description}}</td>
+                                    <td>{{$lists->start_distance .' - '. $lists->upto_distance ." KM."}}</td>
+                                    <td>{{$lists->cost}}</td>
+                                    <td>{{$lists->total_number}}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-            </div>
+                </x-slot>
+            </x-cards>
             @endif
         </div>
     </div>
