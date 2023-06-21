@@ -56,7 +56,7 @@ class Carriagesors extends Component
 
         $this->CarriageSor = Carriagesor::orderBy('id','asc')->get();
         $this->updateDataTableTracker = rand(1, 1000);
-        $this->titel = trans('cruds.sor.title');
+        $this->titel = "Carriages SOR";
         $assets = ['chart', 'animation'];
         return view('livewire.carriages.carriagesors',compact('assets'));
     }

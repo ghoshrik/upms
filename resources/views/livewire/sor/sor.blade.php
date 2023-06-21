@@ -67,7 +67,7 @@
                     <div class="col-md-12 col-lg-12 col-sm-3">
                         <div class="card">
                             <div class="card-header">
-                                <button type="button" class="btn btn-sm btn-soft-warning px-2 py-2 notification"
+                                <button type="button" class="btn btn-sm btn-soft-warning px-2 py-2 notification px-3 rounded"
                                     :wire:key="$updateDataTableTracker">
                                     <span>Pending Approval</span>
                                     <span class="badge">{{ $CountSorListPending }}</span>
@@ -145,7 +145,7 @@
                     </div>
                 </div>
             </div> --}}
-            {{-- <livewire:components.modal.import-file.file-upload /> --}}
+            <livewire:components.modal.import-file.file-upload />
         </div>
     </div>
 </div>

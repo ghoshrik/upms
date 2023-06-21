@@ -38,6 +38,14 @@ class Sor extends Component
     //     $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
     // }
 
+
+
+    public function OpenImportFile()
+    {
+        dd("gdg");
+
+    }
+
     public function fromEntryControl($data = '')
     {
         // dd($data);

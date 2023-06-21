@@ -40,12 +40,12 @@ final class SorDataTable extends PowerGridComponent
         return [
             Button::add('bulk-demo')
                 ->caption('PDF')
-                ->class('cursor-pointer btn btn-soft-primary btn-sm')
+                ->class('cursor-pointer btn btn-soft-primary btn-sm px-3 py-2.5 rounded')
                 ->emit('bulkActionEvent', []),
 
             Button::add('bulk-demo')
                 ->caption('Import')
-                ->class('cursor-pointer btn btn-soft-primary btn-sm')
+                ->class('cursor-pointer btn btn-soft-primary btn-sm px-3 py-2.5 rounded')
                 ->emit('rowActionEvent', ['id'=>'hi'])
         ];
     }
@@ -68,7 +68,7 @@ final class SorDataTable extends PowerGridComponent
             Exportable::make('export')
                 ->striped()
                 ->type(Exportable::TYPE_XLS),
-            Header::make()->showSearchInput(),
+            // Header::make()->showSearchInput(),
             Footer::make()
                 ->showPerPage()
                 ->showRecordCount(),
