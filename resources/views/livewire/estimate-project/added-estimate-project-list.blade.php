@@ -104,10 +104,10 @@
                                             {{ $addedEstimate['qty'] }}
                                         </td>
                                         <td>
-                                            {{ round($addedEstimate['rate'],10,2) }}
+                                            {{ $addedEstimate['rate'] }}
                                         </td>
                                         <td>
-                                            {{ round($addedEstimate['total_amount'],10,2) }}
+                                            {{ $addedEstimate['total_amount']}}
                                         </td>
                                         <td>
                                             @if ($addedEstimate['estimate_no'])

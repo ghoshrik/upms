@@ -21,10 +21,10 @@
     <x-slot name="footer">
         <div class="flex justify-between">
             <div class="flex float-left">
-                <x-button class="btn btn-soft-danger" flat label="Cancel" x-on:click="close" />
+                <x-button class="btn btn-soft-danger px-3 py-2.5 rounded" flat label="Cancel" x-on:click="close" />
             </div>
             <div class="flex float-right">
-                <button wire:click="forwardAssignUser()" class="btn btn-soft-success">
+                <button wire:click="forwardAssignUser()" class="btn btn-soft-success px-3 py-2.5 rounded">
                     <x-lucide-send class="w-4 h-4 text-gray-500" /> Forward
                 </button>
             </div>

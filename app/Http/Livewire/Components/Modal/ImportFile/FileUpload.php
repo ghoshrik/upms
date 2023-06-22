@@ -22,7 +22,6 @@ class FileUpload extends Component
     public $importFilePath;
     public $importFinished = false;
 
-
     public function mount() {
         $this->show = false;
     }
@@ -40,6 +39,8 @@ class FileUpload extends Component
         //logic
         // $this->doClose();
     }
+
+    
     public function import()
     {
         // dd($this->importFile);
@@ -48,12 +49,14 @@ class FileUpload extends Component
             'importFile' => 'required',
         ]);
         $this->importing = true;
-        $this->importFilePath = $this->importFile->store('imports');
+        $this->importFilePath = $this->importFile->getRealPath();
+        // $this->importFilePath = $this->importFile->store('imports');
         $batch = Bus::batch([
             new ImportJob($this->importFilePath),
         ])->dispatch();
-
         $this->batchId = $batch->id;
+        // $data = array_map('str_getcsv', file($this->importFile->getRealPath()));
+        // dd($data);
     }
     public function getImportBatchProperty()
     {

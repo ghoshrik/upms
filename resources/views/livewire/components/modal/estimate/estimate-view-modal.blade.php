@@ -87,7 +87,7 @@
             <x-slot name="footer">
                 <div class="flex justify-between">
                     <div class="flex float-left">
-                        <x-button class="btn btn-soft-danger" flat label="Cancel" x-on:click="close" />
+                        <x-button class="btn btn-soft-danger px-3 py-2.5 rounded" flat label="Cancel" x-on:click="close" />
                     </div>
                     {{-- <div class="flex float-right">
                         <button wire:click="download({{ $estimate_id }})" class="btn btn-soft-info">

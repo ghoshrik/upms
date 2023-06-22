@@ -316,7 +316,13 @@ class CreateRateAnalysis extends Component
 
         $getCompositSorList = CompositSor::where('sor_itemno_parent_id', $id)->get();
         // $getRateList = RatesAnalysis::where('operation','Total')->get();
+
+        // dd($getCompositSorList);
+
         foreach($getCompositSorList as $key => $sor){
+            // dd(intval($sor['sor_itemno_child']));
+            // dd(RatesAnalysis::where('sor_item_number',intval($sor['sor_itemno_child']))->where('operation','=','Total')->first());
+
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = '';
             $this->estimateData['dept_category_id'] = $sor['dept_category_id'];
@@ -325,9 +331,25 @@ class CreateRateAnalysis extends Component
             $this->estimateData['description'] = getSorItemNumberDesc($sor['sor_itemno_child']);
             $this->estimateData['other_name'] = '';
             $this->estimateData['qty'] = $sor['rate'];
-            $rateDetails = RatesAnalysis::where([['sor_item_number',$sor['sor_itemno_child']],['operation','Total']])->first();
-            $this->estimateData['rate'] = $rateDetails->total_amount;
-            $this->estimateData['total_amount'] = $rateDetails->total_amount * $sor['rate'];
+            $rateDetails = RatesAnalysis::where('sor_item_number',$sor['sor_itemno_child'])->where('operation','=','Total')->first();
+            if(!empty($rateDetails))
+            {
+                $this->estimateData['rate'] = $rateDetails->total_amount;
+                $this->estimateData['total_amount'] = $rateDetails->total_amount * $sor['rate'];
+                $this->addEstimate($key+1);
+            }else{
+                
+                $this->searchStyle = 'none';
+                $this->notification()->error(
+                    $title = 'Not data found !!' . $this->selectedSORKey
+                );
+                $this->selectedSORKey = '';
+                return;
+            }
+            // where([['sor_item_number',$sor['sor_itemno_child']],['operation','Total']])->first();                  
+            // dd($rateDetails);
+            // $this->estimateData['rate'] = $rateDetails->total_amount;
+            // $this->estimateData['total_amount'] = $rateDetails->total_amount * $sor['rate'];
             // foreach($getRateList as $rate)
             // {
             //     // if($sor['sor_itemno_child'] == $rate['sor_item_number']){
@@ -335,7 +357,7 @@ class CreateRateAnalysis extends Component
             //         $this->estimateData['total_amount'] = $rate['total_amount'] * $sor['rate'];
             //     // }
             // }
-            $this->addEstimate($key+1);
+            // $this->addEstimate($key+1);
         }
     }
     public function calculateValue()

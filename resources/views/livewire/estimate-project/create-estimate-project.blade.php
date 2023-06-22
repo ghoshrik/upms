@@ -261,6 +261,8 @@
 
                                 </div>
                             @endif
+
+
                             @if ($estimateData['item_name'] == 'Rate')
                                 <div class="row">
                                     <div class="col">

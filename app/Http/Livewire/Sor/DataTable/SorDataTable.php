@@ -106,7 +106,6 @@ final class SorDataTable extends PowerGridComponent
                 'effect_from',
                 'effect_to',
                 'is_active',
-                'created_by',
                 'is_approved',
                 DB::raw('ROW_NUMBER() OVER (ORDER BY s_o_r_s.id) as serial_no')
             );
@@ -165,7 +164,7 @@ final class SorDataTable extends PowerGridComponent
                 return $model->effect_to ? Carbon::parse($model->effect_from)->format('d/m/Y') : '';
             })
             // ->addColumn('is_active')
-            ->addColumn('created_by')
+            // ->addColumn('created_by')
             ->addColumn('is_approved', function (SOR $model) {
                 if ($model->is_approved == 1) {
                     return '<span class="badge badge-pill rounded bg-success">Approved</span>';
@@ -243,7 +242,7 @@ final class SorDataTable extends PowerGridComponent
             //     ->sortable()
             //     ->searchable(),
 
-            Column::make('CREATED BY', 'created_by'),
+            // Column::make('CREATED BY', 'created_by'),
 
             Column::make('status', 'is_approved')
                 ->sortable()

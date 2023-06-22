@@ -163,6 +163,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         App\Providers\PermissionsServiceProvider::class,
         // Barryvdh\DomPDF\ServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -234,6 +235,7 @@ return [
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'AuthHelper' => App\Helpers\AuthHelper::class,
         // 'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];

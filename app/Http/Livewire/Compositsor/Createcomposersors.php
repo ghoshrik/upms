@@ -284,7 +284,12 @@ class Createcomposersors extends Component
                 ]);
 
                 /* Single File Upload*/
-                $filePath = file_get_contents($this->storeItem['file_upload']->getRealPath());
+                $temporaryFilePath = $this->storeItem['file_upload']->getRealPath();
+                // Delete the temporary file
+                if (file_exists($temporaryFilePath)) {
+                    unlink($temporaryFilePath);
+                }
+                $filePath = file_get_contents($temporaryFilePath);
                 $fileSize = $this->storeItem['file_upload']->getSize();
                 $filExt = $this->storeItem['file_upload']->getClientOriginalExtension();
                 $mimeType = $this->storeItem['file_upload']->getMimeType();
@@ -297,6 +302,7 @@ class Createcomposersors extends Component
                     'document_size' => $fileSize,
                     'docufile' => base64_encode($filePath)
                 ]);
+                
             }
 
             $this->notification()->success(

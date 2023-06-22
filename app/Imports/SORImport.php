@@ -15,20 +15,20 @@ class SORImport implements ToModel ,WithHeadingRow, WithChunkReading
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
-    private $departments;
-    public function __construct()
-    {
-        $this->departments = Department::all(['id','department_name'])->pluck('id','department_name');
-    }
+    // private $departments;
+    // public function __construct()
+    // {
+    //     $this->departments = Department::all(['id','department_name'])->pluck('id','department_name');
+    // }
     public function model(array $row)
     {
         return new SOR([
             'Item_details'=>$row['Item_Details'],
-            'department_id'=>$this->departments[$row['department _id']],
+            'department_id'=>$row['department _id'],
             'dept_category_id'=>$row['dept_categoy_id'],
-            'description'=>$row['description'],
-            'unit_id'=>$row['unit_id'],
             'unit'=>$row['unit'],
+            'unit_id'=>$row['unit_id'],
+            'description'=>$row['description'],
             'cost'=>$row['cost'],
             'version'=>$row['version'],
             'effect_from'=>$row['effect_form'],

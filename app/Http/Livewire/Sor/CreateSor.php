@@ -134,11 +134,16 @@ class CreateSor extends Component
                 // }
                 // dd($data['file_upload']);
                 /*Single file Upload */
-                $filePath = file_get_contents($this->file_upload->getRealPath());
+                $temporaryFilePath = $this->file_upload->getRealPath();
+                // Delete the temporary file
+                if ($temporaryFilePath || file_exists($temporaryFilePath)) {
+                    unlink($temporaryFilePath);
+                }
+                $filePath = file_get_contents($temporaryFilePath);
                 $fileSize = $this->file_upload->getSize();
                 $filExt = $this->file_upload->getClientOriginalExtension();
                 $mimeType = $this->file_upload->getMimeType();
-
+                
 
                 DocuSor::create([
                     // $db_ext = DB::connection('pgsql_docu_External');
@@ -150,6 +155,7 @@ class CreateSor extends Component
                     'docufile' => base64_encode($filePath)
 
                 ]);
+                
             }
             $this->notification()->success(
                 $title = trans('cruds.sor.create_msg')
