@@ -19,8 +19,12 @@ class HomeController extends Controller
     {
         // $this->emit('changeTitleSubTitle');
 
-        // $assets = ['chart', 'animation'];
-        // return view('dashboards.dashboard', compact('assets'));
+        $assets = ['chart', 'animation'];
+        return view('dashboards.dashboard', compact('assets'));
+        // 
+    }
+    public function signature()
+    {
         return view('digital-sign.signature_pad');
     }
     public function upload(Request $request)
@@ -120,8 +124,6 @@ class HomeController extends Controller
 
     public function testMileStone()
     {
-
-
         $categories = Category::whereNull('category_id')
             ->with('childrenCategories')
             ->get();

@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Laravel Signature Pad Tutorial Example - ItSolutionStuff.com </title>
+    <title>{{__('Signature Pad')}} </title>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.css">
   
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 

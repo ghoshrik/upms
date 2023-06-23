@@ -173,7 +173,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         // });
 
         //digital signature 
-        Route::get('signaturepad',[HomeController::class,'index'])->name('signaturepad');
+        Route::get('signaturepad',[HomeController::class,'signature'])->name('signaturepad');
         Route::post('signaturepad',[HomeController::class,'upload'])->name('signaturepad.upload');
         Route::get('/create/pdf', [HomeController::class, 'createPDF'])->name('createPDF');
         

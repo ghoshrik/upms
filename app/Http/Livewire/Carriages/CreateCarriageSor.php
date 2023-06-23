@@ -137,12 +137,12 @@ class CreateCarriageSor extends Component
         // }
 
         /*
-            0 - 5
-            5 - 10
-            10 -20
-            20 - 50
-            50- 100
-            100 >
+            0 - 5 = 5
+            5 - 10 = 5
+            10 -20 = 10 
+            20 -50 = 30 
+            50- 100 = 50 
+            100 - 110 = 10 
 
         */
             // dd($this->inputsData[$key]['anyDistance']);
@@ -171,30 +171,36 @@ class CreateCarriageSor extends Component
 
         if($this->inputsData[$key]['anyDistance'] >= 0 && $this->inputsData[$key]['aboveDistance'] <=5)
         {
+            // $differDistance = intval($this->inputsData[$key]['aboveDistance']) - intval($this->inputsData[$key]['anyDistance']);
             $this->inputsData[$key]['total_amount'] = $this->inputsData[$key]['cost'];
         }
         else if($this->inputsData[$key]['anyDistance'] >=5 && $this->inputsData[$key]['aboveDistance'] <=10)
         {
-            $this->inputsData[$key]['total_amount'] = 5 * $this->inputsData[$key]['cost'] ;
+            $differDistance = intval($this->inputsData[$key]['aboveDistance']) - intval($this->inputsData[$key]['anyDistance']);
+             $this->inputsData[$key]['total_amount'] = $this->inputsData[$key]['cost'] * $differDistance;
+            // $this->inputsData[$key]['total_amount'] = 5 * $this->inputsData[$key]['cost'] ;
         }
         else if($this->inputsData[$key]['anyDistance'] >=10 && $this->inputsData[$key]['aboveDistance'] <=20)
         {
-            $this->inputsData[$key]['total_amount'] = 10 * $this->inputsData[$key]['cost'];
+            $differDistance = intval($this->inputsData[$key]['aboveDistance']) - intval($this->inputsData[$key]['anyDistance']);
+            $this->inputsData[$key]['total_amount'] = $differDistance * $this->inputsData[$key]['cost'];
         }
         else if($this->inputsData[$key]['anyDistance'] >=20 && $this->inputsData[$key]['aboveDistance'] <=50)
         {
-            $this->inputsData[$key]['total_amount'] = 30 * $this->inputsData[$key]['cost'];
+            $differDistance = intval($this->inputsData[$key]['aboveDistance']) - intval($this->inputsData[$key]['anyDistance']);
+            $this->inputsData[$key]['total_amount'] = $differDistance * $this->inputsData[$key]['cost'];
         }
         else if($this->inputsData[$key]['anyDistance'] >=50 && $this->inputsData[$key]['aboveDistance'] <=100)
         {
-            $this->inputsData[$key]['total_amount'] = 50 * $this->inputsData[$key]['cost'];
+            $differDistance = intval($this->inputsData[$key]['aboveDistance']) - intval($this->inputsData[$key]['anyDistance']);
+            $this->inputsData[$key]['total_amount'] = $differDistance * $this->inputsData[$key]['cost'];
         }
 
         else
         {
-            $this->inputsData[$key]['total_amount'] = 10*$this->inputsData[$key]['cost'];
+            $differDistance = intval($this->inputsData[$key]['aboveDistance']) - intval($this->inputsData[$key]['anyDistance']);
+            $this->inputsData[$key]['total_amount'] = $differDistance * $this->inputsData[$key]['cost'];
         }
-
 
     }
     public function store()

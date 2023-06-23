@@ -54,7 +54,8 @@ class CreateCarriageCost extends Component
     public function getDistSor()
     {
         // dd($this->estimateData['dept_category_id']);
-        $this->fatchDropdownData['selectSOR'] =  Carriagesor::select('s_o_r_s.Item_details as ItemNo','s_o_r_s.id as sl_no')->join('s_o_r_s','s_o_r_s.id','=','carriagesors.sor_parent_id')
+        $this->fatchDropdownData['selectSOR'] =  Carriagesor::select('s_o_r_s.Item_details as ItemNo','s_o_r_s.id as sl_no')
+        ->join('s_o_r_s','s_o_r_s.id','=','carriagesors.sor_parent_id')
         ->where('carriagesors.dept_category_id',$this->estimateData['dept_category_id'])
         ->where('carriagesors.dept_id',Auth::user()->department_id)
         ->groupBy('s_o_r_s.id')

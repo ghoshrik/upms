@@ -53,7 +53,6 @@ class Carriagesors extends Component
     }
     public function render()
     {
-
         $this->CarriageSor = Carriagesor::orderBy('id','asc')->get();
         $this->updateDataTableTracker = rand(1, 1000);
         $this->titel = "Carriages SOR";
