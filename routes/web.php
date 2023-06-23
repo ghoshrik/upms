@@ -172,6 +172,11 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('admin/settings', SettingLists::class)->name('admin.settings');
         // });
 
+        //digital signature 
+        Route::get('signaturepad',[HomeController::class,'index'])->name('signaturepad');
+        Route::post('signaturepad',[HomeController::class,'upload'])->name('signaturepad.upload');
+        Route::get('/create/pdf', [HomeController::class, 'createPDF'])->name('createPDF');
+        
         Route::get('change-role/{id}', function ($id) {
             if (UsersHasRoles::where([['user_id', Auth::user()->id], ['role_id', $id]])->first()) {
                 $selectedRole = Role::find($id);

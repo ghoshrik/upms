@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use PDF;
 use App\Models\MileStone;
+use App\Models\Signature;
 use App\Models\testCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,8 +19,28 @@ class HomeController extends Controller
     {
         // $this->emit('changeTitleSubTitle');
 
-        $assets = ['chart', 'animation'];
-        return view('dashboards.dashboard', compact('assets'));
+        // $assets = ['chart', 'animation'];
+        // return view('dashboards.dashboard', compact('assets'));
+        return view('digital-sign.signature_pad');
+    }
+    public function upload(Request $request)
+    {
+        $folderPath = public_path('upload/');
+        $img_part = explode(";base64,",$request->signed);
+        $image_type_aux = explode("image/", $img_part[0]);
+           
+        $image_type = $image_type_aux[1];
+           
+        $image_base64 = base64_decode($img_part[1]);
+        $signature = uniqid() . '.'.$image_type;
+        $file = $folderPath . $signature;
+        file_put_contents($file, $image_base64);
+        // $save = new Signature();
+        // $save->name= $request->name;
+        // $save->signature = $signature;
+        // $save->save();
+        Signature::create(['name'=>"img_signature".rand(0000,9999),'signature'=>$signature]);
+        return back()->with('success', 'success Full upload signature');
     }
 
     // public function testMileStone()
@@ -26,6 +48,51 @@ class HomeController extends Controller
     //     $assets = ['chart', 'animation'];
     //     return view('testMileStone',compact('assets'));
     // }
+
+    /**
+     * Where to redirect users after login.
+     *
+     * @var string
+     */
+    public function createPDF(Request $request)
+    {
+        // set certificate file
+        $certificate = 'file://'.base_path().'/public/tcpdf.crt';
+
+        // set additional information in the signature
+        $info = array(
+            'Name' => 'TCPDF',
+            'Location' => 'Office',
+            'Reason' => 'Testing TCPDF',
+            'ContactInfo' => 'http://www.tcpdf.org',
+        );
+
+        // set document signature
+        PDF::setSignature($certificate, $certificate, 'tcpdfdemo', '', 2, $info);
+        
+        PDF::SetFont('helvetica', '', 12);
+        PDF::SetTitle('Hello World');
+        PDF::AddPage();
+
+        // print a line of text
+        $text = view('tcpdf');
+
+        // add view content
+        PDF::writeHTML($text, true, 0, true, 0);
+
+        // add image for signature
+        PDF::Image('tcpdf.png', 180, 60, 15, 15, 'PNG');
+        
+        // define active area for signature appearance
+        PDF::setSignatureAppearance(180, 60, 15, 15);
+        
+        // save pdf file
+        PDF::Output(public_path('hello_world.pdf'), 'F');
+
+        PDF::reset();
+
+        dd('pdf created');
+    }
 
 
     public function buildTree($nodes)
