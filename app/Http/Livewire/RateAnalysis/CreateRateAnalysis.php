@@ -455,9 +455,12 @@ class CreateRateAnalysis extends Component
     // public $totalCost;
     public function getListData()
     {
+        // dd($this->estimateData['distance']);
+
+
         $res = Carriagesor::where(function ($query) {
             $query->where('start_distance', '>=', 0)
-                  ->where('upto_distance', '<=', $this->estimateData['distance']);
+                  ->where('upto_distance', '<', $this->estimateData['distance']);
         })
         // ->orWhere(function($query){
         //     $query->where('start_distance', '>=', 0)
@@ -467,20 +470,13 @@ class CreateRateAnalysis extends Component
         ->where('dept_category_id',$this->estimateData['dept_category_id'])
         ->where('sor_parent_id',$this->estimateData['itemNo'])
         ->get();
-        dd($res);
+        // dd($res);
         $totalCost=0;
         foreach($res as $key =>$resp)
         {
-            // $this->estimateData['item_number'] = $resp->child_sor_id;
-            // $this->estimateData['description'] = $resp->description;
-            // // $this->estimateData['distance'] = '';
-            // $this->estimateData['start_distance'] = $resp->start_distance;
-            // $this->estimateData['Upto_distance'] = $resp->upto_distance;
-            // $this->estimateData['cost'] = $resp->cost;
             $totalCost+= $resp->total_number;
-            // dd($resp['cost']);
         }
-        dd($totalCost);
+        // dd($totalCost);
         $this->addEstimate($key + 1);
     }
 
@@ -599,7 +595,8 @@ class CreateRateAnalysis extends Component
     public function addEstimate($key = null)
     {
         $this->validate();
-        if (isset($key)) {
+        if (isset($key)) 
+        {
             $this->showTableOne = !$this->showTableOne;
             $this->addedEstimate[$key]['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];
             $this->addedEstimate[$key]['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
@@ -624,6 +621,7 @@ class CreateRateAnalysis extends Component
             // $this->estimateData['total_amount'] = '';
             $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor', 'estimateData']);
         } else {
+            // dd("key");
             $this->reset('addedEstimate');
             $this->showTableOne = !$this->showTableOne;
             $this->addedEstimate['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];

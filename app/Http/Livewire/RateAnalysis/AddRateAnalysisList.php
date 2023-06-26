@@ -123,14 +123,17 @@ class AddRateAnalysisList extends Component
 
     public function setEstimateDataToSession()
     {
-        // dd($this->addedEstimateData);
+        // dd($this->addedRateAnalysisData);
         $this->reset('allAddedEstimatesData');
         if (Session()->has('addedRateAnalysisData')) {
             $this->allAddedEstimatesData = Session()->get('addedRateAnalysisData');
+            // dd( $this->allAddedEstimatesData);
         }
         if ($this->addedEstimateData != null) {
+            dd($this->addedEstimateData);
             if (CommonFunction::hasNestedArrays($this->addedEstimateData)) {
-                foreach ($this->addedEstimateData as $key => $addedEstimate) {
+                foreach ($this->addedEstimateData as $key => $addedEstimate) 
+                {
                     $index = count($this->allAddedEstimatesData) + 1;
                     if (!array_key_exists("operation", $addedEstimate)) {
                         $addedEstimate['operation'] = '';
