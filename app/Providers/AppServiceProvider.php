@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use URL;
 use App\Models\Menu;
 use App\Models\AccessMaster;
 use App\Models\MenuPermission;
@@ -29,12 +30,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        \URL::forceScheme('https');
+        //\URL::forceScheme('https');
         Gate::before(function ($user, $ability) {
             return $user->hasRole('Super Admin') ? true : null;
         });
         Schema::defaultStringLength(191);
-        \URL::forceScheme('http');
+        
         view()->composer('*', function ($menus) {
             // dd(Menu::where(['title','Estimate Prepare'])->orderBy('piority')->get());
             // $m = Menu::where('parent_id', '=', '0')->orderBy('piority')->get();

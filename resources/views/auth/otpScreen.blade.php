@@ -148,7 +148,7 @@
                                     <p class="text-danger" id="countdown"></p>
                                 </div>
                             </div>
-                            <button type="button" id="submit" class="btn btn-primary hide">Verify OTP</button>
+                            <button type="button" id="submit" class="btn btn-primary hide rounded">Verify OTP</button>
                         </form>
                     </div>
                 </div>
