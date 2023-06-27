@@ -2,7 +2,9 @@
 namespace App\Http\Livewire\Components\Modal\ImportFile;
 
 use App\Jobs\ImportJob;
+use App\Models\TestSor;
 use Livewire\Component;
+use WireUi\Traits\Actions;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
@@ -10,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 class FileUpload extends Component
 {
 
+    use Actions;
     protected $listeners = ['OpenImportFile'];
     public $viewModal = false;
     public $show;
@@ -40,7 +43,7 @@ class FileUpload extends Component
         // $this->doClose();
     }
 
-    
+   
     public function import()
     {
         // dd($this->importFile);
@@ -49,15 +52,48 @@ class FileUpload extends Component
             'importFile' => 'required',
         ]);
         $this->importing = true;
+        /* `->importFilePath` is storing the path of the uploaded file. It is used later in the
+        code to read the contents of the file and perform operations on it. */
         $this->importFilePath = $this->importFile->getRealPath();
-        // $this->importFilePath = $this->importFile->store('imports');
-        $batch = Bus::batch([
-            new ImportJob($this->importFilePath),
-        ])->dispatch();
-        $this->batchId = $batch->id;
-        // $data = array_map('str_getcsv', file($this->importFile->getRealPath()));
-        // dd($data);
+        
+        // dd($this->importFilePath);
+        // $batch = Bus::batch([
+        //    new ImportJob(1,100)
+        // ])->dispatch();
+        // $this->batchId = $batch->id;
+        $data = array_map('str_getcsv', file($this->importFile->getRealPath()));
+        // $data = $this->importFile->getRealPath();
+        $header = $data[0];
+        unset($data[0]);
+        // dd($data[0]);
+
+
+        /* 
+        * chunks file 
+         */
+        /*$chunks = array_chunk($data,1000);
+        // dd(count($chunks));
+        foreach($chunks as $key =>$chunk)
+        {
+           $name = "/tmp{$key}.csv";
+           $path = resource_path('temp');
+           file_put_contents($path.$name,$chunk);
+
+        }
+        */
+        foreach($data as $value)
+        {   
+            $dataList = array_combine($header,$value);
+            TestSor::create($dataList);
+        }
+        $this->notification()->success(
+            $title = 'File Upload Successfully'
+        );
+        $this->reset('importFile');
+        return ;
     }
+
+    /*
     public function getImportBatchProperty()
     {
         if (!$this->batchId) {
@@ -66,15 +102,16 @@ class FileUpload extends Component
 
         return Bus::findBatch($this->batchId);
     }
-
+    */
     public function updateImportProgress()
     {
-        $this->importFinished = $this->importBatch->finished();
+        // $this->importFinished = $this->importBatch->finished();
 
-        if ($this->importFinished) {
-            Storage::delete($this->importFilePath);
-            $this->importing = false;
-        }
+        // if ($this->importFinished) {
+        //     Storage::delete($this->importFilePath);
+        //     $this->importing = false;
+        // }
+        return ;
     }
     public function render()
     {

@@ -12,9 +12,9 @@
                             <div wire:poll="updateImportProgress">Importing...please wait.</div>
                         @endif
 
-                        @if ($importFinished)
+                        {{-- @if ($importFinished)
                             Finished importing.
-                        @endif
+                        @endif --}}
                     </div>
                 </div>
 
