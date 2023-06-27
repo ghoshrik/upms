@@ -62,16 +62,11 @@
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                     </svg> --}}
-
-
                             @isset($menu->icon)
                                 <x-icon name="{{ $menu->icon }}" class="w-5 h-5" />
                             @else
                                 <x-icon name="link" class="w-5 h-5" />
                             @endisset
-
-
-
                         </i>
                         <span class="item-name">{{ $menu->title }}</span>
                         </a>
