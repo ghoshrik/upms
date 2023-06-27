@@ -122,12 +122,15 @@ final class MisReport extends PowerGridComponent
                 'estimate_statuses.status as estCurrStatus',
                 'sor_masters.estimate_id',
                 'sor_masters.sorMasterDesc',
+                'estimate_prepares.total_amount as total_amount',
                 DB::raw(
                     'ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no'
                 )
             )
             ->join('estimate_statuses', 'sor_masters.status', '=', 'estimate_statuses.id')
-            ->join('departments', 'sor_masters.dept_id', '=', 'departments.id');
+            ->join('departments', 'sor_masters.dept_id', '=', 'departments.id')
+            ->join('estimate_prepares','estimate_prepares.estimate_id','=','sor_masters.estimate_id')
+            ->where('estimate_prepares.operation','=','Total');
         return $res;
     }
 
@@ -169,7 +172,8 @@ final class MisReport extends PowerGridComponent
             ->addColumn('dept_code')
             ->addColumn('estimate_id')
             ->addColumn('estCurrStatus')
-            ->addColumn('sorMasterDesc');
+            ->addColumn('sorMasterDesc')
+            ->addColumn('total_amount');
     }
 
     /*
@@ -206,7 +210,8 @@ final class MisReport extends PowerGridComponent
             Column::make('Status', 'estCurrStatus')
                 ->sortable(),
 
-            Column::make('Estimate Desc.', 'sorMasterDesc')
+            Column::make('Estimate Desc.', 'sorMasterDesc'),
+            Column::make('Total Amount.', 'total_amount')
         ];
     }
 }
