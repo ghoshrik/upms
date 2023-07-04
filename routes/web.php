@@ -153,7 +153,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('quantity-evaluation', QuantityEvaluation::class)->name('quantity-evaluation');
         Route::get('carriage-cost',CarriageCosts::class)->name('carriage-cost'); // Route::get('aafs-project',ProjectList::class)->name('aafs-project'); Route::get('roles', Roles::class)->name('roles'); Route::get('permissions', Permission::class)->name('permissions');
         Route::get('import',Imports::class)->name('import');
-
+        Route::get('roles', Roles::class)->name('roles');
+        Route::get('permissions', Permission::class)->name('permissions');
+        
         // Route::get('vendors',VendorList::class)->name('vendors');
 
         // Route::get('aafs-project', AafsProjects::class)->name('aafs-project');
