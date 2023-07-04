@@ -106,7 +106,7 @@ class Create extends Component
             $this->emit('openEntryForm');
             $this->reset();
         } catch (\Throwable $th) {
-            dd($th);
+            $this->emit('showError', $th->getMessage());
         }
     }
 
