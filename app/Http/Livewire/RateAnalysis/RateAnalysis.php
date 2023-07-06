@@ -46,7 +46,7 @@ class RateAnalysis extends Component
         ->where('user_id',Auth::user()->id)
         ->where('is_done',0)
         ->count();
-        $this->counterData['forwardedDataCount'] =  EstimateUserAssignRecord::query()
+        $this->counterData['fwdDataCount'] =  EstimateUserAssignRecord::query()
         ->selectRaw('count(status)')
         ->where('status', 2)
         ->where('user_id', Auth::user()->id)

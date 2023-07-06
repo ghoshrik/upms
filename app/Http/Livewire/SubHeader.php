@@ -15,29 +15,20 @@ class SubHeader extends Component
         'changeTitleSubTitle'=>'setTitleSubTitle'];
     public $errorMessage;
 
-    // public function CCButtonControl()
-    // {
-    //     $this->createButtonOn = !$this->createButtonOn;
-    // }
+   
     public function openCloseEntryForm()
     {
         $this->emit('openEntryForm');
         $this->showCloseButton = !$this->showCloseButton;
     }
-    // public function setTitel($titel)
-    // {
-    //     $this->titel = $titel;
-    // }
+
     public function setTitleSubTitle($titleSubTitle)
     {
         $titleSubTitle = explode('|',$titleSubTitle);
         $this->titel = $titleSubTitle[0];
         $this->subTitel = $titleSubTitle[1];
     }
-    // public function setSubTitel($subTitel)
-    // {
-    //     $this->subTitel = $subTitel;
-    // }
+   
     public function setErrorAlert($errorMessage)
     {
        $this->errorMessage = $errorMessage;

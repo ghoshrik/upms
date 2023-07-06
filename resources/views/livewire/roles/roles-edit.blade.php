@@ -21,6 +21,42 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="card card-block card-stretch card-height px-2 py-3">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" class="text-center">Module Name</th>
+                            </tr>
+                            <tr>
+                                <th colspan="6" class="text-center">Permissions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($grouped_permissions as $key => $permissions)
+                                <tr>
+                                    <td>{{$key}}</td>
+                                    @foreach ($permissions as $permission)
+                                    <td>
+                                        <div class="form-check">
+                                            <x-checkbox id="right-label" wire:key="permissionId-{{ $permission['id'] }}"
+                                                label="{{$permission['name']}}" value="{{$permission['name'].''.$key}}"
+                                                wire:model="selectedPermissions" />
+                                        </div>
+                                    </td>
+                                    @endforeach
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-12">
+                <x-button wire:click="updateRole" rounded warning label="update"/>
+            </div>
+        </div>
+        {{-- 
         @foreach ($grouped_permissions as $key => $permissions)
         <div class="col-lg-3 col-md-6">
             <div class="card card-block card-stretch card-height">
@@ -56,4 +92,5 @@
             <x-button wire:click="updateRole" rounded primary label="Save" />
         </div>
     </div>
+    --}}
 </div>

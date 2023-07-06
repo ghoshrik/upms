@@ -86,8 +86,8 @@ final class RolesTable extends PowerGridComponent
     {
         return PowerGrid::eloquent()
             ->addColumn('id')
-            ->addColumn('name')
-            ->addColumn('created_at_formatted', fn (Role $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
+            ->addColumn('name');
+            // ->addColumn('created_at_formatted', fn (Role $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
         // ->addColumn('updated_at_formatted', fn (Role $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
     }
 
@@ -112,10 +112,10 @@ final class RolesTable extends PowerGridComponent
                 ->makeInputRange(),
             Column::make('NAME', 'name')
                 ->makeInputRange(),
-            Column::make('CREATED AT', 'created_at_formatted', 'created_at')
-                ->searchable()
-                ->sortable()
-                ->makeInputDatePicker(),
+            // Column::make('CREATED AT', 'created_at_formatted', 'created_at')
+            //     ->searchable()
+            //     ->sortable()
+            //     ->makeInputDatePicker(),
 
             // Column::make('UPDATED AT', 'updated_at_formatted', 'updated_at')
             //     ->searchable()
@@ -142,9 +142,13 @@ final class RolesTable extends PowerGridComponent
     public function actions(): array
     {
         return [
-            Button::make('edit', 'Edit')
+
+            Button::add('Edit')
+                ->bladeComponent('edit-button', ['id' => 'id', 'action' => 'edit'])
+
+            /*Button::make('edit', 'Edit')
                 ->class('btn btn-soft-primary btn-sm')
-                ->emit('openEntryForm', ['id' => 'id', 'formType' => 'edit']),
+                ->emit('openEntryForm', ['id' => 'id', 'formType' => 'edit']),*/
 
             //    Button::make('destroy', 'Delete')
             //        ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
@@ -152,6 +156,13 @@ final class RolesTable extends PowerGridComponent
             //        ->method('delete')
         ];
     }
+
+
+    public function edit($id)
+    {
+        $this->emit('openEntryForm', ['formType' => 'edit', 'id' => $id]);
+    }
+
 
     /*
     |--------------------------------------------------------------------------

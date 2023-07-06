@@ -77,7 +77,7 @@ class User extends Authenticatable implements MustVerifyEmail
     // }
     public function getDepartmentName()
     {
-        return $this->belongsTo(Department::class, 'department_id');
+        return $this->belongsTo(Department::class, 'department_id','id');
     }
     public function getDesignationName()
     {

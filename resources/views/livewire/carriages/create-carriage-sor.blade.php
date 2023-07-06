@@ -23,6 +23,7 @@
                                 </x-select>
                             </div>
                         </div>
+                        
                         <div class="col-sm-4 col-lg-4 col-md-4">
                             <div class="form-group">
                                 <x-select wire:key="unitmaster" label="{{ trans('cruds.sor.fields.item_number') }}"
@@ -30,7 +31,7 @@
                                     wire:model.defer="inputText.item_Parent_no" x-on:select="$wire.getFilterItemNo()">
                                     @isset($fetchDropDownData['sorParent_no'])
                                         @foreach ($fetchDropDownData['sorParent_no'] as $itemno)
-                                            <x-select.option label="{{ $itemno['Item_details'] }}"
+                                            <x-select.option label="{{ $itemno['Item_details'] }} &nbsp; {{ $itemno['description'] }}"
                                                 value="{{ $itemno['id'] }}" />
                                         @endforeach
                                     @endisset
@@ -51,8 +52,7 @@
                                         x-on:select="$wire.getItemDetails({{$key}})">
                                         @isset($fetchDropDownData['carriageSor'])
                                             @foreach ($fetchDropDownData['carriageSor'] as $item)
-                                                <x-select.option label="{{ $item['Item_details'] }}"
-                                                    value="{{ $item['id'] }}" />
+                                                <x-select.option label="{{ $item['Item_details'] }} &nbsp; {{ $item['description'] }}" value="{{ $item['id'] }}" />
                                             @endforeach
                                         @endisset
                                     </x-select>

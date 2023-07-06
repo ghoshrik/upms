@@ -176,7 +176,7 @@
                                                             style="display:{{ $searchDtaCount ? $searchStyle : $searchStyle }}">
                                                             @foreach ($this->fatchDropdownData['items_number'] as $list)
                                                                 <a href="javascript:void(0);"
-                                                                    wire:click="getItemDetails({{ $list['id'] }})">{{ $list['Item_details'] }}</a>
+                                                                    wire:click="getItemDetails({{ $list['id'] }})"><b>{{ $list['Item_details'] }}</b> <sub>{{$list['description']}}</sub></a>
                                                             @endforeach
                                                         </div>
                                                     @endif
@@ -402,7 +402,7 @@
                                                             style="display:{{ $searchDtaCount ? $searchStyle : $searchStyle }}">
                                                             @foreach ($this->fatchDropdownData['items_number'] as $list)
                                                                 <a href="javascript:void(0);"
-                                                                    wire:click="getCompositSorItemDetails({{ $list['id'] }})">{{ $list['Item_details'] }}</a>
+                                                                    wire:click="getCompositSorItemDetails({{ $list['id'] }})"><b>{{ $list['Item_details'] }}</b> <sub>{{$list['description']}}</sub></a>
                                                             @endforeach
                                                         </div>
                                                     @endif

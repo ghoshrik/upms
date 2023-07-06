@@ -85,20 +85,20 @@ class CreateCarriageSor extends Component
 
     public function getDeptCategory()
     {
-        $this->fetchDropDownData['sorParent_no'] = SOR::select('id','Item_details')->where('department_id',Auth::user()->department_id)->where('dept_category_id',$this->inputText['dept_cate_id'])->get();
+        $this->fetchDropDownData['sorParent_no'] = SOR::select('id','Item_details','description')->where('department_id',Auth::user()->department_id)->where('dept_category_id',$this->inputText['dept_cate_id'])->get();
     }
 
     public function getFilterItemNo()
     {
-        $res = SOR::select('Item_details')->where('id',$this->inputText['item_Parent_no'])->first();
-        $this->fetchDropDownData['carriageSor'] = SOR::select('Item_details','id')->where('Item_details','LIKE',$res['Item_details']."%")->get();
+        $res = SOR::select('Item_details','description')->where('id',$this->inputText['item_Parent_no'])->first();
+        $this->fetchDropDownData['carriageSor'] = SOR::select('Item_details','id','description')->where('Item_details','LIKE',$res['Item_details']."%")->get();
 
     }
 
     public function getItemNo($key)
     {
-        $res = SOR::select('Item_details')->where('id',$this->inputsData[$key]['sor_parent_id'])->first();
-        $this->fetchDropDownData['carriageSor'] = SOR::select('Item_details','id')->where('Item_details','LIKE',$res['Item_details']."%")->get();
+        $res = SOR::select('Item_details','description')->where('id',$this->inputsData[$key]['sor_parent_id'])->first();
+        $this->fetchDropDownData['carriageSor'] = SOR::select('Item_details','id','description')->where('Item_details','LIKE',$res['Item_details']."%")->get();
     }
     public function getItemDetails($key)
     {

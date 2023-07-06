@@ -100,7 +100,6 @@ final class UsersDataTable extends PowerGridComponent
                     // ->where('department_id', Auth::user()->department_id)
                     ->where('is_active', 1)->get();
                 $i = 1;
-                // dd($users);
                 foreach ($users as $key => $user) {
                     $desg = Designation::select('designation_name')->where('id', $user->designation_id)->get();
                     foreach ($desg as $designation) {
@@ -171,7 +170,7 @@ final class UsersDataTable extends PowerGridComponent
                         '6' => $user->mobile,
                         '7' => $designationName,
                         '8' => $user->getDepartmentName->department_name,
-                        '9' => $user->getOfficeName->office_name,
+                        '9' => $user->office_id ? $user->getOfficeName->office_name: 'N/A',
                         'active' => $user->is_active,
                     ];
                     $i++;
@@ -412,7 +411,8 @@ final class UsersDataTable extends PowerGridComponent
                 )
                 ->where('user_types.parent_id', $this->userData)
                 ->join('user_types', 'users.user_type', '=', 'user_types.id')
-                ->join('designations', 'users.designation_id', '=', 'designations.id');
+                ->join('designations', 'users.designation_id', '=', 'designations.id')
+                ;
         }
     }
 
@@ -455,7 +455,10 @@ final class UsersDataTable extends PowerGridComponent
      */
     public function relationSearch(): array
     {
-        return [];
+        return [
+            // 'Department'=>['department_name'],
+            // 'Office'=>['office_name'],
+        ];
     }
 
     /*
@@ -629,17 +632,16 @@ final class UsersDataTable extends PowerGridComponent
                 ->makeInputText(),
 
             Column::make('DEPARTMENT NAME', 'getDepartmentName.department_name')
-                ->sortable()
+                
                 ->searchable(),
 
             Column::make('OFFICE NAME', 'getOfficeName.office_name')
-                ->sortable()
+                
                 ->searchable(),
             // ->when(fn ($dish) => $dish->in_stock == false)
             // ->hide(),
 
             Column::make('USER TYPE', 'getUserType.type')
-                ->sortable()
                 ->searchable(),
 
             Column::make('STATUS', 'is_active')
