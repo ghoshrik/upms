@@ -130,9 +130,9 @@ class AddRateAnalysisList extends Component
             // dd( $this->allAddedEstimatesData);
         }
         if ($this->addedEstimateData != null) {
-            dd($this->addedEstimateData);
+            // dd($this->addedEstimateData);
             if (CommonFunction::hasNestedArrays($this->addedEstimateData)) {
-                foreach ($this->addedEstimateData as $key => $addedEstimate) 
+                foreach ($this->addedEstimateData as $key => $addedEstimate)
                 {
                     $index = count($this->allAddedEstimatesData) + 1;
                     if (!array_key_exists("operation", $addedEstimate)) {
@@ -178,6 +178,7 @@ class AddRateAnalysisList extends Component
                 Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
                 $this->reset('addedEstimateData');
             }
+            $this->reset('addedEstimateData');
         }
     }
 

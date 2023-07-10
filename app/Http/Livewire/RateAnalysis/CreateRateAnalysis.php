@@ -3,20 +3,16 @@
 namespace App\Http\Livewire\RateAnalysis;
 
 use App\Models\Carriagesor;
-use App\Models\SOR;
-use Livewire\Component;
-use App\Models\SorMaster;
-use App\Models\Department;
-use WireUi\Traits\Actions;
 use App\Models\CompositSor;
-use Illuminate\Support\Arr;
-use App\Models\Esrecommender;
-use App\Models\RatesAnalysis;
+use App\Models\Department;
 use App\Models\EstimatePrepare;
+use App\Models\RatesAnalysis;
+use App\Models\SOR;
 use App\Models\SorCategoryType;
-use Illuminate\Support\Facades\Log;
+use App\Models\SorMaster;
 use Illuminate\Support\Facades\Auth;
-
+use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class CreateRateAnalysis extends Component
 {
@@ -128,7 +124,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
-            $this->estimateData['distance']='';
+            $this->estimateData['distance'] = '';
             $this->estimateData['itemNo'] = '';
         } elseif ($this->selectedCategoryId == 2) {
             $this->estimateData['rate_no'] = '';
@@ -141,7 +137,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
-            $this->estimateData['distance']='';
+            $this->estimateData['distance'] = '';
             $this->estimateData['itemNo'] = '';
         } elseif ($this->selectedCategoryId == 3) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
@@ -159,7 +155,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
-            $this->estimateData['distance']='';
+            $this->estimateData['distance'] = '';
             $this->estimateData['itemNo'] = '';
         } elseif ($this->selectedCategoryId == 4) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
@@ -176,7 +172,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
-            $this->estimateData['distance']='';
+            $this->estimateData['distance'] = '';
             $this->estimateData['itemNo'] = '';
         } else {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
@@ -193,7 +189,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
-            $this->estimateData['distance']='';
+            $this->estimateData['distance'] = '';
             $this->estimateData['itemNo'] = '';
         }
     }
@@ -274,7 +270,7 @@ class CreateRateAnalysis extends Component
         //     ->where('version', $this->estimateData['version'])
         //     ->where('Item_details', 'like', '%' . $keyword . '%')->get();
         if ($this->selectedSORKey) {
-            $this->fatchDropdownData['items_number'] = SOR::select('Item_details', 'id','description')
+            $this->fatchDropdownData['items_number'] = SOR::select('Item_details', 'id', 'description')
                 ->where('department_id', $this->estimateData['dept_id'])
                 ->where('dept_category_id', $this->estimateData['dept_category_id'])
                 ->where('version', $this->estimateData['version'])
@@ -305,6 +301,7 @@ class CreateRateAnalysis extends Component
             );
         }
     }
+
     public function getItemDetails($id)
     {
         // $this->estimateData['description'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['description'];
@@ -331,6 +328,115 @@ class CreateRateAnalysis extends Component
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
         }
+    }
+    public $distance;
+    public function getItemDetails1($id)
+    {
+        // dd($id);
+        $this->distance = $this->estimateData['distance'];
+        // $this->estimateData['description'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['description'];
+        // $this->estimateData['qty'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['unit'];
+        // $this->estimateData['rate'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['cost'];
+        // $this->estimateData['item_number'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['id'];
+        // $this->calculateValue();
+
+        $this->searchResData = SOR::select('Item_details', 'id', 'description', 'cost')->where('Item_details', 'like', $id . '%')->get();
+        // dd($this->searchResData);
+        foreach ($this->searchResData as $key => $data) {
+
+            if ($key == 0 && $this->distance != 0) {
+                if ($this->distance >= 5) {
+                    $this->estimateData['qty'] = 5;
+                } else {
+                    $this->estimateData['qty'] = $this->distance;
+                }
+                $this->estimateData['item_number'] = $data['id'];
+                $this->estimateData['description'] = $data['description'];
+
+                $this->estimateData['rate'] = $data['cost'];
+                $this->estimateData['total_amount'] = $data['cost'];
+                $this->distance = $this->distance - $this->estimateData['qty'];
+                $this->addEstimate($key + 1);
+            } elseif ($key == 1 && $this->distance != 0) {
+                if ($this->distance >= 5) {
+                    $this->estimateData['qty'] = 5;
+                } else {
+                    $this->estimateData['qty'] = $this->distance;
+                }
+                $this->estimateData['item_number'] = $data['id'];
+                $this->estimateData['description'] = $data['description'];
+                // $this->estimateData['qty'] = 5;
+                $this->estimateData['rate'] = $data['cost'];
+                $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
+                $this->distance = $this->distance - $this->estimateData['qty'];
+                $this->addEstimate($key + 1);
+            } elseif ($key == 2 && $this->distance != 0) {
+                if ($this->distance >= 10) {
+                    $this->estimateData['qty'] = 10;
+                } else {
+                    $this->estimateData['qty'] = $this->distance;
+                }
+                $this->estimateData['item_number'] = $data['id'];
+                $this->estimateData['description'] = $data['description'];
+                // $this->estimateData['qty'] = 10;
+                $this->estimateData['rate'] = $data['cost'];
+                $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
+                $this->distance = $this->distance - $this->estimateData['qty'];
+                $this->addEstimate($key + 1);
+            } elseif ($key == 3 && $this->distance != 0) {
+                if ($this->distance >= 30) {
+                    $this->estimateData['qty'] = 30;
+                } else {
+                    $this->estimateData['qty'] = $this->distance;
+                }
+                $this->estimateData['item_number'] = $data['id'];
+                $this->estimateData['description'] = $data['description'];
+                // $this->estimateData['qty'] = 30;
+                $this->estimateData['rate'] = $data['cost'];
+                $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
+                $this->distance = $this->distance - $this->estimateData['qty'];
+                $this->addEstimate($key + 1);
+            } elseif ($key == 4 && $this->distance != 0) {
+                if ($this->distance >= 50) {
+                    $this->estimateData['qty'] = 50;
+                } else {
+                    $this->estimateData['qty'] = $this->distance;
+                }
+                $this->estimateData['item_number'] = $data['id'];
+                $this->estimateData['description'] = $data['description'];
+                // $this->estimateData['qty'] = 50;
+                $this->estimateData['rate'] = $data['cost'];
+                $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
+                $this->distance = $this->distance - $this->estimateData['qty'];
+                $this->addEstimate($key + 1);
+            } else {
+                if ($this->distance != 0) {
+                    $this->estimateData['item_number'] = $data['id'];
+                    $this->estimateData['description'] = $data['description'];
+                    $this->estimateData['qty'] = $this->distance;
+                    $this->estimateData['rate'] = $data['cost'];
+                    $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
+                    $this->addEstimate($key + 1);
+                }
+            }
+        }
+        // dd($this->estimateData);
+        // $this->searchDtaCount = count($this->searchResData) > 0;
+        // $this->searchStyle = 'none';
+        // if (count($this->searchResData) > 0) {
+        //     foreach ($this->searchResData as $list) {
+        //         $this->estimateData['description'] = $list['description'];
+        //         $this->estimateData['qty'] = $list['unit'];
+        //         $this->estimateData['rate'] = $list['cost'];
+        //         $this->estimateData['item_number'] = $list['id'];
+        //         $this->selectedSORKey = $list['Item_details'];
+        //     }
+        //     $this->calculateValue();
+        // } else {
+        //     $this->estimateData['description'] = '';
+        //     $this->estimateData['qty'] = '';
+        //     $this->estimateData['rate'] = '';
+        // }
     }
     public function getCompositSorItemDetails($id)
     {
@@ -371,7 +477,7 @@ class CreateRateAnalysis extends Component
                 $this->selectedSORKey = '';
                 return;
             }
-            // where([['sor_item_number',$sor['sor_itemno_child']],['operation','Total']])->first();                  
+            // where([['sor_item_number',$sor['sor_itemno_child']],['operation','Total']])->first();
             // dd($rateDetails);
             // $this->estimateData['rate'] = $rateDetails->total_amount;
             // $this->estimateData['total_amount'] = $rateDetails->total_amount * $sor['rate'];
@@ -387,14 +493,14 @@ class CreateRateAnalysis extends Component
     }
 
     /*
-    * Carriage SOR search 
-    */
+     * Carriage SOR search
+     */
     public $searchCarriageDtaCount;
     public function autoCarriagesSearch()
     {
         if ($this->selectedSORKey) {
             $this->fatchDropdownData['items_number'] = SOR::select('s_o_r_s.Item_details', 's_o_r_s.id')
-                // ->join('carriagesors','carriagesors.sor_parent_id','=','s_o_r_s.id')
+            // ->join('carriagesors','carriagesors.sor_parent_id','=','s_o_r_s.id')
                 ->where('s_o_r_s.department_id', $this->estimateData['dept_id'])
                 ->where('s_o_r_s.dept_category_id', $this->estimateData['dept_category_id'])
                 ->where('s_o_r_s.version', $this->estimateData['version'])
@@ -425,31 +531,29 @@ class CreateRateAnalysis extends Component
         }
     }
 
-
-
     /*public function getCarriageItemDetails($id)
     {
-        $sors = SOR::select('id','Item_details')->where('id',$id)->first();
-        if(!empty($sors))
-        {
-           $ssa = Carriagesor::select('sor_parent_id','child_sor_id','description','start_distance','upto_distance','cost','total_number')->where('sor_parent_id',$sors->id)->get();
-            dd($ssa);
-        }
-        else
-        {
-            dd("no");
-        }
+    $sors = SOR::select('id','Item_details')->where('id',$id)->first();
+    if(!empty($sors))
+    {
+    $ssa = Carriagesor::select('sor_parent_id','child_sor_id','description','start_distance','upto_distance','cost','total_number')->where('sor_parent_id',$sors->id)->get();
+    dd($ssa);
+    }
+    else
+    {
+    dd("no");
+    }
     }*/
 
     public function getSorDtls()
     {
-        $this->fatchDropdownData['selectSOR'] =  Carriagesor::select('s_o_r_s.Item_details as ItemNo','s_o_r_s.id as sl_no')
-        ->join('s_o_r_s','s_o_r_s.id','=','carriagesors.sor_parent_id')
-        ->where('carriagesors.dept_category_id',$this->estimateData['dept_category_id'])
-        ->where('carriagesors.dept_id',Auth::user()->department_id)
-        ->where('s_o_r_s.version', $this->estimateData['version'])
-        ->groupBy('s_o_r_s.id')
-        ->get();
+        $this->fatchDropdownData['selectSOR'] = Carriagesor::select('s_o_r_s.Item_details as ItemNo', 's_o_r_s.id as sl_no')
+            ->join('s_o_r_s', 's_o_r_s.id', '=', 'carriagesors.sor_parent_id')
+            ->where('carriagesors.dept_category_id', $this->estimateData['dept_category_id'])
+            ->where('carriagesors.dept_id', Auth::user()->department_id)
+            ->where('s_o_r_s.version', $this->estimateData['version'])
+            ->groupBy('s_o_r_s.id')
+            ->get();
         // dd($this->fatchDropdownData['selectSOR']);
     }
     // public $totalCost;
@@ -457,24 +561,22 @@ class CreateRateAnalysis extends Component
     {
         // dd($this->estimateData['distance']);
 
-
         $res = Carriagesor::where(function ($query) {
             $query->where('start_distance', '>=', 0)
-                  ->where('upto_distance', '<', $this->estimateData['distance']);
+                ->where('upto_distance', '<', $this->estimateData['distance']);
         })
         // ->orWhere(function($query){
         //     $query->where('start_distance', '>=', 0)
         //     ->where('upto_distance', '<=', $this->estimateData['distance']);
         // })
-        ->where('dept_id',Auth::user()->department_id)
-        ->where('dept_category_id',$this->estimateData['dept_category_id'])
-        ->where('sor_parent_id',$this->estimateData['itemNo'])
-        ->get();
+            ->where('dept_id', Auth::user()->department_id)
+            ->where('dept_category_id', $this->estimateData['dept_category_id'])
+            ->where('sor_parent_id', $this->estimateData['itemNo'])
+            ->get();
         // dd($res);
-        $totalCost=0;
-        foreach($res as $key =>$resp)
-        {
-            $totalCost+= $resp->total_number;
+        $totalCost = 0;
+        foreach ($res as $key => $resp) {
+            $totalCost += $resp->total_number;
         }
         // dd($totalCost);
         $this->addEstimate($key + 1);
@@ -595,8 +697,7 @@ class CreateRateAnalysis extends Component
     public function addEstimate($key = null)
     {
         $this->validate();
-        if (isset($key)) 
-        {
+        if (isset($key)) {
             $this->showTableOne = !$this->showTableOne;
             $this->addedEstimate[$key]['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];
             $this->addedEstimate[$key]['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
@@ -619,7 +720,7 @@ class CreateRateAnalysis extends Component
             // $this->estimateData['qty'] = '';
             // $this->estimateData['rate'] = '';
             // $this->estimateData['total_amount'] = '';
-            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor', 'estimateData']);
+            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor', 'estimateData', 'distance']);
         } else {
             // dd("key");
             $this->reset('addedEstimate');

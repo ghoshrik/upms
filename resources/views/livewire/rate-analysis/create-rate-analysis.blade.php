@@ -452,7 +452,7 @@
                                             <x-select wire:key="compositversion"
                                                 label="{{ trans('cruds.estimate.fields.version') }}"
                                                 placeholder="Select {{ trans('cruds.estimate.fields.version') }}"
-                                                wire:model.defer="estimateData.version" x-on:select="$wire.getSorDtls()">
+                                                wire:model.defer="estimateData.version" x-on:select="$wire.getVersion()">
                                                 @isset($fatchDropdownData['versions'])
                                                     @foreach ($fatchDropdownData['versions'] as $version)
                                                         <x-select.option label="{{ $version['version'] }}"
@@ -468,28 +468,30 @@
                                         </div>
                                     </div>
                                    <div class="col-md-3 col-lg-3 col-sm-3">
-                                         {{-- <div class="form-group search-sor">
+                                         <div class="form-group search-sor">
                                             <div class="dropdown">
-                                                <x-input wire:key="compositsor"
+                                                <x-input wire:key="sor"
                                                     label="{{ trans('cruds.estimate.fields.sor') }}"
                                                     placeholder="{{ trans('cruds.estimate.fields.sor') }}"
                                                     wire:model.defer="selectedSORKey" value="{{ $selectedSORKey }}"
-                                                    wire:keydown.escape="resetValus" wire:keydown.tab="autoCarriagesSearch"
+                                                    wire:keydown.escape="resetValus" wire:keydown.tab="autoSearch"
                                                     class="dropbtn" />
+
+
                                                 @isset($this->fatchDropdownData['items_number'])
                                                     @if (count($this->fatchDropdownData['items_number']) > 0)
                                                         <div class="dropdown-content"
                                                             style="display:{{ $searchDtaCount ? $searchStyle : $searchStyle }}">
                                                             @foreach ($this->fatchDropdownData['items_number'] as $list)
                                                                 <a href="javascript:void(0);"
-                                                                    wire:click="getCarriageItemDetails({{ $list['id'] }})">{{ $list['Item_details'] }}</a>
+                                                                    wire:click="getItemDetails1('{{ $list['Item_details'] }}')"><b>{{ $list['Item_details'] }}</b> <sub>{{$list['description']}}</sub></a>
                                                             @endforeach
                                                         </div>
                                                     @endif
                                                 @endisset
                                             </div>
-                                        </div>--}}
-                                        <div class="form-group">
+                                        </div>
+                                        {{-- <div class="form-group">
                                             <x-select wire:key="carriageSor"
                                                 label="{{ trans('cruds.estimate.fields.item_number') }}"
                                                 placeholder="Select {{ trans('cruds.estimate.fields.item_number') }}"
@@ -501,8 +503,8 @@
                                                     @endforeach
                                                 @endisset
                                             </x-select>
-                                        </div>
-                                    </div> 
+                                        </div> --}}
+                                    </div>
 
                                 </div>
                             @endif
