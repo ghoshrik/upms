@@ -20,7 +20,7 @@ class CreateRateAnalysis extends Component
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc, $selectSor = [], $dropdownData = [];
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
-    public $searchDtaCount, $searchStyle, $searchResData;
+    public $searchDtaCount, $searchStyle, $searchResData,$totalDistance;
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -343,81 +343,75 @@ class CreateRateAnalysis extends Component
         $this->searchResData = SOR::select('Item_details', 'id', 'description', 'cost')->where('Item_details', 'like', $id . '%')->get();
         // dd($this->searchResData);
         foreach ($this->searchResData as $key => $data) {
-
-            if ($key == 0 && $this->distance != 0) {
-                if ($this->distance >= 5) {
+            if ($key == 0 && $this->estimateData['distance'] != 0) {
+                if ($this->estimateData['distance'] >= 5) {
                     $this->estimateData['qty'] = 5;
                 } else {
-                    $this->estimateData['qty'] = $this->distance;
+                    $this->estimateData['qty'] = $this->estimateData['distance'];
                 }
                 $this->estimateData['item_number'] = $data['id'];
                 $this->estimateData['description'] = $data['description'];
-
                 $this->estimateData['rate'] = $data['cost'];
                 $this->estimateData['total_amount'] = $data['cost'];
-                $this->distance = $this->distance - $this->estimateData['qty'];
+                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
                 $this->addEstimate($key + 1);
-            } elseif ($key == 1 && $this->distance != 0) {
-                if ($this->distance >= 5) {
+            } elseif ($key == 1 && $this->estimateData['distance'] != 0) {
+                if ($this->estimateData['distance'] >= 5) {
                     $this->estimateData['qty'] = 5;
                 } else {
-                    $this->estimateData['qty'] = $this->distance;
+                    $this->estimateData['qty'] = $this->estimateData['distance'];
                 }
                 $this->estimateData['item_number'] = $data['id'];
                 $this->estimateData['description'] = $data['description'];
-                // $this->estimateData['qty'] = 5;
                 $this->estimateData['rate'] = $data['cost'];
                 $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
-                $this->distance = $this->distance - $this->estimateData['qty'];
+                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
                 $this->addEstimate($key + 1);
-            } elseif ($key == 2 && $this->distance != 0) {
-                if ($this->distance >= 10) {
+            } elseif ($key == 2 && $this->estimateData['distance'] != 0) {
+                if ($this->estimateData['distance'] >= 10) {
                     $this->estimateData['qty'] = 10;
                 } else {
-                    $this->estimateData['qty'] = $this->distance;
+                    $this->estimateData['qty'] = $this->estimateData['distance'];
                 }
                 $this->estimateData['item_number'] = $data['id'];
                 $this->estimateData['description'] = $data['description'];
-                // $this->estimateData['qty'] = 10;
                 $this->estimateData['rate'] = $data['cost'];
                 $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
-                $this->distance = $this->distance - $this->estimateData['qty'];
+                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
                 $this->addEstimate($key + 1);
-            } elseif ($key == 3 && $this->distance != 0) {
-                if ($this->distance >= 30) {
+            } elseif ($key == 3 && $this->estimateData['distance'] != 0) {
+                if ($this->estimateData['distance'] >= 30) {
                     $this->estimateData['qty'] = 30;
                 } else {
-                    $this->estimateData['qty'] = $this->distance;
+                    $this->estimateData['qty'] = $this->estimateData['distance'];
                 }
                 $this->estimateData['item_number'] = $data['id'];
                 $this->estimateData['description'] = $data['description'];
-                // $this->estimateData['qty'] = 30;
                 $this->estimateData['rate'] = $data['cost'];
                 $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
-                $this->distance = $this->distance - $this->estimateData['qty'];
+                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
                 $this->addEstimate($key + 1);
-            } elseif ($key == 4 && $this->distance != 0) {
-                if ($this->distance >= 50) {
+            } elseif ($key == 4 && $this->estimateData['distance'] != 0) {
+                if ($this->estimateData['distance'] >= 50) {
                     $this->estimateData['qty'] = 50;
                 } else {
-                    $this->estimateData['qty'] = $this->distance;
+                    $this->estimateData['qty'] = $this->estimateData['distance'];
                 }
                 $this->estimateData['item_number'] = $data['id'];
                 $this->estimateData['description'] = $data['description'];
-                // $this->estimateData['qty'] = 50;
                 $this->estimateData['rate'] = $data['cost'];
                 $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
-                $this->distance = $this->distance - $this->estimateData['qty'];
+                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
+                $this->addEstimate($key + 1);
+            } elseif ($key == 5 && $this->estimateData['distance'] != 0) {
+                $this->estimateData['item_number'] = $data['id'];
+                $this->estimateData['description'] = $data['description'];
+                $this->estimateData['qty'] = $this->estimateData['distance'];
+                $this->estimateData['rate'] = $data['cost'];
+                $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
                 $this->addEstimate($key + 1);
             } else {
-                if ($this->distance != 0) {
-                    $this->estimateData['item_number'] = $data['id'];
-                    $this->estimateData['description'] = $data['description'];
-                    $this->estimateData['qty'] = $this->distance;
-                    $this->estimateData['rate'] = $data['cost'];
-                    $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
-                    $this->addEstimate($key + 1);
-                }
+                return;
             }
         }
         // dd($this->estimateData);
@@ -688,10 +682,12 @@ class CreateRateAnalysis extends Component
         $this->estimateData['description'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
-        $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id', 'total_amount')->where([['rate_id', $this->estimateData['rate_no']], ['operation', 'Total'], ['dept_id', Auth::user()->department_id]])->first();
+        $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id','qty', 'total_amount')->where([['rate_id', $this->estimateData['rate_no']], ['operation', 'Total'], ['dept_id', Auth::user()->department_id]])->first();
+        // dd($this->fatchDropdownData['rateDetails']);
         $this->estimateData['total_amount'] = $this->fatchDropdownData['rateDetails']['total_amount'];
         $this->estimateData['description'] = $this->fatchDropdownData['rateDetails']['description'];
-        $this->estimateData['qty'] = 1;
+        // $this->estimateData['qty'] = ($this->fatchDropdownData['rateDetails']['qty'] != 0) ? $this->fatchDropdownData['rateDetails']['qty'] : 1;
+        $this->estimateData['qty'] =  1;
         $this->estimateData['rate'] = $this->fatchDropdownData['rateDetails']['total_amount'];
     }
     public function addEstimate($key = null)

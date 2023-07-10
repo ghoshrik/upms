@@ -28,7 +28,7 @@
                         <div class="col col-md-6 col-lg-6 mb-2">
                             <div class="btn-group float-right" role="group" aria-label="Basic example">
                                 <button type="button" class="btn btn-soft-primary" wire:click="totalOnSelected"
-                                    @if ($openTotalButton && $totalOnSelectedCount!=1||true) {{ '' }}@else {{ 'disabled' }} @endif>{{ trans('cruds.estimate.fields.total_on_selected') }}
+                                    @if (($openTotalButton && $totalOnSelectedCount != 1) || true) {{ '' }}@else {{ 'disabled' }} @endif>{{ trans('cruds.estimate.fields.total_on_selected') }}
                                 </button>
                                 <button type="button" class="btn btn-soft-info" wire:click="exportWord">
                                     <span class="btn-inner">
@@ -84,7 +84,7 @@
                                                 {{ $addedEstimate['description'] }}
                                             @elseif ($addedEstimate['rate_no'])
                                                 {{-- {{ getEstimateDescription($addedEstimate['rate_no']) }} --}}
-                                                {{$addedEstimate['description']}}
+                                                {{ $addedEstimate['description'] }}
                                                 {{-- {{ $addedEstimate->SOR->sorMasterDesc }} --}}
                                             @elseif ($addedEstimate['arrayIndex'])
                                                 @if ($addedEstimate['remarks'])
@@ -97,21 +97,23 @@
                                             @else
                                                 {{ $addedEstimate['other_name'] }}
                                             @endif
-
                                         </td>
                                         <td>
-                                            {{ $addedEstimate['qty'] }}
+                                            @if ($addedEstimate['qty'] != 0)
+                                                {{ $addedEstimate['qty'] }}
+                                            @endif
                                         </td>
                                         <td>
-                                            {{ $addedEstimate['rate'] }}
+                                            @if ($addedEstimate['rate'] != 0)
+                                                {{ $addedEstimate['rate'] }}
+                                            @endif
                                         </td>
                                         <td>
                                             {{ $addedEstimate['total_amount'] }}
                                         </td>
                                         <td>
                                             @if ($addedEstimate['rate_no'])
-                                                <x-button
-                                                    wire:click="viewRateModal({{ $addedEstimate['rate_no'] }})"
+                                                <x-button wire:click="viewRateModal({{ $addedEstimate['rate_no'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
