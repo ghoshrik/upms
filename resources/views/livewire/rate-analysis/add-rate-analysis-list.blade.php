@@ -128,6 +128,19 @@
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                     </span>
                                                 </x-button>
+                                                <button
+                                                    onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
+                                                    wire:click="deleteEstimate({{ $addedEstimate['array_id'] }})" type="button" class="btn btn-soft-danger btn-sm">
+                                                    <span
+                                                        class="btn-inner">
+                                                        <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
+                                                    </span>
+                                                </button>
+                                                {{-- <button onclick="showDeleteConfirmation({{ $addedEstimate['array_id'] }})" type="button" class="btn btn-soft-danger btn-sm">
+                                                    <span class="btn-inner">
+                                                        <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
+                                                    </span>
+                                                </button> --}}
                                             @endif
                                         </td>
                                     </tr>
@@ -148,3 +161,23 @@
         </div>
     @endif
 </div>
+{{-- <script>
+    function showDeleteConfirmation(arrayId) {
+        alert('hi');
+        // Swal.fire({
+        //     title: 'Are you sure?',
+        //     text: 'This action cannot be undone.',
+        //     icon: 'warning',
+        //     showCancelButton: true,
+        //     confirmButtonColor: '#dc3545',
+        //     cancelButtonColor: '#6c757d',
+        //     confirmButtonText: 'Delete',
+        //     cancelButtonText: 'Cancel'
+        // }).then((result) => {
+        //     if (result.isConfirmed) {
+        //         // Call the deleteEstimate() function with the provided arrayId
+        //         Livewire.emit('deleteEstimate', arrayId);
+        //     }
+        // });
+    }
+</script> --}}
