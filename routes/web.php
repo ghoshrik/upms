@@ -37,6 +37,7 @@ use App\Http\Livewire\Roles\Roles;
 use App\Http\Livewire\Setting\SettingLists;
 use App\Http\Livewire\Sorapprove\SorApprovers;
 use App\Http\Livewire\Sor\Sor;
+use App\Http\Livewire\SorBook\DynamicSor;
 use App\Http\Livewire\Tender\Tenders;
 use App\Http\Livewire\Unitsmaster\UnitsMaster;
 use App\Http\Livewire\UserManagement\UserManagement;
@@ -155,7 +156,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('import',Imports::class)->name('import');
         Route::get('roles', Roles::class)->name('roles');
         Route::get('permissions', Permission::class)->name('permissions');
-        
+
         // Route::get('vendors',VendorList::class)->name('vendors');
 
         // Route::get('aafs-project', AafsProjects::class)->name('aafs-project');
@@ -169,16 +170,16 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         // Route::get('qty-analysis', AnalysisList::class)->name('qty-analysis');
 
         Route::get('assign-another-office', AssignToAnotherOffice::class)->name('assign-another-office');
-
+        Route::get('dynamic-sor', DynamicSor::class)->name('dynamic-sor');
         // Route::prefix('admin',function(){
         Route::get('admin/settings', SettingLists::class)->name('admin.settings');
         // });
 
-        //digital signature 
+        //digital signature
         Route::get('signaturepad',[HomeController::class,'signature'])->name('signaturepad');
         Route::post('signaturepad',[HomeController::class,'upload'])->name('signaturepad.upload');
         Route::get('/create/pdf', [HomeController::class, 'createPDF'])->name('createPDF');
-        
+
         Route::get('change-role/{id}', function ($id) {
             if (UsersHasRoles::where([['user_id', Auth::user()->id], ['role_id', $id]])->first()) {
                 $selectedRole = Role::find($id);
