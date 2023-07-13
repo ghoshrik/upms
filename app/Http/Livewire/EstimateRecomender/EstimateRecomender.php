@@ -66,7 +66,7 @@ class EstimateRecomender extends Component
         })
         ->where('is_done',0)
         ->count();
-        $this->counterData['forwardedDataCount'] =  DB::table('estimate_user_assign_records as t1')
+        $this->counterData['fwdDataCount'] =  DB::table('estimate_user_assign_records as t1')
         ->select(DB::raw('count(t1.status)'))
         ->where('t1.status', 9)
         ->where('t1.user_id', Auth::user()->id)

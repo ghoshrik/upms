@@ -80,9 +80,9 @@ class RecomenderDraftTable extends DataTableComponent
     {
         $this->emit('openRevertModal',['estimate_id'=>$estimate_id,'revart_from'=>'ER']);
     }
-    public function forward($estimate_id)
+    public function fwd($estimate_id)
     {
-        $this->emit('openForwardModal',['estimate_id'=>$estimate_id,'forward_from'=>'ER']);
+        $this->emit('openFwdModal',['estimate_id'=>$estimate_id,'fwd_from'=>'ER']);
     }
     public function builder(): Builder
     {

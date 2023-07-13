@@ -31,6 +31,8 @@
                                             {{ getSorItemNumber($view['sor_item_number']) }}
                                         @elseif ($view['estimate_no'])
                                             {{ $view['estimate_no'] }}
+                                        @elseif($view['rate_id'])
+                                            {{ $view['rate_id'] }}
                                         @endif
                                     </td>
                                     <td class="text-wrap">
@@ -38,6 +40,8 @@
                                             {{ getSorItemNumberDesc($view['sor_item_number']) }}
                                         @elseif ($view['estimate_no'])
                                             {{ getEstimateDescription($view['estimate_no']) }}
+                                        @elseif ($view['rate_id'])
+                                            {{ getRateDesc($view['rate_id']) }}
                                         @elseif($view['operation'])
                                             @if ($view['operation'] == 'Total')
                                                 {{ 'Total of ( ' . $view['row_index'] . ' )' }}

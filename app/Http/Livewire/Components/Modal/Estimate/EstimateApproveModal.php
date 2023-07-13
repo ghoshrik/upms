@@ -75,6 +75,7 @@ class EstimateApproveModal extends Component
                             'percentage_rate' => $estimate['perRate'],
                             'verified_by' => Auth::user()->id,
                             'commends' => $estimate['AddRemarks'],
+                            'rate_id' => $estimate['rate_id']
                         ];
                         Esrecommender::create($insert);
                     }

@@ -27,6 +27,7 @@ class ModifyEstimate extends Component
             if ($checkForModify['status'] == 2) {
                 $this->currentEstimate = EstimatePrepare::where('estimate_id', $this->estimate_id)->get()->toArray();
             }
+            // dd($this->currentEstimate);
         // $this->currentEstimate = EstimatePrepare::where('estimate_id', $this->estimate_id)->get();
     }
     public function updateEstimateData($updateValue, $id)
@@ -75,6 +76,10 @@ class ModifyEstimate extends Component
     {
         $this->emit('openModal', $estimate_id);
     }
+    public function viewRateModal($rate_id)
+    {
+        $this->emit('openRateAnalysisModal', $rate_id);
+    }
     public function close()
     {
         // return redirect('/estimate-recommender');
@@ -104,8 +109,8 @@ class ModifyEstimate extends Component
                         'operation' => $estimate['operation'],
                         'verified_by' => Auth::user()->id,
                         'commends' => $estimate['comments'],
+                        'rate_id' => $estimate['rate_id']
                     ];
-                    // dd($insert);
                     Esrecommender::create($insert);
                 }
                 if (SorMaster::where('estimate_id', $value)->update(['status' => 4])) {

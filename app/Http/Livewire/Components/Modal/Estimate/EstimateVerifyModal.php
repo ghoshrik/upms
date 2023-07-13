@@ -22,7 +22,7 @@ class EstimateVerifyModal extends Component
         $this->openVerifyModal = !$this->openVerifyModal;
         if ($estimate_id) {
             $this->estimate_id = $estimate_id;
-            $this->viewEstimates = EstimatePrepare::where('estimate_id', $this->estimate_id)->get();
+            $this->viewEstimates = Esrecommender::where('estimate_id', $this->estimate_id)->orderBy('row_id')->get();
         }
     }
     public function verifyEstimate($value)

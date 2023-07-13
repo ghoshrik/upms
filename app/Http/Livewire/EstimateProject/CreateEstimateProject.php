@@ -204,7 +204,7 @@ class CreateEstimateProject extends Component
                 ->where('is_approved', 1)
                 ->get();
 
-            // dd($this->fatchDropdownData['items_number']);
+            // dd($jsonData = $this->fatchDropdownData['items_number']->toJson());
             if (count($this->fatchDropdownData['items_number']) > 0) {
                 $this->searchDtaCount = (count($this->fatchDropdownData['items_number']) > 0);
                 $this->searchStyle = 'block';
@@ -264,9 +264,8 @@ class CreateEstimateProject extends Component
             }
         } else {
             if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
-                // dd($this->estimateData['qty'] * intval($this->estimateData['rate']));
                 // $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
-                $this->estimateData['total_amount'] = number_format($this->estimateData['qty'] * (float) str_replace(',', '', $this->estimateData['rate']),2);
+                $this->estimateData['total_amount'] = round($this->estimateData['qty'] * $this->estimateData['rate'],2);
             }
         }
     }
@@ -331,10 +330,10 @@ class CreateEstimateProject extends Component
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
         $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id', 'total_amount')->where([['rate_id',$this->estimateData['rate_no']],['operation', 'Total'], ['dept_id', Auth::user()->department_id]])->first();
-        $this->estimateData['total_amount'] = number_format($this->fatchDropdownData['rateDetails']['total_amount'],2);
+        $this->estimateData['total_amount'] = round($this->fatchDropdownData['rateDetails']['total_amount'],2);
         $this->estimateData['description'] = $this->fatchDropdownData['rateDetails']['description'];
         $this->estimateData['qty'] = 1;
-        $this->estimateData['rate'] = number_format($this->fatchDropdownData['rateDetails']['total_amount'],2);
+        $this->estimateData['rate'] = round($this->fatchDropdownData['rateDetails']['total_amount'],2);
     }
 
     public function getEstimateDetails()
@@ -346,7 +345,7 @@ class CreateEstimateProject extends Component
         $this->fatchDropdownData['estimateDetails'] = Esrecommender::join('sor_masters', 'estimate_recomender.estimate_id', 'sor_masters.estimate_id')
             ->where('estimate_recomender.estimate_id', $this->estimateData['estimate_no'])
             ->where('estimate_recomender.operation', 'Total')->where('sor_masters.is_verified', '=', 1)->first();
-        $this->estimateData['total_amount'] = number_format($this->fatchDropdownData['estimateDetails']['total_amount'],2);
+        $this->estimateData['total_amount'] = round($this->fatchDropdownData['estimateDetails']['total_amount'],2);
         $this->estimateData['description'] = $this->fatchDropdownData['estimateDetails']['sorMasterDesc'];
         $this->estimateData['qty'] = 1;
         $this->estimateData['rate'] = $this->fatchDropdownData['estimateDetails']['total_amount'];

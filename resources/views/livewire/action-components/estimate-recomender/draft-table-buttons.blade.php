@@ -17,7 +17,7 @@
                 @endif
 
             @else
-                @include('components.data-table-components.buttons.forward')
+                @include('components.data-table-components.buttons.fwd')
             @endif
         @endisset
     </div>
