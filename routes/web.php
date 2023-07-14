@@ -43,6 +43,7 @@ use App\Http\Livewire\Unitsmaster\UnitsMaster;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\UserType\UserType;
 use App\Http\Livewire\VendorRegs\VendorList;
+use App\Http\Controllers\ApiController;
 // Packages
 use App\Models\User;
 use App\Models\UsersHasRoles;
@@ -171,6 +172,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::get('assign-another-office', AssignToAnotherOffice::class)->name('assign-another-office');
         Route::get('dynamic-sor', DynamicSor::class)->name('dynamic-sor');
+        Route::post('/store-dynamic-sor', [ApiController::class,'storeTableHeader'])->name('store-dynamic-sor');
+        Route::post('/update-row-data', [ApiController::class,'updateTableHeader'])->name('update-row-data');
         // Route::prefix('admin',function(){
         Route::get('admin/settings', SettingLists::class)->name('admin.settings');
         // });

@@ -23,7 +23,7 @@
                                 </span>
                             </button>
                         @else
-                            <button wire:click="fromEntryControl" class="btn btn-danger rounded-pill "
+                            <button wire:click="fromEntryControl()" class="btn btn-danger rounded-pill "
                                 x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
                                 <span class="btn-inner">
                                     <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
@@ -57,5 +57,5 @@
             </div>
         </div>
     </div>
-    <livewire:components.modal.sor-book.dynamic-sor-modal :selectedIdForEdit="$selectedIdForEdit"/>
+    {{-- <livewire:components.modal.sor-book.dynamic-sor-modal :selectedIdForEdit="$selectedIdForEdit"/> --}}
 </div>
