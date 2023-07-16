@@ -10,10 +10,14 @@
         var rowdata = @json($row_data);
         var tableId = @json($selectedId);
         var table = new Tabulator("#example-table", {
-            height: "311px",
+            height: "500",
             layout: "fitColumns",
             columns: headerData,
-            data: rowdata
+            data: rowdata,
+            dataTree: true, // Enable the dataTree module
+            dataTreeStartExpanded: true, // Optional: Expand all rows by default
+            dataTreeChildField: "_subrow", // Specify the field name for subrows
+            dataTreeChildIndent: 10, // Optional: Adjust the indentation level of subrows
         });
         document.getElementById("addRow").addEventListener("click", function() {
             addRow({});

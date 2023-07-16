@@ -19,6 +19,7 @@
 
 <link rel="stylesheet" href="{{asset('vendor/aos/dist/aos.css')}}" />
 <link href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css" rel="stylesheet">
+<link href="https://unpkg.com/tabulator-tables//dist/css/tabulator_midnight.min.css" rel="stylesheet">
 <style>
     th.hide-search input{
        display: none;

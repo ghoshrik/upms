@@ -6,23 +6,32 @@
         <div class="col-md-4">
             <x-input label="Table No" placeholder="Table No" name="table_no" id="table_no" />
         </div>
+        <div class="clearfix"></div>
+        <div class="mt-3 mb-3">
+            <button id="addColumnBtn" class="btn btn-sm btn-primary">Add Column</button>
+            <button id="addColumnGroupBtn" class="btn btn-sm btn-info">Add Column Group</button>
+            <button id="addRow" class="btn btn-sm btn-warning">Add Row</button>
+            <button id="addSubRow" class="btn btn-sm btn-warning">Add Sub Row</button>
+            <button id="addSubSubRow" class="btn btn-sm btn-warning">Add Sub SubRow</button>
+            <button id="getHeaderData" class="btn btn-sm btn-success">Save</button>
+            <button id="getRow" class="btn btn-sm btn-warning">Get Row</button>
+        </div>
     </div>
     <div id="table"></div>
-    <button id="addColumnBtn" class="btn btn-primary">Add Column</button>
-    <button id="addColumnGroupBtn" class="btn btn-info">Add Column Group</button>
-    <button id="addRow" class="btn btn-warning">Add Row</button>
-    <button id="getHeaderData" class="btn btn-success">Save</button>
-    {{-- <button id="getRow" class="btn btn-warning">Get Row</button> --}}
 </div>
 
 <script>
     var data = [];
     var columns = [];
     var table = new Tabulator("#table", {
-        height: 205,
+        height: 500,
         data: [],
         layout: "fitColumns",
         columns: [],
+        dataTree: true, // Enable the dataTree module
+        dataTreeStartExpanded: true, // Optional: Expand all rows by default
+        dataTreeChildField: "_subrow", // Specify the field name for subrows
+        dataTreeChildIndent: 10, // Optional: Adjust the indentation level of subrows
     });
 
     document.getElementById("addColumnBtn").addEventListener("click", function() {
@@ -37,16 +46,23 @@
     document.getElementById("addRow").addEventListener("click", function() {
         addRow({});
     });
+    document.getElementById("addSubRow").addEventListener("click", function() {
+        addSubRow({});
+    });
+    document.getElementById("addSubSubRow").addEventListener("click", function() {
+        addSubSubRow({});
+    });
     document.getElementById("getRow").addEventListener("click", function() {
         getRow({});
     });
+
     function addColumn() {
         var columnName = prompt("Enter Column Name");
         if (columnName) {
             var newColumn = {
                 title: columnName,
                 field: columnName.toLowerCase().replace(/\s+/g, "_"), // convert column name to field name
-                editor:"input"
+                editor: "input"
             };
             table.addColumn(newColumn);
         }
@@ -72,12 +88,12 @@
                 if (columnName) {
                     var newColumn = {
                         title: columnName,
-                        field: columnName.toLowerCase().replace(/\s+/g, "_"),
+                        field: columnName.toLowerCase().replace(/\s+/g, "_")+"_"+groupName,
                         hozAlign: "right",
                         sorter: "number",
                         width: 150,
                         resizable: true,
-                        editor:"input"
+                        editor: "input"
                     };
 
                     newGroupColumn.columns.push(newColumn);
@@ -104,7 +120,7 @@
                 header_data: columnData,
                 table_no: table_no,
                 page_no: page_no,
-                row_data:rowData
+                row_data: rowData
             }),
             success: function(response) {
                 window.location.href = '{{ route('dynamic-sor') }}';
@@ -119,16 +135,64 @@
         });
 
     }
-    function getRow()
-    {
+
+    function getRow() {
         var row = table.getData();
         console.log(row);
     }
+
     function addRow() {
         console.log(table.getData().length);
         var newRowData = {
-            id:  table.getData().length + 1, // generate a new unique ID for the row
+            id: table.getData().length + 1, // generate a new unique ID for the row
         };
         table.addRow(newRowData);
+    }
+
+    function addSubRow() {
+        var rowId = prompt("Enter the ID of the row to add a subrow");
+        var row = table.getRow(rowId);
+        if (!row) {
+            alert("Row with ID " + rowId + " does not exist.");
+            return;
+        }
+        var subrows = row.getData()._subrow || []; // Retrieve existing subrows or create an empty array
+        var newSubrow = {
+            subrowId: rowId + "." + (subrows.length + 1), // generate a unique ID for the subrow
+        };
+        subrows.push(newSubrow); // Add the new subrow to the array
+        var newRowData = {
+            _subrow: subrows, // Update the row's subrow property with the modified array
+        };
+        row.update(newRowData);
+    }
+
+    function addSubSubRow() {
+        var rowId = prompt("Enter the ID of the row");
+        var subrowId = prompt("Enter the ID of the subrow");
+        var row = table.getRow(rowId);
+
+        if (!row) {
+            alert("Row with ID " + rowId + " does not exist.");
+            return;
+        }
+
+        var subrow = row.getTreeChildren().find(function(childRow) {
+            return childRow.getData().subrowId === subrowId;
+        });
+
+        if (!subrow) {
+            alert("Subrow with ID " + subrowId + " does not exist.");
+            return;
+        }
+
+        var subsubrowData = {
+            subrowId: subrowId + "." + (subrow.getTreeChildren().length + 1),
+        };
+
+        subrow.addTreeChild(subsubrowData);
+
+        // Refresh the table with updated data
+        table.setData(table.getData());
     }
 </script>
