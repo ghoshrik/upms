@@ -59,11 +59,23 @@
     function addColumn() {
         var columnName = prompt("Enter Column Name");
         if (columnName) {
+            var isClickable = confirm("The Cell is Clickable?");
+            var cellClickAble = {};
+
+            if (isClickable) {
+                cellClickAble.cellClick = function(e, cell) {
+                    // Perform action when cell is clicked
+                    alert("Cell clicked. Value: " + cell.getRow().getIndex());
+                };
+            }
+
             var newColumn = {
                 title: columnName,
                 field: columnName.toLowerCase().replace(/\s+/g, "_"), // convert column name to field name
-                editor: "input"
+                editor: "input",
+                ...cellClickAble // Spread the cellClickAble object properties into newColumn
             };
+
             table.addColumn(newColumn);
         }
     }
@@ -85,15 +97,25 @@
 
             for (var i = 0; i < columnCount; i++) {
                 var columnName = prompt("Enter Column Name");
+                var isClickable = confirm("The Cell is Clickable?");
+                var cellClickAble = {};
+
+                if (isClickable) {
+                    cellClickAble.cellClick = function(e, cell) {
+                        // Perform action when cell is clicked
+                        alert("Cell clicked. Value: " + cell.getRow().getIndex()+"-"+cell.getValue());
+                    };
+                }
                 if (columnName) {
                     var newColumn = {
                         title: columnName,
-                        field: columnName.toLowerCase().replace(/\s+/g, "_")+"_"+groupName,
+                        field: columnName.toLowerCase().replace(/\s+/g, "_") + "_" + groupName,
                         hozAlign: "right",
                         sorter: "number",
                         width: 150,
                         resizable: true,
-                        editor: "input"
+                        editor: "input",
+                        ...cellClickAble
                     };
 
                     newGroupColumn.columns.push(newColumn);
@@ -158,7 +180,7 @@
         }
         var subrows = row.getData()._subrow || []; // Retrieve existing subrows or create an empty array
         var newSubrow = {
-            subrowId: rowId + "." + (subrows.length + 1), // generate a unique ID for the subrow
+            id: rowId + "." + (subrows.length + 1), // generate a unique ID for the subrow
         };
         subrows.push(newSubrow); // Add the new subrow to the array
         var newRowData = {
@@ -187,12 +209,20 @@
         }
 
         var subsubrowData = {
-            subrowId: subrowId + "." + (subrow.getTreeChildren().length + 1),
+            id: subrowId + "." + (subrow.getTreeChildren().length + 1),
         };
 
         subrow.addTreeChild(subsubrowData);
 
         // Refresh the table with updated data
         table.setData(table.getData());
+    }
+
+    function deleteButtonFormatter(cell, formatterParams, onRendered) {
+        var rowIndex = cell.getRow().getIndex();
+        if (rowIndex === table.getDataCount() - 1) {
+            return "<button class='btn btn-danger btn-sm' onclick='deleteRow(" + rowIndex + ")'>Delete</button>";
+        }
+        return ""; // Return empty string for other rows
     }
 </script>
