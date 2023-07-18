@@ -69,11 +69,14 @@
                     // cellValue = cell.getValue();
                 };
             }
+            var cellClickFunction = function(e, cell) {
+                // Perform action when cell is clicked
+            };
             var newColumn = {
                 title: columnName,
                 field: columnName.toLowerCase().replace(/\s+/g, "_"), // convert column name to field name
                 editor: "input",
-                cellClick: cellClickAble.cellClick.toString(),
+                isClick: (isClickable) ? cellClickFunction.toString() : '',
                 ...cellClickAble // Spread the cellClickAble object properties into newColumn
 
             };
@@ -109,6 +112,9 @@
                     };
                 }
                 if (columnName) {
+                    var cellClickFunction = function(e, cell) {
+                        // Perform action when cell is clicked
+                    };
                     var newColumn = {
                         title: columnName,
                         field: columnName.toLowerCase().replace(/\s+/g, "_") + "_" + groupName,
@@ -117,6 +123,7 @@
                         width: 150,
                         resizable: true,
                         editor: "input",
+                        isClick: (isClickable)?cellClickFunction.toString():'',
                         ...cellClickAble
                     };
 

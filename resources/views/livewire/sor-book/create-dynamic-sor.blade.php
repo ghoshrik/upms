@@ -10,9 +10,17 @@
         var rowdata = @json($row_data);
         var tableId = @json($selectedId);
         headerData.forEach(function(column) {
+            var fun;
             delete column.editor;
-            column.cellClick = eval('(' + column.cellClick + ')');
-            if (typeof column.cellClick === "function") {
+            if(column.isClick){
+                column.isClick = eval('(' + column.isClick + ')');
+                fun = column.isClick;
+            }
+            if(column.cellClick){
+                column.cellClick = eval('(' + column.isClick + ')');
+                fun = column.cellClick;
+            }
+            if (typeof fun === "function") {
                 column.cellClick = function(e, cell) {
                     // Overwritten cellClick function
                     var rowData = cell.getRow().getData();
@@ -23,9 +31,15 @@
             }
             if (column.columns) {
                 column.columns.forEach(function(subColumn) {
+                    var subFun;
                     delete subColumn.editor;
-                    subColumn.cellClick = eval('(' + subColumn.cellClick + ')');
-                    if (typeof subColumn.cellClick === "function") {
+                    if(subColumn.isClick){
+                        subFun = subColumn.isClick = eval('(' + subColumn.isClick + ')');
+                    }
+                    if(subColumn.cellClick){
+                        subFun = subColumn.cellClick = eval('(' + subColumn.cellClick + ')');
+                    }
+                    if (typeof subFun === "function") {
                         subColumn.cellClick = function(e, cell) {
                             // Overwritten cellClick function
                             // console.log(cell);
