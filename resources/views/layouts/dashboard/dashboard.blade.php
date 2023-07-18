@@ -13,12 +13,13 @@
     <script src="{{ asset('js/alpineJs/alpinejs.cdn.min.js') }}" defer></script>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @include('partials.dashboard._head')
+    @livewireScripts
 </head>
 
 <body class="">
     <x-dialog />
     @include('partials.dashboard._body')
-    @livewireScripts
+
     {{-- @yield('scripts') --}}
     <script>
         $(document).ready(function() {
