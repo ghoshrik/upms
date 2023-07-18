@@ -5,6 +5,7 @@ namespace App\Http\Livewire\RateAnalysis;
 use App\Models\Carriagesor;
 use App\Models\CompositSor;
 use App\Models\Department;
+use App\Models\DynamicSorHeader;
 use App\Models\EstimatePrepare;
 use App\Models\RatesAnalysis;
 use App\Models\SOR;
@@ -20,7 +21,8 @@ class CreateRateAnalysis extends Component
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc, $selectSor = [], $dropdownData = [];
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
-    public $searchDtaCount, $searchStyle, $searchResData,$totalDistance;
+    public $searchDtaCount, $searchStyle, $searchResData, $totalDistance;
+    public $getSor;
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -111,11 +113,15 @@ class CreateRateAnalysis extends Component
         $this->estimateData['item_name'] = $value;
         if ($this->selectedCategoryId == 1) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+            $this->fatchDropdownData['table_no'] = DynamicSorHeader::select('table_no')->groupBy('table_no')->get();
+            $this->fatchDropdownData['page_no'] = DynamicSorHeader::select('page_no')->groupBy('table_no')->get();
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = Auth::user()->department_id;
             if (!empty($this->estimateData['dept_id'])) {
                 $this->getDeptCategory();
             }
+            $this->estimateData['table_no'] = '';
+            $this->estimateData['page_no'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
             $this->estimateData['item_number'] = '';
@@ -193,7 +199,11 @@ class CreateRateAnalysis extends Component
             $this->estimateData['itemNo'] = '';
         }
     }
-
+    public function getDynamicSor()
+    {
+        $this->getSor = DynamicSorHeader::where([['page_no',$this->estimateData['page_no'],['table_no',$this->estimateData['table_no']]]])->first();
+        dd($this->getSor);
+    }
     public function getDeptCategory()
     {
         $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
@@ -682,12 +692,12 @@ class CreateRateAnalysis extends Component
         $this->estimateData['description'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
-        $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id','qty', 'total_amount')->where([['rate_id', $this->estimateData['rate_no']], ['operation', 'Total'], ['dept_id', Auth::user()->department_id]])->first();
+        $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id', 'qty', 'total_amount')->where([['rate_id', $this->estimateData['rate_no']], ['operation', 'Total'], ['dept_id', Auth::user()->department_id]])->first();
         // dd($this->fatchDropdownData['rateDetails']);
         $this->estimateData['total_amount'] = $this->fatchDropdownData['rateDetails']['total_amount'];
         $this->estimateData['description'] = $this->fatchDropdownData['rateDetails']['description'];
         // $this->estimateData['qty'] = ($this->fatchDropdownData['rateDetails']['qty'] != 0) ? $this->fatchDropdownData['rateDetails']['qty'] : 1;
-        $this->estimateData['qty'] =  1;
+        $this->estimateData['qty'] = 1;
         $this->estimateData['rate'] = $this->fatchDropdownData['rateDetails']['total_amount'];
     }
     public function addEstimate($key = null)

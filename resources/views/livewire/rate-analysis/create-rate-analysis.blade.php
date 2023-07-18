@@ -104,6 +104,33 @@
                                 <div class="row" wire:key='SOR' style="transition: all 2s ease-out">
                                     <div class="col">
                                         <div class="form-group">
+                                            <x-select wire:key="dept" label="Page No"
+                                                placeholder="Select Page No"
+                                                wire:model.defer="estimateData.page_no"
+                                                >
+                                                @foreach ($fatchDropdownData['page_no'] as $page)
+                                                    <x-select.option label="{{ $page['page_no'] }}"
+                                                        value="{{ $page['page_no'] }}" />
+                                                @endforeach
+                                            </x-select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="dept" label="Table No"
+                                                placeholder="Select Table No"
+                                                wire:model.defer="estimateData.table_no"
+                                                >
+                                                @foreach ($fatchDropdownData['table_no'] as $page)
+                                                    <x-select.option label="{{ $page['table_no'] }}"
+                                                    x-on:select="$wire.getDynamicSor()"
+                                                        value="{{ $page['table_no'] }}" />
+                                                @endforeach
+                                            </x-select>
+                                        </div>
+                                    </div>
+                                    {{-- <div class="col">
+                                        <div class="form-group">
                                             <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
                                                 placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
                                                 wire:model.defer="estimateData.dept_id"
@@ -114,8 +141,8 @@
                                                 @endforeach
                                             </x-select>
                                         </div>
-                                    </div>
-                                    <div class="col">
+                                    </div> --}}
+                                    {{-- <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="category"
                                                 label="Department {{ trans('cruds.estimate.fields.category') }}"
@@ -130,8 +157,8 @@
                                                 @endisset
                                             </x-select>
                                         </div>
-                                    </div>
-                                    <div class="col">
+                                    </div> --}}
+                                    {{-- <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="version"
                                                 label="{{ trans('cruds.estimate.fields.version') }}"
@@ -146,21 +173,9 @@
                                                 @endisset
                                             </x-select>
                                         </div>
-                                    </div>
-                                    <div class="col">
+                                    </div> --}}
+                                    {{-- <div class="col">
                                         <div class="form-group search-sor">
-                                            {{-- <x-select wire:key="sor"
-                                                label="Select {{ trans('cruds.estimate.fields.sor') }}"
-                                                placeholder="Select {{ trans('cruds.estimate.fields.sor') }}"
-                                                wire:model.defer="selectedSORKey" x-on:select="$wire.getItemDetails()"
-                                                dynamicSearch=true>
-                                                @isset($this->fatchDropdownData['items_number'])
-                                                    @foreach ($this->fatchDropdownData['items_number'] as $key => $item)
-                                                        <x-select.option label="{{ $item['Item_details'] }}"
-                                                            value="{{ $key }}" />
-                                                    @endforeach
-                                                @endisset
-                                            </x-select> --}}
                                             <div class="dropdown">
                                                 <x-input wire:key="sor"
                                                     label="{{ trans('cruds.estimate.fields.sor') }}"
@@ -183,7 +198,7 @@
                                                 @endisset
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 @if (!empty($searchResData))
                                     @if (count($searchResData) > 0)
