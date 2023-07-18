@@ -10,8 +10,14 @@
         var rowdata = @json($row_data);
         var tableId = @json($selectedId);
         headerData.forEach(function(column) {
+            delete column.editor;
+            column.cellClick = eval('(' + column.cellClick + ')');
             if (column.cellClick) {
-                column.cellClick = eval('(' + column.cellClick + ')');
+                column.cellClick = function(e, cell) {
+                    // Overwritten cellClick function
+                    alert("Cell clicked. Value: " + cell.getRow().getIndex() + "-" + cell.getValue());
+                    // Add your custom code or logic here
+                };
             }
         });
         var table = new Tabulator("#example-table", {
@@ -24,6 +30,10 @@
             dataTreeChildField: "_subrow", // Specify the field name for subrows
             dataTreeChildIndent: 10, // Optional: Adjust the indentation level of subrows
         });
+
+        // table.on("rowClick", function(e, row) {
+        //     alert("Row " + row.getIndex() + " Clicked!!!!")
+        // });
 
         document.getElementById("addRow").addEventListener("click", function() {
             addRow({});

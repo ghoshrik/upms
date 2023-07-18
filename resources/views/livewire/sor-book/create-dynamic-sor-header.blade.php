@@ -64,7 +64,9 @@
 
             if (isClickable) {
                 cellClickAble.cellClick = function(e, cell) {
-                    alert("Cell clicked. Value: " + cell.getRow().getIndex() + "-" + cell.getValue());
+                    // alert("Cell clicked. Value: " + cell.getRow().getIndex() + "-" + cell.getValue());
+                    // rowIndex = cell.getRow().getIndex();
+                    // cellValue = cell.getValue();
                 };
             }
             var newColumn = {
