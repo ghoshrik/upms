@@ -9,6 +9,11 @@
         var headerData = @json($header_data);
         var rowdata = @json($row_data);
         var tableId = @json($selectedId);
+        headerData.forEach(function(column) {
+            if (column.cellClick) {
+                column.cellClick = eval('(' + column.cellClick + ')');
+            }
+        });
         var table = new Tabulator("#example-table", {
             height: "500",
             layout: "fitColumns",
@@ -19,12 +24,13 @@
             dataTreeChildField: "_subrow", // Specify the field name for subrows
             dataTreeChildIndent: 10, // Optional: Adjust the indentation level of subrows
         });
+
         document.getElementById("addRow").addEventListener("click", function() {
             addRow({});
         });
-        document.getElementById("getRow").addEventListener("click", function() {
-            getRow({});
-        });
+        // document.getElementById("getRow").addEventListener("click", function() {
+        //     getRow({});
+        // });
         document.getElementById("updateData").addEventListener("click", function() {
             updateRow({});
         });

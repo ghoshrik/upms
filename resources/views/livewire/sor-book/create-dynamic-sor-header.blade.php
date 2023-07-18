@@ -64,16 +64,16 @@
 
             if (isClickable) {
                 cellClickAble.cellClick = function(e, cell) {
-                    // Perform action when cell is clicked
-                    alert("Cell clicked. Value: " + cell.getRow().getIndex());
+                    alert("Cell clicked. Value: " + cell.getRow().getIndex() + "-" + cell.getValue());
                 };
             }
-
             var newColumn = {
                 title: columnName,
                 field: columnName.toLowerCase().replace(/\s+/g, "_"), // convert column name to field name
                 editor: "input",
+                cellClick: cellClickAble.cellClick.toString(),
                 ...cellClickAble // Spread the cellClickAble object properties into newColumn
+
             };
 
             table.addColumn(newColumn);
@@ -103,7 +103,7 @@
                 if (isClickable) {
                     cellClickAble.cellClick = function(e, cell) {
                         // Perform action when cell is clicked
-                        alert("Cell clicked. Value: " + cell.getRow().getIndex()+"-"+cell.getValue());
+                        alert("Cell clicked. Value: " + cell.getRow().getIndex() + "-" + cell.getValue());
                     };
                 }
                 if (columnName) {
@@ -160,7 +160,8 @@
 
     function getRow() {
         var row = table.getData();
-        console.log(row);
+        var col = table.getColumnDefinitions();
+        console.log(row, col);
     }
 
     function addRow() {
@@ -200,7 +201,7 @@
         }
 
         var subrow = row.getTreeChildren().find(function(childRow) {
-            return childRow.getData().subrowId === subrowId;
+            return childRow.getData().id === subrowId;
         });
 
         if (!subrow) {
