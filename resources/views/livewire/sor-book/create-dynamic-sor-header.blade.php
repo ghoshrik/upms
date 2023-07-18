@@ -123,7 +123,7 @@
                         width: 150,
                         resizable: true,
                         editor: "input",
-                        isClick: (isClickable)?cellClickFunction.toString():'',
+                        isClick: (isClickable) ? cellClickFunction.toString() : '',
                         ...cellClickAble
                     };
 
@@ -166,6 +166,20 @@
         });
 
     }
+
+    // function store() {
+    //     var columnData = table.getColumnDefinitions();
+    //     var rowData = table.getData();
+    //     var table_no = $('#table_no').val();
+    //     var page_no = $('#page_no').val();
+    //     var data = {
+    //         header_data: JSON.stringify(columnData),
+    //         row_data: JSON.stringify(rowData),
+    //         table_no: table_no,
+    //         page_no: page_no
+    //     };
+    //     window.Livewire.emit('storeData', data);
+    // }
 
     function getRow() {
         var row = table.getData();
