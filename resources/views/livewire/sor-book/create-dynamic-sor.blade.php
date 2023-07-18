@@ -12,12 +12,31 @@
         headerData.forEach(function(column) {
             delete column.editor;
             column.cellClick = eval('(' + column.cellClick + ')');
-            if (column.cellClick) {
+            if (typeof column.cellClick === "function") {
                 column.cellClick = function(e, cell) {
                     // Overwritten cellClick function
-                    alert("Cell clicked. Value: " + cell.getRow().getIndex() + "-" + cell.getValue());
+                    var rowData = cell.getRow().getData();
+                    alert("Cell clicked. Value: " + cell.getRow().getIndex() + "-" + cell
+                    .getValue()+" - "+rowData['description_of_items']);
                     // Add your custom code or logic here
                 };
+            }
+            if (column.columns) {
+                column.columns.forEach(function(subColumn) {
+                    delete subColumn.editor;
+                    subColumn.cellClick = eval('(' + subColumn.cellClick + ')');
+                    if (typeof subColumn.cellClick === "function") {
+                        subColumn.cellClick = function(e, cell) {
+                            // Overwritten cellClick function
+                            // console.log(cell);
+                            var subrowIndex = cell.getRow().getIndex();
+                            var rowData = cell.getRow().getData();
+                            alert("Cell clicked. Value: " + subrowIndex + "-" +
+                                cell.getValue()+" - "+rowData['description_of_items']);
+                            // Add your custom code or logic here
+                        };
+                    }
+                });
             }
         });
         var table = new Tabulator("#example-table", {

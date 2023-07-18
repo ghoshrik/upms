@@ -14,6 +14,11 @@ class CreateDynamicSor extends Component
         $this->selectedId = $getDatas['id'];
         $this->header_data = json_decode($getDatas['header_data'],true);
         $this->row_data = json_decode($getDatas['row_data'],true);
+        // foreach($this->row_data as $data){
+        //     if($data['_subrow']){
+        //         foreach()
+        //     }
+        // }
         // dd($this->header_data,$this->row_data);
         return view('livewire.sor-book.create-dynamic-sor');
     }
