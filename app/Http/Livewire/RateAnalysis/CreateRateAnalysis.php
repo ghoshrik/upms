@@ -18,11 +18,12 @@ use WireUi\Traits\Actions;
 class CreateRateAnalysis extends Component
 {
     use Actions;
+    protected $listeners = ['getRowValue'];
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc, $selectSor = [], $dropdownData = [];
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
     public $searchDtaCount, $searchStyle, $searchResData, $totalDistance;
-    public $getSor;
+    public $getSor, $viewModal = false,$modalName='';
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -114,7 +115,7 @@ class CreateRateAnalysis extends Component
         if ($this->selectedCategoryId == 1) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->fatchDropdownData['table_no'] = DynamicSorHeader::select('table_no')->groupBy('table_no')->get();
-            $this->fatchDropdownData['page_no'] = DynamicSorHeader::select('page_no')->groupBy('table_no')->get();
+            $this->fatchDropdownData['page_no'] = DynamicSorHeader::select('page_no')->groupBy('page_no')->get();
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = Auth::user()->department_id;
             if (!empty($this->estimateData['dept_id'])) {
@@ -201,8 +202,26 @@ class CreateRateAnalysis extends Component
     }
     public function getDynamicSor()
     {
-        $this->getSor = DynamicSorHeader::where([['page_no',$this->estimateData['page_no'],['table_no',$this->estimateData['table_no']]]])->first();
-        dd($this->getSor);
+        $this->getSor = [];
+        $this->getSor = DynamicSorHeader::where([['page_no', $this->estimateData['page_no'], ['table_no', $this->estimateData['table_no']]]])->first();
+        if ($this->getSor != null) {
+            $this->viewModal = !$this->viewModal;
+            $this->modalName = "dynamic-sor-modal_".$this->estimateData['page_no']."_".$this->estimateData['table_no'];
+        }
+        // dd($this->getSor);
+    }
+    public function getRowValue($data)
+    {
+        // dd($data);
+        $data = $data[0];
+        if ($data != null) {
+            $this->viewModal = !$this->viewModal;
+            $this->estimateData['description'] = $data['desc'];
+            $this->estimateData['qty'] = 1;
+            $this->estimateData['rate'] = $data['rowValue'];
+            $this->estimateData['item_number'] = $data['itemNo'];
+            $this->calculateValue();
+        }
     }
     public function getDeptCategory()
     {

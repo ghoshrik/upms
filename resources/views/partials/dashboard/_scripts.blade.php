@@ -51,4 +51,3 @@
 <script src="{{asset('js/hope-ui.js') }}"></script>
 <script src="{{asset('js/modelview.js')}}"></script>
 {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
-<script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
