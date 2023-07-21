@@ -632,7 +632,7 @@
                             // Overwritten cellClick function
                             var getData = cell.getRow().getData();
                             var getRowData = [{
-                                desc: getData['description_of_items'],
+                                desc: (getData['description'])?getData['description']:'',
                                 rowValue: cell.getValue(),
                                 itemNo: cell.getRow().getIndex()
                             }];
@@ -660,7 +660,7 @@
                                     var subrowIndex = cell.getRow().getIndex();
                                     var getData = cell.getRow().getData();
                                     var getRowData = [{
-                                        desc: getData['description_of_items'],
+                                        desc: (getData['description'])?getData['description']:'',
                                         rowValue: cell.getValue(),
                                         itemNo: subrowIndex
                                     }];
