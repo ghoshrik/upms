@@ -18,12 +18,12 @@ use WireUi\Traits\Actions;
 class CreateRateAnalysis extends Component
 {
     use Actions;
-    protected $listeners = ['getRowValue'];
+    protected $listeners = ['getRowValue', 'closeModal'];
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc, $selectSor = [], $dropdownData = [];
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
     public $searchDtaCount, $searchStyle, $searchResData, $totalDistance;
-    public $getSor, $viewModal = false,$modalName='';
+    public $getSor, $viewModal = false, $modalName = '';
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -115,7 +115,7 @@ class CreateRateAnalysis extends Component
         if ($this->selectedCategoryId == 1) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->fatchDropdownData['table_no'] = DynamicSorHeader::select('table_no')->groupBy('table_no')->get();
-            $this->fatchDropdownData['page_no'] = DynamicSorHeader::select('page_no')->groupBy('page_no')->get();
+            $this->fatchDropdownData['page_no'] = [];
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = Auth::user()->department_id;
             if (!empty($this->estimateData['dept_id'])) {
@@ -206,22 +206,28 @@ class CreateRateAnalysis extends Component
         $this->getSor = DynamicSorHeader::where([['page_no', $this->estimateData['page_no'], ['table_no', $this->estimateData['table_no']]]])->first();
         if ($this->getSor != null) {
             $this->viewModal = !$this->viewModal;
-            $this->modalName = "dynamic-sor-modal_".$this->estimateData['page_no']."_".$this->estimateData['table_no'];
+            $this->modalName = "dynamic-sor-modal_" . rand(1, 1000);
+            $this->modalName = str_replace(' ', '_', $this->modalName);
         }
         // dd($this->getSor);
     }
     public function getRowValue($data)
     {
-        // dd($data);
-        $data = $data[0];
+        $id = explode('.', $data[0]['id'])[0];
+        foreach (json_decode($this->getSor['row_data']) as $d) {
+            if ($d->id == $id) {
+                $this->estimateData['description'] = $d->desc_of_item;
+            }
+        }
         if ($data != null) {
             $this->viewModal = !$this->viewModal;
-            $this->estimateData['description'] = $data['desc'];
+            $this->estimateData['description'] = $this->estimateData['description'] . "-" . $data[0]['desc'];
             $this->estimateData['qty'] = 1;
-            $this->estimateData['rate'] = $data['rowValue'];
-            $this->estimateData['item_number'] = $data['itemNo'];
+            $this->estimateData['rate'] = $data[0]['rowValue'];
+            $this->estimateData['item_number'] = $data[0]['itemNo'];
             $this->calculateValue();
         }
+        // dd($this->estimateData['description']);
     }
     public function getDeptCategory()
     {
@@ -243,7 +249,11 @@ class CreateRateAnalysis extends Component
             ->where('dept_category_id', $this->selectSor['dept_category_id'])->groupBy('version')
             ->get();
     }
+    public function getPageNo()
+    {
+        $this->fatchDropdownData['page_no'] = DynamicSorHeader::select('page_no', 'table_no')->where('table_no', $this->estimateData['table_no'])->get();
 
+    }
     public function autoSorSearch()
     {
         if ($this->selectSor['selectedSOR']) {
@@ -773,6 +783,11 @@ class CreateRateAnalysis extends Component
             $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor', 'estimateData', 'selectedCategoryId', 'fatchDropdownData']);
         }
         // dd($this->addedEstimate);
+    }
+    public function closeModal()
+    {
+        $this->viewModal = !$this->viewModal;
+        $this->estimateData['page_no'] = '';
     }
     public function render()
     {

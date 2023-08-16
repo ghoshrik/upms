@@ -104,23 +104,24 @@
                                 <div class="row" wire:key='SOR' style="transition: all 2s ease-out">
                                     <div class="col">
                                         <div class="form-group">
-                                            <x-select wire:key="dept" label="Page No" placeholder="Select Page No"
-                                                wire:model.defer="estimateData.page_no">
-                                                @foreach ($fatchDropdownData['page_no'] as $page)
-                                                    <x-select.option label="{{ $page['page_no'] }}"
-                                                        value="{{ $page['page_no'] }}" />
+                                            <x-select wire:key="dept1" label="Table No" placeholder="Select Table No"
+                                                wire:model.defer="estimateData.table_no"
+                                                x-on:select="$wire.getPageNo()">
+                                                @foreach ($fatchDropdownData['table_no'] as $table)
+                                                    <x-select.option label="{{ $table['table_no'] }}"
+                                                        value="{{ $table['table_no'] }}" />
                                                 @endforeach
                                             </x-select>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-group">
-                                            <x-select wire:key="dept1" label="Table No" placeholder="Select Table No"
-                                                wire:model.defer="estimateData.table_no"
+                                            <x-select wire:key="dept" label="Page No" placeholder="Select Page No"
+                                                wire:model.defer="estimateData.page_no"
                                                 x-on:select="$wire.getDynamicSor()">
-                                                @foreach ($fatchDropdownData['table_no'] as $table)
-                                                    <x-select.option label="{{ $table['table_no'] }}"
-                                                        value="{{ $table['table_no'] }}" />
+                                                @foreach ($fatchDropdownData['page_no'] as $page)
+                                                    <x-select.option label="{{ $page['page_no'] }}"
+                                                        value="{{ $page['page_no'] }}" />
                                                 @endforeach
                                             </x-select>
                                         </div>
@@ -593,7 +594,7 @@
         <div>
             <div class="modal fade" id="{{ $modalName }}" tabindex="-1" role="dialog"
                 aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-dialog modal-fullscreen" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
@@ -605,15 +606,28 @@
                             <div id="example-table"></div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
+                            <button type="button"id="closeBtn" class="btn btn-secondary"
+                                data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <script>
+            document.getElementById("closeBtn").addEventListener("click", function() {
+                closeModal();
+            });
+
+            function closeModal() {
+                $('#' + @json($modalName)).modal('hide');
+                window.Livewire.emit('closeModal');
+            }
             $(document).ready(function() {
+                var clickableCellValues = [];
+                $("#" + @json($modalName)).modal({
+                    backdrop: "static",
+                    keyboard: false
+                });
                 var headerData = @json(json_decode($getSor['header_data']));
                 var rowData = @json(json_decode($getSor['row_data']));
                 headerData.forEach(function(column) {
@@ -632,14 +646,18 @@
                             // Overwritten cellClick function
                             var getData = cell.getRow().getData();
                             var getRowData = [{
-                                desc: (getData['description'])?getData['description']:'',
+                                id: getData['id'],
+                                desc: (getData['description']) ? getData['description'] : '',
                                 rowValue: cell.getValue(),
                                 itemNo: cell.getRow().getIndex()
                             }];
+                            console.log(getData);
                             var cnf = confirm("Are you sure " + cell.getValue() + " ?");
                             if (cnf) {
                                 window.Livewire.emit('getRowValue', getRowData);
-                                var modalToggle = document.getElementById(@json($modalName));
+                                // window.Livewire.emit('getRowValue', getData);
+                                // window.Livewire.emit('getRowValue', clickableCellValues);
+                                // var modalToggle = document.getElementById(@json($modalName));
                                 $('#' + @json($modalName)).modal('hide');
                                 // Add your custom code or logic here
                             }
@@ -660,23 +678,24 @@
                                     var subrowIndex = cell.getRow().getIndex();
                                     var getData = cell.getRow().getData();
                                     var getRowData = [{
-                                        desc: (getData['description'])?getData['description']:'',
+                                        id: getData['id'],
+                                        desc: (getData['description']) ? getData[
+                                            'description'] : '',
                                         rowValue: cell.getValue(),
                                         itemNo: subrowIndex
                                     }];
+                                    console.log(getData);
                                     var cnf = confirm("Are you sure " + cell.getValue() + " ?");
                                     if (cnf) {
                                         window.Livewire.emit('getRowValue', getRowData);
-                                        var modalToggle = document.getElementById(
-                                            @json($modalName));
-                                        $('#' + @json($modalName)).modal('hide');
-                                        // Add your custom code or logic here
+                                        // window.Livewire.emit('getRowValue', getData);
                                     }
                                 };
                             }
                         });
                     }
                 });
+
                 var delay = 1000; // Delay time in milliseconds
 
                 var delayPromise = new Promise(function(resolve) {
@@ -687,7 +706,7 @@
 
                 delayPromise.then(function() {
                     var table = new Tabulator("#example-table", {
-                        height: "311px",
+                        height: "auto",
                         layout: "fitColumns",
                         columns: headerData,
                         data: rowData,

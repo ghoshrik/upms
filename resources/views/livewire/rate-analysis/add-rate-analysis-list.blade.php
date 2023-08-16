@@ -72,7 +72,8 @@
                                             {{-- {{ $addedEstimate['sor_item_number'] ?  $addedEstimate['sor_item_number'] : '---'}} --}}
 
                                             @if ($addedEstimate['sor_item_number'])
-                                                {{ getSorItemNumber($addedEstimate['sor_item_number']) }}
+                                                {{-- {{ getSorItemNumber($addedEstimate['sor_item_number']) }} --}}
+                                                {{ $addedEstimate['sor_item_number'] }}
                                             @elseif ($addedEstimate['rate_no'])
                                                 {{ $addedEstimate['rate_no'] }}
                                             @else
