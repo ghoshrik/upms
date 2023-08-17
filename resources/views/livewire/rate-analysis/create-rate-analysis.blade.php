@@ -464,7 +464,7 @@
                             {{-- Carriages Field Start --}}
                             @if ($selectedCategoryId == 5)
                                 <div class="row" wire:key='Carriages' style="transition: all 2s ease-out">
-                                    <div class="col-lg-3 col-md-3 col-sm-3">
+                                    {{-- <div class="col-lg-3 col-md-3 col-sm-3">
                                         <div class="form-group">
                                             <x-select wire:key="compositeDept"
                                                 label="{{ trans('cruds.estimate.fields.dept') }}"
@@ -509,14 +509,14 @@
                                                 @endisset
                                             </x-select>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-md-2 col-lg-2 col-sm-3">
                                         <div class="form-group">
                                             <x-input label="Distance" placeholder="Distance"
                                                 wire:model.defer="estimateData.distance" wire:key="distance" />
                                         </div>
                                     </div>
-                                    <div class="col-md-3 col-lg-3 col-sm-3">
+                                    {{--<div class="col-md-3 col-lg-3 col-sm-3">
                                         <div class="form-group search-sor">
                                             <div class="dropdown">
                                                 <x-input wire:key="sor"
@@ -541,7 +541,7 @@
                                                 @endisset
                                             </div>
                                         </div>
-                                        {{-- <div class="form-group">
+                                        <div class="form-group">
                                             <x-select wire:key="carriageSor"
                                                 label="{{ trans('cruds.estimate.fields.item_number') }}"
                                                 placeholder="Select {{ trans('cruds.estimate.fields.item_number') }}"
@@ -553,9 +553,32 @@
                                                     @endforeach
                                                 @endisset
                                             </x-select>
-                                        </div> --}}
+                                        </div>
+                                    </div> --}}
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="dept1" label="Table No" placeholder="Select Table No"
+                                                wire:model.defer="estimateData.table_no"
+                                                x-on:select="$wire.getPageNo()">
+                                                @foreach ($fatchDropdownData['table_no'] as $table)
+                                                    <x-select.option label="{{ $table['table_no'] }}"
+                                                        value="{{ $table['table_no'] }}" />
+                                                @endforeach
+                                            </x-select>
+                                        </div>
                                     </div>
-
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="dept" label="Page No" placeholder="Select Page No"
+                                                wire:model.defer="estimateData.page_no"
+                                                x-on:select="$wire.getDynamicSor()">
+                                                @foreach ($fatchDropdownData['page_no'] as $page)
+                                                    <x-select.option label="{{ $page['page_no'] }}"
+                                                        value="{{ $page['page_no'] }}" />
+                                                @endforeach
+                                            </x-select>
+                                        </div>
+                                    </div>
                                 </div>
                             @endif
                             {{-- Carriages Field End --}}
@@ -654,7 +677,12 @@
                             console.log(getData);
                             var cnf = confirm("Are you sure " + cell.getValue() + " ?");
                             if (cnf) {
-                                window.Livewire.emit('getRowValue', getRowData);
+                                if (@json($selectedCategoryId) == 5) {
+                                    window.Livewire.emit('getRowValue', getData);
+                                } else {
+                                    window.Livewire.emit('getRowValue', getRowData);
+                                }
+
                                 // window.Livewire.emit('getRowValue', getData);
                                 // window.Livewire.emit('getRowValue', clickableCellValues);
                                 // var modalToggle = document.getElementById(@json($modalName));
@@ -687,7 +715,11 @@
                                     console.log(getData);
                                     var cnf = confirm("Are you sure " + cell.getValue() + " ?");
                                     if (cnf) {
-                                        window.Livewire.emit('getRowValue', getRowData);
+                                        if (@json($selectedCategoryId) == 5) {
+                                            window.Livewire.emit('getRowValue', getData);
+                                        } else {
+                                            window.Livewire.emit('getRowValue', getRowData);
+                                        }
                                         // window.Livewire.emit('getRowValue', getData);
                                     }
                                 };

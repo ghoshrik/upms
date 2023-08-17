@@ -183,10 +183,14 @@ class CreateRateAnalysis extends Component
             $this->estimateData['itemNo'] = '';
         } else {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+            $this->fatchDropdownData['table_no'] = DynamicSorHeader::select('table_no')->groupBy('table_no')->get();
+            $this->fatchDropdownData['page_no'] = [];
             $this->estimateData['dept_id'] = Auth::user()->department_id;
             if (!empty($this->estimateData['dept_id'])) {
                 $this->getDeptCategory();
             }
+            $this->estimateData['table_no'] = '';
+            $this->estimateData['page_no'] = '';
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
@@ -213,20 +217,33 @@ class CreateRateAnalysis extends Component
     }
     public function getRowValue($data)
     {
-        $id = explode('.', $data[0]['id'])[0];
-        foreach (json_decode($this->getSor['row_data']) as $d) {
-            if ($d->id == $id) {
-                $this->estimateData['description'] = $d->desc_of_item;
+        // dd($data['id']);
+        if ($this->selectedCategoryId == 5) {
+            // $id = explode('.',$data['id'])[0];
+            // dd($id);
+            // foreach (json_decode($this->getSor['row_data']) as $d) {
+            //     if ($d->id == $id) {
+            //         $this->estimateData['description'] = $d->desc_of_item;
+            //     }
+            // }
+            $this->getItemDetails1($data);
+        } else {
+            $id = explode('.', $data[0]['id'])[0];
+            foreach (json_decode($this->getSor['row_data']) as $d) {
+                if ($d->id == $id) {
+                    $this->estimateData['description'] = $d->desc_of_item;
+                }
+            }
+            if ($data != null) {
+                $this->viewModal = !$this->viewModal;
+                $this->estimateData['description'] = $this->estimateData['description'] . " " . $data[0]['desc'];
+                $this->estimateData['qty'] = 1;
+                $this->estimateData['rate'] = $data[0]['rowValue'];
+                $this->estimateData['item_number'] = $data[0]['itemNo'];
+                $this->calculateValue();
             }
         }
-        if ($data != null) {
-            $this->viewModal = !$this->viewModal;
-            $this->estimateData['description'] = $this->estimateData['description'] . "-" . $data[0]['desc'];
-            $this->estimateData['qty'] = 1;
-            $this->estimateData['rate'] = $data[0]['rowValue'];
-            $this->estimateData['item_number'] = $data[0]['itemNo'];
-            $this->calculateValue();
-        }
+
         // dd($this->estimateData['description']);
     }
     public function getDeptCategory()
@@ -369,7 +386,8 @@ class CreateRateAnalysis extends Component
         }
     }
     public $distance;
-    public function getItemDetails1($id)
+    // public function getItemDetails1($id)
+    public function getItemDetails1($getData)
     {
         // dd($id);
         $this->distance = $this->estimateData['distance'];
@@ -379,80 +397,80 @@ class CreateRateAnalysis extends Component
         // $this->estimateData['item_number'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['id'];
         // $this->calculateValue();
 
-        $this->searchResData = SOR::select('Item_details', 'id', 'description', 'cost')->where('Item_details', 'like', $id . '%')->get();
+        // $this->searchResData = SOR::select('Item_details', 'id', 'description', 'cost')->where('Item_details', 'like', $id . '%')->get();
         // dd($this->searchResData);
-        foreach ($this->searchResData as $key => $data) {
-            if ($key == 0 && $this->estimateData['distance'] != 0) {
-                if ($this->estimateData['distance'] >= 5) {
-                    $this->estimateData['qty'] = 5;
-                } else {
-                    $this->estimateData['qty'] = $this->estimateData['distance'];
-                }
-                $this->estimateData['item_number'] = $data['id'];
-                $this->estimateData['description'] = $data['description'];
-                $this->estimateData['rate'] = $data['cost'];
-                $this->estimateData['total_amount'] = $data['cost'];
-                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
-                $this->addEstimate($key + 1);
-            } elseif ($key == 1 && $this->estimateData['distance'] != 0) {
-                if ($this->estimateData['distance'] >= 5) {
-                    $this->estimateData['qty'] = 5;
-                } else {
-                    $this->estimateData['qty'] = $this->estimateData['distance'];
-                }
-                $this->estimateData['item_number'] = $data['id'];
-                $this->estimateData['description'] = $data['description'];
-                $this->estimateData['rate'] = $data['cost'];
-                $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
-                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
-                $this->addEstimate($key + 1);
-            } elseif ($key == 2 && $this->estimateData['distance'] != 0) {
-                if ($this->estimateData['distance'] >= 10) {
-                    $this->estimateData['qty'] = 10;
-                } else {
-                    $this->estimateData['qty'] = $this->estimateData['distance'];
-                }
-                $this->estimateData['item_number'] = $data['id'];
-                $this->estimateData['description'] = $data['description'];
-                $this->estimateData['rate'] = $data['cost'];
-                $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
-                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
-                $this->addEstimate($key + 1);
-            } elseif ($key == 3 && $this->estimateData['distance'] != 0) {
-                if ($this->estimateData['distance'] >= 30) {
-                    $this->estimateData['qty'] = 30;
-                } else {
-                    $this->estimateData['qty'] = $this->estimateData['distance'];
-                }
-                $this->estimateData['item_number'] = $data['id'];
-                $this->estimateData['description'] = $data['description'];
-                $this->estimateData['rate'] = $data['cost'];
-                $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
-                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
-                $this->addEstimate($key + 1);
-            } elseif ($key == 4 && $this->estimateData['distance'] != 0) {
-                if ($this->estimateData['distance'] >= 50) {
-                    $this->estimateData['qty'] = 50;
-                } else {
-                    $this->estimateData['qty'] = $this->estimateData['distance'];
-                }
-                $this->estimateData['item_number'] = $data['id'];
-                $this->estimateData['description'] = $data['description'];
-                $this->estimateData['rate'] = $data['cost'];
-                $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
-                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
-                $this->addEstimate($key + 1);
-            } elseif ($key == 5 && $this->estimateData['distance'] != 0) {
-                $this->estimateData['item_number'] = $data['id'];
-                $this->estimateData['description'] = $data['description'];
-                $this->estimateData['qty'] = $this->estimateData['distance'];
-                $this->estimateData['rate'] = $data['cost'];
-                $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
-                $this->addEstimate($key + 1);
-            } else {
-                return;
-            }
-        }
+        // foreach ($this->searchResData as $key => $data) {
+        //     if ($key == 0 && $this->estimateData['distance'] != 0) {
+        //         if ($this->estimateData['distance'] >= 5) {
+        //             $this->estimateData['qty'] = 5;
+        //         } else {
+        //             $this->estimateData['qty'] = $this->estimateData['distance'];
+        //         }
+        //         $this->estimateData['item_number'] = $data['id'];
+        //         $this->estimateData['description'] = $data['description'];
+        //         $this->estimateData['rate'] = $data['cost'];
+        //         $this->estimateData['total_amount'] = $data['cost'];
+        //         $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
+        //         $this->addEstimate($key + 1);
+        //     } elseif ($key == 1 && $this->estimateData['distance'] != 0) {
+        //         if ($this->estimateData['distance'] >= 5) {
+        //             $this->estimateData['qty'] = 5;
+        //         } else {
+        //             $this->estimateData['qty'] = $this->estimateData['distance'];
+        //         }
+        //         $this->estimateData['item_number'] = $data['id'];
+        //         $this->estimateData['description'] = $data['description'];
+        //         $this->estimateData['rate'] = $data['cost'];
+        //         $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
+        //         $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
+        //         $this->addEstimate($key + 1);
+        //     } elseif ($key == 2 && $this->estimateData['distance'] != 0) {
+        //         if ($this->estimateData['distance'] >= 10) {
+        //             $this->estimateData['qty'] = 10;
+        //         } else {
+        //             $this->estimateData['qty'] = $this->estimateData['distance'];
+        //         }
+        //         $this->estimateData['item_number'] = $data['id'];
+        //         $this->estimateData['description'] = $data['description'];
+        //         $this->estimateData['rate'] = $data['cost'];
+        //         $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
+        //         $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
+        //         $this->addEstimate($key + 1);
+        //     } elseif ($key == 3 && $this->estimateData['distance'] != 0) {
+        //         if ($this->estimateData['distance'] >= 30) {
+        //             $this->estimateData['qty'] = 30;
+        //         } else {
+        //             $this->estimateData['qty'] = $this->estimateData['distance'];
+        //         }
+        //         $this->estimateData['item_number'] = $data['id'];
+        //         $this->estimateData['description'] = $data['description'];
+        //         $this->estimateData['rate'] = $data['cost'];
+        //         $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
+        //         $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
+        //         $this->addEstimate($key + 1);
+        //     } elseif ($key == 4 && $this->estimateData['distance'] != 0) {
+        //         if ($this->estimateData['distance'] >= 50) {
+        //             $this->estimateData['qty'] = 50;
+        //         } else {
+        //             $this->estimateData['qty'] = $this->estimateData['distance'];
+        //         }
+        //         $this->estimateData['item_number'] = $data['id'];
+        //         $this->estimateData['description'] = $data['description'];
+        //         $this->estimateData['rate'] = $data['cost'];
+        //         $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
+        //         $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
+        //         $this->addEstimate($key + 1);
+        //     } elseif ($key == 5 && $this->estimateData['distance'] != 0) {
+        //         $this->estimateData['item_number'] = $data['id'];
+        //         $this->estimateData['description'] = $data['description'];
+        //         $this->estimateData['qty'] = $this->estimateData['distance'];
+        //         $this->estimateData['rate'] = $data['cost'];
+        //         $this->estimateData['total_amount'] = $data['cost'] * $this->estimateData['qty'];
+        //         $this->addEstimate($key + 1);
+        //     } else {
+        //         return;
+        //     }
+        // }
         // dd($this->estimateData);
         // $this->searchDtaCount = count($this->searchResData) > 0;
         // $this->searchStyle = 'none';
@@ -470,6 +488,126 @@ class CreateRateAnalysis extends Component
         //     $this->estimateData['qty'] = '';
         //     $this->estimateData['rate'] = '';
         // }
+        $array = [];
+        $arrCount = 0;
+        if (isset($getData['upTo_5'])) {
+            $array[$arrCount++]['upTo_5'] = $getData['upTo_5'];
+        }
+        if (isset($getData['upTo_10'])) {
+            $array[$arrCount++]['upTo_10'] = $getData['upTo_10'];
+        }
+        if (isset($getData['upTo_16'])) {
+            $array[$arrCount++]['upTo_16'] = $getData['upTo_16'];
+        }
+        if (isset($getData['above_16'])) {
+            $array[$arrCount++]['above_16'] = $getData['above_16'];
+        }
+        if (isset($getData['upTo_20'])) {
+            $array[$arrCount++]['upTo_20'] = $getData['upTo_20'];
+        }
+        if (isset($getData['upTo_50'])) {
+            $array[$arrCount++]['upTo_50'] = $getData['upTo_50'];
+        }
+        if (isset($getData['upTo_100'])) {
+            $array[$arrCount++]['upTo_100'] = $getData['upTo_100'];
+        }
+        if (isset($getData['above_100'])) {
+            $array[$arrCount++]['above_100'] = $getData['above_100'];
+        }
+        // dd($array);
+
+        foreach ($array as $key => $data) {
+            // dd($data);
+            if (isset($data['upTo_5']) && $this->estimateData['distance'] != 0) {
+                if ($this->estimateData['distance'] >= 5) {
+                    $this->estimateData['qty'] = 5;
+                } else {
+                    $this->estimateData['qty'] = $this->estimateData['distance'];
+                }
+                $this->estimateData['item_number'] = explode('.', $getData['id'])[0] . ' ( Zone ' . $getData['zone'] . ')';
+                $this->estimateData['description'] = "Any Distance up to 5 km";
+                $this->estimateData['rate'] = $data['upTo_5'];
+                $this->estimateData['total_amount'] = (int) $data['upTo_5'];
+                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
+                $this->addEstimate($key + 1);
+            } elseif (isset($data['upTo_10']) && $this->estimateData['distance'] != 0) {
+                if ($this->estimateData['distance'] >= 5) {
+                    $this->estimateData['qty'] = 5;
+                } else {
+                    $this->estimateData['qty'] = $this->estimateData['distance'];
+                }
+                $this->estimateData['item_number'] = explode('.', $getData['id'])[0] . ' ( Zone ' . $getData['zone'] . ')';
+                $this->estimateData['description'] = "Above 5 km up to 10 km (per km)";
+                $this->estimateData['rate'] = $data['upTo_10'];
+                $this->estimateData['total_amount'] = $data['upTo_10'] * $this->estimateData['qty'];
+                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
+                $this->addEstimate($key + 1);
+            } elseif (isset($data['upTo_16']) && $this->estimateData['distance'] != 0) {
+                if ($this->estimateData['distance'] >= 11 ) {
+                    $this->estimateData['qty'] = 11;
+                } else {
+                    $this->estimateData['qty'] = $this->estimateData['distance'];
+                }
+                $this->estimateData['item_number'] = explode('.', $getData['id'])[0] . ' ( Zone ' . $getData['zone'] . ')';
+                $this->estimateData['description'] = "Above 5 km up to 16 km (per km)";
+                $this->estimateData['rate'] = $data['upTo_16'];
+                $this->estimateData['total_amount'] = $data['upTo_16'] * $this->estimateData['qty'];
+                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
+                $this->addEstimate($key + 1);
+            } elseif (isset($data['above_16']) && $this->estimateData['distance'] != 0) {
+                $this->estimateData['item_number'] = explode('.', $getData['id'])[0] . ' ( Zone ' . $getData['zone'] . ')';
+                $this->estimateData['description'] = "Above 16 km (per km)";
+                $this->estimateData['qty'] = $this->estimateData['distance'];
+                $this->estimateData['rate'] = $data['above_16'];
+                $this->estimateData['total_amount'] = $data['above_16'] * $this->estimateData['qty'];
+                $this->addEstimate($key + 1);
+            } elseif (isset($data['upTo_20']) && $this->estimateData['distance'] != 0) {
+                if ($this->estimateData['distance'] >= 10) {
+                    $this->estimateData['qty'] = 10;
+                } else {
+                    $this->estimateData['qty'] = $this->estimateData['distance'];
+                }
+                $this->estimateData['item_number'] = explode('.', $getData['id'])[0] . ' ( Zone ' . $getData['zone'] . ')';
+                $this->estimateData['description'] = "Above 10 km up to 20 km (per km)";
+                $this->estimateData['rate'] = $data['upTo_20'];
+                $this->estimateData['total_amount'] = $data['upTo_20'] * $this->estimateData['qty'];
+                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
+                $this->addEstimate($key + 1);
+            } elseif (isset($data['upTo_50']) && $this->estimateData['distance'] != 0) {
+                if ($this->estimateData['distance'] >= 30) {
+                    $this->estimateData['qty'] = 30;
+                } else {
+                    $this->estimateData['qty'] = $this->estimateData['distance'];
+                }
+                $this->estimateData['item_number'] = explode('.', $getData['id'])[0] . ' ( Zone ' . $getData['zone'] . ')';
+                $this->estimateData['description'] = "Above 20 km up to 50 km (per km)";
+                $this->estimateData['rate'] = $data['upTo_50'];
+                $this->estimateData['total_amount'] = $data['upTo_50'] * $this->estimateData['qty'];
+                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
+                $this->addEstimate($key + 1);
+            } elseif (isset($data['upTo_100']) && $this->estimateData['distance'] != 0) {
+                if ($this->estimateData['distance'] >= 50) {
+                    $this->estimateData['qty'] = 50;
+                } else {
+                    $this->estimateData['qty'] = $this->estimateData['distance'];
+                }
+                $this->estimateData['item_number'] = explode('.', $getData['id'])[0] . ' ( Zone ' . $getData['zone'] . ')';
+                $this->estimateData['description'] = "Above 50 km up to 100 km (per km)";
+                $this->estimateData['rate'] = $data['upTo_100'];
+                $this->estimateData['total_amount'] = $data['upTo_100'] * $this->estimateData['qty'];
+                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
+                $this->addEstimate($key + 1);
+            } elseif (isset($data['above_100']) && $this->estimateData['distance'] != 0) {
+                $this->estimateData['item_number'] = explode('.', $getData['id'])[0] . ' ( Zone ' . $getData['zone'] . ')';
+                $this->estimateData['description'] = "Above 100 km (per km)";
+                $this->estimateData['qty'] = $this->estimateData['distance'];
+                $this->estimateData['rate'] = $data['above_100'];
+                $this->estimateData['total_amount'] = $data['above_100'] * $this->estimateData['qty'];
+                $this->addEstimate($key + 1);
+            } else {
+                return;
+            }
+        }
     }
     public function getCompositSorItemDetails($id)
     {
@@ -731,6 +869,7 @@ class CreateRateAnalysis extends Component
     }
     public function addEstimate($key = null)
     {
+        // dd($key);
         $this->validate();
         if (isset($key)) {
             $this->showTableOne = !$this->showTableOne;
@@ -755,6 +894,7 @@ class CreateRateAnalysis extends Component
             // $this->estimateData['qty'] = '';
             // $this->estimateData['rate'] = '';
             // $this->estimateData['total_amount'] = '';
+            // dd($this->addedEstimate);
             $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor', 'estimateData', 'distance']);
         } else {
             // dd("key");
@@ -776,10 +916,12 @@ class CreateRateAnalysis extends Component
             $this->estimateData['item_number'] = '';
             $this->estimateData['other_name'] = '';
             $this->estimateData['estimate_no'] = '';
+            $this->estimateData['description'] = '';
             $this->estimateData['rate_no'] = '';
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
+            $this->estimateData['page_no'] = '';
             $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor', 'estimateData', 'selectedCategoryId', 'fatchDropdownData']);
         }
         // dd($this->addedEstimate);
