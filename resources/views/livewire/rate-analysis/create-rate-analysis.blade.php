@@ -594,6 +594,14 @@
                                 </div>
                             </div>
                         </div>
+                        {{-- @isset($estimateData['description']) --}}
+                           @php
+                           print_r('<pre>');
+                            print_r($test);
+                            print_r('</pre>');
+                        @endphp
+                        {{-- @endisset --}}
+
                     </div>
                 </div>
             </div>
@@ -615,7 +623,7 @@
     </div>
     @if ($viewModal)
         <div>
-            <div class="modal fade" id="{{ $modalName }}" tabindex="-1" role="dialog"
+            <div class="modal" id="{{ $modalName }}" tabindex="-1" role="dialog"
                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-fullscreen" role="document">
                     <div class="modal-content">
@@ -670,7 +678,7 @@
                             var getData = cell.getRow().getData();
                             var getRowData = [{
                                 id: getData['id'],
-                                desc: (getData['description']) ? getData['description'] : '',
+                                desc: (getData['desc_of_item']) ? getData['desc_of_item'] : '',
                                 rowValue: cell.getValue(),
                                 itemNo: cell.getRow().getIndex()
                             }];
@@ -707,8 +715,8 @@
                                     var getData = cell.getRow().getData();
                                     var getRowData = [{
                                         id: getData['id'],
-                                        desc: (getData['description']) ? getData[
-                                            'description'] : '',
+                                        desc: (getData['desc_of_item']) ? getData[
+                                            'desc_of_item'] : '',
                                         rowValue: cell.getValue(),
                                         itemNo: subrowIndex
                                     }];
@@ -721,6 +729,7 @@
                                             window.Livewire.emit('getRowValue', getRowData);
                                         }
                                         // window.Livewire.emit('getRowValue', getData);
+                                        $('#' + @json($modalName)).modal('hide');
                                     }
                                 };
                             }

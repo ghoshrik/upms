@@ -23,7 +23,7 @@ class CreateRateAnalysis extends Component
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
     public $searchDtaCount, $searchStyle, $searchResData, $totalDistance;
-    public $getSor, $viewModal = false, $modalName = '';
+    public $getSor, $viewModal = false, $modalName = '',$test=[];
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -217,7 +217,9 @@ class CreateRateAnalysis extends Component
     }
     public function getRowValue($data)
     {
-        // dd($data['id']);
+        // dd($data);
+        $fetchRow[] = [];
+        $descriptions = [];
         if ($this->selectedCategoryId == 5) {
             // $id = explode('.',$data['id'])[0];
             // dd($id);
@@ -228,12 +230,49 @@ class CreateRateAnalysis extends Component
             // }
             $this->getItemDetails1($data);
         } else {
-            $id = explode('.', $data[0]['id'])[0];
-            foreach (json_decode($this->getSor['row_data']) as $d) {
-                if ($d->id == $id) {
-                    $this->estimateData['description'] = $d->desc_of_item;
+            $rowId = explode('.', $data[0]['id'])[0];
+            foreach (json_decode($this->getSor['row_data']) as $row) {
+                if ($row->id == $rowId) {
+                    $fetchRow = $row;
                 }
             }
+            // dd(json_encode($fetchRow));
+            $this->extractDescOfItems($fetchRow, $descriptions);
+            // dd($descriptions);
+            $selectedItemId = $data[0]['id'];
+            $hierarchicalArray = explode(".", $selectedItemId);
+            $convertedArray = [];
+            $partialItemId = "";
+            foreach ($hierarchicalArray as $part) {
+                if ($partialItemId !== "") {
+                    $partialItemId .= ".";
+                }
+                $partialItemId .= $part;
+                $convertedArray[] = $partialItemId;
+            }
+            // dd($convertedArray);
+            // $id = explode('.', $data[0]['id'])[$countLoop];
+            foreach ($convertedArray as $arr) {
+                foreach (json_decode($this->getSor['row_data']) as $d) {
+                    if ($d->id == $arr) {
+                        if (isset($d->desc_of_item)) {
+                            $descriptions[] = $d->desc_of_item;
+                        }
+                        if ($d->_subrow) {
+                            foreach ($d->_subrow as $subRow) {
+                                // dd($arr);
+                                if ($subRow->id == $arr) {
+                                    $this->estimateData['description'] = $this->estimateData['description'] . " " . $subRow->desc_of_item;
+                                }
+                            }
+                        }
+                    }
+                    if ($d->id == $arr) {
+                        $this->estimateData['description'] = $this->estimateData['description'] . " " . $d->desc_of_item;
+                    }
+                }
+            }
+
             if ($data != null) {
                 $this->viewModal = !$this->viewModal;
                 $this->estimateData['description'] = $this->estimateData['description'] . " " . $data[0]['desc'];
@@ -245,6 +284,29 @@ class CreateRateAnalysis extends Component
         }
 
         // dd($this->estimateData['description']);
+    }
+    public function extractDescOfItems($data, &$descriptions)
+    {
+        $this->test[] = $data;
+        if (isset($data->desc_of_item)) {
+            $descriptions[] = $data->desc_of_item;
+        }
+        if (isset($data->_subrow)) {
+            foreach ($data->_subrow as $item) {
+                // dd($item);
+                if (isset($item->desc_of_item)) {
+                    $descriptions[] = $item->desc_of_item;
+                }
+
+                if (!empty($item->_subrow)) {
+                    // dd(count($item->_subrow));
+                    // if (isset($item->_subrow[0]->_subrow)) {
+                        $this->extractDescOfItems($item, $descriptions);
+                    // }
+                }
+            }
+        }
+
     }
     public function getDeptCategory()
     {
@@ -269,6 +331,8 @@ class CreateRateAnalysis extends Component
     public function getPageNo()
     {
         $this->fatchDropdownData['page_no'] = DynamicSorHeader::select('page_no', 'table_no')->where('table_no', $this->estimateData['table_no'])->get();
+        $this->viewModal = false;
+        $this->estimateData['page_no'] = '';
 
     }
     public function autoSorSearch()
@@ -543,7 +607,7 @@ class CreateRateAnalysis extends Component
                 $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
                 $this->addEstimate($key + 1);
             } elseif (isset($data['upTo_16']) && $this->estimateData['distance'] != 0) {
-                if ($this->estimateData['distance'] >= 11 ) {
+                if ($this->estimateData['distance'] >= 11) {
                     $this->estimateData['qty'] = 11;
                 } else {
                     $this->estimateData['qty'] = $this->estimateData['distance'];
