@@ -219,7 +219,7 @@ class CreateRateAnalysis extends Component
     {
         // dd($data);
         $fetchRow[] = [];
-        $descriptions = [];
+        // $descriptions = [];
         if ($this->selectedCategoryId == 5) {
             // $id = explode('.',$data['id'])[0];
             // dd($id);
@@ -237,9 +237,9 @@ class CreateRateAnalysis extends Component
                 }
             }
             // dd(json_encode($fetchRow));
-            $this->extractDescOfItems($fetchRow, $descriptions);
-            // dd($descriptions);
             $selectedItemId = $data[0]['id'];
+
+            // ---------explode the id------
             $hierarchicalArray = explode(".", $selectedItemId);
             $convertedArray = [];
             $partialItemId = "";
@@ -251,31 +251,33 @@ class CreateRateAnalysis extends Component
                 $convertedArray[] = $partialItemId;
             }
             // dd($convertedArray);
+            $this->extractDescOfItems($fetchRow, $descriptions,$convertedArray);
+            // dd($descriptions);
             // $id = explode('.', $data[0]['id'])[$countLoop];
-            foreach ($convertedArray as $arr) {
-                foreach (json_decode($this->getSor['row_data']) as $d) {
-                    if ($d->id == $arr) {
-                        if (isset($d->desc_of_item)) {
-                            $descriptions[] = $d->desc_of_item;
-                        }
-                        if ($d->_subrow) {
-                            foreach ($d->_subrow as $subRow) {
-                                // dd($arr);
-                                if ($subRow->id == $arr) {
-                                    $this->estimateData['description'] = $this->estimateData['description'] . " " . $subRow->desc_of_item;
-                                }
-                            }
-                        }
-                    }
-                    if ($d->id == $arr) {
-                        $this->estimateData['description'] = $this->estimateData['description'] . " " . $d->desc_of_item;
-                    }
-                }
-            }
+            // foreach ($convertedArray as $arr) {
+            //     foreach (json_decode($this->getSor['row_data']) as $d) {
+            //         if ($d->id == $arr) {
+            //             if (isset($d->desc_of_item)) {
+            //                 $descriptions[] = $d->desc_of_item;
+            //             }
+            //             if ($d->_subrow) {
+            //                 foreach ($d->_subrow as $subRow) {
+            //                     // dd($arr);
+            //                     if ($subRow->id == $arr) {
+            //                         $this->estimateData['description'] = $this->estimateData['description'] . " " . $subRow->desc_of_item;
+            //                     }
+            //                 }
+            //             }
+            //         }
+            //         if ($d->id == $arr) {
+            //             $this->estimateData['description'] = $this->estimateData['description'] . " " . $d->desc_of_item;
+            //         }
+            //     }
+            // }
 
             if ($data != null) {
                 $this->viewModal = !$this->viewModal;
-                $this->estimateData['description'] = $this->estimateData['description'] . " " . $data[0]['desc'];
+                $this->estimateData['description'] = $descriptions . "  " . $data[0]['desc'];
                 $this->estimateData['qty'] = 1;
                 $this->estimateData['rate'] = $data[0]['rowValue'];
                 $this->estimateData['item_number'] = $data[0]['itemNo'];
@@ -285,23 +287,24 @@ class CreateRateAnalysis extends Component
 
         // dd($this->estimateData['description']);
     }
-    public function extractDescOfItems($data, &$descriptions)
+    public function extractDescOfItems($data, &$descriptions,$counter)
     {
         $this->test[] = $data;
         if (isset($data->desc_of_item)) {
-            $descriptions[] = $data->desc_of_item;
+            $descriptions .= $data->desc_of_item;
         }
-        if (isset($data->_subrow)) {
+        if (isset($data->_subrow) && count($counter)>2) {
+            // dd($data->_subrow,$descriptions);
             foreach ($data->_subrow as $item) {
-                // dd($item);
+                // dd($item,$descriptions);
                 if (isset($item->desc_of_item)) {
-                    $descriptions[] = $item->desc_of_item;
+                    $descriptions .= $item->desc_of_item;
+                    // dd($descriptions);
                 }
-
+                // $this->extractDescOfItems($item, $descriptions);
                 if (!empty($item->_subrow)) {
-                    // dd(count($item->_subrow));
                     // if (isset($item->_subrow[0]->_subrow)) {
-                        $this->extractDescOfItems($item, $descriptions);
+                        $this->extractDescOfItems($item->_subrow, $descriptions,$counter);
                     // }
                 }
             }

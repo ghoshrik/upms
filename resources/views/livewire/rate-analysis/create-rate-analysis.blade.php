@@ -516,7 +516,7 @@
                                                 wire:model.defer="estimateData.distance" wire:key="distance" />
                                         </div>
                                     </div>
-                                    {{--<div class="col-md-3 col-lg-3 col-sm-3">
+                                    {{-- <div class="col-md-3 col-lg-3 col-sm-3">
                                         <div class="form-group search-sor">
                                             <div class="dropdown">
                                                 <x-input wire:key="sor"
@@ -595,9 +595,9 @@
                             </div>
                         </div>
                         {{-- @isset($estimateData['description']) --}}
-                           @php
-                           print_r('<pre>');
-                            print_r($test);
+                        @php
+                            print_r('<pre>');
+                            // print_r($estimateData['description']);
                             print_r('</pre>');
                         @endphp
                         {{-- @endisset --}}
