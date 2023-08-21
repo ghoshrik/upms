@@ -14,6 +14,7 @@ use App\Models\SorMaster;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use WireUi\Traits\Actions;
+use Illuminate\Support\Facades\Log;
 
 class CreateRateAnalysis extends Component
 {
@@ -23,7 +24,7 @@ class CreateRateAnalysis extends Component
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
     public $searchDtaCount, $searchStyle, $searchResData, $totalDistance;
-    public $getSor, $viewModal = false, $modalName = '',$test=[];
+    public $getSor, $viewModal = false, $modalName = '';
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -221,13 +222,12 @@ class CreateRateAnalysis extends Component
         $fetchRow[] = [];
         // $descriptions = [];
         if ($this->selectedCategoryId == 5) {
-            // $id = explode('.',$data['id'])[0];
-            // dd($id);
-            // foreach (json_decode($this->getSor['row_data']) as $d) {
-            //     if ($d->id == $id) {
-            //         $this->estimateData['description'] = $d->desc_of_item;
-            //     }
-            // }
+            $id = explode('.',$data['id'])[0];
+            foreach (json_decode($this->getSor['row_data']) as $d) {
+                if ($d->id == $id && $d->desc_of_item != '') {
+                    $this->sorMasterDesc .= $d->desc_of_item;
+                }
+            }
             $this->getItemDetails1($data);
         } else {
             $rowId = explode('.', $data[0]['id'])[0];
@@ -251,7 +251,7 @@ class CreateRateAnalysis extends Component
                 $convertedArray[] = $partialItemId;
             }
             // dd($convertedArray);
-            $this->extractDescOfItems($fetchRow, $descriptions,$convertedArray);
+            $this->extractDescOfItems($fetchRow, $descriptions, $convertedArray);
             // dd($descriptions);
             // $id = explode('.', $data[0]['id'])[$countLoop];
             // foreach ($convertedArray as $arr) {
@@ -277,7 +277,7 @@ class CreateRateAnalysis extends Component
 
             if ($data != null) {
                 $this->viewModal = !$this->viewModal;
-                $this->estimateData['description'] = $descriptions . "  " . $data[0]['desc'];
+                $this->estimateData['description'] = $descriptions . " " . $data[0]['desc'];
                 $this->estimateData['qty'] = 1;
                 $this->estimateData['rate'] = $data[0]['rowValue'];
                 $this->estimateData['item_number'] = $data[0]['itemNo'];
@@ -287,25 +287,18 @@ class CreateRateAnalysis extends Component
 
         // dd($this->estimateData['description']);
     }
-    public function extractDescOfItems($data, &$descriptions,$counter)
+    public function extractDescOfItems($data, &$descriptions, $counter)
     {
-        $this->test[] = $data;
-        if (isset($data->desc_of_item)) {
-            $descriptions .= $data->desc_of_item;
+        if (isset($data->desc_of_item) && $data->desc_of_item!='') {
+            $descriptions .=  $data->desc_of_item .' ';
         }
-        if (isset($data->_subrow) && count($counter)>2) {
-            // dd($data->_subrow,$descriptions);
+        if (isset($data->_subrow) && count($counter) > 2) {
             foreach ($data->_subrow as $item) {
-                // dd($item,$descriptions);
                 if (isset($item->desc_of_item)) {
-                    $descriptions .= $item->desc_of_item;
-                    // dd($descriptions);
+                    $descriptions .= $item->desc_of_item . ' ';
                 }
-                // $this->extractDescOfItems($item, $descriptions);
                 if (!empty($item->_subrow)) {
-                    // if (isset($item->_subrow[0]->_subrow)) {
-                        $this->extractDescOfItems($item->_subrow, $descriptions,$counter);
-                    // }
+                    $this->extractDescOfItems($item->_subrow, $descriptions, $counter);
                 }
             }
         }
@@ -555,6 +548,7 @@ class CreateRateAnalysis extends Component
         //     $this->estimateData['qty'] = '';
         //     $this->estimateData['rate'] = '';
         // }
+        $this->reset('addedEstimate');
         $array = [];
         $arrCount = 0;
         if (isset($getData['upTo_5'])) {
@@ -582,28 +576,31 @@ class CreateRateAnalysis extends Component
             $array[$arrCount++]['above_100'] = $getData['above_100'];
         }
         // dd($array);
-
+        // Log::debug(json_encode($array));
         foreach ($array as $key => $data) {
             // dd($data);
+            // Log::debug(json_encode($data));
             if (isset($data['upTo_5']) && $this->estimateData['distance'] != 0) {
                 if ($this->estimateData['distance'] >= 5) {
                     $this->estimateData['qty'] = 5;
                 } else {
                     $this->estimateData['qty'] = $this->estimateData['distance'];
                 }
-                $this->estimateData['item_number'] = explode('.', $getData['id'])[0] . ' ( Zone ' . $getData['zone'] . ')';
+                $this->estimateData['item_number'] = $getData['id'] . ' ( Zone ' . $getData['zone'] . ')';
                 $this->estimateData['description'] = "Any Distance up to 5 km";
                 $this->estimateData['rate'] = $data['upTo_5'];
                 $this->estimateData['total_amount'] = (int) $data['upTo_5'];
                 $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
+                // Log::debug(json_encode($this->estimateData));
                 $this->addEstimate($key + 1);
+                // dd($this->estimateData);
             } elseif (isset($data['upTo_10']) && $this->estimateData['distance'] != 0) {
                 if ($this->estimateData['distance'] >= 5) {
                     $this->estimateData['qty'] = 5;
                 } else {
                     $this->estimateData['qty'] = $this->estimateData['distance'];
                 }
-                $this->estimateData['item_number'] = explode('.', $getData['id'])[0] . ' ( Zone ' . $getData['zone'] . ')';
+                $this->estimateData['item_number'] = $getData['id'] . ' ( Zone ' . $getData['zone'] . ')';
                 $this->estimateData['description'] = "Above 5 km up to 10 km (per km)";
                 $this->estimateData['rate'] = $data['upTo_10'];
                 $this->estimateData['total_amount'] = $data['upTo_10'] * $this->estimateData['qty'];
@@ -615,14 +612,14 @@ class CreateRateAnalysis extends Component
                 } else {
                     $this->estimateData['qty'] = $this->estimateData['distance'];
                 }
-                $this->estimateData['item_number'] = explode('.', $getData['id'])[0] . ' ( Zone ' . $getData['zone'] . ')';
+                $this->estimateData['item_number'] = $getData['id'] . ' ( Zone ' . $getData['zone'] . ')';
                 $this->estimateData['description'] = "Above 5 km up to 16 km (per km)";
                 $this->estimateData['rate'] = $data['upTo_16'];
                 $this->estimateData['total_amount'] = $data['upTo_16'] * $this->estimateData['qty'];
                 $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
                 $this->addEstimate($key + 1);
             } elseif (isset($data['above_16']) && $this->estimateData['distance'] != 0) {
-                $this->estimateData['item_number'] = explode('.', $getData['id'])[0] . ' ( Zone ' . $getData['zone'] . ')';
+                $this->estimateData['item_number'] = $getData['id'] . ' ( Zone ' . $getData['zone'] . ')';
                 $this->estimateData['description'] = "Above 16 km (per km)";
                 $this->estimateData['qty'] = $this->estimateData['distance'];
                 $this->estimateData['rate'] = $data['above_16'];
@@ -634,7 +631,7 @@ class CreateRateAnalysis extends Component
                 } else {
                     $this->estimateData['qty'] = $this->estimateData['distance'];
                 }
-                $this->estimateData['item_number'] = explode('.', $getData['id'])[0] . ' ( Zone ' . $getData['zone'] . ')';
+                $this->estimateData['item_number'] = $getData['id'] . ' ( Zone ' . $getData['zone'] . ')';
                 $this->estimateData['description'] = "Above 10 km up to 20 km (per km)";
                 $this->estimateData['rate'] = $data['upTo_20'];
                 $this->estimateData['total_amount'] = $data['upTo_20'] * $this->estimateData['qty'];
@@ -646,7 +643,7 @@ class CreateRateAnalysis extends Component
                 } else {
                     $this->estimateData['qty'] = $this->estimateData['distance'];
                 }
-                $this->estimateData['item_number'] = explode('.', $getData['id'])[0] . ' ( Zone ' . $getData['zone'] . ')';
+                $this->estimateData['item_number'] = $getData['id'] . ' ( Zone ' . $getData['zone'] . ')';
                 $this->estimateData['description'] = "Above 20 km up to 50 km (per km)";
                 $this->estimateData['rate'] = $data['upTo_50'];
                 $this->estimateData['total_amount'] = $data['upTo_50'] * $this->estimateData['qty'];
@@ -658,14 +655,14 @@ class CreateRateAnalysis extends Component
                 } else {
                     $this->estimateData['qty'] = $this->estimateData['distance'];
                 }
-                $this->estimateData['item_number'] = explode('.', $getData['id'])[0] . ' ( Zone ' . $getData['zone'] . ')';
+                $this->estimateData['item_number'] = $getData['id'] . ' ( Zone ' . $getData['zone'] . ')';
                 $this->estimateData['description'] = "Above 50 km up to 100 km (per km)";
                 $this->estimateData['rate'] = $data['upTo_100'];
                 $this->estimateData['total_amount'] = $data['upTo_100'] * $this->estimateData['qty'];
                 $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
                 $this->addEstimate($key + 1);
             } elseif (isset($data['above_100']) && $this->estimateData['distance'] != 0) {
-                $this->estimateData['item_number'] = explode('.', $getData['id'])[0] . ' ( Zone ' . $getData['zone'] . ')';
+                $this->estimateData['item_number'] = $getData['id'] . ' ( Zone ' . $getData['zone'] . ')';
                 $this->estimateData['description'] = "Above 100 km (per km)";
                 $this->estimateData['qty'] = $this->estimateData['distance'];
                 $this->estimateData['rate'] = $data['above_100'];
@@ -675,6 +672,8 @@ class CreateRateAnalysis extends Component
                 return;
             }
         }
+        // $array = [];
+        // dd($array);
     }
     public function getCompositSorItemDetails($id)
     {
@@ -939,6 +938,8 @@ class CreateRateAnalysis extends Component
         // dd($key);
         $this->validate();
         if (isset($key)) {
+            $currentIndex = count($this->addedEstimate);
+            $key = $currentIndex++;
             $this->showTableOne = !$this->showTableOne;
             $this->addedEstimate[$key]['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];
             $this->addedEstimate[$key]['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];

@@ -179,6 +179,7 @@ class AddRateAnalysisList extends Component
                 $this->reset('addedEstimateData');
             }
             $this->reset('addedEstimateData');
+            // dd($this->allAddedEstimatesData);
         }
     }
 
@@ -335,7 +336,7 @@ class AddRateAnalysisList extends Component
                         foreach ($this->allAddedEstimatesData as $key => $value) {
                             $insert = [
                                 'rate_id' => $intId,
-                                'description' => $this->sorMasterDesc,
+                                'description' => (count($this->allAddedEstimatesData) == $key)? $this->sorMasterDesc : $value['description'],
                                 'rate_no' => $value['rate_no'],
                                 'dept_id' => $value['dept_id'],
                                 'category_id' => $value['category_id'],
@@ -360,6 +361,7 @@ class AddRateAnalysisList extends Component
                             if ($validateData->fails()) {
                                 // dd($validateData->messages());
                             }
+                            // dd($insert);
                             RatesAnalysis::create($insert);
                         }
                         $this->notification()->success(
