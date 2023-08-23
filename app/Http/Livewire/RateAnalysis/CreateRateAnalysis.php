@@ -14,7 +14,6 @@ use App\Models\SorMaster;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use WireUi\Traits\Actions;
-use Illuminate\Support\Facades\Log;
 
 class CreateRateAnalysis extends Component
 {
@@ -24,7 +23,7 @@ class CreateRateAnalysis extends Component
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
     public $searchDtaCount, $searchStyle, $searchResData, $totalDistance;
-    public $getSor, $viewModal = false, $modalName = '';
+    public $getSor, $viewModal = false, $modalName = '', $counterForItemNo = 0;
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -115,7 +114,7 @@ class CreateRateAnalysis extends Component
         $this->estimateData['item_name'] = $value;
         if ($this->selectedCategoryId == 1) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
-            $this->fatchDropdownData['table_no'] = DynamicSorHeader::select('table_no')->groupBy('table_no')->get();
+            // $this->fatchDropdownData['table_no'] = DynamicSorHeader::select('table_no')->groupBy('table_no')->get();
             $this->fatchDropdownData['page_no'] = [];
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = Auth::user()->department_id;
@@ -126,6 +125,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['page_no'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
+            $this->estimateData['volume'] = '';
             $this->estimateData['item_number'] = '';
             $this->estimateData['description'] = '';
             $this->estimateData['other_name'] = '';
@@ -133,12 +133,12 @@ class CreateRateAnalysis extends Component
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
             $this->estimateData['distance'] = '';
-            $this->estimateData['itemNo'] = '';
         } elseif ($this->selectedCategoryId == 2) {
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
+            $this->estimateData['volume'] = '';
             $this->estimateData['item_number'] = '';
             $this->estimateData['description'] = '';
             $this->estimateData['other_name'] = '';
@@ -146,7 +146,6 @@ class CreateRateAnalysis extends Component
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
             $this->estimateData['distance'] = '';
-            $this->estimateData['itemNo'] = '';
         } elseif ($this->selectedCategoryId == 3) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['dept_id'] = Auth::user()->department_id;
@@ -157,6 +156,7 @@ class CreateRateAnalysis extends Component
             // $this->estimateData['estimate_desc'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
+            $this->estimateData['volume'] = '';
             $this->estimateData['item_number'] = '';
             $this->estimateData['description'] = '';
             $this->estimateData['other_name'] = '';
@@ -164,7 +164,6 @@ class CreateRateAnalysis extends Component
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
             $this->estimateData['distance'] = '';
-            $this->estimateData['itemNo'] = '';
         } elseif ($this->selectedCategoryId == 4) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['rate_no'] = '';
@@ -174,6 +173,7 @@ class CreateRateAnalysis extends Component
             }
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
+            $this->estimateData['volume'] = '';
             $this->estimateData['item_number'] = '';
             $this->estimateData['description'] = '';
             $this->estimateData['other_name'] = '';
@@ -181,7 +181,6 @@ class CreateRateAnalysis extends Component
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
             $this->estimateData['distance'] = '';
-            $this->estimateData['itemNo'] = '';
         } else {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->fatchDropdownData['table_no'] = DynamicSorHeader::select('table_no')->groupBy('table_no')->get();
@@ -195,6 +194,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
+            $this->estimateData['volume'] = '';
             $this->estimateData['item_number'] = '';
             $this->estimateData['description'] = '';
             $this->estimateData['other_name'] = '';
@@ -202,13 +202,59 @@ class CreateRateAnalysis extends Component
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
             $this->estimateData['distance'] = '';
-            $this->estimateData['itemNo'] = '';
         }
+    }
+    public function getDeptCategory()
+    {
+        $this->estimateData['dept_category_id'] = '';
+        $this->estimateData['volume'] = '';
+        $this->estimateData['table_no'] = '';
+        $this->estimateData['page_no'] = '';
+        $this->fatchDropdownData['volumes'] = [];
+        $this->fatchDropdownData['table_no'] = [];
+        $this->fatchDropdownData['page_no'] = [];
+        $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
+    }
+    public function getSorDeptCategory()
+    {
+        $this->dropdownData['sorDepartmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->selectSor['dept_id'])->get();
+    }
+    public function getVersion()
+    {
+        $this->fatchDropdownData['versions'] = SOR::select('version')->where('department_id', $this->estimateData['dept_id'])
+            ->where('dept_category_id', $this->estimateData['dept_category_id'])->groupBy('version')
+            ->get();
+    }
+    public function getVolumn()
+    {
+        $this->estimateData['volume'] = '';
+        $this->estimateData['table_no'] = '';
+        $this->estimateData['page_no'] = '';
+        $this->fatchDropdownData['table_no'] = [];
+        $this->fatchDropdownData['page_no'] = [];
+        $this->fatchDropdownData['volumes'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']]])->select('volume_no')->groupBy('volume_no')->get();
+    }
+    public function getTableNo()
+    {
+        $this->estimateData['table_no'] = '';
+        $this->estimateData['page_no'] = '';
+        $this->fatchDropdownData['table_no'] = [];
+        $this->fatchDropdownData['table_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']]])
+            ->select('table_no')->groupBy('table_no')->get();
+    }
+    public function getPageNo()
+    {
+        $this->fatchDropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']]])
+            ->select('page_no')->get();
+        $this->viewModal = false;
+        $this->estimateData['page_no'] = '';
+
     }
     public function getDynamicSor()
     {
         $this->getSor = [];
         $this->getSor = DynamicSorHeader::where([['page_no', $this->estimateData['page_no'], ['table_no', $this->estimateData['table_no']]]])->first();
+        $this->estimateData['sor_id'] = $this->getSor['id'];
         if ($this->getSor != null) {
             $this->viewModal = !$this->viewModal;
             $this->modalName = "dynamic-sor-modal_" . rand(1, 1000);
@@ -222,7 +268,7 @@ class CreateRateAnalysis extends Component
         $fetchRow[] = [];
         // $descriptions = [];
         if ($this->selectedCategoryId == 5) {
-            $id = explode('.',$data['id'])[0];
+            $id = explode('.', $data['id'])[0];
             foreach (json_decode($this->getSor['row_data']) as $d) {
                 if ($d->id == $id && $d->desc_of_item != '') {
                     $this->sorMasterDesc .= $d->desc_of_item;
@@ -238,7 +284,7 @@ class CreateRateAnalysis extends Component
             }
             // dd(json_encode($fetchRow));
             $selectedItemId = $data[0]['id'];
-
+            $this->estimateData['item_index'] = $selectedItemId;
             // ---------explode the id------
             $hierarchicalArray = explode(".", $selectedItemId);
             $convertedArray = [];
@@ -251,6 +297,8 @@ class CreateRateAnalysis extends Component
                 $convertedArray[] = $partialItemId;
             }
             // dd($convertedArray);
+            $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray);
+            $this->estimateData['item_number'] = $itemNo;
             $this->extractDescOfItems($fetchRow, $descriptions, $convertedArray);
             // dd($descriptions);
             // $id = explode('.', $data[0]['id'])[$countLoop];
@@ -280,43 +328,48 @@ class CreateRateAnalysis extends Component
                 $this->estimateData['description'] = $descriptions . " " . $data[0]['desc'];
                 $this->estimateData['qty'] = 1;
                 $this->estimateData['rate'] = $data[0]['rowValue'];
-                $this->estimateData['item_number'] = $data[0]['itemNo'];
                 $this->calculateValue();
             }
         }
 
         // dd($this->estimateData['description']);
     }
+    public function extractItemNoOfItems($data, &$itemNo, $counter)
+    {
+        if (isset($data->item_no) && $data->item_no != '') {
+            $itemNo = $data->item_no . ' ';
+        }
+        if (isset($data->_subrow)) {
+            foreach ($data->_subrow as $key => $item) {
+                if (isset($counter[$this->counterForItemNo + 1])) {
+                    if (isset($item->item_no) && $item->id == $counter[$this->counterForItemNo + 1]) {
+                        $itemNo .= $item->item_no . ' ';
+                    }
+                    if (!empty($item->_subrow)) {
+                        $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter);
+                    }
+                }
+            }
+        }
+    }
     public function extractDescOfItems($data, &$descriptions, $counter)
     {
-        if (isset($data->desc_of_item) && $data->desc_of_item!='') {
-            $descriptions .=  $data->desc_of_item .' ';
+        if (isset($data->desc_of_item) && $data->desc_of_item != '') {
+            $descriptions .= $data->desc_of_item . ' ';
         }
         if (isset($data->_subrow) && count($counter) > 2) {
             foreach ($data->_subrow as $item) {
-                if (isset($item->desc_of_item)) {
-                    $descriptions .= $item->desc_of_item . ' ';
-                }
-                if (!empty($item->_subrow)) {
-                    $this->extractDescOfItems($item->_subrow, $descriptions, $counter);
+                if (isset($item->_subrow)) {
+                    if (isset($item->desc_of_item)) {
+                        $descriptions .= $item->desc_of_item . ' ';
+                    }
+                    if (!empty($item->_subrow)) {
+                        $this->extractDescOfItems($item->_subrow, $descriptions, $counter);
+                    }
                 }
             }
         }
 
-    }
-    public function getDeptCategory()
-    {
-        $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
-    }
-    public function getSorDeptCategory()
-    {
-        $this->dropdownData['sorDepartmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->selectSor['dept_id'])->get();
-    }
-    public function getVersion()
-    {
-        $this->fatchDropdownData['versions'] = SOR::select('version')->where('department_id', $this->estimateData['dept_id'])
-            ->where('dept_category_id', $this->estimateData['dept_category_id'])->groupBy('version')
-            ->get();
     }
     public function getSorVersion()
     {
@@ -324,13 +377,7 @@ class CreateRateAnalysis extends Component
             ->where('dept_category_id', $this->selectSor['dept_category_id'])->groupBy('version')
             ->get();
     }
-    public function getPageNo()
-    {
-        $this->fatchDropdownData['page_no'] = DynamicSorHeader::select('page_no', 'table_no')->where('table_no', $this->estimateData['table_no'])->get();
-        $this->viewModal = false;
-        $this->estimateData['page_no'] = '';
 
-    }
     public function autoSorSearch()
     {
         if ($this->selectSor['selectedSOR']) {
@@ -935,7 +982,7 @@ class CreateRateAnalysis extends Component
     }
     public function addEstimate($key = null)
     {
-        // dd($key);
+        // dd($this->estimateData);
         $this->validate();
         if (isset($key)) {
             $currentIndex = count($this->addedEstimate);
@@ -947,6 +994,11 @@ class CreateRateAnalysis extends Component
             $this->addedEstimate[$key]['dept_id'] = Auth::user()->department_id;
             $this->addedEstimate[$key]['category_id'] = ($this->estimateData['dept_category_id'] == '') ? 0 : $this->estimateData['dept_category_id'];
             $this->addedEstimate[$key]['sor_item_number'] = ($this->estimateData['item_number'] == '') ? 0 : $this->estimateData['item_number'];
+            $this->addedEstimate[$key]['volume_no'] = (isset($this->estimateData['volume']) && $this->estimateData['volume'] != '') ? $this->estimateData['volume'] : 0;
+            $this->addedEstimate[$key]['table_no'] = (isset($this->estimateData['table_no']) && $this->estimateData['table_no'] != '') ? $this->estimateData['table_no'] : 0;
+            $this->addedEstimate[$key]['page_no'] = (isset($this->estimateData['page_no']) && $this->estimateData['page_no'] != '') ? $this->estimateData['page_no'] : 0;
+            $this->addedEstimate[$key]['sor_id'] = (isset($this->estimateData['sor_id']) && $this->estimateData['sor_id'] != '') ? $this->estimateData['sor_id'] : 0;
+            $this->addedEstimate[$key]['item_index'] = (isset($this->estimateData['item_index']) && $this->estimateData['item_index'] != '') ? $this->estimateData['item_index'] : 0;
             $this->addedEstimate[$key]['item_name'] = $this->estimateData['item_name'];
             $this->addedEstimate[$key]['other_name'] = $this->estimateData['other_name'];
             $this->addedEstimate[$key]['description'] = $this->estimateData['description'];
@@ -973,6 +1025,11 @@ class CreateRateAnalysis extends Component
             // $this->addedEstimate['dept_id'] = $this->estimateData['dept_id'];
             $this->addedEstimate['category_id'] = ($this->estimateData['dept_category_id'] == '') ? 0 : $this->estimateData['dept_category_id'];
             $this->addedEstimate['sor_item_number'] = ($this->estimateData['item_number'] == '') ? 0 : $this->estimateData['item_number'];
+            $this->addedEstimate['volume_no'] = ($this->estimateData['volume'] == '') ? 0 : $this->estimateData['volume'];
+            $this->addedEstimate['table_no'] = (isset($this->estimateData['table_no']) && $this->estimateData['table_no'] != '') ? $this->estimateData['table_no'] : 0;
+            $this->addedEstimate['page_no'] = (isset($this->estimateData['page_no']) && $this->estimateData['page_no'] != '') ? $this->estimateData['page_no'] : 0;
+            $this->addedEstimate['sor_id'] = (isset($this->estimateData['sor_id']) && $this->estimateData['sor_id'] != '') ? $this->estimateData['sor_id'] : 0;
+            $this->addedEstimate['item_index'] = (isset($this->estimateData['item_index']) && $this->estimateData['item_index'] != '') ? $this->estimateData['item_index'] : 0;
             $this->addedEstimate['item_name'] = $this->estimateData['item_name'];
             $this->addedEstimate['other_name'] = $this->estimateData['other_name'];
             $this->addedEstimate['description'] = $this->estimateData['description'];

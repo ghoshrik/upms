@@ -20,6 +20,7 @@ class RateAnalysisViewModal extends Component
             $this->rate_id = $rate_id;
             $this->viewEstimates = RatesAnalysis::where('rate_id',$this->rate_id)->get();
         }
+        // dd($this->viewEstimates);
     }
     public function render()
     {

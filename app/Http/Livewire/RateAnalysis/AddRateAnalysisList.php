@@ -172,6 +172,21 @@ class AddRateAnalysisList extends Component
                 if (!array_key_exists("rate_no", $this->addedEstimateData)) {
                     $this->addedEstimateData['rate_no'] = 0;
                 }
+                if (!array_key_exists("volume_no", $this->addedEstimateData)) {
+                    $this->addedEstimateData['volume_no'] = 0;
+                }
+                if (!array_key_exists("sor_id", $this->addedEstimateData)) {
+                    $this->addedEstimateData['sor_id'] = 0;
+                }
+                if (!array_key_exists("item_index", $this->addedEstimateData)) {
+                    $this->addedEstimateData['item_index'] = 0;
+                }
+                if (!array_key_exists("table_no", $this->addedEstimateData)) {
+                    $this->addedEstimateData['table_no'] = 0;
+                }
+                if (!array_key_exists("page_no", $this->addedEstimateData)) {
+                    $this->addedEstimateData['page_no'] = 0;
+                }
                 foreach ($this->addedEstimateData as $key => $estimate) {
                     $this->allAddedEstimatesData[$index][$key] = $estimate;
                 }
@@ -327,9 +342,9 @@ class AddRateAnalysisList extends Component
     }
     public function store()
     {
+        // dd($this->allAddedEstimatesData);
         if ($this->totalOnSelectedCount == 1 || true) {
             try {
-                // dd($this->allAddedEstimatesData);
                 if ($this->allAddedEstimatesData) {
                     $intId = random_int(100000, 999999);
                     if (true) {
@@ -351,6 +366,11 @@ class AddRateAnalysisList extends Component
                                 'operation' => $value['operation'],
                                 'created_by' => Auth::user()->id,
                                 'comments' => $value['remarks'],
+                                'sor_id' => $value['sor_id'],
+                                'page_no' => $value['page_no'],
+                                'table_no' => $value['table_no'],
+                                'volume_no' => $value['volume_no'],
+                                'item_index' =>$value['item_index']
                             ];
                             $validateData = Validator::make($insert, [
                                 'rate_id' => 'required|integer',

@@ -30,14 +30,16 @@
                                             <td>{{ chr($view['row_id'] + 64) }}</td>
                                             <td>
                                                 @if ($view['sor_item_number'])
-                                                    {{ getSorItemNumber($view['sor_item_number']) }}
+                                                    {{-- {{ getSorItemNumber($view['sor_item_number']) }} --}}
+                                                    {{ $view['sor_item_number'] }}
                                                     @elseif ($view['rate_no'])
                                                     {{ $view['rate_no'] }}
                                                 @endif
                                             </td>
                                             <td class="text-wrap" style="width: 40rem">
                                                 @if ($view['sor_item_number'])
-                                                    {{ getSorItemNumberDesc($view['sor_item_number']) }}
+                                                    {{-- {{ getSorItemNumberDesc($view['sor_item_number']) }} --}}
+                                                    {{ $view['description'] }}
                                                     @elseif ($view['rate_no'])
                                                     {{ getRateDescription($view['rate_no']) }}
                                                 @elseif($view['operation'])

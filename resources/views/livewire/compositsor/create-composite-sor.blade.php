@@ -1,6 +1,9 @@
 <div>
     <div class="card">
-        <div class="card-body">
+        <div wire:loading.delay.longest>
+            <div class="spinner-border text-primary loader-position" role="status"></div>
+        </div>
+        <div class="card-body" wire:loading.delay.longest.class="loading">
             <div class="row">
                 <div class="col-md-3 col-sm-3 col-lg-3">
                     <div class="form-group">
@@ -38,12 +41,15 @@
                 </div>
                 <div class="col-md-3 col-lg-3 col-sm-3">
                     <div class="form-group">
-                        <x-input label="Item No" placeholder="Item No"
-                        wire:model.defer="storeItem.item_no" wire:key="item" />
+                        <x-input label="Item No" placeholder="Item No" wire:model.defer="storeItem.item_no"
+                            wire:key="item" />
                     </div>
                 </div>
             </div>
-
+            @if($storeItem['item_no'] != '')
+                <div class="row mutipal-add-row">
+                </div>
+            @endisset
             <div class="card-body">
                 <div class="row">
                     <div class="col-12">
@@ -113,7 +119,7 @@
                                 id: getData['id'],
                                 desc: (getData['desc_of_item']) ? getData['desc_of_item'] : '',
                                 rowValue: cell.getValue(),
-                                itemNo: cell.getRow().getIndex()
+                                itemNo: getData['item_no']
                             }];
                             var cnf = confirm("Are you sure " + cell.getValue() + " ?");
                             if (cnf) {
@@ -142,9 +148,8 @@
                                         desc: (getData['desc_of_item']) ? getData[
                                             'desc_of_item'] : '',
                                         rowValue: cell.getValue(),
-                                        itemNo: subrowIndex
+                                        itemNo: getData['item_no']
                                     }];
-                                    console.log(getData);
                                     var cnf = confirm("Are you sure " + cell.getValue() + " ?");
                                     if (cnf) {
                                         window.Livewire.emit('getRowValue', getRowData);

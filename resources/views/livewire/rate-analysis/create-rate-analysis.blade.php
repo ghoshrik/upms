@@ -104,13 +104,58 @@
                                 <div class="row" wire:key='SOR' style="transition: all 2s ease-out">
                                     <div class="col">
                                         <div class="form-group">
+                                            <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
+                                                placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
+                                                wire:model.defer="estimateData.dept_id"
+                                                x-on:select="$wire.getDeptCategory()">
+                                                @foreach ($fatchDropdownData['departments'] as $department)
+                                                    <x-select.option label="{{ $department['department_name'] }}"
+                                                        value="{{ $department['id'] }}" />
+                                                @endforeach
+                                            </x-select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="category"
+                                                label="Department {{ trans('cruds.estimate.fields.category') }}"
+                                                placeholder="Select Department {{ trans('cruds.estimate.fields.category') }}"
+                                                wire:model.defer="estimateData.dept_category_id"
+                                                x-on:select="$wire.getVolumn()">
+                                                @isset($fatchDropdownData['departmentsCategory'])
+                                                    @foreach ($fatchDropdownData['departmentsCategory'] as $deptCategory)
+                                                        <x-select.option label="{{ $deptCategory['dept_category_name'] }}"
+                                                            value="{{ $deptCategory['id'] }}" />
+                                                    @endforeach
+                                                @endisset
+                                            </x-select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="volume" label="Volume" placeholder="Select Volume"
+                                                wire:model.defer="estimateData.volume" x-on:select="$wire.getTableNo()">
+                                                @isset($fatchDropdownData['volumes'])
+                                                    @foreach ($fatchDropdownData['volumes'] as $volume)
+                                                        <x-select.option label="{{ getVolumeName($volume['volume_no']) }}"
+                                                            value="{{ $volume['volume_no'] }}" />
+                                                    @endforeach
+                                                @endisset
+                                            </x-select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
                                             <x-select wire:key="dept1" label="Table No" placeholder="Select Table No"
                                                 wire:model.defer="estimateData.table_no"
                                                 x-on:select="$wire.getPageNo()">
-                                                @foreach ($fatchDropdownData['table_no'] as $table)
-                                                    <x-select.option label="{{ $table['table_no'] }}"
-                                                        value="{{ $table['table_no'] }}" />
-                                                @endforeach
+                                                @isset($fatchDropdownData['table_no'])
+                                                    @foreach ($fatchDropdownData['table_no'] as $table)
+                                                        <x-select.option label="{{ $table['table_no'] }}"
+                                                            value="{{ $table['table_no'] }}" />
+                                                    @endforeach
+                                                @endisset
+
                                             </x-select>
                                         </div>
                                     </div>
@@ -126,19 +171,6 @@
                                             </x-select>
                                         </div>
                                     </div>
-                                    {{-- <div class="col">
-                                        <div class="form-group">
-                                            <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
-                                                placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
-                                                wire:model.defer="estimateData.dept_id"
-                                                x-on:select="$wire.getDeptCategory()">
-                                                @foreach ($fatchDropdownData['departments'] as $department)
-                                                    <x-select.option label="{{ $department['department_name'] }}"
-                                                        value="{{ $department['id'] }}" />
-                                                @endforeach
-                                            </x-select>
-                                        </div>
-                                    </div> --}}
                                     {{-- <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="category"
@@ -241,8 +273,8 @@
                                         <div class="form-group">
                                             <x-input wire:key="sor_desc"
                                                 label="{{ trans('cruds.estimate.fields.description') }}"
-                                                placeholder="{{ trans('cruds.estimate.fields.description') }}" disabled
-                                                wire:model.defer="estimateData.description" />
+                                                placeholder="{{ trans('cruds.estimate.fields.description') }}"
+                                                disabled wire:model.defer="estimateData.description" />
                                         </div>
                                     </div>
                                     <div class="col">
@@ -557,13 +589,58 @@
                                     </div> --}}
                                     <div class="col">
                                         <div class="form-group">
+                                            <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
+                                                placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
+                                                wire:model.defer="estimateData.dept_id"
+                                                x-on:select="$wire.getDeptCategory()">
+                                                @foreach ($fatchDropdownData['departments'] as $department)
+                                                    <x-select.option label="{{ $department['department_name'] }}"
+                                                        value="{{ $department['id'] }}" />
+                                                @endforeach
+                                            </x-select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="category"
+                                                label="Department {{ trans('cruds.estimate.fields.category') }}"
+                                                placeholder="Select Department {{ trans('cruds.estimate.fields.category') }}"
+                                                wire:model.defer="estimateData.dept_category_id"
+                                                x-on:select="$wire.getVolumn()">
+                                                @isset($fatchDropdownData['departmentsCategory'])
+                                                    @foreach ($fatchDropdownData['departmentsCategory'] as $deptCategory)
+                                                        <x-select.option label="{{ $deptCategory['dept_category_name'] }}"
+                                                            value="{{ $deptCategory['id'] }}" />
+                                                    @endforeach
+                                                @endisset
+                                            </x-select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="volume" label="Volume" placeholder="Select Volume"
+                                                wire:model.defer="estimateData.volume" x-on:select="$wire.getTableNo()">
+                                                @isset($fatchDropdownData['volumes'])
+                                                    @foreach ($fatchDropdownData['volumes'] as $volume)
+                                                        <x-select.option label="{{ getVolumeName($volume['volume_no']) }}"
+                                                            value="{{ $volume['volume_no'] }}" />
+                                                    @endforeach
+                                                @endisset
+                                            </x-select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
                                             <x-select wire:key="dept1" label="Table No" placeholder="Select Table No"
                                                 wire:model.defer="estimateData.table_no"
                                                 x-on:select="$wire.getPageNo()">
-                                                @foreach ($fatchDropdownData['table_no'] as $table)
-                                                    <x-select.option label="{{ $table['table_no'] }}"
-                                                        value="{{ $table['table_no'] }}" />
-                                                @endforeach
+                                                @isset($fatchDropdownData['table_no'])
+                                                    @foreach ($fatchDropdownData['table_no'] as $table)
+                                                        <x-select.option label="{{ $table['table_no'] }}"
+                                                            value="{{ $table['table_no'] }}" />
+                                                    @endforeach
+                                                @endisset
+
                                             </x-select>
                                         </div>
                                     </div>
@@ -628,7 +705,7 @@
                 <div class="modal-dialog modal-fullscreen" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">{{ $getSor->table_no .' - '.$getSor->title }}</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>

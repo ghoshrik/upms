@@ -484,3 +484,16 @@ function getRateDesc($rate_id)
     $getRateDesc = RatesAnalysis::where('rate_id',$rate_id)->where('operation','Total')->first();
     return $getRateDesc['description'];
 }
+
+function getVolumeName($volume_no){
+    $volume = '';
+    if($volume_no == 1){
+        return $volume = 'Volume I';
+    }elseif($volume_no == 2){
+        return $volume = 'Volume II';
+    }elseif($volume_no == 3){
+        return $volume = 'Volume III';
+    }else{
+        return;
+    }
+}
