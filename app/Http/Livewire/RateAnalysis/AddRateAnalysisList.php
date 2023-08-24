@@ -49,6 +49,12 @@ class AddRateAnalysisList extends Component
         $this->addedEstimateData['operation'] = $operation;
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
+        if($this->addedEstimateData['operation'] == 'Total' && $this->selectSor['sor_id'] != ''){
+            $this->addedEstimateData['sor_id'] = $this->selectSor['sor_id'];
+            $this->addedEstimateData['table_no'] = $this->selectSor['table_no'];
+            $this->addedEstimateData['page_no'] = $this->selectSor['page_no'];
+            $this->addedEstimateData['volume_no'] = $this->selectSor['volume'];
+        }
         $this->setEstimateDataToSession();
         $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'selectSor');
     }
@@ -111,7 +117,7 @@ class AddRateAnalysisList extends Component
             if (!isset($this->selectSor['item_number'])) {
                 $this->selectSor['item_number'] = 0;
             }
-            $this->insertAddEstimate($this->arrayIndex, Auth::user()->department_id, 0, $this->selectSor['item_number'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0,  $result, 'Total', '', '');
+            $this->insertAddEstimate($this->arrayIndex, Auth::user()->department_id, 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0,  $result, 'Total', '', '');
             $this->totalOnSelectedCount++;
         } else {
             $this->dispatchBrowserEvent('alert', [

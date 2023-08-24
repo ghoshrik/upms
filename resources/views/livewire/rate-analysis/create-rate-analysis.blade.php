@@ -26,8 +26,7 @@
                                     <x-select wire:key="sorcategory"
                                         label="Department {{ trans('cruds.estimate.fields.category') }}"
                                         placeholder="Select Department {{ trans('cruds.estimate.fields.category') }}"
-                                        wire:model.defer="selectSor.dept_category_id"
-                                        x-on:select="$wire.getSorVersion()">
+                                        wire:model.defer="selectSor.dept_category_id" x-on:select="$wire.getSorVolumn()">
                                         @isset($dropdownData['sorDepartmentsCategory'])
                                             @foreach ($dropdownData['sorDepartmentsCategory'] as $deptCategory)
                                                 <x-select.option label="{{ $deptCategory['dept_category_name'] }}"
@@ -39,19 +38,18 @@
                             </div>
                             <div class="col">
                                 <div class="form-group">
-                                    <x-select wire:key="sorversion" label="{{ trans('cruds.estimate.fields.version') }}"
-                                        placeholder="Select {{ trans('cruds.estimate.fields.version') }}"
-                                        wire:model.defer="selectSor.version">
-                                        @isset($dropdownData['sorVersions'])
-                                            @foreach ($dropdownData['sorVersions'] as $version)
-                                                <x-select.option label="{{ $version['version'] }}"
-                                                    value="{{ $version['version'] }}" />
+                                    <x-select wire:key="sorVolume" label="Volume" placeholder="Select Volume"
+                                        wire:model.defer="selectSor.volume" x-on:select="$wire.getSorTableNo()">
+                                        @isset($dropdownData['volumes'])
+                                            @foreach ($dropdownData['volumes'] as $volume)
+                                                <x-select.option label="{{ getVolumeName($volume['volume_no']) }}"
+                                                    value="{{ $volume['volume_no'] }}" />
                                             @endforeach
                                         @endisset
                                     </x-select>
                                 </div>
                             </div>
-                            <div class="col">
+                            {{-- <div class="col">
                                 <div class="form-group search-sor">
                                     <div class="dropdown">
                                         <x-input wire:key="sorsor" label="{{ trans('cruds.estimate.fields.sor') }}"
@@ -71,6 +69,39 @@
                                             @endif
                                         @endisset
                                     </div>
+                                </div>
+                            </div> --}}
+                            <div class="col">
+                                <div class="form-group">
+                                    <x-select wire:key="sorTable" label="Table No" placeholder="Select Table No"
+                                        wire:model.defer="selectSor.table_no"
+                                        x-on:select="$wire.getSorPageNo()">
+                                        @isset($dropdownData['table_no'])
+                                            @foreach ($dropdownData['table_no'] as $table)
+                                                <x-select.option label="{{ $table['table_no'] }}"
+                                                    value="{{ $table['table_no'] }}" />
+                                            @endforeach
+                                        @endisset
+
+                                    </x-select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <x-select wire:key="sorPage" label="Page No" placeholder="Select Page No"
+                                        wire:model.defer="selectSor.page_no"
+                                        x-on:select="$wire.getSorDynamicSor()">
+                                        @foreach ($dropdownData['page_no'] as $page)
+                                            <x-select.option label="{{ $page['page_no'] }}"
+                                                value="{{ $page['page_no'] }}" />
+                                        @endforeach
+                                    </x-select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <x-input label="Item No" placeholder="Item No" wire:model.defer="selectSor.selectedSOR"
+                                        wire:key="item" />
                                 </div>
                             </div>
                         </div>
@@ -589,7 +620,8 @@
                                     </div> --}}
                                     <div class="col">
                                         <div class="form-group">
-                                            <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
+                                            <x-select wire:key="dept"
+                                                label="{{ trans('cruds.estimate.fields.dept') }}"
                                                 placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
                                                 wire:model.defer="estimateData.dept_id"
                                                 x-on:select="$wire.getDeptCategory()">
@@ -619,7 +651,8 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="volume" label="Volume" placeholder="Select Volume"
-                                                wire:model.defer="estimateData.volume" x-on:select="$wire.getTableNo()">
+                                                wire:model.defer="estimateData.volume"
+                                                x-on:select="$wire.getTableNo()">
                                                 @isset($fatchDropdownData['volumes'])
                                                     @foreach ($fatchDropdownData['volumes'] as $volume)
                                                         <x-select.option label="{{ getVolumeName($volume['volume_no']) }}"
@@ -705,7 +738,8 @@
                 <div class="modal-dialog modal-fullscreen" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">{{ $getSor->table_no .' - '.$getSor->title }}</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">
+                                {{ $getSor->table_no . ' - ' . $getSor->title }}</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -721,6 +755,10 @@
                 </div>
             </div>
         </div>
+        @php
+            $tableNo = (isset($estimateData['table_no'])) ? $estimateData['table_no'] : $selectSor['table_no'];
+            $pageNo = (isset($estimateData['page_no'])) ? $estimateData['page_no'] : $selectSor['page_no'];
+        @endphp
         <script>
             document.getElementById("closeBtn").addEventListener("click", function() {
                 closeModal();
@@ -834,9 +872,9 @@
                         dataTreeChildIndent: 10, // Optional: Adjust the indentation level of subrows
                     });
 
-                    // Open the modal
-                    var tableNo = @json($estimateData['table_no']);
-                    var pageNo = @json($estimateData['page_no']);
+                    // Title of the modal
+                    var tableNo = @json($tableNo);
+                    var pageNo = @json($pageNo);
                     var modalId = "exampleModal_" + tableNo + "_" + pageNo;
 
                     $("#" + @json($modalName)).modal("show");
