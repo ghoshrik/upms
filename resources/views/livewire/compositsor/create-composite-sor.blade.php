@@ -9,7 +9,8 @@
                     <div class="form-group">
                         <x-select wire:key="deptCategory" label="{{ trans('cruds.sor.fields.dept_category') }}"
                             placeholder="Select {{ trans('cruds.sor.fields.dept_category') }}"
-                            wire:model.defer="storeItem.dept_category_id" x-on:select="$wire.getDeptCategorySORItem()">
+                            wire:model.defer="storeItem.dept_category_id"
+                            x-on:select="$wire.getDeptCategorySORTables()">
                             @isset($fetchDropDownData['departmentCategory'])
                                 @foreach ($fetchDropDownData['departmentCategory'] as $category)
                                     <x-select.option label="{{ $category['dept_category_name'] }}"
@@ -32,7 +33,7 @@
                 <div class="col-md-3 col-lg-3 col-sm-3">
                     <div class="form-group">
                         <x-select wire:key="dept" label="Page No" placeholder="Select Page No"
-                            wire:model.defer="storeItem.page_no" x-on:select="$wire.getDynamicSor()">
+                            wire:model.defer="storeItem.page_no" x-on:select="$wire.getDynamicSor('parent')">
                             @foreach ($fetchDropDownData['pages'] as $page)
                                 <x-select.option label="{{ $page['page_no'] }}" value="{{ $page['page_no'] }}" />
                             @endforeach
@@ -46,10 +47,90 @@
                     </div>
                 </div>
             </div>
-            @if($storeItem['item_no'] != '')
-                <div class="row mutipal-add-row">
+            @if ($storeItem['item_no'] != '')
+                @foreach ($inputsData as $key => $inputData)
+                    <div class="row mutipal-add-row">
+                        <div class="col">
+                            <div class="form-group">
+                                <x-select wire:key="table_no{{ $key }}" label="Table No"
+                                    placeholder="Select Table No"
+                                    wire:model.defer="inputsData.{{ $key }}.table_no"
+                                    x-on:select="$wire.getChildPageNo({{ $key }})">
+                                    @isset($fetchDropDownData['child_tables'])
+                                        @foreach ($fetchDropDownData['child_tables'] as $table)
+                                            <x-select.option label="{{ $table['table_no'] }}"
+                                                value="{{ $table['table_no'] }}" />
+                                        @endforeach
+                                    @endisset
+                                </x-select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <x-select wire:key="page_no{{ $key }}" label="Page No"
+                                    placeholder="Select Page No"
+                                    wire:model.defer="inputsData.{{ $key }}.page_no"
+                                    x-on:select="$wire.getDynamicSor({{$key}})">
+                                    @isset($fetchDropDownData[$key]['child_pages'])
+                                        @foreach ($fetchDropDownData[$key]['child_pages'] as $page)
+                                            <x-select.option label="{{ $page['page_no'] }}"
+                                                value="{{ $page['page_no'] }}" />
+                                        @endforeach
+                                    @endisset
+                                </x-select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <x-textarea rows="2" wire:key="description.{{ $key }}"
+                                    wire:model="inputsData.{{ $key }}.description"
+                                    label="{{ trans('cruds.sor.fields.description') }}"
+                                    placeholder="{{ trans('cruds.sor.fields.description') }}" />
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <x-select wire:key="unitmaster.{{ $key }}"
+                                    label="{{ trans('cruds.sor.fields.unit') }}"
+                                    placeholder="Select {{ trans('cruds.sor.fields.unit') }}"
+                                    wire:model="inputsData.{{ $key }}.unit_id">
+                                    @isset($fetchDropDownData['unitMaster'])
+                                        @foreach ($fetchDropDownData['unitMaster'] as $units)
+                                            <x-select.option label="{{ $units['unit_name'] }}" value="{{ $units['id'] }}" />
+                                        @endforeach
+                                    @endisset
+                                </x-select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <x-input wire:key='qty.{{ $key }}' label="{{ trans('cruds.sor.fields.qty') }}"
+                                    placeholder="{{ trans('cruds.sor.fields.qty') }}"
+                                    wire:model="inputsData.{{ $key }}.qty" />
+                            </div>
+                        </div>
+                        <div class="col d-flex align-items-center">
+                            <div class="col-md-12">
+                                <button wire:click="removeRow({{ $key }})"
+                                    class="btn btn-danger rounded-pill btn-ms"
+                                    {{ count($inputsData) < 2 ? 'disabled' : '' }}>
+                                    <span class="btn-inner">
+                                        <x-lucide-trash-2 class="w-4 h-4 text-denger-500" />
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+                <div class="col-md-3">
+                    <button wire:click="addNewRow"
+                        class="btn btn-primary rounded-pill btn-ms mutipal-row-add-button mt-3">
+                        <span class="btn-inner">
+                            <x-lucide-plus class="w-4 h-4 text-denger-500" />
+                        </span>
+                    </button>
                 </div>
-            @endisset
+            @endif
             <div class="card-body">
                 <div class="row">
                     <div class="col-12">
@@ -182,8 +263,8 @@
                     });
 
                     // Open the modal
-                    var tableNo = @json($storeItem['table_no']);
-                    var pageNo = @json($storeItem['page_no']);
+                    var tableNo = @json($table_no);
+                    var pageNo = @json($page_no);
                     var modalId = "exampleModal_" + tableNo + "_" + pageNo;
 
                     $("#" + @json($modalName)).modal("show");
