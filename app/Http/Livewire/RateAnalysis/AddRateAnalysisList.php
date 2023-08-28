@@ -54,6 +54,7 @@ class AddRateAnalysisList extends Component
             $this->addedEstimateData['table_no'] = $this->selectSor['table_no'];
             $this->addedEstimateData['page_no'] = $this->selectSor['page_no'];
             $this->addedEstimateData['volume_no'] = $this->selectSor['volume'];
+            $this->addedEstimateData['item_index'] = $this->selectSor['item_index'];
         }
         $this->setEstimateDataToSession();
         $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'selectSor');
@@ -348,7 +349,7 @@ class AddRateAnalysisList extends Component
     }
     public function store()
     {
-        // dd($this->allAddedEstimatesData);
+        dd($this->allAddedEstimatesData);
         if ($this->totalOnSelectedCount == 1 || true) {
             try {
                 if ($this->allAddedEstimatesData) {

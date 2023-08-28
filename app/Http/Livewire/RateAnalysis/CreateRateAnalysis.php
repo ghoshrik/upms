@@ -228,6 +228,7 @@ class CreateRateAnalysis extends Component
         $this->selectSor['page_no'] = '';
         $this->selectSor['sor_id'] = '';
         $this->selectSor['selectedSOR'] = '';
+        $this->selectSor['item_index'] = '';
     }
     public function getVersion()
     {
@@ -243,6 +244,7 @@ class CreateRateAnalysis extends Component
         $this->selectSor['table_no'] = '';
         $this->selectSor['page_no'] = '';
         $this->selectSor['selectedSOR'] = '';
+        $this->selectSor['item_index'] = '';
         $this->dropdownData['volumes'] = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']]])->select('volume_no')->groupBy('volume_no')->get();
     }
     public function getSorTableNo()
@@ -251,6 +253,7 @@ class CreateRateAnalysis extends Component
         $this->selectSor['table_no'] = '';
         $this->selectSor['page_no'] = '';
         $this->selectSor['selectedSOR'] = '';
+        $this->selectSor['item_index'] = '';
         $this->dropdownData['table_no'] = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']]])
             ->select('table_no')->groupBy('table_no')->get();
 
@@ -260,6 +263,7 @@ class CreateRateAnalysis extends Component
         $this->viewModal = false;
         $this->selectSor['page_no'] = '';
         $this->selectSor['selectedSOR'] = '';
+        $this->selectSor['item_index'] = '';
         $this->dropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']]])
             ->select('page_no')->get();
     }
@@ -408,43 +412,52 @@ class CreateRateAnalysis extends Component
                 $this->selectSor['selectedSOR'] = $itemNo;
                 $this->selectSor['sor_id'] = $this->getSor['id'];
                 $this->selectSor['selectedItemId'] = $selectedItemId;
-                $this->sorMasterDesc = $descriptions . " " . $data[0]['desc'];
+                $this->selectSor['item_index'] = $data[0]['id'];
+                $this->sorMasterDesc =  $data[0]['desc'];
+                // $this->sorMasterDesc = $descriptions . " " . $data[0]['desc'];
             }
         }
 
-        // dd($this->estimateData['description']);
+        // dd($this->selectSor);
     }
     public function extractItemNoOfItems($data, &$itemNo, $counter)
     {
-        if (isset($data->item_no) && $data->item_no != '') {
-            $itemNo = $data->item_no . ' ';
-        }
-        if (isset($data->_subrow)) {
-            foreach ($data->_subrow as $key => $item) {
-                if (isset($counter[$this->counterForItemNo + 1])) {
-                    if (isset($item->item_no) && $item->id == $counter[$this->counterForItemNo + 1]) {
-                        $itemNo .= $item->item_no . ' ';
-                    }
-                    if (!empty($item->_subrow)) {
-                        $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter);
+        if (count($counter) > 1) {
+            if (isset($data->item_no) && $data->item_no != '') {
+                $itemNo = $data->item_no . ' ';
+            }
+            if (isset($data->_subrow)) {
+                foreach ($data->_subrow as $key => $item) {
+                    if (isset($counter[$this->counterForItemNo + 1])) {
+                        if (isset($item->item_no) && $item->id == $counter[$this->counterForItemNo + 1]) {
+                            $itemNo .= $item->item_no . ' ';
+                        }
+                        if (!empty($item->_subrow)) {
+                            $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter);
+                        }
                     }
                 }
             }
+        } else {
+            $itemNo = $data->item_no;
         }
+
     }
     public function extractDescOfItems($data, &$descriptions, $counter)
     {
-        if (isset($data->desc_of_item) && $data->desc_of_item != '') {
-            $descriptions .= $data->desc_of_item . " ";
-        }
-        if (isset($data->_subrow) && count($counter) > 2) {
-            foreach ($data->_subrow as $item) {
-                if (isset($item->_subrow)) {
-                    if (isset($item->desc_of_item)) {
-                        $descriptions .= $item->desc_of_item . ' ';
-                    }
-                    if (!empty($item->_subrow)) {
-                        $this->extractDescOfItems($item->_subrow, $descriptions, $counter);
+        if (count($counter) > 1) {
+            if (isset($data->desc_of_item) && $data->desc_of_item != '') {
+                $descriptions .= $data->desc_of_item . " ";
+            }
+            if (isset($data->_subrow) && count($counter) > 2) {
+                foreach ($data->_subrow as $item) {
+                    if (isset($item->_subrow)) {
+                        if (isset($item->desc_of_item)) {
+                            $descriptions .= $item->desc_of_item . ' ';
+                        }
+                        if (!empty($item->_subrow)) {
+                            $this->extractDescOfItems($item->_subrow, $descriptions, $counter);
+                        }
                     }
                 }
             }
@@ -1134,9 +1147,9 @@ class CreateRateAnalysis extends Component
     public function closeModal()
     {
         $this->viewModal = !$this->viewModal;
-        if($this->selectSor['table_no'] != ''){
+        if ($this->selectedCategoryId == '') {
             $this->selectSor['page_no'] = '';
-        }else{
+        } else {
             $this->estimateData['page_no'] = '';
         }
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Compositsor;
 
+use App\Models\CompositSor;
 use App\Models\DynamicSorHeader;
 use App\Models\SorCategoryType;
 use App\Models\UnitMaster;
@@ -36,6 +37,7 @@ class CreateCompositeSor extends Component
                 'description' => '',
                 'qty' => '',
                 'unit_id' => '',
+                // 'sor_id' => '',
             ],
         ];
     }
@@ -84,6 +86,7 @@ class CreateCompositeSor extends Component
             $this->fetchDropDownData['getSor'] = DynamicSorHeader::where([['dept_category_id', $this->storeItem['dept_category_id']], ['page_no', $this->inputsData[$type]['page_no']], ['table_no', $this->inputsData[$type]['table_no']]])->first();
         }
         $this->sorType = $type;
+        // dd($this->fetchDropDownData['getSor']);
         if ($this->fetchDropDownData['getSor'] != null) {
             $this->table_no = $this->fetchDropDownData['getSor']['table_no'];
             $this->page_no = $this->fetchDropDownData['getSor']['page_no'];
@@ -103,7 +106,7 @@ class CreateCompositeSor extends Component
                 $this->storeItem['item_no'] = $data[0]['itemNo'];
             }
             $this->storeItem['parent_id'] = $this->fetchDropDownData['getSor']['id'];
-
+            $this->storeItem['sor_itemno_parent_index']= $data[0]['id'];
             $rowId = explode('.', $data[0]['id'])[0];
             foreach (json_decode($this->fetchDropDownData['getSor']['row_data']) as $row) {
                 if ($row->id == $rowId) {
@@ -152,9 +155,10 @@ class CreateCompositeSor extends Component
             }
             // dd($convertedArray);
             $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray);
-            $itemNo .= $this->inputsData[$this->sorType]['item_no'];
+            // $itemNo .= $this->inputsData[$this->sorType]['item_no'];
             $this->inputsData[$this->sorType]['item_no'] = $itemNo;
             $this->inputsData[$this->sorType]['description'] = $data[0]['desc'];
+            $this->inputsData[$this->sorType]['sor_id'] = $this->fetchDropDownData['getSor']['id'];
         }
         if ($this->storeItem['item_no'] != '') {
             $this->fetchDropDownData['child_tables'] = DynamicSorHeader::where('dept_category_id', $this->storeItem['dept_category_id'])->select('table_no')->groupBy('table_no')->get();
@@ -214,20 +218,24 @@ class CreateCompositeSor extends Component
     }
     public function extractItemNoOfItems($data, &$itemNo, $counter)
     {
-        if (isset($data->item_no) && $data->item_no != '') {
-            $itemNo = $data->item_no . ' ';
-        }
-        if (isset($data->_subrow)) {
-            foreach ($data->_subrow as $key => $item) {
-                if (isset($counter[$this->counterForItemNo + 1])) {
-                    if (isset($item->item_no) && $item->id == $counter[$this->counterForItemNo + 1]) {
-                        $itemNo .= $item->item_no . ' ';
-                    }
-                    if (!empty($item->_subrow)) {
-                        $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter);
+        if (count($counter) > 1) {
+            if (isset($data->item_no) && $data->item_no != '') {
+                $itemNo = $data->item_no . ' ';
+            }
+            if (isset($data->_subrow)) {
+                foreach ($data->_subrow as $key => $item) {
+                    if (isset($counter[$this->counterForItemNo + 1])) {
+                        if (isset($item->item_no) && $item->id == $counter[$this->counterForItemNo + 1]) {
+                            $itemNo .= $item->item_no . ' ';
+                        }
+                        if (!empty($item->_subrow)) {
+                            $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter);
+                        }
                     }
                 }
             }
+        } else {
+            $itemNo = $data->item_no;
         }
 
     }
@@ -258,6 +266,53 @@ class CreateCompositeSor extends Component
     public function store()
     {
         dd($this->inputsData, $this->storeItem);
+        try {
+
+            foreach ($this->inputsData as $data) {
+
+                // $last = CompositSor::create([
+                $insert = [
+                    'dept_category_id' => $this->storeItem['dept_category_id'],
+                    'sor_itemno_parent_id' => $this->storeItem['parent_id'],
+                    'sor_itemno_child' => $data['child_index_id'],
+                    'sor_itemno_child_id' => $data['sor_id'],
+                    'description' => $data['description'],
+                    'unit_id' => $data['unit_id'],
+                    'rate' => $data['qty'],
+                ];
+                dd($insert);
+                CompositSor::create($insert);
+                /* Single File Upload*/
+                // $temporaryFilePath = $this->storeItem['file_upload']->getRealPath();
+                // // Delete the temporary file
+                // if (file_exists($temporaryFilePath)) {
+                //     unlink($temporaryFilePath);
+                // }
+                // $filePath = file_get_contents($temporaryFilePath);
+                // $fileSize = $this->storeItem['file_upload']->getSize();
+                // $filExt = $this->storeItem['file_upload']->getClientOriginalExtension();
+                // $mimeType = $this->storeItem['file_upload']->getMimeType();
+
+                // $db_ext = DB::connection('pgsql_docu_External');
+                // $db_ext->table('docu_composit_sors')->insert([
+                //     'composer_sor_id' => $last->id,
+                //     'document_type' => $filExt,
+                //     'document_mime' => $mimeType,
+                //     'document_size' => $fileSize,
+                //     'docufile' => base64_encode($filePath)
+                // ]);
+
+            }
+
+            $this->notification()->success(
+                $title = trans('cruds.sor.create_msg')
+            );
+            $this->reset();
+            $this->emit('openEntryForm');
+        } catch (\Throwable $th) {
+            // dd($th->getMessage());
+            $this->emit('showError', $th->getMessage());
+        }
     }
     public function render()
     {

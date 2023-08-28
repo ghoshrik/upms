@@ -10,8 +10,8 @@ class CompositSor extends Model
     use HasFactory;
     protected $table = "composit_sors";
     protected $fillable =
-    [
-        "dept_category_id", "sor_itemno_parent_id", "sor_itemno_child", "description", "unit_id", "rate"
+        [
+        "dept_category_id", "sor_itemno_parent_id", "sor_itemno_child", "description", "unit_id", "rate", "sor_itemno_child_id",
     ];
     public function getDeptCategoryName()
     {
