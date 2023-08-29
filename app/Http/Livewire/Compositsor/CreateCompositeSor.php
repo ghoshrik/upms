@@ -265,7 +265,6 @@ class CreateCompositeSor extends Component
     }
     public function store()
     {
-        dd($this->inputsData, $this->storeItem);
         try {
 
             foreach ($this->inputsData as $data) {
@@ -274,13 +273,13 @@ class CreateCompositeSor extends Component
                 $insert = [
                     'dept_category_id' => $this->storeItem['dept_category_id'],
                     'sor_itemno_parent_id' => $this->storeItem['parent_id'],
+                    'sor_itemno_parent_index' => $this->storeItem['sor_itemno_parent_index'],
                     'sor_itemno_child' => $data['child_index_id'],
                     'sor_itemno_child_id' => $data['sor_id'],
                     'description' => $data['description'],
                     'unit_id' => $data['unit_id'],
                     'rate' => $data['qty'],
                 ];
-                dd($insert);
                 CompositSor::create($insert);
                 /* Single File Upload*/
                 // $temporaryFilePath = $this->storeItem['file_upload']->getRealPath();
@@ -303,7 +302,6 @@ class CreateCompositeSor extends Component
                 // ]);
 
             }
-
             $this->notification()->success(
                 $title = trans('cruds.sor.create_msg')
             );

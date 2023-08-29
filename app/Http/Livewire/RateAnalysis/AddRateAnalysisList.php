@@ -2,15 +2,14 @@
 
 namespace App\Http\Livewire\RateAnalysis;
 
+use App\Models\EstimatePrepare;
+use App\Models\RatesAnalysis;
+use App\Services\CommonFunction;
+use ChrisKonnertz\StringCalc\StringCalc;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use WireUi\Traits\Actions;
-use App\Models\RatesAnalysis;
-use App\Models\EstimatePrepare;
-use App\Services\CommonFunction;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-use ChrisKonnertz\StringCalc\StringCalc;
-use Illuminate\Support\Facades\Validator;
 
 class AddRateAnalysisList extends Component
 {
@@ -18,7 +17,7 @@ class AddRateAnalysisList extends Component
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
-    public $selectSor,$totalDistance;
+    public $selectSor, $totalDistance;
     public function mount()
     {
         $this->setEstimateDataToSession();
@@ -49,7 +48,7 @@ class AddRateAnalysisList extends Component
         $this->addedEstimateData['operation'] = $operation;
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
-        if($this->addedEstimateData['operation'] == 'Total' && $this->selectSor['sor_id'] != ''){
+        if ($this->addedEstimateData['operation'] == 'Total' && $this->selectSor['sor_id'] != '') {
             $this->addedEstimateData['sor_id'] = $this->selectSor['sor_id'];
             $this->addedEstimateData['table_no'] = $this->selectSor['table_no'];
             $this->addedEstimateData['page_no'] = $this->selectSor['page_no'];
@@ -118,7 +117,7 @@ class AddRateAnalysisList extends Component
             if (!isset($this->selectSor['item_number'])) {
                 $this->selectSor['item_number'] = 0;
             }
-            $this->insertAddEstimate($this->arrayIndex, Auth::user()->department_id, 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0,  $result, 'Total', '', '');
+            $this->insertAddEstimate($this->arrayIndex, Auth::user()->department_id, 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, $result, 'Total', '', '');
             $this->totalOnSelectedCount++;
         } else {
             $this->dispatchBrowserEvent('alert', [
@@ -139,8 +138,7 @@ class AddRateAnalysisList extends Component
         if ($this->addedEstimateData != null) {
             // dd($this->addedEstimateData);
             if (CommonFunction::hasNestedArrays($this->addedEstimateData)) {
-                foreach ($this->addedEstimateData as $key => $addedEstimate)
-                {
+                foreach ($this->addedEstimateData as $key => $addedEstimate) {
                     $index = count($this->allAddedEstimatesData) + 1;
                     if (!array_key_exists("operation", $addedEstimate)) {
                         $addedEstimate['operation'] = '';
@@ -241,7 +239,7 @@ class AddRateAnalysisList extends Component
         $exportDatas = array_values($this->allAddedEstimatesData);
         // dd($exportDatas);
         $date = date('Y-m-d');
-        $pw = new \PhpOffice\PhpWord\PhpWord ();
+        $pw = new \PhpOffice\PhpWord\PhpWord();
         $section = $pw->addSection(
             array(
                 'marginLeft' => 600, 'marginRight' => 200,
@@ -349,7 +347,7 @@ class AddRateAnalysisList extends Component
     }
     public function store()
     {
-        dd($this->allAddedEstimatesData);
+        // dd($this->allAddedEstimatesData);
         if ($this->totalOnSelectedCount == 1 || true) {
             try {
                 if ($this->allAddedEstimatesData) {
@@ -358,7 +356,7 @@ class AddRateAnalysisList extends Component
                         foreach ($this->allAddedEstimatesData as $key => $value) {
                             $insert = [
                                 'rate_id' => $intId,
-                                'description' => (count($this->allAddedEstimatesData) == $key)? $this->sorMasterDesc : $value['description'],
+                                'description' => (count($this->allAddedEstimatesData) == $key) ? $this->sorMasterDesc : $value['description'],
                                 'rate_no' => $value['rate_no'],
                                 'dept_id' => $value['dept_id'],
                                 'category_id' => $value['category_id'],
@@ -377,7 +375,7 @@ class AddRateAnalysisList extends Component
                                 'page_no' => $value['page_no'],
                                 'table_no' => $value['table_no'],
                                 'volume_no' => $value['volume_no'],
-                                'item_index' =>$value['item_index']
+                                'item_index' => $value['item_index'],
                             ];
                             $validateData = Validator::make($insert, [
                                 'rate_id' => 'required|integer',

@@ -9,7 +9,7 @@
         "log": true,
         "externalConsole": false,
         "pathMappings": {
-          "D:/projects/umps/new version/UPMS": "${workspaceFolder}"
+          "D:/project/remote backup/UPMS": "${workspaceFolder}"
         },
         "ignore": ["**/vendor/**/*.php"]
       }
