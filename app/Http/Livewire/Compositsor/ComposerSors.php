@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class ComposerSors extends Component
 {
     public $formOpen = false, $editFormOpen = false, $updateDataTableTracker;
-    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'sorFileDownload' => 'generatePdf'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'sorFileDownload' => 'generatePdf','refresh' => 'render'];
     public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel, $editId = null, $CountSorListPending;
     public $composerSor = [];
 
@@ -18,7 +18,8 @@ class ComposerSors extends Component
     {
         $this->updateDataTableTracker = rand(1, 1000);
         $this->CountSorListPending = SOR::where([['department_id', Auth::user()->department_id], ['created_by', Auth::user()->id]])->where('is_approved', 0)->count();
-        $this->composerSor = CompositSor::all();
+        $this->composerSor = CompositSor::select('sor_itemno_parent_id','dept_category_id','sor_itemno_parent_index')->groupBy('sor_itemno_parent_id','dept_category_id','sor_itemno_parent_index')->get();
+        // dd($this->composerSor);
     }
     public function fromEntryControl($data = '')
     {
@@ -59,6 +60,7 @@ class ComposerSors extends Component
     {
         $this->titel = 'Composit SOR';
         $assets = ['chart', 'animation'];
+        $this->updateDataTableTracker = rand(1, 1000);
         return view('livewire.compositsor.composer-sors', compact('assets'));
     }
 }

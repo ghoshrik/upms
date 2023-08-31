@@ -1,19 +1,21 @@
 <?php
 
-use App\Models\SOR;
-use App\Models\Office;
-use App\Models\UnitType;
-use App\Models\SorMaster;
 use App\Models\Department;
 use App\Models\Designation;
+use App\Models\DynamicSorHeader;
 use App\Models\Esrecommender;
-use App\Models\UsersHasRoles;
-use App\Models\EstimateStatus;
 use App\Models\EstimatePrepare;
+use App\Models\EstimateStatus;
+use App\Models\Office;
 use App\Models\RatesAnalysis;
+use App\Models\SOR;
+use App\Models\SorCategoryType;
+use App\Models\SorMaster;
 use App\Models\UnitMaster;
-use Illuminate\Support\Facades\DB;
+use App\Models\UnitType;
+use App\Models\UsersHasRoles;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 function removeSession($session)
 {
@@ -25,12 +27,14 @@ function removeSession($session)
 
 function randomString($length, $type = 'token')
 {
-    if ($type == 'password')
+    if ($type == 'password') {
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?";
-    elseif ($type == 'username')
+    } elseif ($type == 'username') {
         $chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-    else
+    } else {
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    }
+
     $token = substr(str_shuffle($chars), 0, $length);
     return $token;
 }
@@ -51,7 +55,10 @@ function checkRecordExist($table_list, $column_name, $id)
     if (count($table_list) > 0) {
         foreach ($table_list as $table) {
             $check_data = DB::table($table)->where($column_name, $id)->count();
-            if ($check_data > 0) return false;
+            if ($check_data > 0) {
+                return false;
+            }
+
         }
         return true;
     }
@@ -126,9 +133,8 @@ function getEstimateDescription($estimate_no)
 
 function getRateDescription($rate_no)
 {
-    if ($rate_no)
-    {
-        $rateDescription = RatesAnalysis::where('rate_id',$rate_no)->first();
+    if ($rate_no) {
+        $rateDescription = RatesAnalysis::where('rate_id', $rate_no)->first();
     }
     return $rateDescription['description'];
 }
@@ -165,7 +171,7 @@ function exportWord($estimate_id)
     $section = $pw->addSection(
         array(
             'marginLeft' => 600, 'marginRight' => 200,
-            'marginTop' => 600, 'marginBottom' => 200
+            'marginTop' => 600, 'marginBottom' => 200,
         )
     );
     $html = "<h1 style='font-size:24px;font-weight:600;text-align: center;'>Project Estimate Preparation Details</h1>";
@@ -346,7 +352,6 @@ function printTreeHTML($tree, $parent = 0)
     }
 }
 
-
 function buildTree($nodes)
 {
     $children = array();
@@ -393,7 +398,6 @@ function remove_element_by_value($arr, $val)
     return $array;
 }
 
-
 // if(!array_exists())
 function delete_entries(&$array, $ids_to_delete)
 {
@@ -412,11 +416,10 @@ function delete_entries(&$array, $ids_to_delete)
 }
 function getAllAssigenRoles()
 {
-    $roles =  UsersHasRoles::join('roles', 'roles.id', '=', 'users_has_roles.role_id')
+    $roles = UsersHasRoles::join('roles', 'roles.id', '=', 'users_has_roles.role_id')
         ->where('users_has_roles.user_id', Auth::user()->id)
         ->select('users_has_roles.role_id as id', 'roles.name as role_name')
         ->get();
-
 
     $generatedHtml = '';
     foreach ($roles as $key => $role) {
@@ -453,7 +456,11 @@ function getDepartmentName($value)
     $departmentName = Department::where('id', $value)->select('department_name')->first();
     return $departmentName['department_name'];
 }
-
+function getDepartmentCategoryName($value)
+{
+    $categoryName = SorCategoryType::where('id', $value)->select('dept_category_name')->first();
+    return $categoryName['dept_category_name'];
+}
 function generatePDF($list, $data, $title)
 {
     // dd($list,$data,$title);
@@ -475,25 +482,122 @@ function generatePDF($list, $data, $title)
 
 function getunitName($unit_id)
 {
-    $unit_name = UnitMaster::select('unit_name')->where('id',$unit_id)->first();
+    $unit_name = UnitMaster::select('unit_name')->where('id', $unit_id)->first();
     return $unit_name['unit_name'];
 }
 
 function getRateDesc($rate_id)
 {
-    $getRateDesc = RatesAnalysis::where('rate_id',$rate_id)->where('operation','Total')->first();
+    $getRateDesc = RatesAnalysis::where('rate_id', $rate_id)->where('operation', 'Total')->first();
     return $getRateDesc['description'];
 }
 
-function getVolumeName($volume_no){
+function getVolumeName($volume_no)
+{
     $volume = '';
-    if($volume_no == 1){
+    if ($volume_no == 1) {
         return $volume = 'Volume I';
-    }elseif($volume_no == 2){
+    } elseif ($volume_no == 2) {
         return $volume = 'Volume II';
-    }elseif($volume_no == 3){
+    } elseif ($volume_no == 3) {
         return $volume = 'Volume III';
-    }else{
+    } else {
         return;
     }
+}
+function getTableItemNo($sor_id, $item_no)
+{
+    $fetchRow = DynamicSorHeader::where('id', $sor_id)->select('row_data')->first();
+    // $fetchRow = json_decode($fetchRow['row_data']);
+    $rowId = explode('.', $item_no)[0];
+    // dd($rowId);
+    foreach (json_decode($fetchRow['row_data']) as $row) {
+        if ($row->id == $rowId) {
+            $fetchRow = $row;
+        }
+    }
+    $hierarchicalArray = explode(".", $item_no);
+    $convertedArray = [];
+    $partialItemId = "";
+    foreach ($hierarchicalArray as $part) {
+        if ($partialItemId !== "") {
+            $partialItemId .= ".";
+        }
+        $partialItemId .= $part;
+        $convertedArray[] = $partialItemId;
+    }
+    // dd($convertedArray);
+    extractItemNoOfItems($fetchRow, $itemNo, $convertedArray);
+    return $itemNo;
+}
+function extractItemNoOfItems($data, &$itemNo, $counter)
+{
+    // dd($this->counterForItemNo);
+    if (count($counter) > 1) {
+        if (isset($data->item_no) && $data->item_no != '') {
+            $itemNo = $data->item_no . ' ';
+        }
+        if (isset($data->_subrow)) {
+            foreach ($data->_subrow as $key => $item) {
+                if (isset($counter[$key + 1])) {
+                    if (isset($item->item_no) ) {
+                        $itemNo .= $item->item_no . ' ';
+                    }
+                    if (!empty($item->_subrow)) {
+                        extractItemNoOfItems($item->_subrow, $itemNo, $counter);
+                    }
+                }
+            }
+        }
+    } else {
+        $itemNo = $data->item_no;
+    }
+
+}
+function getTableDesc($sor_id, $item_no)
+{
+    $fetchRow = DynamicSorHeader::where('id', $sor_id)->select('row_data')->first();
+    // $fetchRow = json_decode($fetchRow['row_data']);
+    $rowId = explode('.', $item_no)[0];
+    // dd($rowId);
+    foreach (json_decode($fetchRow['row_data']) as $row) {
+        if ($row->id == $rowId) {
+            $fetchRow = $row;
+        }
+    }
+    $hierarchicalArray = explode(".", $item_no);
+    $convertedArray = [];
+    $partialItemId = "";
+    foreach ($hierarchicalArray as $part) {
+        if ($partialItemId !== "") {
+            $partialItemId .= ".";
+        }
+        $partialItemId .= $part;
+        $convertedArray[] = $partialItemId;
+    }
+    // dd($convertedArray);
+    extractDescOfItems($fetchRow, $descriptions, $convertedArray);
+    return $descriptions;
+}
+function extractDescOfItems($data, &$descriptions, $counter)
+    {
+        // if (isset($data->desc_of_item) && $data->desc_of_item != '') {
+        //     $descriptions .= $data->desc_of_item . ' ';
+        // }
+        if (isset($data->_subrow) && count($counter) > 2) {
+            foreach ($data->_subrow as $item) {
+                if (isset($item->desc_of_item)) {
+                    $descriptions .= $item->desc_of_item . ' ';
+                }
+                if (!empty($item->_subrow)) {
+                    extractDescOfItems($item->_subrow, $descriptions, $counter);
+                }
+            }
+        }
+
+    }
+function getSorTableName($sor_id)
+{
+    $fetchRow = DynamicSorHeader::where('id', $sor_id)->select('table_no')->first();
+    return $fetchRow['table_no'];
 }

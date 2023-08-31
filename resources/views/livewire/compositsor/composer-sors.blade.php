@@ -62,11 +62,11 @@
                                             <tr>
                                                 <th>{{ trans('cruds.sor.fields.id_helper') }}</th>
                                                 <th>Dept Category</th>
-                                                <th>SOR Item No Parent</th>
-                                                <th>SOR Item No child</th>
-                                                <th>Description</th>
-                                                <th>{{ trans('cruds.sor.fields.unit') }}</th>
-                                                <th>{{ trans('cruds.sor.fields.cost') }}</th>
+                                                <th>Item No</th>
+                                                <th>Table No</th>
+                                                <th width="40%">Description</th>
+                                                {{-- <th>{{ trans('cruds.sor.fields.unit') }}</th> --}}
+                                                {{-- <th>{{ trans('cruds.sor.fields.cost') }}</th> --}}
                                                 {{-- <th>Status</th>
                                                 <th>File</th> --}}
                                                 <th>{{ trans('cruds.sor.fields.action') }}</th>
@@ -77,14 +77,29 @@
                                                 <tr>
                                                     <td class="text-wrap">{{ $loop->iteration }}</td>
                                                     <td class="text-wrap">
-                                                        {{ $lists->getDeptCategoryName->dept_category_name }}</td>
-                                                    <td class="text-wrap">{{$lists->ParentSORItemNo->Item_details }}
+                                                        {{-- {{ $lists->getDeptCategoryName->dept_category_name }} --}}
+                                                        {{ getDepartmentCategoryName($lists->dept_category_id) }}
                                                     </td>
-                                                    <td class="text-wrap">{{$lists->ChildSORItemNo->Item_details ?? $lists->Item_details }}
+                                                    <td class="text-wrap">
+                                                        {{-- {{$lists->ParentSORItemNo->Item_details }} --}}
+                                                        {{-- {{  $lists->sor_itemno_parent_id }} --}}
+                                                        {{  getTableItemNo($lists->sor_itemno_parent_id,$lists->sor_itemno_parent_index) }}
                                                     </td>
-                                                    <td class="text-wrap">{{ $lists->description }} </td>
-                                                    <td class="text-wrap">{{ $lists->getUnit->unit_name }} </td>
-                                                    <td class="text-wrap">{{ $lists->rate }} </td>
+                                                    <td class="text-wrap">
+                                                        {{-- {{$lists->ChildSORItemNo->Item_details ?? $lists->Item_details }} --}}
+                                                        {{ getSorTableName($lists->sor_itemno_parent_id) }}
+                                                    </td>
+                                                    <td class="text-wrap">
+                                                        {{  getTableDesc($lists->sor_itemno_parent_id,$lists->sor_itemno_parent_index) }}
+                                                        {{-- {{$lists->sor_itemno_parent_index}} --}}
+                                                        {{-- {{ $lists->description }}  --}}
+                                                    </td>
+                                                    {{-- <td class="text-wrap">
+                                                        {{ $lists->getUnit->unit_name }}
+                                                    </td> --}}
+                                                    {{-- <td class="text-wrap">
+                                                        {{ $lists->rate }}
+                                                    </td> --}}
                                                     <td>
                                                         <button class="btn btn-soft-primary btn-sm"
                                                             wire:click='$emit("viewModal",{{ $lists->sor_itemno_parent_id }},{{ $lists->sor_itemno_child }})'>

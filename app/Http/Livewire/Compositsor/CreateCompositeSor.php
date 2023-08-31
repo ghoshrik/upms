@@ -15,7 +15,7 @@ class CreateCompositeSor extends Component
 {
     use Actions, WithFileUploads;
     protected $listeners = ['getRowValue', 'closeModal'];
-    public $fetchDropDownData = [], $storeItem = [], $viewModal = false, $counterForItemNo = 0, $inputsData = [];
+    public $fetchDropDownData = [], $storeItem = [], $viewModal = false, $counterForItemNo = 0, $inputsData = [],$updateDataTableTracker;
     public $table_no = '', $page_no = '', $sorType;
 
     public function mount()
@@ -280,6 +280,7 @@ class CreateCompositeSor extends Component
                     'unit_id' => $data['unit_id'],
                     'rate' => $data['qty'],
                 ];
+                // dd($insert);
                 CompositSor::create($insert);
                 /* Single File Upload*/
                 // $temporaryFilePath = $this->storeItem['file_upload']->getRealPath();
@@ -305,7 +306,7 @@ class CreateCompositeSor extends Component
             $this->notification()->success(
                 $title = trans('cruds.sor.create_msg')
             );
-            $this->reset();
+            // $this->reset();
             $this->emit('openEntryForm');
         } catch (\Throwable $th) {
             // dd($th->getMessage());
