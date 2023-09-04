@@ -576,21 +576,24 @@ function getTableDesc($sor_id, $item_no)
         $convertedArray[] = $partialItemId;
     }
     // dd($convertedArray);
-    extractDescOfItems($fetchRow, $descriptions, $convertedArray);
+    $loopCount=1;
+    extractDescOfItems($fetchRow, $descriptions, $convertedArray,$loopCount);
     return $descriptions;
 }
-function extractDescOfItems($data, &$descriptions, $counter)
+function extractDescOfItems($data, &$descriptions, $counter,$loopCount)
     {
+        // If need parent desc
         // if (isset($data->desc_of_item) && $data->desc_of_item != '') {
         //     $descriptions .= $data->desc_of_item . ' ';
         // }
-        if (isset($data->_subrow) && count($counter) > 2) {
+        if (isset($data->_subrow) && count($counter) > 2 && $loopCount < count($counter)) {
             foreach ($data->_subrow as $item) {
-                if (isset($item->desc_of_item)) {
+                if (isset($item->desc_of_item) && $counter[$loopCount] == $item->id) {
                     $descriptions .= $item->desc_of_item . ' ';
+                    $loopCount++;
                 }
                 if (!empty($item->_subrow)) {
-                    extractDescOfItems($item->_subrow, $descriptions, $counter);
+                    extractDescOfItems($item->_subrow, $descriptions, $counter,$loopCount);
                 }
             }
         }
