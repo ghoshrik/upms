@@ -89,11 +89,11 @@
                             <div class="col">
                                 <div class="form-group">
                                     <x-select wire:key="sorPage" label="Page No" placeholder="Select Page No"
-                                        wire:model.defer="selectSor.page_no"
+                                        wire:model.defer="selectSor.id"
                                         x-on:select="$wire.getSorDynamicSor()">
                                         @foreach ($dropdownData['page_no'] as $page)
                                             <x-select.option label="{{ $page['page_no'] }}"
-                                                value="{{ $page['page_no'] }}" />
+                                                value="{{ $page['id'] }}" />
                                         @endforeach
                                     </x-select>
                                 </div>
@@ -193,11 +193,11 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="dept" label="Page No" placeholder="Select Page No"
-                                                wire:model.defer="estimateData.page_no"
+                                                wire:model.defer="estimateData.id"
                                                 x-on:select="$wire.getDynamicSor()">
                                                 @foreach ($fatchDropdownData['page_no'] as $page)
                                                     <x-select.option label="{{ $page['page_no'] }}"
-                                                        value="{{ $page['page_no'] }}" />
+                                                        value="{{ $page['id'] }}" />
                                                 @endforeach
                                             </x-select>
                                         </div>
@@ -450,7 +450,7 @@
 
                             {{-- Composite SOR Field Start --}}
                             @if ($selectedCategoryId == 4)
-                                <div class="row" wire:key='C-SOR' style="transition: all 2s ease-out">
+                                {{-- <div class="row" wire:key='C-SOR' style="transition: all 2s ease-out">
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="compositeDept"
@@ -518,6 +518,77 @@
                                                     @endif
                                                 @endisset
                                             </div>
+                                        </div>
+                                    </div>
+                                </div> --}}
+                                <div class="row" wire:key='C-SOR' style="transition: all 2s ease-out">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
+                                                placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
+                                                wire:model.defer="estimateData.dept_id"
+                                                x-on:select="$wire.getDeptCategory()">
+                                                @foreach ($fatchDropdownData['departments'] as $department)
+                                                    <x-select.option label="{{ $department['department_name'] }}"
+                                                        value="{{ $department['id'] }}" />
+                                                @endforeach
+                                            </x-select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="category"
+                                                label="Department {{ trans('cruds.estimate.fields.category') }}"
+                                                placeholder="Select Department {{ trans('cruds.estimate.fields.category') }}"
+                                                wire:model.defer="estimateData.dept_category_id"
+                                                x-on:select="$wire.getVolumn()">
+                                                @isset($fatchDropdownData['departmentsCategory'])
+                                                    @foreach ($fatchDropdownData['departmentsCategory'] as $deptCategory)
+                                                        <x-select.option label="{{ $deptCategory['dept_category_name'] }}"
+                                                            value="{{ $deptCategory['id'] }}" />
+                                                    @endforeach
+                                                @endisset
+                                            </x-select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="volume" label="Volume" placeholder="Select Volume"
+                                                wire:model.defer="estimateData.volume" x-on:select="$wire.getTableNo()">
+                                                @isset($fatchDropdownData['volumes'])
+                                                    @foreach ($fatchDropdownData['volumes'] as $volume)
+                                                        <x-select.option label="{{ getVolumeName($volume['volume_no']) }}"
+                                                            value="{{ $volume['volume_no'] }}" />
+                                                    @endforeach
+                                                @endisset
+                                            </x-select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="dept1" label="Table No" placeholder="Select Table No"
+                                                wire:model.defer="estimateData.table_no"
+                                                x-on:select="$wire.getPageNo()">
+                                                @isset($fatchDropdownData['table_no'])
+                                                    @foreach ($fatchDropdownData['table_no'] as $table)
+                                                        <x-select.option label="{{ $table['table_no'] }}"
+                                                            value="{{ $table['table_no'] }}" />
+                                                    @endforeach
+                                                @endisset
+
+                                            </x-select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="dept" label="Page No" placeholder="Select Page No"
+                                                wire:model.defer="estimateData.id"
+                                                x-on:select="$wire.getDynamicSor()">
+                                                @foreach ($fatchDropdownData['page_no'] as $page)
+                                                    <x-select.option label="{{ $page['page_no'] }}"
+                                                        value="{{ $page['id'] }}" />
+                                                @endforeach
+                                            </x-select>
                                         </div>
                                     </div>
                                 </div>
@@ -680,11 +751,11 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="dept" label="Page No" placeholder="Select Page No"
-                                                wire:model.defer="estimateData.page_no"
+                                                wire:model.defer="estimateData.id"
                                                 x-on:select="$wire.getDynamicSor()">
                                                 @foreach ($fatchDropdownData['page_no'] as $page)
                                                     <x-select.option label="{{ $page['page_no'] }}"
-                                                        value="{{ $page['page_no'] }}" />
+                                                        value="{{ $page['id'] }}" />
                                                 @endforeach
                                             </x-select>
                                         </div>
@@ -704,14 +775,6 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- @isset($estimateData['description']) --}}
-                        @php
-                            print_r('<pre>');
-                            // print_r($estimateData['description']);
-                            print_r('</pre>');
-                        @endphp
-                        {{-- @endisset --}}
-
                     </div>
                 </div>
             </div>
@@ -797,10 +860,15 @@
                                 rowValue: cell.getValue(),
                                 itemNo: cell.getRow().getIndex()
                             }];
-                            console.log(getData);
                             var cnf = confirm("Are you sure " + cell.getValue() + " ?");
                             if (cnf) {
-                                if (@json($selectedCategoryId) == 5) {
+                                if (@json($selectedCategoryId) == 4){
+                                    var test = [{
+                                        parentId: @json($getSor['id']),
+                                        item_index: getData['id']
+                                    }];
+                                    window.Livewire.emit('getComposite', test);
+                                } else if (@json($selectedCategoryId) == 5) {
                                     window.Livewire.emit('getRowValue', getData);
                                 } else {
                                     window.Livewire.emit('getRowValue', getRowData);

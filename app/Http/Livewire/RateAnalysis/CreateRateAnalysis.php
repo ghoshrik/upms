@@ -18,12 +18,12 @@ use WireUi\Traits\Actions;
 class CreateRateAnalysis extends Component
 {
     use Actions;
-    protected $listeners = ['getRowValue', 'closeModal'];
+    protected $listeners = ['getRowValue', 'closeModal','getComposite'];
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc, $selectSor = [], $dropdownData = [];
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
     public $searchDtaCount, $searchStyle, $searchResData, $totalDistance;
-    public $getSor, $viewModal = false, $modalName = '', $counterForItemNo = 0;
+    public $getSor, $viewModal = false, $modalName = '', $counterForItemNo = 0,$isParent=false;
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -108,6 +108,7 @@ class CreateRateAnalysis extends Component
         $this->selectSor['page_no'] = '';
         $this->selectSor['volume'] = '';
         $this->selectSor['sor_id'] = '';
+        $this->selectSor['id'] = '';
         if (Session()->has('addedEstimateData')) {
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
@@ -128,6 +129,7 @@ class CreateRateAnalysis extends Component
             }
             $this->estimateData['table_no'] = '';
             $this->estimateData['page_no'] = '';
+            $this->estimateData['id'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
             $this->estimateData['volume'] = '';
@@ -139,6 +141,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['total_amount'] = '';
             $this->estimateData['distance'] = '';
         } elseif ($this->selectedCategoryId == 2) {
+            $this->estimateData['id'] = '';
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = '';
             $this->estimateData['dept_category_id'] = '';
@@ -157,6 +160,7 @@ class CreateRateAnalysis extends Component
             if (!empty($this->estimateData['dept_id'])) {
                 $this->getDeptRates();
             }
+            $this->estimateData['id'] = '';
             $this->estimateData['rate_no'] = '';
             // $this->estimateData['estimate_desc'] = '';
             $this->estimateData['dept_category_id'] = '';
@@ -171,11 +175,14 @@ class CreateRateAnalysis extends Component
             $this->estimateData['distance'] = '';
         } elseif ($this->selectedCategoryId == 4) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+            $this->fatchDropdownData['page_no'] = [];
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = Auth::user()->department_id;
             if (!empty($this->estimateData['dept_id'])) {
                 $this->getDeptCategory();
             }
+            $this->estimateData['table_no'] = '';
+            $this->estimateData['id'] = '';
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
             $this->estimateData['volume'] = '';
@@ -214,7 +221,7 @@ class CreateRateAnalysis extends Component
         $this->estimateData['dept_category_id'] = '';
         $this->estimateData['volume'] = '';
         $this->estimateData['table_no'] = '';
-        $this->estimateData['page_no'] = '';
+        $this->estimateData['id'] = '';
         $this->fatchDropdownData['volumes'] = [];
         $this->fatchDropdownData['table_no'] = [];
         $this->fatchDropdownData['page_no'] = [];
@@ -227,6 +234,7 @@ class CreateRateAnalysis extends Component
         $this->selectSor['table_no'] = '';
         $this->selectSor['page_no'] = '';
         $this->selectSor['sor_id'] = '';
+        $this->selectSor['id'] = '';
         $this->selectSor['selectedSOR'] = '';
         $this->selectSor['item_index'] = '';
     }
@@ -242,6 +250,7 @@ class CreateRateAnalysis extends Component
         $this->dropdownData['page_no'] = [];
         $this->selectSor['volume'] = '';
         $this->selectSor['table_no'] = '';
+        $this->selectSor['id'] = '';
         $this->selectSor['page_no'] = '';
         $this->selectSor['selectedSOR'] = '';
         $this->selectSor['item_index'] = '';
@@ -251,6 +260,7 @@ class CreateRateAnalysis extends Component
     {
         $this->dropdownData['table_no'] = [];
         $this->selectSor['table_no'] = '';
+        $this->selectSor['id'] = '';
         $this->selectSor['page_no'] = '';
         $this->selectSor['selectedSOR'] = '';
         $this->selectSor['item_index'] = '';
@@ -261,18 +271,22 @@ class CreateRateAnalysis extends Component
     public function getSorPageNo()
     {
         $this->viewModal = false;
+        $this->selectSor['id'] = '';
         $this->selectSor['page_no'] = '';
         $this->selectSor['selectedSOR'] = '';
         $this->selectSor['item_index'] = '';
         $this->dropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']]])
-            ->select('page_no')->get();
+            ->select('id','page_no')->get();
+            // dd($this->dropdownData);
     }
     public function getSorDynamicSor()
     {
         $this->getSor = [];
-        $this->getSor = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']], ['page_no', $this->selectSor['page_no']]])->first();
+        // $this->getSor = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']], ['page_no', $this->selectSor['page_no']]])->first();
+        $this->getSor = DynamicSorHeader::where('id',$this->selectSor['id'])->first();
         if ($this->getSor != null) {
             $this->viewModal = !$this->viewModal;
+            $this->isParent = !$this->isParent;
             $this->modalName = "dynamic-sor-modal_" . rand(1, 1000);
             $this->modalName = str_replace(' ', '_', $this->modalName);
         }
@@ -319,20 +333,25 @@ class CreateRateAnalysis extends Component
             $this->dropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']]])
                 ->select('page_no')->get();
         } else {
-            $this->estimateData['page_no'] = '';
+            $this->estimateData['id'] = '';
             $this->fatchDropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']]])
-                ->select('page_no')->get();
+                ->select('id','page_no')->get();
         }
     }
     public function getDynamicSor()
     {
+        // dd($this->estimateData);
         $this->getSor = [];
         if ($this->selectedCategoryId == '') {
-            $this->getSor = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']], ['page_no', $this->selectSor['page_no']]])->first();
+            // $this->getSor = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']], ['page_no', $this->selectSor['page_no']]])->first();
+            $this->getSor = DynamicSorHeader::where('id',$this->selectSor['id'])->first();
+            $this->estimateData['page_no'] = $this->selectSor['page_no'];
             $this->selectSor['sor_id'] = $this->getSor['id'];
         } else {
-            $this->getSor = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']], ['page_no', $this->estimateData['page_no']]])->first();
+            // $this->getSor = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']], ['page_no', $this->estimateData['page_no']]])->first();
+            $this->getSor = DynamicSorHeader::where('id',$this->estimateData['id'])->first();
             $this->estimateData['sor_id'] = $this->getSor['id'];
+            $this->estimateData['page_no'] = $this->getSor['page_no'];
         }
         if ($this->getSor != null) {
             $this->viewModal = !$this->viewModal;
@@ -343,6 +362,8 @@ class CreateRateAnalysis extends Component
     }
     public function getRowValue($data)
     {
+        // dd($this->selectSor,$this->estimateData);
+        // dd($this->estimateData);
         // dd($data);
         $fetchRow[] = [];
         // $descriptions = [];
@@ -411,6 +432,7 @@ class CreateRateAnalysis extends Component
             } else {
                 $this->selectSor['selectedSOR'] = $itemNo;
                 $this->selectSor['sor_id'] = $this->getSor['id'];
+                $this->selectSor['page_no'] = $this->getSor['page_no'];
                 $this->selectSor['selectedItemId'] = $selectedItemId;
                 $this->selectSor['item_index'] = $data[0]['id'];
                 $this->sorMasterDesc =  $data[0]['desc'];
@@ -419,6 +441,7 @@ class CreateRateAnalysis extends Component
         }
 
         // dd($this->selectSor);
+        // dd($this->estimateData);
     }
     public function extractItemNoOfItems($data, &$itemNo, $counter)
     {
@@ -815,6 +838,12 @@ class CreateRateAnalysis extends Component
         // $array = [];
         // dd($array);
     }
+    public function getComposite($data)
+    {
+        // dd($data);
+        $getData = CompositSor::where([['sor_itemno_parent_id',$data[0]['parentId']],['sor_itemno_parent_index',$data[0]['item_index']]])->get();
+        dd($getData);
+    }
     public function getCompositSorItemDetails($id)
     {
         // $this->estimateData['description'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['description'];
@@ -1140,6 +1169,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
             $this->estimateData['page_no'] = '';
+            $this->estimateData['id'] = '';
             $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor', 'estimateData', 'selectedCategoryId', 'fatchDropdownData']);
         }
         // dd($this->addedEstimate);
