@@ -18,12 +18,12 @@ use WireUi\Traits\Actions;
 class CreateRateAnalysis extends Component
 {
     use Actions;
-    protected $listeners = ['getRowValue', 'closeModal','getComposite'];
+    protected $listeners = ['getRowValue', 'closeModal', 'getComposite'];
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc, $selectSor = [], $dropdownData = [];
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
     public $searchDtaCount, $searchStyle, $searchResData, $totalDistance;
-    public $getSor, $viewModal = false, $modalName = '', $counterForItemNo = 0,$isParent=false;
+    public $getSor, $viewModal = false, $modalName = '', $counterForItemNo = 0, $isParent = false;
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -276,14 +276,14 @@ class CreateRateAnalysis extends Component
         $this->selectSor['selectedSOR'] = '';
         $this->selectSor['item_index'] = '';
         $this->dropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']]])
-            ->select('id','page_no')->get();
-            // dd($this->dropdownData);
+            ->select('id', 'page_no')->get();
+        // dd($this->dropdownData);
     }
     public function getSorDynamicSor()
     {
         $this->getSor = [];
         // $this->getSor = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']], ['page_no', $this->selectSor['page_no']]])->first();
-        $this->getSor = DynamicSorHeader::where('id',$this->selectSor['id'])->first();
+        $this->getSor = DynamicSorHeader::where('id', $this->selectSor['id'])->first();
         if ($this->getSor != null) {
             $this->viewModal = !$this->viewModal;
             $this->isParent = !$this->isParent;
@@ -335,7 +335,7 @@ class CreateRateAnalysis extends Component
         } else {
             $this->estimateData['id'] = '';
             $this->fatchDropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']]])
-                ->select('id','page_no')->get();
+                ->select('id', 'page_no')->get();
         }
     }
     public function getDynamicSor()
@@ -344,12 +344,12 @@ class CreateRateAnalysis extends Component
         $this->getSor = [];
         if ($this->selectedCategoryId == '') {
             // $this->getSor = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']], ['page_no', $this->selectSor['page_no']]])->first();
-            $this->getSor = DynamicSorHeader::where('id',$this->selectSor['id'])->first();
+            $this->getSor = DynamicSorHeader::where('id', $this->selectSor['id'])->first();
             $this->estimateData['page_no'] = $this->selectSor['page_no'];
             $this->selectSor['sor_id'] = $this->getSor['id'];
         } else {
             // $this->getSor = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']], ['page_no', $this->estimateData['page_no']]])->first();
-            $this->getSor = DynamicSorHeader::where('id',$this->estimateData['id'])->first();
+            $this->getSor = DynamicSorHeader::where('id', $this->estimateData['id'])->first();
             $this->estimateData['sor_id'] = $this->getSor['id'];
             $this->estimateData['page_no'] = $this->getSor['page_no'];
         }
@@ -435,7 +435,7 @@ class CreateRateAnalysis extends Component
                 $this->selectSor['page_no'] = $this->getSor['page_no'];
                 $this->selectSor['selectedItemId'] = $selectedItemId;
                 $this->selectSor['item_index'] = $data[0]['id'];
-                $this->sorMasterDesc =  $data[0]['desc'];
+                $this->sorMasterDesc = $data[0]['desc'];
                 // $this->sorMasterDesc = $descriptions . " " . $data[0]['desc'];
             }
         }
@@ -841,8 +841,25 @@ class CreateRateAnalysis extends Component
     public function getComposite($data)
     {
         // dd($data);
-        $getData = CompositSor::where([['sor_itemno_parent_id',$data[0]['parentId']],['sor_itemno_parent_index',$data[0]['item_index']]])->get();
-        dd($getData);
+        $getCompositeDatas = CompositSor::where([['sor_itemno_parent_id', $data[0]['parentId']], ['sor_itemno_parent_index', $data[0]['item_index']]])->get();
+        foreach ($getCompositeDatas as $key => $compositeData) {
+            $getRateDetails = RatesAnalysis::where([['item_index', $compositeData['sor_itemno_child']], ['sor_id', $compositeData['sor_itemno_child_id']], ['operation', '=', 'Total']])->first();
+            if (!empty($getRateDetails)) {
+                $this->estimateData['rate_no'] = '';
+                $this->estimateData['dept_id'] = '';
+                $this->estimateData['dept_category_id'] = $compositeData['dept_category_id'];
+                $this->estimateData['item_number'] = $compositeData['sor_itemno_child'];
+                $this->estimateData['description'] = $compositeData['description'];
+                $this->estimateData['version'] = '';
+                $this->estimateData['other_name'] = '';
+                $this->estimateData['qty'] = $compositeData['rate'];
+                $this->estimateData['rate'] = $getRateDetails->total_amount;
+                $this->estimateData['total_amount'] = $getRateDetails->total_amount * $compositeData['rate'];
+                $this->addEstimate($key + 1);
+            }
+            // dd();
+        }
+        // dd($getRateDetails);
     }
     public function getCompositSorItemDetails($id)
     {
