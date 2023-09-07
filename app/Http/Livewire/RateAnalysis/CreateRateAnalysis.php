@@ -281,6 +281,7 @@ class CreateRateAnalysis extends Component
     }
     public function getSorDynamicSor()
     {
+        // $this->isParent = !$this->isParent;
         $this->getSor = [];
         // $this->getSor = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']], ['page_no', $this->selectSor['page_no']]])->first();
         $this->getSor = DynamicSorHeader::where('id', $this->selectSor['id'])->first();
@@ -364,7 +365,7 @@ class CreateRateAnalysis extends Component
     {
         // dd($this->selectSor,$this->estimateData);
         // dd($this->estimateData);
-        // dd($data);
+        // dd($this->isParent);
         $fetchRow[] = [];
         // $descriptions = [];
         if ($this->selectedCategoryId == 5) {
@@ -399,30 +400,8 @@ class CreateRateAnalysis extends Component
             // dd($convertedArray);
             $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray);
             $this->extractDescOfItems($fetchRow, $descriptions, $convertedArray);
-            // dd($descriptions);
-            // $id = explode('.', $data[0]['id'])[$countLoop];
-            // foreach ($convertedArray as $arr) {
-            //     foreach (json_decode($this->getSor['row_data']) as $d) {
-            //         if ($d->id == $arr) {
-            //             if (isset($d->desc_of_item)) {
-            //                 $descriptions[] = $d->desc_of_item;
-            //             }
-            //             if ($d->_subrow) {
-            //                 foreach ($d->_subrow as $subRow) {
-            //                     // dd($arr);
-            //                     if ($subRow->id == $arr) {
-            //                         $this->estimateData['description'] = $this->estimateData['description'] . " " . $subRow->desc_of_item;
-            //                     }
-            //                 }
-            //             }
-            //         }
-            //         if ($d->id == $arr) {
-            //             $this->estimateData['description'] = $this->estimateData['description'] . " " . $d->desc_of_item;
-            //         }
-            //     }
-            // }
-
-            if ($data != null && $this->selectedCategoryId != '' && $this->selectSor['selectedSOR'] != '') {
+            if ($data != null && $this->selectedCategoryId != '' && $this->isParent == false) {
+                // dd('hi');
                 $this->viewModal = !$this->viewModal;
                 $this->estimateData['description'] = $descriptions . " " . $data[0]['desc'];
                 $this->estimateData['qty'] = 1;
@@ -437,6 +416,7 @@ class CreateRateAnalysis extends Component
                 $this->selectSor['item_index'] = $data[0]['id'];
                 $this->sorMasterDesc = $data[0]['desc'];
                 // $this->sorMasterDesc = $descriptions . " " . $data[0]['desc'];
+                $this->isParent = !$this->isParent;
             }
         }
 
@@ -445,6 +425,7 @@ class CreateRateAnalysis extends Component
     }
     public function extractItemNoOfItems($data, &$itemNo, $counter)
     {
+        // dd($data);
         if (count($counter) > 1) {
             if (isset($data->item_no) && $data->item_no != '') {
                 $itemNo = $data->item_no . ' ';
@@ -715,10 +696,21 @@ class CreateRateAnalysis extends Component
         $array = [];
         $arrCount = 0;
         if (isset($getData['upTo_5'])) {
-            $array[$arrCount++]['upTo_5'] = $getData['upTo_5'];
+            if ($getData['upTo_5'] == isset($getData['upTo_10'])) {
+                $array[$arrCount]['upTo_10'] = $getData['upTo_10'];
+                // unset($array[$arrCount]['upTo_5']);
+            } else {
+                $array[$arrCount++]['upTo_5'] = $getData['upTo_5'];
+            }
         }
         if (isset($getData['upTo_10'])) {
-            $array[$arrCount++]['upTo_10'] = $getData['upTo_10'];
+            // dd($arrCount);
+            if ($getData['upTo_10'] == isset($getData['upTo_20'])) {
+                unset($array[$arrCount]);
+                $array[$arrCount]['upTo_20'] = $getData['upTo_20'];
+            } else {
+                $array[$arrCount++]['upTo_10'] = $getData['upTo_10'];
+            }
         }
         if (isset($getData['upTo_16'])) {
             $array[$arrCount++]['upTo_16'] = $getData['upTo_16'];
@@ -727,18 +719,36 @@ class CreateRateAnalysis extends Component
             $array[$arrCount++]['above_16'] = $getData['above_16'];
         }
         if (isset($getData['upTo_20'])) {
-            $array[$arrCount++]['upTo_20'] = $getData['upTo_20'];
+            if ($getData['upTo_20'] == isset($getData['upTo_50'])) {
+                unset($array[$arrCount]);
+                $array[$arrCount]['upTo_50'] = $getData['upTo_50'];
+
+            } else {
+                $array[$arrCount++]['upTo_20'] = $getData['upTo_20'];
+            }
         }
         if (isset($getData['upTo_50'])) {
-            $array[$arrCount++]['upTo_50'] = $getData['upTo_50'];
+            if ($getData['upTo_50'] == isset($getData['upTo_100'])) {
+                unset($array[$arrCount]);
+                $array[$arrCount]['upTo_100'] = $getData['upTo_100'];
+
+            } else {
+                $array[$arrCount++]['upTo_50'] = $getData['upTo_50'];
+            }
         }
         if (isset($getData['upTo_100'])) {
-            $array[$arrCount++]['upTo_100'] = $getData['upTo_100'];
+            if ($getData['upTo_100'] == isset($getData['above_100'])) {
+                unset($array[$arrCount]);
+                $array[$arrCount]['upTo_100'] = $getData['upTo_100'];
+
+            } else {
+                $array[$arrCount++]['upTo_100'] = $getData['upTo_100'];
+            }
         }
         if (isset($getData['above_100'])) {
             $array[$arrCount++]['above_100'] = $getData['above_100'];
         }
-        // dd($array);
+        dd($array);
         // Log::debug(json_encode($array));
         foreach ($array as $key => $data) {
             // dd($data);
@@ -836,7 +846,7 @@ class CreateRateAnalysis extends Component
             }
         }
         // $array = [];
-        // dd($array);
+        // dd($this->estimateData);
     }
     public function getComposite($data)
     {

@@ -863,11 +863,11 @@
                             var cnf = confirm("Are you sure " + cell.getValue() + " ?");
                             if (cnf) {
                                 if (@json($selectedCategoryId) == 4){
-                                    var test = [{
+                                    var cSor_data = [{
                                         parentId: @json($getSor['id']),
                                         item_index: getData['id']
                                     }];
-                                    window.Livewire.emit('getComposite', test);
+                                    // window.Livewire.emit('getComposite', cSor_data);
                                 } else if (@json($selectedCategoryId) == 5) {
                                     window.Livewire.emit('getRowValue', getData);
                                 } else {

@@ -347,7 +347,7 @@ class AddRateAnalysisList extends Component
     }
     public function store()
     {
-        dd($this->allAddedEstimatesData);
+        // dd($this->allAddedEstimatesData);
         if ($this->totalOnSelectedCount == 1 || true) {
             try {
                 if ($this->allAddedEstimatesData) {
