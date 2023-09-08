@@ -73,41 +73,54 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($composerSor as $lists)
-                                                <tr>
-                                                    <td class="text-wrap">{{ $loop->iteration }}</td>
-                                                    <td class="text-wrap">
-                                                        {{-- {{ $lists->getDeptCategoryName->dept_category_name }} --}}
-                                                        {{ getDepartmentCategoryName($lists->dept_category_id) }}
-                                                    </td>
-                                                    <td class="text-wrap">
-                                                        {{-- {{$lists->ParentSORItemNo->Item_details }} --}}
-                                                        {{-- {{  $lists->sor_itemno_parent_id }} --}}
-                                                        {{  getTableItemNo($lists->sor_itemno_parent_id,$lists->sor_itemno_parent_index) }}
-                                                    </td>
-                                                    <td class="text-wrap">
-                                                        {{-- {{$lists->ChildSORItemNo->Item_details ?? $lists->Item_details }} --}}
-                                                        {{ getSorTableName($lists->sor_itemno_parent_id) }}
-                                                    </td>
-                                                    <td class="text-wrap">
-                                                        {{  getTableDesc($lists->sor_itemno_parent_id,$lists->sor_itemno_parent_index) }}
-                                                        {{-- {{$lists->sor_itemno_parent_index}} --}}
-                                                        {{-- {{ $lists->description }}  --}}
-                                                    </td>
-                                                    {{-- <td class="text-wrap">
+                                            @isset($composerSor)
+                                                @foreach ($composerSor as $lists)
+                                                    <tr>
+                                                        <td class="text-wrap">{{ $loop->iteration }}</td>
+                                                        <td class="text-wrap">
+                                                            {{-- {{ $lists->getDeptCategoryName->dept_category_name }} --}}
+                                                            @isset($lists->dept_category_id)
+                                                                {{ getDepartmentCategoryName($lists->dept_category_id) }}
+                                                            @endisset
+
+                                                        </td>
+                                                        <td class="text-wrap">
+                                                            {{-- {{$lists->ParentSORItemNo->Item_details }} --}}
+                                                            {{-- {{  $lists->sor_itemno_parent_id }} --}}
+                                                            @isset($lists->sor_itemno_parent_id)
+                                                                {{ getTableItemNo($lists->sor_itemno_parent_id, $lists->sor_itemno_parent_index) }}
+                                                            @endisset
+                                                        </td>
+                                                        <td class="text-wrap">
+                                                            {{-- {{$lists->ChildSORItemNo->Item_details ?? $lists->Item_details }} --}}
+                                                            @isset($lists->sor_itemno_parent_id)
+                                                                {{ getSorTableName($lists->sor_itemno_parent_id) }}
+                                                            @endisset
+
+                                                        </td>
+                                                        <td class="text-wrap">
+                                                            @isset($lists->sor_itemno_parent_id)
+                                                                {{ getTableDesc($lists->sor_itemno_parent_id, $lists->sor_itemno_parent_index) }}
+                                                            @endisset
+
+                                                            {{-- {{$lists->sor_itemno_parent_index}} --}}
+                                                            {{-- {{ $lists->description }}  --}}
+                                                        </td>
+                                                        {{-- <td class="text-wrap">
                                                         {{ $lists->getUnit->unit_name }}
                                                     </td> --}}
-                                                    {{-- <td class="text-wrap">
+                                                        {{-- <td class="text-wrap">
                                                         {{ $lists->rate }}
                                                     </td> --}}
-                                                    <td>
-                                                        <button class="btn btn-soft-primary btn-sm"
-                                                            wire:click='$emit("viewModal",{{ $lists->sor_itemno_parent_id }},{{ $lists->sor_itemno_child }})'>
-                                                            <x-icon name="eye" class="w-5 h-5" />View
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
+                                                        <td>
+                                                            <button class="btn btn-soft-primary btn-sm"
+                                                                wire:click='viewComposite({{ $lists->sor_itemno_parent_id }}, {{ $lists->sor_itemno_child_id }})'>
+                                                                <x-icon name="eye" class="w-5 h-5" />View
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @endisset
                                         </tbody>
                                     </table>
                                 </div>

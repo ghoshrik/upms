@@ -18,8 +18,7 @@ class ComposerSors extends Component
     {
         $this->updateDataTableTracker = rand(1, 1000);
         $this->CountSorListPending = SOR::where([['department_id', Auth::user()->department_id], ['created_by', Auth::user()->id]])->where('is_approved', 0)->count();
-        $this->composerSor = CompositSor::select('sor_itemno_parent_id','dept_category_id','sor_itemno_parent_index')->groupBy('sor_itemno_parent_id','dept_category_id','sor_itemno_parent_index')->get();
-        // dd($this->composerSor);
+        $this->composerSor = CompositSor::select('sor_itemno_parent_id','dept_category_id','sor_itemno_parent_index','sor_itemno_child_id')->groupBy('sor_itemno_parent_id','dept_category_id','sor_itemno_parent_index','sor_itemno_child_id')->get();
     }
     public function fromEntryControl($data = '')
     {
@@ -55,7 +54,11 @@ class ComposerSors extends Component
         $this->errorMessage = $errorMessage;
     }
 
-
+    public function viewComposite($parent_id,$child_id)
+    {
+        $this->viewCompositSOR = CompositSor::where([['sor_itemno_parent_id',$parent_id],['sor_itemno_child_id',$child_id]])->get();
+        $this->emit('viewModal',$this->viewCompositSOR);
+    }
     public function render()
     {
         $this->titel = 'Composit SOR';

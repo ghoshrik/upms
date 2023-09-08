@@ -2,18 +2,19 @@
 
 namespace App\Http\Livewire\RateAnalysis;
 
+use App\Models\SOR;
+use Livewire\Component;
+use App\Models\SorMaster;
+use App\Models\Department;
+use WireUi\Traits\Actions;
 use App\Models\Carriagesor;
 use App\Models\CompositSor;
-use App\Models\Department;
-use App\Models\DynamicSorHeader;
-use App\Models\EstimatePrepare;
 use App\Models\RatesAnalysis;
-use App\Models\SOR;
+use App\Models\EstimatePrepare;
 use App\Models\SorCategoryType;
-use App\Models\SorMaster;
+use App\Models\DynamicSorHeader;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Component;
-use WireUi\Traits\Actions;
 
 class CreateRateAnalysis extends Component
 {
@@ -696,59 +697,76 @@ class CreateRateAnalysis extends Component
         $array = [];
         $arrCount = 0;
         if (isset($getData['upTo_5'])) {
-            if ($getData['upTo_5'] == isset($getData['upTo_10'])) {
-                $array[$arrCount]['upTo_10'] = $getData['upTo_10'];
-                // unset($array[$arrCount]['upTo_5']);
+            if (isset($getData['upTo_10'])) {
+                if ($getData['upTo_5'] == $getData['upTo_10']) {
+                    $array[$arrCount]['upTo_10'] = $getData['upTo_10'];
+                    // unset($array[$arrCount]['upTo_5']);
+                } else {
+                    $array[$arrCount++]['upTo_5'] = $getData['upTo_5'];
+                }
             } else {
                 $array[$arrCount++]['upTo_5'] = $getData['upTo_5'];
             }
         }
         if (isset($getData['upTo_10'])) {
-            // dd($arrCount);
-            if ($getData['upTo_10'] == isset($getData['upTo_20'])) {
-                unset($array[$arrCount]);
-                $array[$arrCount]['upTo_20'] = $getData['upTo_20'];
+            if (isset($getData['upTo_20'])) {
+                if ($getData['upTo_10'] == $getData['upTo_20']) {
+                    unset($array[$arrCount]);
+                    $array[$arrCount]['upTo_20'] = $getData['upTo_20'];
+                } else {
+                    $array[$arrCount++]['upTo_10'] = $getData['upTo_10'];
+                }
             } else {
                 $array[$arrCount++]['upTo_10'] = $getData['upTo_10'];
             }
         }
         if (isset($getData['upTo_16'])) {
-            $array[$arrCount++]['upTo_16'] = $getData['upTo_16'];
+            $array[$arrCount+1]['upTo_16'] = $getData['upTo_16'];
         }
         if (isset($getData['above_16'])) {
-            $array[$arrCount++]['above_16'] = $getData['above_16'];
+            $array[$arrCount+1]['above_16'] = $getData['above_16'];
         }
         if (isset($getData['upTo_20'])) {
-            if ($getData['upTo_20'] == isset($getData['upTo_50'])) {
-                unset($array[$arrCount]);
-                $array[$arrCount]['upTo_50'] = $getData['upTo_50'];
-
-            } else {
+            if (isset($getData['upTo_50'])) {
+                if ($getData['upTo_20'] == $getData['upTo_50']) {
+                    unset($array[$arrCount]);
+                    $array[$arrCount]['upTo_50'] = $getData['upTo_50'];
+                } else {
+                    $array[$arrCount++]['upTo_20'] = $getData['upTo_20'];
+                }
+            }else {
                 $array[$arrCount++]['upTo_20'] = $getData['upTo_20'];
             }
         }
         if (isset($getData['upTo_50'])) {
-            if ($getData['upTo_50'] == isset($getData['upTo_100'])) {
-                unset($array[$arrCount]);
-                $array[$arrCount]['upTo_100'] = $getData['upTo_100'];
-
-            } else {
+            if (isset($getData['upTo_100'])) {
+                if ($getData['upTo_50'] == $getData['upTo_100']) {
+                    unset($array[$arrCount]);
+                    $array[$arrCount]['upTo_100'] = $getData['upTo_100'];
+                    $array[$arrCount]['distance'] = 100;
+                } else {
+                    $array[$arrCount++]['upTo_50'] = $getData['upTo_50'];
+                }
+            }else {
                 $array[$arrCount++]['upTo_50'] = $getData['upTo_50'];
             }
         }
         if (isset($getData['upTo_100'])) {
-            if ($getData['upTo_100'] == isset($getData['above_100'])) {
-                unset($array[$arrCount]);
-                $array[$arrCount]['upTo_100'] = $getData['upTo_100'];
-
-            } else {
+            if (isset($getData['above_100'])) {
+                if ($getData['upTo_100'] == $getData['above_100']) {
+                    unset($array[$arrCount]);
+                    $array[$arrCount]['above_100'] = $getData['above_100'];
+                } else {
+                    $array[$arrCount++]['upTo_100'] = $getData['upTo_100'];
+                }
+            }else {
                 $array[$arrCount++]['upTo_100'] = $getData['upTo_100'];
             }
         }
         if (isset($getData['above_100'])) {
             $array[$arrCount++]['above_100'] = $getData['above_100'];
         }
-        dd($array);
+        // dd($array);
         // Log::debug(json_encode($array));
         foreach ($array as $key => $data) {
             // dd($data);
@@ -824,14 +842,21 @@ class CreateRateAnalysis extends Component
                 $this->addEstimate($key + 1);
             } elseif (isset($data['upTo_100']) && $this->estimateData['distance'] != 0) {
                 if ($this->estimateData['distance'] >= 50) {
-                    $this->estimateData['qty'] = 50;
+                    if (isset($data['distance'])) {
+                        $this->estimateData['qty'] = $data['distance'];
+                        $this->estimateData['total_amount'] = $data['upTo_100'];
+                    } else {
+                        $this->estimateData['qty'] = 50;
+                    }
                 } else {
                     $this->estimateData['qty'] = $this->estimateData['distance'];
                 }
                 $this->estimateData['item_number'] = $getData['id'] . ' ( Zone ' . $getData['zone'] . ')';
-                $this->estimateData['description'] = "Above 50 km up to 100 km (per km)";
+                $this->estimateData['description'] = (isset($data['distance'])) ? "Any to 100 km" : "Above 50 km up to 100 km (per km)";
                 $this->estimateData['rate'] = $data['upTo_100'];
-                $this->estimateData['total_amount'] = $data['upTo_100'] * $this->estimateData['qty'];
+                if ($this->estimateData['total_amount'] == '') {
+                    $this->estimateData['total_amount'] = $data['upTo_100'] * $this->estimateData['qty'];
+                }
                 $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
                 $this->addEstimate($key + 1);
             } elseif (isset($data['above_100']) && $this->estimateData['distance'] != 0) {

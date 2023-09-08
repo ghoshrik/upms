@@ -11,29 +11,36 @@
                         <th class="whitespace-nowrap" style="width:40%;text-align:center;">
                             DESCRIPTION</th>
 
-                        <th class="whitespace-nowrap" style="text-align:center;">child ID
-                        </th>
-                        <th class="whitespace-nowrap" style="text-align:right;">UNIT
-                            PRICE</th>
-                        <th class="whitespace-nowrap" style="text-align:center;">COST</th>
+                        {{-- <th class="whitespace-nowrap" style="text-align:center;">child ID
+                        </th> --}}
+                        <th class="whitespace-nowrap" >UNIT
+                            </th>
+                        <th class="whitespace-nowrap" >COST</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @isset($this->viewCompositSOR['parent'])
-                        @foreach ($viewCompositSOR['parent'] as $lists)
+                    @isset($this->viewCompositSOR)
+                        @foreach ($viewCompositSOR as $lists)
                             <tr>
-                                <td> {{ $lists->Item_details }}</td>
+                                <td>{{ $loop->iteration }}</td>
+                                <td> {{ $lists['sor_itemno_child'] }}</td>
                                 <td>
-                                    {{ $lists->description }}
+                                    {{ $lists['description'] }}
                                 </td>
                                 <td>
+                                    {{ getunitName($lists['unit_id']) }}
+                                </td>
+                                <td>
+                                    {{ $lists['rate'] }}
+                                </td>
+                                {{-- <td>
                                     <ul>
                                         @foreach ($this->viewCompositSOR['child'] as $data)
                                             <li>{{ $data['Item_details'] }}</li>
                                             <li>{{ $data['description'] }}</li>
                                         @endforeach
                                     </ul>
-                                </td>
+                                </td> --}}
                             </tr>
                         @endforeach
                     @endisset

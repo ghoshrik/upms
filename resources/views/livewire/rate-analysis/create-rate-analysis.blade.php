@@ -867,7 +867,7 @@
                                         parentId: @json($getSor['id']),
                                         item_index: getData['id']
                                     }];
-                                    // window.Livewire.emit('getComposite', cSor_data);
+                                    window.Livewire.emit('getComposite', cSor_data);
                                 } else if (@json($selectedCategoryId) == 5) {
                                     window.Livewire.emit('getRowValue', getData);
                                 } else {
