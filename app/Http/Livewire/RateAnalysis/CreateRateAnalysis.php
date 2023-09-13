@@ -696,6 +696,7 @@ class CreateRateAnalysis extends Component
         $this->reset('addedEstimate');
         $array = [];
         $arrCount = 0;
+        // dd($getData);
         if (isset($getData['upTo_5'])) {
             if (isset($getData['upTo_10'])) {
                 if ($getData['upTo_5'] == $getData['upTo_10']) {
@@ -721,10 +722,10 @@ class CreateRateAnalysis extends Component
             }
         }
         if (isset($getData['upTo_16'])) {
-            $array[$arrCount+1]['upTo_16'] = $getData['upTo_16'];
+            $array[$arrCount++]['upTo_16'] = $getData['upTo_16'];
         }
         if (isset($getData['above_16'])) {
-            $array[$arrCount+1]['above_16'] = $getData['above_16'];
+            $array[$arrCount++]['above_16'] = $getData['above_16'];
         }
         if (isset($getData['upTo_20'])) {
             if (isset($getData['upTo_50'])) {
@@ -876,6 +877,7 @@ class CreateRateAnalysis extends Component
     public function getComposite($data)
     {
         // dd($data);
+        $this->reset('addedEstimate');
         $getCompositeDatas = CompositSor::where([['sor_itemno_parent_id', $data[0]['parentId']], ['sor_itemno_parent_index', $data[0]['item_index']]])->get();
         foreach ($getCompositeDatas as $key => $compositeData) {
             $getRateDetails = RatesAnalysis::where([['item_index', $compositeData['sor_itemno_child']], ['sor_id', $compositeData['sor_itemno_child_id']], ['operation', '=', 'Total']])->first();

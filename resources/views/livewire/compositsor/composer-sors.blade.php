@@ -82,7 +82,6 @@
                                                             @isset($lists->dept_category_id)
                                                                 {{ getDepartmentCategoryName($lists->dept_category_id) }}
                                                             @endisset
-
                                                         </td>
                                                         <td class="text-wrap">
                                                             {{-- {{$lists->ParentSORItemNo->Item_details }} --}}

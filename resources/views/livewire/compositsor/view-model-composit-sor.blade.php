@@ -15,7 +15,7 @@
                         </th> --}}
                         <th class="whitespace-nowrap" >UNIT
                             </th>
-                        <th class="whitespace-nowrap" >COST</th>
+                        <th class="whitespace-nowrap" >QUANTITY</th>
                     </tr>
                 </thead>
                 <tbody>
