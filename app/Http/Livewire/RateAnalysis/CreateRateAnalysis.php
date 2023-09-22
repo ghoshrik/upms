@@ -771,7 +771,7 @@ class CreateRateAnalysis extends Component
         // Log::debug(json_encode($array));
         foreach ($array as $key => $data) {
             // dd($data);
-            // Log::debug(json_encode($data));
+            Log::debug(json_encode($this->estimateData));
             if (isset($data['upTo_5']) && $this->estimateData['distance'] != 0) {
                 if ($this->estimateData['distance'] >= 5) {
                     $this->estimateData['qty'] = 5;
@@ -855,7 +855,9 @@ class CreateRateAnalysis extends Component
                 $this->estimateData['item_number'] = $getData['id'] . ' ( Zone ' . $getData['zone'] . ')';
                 $this->estimateData['description'] = (isset($data['distance'])) ? "Any to 100 km" : "Above 50 km up to 100 km (per km)";
                 $this->estimateData['rate'] = $data['upTo_100'];
-                if ($this->estimateData['total_amount'] == '') {
+                if (count($array) == 2) {
+                    $this->estimateData['total_amount'] = $data['upTo_100'];
+                }else{
                     $this->estimateData['total_amount'] = $data['upTo_100'] * $this->estimateData['qty'];
                 }
                 $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
