@@ -71,7 +71,7 @@ class CreateCompositeSor extends Component
     public function getPageNo()
     {
         $this->fetchDropDownData['pages'] = [];
-        $this->fetchDropDownData['pages'] = DynamicSorHeader::where([['dept_category_id', $this->storeItem['dept_category_id']], ['table_no', $this->storeItem['table_no']]])->select('page_no')->groupBy('page_no')->get();
+        $this->fetchDropDownData['pages'] = DynamicSorHeader::where([['dept_category_id', $this->storeItem['dept_category_id']], ['table_no', $this->storeItem['table_no']]])->select('page_no')->get();
         $this->viewModal = false;
         $this->storeItem['page_no'] = '';
     }
@@ -213,7 +213,7 @@ class CreateCompositeSor extends Component
         $this->viewModal = false;
         $this->fetchDropDownData[$key]['child_pages'] = [];
         $this->inputsData[$key]['page_no'] = '';
-        $this->fetchDropDownData[$key]['child_pages'] = DynamicSorHeader::where([['dept_category_id', $this->storeItem['dept_category_id']], ['table_no', $this->inputsData[$key]['table_no']]])->select('page_no')->groupBy('page_no')->get();
+        $this->fetchDropDownData[$key]['child_pages'] = DynamicSorHeader::where([['dept_category_id', $this->storeItem['dept_category_id']], ['table_no', $this->inputsData[$key]['table_no']]])->select('page_no')->get();
         // dd($this->fetchDropDownData);
     }
     public function extractItemNoOfItems($data, &$itemNo, $counter)

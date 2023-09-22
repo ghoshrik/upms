@@ -771,7 +771,7 @@ class CreateRateAnalysis extends Component
         // Log::debug(json_encode($array));
         foreach ($array as $key => $data) {
             // dd($data);
-            Log::debug(json_encode($this->estimateData));
+            // Log::debug(json_encode($this->estimateData));
             if (isset($data['upTo_5']) && $this->estimateData['distance'] != 0) {
                 if ($this->estimateData['distance'] >= 5) {
                     $this->estimateData['qty'] = 5;
