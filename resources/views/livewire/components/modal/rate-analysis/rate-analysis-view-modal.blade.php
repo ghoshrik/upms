@@ -31,7 +31,7 @@
                                             <td>
                                                 @if ($view['sor_item_number'])
                                                     {{-- {{ getSorItemNumber($view['sor_item_number']) }} --}}
-                                                    {{ $view['sor_item_number'] }}
+                                                    {{ ($view['operation'] == 'Total') ? '' : $view['sor_item_number'] }}
                                                     @elseif ($view['rate_no'])
                                                     {{ $view['rate_no'] }}
                                                 @endif
@@ -40,7 +40,7 @@
                                                 @if ($view['sor_item_number'])
                                                     {{-- {{ getSorItemNumberDesc($view['sor_item_number']) }} --}}
                                                     {{ $view['description'] }}
-                                                    @elseif ($view['rate_no'])
+                                                @elseif ($view['rate_no'])
                                                     {{ getRateDescription($view['rate_no']) }}
                                                 @elseif($view['operation'])
                                                     @if ($view['operation'] == 'Total')
