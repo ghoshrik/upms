@@ -134,7 +134,7 @@ function getEstimateDescription($estimate_no)
 function getRateDescription($rate_no)
 {
     if ($rate_no) {
-        $rateDescription = RatesAnalysis::where('rate_id', $rate_no)->first();
+        $rateDescription = RatesAnalysis::where([['rate_id', $rate_no],['operation','Total']])->first();
     }
     return $rateDescription['description'];
 }
