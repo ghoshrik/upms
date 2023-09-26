@@ -35,7 +35,9 @@
                         <x-select wire:key="dept" label="Page No" placeholder="Select Page No"
                             wire:model.defer="storeItem.page_no" x-on:select="$wire.getDynamicSor('parent')">
                             @foreach ($fetchDropDownData['pages'] as $page)
-                                <x-select.option label="{{ $page['page_no'] }}" value="{{ $page['page_no'] }}" />
+                                <x-select.option
+                                    label="{{ $page['page_no'] . ($page['corrigenda_name'] != null ? ' - ' . $page['corrigenda_name'] : '') }}"
+                                    value="{{ $page['id'] }}" />
                             @endforeach
                         </x-select>
                     </div>
@@ -70,11 +72,12 @@
                                 <x-select wire:key="page_no{{ $key }}" label="Page No"
                                     placeholder="Select Page No"
                                     wire:model.defer="inputsData.{{ $key }}.page_no"
-                                    x-on:select="$wire.getDynamicSor({{$key}})">
+                                    x-on:select="$wire.getDynamicSor({{ $key }})">
                                     @isset($fetchDropDownData[$key]['child_pages'])
                                         @foreach ($fetchDropDownData[$key]['child_pages'] as $page)
-                                            <x-select.option label="{{ $page['page_no'] }}"
-                                                value="{{ $page['page_no'] }}" />
+                                            <x-select.option
+                                                label="{{ $page['page_no'] . ($page['corrigenda_name'] != null ? ' - ' . $page['corrigenda_name'] : '') }}"
+                                                value="{{ $page['id'] }}" />
                                         @endforeach
                                     @endisset
                                 </x-select>
@@ -96,7 +99,8 @@
                                     wire:model="inputsData.{{ $key }}.unit_id">
                                     @isset($fetchDropDownData['unitMaster'])
                                         @foreach ($fetchDropDownData['unitMaster'] as $units)
-                                            <x-select.option label="{{ $units['unit_name'] }}" value="{{ $units['id'] }}" />
+                                            <x-select.option label="{{ $units['unit_name'] }}"
+                                                value="{{ $units['id'] }}" />
                                         @endforeach
                                     @endisset
                                 </x-select>
@@ -104,7 +108,8 @@
                         </div>
                         <div class="col">
                             <div class="form-group">
-                                <x-input wire:key='qty.{{ $key }}' label="{{ trans('cruds.sor.fields.qty') }}"
+                                <x-input wire:key='qty.{{ $key }}'
+                                    label="{{ trans('cruds.sor.fields.qty') }}"
                                     placeholder="{{ trans('cruds.sor.fields.qty') }}"
                                     wire:model="inputsData.{{ $key }}.qty" />
                             </div>
@@ -148,7 +153,7 @@
                 <div class="modal-dialog modal-fullscreen" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">{{ $fetchDropDownData['getSor']['title'] }}</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>

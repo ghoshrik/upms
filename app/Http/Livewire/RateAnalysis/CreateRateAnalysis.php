@@ -277,7 +277,7 @@ class CreateRateAnalysis extends Component
         $this->selectSor['selectedSOR'] = '';
         $this->selectSor['item_index'] = '';
         $this->dropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']]])
-            ->select('id', 'page_no')->get();
+            ->select('id', 'page_no','corrigenda_name')->get();
         // dd($this->dropdownData);
     }
     public function getSorDynamicSor()
@@ -292,7 +292,7 @@ class CreateRateAnalysis extends Component
             $this->modalName = "dynamic-sor-modal_" . rand(1, 1000);
             $this->modalName = str_replace(' ', '_', $this->modalName);
         }
-        // dd($this->getSor);
+        // dd($this->viewModal,$this->isParent);
     }
     public function getVolumn()
     {
@@ -330,15 +330,15 @@ class CreateRateAnalysis extends Component
     {
 
         $this->viewModal = false;
-        if ($this->selectedCategoryId == '') {
-            $this->selectSor['page_no'] = '';
-            $this->dropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']]])
-                ->select('page_no')->get();
-        } else {
+        // if ($this->selectedCategoryId == '') {
+        //     $this->selectSor['page_no'] = '';
+        //     $this->dropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']]])
+        //         ->select('page_no')->get();
+        // } else {
             $this->estimateData['id'] = '';
             $this->fatchDropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']]])
-                ->select('id', 'page_no')->get();
-        }
+                ->select('id', 'page_no','corrigenda_name')->get();
+        // }
     }
     public function getDynamicSor()
     {
@@ -360,7 +360,7 @@ class CreateRateAnalysis extends Component
             $this->modalName = "dynamic-sor-modal_" . rand(1, 1000);
             $this->modalName = str_replace(' ', '_', $this->modalName);
         }
-        // dd($this->getSor);
+        // dd($this->isParent);
     }
     public function getRowValue($data)
     {
@@ -417,6 +417,7 @@ class CreateRateAnalysis extends Component
                 $this->selectSor['item_index'] = $data[0]['id'];
                 $this->sorMasterDesc = $data[0]['desc'];
                 // $this->sorMasterDesc = $descriptions . " " . $data[0]['desc'];
+                $this->viewModal = !$this->viewModal;
                 $this->isParent = !$this->isParent;
             }
         }

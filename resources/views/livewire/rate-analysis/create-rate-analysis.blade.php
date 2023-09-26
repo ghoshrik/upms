@@ -26,7 +26,8 @@
                                     <x-select wire:key="sorcategory"
                                         label="Department {{ trans('cruds.estimate.fields.category') }}"
                                         placeholder="Select Department {{ trans('cruds.estimate.fields.category') }}"
-                                        wire:model.defer="selectSor.dept_category_id" x-on:select="$wire.getSorVolumn()">
+                                        wire:model.defer="selectSor.dept_category_id"
+                                        x-on:select="$wire.getSorVolumn()">
                                         @isset($dropdownData['sorDepartmentsCategory'])
                                             @foreach ($dropdownData['sorDepartmentsCategory'] as $deptCategory)
                                                 <x-select.option label="{{ $deptCategory['dept_category_name'] }}"
@@ -74,8 +75,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <x-select wire:key="sorTable" label="Table No" placeholder="Select Table No"
-                                        wire:model.defer="selectSor.table_no"
-                                        x-on:select="$wire.getSorPageNo()">
+                                        wire:model.defer="selectSor.table_no" x-on:select="$wire.getSorPageNo()">
                                         @isset($dropdownData['table_no'])
                                             @foreach ($dropdownData['table_no'] as $table)
                                                 <x-select.option label="{{ $table['table_no'] }}"
@@ -89,10 +89,10 @@
                             <div class="col">
                                 <div class="form-group">
                                     <x-select wire:key="sorPage" label="Page No" placeholder="Select Page No"
-                                        wire:model.defer="selectSor.id"
-                                        x-on:select="$wire.getSorDynamicSor()">
+                                        wire:model.defer="selectSor.id" x-on:select="$wire.getSorDynamicSor()">
                                         @foreach ($dropdownData['page_no'] as $page)
-                                            <x-select.option label="{{ $page['page_no'] }}"
+                                            <x-select.option
+                                                label="{{ $page['page_no'] . ($page['corrigenda_name'] != null ? ' - ' . $page['corrigenda_name'] : '') }}"
                                                 value="{{ $page['id'] }}" />
                                         @endforeach
                                     </x-select>
@@ -100,8 +100,8 @@
                             </div>
                             <div class="col">
                                 <div class="form-group">
-                                    <x-input label="Item No" placeholder="Item No" wire:model.defer="selectSor.selectedSOR"
-                                        wire:key="item" />
+                                    <x-input label="Item No" placeholder="Item No"
+                                        wire:model.defer="selectSor.selectedSOR" wire:key="item" />
                                 </div>
                             </div>
                         </div>
@@ -165,7 +165,8 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="volume" label="Volume" placeholder="Select Volume"
-                                                wire:model.defer="estimateData.volume" x-on:select="$wire.getTableNo()">
+                                                wire:model.defer="estimateData.volume"
+                                                x-on:select="$wire.getTableNo()">
                                                 @isset($fatchDropdownData['volumes'])
                                                     @foreach ($fatchDropdownData['volumes'] as $volume)
                                                         <x-select.option label="{{ getVolumeName($volume['volume_no']) }}"
@@ -196,7 +197,8 @@
                                                 wire:model.defer="estimateData.id"
                                                 x-on:select="$wire.getDynamicSor()">
                                                 @foreach ($fatchDropdownData['page_no'] as $page)
-                                                    <x-select.option label="{{ $page['page_no'] }}"
+                                                    <x-select.option
+                                                        label="{{ $page['page_no'] . ($page['corrigenda_name'] != null ? ' - ' . $page['corrigenda_name'] : '') }}"
                                                         value="{{ $page['id'] }}" />
                                                 @endforeach
                                             </x-select>
@@ -524,7 +526,8 @@
                                 <div class="row" wire:key='C-SOR' style="transition: all 2s ease-out">
                                     <div class="col">
                                         <div class="form-group">
-                                            <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
+                                            <x-select wire:key="dept"
+                                                label="{{ trans('cruds.estimate.fields.dept') }}"
                                                 placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
                                                 wire:model.defer="estimateData.dept_id"
                                                 x-on:select="$wire.getDeptCategory()">
@@ -554,7 +557,8 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="volume" label="Volume" placeholder="Select Volume"
-                                                wire:model.defer="estimateData.volume" x-on:select="$wire.getTableNo()">
+                                                wire:model.defer="estimateData.volume"
+                                                x-on:select="$wire.getTableNo()">
                                                 @isset($fatchDropdownData['volumes'])
                                                     @foreach ($fatchDropdownData['volumes'] as $volume)
                                                         <x-select.option label="{{ getVolumeName($volume['volume_no']) }}"
@@ -585,7 +589,8 @@
                                                 wire:model.defer="estimateData.id"
                                                 x-on:select="$wire.getDynamicSor()">
                                                 @foreach ($fatchDropdownData['page_no'] as $page)
-                                                    <x-select.option label="{{ $page['page_no'] }}"
+                                                    <x-select.option
+                                                        label="{{ $page['page_no'] . ($page['corrigenda_name'] != null ? ' - ' . $page['corrigenda_name'] : '') }}"
                                                         value="{{ $page['id'] }}" />
                                                 @endforeach
                                             </x-select>
@@ -754,7 +759,8 @@
                                                 wire:model.defer="estimateData.id"
                                                 x-on:select="$wire.getDynamicSor()">
                                                 @foreach ($fatchDropdownData['page_no'] as $page)
-                                                    <x-select.option label="{{ $page['page_no'] }}"
+                                                    <x-select.option
+                                                        label="{{ $page['page_no'] . ($page['corrigenda_name'] != null ? ' - ' . $page['corrigenda_name'] : '') }}"
                                                         value="{{ $page['id'] }}" />
                                                 @endforeach
                                             </x-select>
@@ -819,8 +825,8 @@
             </div>
         </div>
         @php
-            $tableNo = (isset($estimateData['table_no'])) ? $estimateData['table_no'] : $selectSor['table_no'];
-            $pageNo = (isset($estimateData['page_no'])) ? $estimateData['page_no'] : $selectSor['page_no'];
+            $tableNo = isset($estimateData['table_no']) ? $estimateData['table_no'] : $selectSor['table_no'];
+            $pageNo = isset($estimateData['page_no']) ? $estimateData['page_no'] : $selectSor['page_no'];
         @endphp
         <script>
             document.getElementById("closeBtn").addEventListener("click", function() {
@@ -862,17 +868,23 @@
                             }];
                             var cnf = confirm("Are you sure " + cell.getValue() + " ?");
                             if (cnf) {
-                                if (@json($selectedCategoryId) == 4){
-                                    var cSor_data = [{
-                                        parentId: @json($getSor['id']),
-                                        item_index: getData['id']
-                                    }];
-                                    window.Livewire.emit('getComposite', cSor_data);
-                                } else if (@json($selectedCategoryId) == 5) {
-                                    window.Livewire.emit('getRowValue', getData);
-                                } else {
+                                if (@json($isParent)) {
                                     window.Livewire.emit('getRowValue', getRowData);
+                                } else {
+                                    console.log(@json($isParent));
+                                    if (@json($selectedCategoryId) == 4) {
+                                        var cSor_data = [{
+                                            parentId: @json($getSor['id']),
+                                            item_index: getData['id']
+                                        }];
+                                        window.Livewire.emit('getComposite', cSor_data);
+                                    } else if (@json($selectedCategoryId) == 5) {
+                                        window.Livewire.emit('getRowValue', getData);
+                                    } else {
+                                        window.Livewire.emit('getRowValue', getRowData);
+                                    }
                                 }
+
 
                                 // window.Livewire.emit('getRowValue', getData);
                                 // window.Livewire.emit('getRowValue', clickableCellValues);
@@ -903,13 +915,22 @@
                                         rowValue: cell.getValue(),
                                         itemNo: subrowIndex
                                     }];
-                                    console.log(getData);
                                     var cnf = confirm("Are you sure " + cell.getValue() + " ?");
                                     if (cnf) {
-                                        if (@json($selectedCategoryId) == 5) {
-                                            window.Livewire.emit('getRowValue', getData);
-                                        } else {
+                                        if (@json($isParent)) {
                                             window.Livewire.emit('getRowValue', getRowData);
+                                        } else {
+                                            if (@json($selectedCategoryId) == 4) {
+                                                var cSor_data = [{
+                                                    parentId: @json($getSor['id']),
+                                                    item_index: getData['id']
+                                                }];
+                                                window.Livewire.emit('getComposite', cSor_data);
+                                            } else if (@json($selectedCategoryId) == 5) {
+                                                window.Livewire.emit('getRowValue', getData);
+                                            } else {
+                                                window.Livewire.emit('getRowValue', getRowData);
+                                            }
                                         }
                                         // window.Livewire.emit('getRowValue', getData);
                                         $('#' + @json($modalName)).modal('hide');

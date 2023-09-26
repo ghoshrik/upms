@@ -129,14 +129,14 @@
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                     </span>
                                                 </x-button>
-                                                <button
+                                                {{-- <button
                                                     onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
                                                     wire:click="deleteEstimate({{ $addedEstimate['array_id'] }})" type="button" class="btn btn-soft-danger btn-sm">
                                                     <span
                                                         class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                     </span>
-                                                </button>
+                                                </button> --}}
                                                 {{-- <button onclick="showDeleteConfirmation({{ $addedEstimate['array_id'] }})" type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
