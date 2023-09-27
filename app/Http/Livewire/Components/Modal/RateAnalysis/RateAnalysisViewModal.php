@@ -18,7 +18,7 @@ class RateAnalysisViewModal extends Component
         if($rate_id)
         {
             $this->rate_id = $rate_id;
-            $this->viewEstimates = RatesAnalysis::where('rate_id',$this->rate_id)->get();
+            $this->viewEstimates = RatesAnalysis::where('rate_id',$this->rate_id)->orderBy('row_id')->get();
         }
         // dd($this->viewEstimates);
     }
