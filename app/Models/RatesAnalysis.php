@@ -29,6 +29,7 @@ class RatesAnalysis extends Model
         'total_amount',
         'operation',
         'created_by',
-        'comments'
+        'comments',
+        'col_position'
     ];
 }

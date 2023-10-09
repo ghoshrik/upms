@@ -114,12 +114,14 @@ class CreateRateAnalysis extends Component
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
     }
+    public $temp;
     public function changeCategory($value)
     {
-        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor']);
+        $this->temp = $this->selectedCategoryId;
+        $this->resetExcept(['addedEstimate', 'temp', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor']);
         $value = $value['_x_bindings']['value'];
         $this->estimateData['item_name'] = $value;
-        if ($this->selectedCategoryId == 1) {
+        if ($this->temp == 1) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             // $this->fatchDropdownData['table_no'] = DynamicSorHeader::select('table_no')->groupBy('table_no')->get();
             $this->fatchDropdownData['page_no'] = [];
@@ -141,7 +143,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
             $this->estimateData['distance'] = '';
-        } elseif ($this->selectedCategoryId == 2) {
+        } elseif ($this->temp == 2) {
             $this->estimateData['id'] = '';
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = '';
@@ -155,7 +157,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
             $this->estimateData['distance'] = '';
-        } elseif ($this->selectedCategoryId == 3) {
+        } elseif ($this->temp == 3) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['dept_id'] = Auth::user()->department_id;
             if (!empty($this->estimateData['dept_id'])) {
@@ -174,7 +176,8 @@ class CreateRateAnalysis extends Component
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
             $this->estimateData['distance'] = '';
-        } elseif ($this->selectedCategoryId == 4) {
+            $this->render();
+        } elseif ($this->temp == 4) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->fatchDropdownData['page_no'] = [];
             $this->estimateData['rate_no'] = '';
@@ -216,6 +219,8 @@ class CreateRateAnalysis extends Component
             $this->estimateData['total_amount'] = '';
             $this->estimateData['distance'] = '';
         }
+
+        $this->selectedCategoryId = $this->temp;
     }
     public function getDeptCategory()
     {
@@ -364,7 +369,7 @@ class CreateRateAnalysis extends Component
     }
     public function getRowValue($data)
     {
-        // dd($this->selectSor,$this->estimateData);
+        // dd($data);
         // dd($this->estimateData);
         // dd($this->isParent);
         $fetchRow[] = [];
@@ -408,6 +413,7 @@ class CreateRateAnalysis extends Component
                 $this->estimateData['qty'] = 1;
                 $this->estimateData['rate'] = $data[0]['rowValue'];
                 $this->estimateData['item_number'] = $itemNo;
+                $this->estimateData['col_position'] = $data[0]['colPosition'];
                 $this->calculateValue();
             } else {
                 $this->selectSor['selectedSOR'] = $itemNo;
@@ -415,6 +421,7 @@ class CreateRateAnalysis extends Component
                 $this->selectSor['page_no'] = $this->getSor['page_no'];
                 $this->selectSor['selectedItemId'] = $selectedItemId;
                 $this->selectSor['item_index'] = $data[0]['id'];
+                $this->selectSor['col_position'] = $data[0]['colPosition'];
                 $this->sorMasterDesc = $data[0]['desc'];
                 // $this->sorMasterDesc = $descriptions . " " . $data[0]['desc'];
                 $this->viewModal = !$this->viewModal;
@@ -1216,6 +1223,7 @@ class CreateRateAnalysis extends Component
             $this->addedEstimate['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
             $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
             $this->addedEstimate['version'] = $this->estimateData['version'];
+            $this->addedEstimate['col_position'] = isset($this->estimateData['col_position']) ? $this->estimateData['col_position'] : '';
             $this->addedEstimateUpdateTrack = rand(1, 1000);
             $this->estimateData['item_number'] = '';
             $this->estimateData['other_name'] = '';

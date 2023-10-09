@@ -153,7 +153,8 @@
                 <div class="modal-dialog modal-fullscreen" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">{{ $fetchDropDownData['getSor']['title'] }}</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">
+                                {{ $fetchDropDownData['getSor']['title'] }}</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -201,11 +202,31 @@
                         column.cellClick = function(e, cell) {
                             // Overwritten cellClick function
                             var getData = cell.getRow().getData();
+                            var colId = cell.getField();
+                            var allColumn = cell.getTable().columnManager.getColumns();
+                            var colIdx = -1;
+                            for (var i = 0; i < allColumn.length; i++) {
+                                if (allColumn[i]['columns'] && allColumn[i]['columns'].length > 0) {
+                                    var allGroupCol = allColumn[i]['columns'];
+                                    for (var j = 0; j < allGroupCol.length; j++) {
+                                        if (allGroupCol[j].getField() === colId) {
+                                            colIdx = i + j;
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    if (allColumn[i].getField() === colId) {
+                                        colIdx = i;
+                                        break;
+                                    }
+                                }
+                            }
                             var getRowData = [{
                                 id: getData['id'],
                                 desc: (getData['desc_of_item']) ? getData['desc_of_item'] : '',
                                 rowValue: cell.getValue(),
-                                itemNo: getData['item_no']
+                                itemNo: getData['item_no'],
+                                colPosition: colIdx
                             }];
                             var cnf = confirm("Are you sure " + cell.getValue() + " ?");
                             if (cnf) {
@@ -229,12 +250,33 @@
                                 subColumn.cellClick = function(e, cell) {
                                     var subrowIndex = cell.getRow().getIndex();
                                     var getData = cell.getRow().getData();
+                                    var colId = cell.getField();
+                                    var allColumn = cell.getTable().columnManager.getColumns();
+                                    var colIdx = -1;
+                                    for (var i = 0; i < allColumn.length; i++) {
+                                        if (allColumn[i]['columns'] && allColumn[i]['columns']
+                                            .length > 0) {
+                                            var allGroupCol = allColumn[i]['columns'];
+                                            for (var j = 0; j < allGroupCol.length; j++) {
+                                                if (allGroupCol[j].getField() === colId) {
+                                                    colIdx = i + j;
+                                                    break;
+                                                }
+                                            }
+                                        } else {
+                                            if (allColumn[i].getField() === colId) {
+                                                colIdx = i;
+                                                break;
+                                            }
+                                        }
+                                    }
                                     var getRowData = [{
                                         id: getData['id'],
                                         desc: (getData['desc_of_item']) ? getData[
                                             'desc_of_item'] : '',
                                         rowValue: cell.getValue(),
-                                        itemNo: getData['item_no']
+                                        itemNo: getData['item_no'],
+                                        colPosition: colIdx
                                     }];
                                     var cnf = confirm("Are you sure " + cell.getValue() + " ?");
                                     if (cnf) {
