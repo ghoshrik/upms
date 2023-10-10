@@ -131,6 +131,7 @@ class CreateCompositeSor extends Component
             $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray);
             $itemNo .= $this->storeItem['item_no'];
             $this->storeItem['item_no'] = $itemNo;
+            $this->storeItem['col_position'] = $data[0]['colPosition'];
         } else {
             if (isset($data[0]['itemNo'])) {
                 $this->inputsData[$this->sorType]['item_no'] = $data[0]['itemNo'];
@@ -269,7 +270,6 @@ class CreateCompositeSor extends Component
     public function store()
     {
         try {
-
             foreach ($this->inputsData as $data) {
 
                 // $last = CompositSor::create([
@@ -277,6 +277,7 @@ class CreateCompositeSor extends Component
                     'dept_category_id' => $this->storeItem['dept_category_id'],
                     'sor_itemno_parent_id' => $this->storeItem['parent_id'],
                     'sor_itemno_parent_index' => $this->storeItem['sor_itemno_parent_index'],
+                    'col_position' => $this->storeItem['col_position'],
                     'sor_itemno_child' => $data['child_index_id'],
                     'sor_itemno_child_id' => $data['sor_id'],
                     'description' => $data['description'],

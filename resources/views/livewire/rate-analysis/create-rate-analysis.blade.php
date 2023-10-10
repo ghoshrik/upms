@@ -893,11 +893,11 @@
                                 if (@json($isParent)) {
                                     window.Livewire.emit('getRowValue', getRowData);
                                 } else {
-                                    console.log(@json($isParent));
                                     if (@json($selectedCategoryId) == 4) {
                                         var cSor_data = [{
                                             parentId: @json($getSor['id']),
-                                            item_index: getData['id']
+                                            item_index: getData['id'],
+                                            colPosition: colIdx
                                         }];
                                         window.Livewire.emit('getComposite', cSor_data);
                                     } else if (@json($selectedCategoryId) == 5) {
@@ -967,7 +967,8 @@
                                             if (@json($selectedCategoryId) == 4) {
                                                 var cSor_data = [{
                                                     parentId: @json($getSor['id']),
-                                                    item_index: getData['id']
+                                                    item_index: getData['id'],
+                                                    colPosition: colIdx
                                                 }];
                                                 window.Livewire.emit('getComposite', cSor_data);
                                             } else if (@json($selectedCategoryId) == 5) {
