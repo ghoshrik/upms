@@ -27,9 +27,20 @@
                         </div>
                         <div class="col col-md-6 col-lg-6 mb-2">
                             <div class="btn-group float-right" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-soft-primary" wire:click="totalOnSelected"
-                                    @if (($openTotalButton && $totalOnSelectedCount != 1) || true) {{ '' }}@else {{ 'disabled' }} @endif>{{ trans('cruds.estimate.fields.total_on_selected') }}
-                                </button>
+                                @if ($hideWithStackBtn == true)
+                                    <button type="button" class="btn btn-soft-primary"
+                                        wire:click="totalOnSelected('With Stacking')">With Stacking</button>
+                                @endif
+                                @if ($hideWithoutStackBtn == true)
+                                    <button type="button" class="btn btn-soft-primary"
+                                        wire:click="totalOnSelected('Without Stacking')">Without Stacking</button>
+                                @endif
+                                @if ($hideTotalbutton == true)
+                                    <button type="button" class="btn btn-soft-primary"
+                                        wire:click="totalOnSelected('Total')"
+                                        @if (($openTotalButton && $totalOnSelectedCount != 1) || true) {{ '' }}@else {{ 'disabled' }} @endif>{{ trans('cruds.estimate.fields.total_on_selected') }}
+                                    </button>
+                                @endif
                                 <button type="button" class="btn btn-soft-info" wire:click="exportWord">
                                     <span class="btn-inner">
                                         <x-lucide-sheet class="w-4 h-4 text-gray-500" />

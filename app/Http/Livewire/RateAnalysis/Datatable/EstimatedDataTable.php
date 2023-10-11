@@ -2,12 +2,11 @@
 
 namespace App\Http\Livewire\RateAnalysis\Datatable;
 
-use Rappasoft\LaravelLivewireTables\DataTableComponent;
-use Rappasoft\LaravelLivewireTables\Views\Column;
-use App\Models\EstimatePrepare;
 use App\Models\RatesAnalysis;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Rappasoft\LaravelLivewireTables\DataTableComponent;
+use Rappasoft\LaravelLivewireTables\Views\Column;
 
 class EstimatedDataTable extends DataTableComponent
 {
@@ -30,23 +29,28 @@ class EstimatedDataTable extends DataTableComponent
                 ->sortable(),
             Column::make("DESCRIPTION", "description")
                 ->searchable()
+                ->sortable()
+                ->format( fn($row) => '<span class="text-wrap">'.$row.'</span>')
+                ->html(),
+            Column::make("TYPE","operation")
+                ->searchable()
                 ->sortable(),
             Column::make("TOTAL AMOUNT", "total_amount")
-                ->format(fn ($row) => round($row, 10, 2))
+                ->format(fn($row) => round($row, 10, 2))
                 ->sortable(),
             // Column::make("Status","SOR.getEstimateStatus.status")
             //     ->sortable()
             //     ->format( fn($row) => '<span class="badge bg-soft-primary fs-6">'.$row.'</span>')
             //         ->html(),
             Column::make("Actions", "rate_id")
-            ->format(
-                fn($value, $row, Column $column) => view('livewire.action-components.rate-analysis.action-buttons')->withValue($value))
+                ->format(
+                    fn($value, $row, Column $column) => view('livewire.action-components.rate-analysis.action-buttons')->withValue($value)),
         ];
     }
 
     public function edit($id)
     {
-        $this->emit('openForm', ['formType'=>'edit', 'id'=>$id]);
+        $this->emit('openForm', ['formType' => 'edit', 'id' => $id]);
     }
     public function view($rate_id)
     {
@@ -54,13 +58,15 @@ class EstimatedDataTable extends DataTableComponent
     }
     public function forward($estimate_id)
     {
-        $this->emit('openForwardModal',['estimate_id'=>$estimate_id,'forward_from'=>'EP']);
+        $this->emit('openForwardModal', ['estimate_id' => $estimate_id, 'forward_from' => 'EP']);
     }
     public function builder(): Builder
     {
         return RatesAnalysis::query()
-            ->where('operation', 'Total')
-            ->where('created_by',Auth::user()->id);
-        // ->groupBy('estimate_id.estimate_id');
+            ->orWhere('operation', 'Total')
+            ->orWhere('operation', 'With Stacking')
+            ->orWhere('operation', 'Without Stacking')
+            ->where('created_by', Auth::user()->id);
     }
+
 }

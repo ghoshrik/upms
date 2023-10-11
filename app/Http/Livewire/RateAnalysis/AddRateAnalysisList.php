@@ -58,7 +58,7 @@ class AddRateAnalysisList extends Component
             $this->addedEstimateData['col_position'] = $this->selectSor['col_position'];
         }
         $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'selectSor');
+        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'selectSor','hideTotalbutton','hideWithStackBtn','hideWithoutStackBtn');
     }
 
     public function expCalc()
@@ -105,10 +105,20 @@ class AddRateAnalysisList extends Component
             $this->openTotalButton = false;
         }
     }
-
-    public function totalOnSelected()
+    public $hideTotalbutton = true, $hideWithStackBtn = true, $hideWithoutStackBtn = true;
+    public function totalOnSelected($flag)
     {
-        // dd($this->selectSor);
+        if($flag == 'With Stacking'){
+            $this->hideTotalbutton = false;
+            $this->hideWithStackBtn = false;
+        } elseif ($flag == 'Without Stacking'){
+            $this->hideTotalbutton = false;
+            $this->hideWithoutStackBtn = false;
+        }else{
+            $this->hideWithStackBtn = false;
+            $this->hideWithoutStackBtn = false;
+        }
+        // dd($this->hideTotalbutton,$this->hideWithStackBtn,$this->hideWithoutStackBtn);
         if (count($this->level) >= 2 || true) {
             $result = 0;
             foreach ($this->level as $key => $array) {
@@ -119,7 +129,7 @@ class AddRateAnalysisList extends Component
             if (!isset($this->selectSor['item_number'])) {
                 $this->selectSor['item_number'] = 0;
             }
-            $this->insertAddEstimate($this->arrayIndex, Auth::user()->department_id, 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, $result, 'Total', '', '');
+            $this->insertAddEstimate($this->arrayIndex, Auth::user()->department_id, 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, $result, $flag, '', '');
             $this->totalOnSelectedCount++;
         } else {
             $this->dispatchBrowserEvent('alert', [
@@ -352,7 +362,7 @@ class AddRateAnalysisList extends Component
     }
     public function store()
     {
-        dd($this->allAddedEstimatesData);
+        // dd($this->allAddedEstimatesData);
         if ($this->totalOnSelectedCount == 1 || true) {
             try {
                 if ($this->allAddedEstimatesData) {
