@@ -114,14 +114,12 @@ class CreateRateAnalysis extends Component
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
     }
-    public $temp;
     public function changeCategory($value)
     {
-        $this->temp = $this->selectedCategoryId;
-        $this->resetExcept(['addedEstimate', 'temp', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor']);
+        $this->resetExcept(['addedEstimate','selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor']);
         $value = $value['_x_bindings']['value'];
         $this->estimateData['item_name'] = $value;
-        if ($this->temp == 1) {
+        if ($this->selectedCategoryId == 1) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             // $this->fatchDropdownData['table_no'] = DynamicSorHeader::select('table_no')->groupBy('table_no')->get();
             $this->fatchDropdownData['page_no'] = [];
@@ -143,7 +141,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
             $this->estimateData['distance'] = '';
-        } elseif ($this->temp == 2) {
+        } elseif ($this->selectedCategoryId == 2) {
             $this->estimateData['id'] = '';
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = '';
@@ -157,7 +155,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
             $this->estimateData['distance'] = '';
-        } elseif ($this->temp == 3) {
+        } elseif ($this->selectedCategoryId == 3) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['dept_id'] = Auth::user()->department_id;
             if (!empty($this->estimateData['dept_id'])) {
@@ -177,7 +175,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['total_amount'] = '';
             $this->estimateData['distance'] = '';
             $this->render();
-        } elseif ($this->temp == 4) {
+        } elseif ($this->selectedCategoryId == 4) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->fatchDropdownData['page_no'] = [];
             $this->estimateData['rate_no'] = '';
@@ -219,8 +217,6 @@ class CreateRateAnalysis extends Component
             $this->estimateData['total_amount'] = '';
             $this->estimateData['distance'] = '';
         }
-
-        $this->selectedCategoryId = $this->temp;
     }
     public function getDeptCategory()
     {
@@ -1100,7 +1096,7 @@ class CreateRateAnalysis extends Component
         //     ->where('sor_masters.is_verified', '=', 1)
         //     ->get();
         // $this->fatchDropdownData['ratesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',1],['is_verified',1]])->get();
-        $this->fatchDropdownData['ratesList'] = RatesAnalysis::select('description', 'rate_id')->where([['operation', 'Total'], ['dept_id', $this->estimateData['dept_id']]])->get();
+        $this->fatchDropdownData['ratesList'] = RatesAnalysis::select('description', 'rate_id','operation')->where([['dept_id', $this->estimateData['dept_id']],['operation','!=',''],['operation','!=','Exp Calculoation']])->get();
         // $this->fatchDropdownData['ratesList'] = RatesAnalysis::all();
     }
     public function getEstimateDetails()
@@ -1134,7 +1130,16 @@ class CreateRateAnalysis extends Component
         $this->estimateData['qty'] = 1;
         $this->estimateData['rate'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
     }
-
+    public function getRateDetailsTypes()
+    {
+        $this->estimateData['total_amount'] = '';
+        $this->estimateData['description'] = '';
+        $this->estimateData['qty'] = '';
+        $this->estimateData['rate'] = '';
+        $this->fatchDropdownData['rateDetailsTypes'] = RatesAnalysis::where([['rate_id', $this->estimateData['rate_no']], ['dept_id', Auth::user()->department_id],['operation','!=',''],['operation','!=','Exp Calculoation']])
+            ->select('rate_id','operation')->get();
+        // dd($this->fatchDropdownData['rateDetailsTypes']);
+    }
     public function getRateDetails()
     {
         // $rateId = (int)$this->estimateData['rate_no'];

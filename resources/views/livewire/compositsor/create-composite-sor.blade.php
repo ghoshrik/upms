@@ -111,7 +111,7 @@
                                 <x-input wire:key='qty.{{ $key }}'
                                     label="{{ trans('cruds.sor.fields.qty') }}"
                                     placeholder="{{ trans('cruds.sor.fields.qty') }}"
-                                    wire:model="inputsData.{{ $key }}.qty" />
+                                    wire:model.defer="inputsData.{{ $key }}.qty" />
                             </div>
                         </div>
                         <div class="col d-flex align-items-center">

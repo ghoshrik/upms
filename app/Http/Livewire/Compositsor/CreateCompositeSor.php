@@ -104,9 +104,9 @@ class CreateCompositeSor extends Component
         $itemNo = '';
         $fetchRow[] = [];
         if ($this->storeItem['item_no'] == '') {
-            if (isset($data[0]['itemNo'])) {
-                $this->storeItem['item_no'] = $data[0]['itemNo'];
-            }
+            // if (isset($data[0]['itemNo'])) {
+            //     $this->storeItem['item_no'] = $data[0]['itemNo'];
+            // }
             $this->storeItem['parent_id'] = $this->fetchDropDownData['getSor']['id'];
             $this->storeItem['sor_itemno_parent_index'] = $data[0]['id'];
             $rowId = explode('.', $data[0]['id'])[0];
@@ -220,8 +220,32 @@ class CreateCompositeSor extends Component
         $this->fetchDropDownData[$key]['child_pages'] = DynamicSorHeader::where([['dept_category_id', $this->storeItem['dept_category_id']], ['table_no', $this->inputsData[$key]['table_no']]])->select('id', 'page_no', 'corrigenda_name')->get();
         // dd($this->fetchDropDownData);
     }
+    // public function extractItemNoOfItems($data, &$itemNo, $counter)
+    // {
+    //     if (count($counter) > 1) {
+    //         if (isset($data->item_no) && $data->item_no != '') {
+    //             $itemNo = $data->item_no . ' ';
+    //         }
+    //         if (isset($data->_subrow)) {
+    //             foreach ($data->_subrow as $key => $item) {
+    //                 if (isset($counter[$this->counterForItemNo + 1])) {
+    //                     if (isset($item->item_no) && $item->id == $counter[$this->counterForItemNo + 1]) {
+    //                         $itemNo .= $item->item_no . ' ';
+    //                     }
+    //                     if (!empty($item->_subrow)) {
+    //                         $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter);
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     } else {
+    //         $itemNo = $data->item_no;
+    //     }
+
+    // }
     public function extractItemNoOfItems($data, &$itemNo, $counter)
     {
+        // dd($data);
         if (count($counter) > 1) {
             if (isset($data->item_no) && $data->item_no != '') {
                 $itemNo = $data->item_no . ' ';
@@ -283,6 +307,7 @@ class CreateCompositeSor extends Component
                     'description' => $data['description'],
                     'unit_id' => $data['unit_id'],
                     'rate' => $data['qty'],
+                    'created_by' => Auth::user()->id
                 ];
                 CompositSor::create($insert);
                 /* Single File Upload*/

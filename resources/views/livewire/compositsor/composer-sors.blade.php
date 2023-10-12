@@ -111,9 +111,12 @@
                                                         {{-- <td class="text-wrap">
                                                         {{ $lists->rate }}
                                                     </td> --}}
+                                                    @php
+                                                        $sor_itemno_parent_index = str_replace(".", "_", $lists->sor_itemno_parent_index);
+                                                    @endphp
                                                         <td>
                                                             <button class="btn btn-soft-primary btn-sm"
-                                                                wire:click='viewComposite({{ $lists->sor_itemno_parent_id }}, {{ $lists->sor_itemno_child_id }})'>
+                                                                wire:click='viewComposite({{ $lists->sor_itemno_parent_id }}, {{ $lists->sor_itemno_child_id }},{{ $sor_itemno_parent_index }})'>
                                                                 <x-icon name="eye" class="w-5 h-5" />View
                                                             </button>
                                                         </td>

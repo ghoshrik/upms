@@ -8,11 +8,13 @@ use Livewire\Component;
 class ViewModelCompositSor extends Component
 {
     public $listeners = ["viewModal" => "ViewProcess"];
-    public $viewVerifyModal = false, $viewCompositSOR;
+    public $viewVerifyModal = false, $viewCompositSOR,$sor_itemno_parent_index,$sor_itemno_parent_id;
 
     public function ViewProcess($data)
     {
         // dd($data);
+        $this->sor_itemno_parent_id = $data[0]['sor_itemno_parent_id'];
+        $this->sor_itemno_parent_index = $data[0]['sor_itemno_parent_index'];
         $this->viewCompositSOR = $data;
         // dd($this->viewCompositSOR);
         // dd($parent_id, $child_id);

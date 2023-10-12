@@ -400,12 +400,23 @@
                                             <x-select wire:key="rate_no" label="{{ __('Select Rate') }}"
                                                 placeholder="Select {{ __('Rate') }}"
                                                 wire:model.defer="estimateData.rate_no"
-                                                x-on:select="$wire.getRateDetails()">
+                                                x-on:select="$wire.getRateDetailsTypes()">
                                                 @isset($fatchDropdownData['ratesList'])
                                                     @foreach ($fatchDropdownData['ratesList'] as $rate)
                                                         <x-select.option
-                                                            label="{{ $rate['rate_id'] . ' - ' . $rate['description'] }}"
+                                                            label="{{ $rate['rate_id'] . ' - ' . $rate['description'] . ' ( ' . $rate['operation'] .' )'}}"
                                                             value="{{ $rate['rate_id'] }}" />
+                                                    @endforeach
+                                                @endisset
+                                            </x-select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="from-group">
+                                            <x-select wire:key='rate_type' label="{{ __('Select Rate Type') }}" placeholder="Select{{ __('Type') }}" wire:model.defer="estimateData.rate_type" x-on:select="$wire.getRateDetails()">
+                                                @isset($fatchDropdownData['rateDetailsTypes'])
+                                                    @foreach ($fatchDropdownData['rateDetailsTypes'] as $rateType)
+                                                        <x-select.option label="{{ $rateType['operation'] }}" value="{{ $rateType['operation'] }}" />
                                                     @endforeach
                                                 @endisset
                                             </x-select>
