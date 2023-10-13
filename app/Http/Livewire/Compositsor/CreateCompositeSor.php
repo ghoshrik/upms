@@ -294,6 +294,7 @@ class CreateCompositeSor extends Component
     public function store()
     {
         try {
+            // $test = [];
             foreach ($this->inputsData as $data) {
 
                 // $last = CompositSor::create([
@@ -309,6 +310,7 @@ class CreateCompositeSor extends Component
                     'rate' => $data['qty'],
                     'created_by' => Auth::user()->id
                 ];
+                // $test[] = $insert;
                 CompositSor::create($insert);
                 /* Single File Upload*/
                 // $temporaryFilePath = $this->storeItem['file_upload']->getRealPath();
@@ -331,6 +333,7 @@ class CreateCompositeSor extends Component
                 // ]);
 
             }
+            // dd($test);
             $this->notification()->success(
                 $title = trans('cruds.sor.create_msg')
             );

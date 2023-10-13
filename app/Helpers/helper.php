@@ -559,7 +559,6 @@ function getTableDesc($sor_id, $item_no)
     $fetchRow = DynamicSorHeader::where('id', $sor_id)->select('row_data')->first();
     // $fetchRow = json_decode($fetchRow['row_data']);
     $rowId = explode('.', $item_no)[0];
-    // dd($rowId);
     foreach (json_decode($fetchRow['row_data']) as $row) {
         if ($row->id == $rowId) {
             $fetchRow = $row;
@@ -575,7 +574,6 @@ function getTableDesc($sor_id, $item_no)
         $partialItemId .= $part;
         $convertedArray[] = $partialItemId;
     }
-    // dd($convertedArray);
     $loopCount=1;
     extractDescOfItems($fetchRow, $descriptions, $convertedArray,$loopCount);
     return $descriptions;
@@ -586,9 +584,10 @@ function extractDescOfItems($data, &$descriptions, $counter,$loopCount)
         // if (isset($data->desc_of_item) && $data->desc_of_item != '') {
         //     $descriptions .= $data->desc_of_item . ' ';
         // }
-        if (isset($data->_subrow) && count($counter) > 2 && $loopCount < count($counter)) {
+        if (isset($data->_subrow) ) {
             foreach ($data->_subrow as $item) {
-                if (isset($item->desc_of_item) && $counter[$loopCount] == $item->id) {
+                // dd($item,$counter[$loopCount],$item->id);
+                if (isset($item->desc_of_item) && isset($counter[$loopCount]) == $item->id) {
                     $descriptions .= $item->desc_of_item . ' ';
                     $loopCount++;
                 }
@@ -597,7 +596,6 @@ function extractDescOfItems($data, &$descriptions, $counter,$loopCount)
                 }
             }
         }
-
     }
 function getSorTableName($sor_id)
 {

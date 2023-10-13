@@ -62,8 +62,8 @@
                                             <tr>
                                                 <th>{{ trans('cruds.sor.fields.id_helper') }}</th>
                                                 <th>Dept Category</th>
-                                                <th>Item No</th>
                                                 <th>Table No</th>
+                                                <th>Item No</th>
                                                 <th width="40%">Description</th>
                                                 {{-- <th>{{ trans('cruds.sor.fields.unit') }}</th> --}}
                                                 {{-- <th>{{ trans('cruds.sor.fields.cost') }}</th> --}}
@@ -84,18 +84,17 @@
                                                             @endisset
                                                         </td>
                                                         <td class="text-wrap">
+                                                            {{-- {{$lists->ChildSORItemNo->Item_details ?? $lists->Item_details }} --}}
+                                                            @isset($lists->sor_itemno_parent_id)
+                                                                {{ getSorTableName($lists->sor_itemno_parent_id) }}
+                                                            @endisset
+                                                        </td>
+                                                        <td class="text-wrap">
                                                             {{-- {{$lists->ParentSORItemNo->Item_details }} --}}
                                                             {{-- {{  $lists->sor_itemno_parent_id }} --}}
                                                             @isset($lists->sor_itemno_parent_id)
                                                                 {{ getTableItemNo($lists->sor_itemno_parent_id, $lists->sor_itemno_parent_index) }}
                                                             @endisset
-                                                        </td>
-                                                        <td class="text-wrap">
-                                                            {{-- {{$lists->ChildSORItemNo->Item_details ?? $lists->Item_details }} --}}
-                                                            @isset($lists->sor_itemno_parent_id)
-                                                                {{ getSorTableName($lists->sor_itemno_parent_id) }}
-                                                            @endisset
-
                                                         </td>
                                                         <td class="text-wrap">
                                                             @isset($lists->sor_itemno_parent_id)
@@ -111,9 +110,9 @@
                                                         {{-- <td class="text-wrap">
                                                         {{ $lists->rate }}
                                                     </td> --}}
-                                                    @php
-                                                        $sor_itemno_parent_index = str_replace(".", "_", $lists->sor_itemno_parent_index);
-                                                    @endphp
+                                                        @php
+                                                            $sor_itemno_parent_index = str_replace('.', '_', $lists->sor_itemno_parent_index);
+                                                        @endphp
                                                         <td>
                                                             <button class="btn btn-soft-primary btn-sm"
                                                                 wire:click='viewComposite({{ $lists->sor_itemno_parent_id }}, {{ $lists->sor_itemno_child_id }},{{ $sor_itemno_parent_index }})'>

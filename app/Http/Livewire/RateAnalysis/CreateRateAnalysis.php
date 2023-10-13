@@ -885,6 +885,7 @@ class CreateRateAnalysis extends Component
         // dd($data);
         $this->reset('addedEstimate');
         $getCompositeDatas = CompositSor::where([['sor_itemno_parent_id', $data[0]['parentId']], ['sor_itemno_parent_index', $data[0]['item_index']], ['col_position', $data[0]['colPosition']]])->get();
+        dd($getCompositeDatas);
         foreach ($getCompositeDatas as $key => $compositeData) {
             $getRateDetails = RatesAnalysis::where([['item_index', $compositeData['sor_itemno_child']], ['sor_id', $compositeData['sor_itemno_child_id']], ['operation', '=', 'Total']])->first();
             if (!empty($getRateDetails)) {

@@ -190,6 +190,12 @@
                 headerData.forEach(function(column) {
                     var fun;
                     delete column.editor;
+                    // console.log(column);
+                    if(column.field == 'desc_of_item')
+                    {
+                        // console.log('hi');
+                        column.isClick = function(e, cell) {};
+                    }
                     if (column.isClick) {
                         column.isClick = eval('(' + column.isClick + ')');
                         fun = column.isClick;
@@ -198,6 +204,7 @@
                         column.cellClick = eval('(' + column.isClick + ')');
                         fun = column.cellClick;
                     }
+
                     if (typeof fun === "function") {
                         column.cellClick = function(e, cell) {
                             // Overwritten cellClick function
@@ -240,12 +247,18 @@
                         column.columns.forEach(function(subColumn) {
                             var subFun;
                             delete subColumn.editor;
+                            // console.log(subColumn);
+                            if(subColumn.field == 'desc_of_item'){
+                                // console.log('hlw');
+                                column.isClick = function(e, cell) {};
+                            }
                             if (subColumn.isClick) {
                                 subFun = subColumn.isClick = eval('(' + subColumn.isClick + ')');
                             }
                             if (subColumn.cellClick) {
                                 subFun = subColumn.cellClick = eval('(' + subColumn.cellClick + ')');
                             }
+
                             if (typeof subFun === "function") {
                                 subColumn.cellClick = function(e, cell) {
                                     var subrowIndex = cell.getRow().getIndex();
@@ -288,7 +301,7 @@
                         });
                     }
                 });
-
+// console.log(headerData);
                 var delay = 1000; // Delay time in milliseconds
 
                 var delayPromise = new Promise(function(resolve) {
