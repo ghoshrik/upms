@@ -404,7 +404,7 @@
                                                 @isset($fatchDropdownData['ratesList'])
                                                     @foreach ($fatchDropdownData['ratesList'] as $rate)
                                                         <x-select.option
-                                                            label="{{ $rate['rate_id'] . ' - ' . $rate['description'] . ' ( ' . $rate['operation'] .' )'}}"
+                                                            label="{{ $rate['rate_id'] . ' - ' . $rate['description'] . ' ( ' . $rate['operation'] . ' )' }}"
                                                             value="{{ $rate['rate_id'] }}" />
                                                     @endforeach
                                                 @endisset
@@ -413,10 +413,14 @@
                                     </div>
                                     <div class="col">
                                         <div class="from-group">
-                                            <x-select wire:key='rate_type' label="{{ __('Select Rate Type') }}" placeholder="Select{{ __('Type') }}" wire:model.defer="estimateData.rate_type" x-on:select="$wire.getRateDetails()">
+                                            <x-select wire:key='rate_type' label="{{ __('Select Rate Type') }}"
+                                                placeholder="Select{{ __('Type') }}"
+                                                wire:model.defer="estimateData.rate_type"
+                                                x-on:select="$wire.getRateDetails()">
                                                 @isset($fatchDropdownData['rateDetailsTypes'])
                                                     @foreach ($fatchDropdownData['rateDetailsTypes'] as $rateType)
-                                                        <x-select.option label="{{ $rateType['operation'] }}" value="{{ $rateType['operation'] }}" />
+                                                        <x-select.option label="{{ $rateType['operation'] }}"
+                                                            value="{{ $rateType['operation'] }}" />
                                                     @endforeach
                                                 @endisset
                                             </x-select>
@@ -608,6 +612,16 @@
                                             </x-select>
                                         </div>
                                     </div>
+                                    @if($fetchChildSor)
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <x-select wire:key='sor-child' label="Child Page No"
+                                                    placeHolder="Select Child Page" x-on:select="$wire.getPlaceWiseComposite()">
+                                                    <x-select.option label="{{ $getSor['page_no'] }}" value="{{ $getSor['id'] }}" />
+                                                </x-select>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
                             @endif
                             {{-- Composite SOR Field End --}}
@@ -860,6 +874,10 @@
                 headerData.forEach(function(column) {
                     var fun;
                     delete column.editor;
+                    if (@json($selectedCategoryId) == 4 && column.field == 'desc_of_item') {
+                        // console.log('hi');
+                        column.isClick = function(e, cell) {};
+                    }
                     if (column.isClick) {
                         column.isClick = eval('(' + column.isClick + ')');
                         fun = column.isClick;
@@ -908,7 +926,7 @@
                                         var cSor_data = [{
                                             parentId: @json($getSor['id']),
                                             item_index: getData['id'],
-                                            colPosition: colIdx
+                                            // colPosition: colIdx
                                         }];
                                         window.Livewire.emit('getComposite', cSor_data);
                                     } else if (@json($selectedCategoryId) == 5) {
@@ -931,6 +949,10 @@
                         column.columns.forEach(function(subColumn) {
                             var subFun;
                             delete subColumn.editor;
+                            if (@json($selectedCategoryId) == 4 && column.field == 'desc_of_item') {
+                                // console.log('hi');
+                                column.isClick = function(e, cell) {};
+                            }
                             if (subColumn.isClick) {
                                 subFun = subColumn.isClick = eval('(' + subColumn.isClick + ')');
                             }
