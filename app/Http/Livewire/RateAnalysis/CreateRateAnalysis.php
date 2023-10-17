@@ -887,13 +887,16 @@ class CreateRateAnalysis extends Component
         // dd($data);
         $this->reset('addedEstimate');
         $this->getCompositeDatas = CompositSor::where([['sor_itemno_parent_id', $data[0]['parentId']], ['sor_itemno_parent_index', $data[0]['item_index']]])->get();
-        if ($this->getCompositeDatas != []) {
-            dd('hi');
+        // dd($this->getCompositeDatas);
+        if (count($this->getCompositeDatas)>0) {
             $this->modalName = '';
             $this->viewModal = !$this->viewModal;
             $this->fetchChildSor = !$this->fetchChildSor;
             $this->getSor = DynamicSorHeader::where('id', $this->getCompositeDatas[0]['sor_itemno_child_id'])->first();
         } else {
+            $this->modalName = '';
+            $this->viewModal = !$this->viewModal;
+            $this->estimateData['id'] = '';
             $this->notification()->error(
                 $title = 'No Composite Sor Found'
             );
