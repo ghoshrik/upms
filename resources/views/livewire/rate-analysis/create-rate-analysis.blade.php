@@ -612,12 +612,14 @@
                                             </x-select>
                                         </div>
                                     </div>
-                                    @if($fetchChildSor)
+                                    @if ($fetchChildSor)
                                         <div class="col">
                                             <div class="form-group">
                                                 <x-select wire:key='sor-child' label="Child Page No"
-                                                    placeHolder="Select Child Page" x-on:select="$wire.getPlaceWiseComposite()">
-                                                    <x-select.option label="{{ $getSor['page_no'] }}" value="{{ $getSor['id'] }}" />
+                                                    placeHolder="Select Child Page"
+                                                    x-on:select="$wire.getPlaceWiseComposite()">
+                                                    <x-select.option label="{{ $getSor['page_no'] }}"
+                                                        value="{{ $getSor['id'] }}" />
                                                 </x-select>
                                             </div>
                                         </div>
@@ -874,7 +876,8 @@
                 headerData.forEach(function(column) {
                     var fun;
                     delete column.editor;
-                    if (@json($selectedCategoryId) == 4 && column.field == 'desc_of_item') {
+                    if (@json($selectedCategoryId) == 4 && column.field == 'desc_of_item' &&
+                        @json($fetchChildSor) == false) {
                         // console.log('hi');
                         column.isClick = function(e, cell) {};
                     }
@@ -926,9 +929,15 @@
                                         var cSor_data = [{
                                             parentId: @json($getSor['id']),
                                             item_index: getData['id'],
-                                            // colPosition: colIdx
+                                            colPosition: colIdx
                                         }];
-                                        window.Livewire.emit('getComposite', cSor_data);
+                                        if (@json($fetchChildSor == true)) {
+                                            console.log('hi');
+                                            window.Livewire.emit('getCompositePlaceWise', cSor_data)
+                                        } else {
+                                            console.log('hlw');
+                                            window.Livewire.emit('getComposite', cSor_data);
+                                        }
                                     } else if (@json($selectedCategoryId) == 5) {
                                         window.Livewire.emit('getRowValue', getData);
                                     } else {
@@ -1003,7 +1012,14 @@
                                                     item_index: getData['id'],
                                                     colPosition: colIdx
                                                 }];
-                                                window.Livewire.emit('getComposite', cSor_data);
+                                                if (@json($fetchChildSor == true)) {
+                                                    console.log('hi');
+                                                    window.Livewire.emit('getCompositePlaceWise',
+                                                        cSor_data)
+                                                } else {
+                                                    console.log('hlw');
+                                                    window.Livewire.emit('getComposite', cSor_data);
+                                                }
                                             } else if (@json($selectedCategoryId) == 5) {
                                                 window.Livewire.emit('getRowValue', getData);
                                             } else {

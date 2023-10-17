@@ -49,7 +49,7 @@ class AddRateAnalysisList extends Component
         $this->addedEstimateData['operation'] = $operation;
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
-        if ($this->addedEstimateData['operation'] == 'Total' && $this->selectSor['sor_id'] != '') {
+        if ($this->addedEstimateData['operation'] == 'Total' || $this->addedEstimateData['operation'] == 'With Stacking' || $this->addedEstimateData['operation'] == 'Without Stacking' && $this->selectSor['sor_id'] != '') {
             $this->addedEstimateData['sor_id'] = $this->selectSor['sor_id'];
             $this->addedEstimateData['table_no'] = $this->selectSor['table_no'];
             $this->addedEstimateData['page_no'] = $this->selectSor['page_no'];
