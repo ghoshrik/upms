@@ -928,24 +928,28 @@ class CreateRateAnalysis extends Component
     }
     public function getCompositePlaceWise($data)
     {
-        // dd($data, $this->getCompositeDatas);
+        // dd($data,$this->getCompositeDatas);
         foreach ($this->getCompositeDatas as $key => $compositeData) {
-            $getRateDetails = RatesAnalysis::where([['item_index', $compositeData['sor_itemno_child']], ['sor_id', $compositeData['sor_itemno_child_id']], ['operation', '=', 'With Stacking']])->get();
-            dd($getRateDetails);
-            if (!empty($getRateDetails)) {
-                $this->estimateData['rate_no'] = '';
-                $this->estimateData['dept_id'] = '';
-                $this->estimateData['dept_category_id'] = $compositeData['dept_category_id'];
-                $this->estimateData['item_number'] = $compositeData['sor_itemno_child'];
-                $this->estimateData['description'] = $compositeData['description'];
-                $this->estimateData['version'] = '';
-                $this->estimateData['other_name'] = '';
-                $this->estimateData['qty'] = $compositeData['rate'];
-                $this->estimateData['rate'] = $getRateDetails->total_amount;
-                $this->estimateData['total_amount'] = $getRateDetails->total_amount * $compositeData['rate'];
-                $this->addEstimate($key + 1);
-            }
+            // dd($compositeData,$data);
+            $getRateDetails[] = RatesAnalysis::where([['sor_id', $compositeData['sor_itemno_child_id']],['item_index', $compositeData['sor_itemno_child']],['operation','With Stacking']])
+            // ->whereIn('operation', ['With Stacking', 'Without Stacking'])
+            ->get();
+
+            // if (!empty($getRateDetails)) {
+            //     $this->estimateData['rate_no'] = '';
+            //     $this->estimateData['dept_id'] = '';
+            //     $this->estimateData['dept_category_id'] = $compositeData['dept_category_id'];
+            //     $this->estimateData['item_number'] = $compositeData['sor_itemno_child'];
+            //     $this->estimateData['description'] = $compositeData['description'];
+            //     $this->estimateData['version'] = '';
+            //     $this->estimateData['other_name'] = '';
+            //     $this->estimateData['qty'] = $compositeData['rate'];
+            //     $this->estimateData['rate'] = $getRateDetails->total_amount;
+            //     $this->estimateData['total_amount'] = $getRateDetails->total_amount * $compositeData['rate'];
+            //     $this->addEstimate($key + 1);
+            // }
         }
+    dd($getRateDetails);
     }
     public function getCompositSorItemDetails($id)
     {

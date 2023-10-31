@@ -49,13 +49,13 @@ class AddRateAnalysisList extends Component
         $this->addedEstimateData['operation'] = $operation;
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
-        if ($this->addedEstimateData['operation'] == 'Total' || $this->addedEstimateData['operation'] == 'With Stacking' || $this->addedEstimateData['operation'] == 'Without Stacking' && $this->selectSor['sor_id'] != '') {
+        if ( $this->selectSor['sor_id'] != '' && $this->addedEstimateData['operation'] == 'Total' || $this->addedEstimateData['operation'] == 'With Stacking' || $this->addedEstimateData['operation'] == 'Without Stacking') {
             $this->addedEstimateData['sor_id'] = $this->selectSor['sor_id'];
             $this->addedEstimateData['table_no'] = $this->selectSor['table_no'];
             $this->addedEstimateData['page_no'] = $this->selectSor['page_no'];
             $this->addedEstimateData['volume_no'] = $this->selectSor['volume'];
-            $this->addedEstimateData['item_index'] = $this->selectSor['item_index'];
-            $this->addedEstimateData['col_position'] = $this->selectSor['col_position'];
+            $this->addedEstimateData['item_index'] = (isset($this->selectSor['item_index'])) ? $this->selectSor['item_index'] : 0;
+            $this->addedEstimateData['col_position'] = (isset($this->selectSor['col_position'])) ? $this->selectSor['col_position'] : 0;
         }
         $this->setEstimateDataToSession();
         $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'selectSor','hideTotalbutton','hideWithStackBtn','hideWithoutStackBtn');
@@ -167,6 +167,24 @@ class AddRateAnalysisList extends Component
                     if (!array_key_exists("rate_no", $addedEstimate)) {
                         $addedEstimate['rate_no'] = 0;
                     }
+                    if (!array_key_exists("volume_no", $this->addedEstimateData)) {
+                        $this->addedEstimateData['volume_no'] = 0;
+                    }
+                    if (!array_key_exists("sor_id", $this->addedEstimateData)) {
+                        $this->addedEstimateData['sor_id'] = 0;
+                    }
+                    if (!array_key_exists("item_index", $this->addedEstimateData)) {
+                        $this->addedEstimateData['item_index'] = 0;
+                    }
+                    if (!array_key_exists("table_no", $this->addedEstimateData)) {
+                        $this->addedEstimateData['table_no'] = 0;
+                    }
+                    if (!array_key_exists("page_no", $this->addedEstimateData)) {
+                        $this->addedEstimateData['page_no'] = 0;
+                    }
+                    // if (!array_key_exists("col_position", $this->addedEstimateData)) {
+                    //     $this->addedEstimateData['col_position'] = 0;
+                    // }
                     foreach ($addedEstimate as $key => $estimate) {
                         $this->allAddedEstimatesData[$index][$key] = $estimate;
                     }
@@ -204,9 +222,9 @@ class AddRateAnalysisList extends Component
                 if (!array_key_exists("page_no", $this->addedEstimateData)) {
                     $this->addedEstimateData['page_no'] = 0;
                 }
-                if (!array_key_exists("col_position", $this->addedEstimateData)) {
-                    $this->addedEstimateData['col_position'] = '';
-                }
+                // if (!array_key_exists("col_position", $this->addedEstimateData)) {
+                //     $this->addedEstimateData['col_position'] = 0;
+                // }
                 foreach ($this->addedEstimateData as $key => $estimate) {
                     $this->allAddedEstimatesData[$index][$key] = $estimate;
                 }
@@ -362,7 +380,7 @@ class AddRateAnalysisList extends Component
     }
     public function store()
     {
-        dd($this->allAddedEstimatesData);
+        // dd($this->allAddedEstimatesData);
         if ($this->totalOnSelectedCount == 1 || true) {
             try {
                 if ($this->allAddedEstimatesData) {
@@ -391,6 +409,7 @@ class AddRateAnalysisList extends Component
                                 'table_no' => $value['table_no'],
                                 'volume_no' => $value['volume_no'],
                                 'item_index' => $value['item_index'],
+                                'col_position' => (isset($value['col_position'])) ? $value['col_position'] : 0
                             ];
                             $validateData = Validator::make($insert, [
                                 'rate_id' => 'required|integer',
