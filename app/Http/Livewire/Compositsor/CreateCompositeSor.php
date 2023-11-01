@@ -295,10 +295,12 @@ class CreateCompositeSor extends Component
     {
         try {
             // $test = [];
+            $intId = random_int(100000, 999999);
             foreach ($this->inputsData as $data) {
 
                 // $last = CompositSor::create([
                 $insert = [
+                    'composite_id' => $intId,
                     'dept_category_id' => $this->storeItem['dept_category_id'],
                     'sor_itemno_parent_id' => $this->storeItem['parent_id'],
                     'sor_itemno_parent_index' => $this->storeItem['sor_itemno_parent_index'],
@@ -308,7 +310,8 @@ class CreateCompositeSor extends Component
                     'description' => $data['description'],
                     'unit_id' => $data['unit_id'],
                     'rate' => $data['qty'],
-                    'created_by' => Auth::user()->id
+                    'created_by' => Auth::user()->id,
+                    'parent_itemNo' => $this->storeItem['item_no']
                 ];
                 // $test[] = $insert;
                 CompositSor::create($insert);

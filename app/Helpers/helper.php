@@ -510,7 +510,7 @@ function getTableItemNo($sor_id, $item_no)
     $fetchRow = DynamicSorHeader::where('id', $sor_id)->select('row_data')->first();
     // $fetchRow = json_decode($fetchRow['row_data']);
     $rowId = explode('.', $item_no)[0];
-    // dd($rowId);
+    // dd($item_no);
     foreach (json_decode($fetchRow['row_data']) as $row) {
         if ($row->id == $rowId) {
             $fetchRow = $row;
@@ -539,10 +539,20 @@ function extractItemNoOfItems($data, &$itemNo, $counter)
         }
         if (isset($data->_subrow)) {
             foreach ($data->_subrow as $key => $item) {
-                if (isset($counter[$key + 1])) {
-                    if (isset($item->item_no) ) {
-                        $itemNo .= $item->item_no . ' ';
+                // dd(isset($item->id) == isset($counter[$key+1]));
+                if (isset($item->id)) {
+                    foreach($counter as $c)
+                    {
+                        if($item->id == $c){
+                            $itemNo .= $item->item_no . ' ';
+                        }
                     }
+                    // if (isset($item->item_no) && isset($counter[$key+1]) ) {
+                    //     if($item->id == $counter[$key+1]){
+                    //         dd($item->item_no);
+                    //         $itemNo .= $item->item_no . ' ';
+                    //     }
+                    // }
                     if (!empty($item->_subrow)) {
                         extractItemNoOfItems($item->_subrow, $itemNo, $counter);
                     }

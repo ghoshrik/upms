@@ -94,6 +94,7 @@
                                                             {{-- {{  $lists->sor_itemno_parent_id }} --}}
                                                             @isset($lists->sor_itemno_parent_id)
                                                                 {{ getTableItemNo($lists->sor_itemno_parent_id, $lists->sor_itemno_parent_index) }}
+                                                                {{-- {{ $lists->parent_itemNo }} --}}
                                                             @endisset
                                                         </td>
                                                         <td class="text-wrap">
