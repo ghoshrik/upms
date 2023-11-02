@@ -893,6 +893,19 @@ class CreateRateAnalysis extends Component
             $this->viewModal = !$this->viewModal;
             $this->fetchChildSor = !$this->fetchChildSor;
             $this->getSor = DynamicSorHeader::where('id', $this->getCompositeDatas[0]['sor_itemno_child_id'])->first();
+            $rdata = [];
+            foreach(json_decode($this->getSor['row_data']) as $json){
+                // dd($json);
+                foreach($this->getCompositeDatas as $comp){
+                    // dd($comp);
+                    if($json->id == $comp['sor_itemno_child']){
+                        $rdata[] = $json;
+                    }
+                }
+            }
+            dd($rdata);
+            dd(json_decode($this->getSor['row_data']));
+            // dd($this->getSor);
         } else {
             $this->modalName = '';
             $this->viewModal = !$this->viewModal;
@@ -928,7 +941,7 @@ class CreateRateAnalysis extends Component
     }
     public function getCompositePlaceWise($data)
     {
-        // dd($data,$this->getCompositeDatas);
+        dd($data,$this->getCompositeDatas);
         foreach ($this->getCompositeDatas as $key => $compositeData) {
             // dd($compositeData,$data);
             $getRateDetails[] = RatesAnalysis::where([['sor_id', $compositeData['sor_itemno_child_id']],['item_index', $compositeData['sor_itemno_child']],['operation','With Stacking']])

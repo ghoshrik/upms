@@ -222,9 +222,9 @@ class AddRateAnalysisList extends Component
                 if (!array_key_exists("page_no", $this->addedEstimateData)) {
                     $this->addedEstimateData['page_no'] = 0;
                 }
-                // if (!array_key_exists("col_position", $this->addedEstimateData)) {
-                //     $this->addedEstimateData['col_position'] = 0;
-                // }
+                if (!array_key_exists("col_position", $this->addedEstimateData)) {
+                    $this->addedEstimateData['col_position'] = 0;
+                }
                 foreach ($this->addedEstimateData as $key => $estimate) {
                     $this->allAddedEstimatesData[$index][$key] = $estimate;
                 }
@@ -380,7 +380,7 @@ class AddRateAnalysisList extends Component
     }
     public function store()
     {
-        // dd($this->allAddedEstimatesData);
+        dd($this->allAddedEstimatesData);
         if ($this->totalOnSelectedCount == 1 || true) {
             try {
                 if ($this->allAddedEstimatesData) {
@@ -390,7 +390,7 @@ class AddRateAnalysisList extends Component
                             $insert = [
                                 'rate_id' => $intId,
                                 'description' => (count($this->allAddedEstimatesData) == $key) ? $this->sorMasterDesc : $value['description'],
-                                'rate_no' => $value['rate_no'],
+                                'rate_no' => (int)$value['rate_no'],
                                 'dept_id' => $value['dept_id'],
                                 'category_id' => $value['category_id'],
                                 'row_id' => $value['array_id'],
