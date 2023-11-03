@@ -891,21 +891,36 @@ class CreateRateAnalysis extends Component
         if (count($this->getCompositeDatas) > 0) {
             $this->modalName = '';
             $this->viewModal = !$this->viewModal;
-            $this->fetchChildSor = !$this->fetchChildSor;
+            // $this->fetchChildSor = !$this->fetchChildSor;
             $this->getSor = DynamicSorHeader::where('id', $this->getCompositeDatas[0]['sor_itemno_child_id'])->first();
-            $rdata = [];
-            foreach(json_decode($this->getSor['row_data']) as $json){
-                // dd($json);
-                foreach($this->getCompositeDatas as $comp){
-                    // dd($comp);
-                    if($json->id == $comp['sor_itemno_child']){
-                        $rdata[] = $json;
-                    }
-                }
-            }
-            dd($rdata);
-            dd(json_decode($this->getSor['row_data']));
+            // $rdata = [];
+            // foreach(json_decode($this->getSor['row_data']) as $json){
+            //     // dd($json);
+            //     foreach($this->getCompositeDatas as $comp){
+            //         // dd($comp);
+            //         if($json->id == $comp['sor_itemno_child']){
+            //             $rdata[] = $json;
+            //         }
+            //     }
+            // }
+            // $this->getSor['row_data'] = json_encode($rdata);
+            // dd($this->getSor['row_data']);
+            // dd(json_encode($rdata));
+            // dd(json_decode($this->getSor['row_data']));
             // dd($this->getSor);
+            foreach ($this->getCompositeDatas as $key=> $compositeData) {
+                $this->estimateData['rate_no'] = '';
+                $this->estimateData['dept_id'] = '';
+                $this->estimateData['dept_category_id'] = $compositeData['dept_category_id'];
+                $this->estimateData['item_number'] = $compositeData['sor_itemno_child'];
+                $this->estimateData['description'] = $compositeData['description'];
+                $this->estimateData['version'] = '';
+                $this->estimateData['other_name'] = '';
+                $this->estimateData['qty'] = $compositeData['rate'];
+                $this->estimateData['rate'] = 'fetch';
+                $this->estimateData['total_amount'] = 0;
+                $this->addEstimate($key + 1);
+            }
         } else {
             $this->modalName = '';
             $this->viewModal = !$this->viewModal;
@@ -935,9 +950,24 @@ class CreateRateAnalysis extends Component
     }
     public function getPlaceWiseComposite()
     {
+        dd($this->getCompositeDatas);
         $this->viewModal = !$this->viewModal;
         $this->modalName = "child-sor-modal_" . rand(1, 1000);
         $this->modalName = str_replace(' ', '_', $this->modalName);
+        // dd($this->getCompositeDatas[0]['sor_itemno_child_id'],$this->estimateData);
+        $this->getSor = DynamicSorHeader::where('id', (int)$this->estimateData['childSorId'])->first();
+            $rdata = [];
+            foreach(json_decode($this->getSor['row_data']) as $json){
+                // dd($json);
+                foreach($this->getCompositeDatas as $comp){
+                    // dd($comp);
+                    if($json->id == $comp['sor_itemno_child']){
+                        $rdata[] = $json;
+                    }
+                }
+            }
+            $this->getSor['row_data'] = json_encode($rdata);
+        // dd($this->getSor['row_data']);
     }
     public function getCompositePlaceWise($data)
     {

@@ -141,7 +141,7 @@ class AddRateAnalysisList extends Component
 
     public function setEstimateDataToSession()
     {
-        // dd($this->addedRateAnalysisData);
+        // dd($this->addedEstimateData);
         $this->reset('allAddedEstimatesData');
         if (Session()->has('addedRateAnalysisData')) {
             $this->allAddedEstimatesData = Session()->get('addedRateAnalysisData');

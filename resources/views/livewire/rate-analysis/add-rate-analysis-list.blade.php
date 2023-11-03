@@ -116,8 +116,15 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['rate'] != 0)
+                                            @if ($addedEstimate['rate'] != 0 && $addedEstimate['rate'] != 'fetch')
                                                 {{ $addedEstimate['rate'] }}
+                                            @else
+                                                <x-button wire:click="viewRateModal({{ $addedEstimate['rate_no'] }})"
+                                                    type="button" class="btn btn-soft-primary btn-sm">
+                                                    <span class="btn-inner">
+                                                        <x-lucide-eye class="w-4 h-4 text-gray-500" /> Get Rate
+                                                    </span>
+                                                </x-button>
                                             @endif
                                         </td>
                                         <td>

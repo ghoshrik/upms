@@ -616,7 +616,7 @@
                                         <div class="col">
                                             <div class="form-group">
                                                 <x-select wire:key='sor-child' label="Child Page No"
-                                                    placeHolder="Select Child Page"
+                                                    placeHolder="Select Child Page" wire:model.defer="estimateData.childSorId"
                                                     x-on:select="$wire.getPlaceWiseComposite()">
                                                     <x-select.option label="{{ $getSor['page_no'] }}"
                                                         value="{{ $getSor['id'] }}" />

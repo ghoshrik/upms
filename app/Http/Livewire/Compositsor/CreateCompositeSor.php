@@ -104,9 +104,9 @@ class CreateCompositeSor extends Component
         $itemNo = '';
         $fetchRow[] = [];
         if ($this->storeItem['item_no'] == '') {
-            // if (isset($data[0]['itemNo'])) {
-            //     $this->storeItem['item_no'] = $data[0]['itemNo'];
-            // }
+            if (isset($data[0]['itemNo'])) {
+                $this->storeItem['item_no'] = $data[0]['itemNo'];
+            }
             $this->storeItem['parent_id'] = $this->fetchDropDownData['getSor']['id'];
             $this->storeItem['sor_itemno_parent_index'] = $data[0]['id'];
             $rowId = explode('.', $data[0]['id'])[0];
