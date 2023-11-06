@@ -2,19 +2,20 @@
 
 namespace App\Http\Livewire\RateAnalysis;
 
+use App\Models\DynamicSorHeader;
+use App\Models\EstimatePrepare;
+use App\Models\RatesAnalysis;
+use App\Services\CommonFunction;
+use ChrisKonnertz\StringCalc\StringCalc;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use WireUi\Traits\Actions;
-use App\Models\RatesAnalysis;
-use App\Models\EstimatePrepare;
-use App\Services\CommonFunction;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-use ChrisKonnertz\StringCalc\StringCalc;
-use Illuminate\Support\Facades\Validator;
 
 class AddRateAnalysisList extends Component
 {
     use Actions;
+    protected $listeners = ['closeModal1', 'getRatePlaceWise'];
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
@@ -49,7 +50,7 @@ class AddRateAnalysisList extends Component
         $this->addedEstimateData['operation'] = $operation;
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
-        if ( $this->selectSor['sor_id'] != '' && $this->addedEstimateData['operation'] == 'Total' || $this->addedEstimateData['operation'] == 'With Stacking' || $this->addedEstimateData['operation'] == 'Without Stacking') {
+        if ($this->selectSor['sor_id'] != '' && $this->addedEstimateData['operation'] == 'Total' || $this->addedEstimateData['operation'] == 'With Stacking' || $this->addedEstimateData['operation'] == 'Without Stacking') {
             $this->addedEstimateData['sor_id'] = $this->selectSor['sor_id'];
             $this->addedEstimateData['table_no'] = $this->selectSor['table_no'];
             $this->addedEstimateData['page_no'] = $this->selectSor['page_no'];
@@ -58,7 +59,7 @@ class AddRateAnalysisList extends Component
             $this->addedEstimateData['col_position'] = (isset($this->selectSor['col_position'])) ? $this->selectSor['col_position'] : 0;
         }
         $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'selectSor','hideTotalbutton','hideWithStackBtn','hideWithoutStackBtn');
+        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'selectSor', 'hideTotalbutton', 'hideWithStackBtn', 'hideWithoutStackBtn');
     }
 
     public function expCalc()
@@ -108,13 +109,13 @@ class AddRateAnalysisList extends Component
     public $hideTotalbutton = true, $hideWithStackBtn = true, $hideWithoutStackBtn = true;
     public function totalOnSelected($flag)
     {
-        if($flag == 'With Stacking'){
+        if ($flag == 'With Stacking') {
             $this->hideTotalbutton = false;
             $this->hideWithStackBtn = false;
-        } elseif ($flag == 'Without Stacking'){
+        } elseif ($flag == 'Without Stacking') {
             $this->hideTotalbutton = false;
             $this->hideWithoutStackBtn = false;
-        }else{
+        } else {
             $this->hideWithStackBtn = false;
             $this->hideWithoutStackBtn = false;
         }
@@ -150,7 +151,7 @@ class AddRateAnalysisList extends Component
         if ($this->addedEstimateData != null) {
             // dd($this->addedEstimateData);
             if (CommonFunction::hasNestedArrays($this->addedEstimateData)) {
-                foreach ($this->addedEstimateData as  $addedEstimate) {
+                foreach ($this->addedEstimateData as $addedEstimate) {
                     $index = count($this->allAddedEstimatesData) + 1;
                     if (!array_key_exists("operation", $addedEstimate)) {
                         $addedEstimate['operation'] = '';
@@ -181,6 +182,9 @@ class AddRateAnalysisList extends Component
                     }
                     if (!array_key_exists("page_no", $this->addedEstimateData)) {
                         $this->addedEstimateData['page_no'] = 0;
+                    }
+                    if (!array_key_exists("sor_itemno_child_id", $this->addedEstimateData)) {
+                        $this->addedEstimateData['sor_itemno_child_id'] = 0;
                     }
                     // if (!array_key_exists("col_position", $this->addedEstimateData)) {
                     //     $this->addedEstimateData['col_position'] = 0;
@@ -378,19 +382,73 @@ class AddRateAnalysisList extends Component
     {
         $this->emit('openRateAnalysisModal', $rate_id);
     }
+    public $openSorModal = false, $openSorModalName, $getSingleSor = [], $selectedArrKey;
+    public function viewDynamicSor($sorChildId, $sorItemNo, $arrKey)
+    {
+        $this->getSingleSor = DynamicSorHeader::where('id', (int) $sorChildId)->first();
+        // dd($this->getSingleSor);
+        $rdata = [];
+        foreach (json_decode($this->getSingleSor['row_data']) as $json) {
+            if ($json->id == $sorItemNo) {
+                $rdata[] = $json;
+            }
+        }
+        $this->getSingleSor['row_data'] = json_encode($rdata);
+        $this->selectedArrKey = $arrKey;
+        $this->openSorModal = !$this->openSorModal;
+        $this->openSorModalName = "item-specific-dynamic-sor-modal_" . rand(1, 1000);
+        $this->openSorModalName = str_replace(' ', '_', $this->openSorModalName);
+        // dd($getSingleSor['row_data']);
+    }
+    public function closeModal1()
+    {
+        $this->openSorModal = !$this->openSorModal;
+        $this->reset('selectedArrKey');
+        // if ($this->selectedCategoryId == '') {
+        //     $this->selectSor['page_no'] = '';
+        // } else {
+        //     $this->estimateData['page_no'] = '';
+        // }
+    }
+    // public $fetchRatePlaceWise;
+    public function getRatePlaceWise($data)
+    {
+        $fetchRatePlaceWise = [];
+        $fetchRatePlaceWise = RatesAnalysis::where([['sor_id', $data[0]['id']], ['item_index', $data[0]['itemNo']], ['col_position', $data[0]['colPosition']], ['operation', '!=', '']])->first();
+        // dd(count($fetchRatePlaceWise));
+        $tempValue = $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
+        if (!empty($fetchRatePlaceWise)) {
+            $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = $fetchRatePlaceWise['total_amount'];
+            if ($this->allAddedEstimatesData[$this->selectedArrKey]['rate'] != $tempValue) {
+                $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
+            }
+            $this->updateDataTableTracker = rand(1, 1000);
+            $this->openSorModal = !$this->openSorModal;
+        }else{
+            $this->reset('selectedArrKey','openSorModal');
+            $this->notification()->error(
+                $title = 'No Rate Found !!'
+            );
+        }
+
+        // dd($this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = 100);
+        // dd($fetchValue);
+        // dd($data);
+    }
     public function store()
     {
-        dd($this->allAddedEstimatesData);
+        // dd($this->allAddedEstimatesData);
         if ($this->totalOnSelectedCount == 1 || true) {
             try {
                 if ($this->allAddedEstimatesData) {
                     $intId = random_int(100000, 999999);
                     if (true) {
+                        // $insert = [];
                         foreach ($this->allAddedEstimatesData as $key => $value) {
                             $insert = [
                                 'rate_id' => $intId,
-                                'description' => (count($this->allAddedEstimatesData) == $key) ? $this->sorMasterDesc : $value['description'],
-                                'rate_no' => (int)$value['rate_no'],
+                                'description' => (count($this->allAddedEstimatesData) == $key) ? str_replace(',', ' ', $this->sorMasterDesc) : str_replace(',', ' ', $value['description']),
+                                'rate_no' => (int) $value['rate_no'],
                                 'dept_id' => $value['dept_id'],
                                 'category_id' => $value['category_id'],
                                 'row_id' => $value['array_id'],
@@ -409,7 +467,7 @@ class AddRateAnalysisList extends Component
                                 'table_no' => $value['table_no'],
                                 'volume_no' => $value['volume_no'],
                                 'item_index' => $value['item_index'],
-                                'col_position' => (isset($value['col_position'])) ? $value['col_position'] : 0
+                                'col_position' => (isset($value['col_position'])) ? $value['col_position'] : 0,
                             ];
                             $validateData = Validator::make($insert, [
                                 'rate_id' => 'required|integer',
@@ -420,9 +478,9 @@ class AddRateAnalysisList extends Component
                             if ($validateData->fails()) {
                                 // dd($validateData->messages());
                             }
-                            // dd($insert);
                             RatesAnalysis::create($insert);
                         }
+                        // dd($insert);
                         $this->notification()->success(
                             $title = 'Created Successfully!!'
                         );

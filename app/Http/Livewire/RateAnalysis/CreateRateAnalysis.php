@@ -909,10 +909,12 @@ class CreateRateAnalysis extends Component
             // dd(json_decode($this->getSor['row_data']));
             // dd($this->getSor);
             foreach ($this->getCompositeDatas as $key=> $compositeData) {
+                // dd($compositeData);
                 $this->estimateData['rate_no'] = '';
                 $this->estimateData['dept_id'] = '';
                 $this->estimateData['dept_category_id'] = $compositeData['dept_category_id'];
                 $this->estimateData['item_number'] = $compositeData['sor_itemno_child'];
+                $this->estimateData['sor_itemno_child_id'] = $compositeData['sor_itemno_child_id'];
                 $this->estimateData['description'] = $compositeData['description'];
                 $this->estimateData['version'] = '';
                 $this->estimateData['other_name'] = '';
@@ -1256,7 +1258,7 @@ class CreateRateAnalysis extends Component
         $this->estimateData['rate'] = '';
         $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id', 'qty', 'total_amount')->where([['rate_id', $this->estimateData['rate_no']], ['operation', $this->estimateData['rate_type']], ['dept_id', Auth::user()->department_id]])->first();
         // dd($this->fatchDropdownData['rateDetails']);
-        $this->estimateData['total_amount'] = $this->fatchDropdownData['rateDetails']['total_amount'];
+        $this->estimateData['total_amount'] = (int)$this->fatchDropdownData['rateDetails']['total_amount'];
         $this->estimateData['description'] = $this->fatchDropdownData['rateDetails']['description'];
         // $this->estimateData['qty'] = ($this->fatchDropdownData['rateDetails']['qty'] != 0) ? $this->fatchDropdownData['rateDetails']['qty'] : 1;
         $this->estimateData['qty'] = 1;
@@ -1288,6 +1290,7 @@ class CreateRateAnalysis extends Component
             $this->addedEstimate[$key]['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
             $this->addedEstimate[$key]['total_amount'] = $this->estimateData['total_amount'];
             $this->addedEstimate[$key]['version'] = $this->estimateData['version'];
+            $this->addedEstimate[$key]['sor_itemno_child_id'] = isset($this->estimateData['sor_itemno_child_id']) ? $this->estimateData['sor_itemno_child_id'] : 0;
             $this->addedEstimateUpdateTrack = rand(1, 1000);
             // $this->estimateData['item_number'] = '';
             // $this->estimateData['other_name'] = '';
@@ -1319,7 +1322,7 @@ class CreateRateAnalysis extends Component
             $this->addedEstimate['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
             $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
             $this->addedEstimate['version'] = $this->estimateData['version'];
-            $this->addedEstimate['col_position'] = isset($this->estimateData['col_position']) ? $this->estimateData['col_position'] : '';
+            $this->addedEstimate['col_position'] = isset($this->estimateData['col_position']) ? $this->estimateData['col_position'] : 0;
             $this->addedEstimateUpdateTrack = rand(1, 1000);
             $this->estimateData['item_number'] = '';
             $this->estimateData['other_name'] = '';

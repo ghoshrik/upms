@@ -836,7 +836,10 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">
-                                {{ $getSor->table_no . ' - ' . $getSor->title }}</h5>
+                                @isset($getSor->table_no)
+                                    {{ $getSor->table_no . ' - ' . $getSor->title }}
+                                @endisset
+                            </h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
