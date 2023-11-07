@@ -921,6 +921,7 @@ class CreateRateAnalysis extends Component
                 $this->estimateData['qty'] = $compositeData['rate'];
                 $this->estimateData['rate'] = 'fetch';
                 $this->estimateData['total_amount'] = 0;
+                $this->estimateData['is_row'] = $compositeData['is_row'];
                 $this->addEstimate($key + 1);
             }
         } else {
@@ -1291,6 +1292,7 @@ class CreateRateAnalysis extends Component
             $this->addedEstimate[$key]['total_amount'] = $this->estimateData['total_amount'];
             $this->addedEstimate[$key]['version'] = $this->estimateData['version'];
             $this->addedEstimate[$key]['sor_itemno_child_id'] = isset($this->estimateData['sor_itemno_child_id']) ? $this->estimateData['sor_itemno_child_id'] : 0;
+            $this->addedEstimate[$key]['is_row'] = isset($this->estimateData['is_row']) ? $this->estimateData['is_row'] : null;
             $this->addedEstimateUpdateTrack = rand(1, 1000);
             // $this->estimateData['item_number'] = '';
             // $this->estimateData['other_name'] = '';
@@ -1323,6 +1325,7 @@ class CreateRateAnalysis extends Component
             $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
             $this->addedEstimate['version'] = $this->estimateData['version'];
             $this->addedEstimate['col_position'] = isset($this->estimateData['col_position']) ? $this->estimateData['col_position'] : 0;
+            $this->addedEstimate['is_row'] = isset($this->estimateData['is_row']) ? $this->estimateData['is_row'] : null;
             $this->addedEstimateUpdateTrack = rand(1, 1000);
             $this->estimateData['item_number'] = '';
             $this->estimateData['other_name'] = '';

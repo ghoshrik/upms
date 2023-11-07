@@ -92,7 +92,7 @@
                                             @endif
                                         </td>
                                         <td class="text-wrap" style="width: 40rem">
-                                            @if ($addedEstimate['sor_item_number'])
+                                            @if ($addedEstimate['sor_item_number'] || $addedEstimate['is_row'] == 0)
                                                 {{ $addedEstimate['description'] }}
                                             @elseif ($addedEstimate['rate_no'])
                                                 {{-- {{ getEstimateDescription($addedEstimate['rate_no']) }} --}}

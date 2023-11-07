@@ -45,7 +45,7 @@
                 <div class="col-md-3 col-lg-3 col-sm-3">
                     <div class="form-group">
                         <x-input label="Item No" placeholder="Item No" wire:model.defer="storeItem.item_no"
-                            wire:key="item" />
+                            wire:key="item" readonly />
                     </div>
                 </div>
             </div>
@@ -67,6 +67,17 @@
                                 </x-select>
                             </div>
                         </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <x-select wire:key='table_{{ $key }}' label="Select Option"
+                                    placeholder="Select" wire:model.defer="inputsData.{{ $key }}.table_">
+                                    <x-select.option wire:key="1" label="Select Table" value="1" />
+                                    <x-select.option wire:key="2" label="Select Row" value="2" />
+                                </x-select>
+                            </div>
+                        </div>
+                        {{-- @if ($this->inputsData[$key]['table_'] != '')
+                            @if ($this->inputsData[$key]['table_'] == '1') --}}
                         <div class="col">
                             <div class="form-group">
                                 <x-select wire:key="page_no{{ $key }}" label="Page No"
@@ -114,6 +125,7 @@
                                     wire:model.defer="inputsData.{{ $key }}.qty" />
                             </div>
                         </div>
+
                         <div class="col d-flex align-items-center">
                             <div class="col-md-12">
                                 <button wire:click="removeRow({{ $key }})"
@@ -191,8 +203,7 @@
                     var fun;
                     delete column.editor;
                     // console.log(column);
-                    if(column.field == 'desc_of_item')
-                    {
+                    if (column.field == 'desc_of_item') {
                         // console.log('hi');
                         column.isClick = function(e, cell) {};
                     }
@@ -248,7 +259,7 @@
                             var subFun;
                             delete subColumn.editor;
                             // console.log(subColumn);
-                            if(subColumn.field == 'desc_of_item'){
+                            if (subColumn.field == 'desc_of_item') {
                                 // console.log('hlw');
                                 column.isClick = function(e, cell) {};
                             }
@@ -301,7 +312,7 @@
                         });
                     }
                 });
-// console.log(headerData);
+                // console.log(headerData);
                 var delay = 1000; // Delay time in milliseconds
 
                 var delayPromise = new Promise(function(resolve) {

@@ -18,7 +18,8 @@ class Carriagesor extends Model
         "start_distance",
         "upto_distance",
         "cost",
-        "total_number"
+        "total_number",
+        "is_row"
     ];
     public function getSORParentDetails()
     {

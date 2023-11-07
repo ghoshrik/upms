@@ -186,6 +186,9 @@ class AddRateAnalysisList extends Component
                     if (!array_key_exists("sor_itemno_child_id", $this->addedEstimateData)) {
                         $this->addedEstimateData['sor_itemno_child_id'] = 0;
                     }
+                    if (!array_key_exists("is_row", $this->addedEstimateData)) {
+                        $this->addedEstimateData['is_row'] = null;
+                    }
                     // if (!array_key_exists("col_position", $this->addedEstimateData)) {
                     //     $this->addedEstimateData['col_position'] = 0;
                     // }
@@ -228,6 +231,9 @@ class AddRateAnalysisList extends Component
                 }
                 if (!array_key_exists("col_position", $this->addedEstimateData)) {
                     $this->addedEstimateData['col_position'] = 0;
+                }
+                if (!array_key_exists("is_row", $this->addedEstimateData)) {
+                    $this->addedEstimateData['is_row'] = null;
                 }
                 foreach ($this->addedEstimateData as $key => $estimate) {
                     $this->allAddedEstimatesData[$index][$key] = $estimate;
@@ -387,13 +393,16 @@ class AddRateAnalysisList extends Component
     {
         $this->getSingleSor = DynamicSorHeader::where('id', (int) $sorChildId)->first();
         // dd($this->getSingleSor);
-        $rdata = [];
-        foreach (json_decode($this->getSingleSor['row_data']) as $json) {
-            if ($json->id == $sorItemNo) {
-                $rdata[] = $json;
+        if ($sorItemNo != 0) {
+            $rdata = [];
+            foreach (json_decode($this->getSingleSor['row_data']) as $json) {
+                if ($json->id == $sorItemNo) {
+                    $rdata[] = $json;
+                }
             }
+            $this->getSingleSor['row_data'] = json_encode($rdata);
         }
-        $this->getSingleSor['row_data'] = json_encode($rdata);
+
         $this->selectedArrKey = $arrKey;
         $this->openSorModal = !$this->openSorModal;
         $this->openSorModalName = "item-specific-dynamic-sor-modal_" . rand(1, 1000);
@@ -424,8 +433,8 @@ class AddRateAnalysisList extends Component
             }
             $this->updateDataTableTracker = rand(1, 1000);
             $this->openSorModal = !$this->openSorModal;
-        }else{
-            $this->reset('selectedArrKey','openSorModal');
+        } else {
+            $this->reset('selectedArrKey', 'openSorModal');
             $this->notification()->error(
                 $title = 'No Rate Found !!'
             );

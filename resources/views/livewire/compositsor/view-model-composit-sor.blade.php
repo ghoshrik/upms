@@ -1,5 +1,4 @@
 <div>
-    {{-- Nothing in the world is as soft and yielding as water. --}}
     <x-modal max-width="5xl" blur wire:model.defer="viewVerifyModal">
         <x-card>
             <h3>
@@ -28,7 +27,14 @@
                         @foreach ($viewCompositSOR as $lists)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td> {{ $lists['sor_itemno_child'] }}</td>
+                                @if ($lists['is_row'] == 0)
+                                        {{ getSorPageNo($lists['sor_itemno_child_id']) }}
+                                        {{-- @if (getSorCorrigenda($lists['sor_itemno_child_id'] != null)) --}}
+                                        ({{ getSorCorrigenda($lists['sor_itemno_child_id']) }})
+                                        {{-- @endif --}}
+                                    @else
+                                        {{ $lists['sor_itemno_child'] }}
+                                    @endif
                                 <td>
                                     {{ $lists['description'] }}
                                 </td>

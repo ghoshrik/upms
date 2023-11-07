@@ -66,7 +66,8 @@ class ComposerSors extends Component
         $this->titel = 'Composit SOR';
         $assets = ['chart', 'animation'];
         $this->updateDataTableTracker = rand(1, 1000);
-        $this->composerSor = CompositSor::where('created_by',Auth::user()->id)->select('sor_itemno_parent_id','dept_category_id','sor_itemno_parent_index','sor_itemno_child_id','parent_itemNo')->groupBy('sor_itemno_parent_id','dept_category_id','sor_itemno_parent_index','sor_itemno_child_id','parent_itemNo')->get();
+        $this->composerSor = CompositSor::where('created_by',Auth::user()->id)->select('sor_itemno_parent_id','dept_category_id','sor_itemno_parent_index','sor_itemno_child_id','parent_itemNo','composite_id')->groupBy('sor_itemno_parent_id','dept_category_id','sor_itemno_parent_index','sor_itemno_child_id','parent_itemNo','composite_id')->get();
+        // $this->composerSor = CompositSor::groupBy('composite_id')->get();
         return view('livewire.compositsor.composer-sors', compact('assets'));
     }
 }

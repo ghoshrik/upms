@@ -41,7 +41,6 @@
         <div>
             <div x-show="formOpen">
                 @if ($isFromOpen && $openedFormType == 'create')
-                    {{-- <livewire:compositsor.createcomposersors /> --}}
                     <livewire:compositsor.create-composite-sor />
                 @elseif($isFromOpen && $openedFormType == 'edit')
                 @else
@@ -85,22 +84,23 @@
                                                         </td>
                                                         <td class="text-wrap">
                                                             {{-- {{$lists->ChildSORItemNo->Item_details ?? $lists->Item_details }} --}}
-                                                            @isset($lists->sor_itemno_parent_id)
+                                                            {{-- @isset($lists->sor_itemno_parent_id)
                                                                 {{ getSorTableName($lists->sor_itemno_parent_id) }}
-                                                            @endisset
+                                                            @endisset --}}
+                                                            {{ $lists->composite_id }}
                                                         </td>
                                                         <td class="text-wrap">
                                                             {{-- {{$lists->ParentSORItemNo->Item_details }} --}}
                                                             {{-- {{  $lists->sor_itemno_parent_id }} --}}
                                                             @isset($lists->sor_itemno_parent_id)
-                                                                {{ getTableItemNo($lists->sor_itemno_parent_id, $lists->sor_itemno_parent_index) }}
-                                                                {{-- {{ $lists->parent_itemNo }} --}}
+                                                                {{-- {{ getTableItemNo($lists->sor_itemno_parent_id, $lists->sor_itemno_parent_index) }} --}}
+                                                                {{ $lists->parent_itemNo }}
                                                             @endisset
                                                         </td>
                                                         <td class="text-wrap">
-                                                            @isset($lists->sor_itemno_parent_id)
+                                                            {{-- @isset($lists->sor_itemno_parent_id)
                                                                 {{ getTableDesc($lists->sor_itemno_parent_id, $lists->sor_itemno_parent_index) }}
-                                                            @endisset
+                                                            @endisset --}}
 
                                                             {{-- {{$lists->sor_itemno_parent_index}} --}}
                                                             {{-- {{ $lists->description }}  --}}

@@ -18,6 +18,46 @@ class CreateCompositeSor extends Component
     public $fetchDropDownData = [], $storeItem = [], $viewModal = false, $counterForItemNo = 0, $inputsData = [], $updateDataTableTracker;
     public $table_no = '', $page_no = '', $sorType;
 
+
+    protected $rules = [
+        'storeItem.dept_category_id' => 'required',
+        'storeItem.table_no' => 'required',
+        'storeItem.page_no' => 'required|integer',
+
+
+        'inputsData.*.table_no' => 'required',
+        'inputsData.*.table_' => 'required|integer',
+        'inputsData.*.page_no' => 'required|integer',
+        'inputsData.*.description' => 'required',
+        'inputsData.*.unit_id' => 'required|integer',
+        'inputsData.*.qty' => 'required',
+    ];
+
+    protected $messages = [
+        'storeItem.dept_category_id.required' => 'This field is required',
+        'storeItem.table_no.required' => 'This field is required',
+        'storeItem.page_no.required' => 'This field is required',
+        'storeItem.page_no.integer' => 'This field data mismatch',
+
+        'inputsData.*.table_no.required' => 'This field is required',
+        'inputsData.*.table_.required' => 'This field is required',
+        'inputsData.*.table_.integer' => 'This field data mismatch',
+        'inputsData.*.page_no.required' => 'This field is required',
+        'inputsData.*.page_no.integer' => 'This field data mismatch',
+        'inputsData.*.description.required' => 'This field is required',
+        'inputsData.*.unit_id.required' => 'This field is required',
+        'inputsData.*.unit_id.integer' => 'This field data mismatch',
+        'inputsData.*.qty.required' => 'This field is required',
+
+    ];
+
+
+
+
+
+
+
+
     public function mount()
     {
         $this->fetchDropDownData['departmentCategory'] = SorCategoryType::where('department_id', Auth::user()->department_id)->get();
@@ -37,12 +77,21 @@ class CreateCompositeSor extends Component
                 'description' => '',
                 'qty' => '',
                 'unit_id' => '',
-                // 'sor_id' => '',
+                'table_' => '',
             ],
         ];
     }
+    public function onTableSelect($key)
+    {
+        if ($this->inputsData[$key]['table_'] == 1) {
+        } else {
+            $this->viewModal = !$this->viewModal;
+        }
+    }
+
     public function addNewRow()
     {
+
         $this->inputsData[] = [
             'table_no' => '',
             'page_no' => '',
@@ -51,7 +100,9 @@ class CreateCompositeSor extends Component
             'description' => '',
             'qty' => '',
             'unit_id' => '',
+            'table_' => ''
         ];
+        //dd($this->inputsData);
     }
     public function removeRow($index)
     {
@@ -79,6 +130,7 @@ class CreateCompositeSor extends Component
 
     public function getDynamicSor($type)
     {
+        // dd($type);
         if ($type == 'parent') {
             $this->storeItem['item_no'] = '';
             $this->fetchDropDownData['getSor'] = [];
@@ -86,16 +138,27 @@ class CreateCompositeSor extends Component
         } else {
             $this->fetchDropDownData['getSor'] = [];
             $this->fetchDropDownData['getSor'] = DynamicSorHeader::where('id', $this->inputsData[$type]['page_no'])->first();
+            $this->sorType = $type;
         }
-        $this->sorType = $type;
-        // dd($this->fetchDropDownData['getSor']);
-        if ($this->fetchDropDownData['getSor'] != null) {
+        if ($type != 'parent' && $this->inputsData[$type]['table_'] == 1) {
+            // dd();
             $this->table_no = $this->fetchDropDownData['getSor']['table_no'];
+            $this->inputsData[$type]['description'] = $this->fetchDropDownData['getSor']['title'];
             $this->page_no = $this->fetchDropDownData['getSor']['page_no'];
-            $this->viewModal = !$this->viewModal;
-            $this->modalName = "dynamic-sor-modal_" . rand(1, 1000);
-            $this->modalName = str_replace(' ', '_', $this->modalName);
+            $this->inputsData[$type]['sor_id'] = (int)$this->inputsData[$type]['page_no'];
+        } else {
+            // $this->viewModal = !$this->viewModal;
+            // dd('hlw');
+            if ($this->fetchDropDownData['getSor'] != null) {
+                $this->table_no = $this->fetchDropDownData['getSor']['table_no'];
+                $this->page_no = $this->fetchDropDownData['getSor']['page_no'];
+                $this->viewModal = !$this->viewModal;
+                $this->modalName = "dynamic-sor-modal_" . rand(1, 1000);
+                $this->modalName = str_replace(' ', '_', $this->modalName);
+            }
         }
+        // dd($this->fetchDropDownData['getSor']);
+
     }
 
     public function getRowValue($data)
@@ -104,6 +167,7 @@ class CreateCompositeSor extends Component
         $itemNo = '';
         $fetchRow[] = [];
         if ($this->storeItem['item_no'] == '') {
+            // dd("yes");
             if (isset($data[0]['itemNo'])) {
                 $this->storeItem['item_no'] = $data[0]['itemNo'];
             }
@@ -167,6 +231,9 @@ class CreateCompositeSor extends Component
             $this->fetchDropDownData['child_tables'] = DynamicSorHeader::where('dept_category_id', $this->storeItem['dept_category_id'])->select('table_no')->groupBy('table_no')->get();
             $this->fetchDropDownData['unitMaster'] = UnitMaster::select('id', 'unit_name', 'short_name', 'is_active')->where('is_active', 1)->orderBy('id', 'desc')->get();
         }
+
+
+        /*
         // dd($this->storeItem, $this->inputsData);
         // if ($this->selectedCategoryId == 5) {
         //     $id = explode('.',$data['id'])[0];
@@ -210,6 +277,7 @@ class CreateCompositeSor extends Component
         // }
 
         // dd($this->estimateData['description']);
+        */
         $this->viewModal = !$this->viewModal;
     }
     public function getChildPageNo($key)
@@ -265,7 +333,6 @@ class CreateCompositeSor extends Component
         } else {
             $itemNo = $data->item_no;
         }
-
     }
     public function extractDescOfItems($data, &$descriptions, $counter)
     {
@@ -282,7 +349,6 @@ class CreateCompositeSor extends Component
                 }
             }
         }
-
     }
     public function closeModal()
     {
@@ -293,8 +359,9 @@ class CreateCompositeSor extends Component
     }
     public function store()
     {
+        // dd($this->inputsData, $this->storeItem);
+        $this->validate();
         try {
-            // $test = [];
             $intId = random_int(100000, 999999);
             foreach ($this->inputsData as $data) {
 
@@ -306,35 +373,16 @@ class CreateCompositeSor extends Component
                     'sor_itemno_parent_index' => $this->storeItem['sor_itemno_parent_index'],
                     'col_position' => $this->storeItem['col_position'],
                     'sor_itemno_child' => $data['child_index_id'],
-                    'sor_itemno_child_id' => $data['sor_id'],
+                    'sor_itemno_child_id' => $data['sor_id'] ?? '',
                     'description' => $data['description'],
                     'unit_id' => $data['unit_id'],
+                    'is_row' => $data['table_'],
                     'rate' => $data['qty'],
                     'created_by' => Auth::user()->id,
                     'parent_itemNo' => $this->storeItem['item_no']
                 ];
-                // $test[] = $insert;
+                // dd($insert);
                 CompositSor::create($insert);
-                /* Single File Upload*/
-                // $temporaryFilePath = $this->storeItem['file_upload']->getRealPath();
-                // // Delete the temporary file
-                // if (file_exists($temporaryFilePath)) {
-                //     unlink($temporaryFilePath);
-                // }
-                // $filePath = file_get_contents($temporaryFilePath);
-                // $fileSize = $this->storeItem['file_upload']->getSize();
-                // $filExt = $this->storeItem['file_upload']->getClientOriginalExtension();
-                // $mimeType = $this->storeItem['file_upload']->getMimeType();
-
-                // $db_ext = DB::connection('pgsql_docu_External');
-                // $db_ext->table('docu_composit_sors')->insert([
-                //     'composer_sor_id' => $last->id,
-                //     'document_type' => $filExt,
-                //     'document_mime' => $mimeType,
-                //     'document_size' => $fileSize,
-                //     'docufile' => base64_encode($filePath)
-                // ]);
-
             }
             // dd($test);
             $this->notification()->success(
