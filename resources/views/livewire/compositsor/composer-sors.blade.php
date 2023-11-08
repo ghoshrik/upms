@@ -71,7 +71,7 @@
                                                             @endisset
                                                         </td>
                                                         <td class="text-wrap">
-                                                            {{ $lists->ChildSORItemNo->Item_details ?? $lists->Item_details }}
+                                                            {{-- {{ $lists->ChildSORItemNo->Item_details ?? $lists->Item_details }} --}}
 
                                                             @isset($lists->sor_itemno_parent_id)
                                                                 {{ getSorTableName($lists->sor_itemno_parent_id) }}

@@ -2,10 +2,10 @@
 
 namespace App\Http\Livewire\Compositsor;
 
-use App\Models\SOR;
-use Livewire\Component;
 use App\Models\CompositSor;
+use App\Models\SOR;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
 class ComposerSors extends Component
 {
@@ -74,10 +74,17 @@ class ComposerSors extends Component
         $this->titel = 'Composit SOR';
         $assets = ['chart', 'animation'];
         $this->updateDataTableTracker = rand(1, 1000);
-        $this->composerSor = CompositSor::where('created_by', Auth::user()->id)
-            ->select('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
-            ->groupBy('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
-            ->get();
+        if (Auth::user()->user_type == 1) {
+            $this->composerSor = CompositSor::select('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
+                ->groupBy('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
+                ->get();
+        } else {
+            $this->composerSor = CompositSor::where('created_by', Auth::user()->id)
+                ->select('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
+                ->groupBy('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
+                ->get();
+        }
+        // dd($this->composerSor);
         return view('livewire.compositsor.composer-sors', compact('assets'));
     }
 }

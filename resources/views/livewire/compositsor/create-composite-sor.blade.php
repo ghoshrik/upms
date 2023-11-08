@@ -71,8 +71,8 @@
                             <div class="form-group">
                                 <x-select wire:key='table_{{ $key }}' label="Select Option"
                                     placeholder="Select" wire:model.defer="inputsData.{{ $key }}.table_">
-                                    <x-select.option wire:key="1" label="Select Table" value="1" />
-                                    <x-select.option wire:key="2" label="Select Row" value="2" />
+                                    <x-select.option wire:key="1" label="Table" value="1" />
+                                    <x-select.option wire:key="2" label="Row" value="2" />
                                 </x-select>
                             </div>
                         </div>
