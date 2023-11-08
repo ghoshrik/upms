@@ -274,7 +274,7 @@
                             var cnf = confirm("Are you sure " + cell.getValue() + " col position " +
                                 colIdx + " ?");
                             if (cnf) {
-                                window.Livewire.emit('getRatePlaceWise',getRowData);
+                                window.Livewire.emit('getRatePlaceWise', getRowData);
                                 $('#' + @json($openSorModalName)).modal('hide');
                                 // Add your custom code or logic here
                             }
@@ -327,7 +327,7 @@
                                     var cnf = confirm("Are you sure " + cell.getValue() +
                                         " col position " + colIdx + " ?");
                                     if (cnf) {
-                                        window.Livewire.emit('getRatePlaceWise',getRowData);
+                                        window.Livewire.emit('getRatePlaceWise', getRowData);
                                         $('#' + @json($openSorModalName)).modal('hide');
                                     }
                                 };
@@ -366,7 +366,87 @@
             });
         </script>
     @endif
-
+    @if ($isRateType)
+        <div>
+            <div class="modal" id="{{$rateTypeModalName}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Select Rate Type</h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row" wire:key='rate-type' style="transition: all 2s ease-out">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <x-input label="TABLE NO" placeholder="TABLE NO"
+                                         wire:key="item" value="{{ $fetchRatePlaceWise[0]['table_no'] }}" disabled/>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <x-input label="PAGE NO" placeholder="PAGE NO"
+                                         wire:key="item" value="{{ $fetchRatePlaceWise[0]['page_no'] }}" disabled/>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <x-input label="ITEM NAME" placeholder="ITEM NAME"
+                                         wire:key="item" value="{{ $fetchRatePlaceWise[0]['description'] }}" disabled/>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <x-select wire:key="type" label="RATE TYPE" placeholder="Select Rate" wire:model.defer="rateType"
+                                            >
+                                            @isset($fetchRatePlaceWise)
+                                                @foreach ($fetchRatePlaceWise as $fetchRateType)
+                                                    <x-select.option label="{{ $fetchRateType['operation'] }}"
+                                                        value="{{ $fetchRateType['operation'] }}" />
+                                                @endforeach
+                                            @endisset
+                                        </x-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button> --}}
+                        <div class="modal-footer">
+                            <button type="button"id="submitBtn" class="btn btn-success"
+                                wire:click="getTypeWiseRate()">Submit</button>
+                            <button type="button"id="closeBtn" class="btn btn-secondary"
+                                data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.getElementById("closeBtn").addEventListener("click", function() {
+                closeModal();
+            });
+            document.getElementById("submitBtn").addEventListener("click", function() {
+                closeModal();
+            });
+            function closeModal() {
+                $('#' + @json($rateTypeModalName)).modal('hide');
+                window.Livewire.emit('closeModal1');
+            }
+            function closeRateTypeModal(){
+                $('#' + @json($rateTypeModalName)).modal('hide');
+            }
+            $(document).ready(function() {
+                var clickableCellValues = [];
+                $("#" + @json($rateTypeModalName)).modal({
+                    backdrop: "static",
+                    keyboard: false
+                });
+                $("#" + @json($rateTypeModalName)).modal("show");
+            });
+        </script>
+    @endif
 </div>
 
 {{-- <script>

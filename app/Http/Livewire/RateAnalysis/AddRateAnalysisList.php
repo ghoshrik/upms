@@ -411,7 +411,12 @@ class AddRateAnalysisList extends Component
     }
     public function closeModal1()
     {
-        $this->openSorModal = !$this->openSorModal;
+        if ($this->openSorModal) {
+            $this->openSorModal = !$this->openSorModal;
+        }
+        if ($this->isRateType) {
+            $this->isRateType = !$this->isRateType;
+        }
         $this->reset('selectedArrKey');
         // if ($this->selectedCategoryId == '') {
         //     $this->selectSor['page_no'] = '';
@@ -419,30 +424,66 @@ class AddRateAnalysisList extends Component
         //     $this->estimateData['page_no'] = '';
         // }
     }
-    // public $fetchRatePlaceWise;
+    public $fetchRatePlaceWise;
+    public $isRateType = false, $rateTypeModalName, $rateType = '';
     public function getRatePlaceWise($data)
     {
-        $fetchRatePlaceWise = [];
-        $fetchRatePlaceWise = RatesAnalysis::where([['sor_id', $data[0]['id']], ['item_index', $data[0]['itemNo']], ['col_position', $data[0]['colPosition']], ['operation', '!=', '']])->first();
-        // dd(count($fetchRatePlaceWise));
-        $tempValue = $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
-        if (!empty($fetchRatePlaceWise)) {
-            $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = $fetchRatePlaceWise['total_amount'];
-            if ($this->allAddedEstimatesData[$this->selectedArrKey]['rate'] != $tempValue) {
-                $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
-            }
-            $this->updateDataTableTracker = rand(1, 1000);
-            $this->openSorModal = !$this->openSorModal;
-        } else {
+        // dd($data[0]);
+        $this->fetchRatePlaceWise = [];
+        // if($data){
+
+        // }
+        $this->fetchRatePlaceWise = RatesAnalysis::where([['sor_id', $data[0]['id']], ['item_index', $data[0]['itemNo']], ['col_position', $data[0]['colPosition']], ['operation', '!=', '']])->get();
+        // dd($this->fetchRatePlaceWise);
+        if (count($this->fetchRatePlaceWise) > 0) {
+            $this->isRateType = !$this->isRateType;
+            $this->rateTypeModalName = "item-wise-rate-type-modal_" . rand(1, 1000);
+            $this->rateTypeModalName = str_replace(' ', '_', $this->rateTypeModalName);
+        }else{
             $this->reset('selectedArrKey', 'openSorModal');
             $this->notification()->error(
                 $title = 'No Rate Found !!'
             );
         }
+        // $tempValue = $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
+        // if (!empty($fetchRatePlaceWise)) {
+        //     $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = $fetchRatePlaceWise['total_amount'];
+        //     if ($this->allAddedEstimatesData[$this->selectedArrKey]['rate'] != $tempValue) {
+        //         $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
+        //     }
+        //     $this->updateDataTableTracker = rand(1, 1000);
+        //     $this->openSorModal = !$this->openSorModal;
+        // } else {
+        //     $this->reset('selectedArrKey', 'openSorModal');
+        //     $this->notification()->error(
+        //         $title = 'No Rate Found !!'
+        //     );
+        // }
 
         // dd($this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = 100);
         // dd($fetchValue);
         // dd($data);
+    }
+    public function getTypeWiseRate()
+    {
+        $tempValue = $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
+        if (count($this->fetchRatePlaceWise)>0) {
+            foreach ($this->fetchRatePlaceWise as $fetchRate) {
+                if ($fetchRate['operation'] == $this->rateType) {
+                    $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = $fetchRate['total_amount'];
+                    if ($this->allAddedEstimatesData[$this->selectedArrKey]['rate'] != $tempValue) {
+                        $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
+                    }
+                    $this->updateDataTableTracker = rand(1, 1000);
+                    $this->isRateType = !$this->isRateType;
+                }
+            }
+        } else {
+            $this->reset('selectedArrKey', 'openSorModal','isRateType');
+            $this->notification()->error(
+                $title = 'No Rate Found !!'
+            );
+        }
     }
     public function store()
     {
