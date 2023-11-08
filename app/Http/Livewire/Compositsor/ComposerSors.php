@@ -10,15 +10,15 @@ use Illuminate\Support\Facades\Auth;
 class ComposerSors extends Component
 {
     public $formOpen = false, $editFormOpen = false, $updateDataTableTracker;
-    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'sorFileDownload' => 'generatePdf','refresh' => 'render'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'sorFileDownload' => 'generatePdf', 'refresh' => 'render'];
     public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel, $editId = null, $CountSorListPending;
-    public $composerSor = [];
+    public $composerSor = [], $viewCompositSOR;
 
     public function mount()
     {
         $this->updateDataTableTracker = rand(1, 1000);
         $this->CountSorListPending = SOR::where([['department_id', Auth::user()->department_id], ['created_by', Auth::user()->id]])->where('is_approved', 0)->count();
-        $this->composerSor = CompositSor::select('sor_itemno_parent_id','dept_category_id','sor_itemno_parent_index','sor_itemno_child_id')->groupBy('sor_itemno_parent_id','dept_category_id','sor_itemno_parent_index','sor_itemno_child_id')->get();
+        $this->composerSor = CompositSor::select('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'sor_itemno_child_id')->groupBy('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'sor_itemno_child_id')->get();
     }
     public function fromEntryControl($data = '')
     {
@@ -54,20 +54,30 @@ class ComposerSors extends Component
         $this->errorMessage = $errorMessage;
     }
 
-    public function viewComposite($parent_id,$child_id,$sor_itemno_parent_index)
+    // public function viewComposite($parent_id, $child_id, $sor_itemno_parent_index)
+    // {
+    //     $sor_itemno_parent_index = implode('.', str_split($sor_itemno_parent_index));
+    //     // dd($sor_itemno_parent_index);
+    //     $this->viewCompositSOR = CompositSor::where([['sor_itemno_parent_id', $parent_id], ['sor_itemno_child_id', $child_id], ['sor_itemno_parent_index', $sor_itemno_parent_index]])->get();
+    //     $this->emit('viewModal', $this->viewCompositSOR);
+    // }
+    public function viewComposite($composite_id)
     {
-        $sor_itemno_parent_index = implode('.', str_split($sor_itemno_parent_index));
+        // $sor_itemno_parent_index = implode('.', str_split($sor_itemno_parent_index));
         // dd($sor_itemno_parent_index);
-        $this->viewCompositSOR = CompositSor::where([['sor_itemno_parent_id',$parent_id],['sor_itemno_child_id',$child_id],['sor_itemno_parent_index',$sor_itemno_parent_index]])->get();
-        $this->emit('viewModal',$this->viewCompositSOR);
+        $this->viewCompositSOR = CompositSor::where([['composite_id', $composite_id]])->get();
+        // dd($this->viewCompositSOR);
+        $this->emit('viewModal', $this->viewCompositSOR);
     }
     public function render()
     {
         $this->titel = 'Composit SOR';
         $assets = ['chart', 'animation'];
         $this->updateDataTableTracker = rand(1, 1000);
-        $this->composerSor = CompositSor::where('created_by',Auth::user()->id)->select('sor_itemno_parent_id','dept_category_id','sor_itemno_parent_index','sor_itemno_child_id','parent_itemNo','composite_id')->groupBy('sor_itemno_parent_id','dept_category_id','sor_itemno_parent_index','sor_itemno_child_id','parent_itemNo','composite_id')->get();
-        // $this->composerSor = CompositSor::groupBy('composite_id')->get();
+        $this->composerSor = CompositSor::where('created_by', Auth::user()->id)
+            ->select('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
+            ->groupBy('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
+            ->get();
         return view('livewire.compositsor.composer-sors', compact('assets'));
     }
 }

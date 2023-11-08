@@ -46,14 +46,6 @@
                 @else
                     <div class="col-md-12 col-lg-12 col-sm-3">
                         <div class="card">
-                            <div class="card-header">
-                                {{-- <button type="button" class="btn btn-sm btn-soft-warning px-2 py-2 notification"
-                                    :wire:key="$updateDataTableTracker">
-                                    <span>Pending Approval</span>
-                                    <span class="badge">{{ $CountSorListPending }}</span>
-                                </button> --}}
-
-                            </div>
                             <div class="card-body">
                                 <div class="table-responsive mt-4">
                                     <table id="basic-table" class="table table-striped mb-0" role="grid">
@@ -64,10 +56,6 @@
                                                 <th>Table No</th>
                                                 <th>Item No</th>
                                                 <th width="40%">Description</th>
-                                                {{-- <th>{{ trans('cruds.sor.fields.unit') }}</th> --}}
-                                                {{-- <th>{{ trans('cruds.sor.fields.cost') }}</th> --}}
-                                                {{-- <th>Status</th>
-                                                <th>File</th> --}}
                                                 <th>{{ trans('cruds.sor.fields.action') }}</th>
                                             </tr>
                                         </thead>
@@ -83,11 +71,11 @@
                                                             @endisset
                                                         </td>
                                                         <td class="text-wrap">
-                                                            {{-- {{$lists->ChildSORItemNo->Item_details ?? $lists->Item_details }} --}}
-                                                            {{-- @isset($lists->sor_itemno_parent_id)
+                                                            {{ $lists->ChildSORItemNo->Item_details ?? $lists->Item_details }}
+
+                                                            @isset($lists->sor_itemno_parent_id)
                                                                 {{ getSorTableName($lists->sor_itemno_parent_id) }}
-                                                            @endisset --}}
-                                                            {{ $lists->composite_id }}
+                                                            @endisset
                                                         </td>
                                                         <td class="text-wrap">
                                                             {{-- {{$lists->ParentSORItemNo->Item_details }} --}}
@@ -98,9 +86,9 @@
                                                             @endisset
                                                         </td>
                                                         <td class="text-wrap">
-                                                            {{-- @isset($lists->sor_itemno_parent_id)
+                                                            @isset($lists->sor_itemno_parent_id)
                                                                 {{ getTableDesc($lists->sor_itemno_parent_id, $lists->sor_itemno_parent_index) }}
-                                                            @endisset --}}
+                                                            @endisset
 
                                                             {{-- {{$lists->sor_itemno_parent_index}} --}}
                                                             {{-- {{ $lists->description }}  --}}
@@ -116,7 +104,7 @@
                                                         @endphp
                                                         <td>
                                                             <button class="btn btn-soft-primary btn-sm"
-                                                                wire:click='viewComposite({{ $lists->sor_itemno_parent_id }}, {{ $lists->sor_itemno_child_id }},{{ $sor_itemno_parent_index }})'>
+                                                                wire:click='viewComposite({{ $lists->composite_id }})'>
                                                                 <x-icon name="eye" class="w-5 h-5" />View
                                                             </button>
                                                         </td>

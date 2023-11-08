@@ -612,3 +612,13 @@ function getSorTableName($sor_id)
     $fetchRow = DynamicSorHeader::where('id', $sor_id)->select('table_no')->first();
     return $fetchRow['table_no'];
 }
+function getSorPageNo($sor_id)
+{
+    $fetchRow = DynamicSorHeader::where('id', $sor_id)->select('page_no')->first();
+    return $fetchRow['page_no'];
+}
+function getSorCorrigenda($sor_id)
+{
+    $fetchRow = DynamicSorHeader::where('id', $sor_id)->select('corrigenda_name')->first();
+    return $fetchRow['corrigenda_name'];
+}

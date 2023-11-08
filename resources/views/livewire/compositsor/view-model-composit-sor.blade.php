@@ -1,10 +1,11 @@
 <div>
+    {{-- Nothing in the world is as soft and yielding as water. --}}
     <x-modal max-width="5xl" blur wire:model.defer="viewVerifyModal">
         <x-card>
             <h3>
-                @isset($sor_itemno_parent_id, $sor_itemno_parent_index)
+                {{-- @isset($sor_itemno_parent_id, $sor_itemno_parent_index)
                     {{ getTableDesc($sor_itemno_parent_id, $sor_itemno_parent_index) }}
-                @endisset
+                @endisset --}}
             </h3>
             <table class="table mt-2 table-report">
                 <thead>
@@ -27,7 +28,8 @@
                         @foreach ($viewCompositSOR as $lists)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                @if ($lists['is_row'] == 0)
+                                <td>
+                                    @if ($lists['is_row'] == 0)
                                         {{ getSorPageNo($lists['sor_itemno_child_id']) }}
                                         {{-- @if (getSorCorrigenda($lists['sor_itemno_child_id'] != null)) --}}
                                         ({{ getSorCorrigenda($lists['sor_itemno_child_id']) }})
@@ -35,6 +37,7 @@
                                     @else
                                         {{ $lists['sor_itemno_child'] }}
                                     @endif
+                                </td>
                                 <td>
                                     {{ $lists['description'] }}
                                 </td>
@@ -60,11 +63,12 @@
             <x-slot name="footer">
                 <div class="flex justify-between">
                     <div class="flex float-left">
-                        <x-button class="btn btn-soft-danger px-3 py-2.5 rounded" flat label="Cancel" x-on:click="close" />
+                        <x-button class="btn btn-soft-danger px-3 py-2.5 rounded" flat label="Cancel"
+                            x-on:click="close" />
                     </div>
                 </div>
-                </div>
-            </x-slot>
-        </x-card>
-    </x-modal>
+</div>
+</x-slot>
+</x-card>
+</x-modal>
 </div>
