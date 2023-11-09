@@ -591,9 +591,9 @@ function getTableDesc($sor_id, $item_no)
 function extractDescOfItems($data, &$descriptions, $counter,$loopCount)
     {
         // If need parent desc
-        // if (isset($data->desc_of_item) && $data->desc_of_item != '') {
-        //     $descriptions .= $data->desc_of_item . ' ';
-        // }
+        if (isset($data->desc_of_item) && $data->desc_of_item != '') {
+            $descriptions .= $data->desc_of_item . ' ';
+        }
         if (isset($data->_subrow) ) {
             foreach ($data->_subrow as $item) {
                 // dd($item,$counter[$loopCount],$item->id);

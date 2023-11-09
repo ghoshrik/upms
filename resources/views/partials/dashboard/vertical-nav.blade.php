@@ -6,7 +6,7 @@
         </a>
     </li> --}}
 
-    <li class="nav-item">
+    {{-- <li class="nav-item">
         <a class="nav-link {{ Request::routeIs('dashboard') ? 'active' : '' }}" aria-current="page"
             href="{{ route('dashboard') }}">
             <i class="icon">
@@ -19,7 +19,7 @@
 
             <span class="item-name">{{ __('Dashboard') }}</span>
         </a>
-    </li>
+    </li> --}}
     @foreach ($menus as $menu)
         @if ($menu->permissions_roles != null)
             @php
