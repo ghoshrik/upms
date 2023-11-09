@@ -439,7 +439,7 @@ class AddRateAnalysisList extends Component
             $this->isRateType = !$this->isRateType;
             $this->rateTypeModalName = "item-wise-rate-type-modal_" . rand(1, 1000);
             $this->rateTypeModalName = str_replace(' ', '_', $this->rateTypeModalName);
-        }else{
+        } else {
             $this->reset('selectedArrKey', 'openSorModal');
             $this->notification()->error(
                 $title = 'No Rate Found !!'
@@ -467,19 +467,20 @@ class AddRateAnalysisList extends Component
     public function getTypeWiseRate()
     {
         $tempValue = $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
-        if (count($this->fetchRatePlaceWise)>0) {
+        if (count($this->fetchRatePlaceWise) > 0) {
             foreach ($this->fetchRatePlaceWise as $fetchRate) {
                 if ($fetchRate['operation'] == $this->rateType) {
                     $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = $fetchRate['total_amount'];
                     if ($this->allAddedEstimatesData[$this->selectedArrKey]['rate'] != $tempValue) {
                         $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
                     }
-                    $this->updateDataTableTracker = rand(1, 1000);
-                    $this->isRateType = !$this->isRateType;
                 }
             }
+            $this->updateDataTableTracker = rand(1, 1000);
+            // $this->isRateType = !$this->isRateType;
+            $this->reset('selectedArrKey', 'openSorModal', 'isRateType', 'rateType');
         } else {
-            $this->reset('selectedArrKey', 'openSorModal','isRateType');
+            $this->reset('selectedArrKey', 'openSorModal', 'isRateType', 'rateType');
             $this->notification()->error(
                 $title = 'No Rate Found !!'
             );

@@ -194,7 +194,7 @@ return [
             'total_on_selected' => 'Total On Selected',
             'export_word' => 'Export Word',
             'description' => 'Description',
-            'quantity' => 'Quantity',
+            'quantity' => 'Unit(s)',
             'unit_price' => 'Unit Price(RS.)',
             'remarks' => 'Remarks',
             'status' => 'Status',
