@@ -779,7 +779,7 @@ class CreateRateAnalysis extends Component
             // Log::debug(json_encode($this->estimateData));
             if (isset($data['upTo_5']) && $this->estimateData['distance'] != 0) {
                 if ($this->estimateData['distance'] >= 5) {
-                    $this->estimateData['qty'] = 5;
+                    $this->estimateData['qty'] = 1;
                 } else {
                     $this->estimateData['qty'] = $this->estimateData['distance'];
                 }
@@ -787,7 +787,7 @@ class CreateRateAnalysis extends Component
                 $this->estimateData['description'] = "Any Distance up to 5 km";
                 $this->estimateData['rate'] = $data['upTo_5'];
                 $this->estimateData['total_amount'] = (int) $data['upTo_5'];
-                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
+                $this->estimateData['distance'] = $this->estimateData['distance'] - 5;
                 // Log::debug(json_encode($this->estimateData));
                 $this->addEstimate($key + 1);
                 // dd($this->estimateData);
