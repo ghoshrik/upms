@@ -77,11 +77,13 @@ class ComposerSors extends Component
         if (Auth::user()->user_type == 1) {
             $this->composerSor = CompositSor::select('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
                 ->groupBy('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
+                ->orderBy('sor_itemno_parent_id','asc')
                 ->get();
         } else {
             $this->composerSor = CompositSor::where('created_by', Auth::user()->id)
                 ->select('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
                 ->groupBy('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
+                ->orderBy('sor_itemno_parent_id','asc')
                 ->get();
         }
         // dd($this->composerSor);
