@@ -2,14 +2,15 @@
 
 namespace App\Http\Livewire\Compositsor;
 
-use App\Models\CompositSor;
-use App\Models\DynamicSorHeader;
-use App\Models\SorCategoryType;
-use App\Models\UnitMaster;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
-use Livewire\WithFileUploads;
+use App\Models\UnitMaster;
 use WireUi\Traits\Actions;
+use App\Models\CompositSor;
+use Livewire\WithFileUploads;
+use App\Models\SorCategoryType;
+use App\Models\DynamicSorHeader;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class CreateCompositeSor extends Component
 {
@@ -18,12 +19,10 @@ class CreateCompositeSor extends Component
     public $fetchDropDownData = [], $storeItem = [], $viewModal = false, $counterForItemNo = 0, $inputsData = [], $updateDataTableTracker;
     public $table_no = '', $page_no = '', $sorType;
 
-
     protected $rules = [
         'storeItem.dept_category_id' => 'required',
         'storeItem.table_no' => 'required',
         'storeItem.page_no' => 'required|integer',
-
 
         'inputsData.*.table_no' => 'required',
         'inputsData.*.table_' => 'required|integer',
@@ -50,13 +49,6 @@ class CreateCompositeSor extends Component
         'inputsData.*.qty.required' => 'This field is required',
 
     ];
-
-
-
-
-
-
-
 
     public function mount()
     {
@@ -100,7 +92,7 @@ class CreateCompositeSor extends Component
             'description' => '',
             'qty' => '',
             'unit_id' => '',
-            'table_' => ''
+            'table_' => '',
         ];
         //dd($this->inputsData);
     }
@@ -145,7 +137,7 @@ class CreateCompositeSor extends Component
             $this->table_no = $this->fetchDropDownData['getSor']['table_no'];
             $this->inputsData[$type]['description'] = $this->fetchDropDownData['getSor']['title'];
             $this->page_no = $this->fetchDropDownData['getSor']['page_no'];
-            $this->inputsData[$type]['sor_id'] = (int)$this->inputsData[$type]['page_no'];
+            $this->inputsData[$type]['sor_id'] = (int) $this->inputsData[$type]['page_no'];
         } else {
             // $this->viewModal = !$this->viewModal;
             // dd('hlw');
@@ -192,8 +184,10 @@ class CreateCompositeSor extends Component
                 $convertedArray[] = $partialItemId;
             }
             // dd($convertedArray);
-            $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray);
-            $itemNo .= $this->storeItem['item_no'];
+            $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray,$this->counterForItemNo);
+            if (count($convertedArray) > count($convertedArray)-1) {
+                $itemNo .= $this->storeItem['item_no'];
+            }
             $this->storeItem['item_no'] = $itemNo;
             $this->storeItem['col_position'] = $data[0]['colPosition'];
         } else {
@@ -221,7 +215,7 @@ class CreateCompositeSor extends Component
                 $convertedArray[] = $partialItemId;
             }
             // dd($convertedArray);
-            $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray);
+            $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray,$this->counterForItemNo);
             // $itemNo .= $this->inputsData[$this->sorType]['item_no'];
             $this->inputsData[$this->sorType]['item_no'] = $itemNo;
             $this->inputsData[$this->sorType]['description'] = $data[0]['desc'];
@@ -231,7 +225,6 @@ class CreateCompositeSor extends Component
             $this->fetchDropDownData['child_tables'] = DynamicSorHeader::where('dept_category_id', $this->storeItem['dept_category_id'])->select('table_no')->groupBy('table_no')->get();
             $this->fetchDropDownData['unitMaster'] = UnitMaster::select('id', 'unit_name', 'short_name', 'is_active')->where('is_active', 1)->orderBy('id', 'desc')->get();
         }
-
 
         /*
         // dd($this->storeItem, $this->inputsData);
@@ -277,7 +270,7 @@ class CreateCompositeSor extends Component
         // }
 
         // dd($this->estimateData['description']);
-        */
+         */
         $this->viewModal = !$this->viewModal;
     }
     public function getChildPageNo($key)
@@ -288,44 +281,38 @@ class CreateCompositeSor extends Component
         $this->fetchDropDownData[$key]['child_pages'] = DynamicSorHeader::where([['dept_category_id', $this->storeItem['dept_category_id']], ['table_no', $this->inputsData[$key]['table_no']]])->select('id', 'page_no', 'corrigenda_name')->get();
         // dd($this->fetchDropDownData);
     }
-    // public function extractItemNoOfItems($data, &$itemNo, $counter)
-    // {
-    //     if (count($counter) > 1) {
-    //         if (isset($data->item_no) && $data->item_no != '') {
-    //             $itemNo = $data->item_no . ' ';
-    //         }
-    //         if (isset($data->_subrow)) {
-    //             foreach ($data->_subrow as $key => $item) {
-    //                 if (isset($counter[$this->counterForItemNo + 1])) {
-    //                     if (isset($item->item_no) && $item->id == $counter[$this->counterForItemNo + 1]) {
-    //                         $itemNo .= $item->item_no . ' ';
-    //                     }
-    //                     if (!empty($item->_subrow)) {
-    //                         $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter);
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     } else {
-    //         $itemNo = $data->item_no;
-    //     }
 
-    // }
-    public function extractItemNoOfItems($data, &$itemNo, $counter)
+    public function extractItemNoOfItems($data, &$itemNo, $counter,$position)
     {
         // dd($data);
+        // Log::info(json_encode($data));
+        // Log::info("-------------------------------------");
+        $position++;
         if (count($counter) > 1) {
             if (isset($data->item_no) && $data->item_no != '') {
                 $itemNo = $data->item_no . ' ';
             }
             if (isset($data->_subrow)) {
                 foreach ($data->_subrow as $key => $item) {
-                    if (isset($counter[$this->counterForItemNo + 1])) {
-                        if (isset($item->item_no) && $item->id == $counter[$this->counterForItemNo + 1]) {
+                    if (isset($counter[$position])) {
+                        if (isset($item->item_no) && $item->id == $counter[$position]) {
                             $itemNo .= $item->item_no . ' ';
                         }
-                        if (!empty($item->_subrow)) {
-                            $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter);
+                        if (isset($item->_subrow)) {
+                            $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter,$position);
+                        }
+                    }
+                }
+            }else{
+                if(count($data)>0){
+                    foreach ($data as $key => $item) {
+                        if (isset($counter[$position]) && isset($item->_subrow)) {
+                            if (isset($item->item_no) && $item->id == $counter[$position]) {
+                                $itemNo .= $item->item_no . ' ';
+                            }
+                            if (isset($item->_subrow)) {
+                                $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter,$position);
+                            }
                         }
                     }
                 }
@@ -333,6 +320,7 @@ class CreateCompositeSor extends Component
         } else {
             $itemNo = $data->item_no;
         }
+
     }
     public function extractDescOfItems($data, &$descriptions, $counter)
     {
@@ -379,7 +367,7 @@ class CreateCompositeSor extends Component
                     'is_row' => $data['table_'],
                     'rate' => $data['qty'],
                     'created_by' => Auth::user()->id,
-                    'parent_itemNo' => $this->storeItem['item_no']
+                    'parent_itemNo' => $this->storeItem['item_no'],
                 ];
                 // dd($insert);
                 CompositSor::create($insert);
