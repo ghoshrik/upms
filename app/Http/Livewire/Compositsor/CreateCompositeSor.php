@@ -2,15 +2,14 @@
 
 namespace App\Http\Livewire\Compositsor;
 
-use Livewire\Component;
-use App\Models\UnitMaster;
-use WireUi\Traits\Actions;
 use App\Models\CompositSor;
-use Livewire\WithFileUploads;
-use App\Models\SorCategoryType;
 use App\Models\DynamicSorHeader;
-use Illuminate\Support\Facades\Log;
+use App\Models\SorCategoryType;
+use App\Models\UnitMaster;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+use WireUi\Traits\Actions;
 
 class CreateCompositeSor extends Component
 {
@@ -156,6 +155,7 @@ class CreateCompositeSor extends Component
     public function getRowValue($data)
     {
         // dd($data);
+        $this->reset('counterForItemNo');
         $itemNo = '';
         $fetchRow[] = [];
         if ($this->storeItem['item_no'] == '') {
@@ -184,10 +184,10 @@ class CreateCompositeSor extends Component
                 $convertedArray[] = $partialItemId;
             }
             // dd($convertedArray);
-            $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray,$this->counterForItemNo);
-            if (count($convertedArray) > count($convertedArray)-1) {
-                $itemNo .= $this->storeItem['item_no'];
-            }
+            $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray, $this->counterForItemNo);
+            // if (count($convertedArray) > count($convertedArray)-1) {
+            //     $itemNo .= $this->storeItem['item_no'];
+            // }
             $this->storeItem['item_no'] = $itemNo;
             $this->storeItem['col_position'] = $data[0]['colPosition'];
         } else {
@@ -215,7 +215,7 @@ class CreateCompositeSor extends Component
                 $convertedArray[] = $partialItemId;
             }
             // dd($convertedArray);
-            $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray,$this->counterForItemNo);
+            $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray, $this->counterForItemNo);
             // $itemNo .= $this->inputsData[$this->sorType]['item_no'];
             $this->inputsData[$this->sorType]['item_no'] = $itemNo;
             $this->inputsData[$this->sorType]['description'] = $data[0]['desc'];
@@ -226,51 +226,6 @@ class CreateCompositeSor extends Component
             $this->fetchDropDownData['unitMaster'] = UnitMaster::select('id', 'unit_name', 'short_name', 'is_active')->where('is_active', 1)->orderBy('id', 'desc')->get();
         }
 
-        /*
-        // dd($this->storeItem, $this->inputsData);
-        // if ($this->selectedCategoryId == 5) {
-        //     $id = explode('.',$data['id'])[0];
-        //     foreach (json_decode($this->getSor['row_data']) as $d) {
-        //         if ($d->id == $id && $d->desc_of_item != '') {
-        //             $this->sorMasterDesc .= $d->desc_of_item;
-        //         }
-        //     }
-        //     $this->getItemDetails1($data);
-        // } else {
-        //     $rowId = explode('.', $data[0]['id'])[0];
-        //     dd($rowId);
-        //     foreach (json_decode($this->getSor['row_data']) as $row) {
-        //         if ($row->id == $rowId) {
-        //             $fetchRow = $row;
-        //         }
-        //     }
-        //     $selectedItemId = $data[0]['id'];
-
-        //     // ---------explode the id------
-        //     $hierarchicalArray = explode(".", $selectedItemId);
-        //     $convertedArray = [];
-        //     $partialItemId = "";
-        //     foreach ($hierarchicalArray as $part) {
-        //         if ($partialItemId !== "") {
-        //             $partialItemId .= ".";
-        //         }
-        //         $partialItemId .= $part;
-        //         $convertedArray[] = $partialItemId;
-        //     }
-        //     $this->extractDescOfItems($fetchRow, $descriptions, $convertedArray);
-
-        //     if ($data != null) {
-        //         $this->viewModal = !$this->viewModal;
-        //         $this->estimateData['description'] = $descriptions . " " . $data[0]['desc'];
-        //         $this->estimateData['qty'] = 1;
-        //         $this->estimateData['rate'] = $data[0]['rowValue'];
-        //         $this->estimateData['item_number'] = $data[0]['itemNo'];
-        //         $this->calculateValue();
-        //     }
-        // }
-
-        // dd($this->estimateData['description']);
-         */
         $this->viewModal = !$this->viewModal;
     }
     public function getChildPageNo($key)
@@ -282,12 +237,10 @@ class CreateCompositeSor extends Component
         // dd($this->fetchDropDownData);
     }
 
-    public function extractItemNoOfItems($data, &$itemNo, $counter,$position)
+    public function extractItemNoOfItems($data, &$itemNo, $counter, $position)
     {
-        // dd($data);
-        // Log::info(json_encode($data));
-        // Log::info("-------------------------------------");
         $position++;
+        $this->counterForItemNo = $position;
         if (count($counter) > 1) {
             if (isset($data->item_no) && $data->item_no != '') {
                 $itemNo = $data->item_no . ' ';
@@ -299,19 +252,26 @@ class CreateCompositeSor extends Component
                             $itemNo .= $item->item_no . ' ';
                         }
                         if (isset($item->_subrow)) {
-                            $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter,$position);
+                            $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter, $position);
                         }
                     }
                 }
-            }else{
-                if(count($data)>0){
+            } else {
+                // dd($data);
+                if (count($data) > 0) {
                     foreach ($data as $key => $item) {
                         if (isset($counter[$position]) && isset($item->_subrow)) {
                             if (isset($item->item_no) && $item->id == $counter[$position]) {
                                 $itemNo .= $item->item_no . ' ';
                             }
                             if (isset($item->_subrow)) {
-                                $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter,$position);
+                                $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter, $position);
+                            }
+                        } else {
+                            if (isset($counter[$position])) {
+                                if (isset($item->item_no) && $item->id == $counter[$position]) {
+                                    $itemNo .= $item->item_no . ' ';
+                                }
                             }
                         }
                     }
@@ -320,7 +280,6 @@ class CreateCompositeSor extends Component
         } else {
             $itemNo = $data->item_no;
         }
-
     }
     public function extractDescOfItems($data, &$descriptions, $counter)
     {

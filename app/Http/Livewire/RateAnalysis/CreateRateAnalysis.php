@@ -369,6 +369,7 @@ class CreateRateAnalysis extends Component
         // dd($data);
         // dd($this->estimateData);
         // dd($this->isParent);
+        $this->reset('counterForItemNo');
         $fetchRow[] = [];
         // $descriptions = [];
         if ($this->selectedCategoryId == 5) {
@@ -401,7 +402,7 @@ class CreateRateAnalysis extends Component
                 $convertedArray[] = $partialItemId;
             }
             // dd($convertedArray);
-            $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray);
+            $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray,$this->counterForItemNo);
             $this->extractDescOfItems($fetchRow, $descriptions, $convertedArray);
             if ($data != null && $this->selectedCategoryId != '' && $this->isParent == false) {
                 // dd('hi');
@@ -429,21 +430,66 @@ class CreateRateAnalysis extends Component
         // dd($this->selectSor);
         // dd($this->estimateData);
     }
-    public function extractItemNoOfItems($data, &$itemNo, $counter)
+    // public function extractItemNoOfItems($data, &$itemNo, $counter)
+    // {
+    //     // dd($data);
+    //     if (count($counter) > 1) {
+    //         if (isset($data->item_no) && $data->item_no != '') {
+    //             $itemNo = $data->item_no . ' ';
+    //         }
+    //         if (isset($data->_subrow)) {
+    //             foreach ($data->_subrow as $key => $item) {
+    //                 if (isset($counter[$this->counterForItemNo + 1])) {
+    //                     if (isset($item->item_no) && $item->id == $counter[$this->counterForItemNo + 1]) {
+    //                         $itemNo .= $item->item_no . ' ';
+    //                     }
+    //                     if (!empty($item->_subrow)) {
+    //                         $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter);
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     } else {
+    //         $itemNo = $data->item_no;
+    //     }
+
+    // }
+    public function extractItemNoOfItems($data, &$itemNo, $counter, $position)
     {
-        // dd($data);
+        $position++;
+        $this->counterForItemNo = $position;
         if (count($counter) > 1) {
             if (isset($data->item_no) && $data->item_no != '') {
                 $itemNo = $data->item_no . ' ';
             }
             if (isset($data->_subrow)) {
                 foreach ($data->_subrow as $key => $item) {
-                    if (isset($counter[$this->counterForItemNo + 1])) {
-                        if (isset($item->item_no) && $item->id == $counter[$this->counterForItemNo + 1]) {
+                    if (isset($counter[$position])) {
+                        if (isset($item->item_no) && $item->id == $counter[$position]) {
                             $itemNo .= $item->item_no . ' ';
                         }
-                        if (!empty($item->_subrow)) {
-                            $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter);
+                        if (isset($item->_subrow)) {
+                            $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter, $position);
+                        }
+                    }
+                }
+            } else {
+                // dd($data);
+                if (count($data) > 0) {
+                    foreach ($data as $key => $item) {
+                        if (isset($counter[$position]) && isset($item->_subrow)) {
+                            if (isset($item->item_no) && $item->id == $counter[$position]) {
+                                $itemNo .= $item->item_no . ' ';
+                            }
+                            if (isset($item->_subrow)) {
+                                $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter, $position);
+                            }
+                        } else {
+                            if (isset($counter[$position])) {
+                                if (isset($item->item_no) && $item->id == $counter[$position]) {
+                                    $itemNo .= $item->item_no . ' ';
+                                }
+                            }
                         }
                     }
                 }
@@ -451,7 +497,6 @@ class CreateRateAnalysis extends Component
         } else {
             $itemNo = $data->item_no;
         }
-
     }
     public function extractDescOfItems($data, &$descriptions, $counter)
     {
