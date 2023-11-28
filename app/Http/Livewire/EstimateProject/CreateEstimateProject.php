@@ -2,27 +2,28 @@
 
 namespace App\Http\Livewire\EstimateProject;
 
-use App\Models\SOR;
-use Livewire\Component;
-use App\Models\SorMaster;
 use App\Models\Department;
-use WireUi\Traits\Actions;
-use Illuminate\Support\Arr;
+use App\Models\DynamicSorHeader;
 use App\Models\Esrecommender;
-use App\Models\RatesAnalysis;
-use App\Models\EstimatePrepare;
-use App\Models\SorCategoryType;
 use App\Models\QultiyEvaluation;
-use Illuminate\Support\Facades\DB;
+use App\Models\RatesAnalysis;
+use App\Models\SOR;
+use App\Models\SorCategoryType;
+use App\Models\SorMaster;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class CreateEstimateProject extends Component
 {
     use Actions;
+    protected $listeners = ['getRowValue', 'closeModal'];
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc;
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
-    public $searchDtaCount, $searchStyle, $searchResData,$quntity_type='menual',$quntity_type_id = 2,$qc_value;
+    public $searchDtaCount, $searchStyle, $searchResData, $quntity_type = 'menual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '';
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -108,12 +109,17 @@ class CreateEstimateProject extends Component
         $this->estimateData['item_name'] = $value;
         if ($this->estimateData['item_name'] == 'SOR') {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+            $this->fatchDropdownData['page_no'] = [];
             $this->estimateData['estimate_no'] = null;
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = Auth::user()->department_id;
             $this->getDeptCategory();
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
+            $this->estimateData['volume'] = '';
+            $this->estimateData['table_no'] = '';
+            $this->estimateData['page_no'] = '';
+            $this->estimateData['id'] = '';
             $this->estimateData['item_number'] = '';
             $this->estimateData['description'] = '';
             $this->estimateData['other_name'] = '';
@@ -147,10 +153,11 @@ class CreateEstimateProject extends Component
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
-        }elseif ($this->estimateData['item_name'] == 'Rate') {
+        } elseif ($this->estimateData['item_name'] == 'Rate') {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->estimateData['estimate_no'] = '';
             $this->estimateData['rate_no'] = '';
+            $this->estimateData['rate_type'] = '';
             // $this->estimateData['estimate_desc'] = '';
             $this->estimateData['dept_id'] = Auth::user()->department_id;
             $this->getDeptRates();
@@ -165,18 +172,28 @@ class CreateEstimateProject extends Component
         }
     }
 
-    public function changeQuntity($value){
+    public function changeQuntity($value)
+    {
         $value = $value['_x_bindings']['value'];
         // dd($value);
         $this->quntity_type = $value;
         if ($value == 'Qutity Evaluation') {
-            $this->fatchDropdownData['qultiyEvaluation'] = QultiyEvaluation::select('value')->where('rate_id',$this->estimateData['rate_no'])->where('operation','=','Final')->get();
+            $this->fatchDropdownData['qultiyEvaluation'] = QultiyEvaluation::select('value')->where('rate_id', $this->estimateData['rate_no'])->where('operation', '=', 'Final')->get();
         }
         // dd($this->fatchDropdownData['qultiyEvaluation']);
     }
 
     public function getDeptCategory()
     {
+        $this->estimateData['dept_category_id'] = '';
+        $this->estimateData['volume'] = '';
+        $this->estimateData['table_no'] = '';
+        $this->estimateData['page_no'] = '';
+        $this->estimateData['id'] = '';
+        $this->estimateData['description'] = '';
+        $this->estimateData['qty'] = '';
+        $this->estimateData['rate'] = '';
+        $this->estimateData['total_amount'] = '';
         $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
     }
 
@@ -196,7 +213,7 @@ class CreateEstimateProject extends Component
         //     ->where('version', $this->estimateData['version'])
         //     ->where('Item_details', 'like', '%' . $keyword . '%')->get();
         if ($this->selectedSORKey) {
-            $this->fatchDropdownData['items_number'] = SOR::select('Item_details', 'id','description')
+            $this->fatchDropdownData['items_number'] = SOR::select('Item_details', 'id', 'description')
                 ->where('department_id', $this->estimateData['dept_id'])
                 ->where('dept_category_id', $this->estimateData['dept_category_id'])
                 ->where('version', $this->estimateData['version'])
@@ -256,6 +273,82 @@ class CreateEstimateProject extends Component
         }
     }
 
+    public function getVolumn()
+    {
+        $this->fatchDropdownData['table_no'] = [];
+        $this->fatchDropdownData['page_no'] = [];
+        $this->estimateData['volume'] = '';
+        $this->estimateData['table_no'] = '';
+        $this->estimateData['page_no'] = '';
+        $this->estimateData['id'] = '';
+        $this->estimateData['description'] = '';
+        $this->estimateData['qty'] = '';
+        $this->estimateData['rate'] = '';
+        $this->estimateData['total_amount'] = '';
+        $this->fatchDropdownData['volumes'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']]])->select('volume_no')->groupBy('volume_no')->get();
+
+    }
+    public function getTableNo()
+    {
+        $this->fatchDropdownData['table_no'] = [];
+        // if ($this->selectedCategoryId == '') {
+        //     $this->selectSor['table_no'] = '';
+        //     $this->selectSor['page_no'] = '';
+        //     $this->dropdownData['table_no'] = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']]])
+        //         ->select('table_no')->groupBy('table_no')->get();
+        // } else {
+        $this->estimateData['table_no'] = '';
+        $this->estimateData['page_no'] = '';
+        $this->estimateData['id'] = '';
+        $this->estimateData['description'] = '';
+        $this->estimateData['qty'] = '';
+        $this->estimateData['rate'] = '';
+        $this->estimateData['total_amount'] = '';
+        $this->fatchDropdownData['table_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']]])
+            ->select('table_no')->groupBy('table_no')->get();
+        // }
+
+    }
+    public function getPageNo()
+    {
+
+        $this->viewModal = false;
+        // if ($this->selectedCategoryId == '') {
+        //     $this->selectSor['page_no'] = '';
+        //     $this->dropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']]])
+        //         ->select('page_no')->get();
+        // } else {
+        $this->estimateData['id'] = '';
+        $this->estimateData['description'] = '';
+        $this->estimateData['qty'] = '';
+        $this->estimateData['rate'] = '';
+        $this->estimateData['total_amount'] = '';
+        $this->fatchDropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']]])
+            ->select('id', 'page_no', 'corrigenda_name')->get();
+        // }
+    }
+    public function getDynamicSor()
+    {
+        // dd($this->estimateData);
+        $this->getSor = [];
+        // if ($this->selectedCategoryId == '') {
+        //     // $this->getSor = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']], ['page_no', $this->selectSor['page_no']]])->first();
+        //     $this->getSor = DynamicSorHeader::where('id', $this->selectSor['id'])->first();
+        //     $this->estimateData['page_no'] = $this->selectSor['page_no'];
+        //     $this->selectSor['sor_id'] = $this->getSor['id'];
+        // } else {
+        // $this->getSor = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']], ['page_no', $this->estimateData['page_no']]])->first();
+        $this->getSor = DynamicSorHeader::where('id', $this->estimateData['id'])->first();
+        $this->estimateData['sor_id'] = $this->getSor['id'];
+        $this->estimateData['page_no'] = $this->getSor['page_no'];
+        // }
+        if ($this->getSor != null) {
+            $this->viewModal = !$this->viewModal;
+            $this->modalName = "dynamic-sor-modal_" . rand(1, 1000);
+            $this->modalName = str_replace(' ', '_', $this->modalName);
+        }
+        // dd($this->isParent);
+    }
     public function calculateValue()
     {
         if ($this->estimateData['item_name'] == 'SOR') {
@@ -265,7 +358,7 @@ class CreateEstimateProject extends Component
         } else {
             if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
                 // $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
-                $this->estimateData['total_amount'] = round($this->estimateData['qty'] * $this->estimateData['rate'],2);
+                $this->estimateData['total_amount'] = round($this->estimateData['qty'] * $this->estimateData['rate'], 2);
             }
         }
     }
@@ -285,7 +378,7 @@ class CreateEstimateProject extends Component
         //     ->where('estimate_recomender.dept_id', $this->estimateData['dept_id'])
         //     ->where('sor_masters.is_verified', '=', 1)
         //     ->get();
-        $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',$this->estimateData['dept_id']],['status',8],['is_verified',1]])->get();
+        $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id', 'dept_id', 'sorMasterDesc', 'status', 'is_verified')->where([['dept_id', $this->estimateData['dept_id']], ['status', 8], ['is_verified', 1]])->get();
     }
     public function getDeptRates()
     {
@@ -302,7 +395,9 @@ class CreateEstimateProject extends Component
         //     ->where('estimate_recomender.dept_id', $this->estimateData['dept_id'])
         //     ->where('sor_masters.is_verified', '=', 1)
         //     ->get();
-        $this->fatchDropdownData['ratesList'] = RatesAnalysis::select('description', 'rate_id')->where([['operation', 'Total'], ['dept_id', $this->estimateData['dept_id']]])->get();
+        $this->fatchDropdownData['ratesList'] = DB::select(DB::raw("SELECT rate_id, description FROM rates_analyses WHERE dept_id = :dept_id AND operation != '' AND operation != 'Exp Calculoation' GROUP BY rate_id, description"), ['dept_id' => $this->estimateData['dept_id']]);
+        $this->fatchDropdownData['ratesList'] = json_decode(json_encode($this->fatchDropdownData['ratesList']), true);
+        // $this->fatchDropdownData['ratesList'] = RatesAnalysis::where([['dept_id', $this->estimateData['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculoation']])->select('rate_id','description')->groupBy('rate_id','description')->get();
         // $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',8],['is_verified',1]])->get();
     }
 
@@ -329,11 +424,11 @@ class CreateEstimateProject extends Component
         $this->estimateData['description'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
-        $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id', 'total_amount')->where([['rate_id',$this->estimateData['rate_no']],['operation', 'Total'], ['dept_id', Auth::user()->department_id]])->first();
-        $this->estimateData['total_amount'] = round($this->fatchDropdownData['rateDetails']['total_amount'],2);
+        $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id', 'qty', 'total_amount')->where([['rate_id', $this->estimateData['rate_no']], ['operation', $this->estimateData['rate_type']], ['dept_id', Auth::user()->department_id]])->first();
+        $this->estimateData['total_amount'] = round($this->fatchDropdownData['rateDetails']['total_amount'], 2);
         $this->estimateData['description'] = $this->fatchDropdownData['rateDetails']['description'];
         $this->estimateData['qty'] = 1;
-        $this->estimateData['rate'] = round($this->fatchDropdownData['rateDetails']['total_amount'],2);
+        $this->estimateData['rate'] = round($this->fatchDropdownData['rateDetails']['total_amount'], 2);
     }
 
     public function getEstimateDetails()
@@ -345,11 +440,151 @@ class CreateEstimateProject extends Component
         $this->fatchDropdownData['estimateDetails'] = Esrecommender::join('sor_masters', 'estimate_recomender.estimate_id', 'sor_masters.estimate_id')
             ->where('estimate_recomender.estimate_id', $this->estimateData['estimate_no'])
             ->where('estimate_recomender.operation', 'Total')->where('sor_masters.is_verified', '=', 1)->first();
-        $this->estimateData['total_amount'] = round($this->fatchDropdownData['estimateDetails']['total_amount'],2);
+        $this->estimateData['total_amount'] = round($this->fatchDropdownData['estimateDetails']['total_amount'], 2);
         $this->estimateData['description'] = $this->fatchDropdownData['estimateDetails']['sorMasterDesc'];
         $this->estimateData['qty'] = 1;
         $this->estimateData['rate'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
     }
+    public function getRateDetailsTypes()
+    {
+        $this->estimateData['total_amount'] = '';
+        $this->estimateData['description'] = '';
+        $this->estimateData['qty'] = '';
+        $this->estimateData['rate'] = '';
+        $this->fatchDropdownData['rateDetailsTypes'] = RatesAnalysis::where([['rate_id', $this->estimateData['rate_no']], ['dept_id', Auth::user()->department_id], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculoation']])
+            ->select('rate_id', 'operation')->get();
+        // dd($this->fatchDropdownData['rateDetailsTypes']);
+    }
+    public function getRowValue($data)
+    {
+        $this->reset('counterForItemNo');
+        $fetchRow[] = [];
+        // $descriptions = [];
+        // if ($this->selectedCategoryId == 5) {
+        //     $id = explode('.', $data['id'])[0];
+        //     foreach (json_decode($this->getSor['row_data']) as $d) {
+        //         if ($d->id == $id && $d->desc_of_item != '') {
+        //             $this->sorMasterDesc .= $d->desc_of_item;
+        //         }
+        //     }
+        //     $this->getItemDetails1($data);
+        // } else {
+        $rowId = explode('.', $data[0]['id'])[0];
+        foreach (json_decode($this->getSor['row_data']) as $row) {
+            if ($row->id == $rowId) {
+                $fetchRow = $row;
+            }
+        }
+        // dd(json_encode($fetchRow));
+        $selectedItemId = $data[0]['id'];
+        $this->estimateData['item_index'] = $selectedItemId;
+        // ---------explode the id------
+        $hierarchicalArray = explode(".", $selectedItemId);
+        $convertedArray = [];
+        $partialItemId = "";
+        foreach ($hierarchicalArray as $part) {
+            if ($partialItemId !== "") {
+                $partialItemId .= ".";
+            }
+            $partialItemId .= $part;
+            $convertedArray[] = $partialItemId;
+        }
+        // dd($convertedArray);
+        $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray, $this->counterForItemNo);
+        $this->extractDescOfItems($fetchRow, $descriptions, $convertedArray);
+        // if ($data != null && $this->selectedCategoryId != '' && $this->isParent == false) {
+        // dd('hi');
+        $this->viewModal = !$this->viewModal;
+        $this->estimateData['description'] = $descriptions . " " . $data[0]['desc'];
+        $this->estimateData['qty'] = 1;
+        $this->estimateData['rate'] = $data[0]['rowValue'];
+        $this->estimateData['item_number'] = $itemNo;
+        $this->estimateData['col_position'] = $data[0]['colPosition'];
+        $this->calculateValue();
+        // } else {
+        //     $this->selectSor['selectedSOR'] = $itemNo;
+        //     $this->selectSor['sor_id'] = $this->getSor['id'];
+        //     $this->selectSor['page_no'] = $this->getSor['page_no'];
+        //     $this->selectSor['selectedItemId'] = $selectedItemId;
+        //     $this->selectSor['item_index'] = $data[0]['id'];
+        //     $this->selectSor['col_position'] = $data[0]['colPosition'];
+        //     $this->sorMasterDesc = $data[0]['desc'];
+        //     // $this->sorMasterDesc = $descriptions . " " . $data[0]['desc'];
+        //     $this->viewModal = !$this->viewModal;
+        //     $this->isParent = !$this->isParent;
+        // }
+        // }
+
+        // dd($this->selectSor);
+        // dd($this->estimateData);
+    }
+
+    public function extractItemNoOfItems($data, &$itemNo, $counter, $position)
+    {
+        $position++;
+        $this->counterForItemNo = $position;
+        if (count($counter) > 1) {
+            if (isset($data->item_no) && $data->item_no != '') {
+                $itemNo = $data->item_no . ' ';
+            }
+            if (isset($data->_subrow)) {
+                foreach ($data->_subrow as $key => $item) {
+                    if (isset($counter[$position])) {
+                        if (isset($item->item_no) && $item->id == $counter[$position]) {
+                            $itemNo .= $item->item_no . ' ';
+                        }
+                        if (isset($item->_subrow)) {
+                            $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter, $position);
+                        }
+                    }
+                }
+            } else {
+                if (count($data) > 0) {
+                    foreach ($data as $key => $item) {
+                        if (isset($counter[$position]) && isset($item->_subrow)) {
+                            if (isset($item->item_no) && $item->id == $counter[$position]) {
+                                $itemNo .= $item->item_no . ' ';
+                            }
+                            if (isset($item->_subrow)) {
+                                $this->extractItemNoOfItems($item->_subrow, $itemNo, $counter, $position);
+                            }
+                        } else {
+                            if (isset($counter[$position])) {
+                                if (isset($item->item_no) && $item->id == $counter[$position]) {
+                                    $itemNo .= $item->item_no . ' ';
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            $itemNo = $data->item_no;
+        }
+    }
+
+    public function extractDescOfItems($data, &$descriptions, $counter)
+    {
+        if (count($counter) > 1) {
+            if (isset($data->desc_of_item) && $data->desc_of_item != '') {
+                $descriptions .= $data->desc_of_item . " ";
+            }
+            if (isset($data->_subrow) && count($counter) > 2) {
+                foreach ($data->_subrow as $item) {
+                    if (isset($item->_subrow)) {
+                        if (isset($item->desc_of_item)) {
+                            $descriptions .= $item->desc_of_item . ' ';
+                        }
+                        if (!empty($item->_subrow)) {
+                            $this->extractDescOfItems($item->_subrow, $descriptions, $counter);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
     public function addEstimate()
     {
         $validatee = $this->validate();
@@ -367,15 +602,26 @@ class CreateEstimateProject extends Component
         $this->addedEstimate['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
         $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
         $this->addedEstimate['version'] = $this->estimateData['version'];
+        $this->addedEstimate['rate_type'] = $this->estimateData['rate_type'];
         $this->addedEstimateUpdateTrack = rand(1, 1000);
         $this->estimateData['item_number'] = '';
         $this->estimateData['estimate_no'] = '';
         $this->estimateData['rate_no'] = '';
+        $this->estimateData['rate_type'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
         $this->estimateData['total_amount'] = '';
-        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc','estimateData','fatchDropdownData','selectedCategoryId']);
+        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'estimateData', 'fatchDropdownData', 'selectedCategoryId']);
 
+    }
+    public function closeModal()
+    {
+        $this->viewModal = !$this->viewModal;
+        if ($this->selectedCategoryId == '') {
+            $this->selectSor['page_no'] = '';
+        } else {
+            $this->estimateData['page_no'] = '';
+        }
     }
     public function render()
     {

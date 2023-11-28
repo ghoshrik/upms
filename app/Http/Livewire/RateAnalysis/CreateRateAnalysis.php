@@ -402,7 +402,7 @@ class CreateRateAnalysis extends Component
                 $convertedArray[] = $partialItemId;
             }
             // dd($convertedArray);
-            $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray,$this->counterForItemNo);
+            $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray, $this->counterForItemNo);
             $this->extractDescOfItems($fetchRow, $descriptions, $convertedArray);
             if ($data != null && $this->selectedCategoryId != '' && $this->isParent == false) {
                 // dd('hi');
@@ -474,7 +474,6 @@ class CreateRateAnalysis extends Component
                     }
                 }
             } else {
-                // dd($data);
                 if (count($data) > 0) {
                     foreach ($data as $key => $item) {
                         if (isset($counter[$position]) && isset($item->_subrow)) {
@@ -498,6 +497,7 @@ class CreateRateAnalysis extends Component
             $itemNo = $data->item_no;
         }
     }
+
     public function extractDescOfItems($data, &$descriptions, $counter)
     {
         if (count($counter) > 1) {
@@ -953,7 +953,7 @@ class CreateRateAnalysis extends Component
             // dd(json_encode($rdata));
             // dd(json_decode($this->getSor['row_data']));
             // dd($this->getSor);
-            foreach ($this->getCompositeDatas as $key=> $compositeData) {
+            foreach ($this->getCompositeDatas as $key => $compositeData) {
                 // dd($compositeData);
                 $this->estimateData['rate_no'] = '';
                 $this->estimateData['dept_id'] = '';
@@ -1003,28 +1003,28 @@ class CreateRateAnalysis extends Component
         $this->modalName = "child-sor-modal_" . rand(1, 1000);
         $this->modalName = str_replace(' ', '_', $this->modalName);
         // dd($this->getCompositeDatas[0]['sor_itemno_child_id'],$this->estimateData);
-        $this->getSor = DynamicSorHeader::where('id', (int)$this->estimateData['childSorId'])->first();
-            $rdata = [];
-            foreach(json_decode($this->getSor['row_data']) as $json){
-                // dd($json);
-                foreach($this->getCompositeDatas as $comp){
-                    // dd($comp);
-                    if($json->id == $comp['sor_itemno_child']){
-                        $rdata[] = $json;
-                    }
+        $this->getSor = DynamicSorHeader::where('id', (int) $this->estimateData['childSorId'])->first();
+        $rdata = [];
+        foreach (json_decode($this->getSor['row_data']) as $json) {
+            // dd($json);
+            foreach ($this->getCompositeDatas as $comp) {
+                // dd($comp);
+                if ($json->id == $comp['sor_itemno_child']) {
+                    $rdata[] = $json;
                 }
             }
-            $this->getSor['row_data'] = json_encode($rdata);
+        }
+        $this->getSor['row_data'] = json_encode($rdata);
         // dd($this->getSor['row_data']);
     }
     public function getCompositePlaceWise($data)
     {
-        dd($data,$this->getCompositeDatas);
+        dd($data, $this->getCompositeDatas);
         foreach ($this->getCompositeDatas as $key => $compositeData) {
             // dd($compositeData,$data);
-            $getRateDetails[] = RatesAnalysis::where([['sor_id', $compositeData['sor_itemno_child_id']],['item_index', $compositeData['sor_itemno_child']],['operation','With Stacking']])
+            $getRateDetails[] = RatesAnalysis::where([['sor_id', $compositeData['sor_itemno_child_id']], ['item_index', $compositeData['sor_itemno_child']], ['operation', 'With Stacking']])
             // ->whereIn('operation', ['With Stacking', 'Without Stacking'])
-            ->get();
+                ->get();
 
             // if (!empty($getRateDetails)) {
             //     $this->estimateData['rate_no'] = '';
@@ -1040,7 +1040,7 @@ class CreateRateAnalysis extends Component
             //     $this->addEstimate($key + 1);
             // }
         }
-    dd($getRateDetails);
+        dd($getRateDetails);
     }
     public function getCompositSorItemDetails($id)
     {
@@ -1234,7 +1234,7 @@ class CreateRateAnalysis extends Component
         //     ->where('sor_masters.is_verified', '=', 1)
         //     ->get();
         // $this->fatchDropdownData['ratesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',1],['is_verified',1]])->get();
-        $this->fatchDropdownData['ratesList'] = RatesAnalysis::select('description', 'rate_id', 'operation')->where([['dept_id', $this->estimateData['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculoation']])->get();
+        $this->fatchDropdownData['ratesList'] = RatesAnalysis::where([['dept_id', $this->estimateData['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculoation']])->select('description', 'rate_id')->groupBy('description', 'rate_id')->get();
         // $this->fatchDropdownData['ratesList'] = RatesAnalysis::all();
     }
     public function getEstimateDetails()
@@ -1304,7 +1304,7 @@ class CreateRateAnalysis extends Component
         $this->estimateData['rate'] = '';
         $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id', 'qty', 'total_amount')->where([['rate_id', $this->estimateData['rate_no']], ['operation', $this->estimateData['rate_type']], ['dept_id', Auth::user()->department_id]])->first();
         // dd($this->fatchDropdownData['rateDetails']);
-        $this->estimateData['total_amount'] = (int)$this->fatchDropdownData['rateDetails']['total_amount'];
+        $this->estimateData['total_amount'] = (int) $this->fatchDropdownData['rateDetails']['total_amount'];
         $this->estimateData['description'] = $this->fatchDropdownData['rateDetails']['description'];
         // $this->estimateData['qty'] = ($this->fatchDropdownData['rateDetails']['qty'] != 0) ? $this->fatchDropdownData['rateDetails']['qty'] : 1;
         $this->estimateData['qty'] = 1;

@@ -83,7 +83,7 @@
                                         </td>
                                         <td class="text-wrap" style="width: 40rem">
                                             @if ($addedEstimate['sor_item_number'] || $addedEstimate['rate_no'])
-                                                {{ $addedEstimate['description'] }}
+                                                {{ $addedEstimate['description'] }}{{ ($addedEstimate['rate_type'] != '') ? ' ( ' .$addedEstimate['rate_type']. ' ) ': ''}}
                                             @elseif ($addedEstimate['estimate_no'])
                                                 {{ getEstimateDescription($addedEstimate['estimate_no']) }}
                                                 {{-- {{ $addedEstimate->SOR->sorMasterDesc }} --}}

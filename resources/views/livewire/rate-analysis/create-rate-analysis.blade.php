@@ -404,7 +404,7 @@
                                                 @isset($fatchDropdownData['ratesList'])
                                                     @foreach ($fatchDropdownData['ratesList'] as $rate)
                                                         <x-select.option
-                                                            label="{{ $rate['rate_id'] . ' - ' . $rate['description'] . ' ( ' . $rate['operation'] . ' )' }}"
+                                                            label="{{ $rate['rate_id'] . ' - ' . $rate['description'] }}"
                                                             value="{{ $rate['rate_id'] }}" />
                                                     @endforeach
                                                 @endisset
