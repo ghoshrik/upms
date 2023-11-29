@@ -23,7 +23,7 @@ class CreateEstimateProject extends Component
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc;
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
-    public $searchDtaCount, $searchStyle, $searchResData, $quntity_type = 'menual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '';
+    public $searchDtaCount, $searchStyle, $searchResData, $quntity_type = 'menual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '',$getSor=[];
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -354,11 +354,12 @@ class CreateEstimateProject extends Component
         if ($this->estimateData['item_name'] == 'SOR') {
             if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
                 $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
+                $this->estimateData['total_amount'] = round($this->estimateData['total_amount'],2);
             }
         } else {
             if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
-                // $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
-                $this->estimateData['total_amount'] = round($this->estimateData['qty'] * $this->estimateData['rate'], 2);
+                $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
+                $this->estimateData['total_amount'] = round($this->estimateData['total_amount'],2);
             }
         }
     }
@@ -457,6 +458,7 @@ class CreateEstimateProject extends Component
     }
     public function getRowValue($data)
     {
+        // dd($data);
         $this->reset('counterForItemNo');
         $fetchRow[] = [];
         // $descriptions = [];
@@ -494,7 +496,7 @@ class CreateEstimateProject extends Component
         $this->extractDescOfItems($fetchRow, $descriptions, $convertedArray);
         // if ($data != null && $this->selectedCategoryId != '' && $this->isParent == false) {
         // dd('hi');
-        $this->viewModal = !$this->viewModal;
+        // $this->viewModal = !$this->viewModal;
         $this->estimateData['description'] = $descriptions . " " . $data[0]['desc'];
         $this->estimateData['qty'] = 1;
         $this->estimateData['rate'] = $data[0]['rowValue'];
@@ -587,10 +589,11 @@ class CreateEstimateProject extends Component
 
     public function addEstimate()
     {
-        $validatee = $this->validate();
+        // dd($this->estimateData);
+        // $validatee = $this->validate();
         $this->reset('addedEstimate');
         $this->showTableOne = !$this->showTableOne;
-        $this->addedEstimate['estimate_no'] = ($this->estimateData['estimate_no'] == '') ? 0 : $this->estimateData['estimate_no'];
+        $this->addedEstimate['estimate_no'] = ($this->estimateData['estimate_no'] == '' || $this->estimateData['estimate_no'] == null) ? 0 : $this->estimateData['estimate_no'];
         $this->addedEstimate['rate_no'] = ($this->estimateData['rate_no'] == '') ? 0 : $this->estimateData['rate_no'];
         $this->addedEstimate['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
         $this->addedEstimate['category_id'] = ($this->estimateData['dept_category_id'] == '') ? 0 : $this->estimateData['dept_category_id'];
@@ -602,7 +605,13 @@ class CreateEstimateProject extends Component
         $this->addedEstimate['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
         $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
         $this->addedEstimate['version'] = $this->estimateData['version'];
-        $this->addedEstimate['rate_type'] = $this->estimateData['rate_type'];
+        $this->addedEstimate['page_no'] = (isset($this->estimateData['page_no']))? $this->estimateData['page_no'] : 0;
+        $this->addedEstimate['table_no'] = (isset($this->estimateData['table_no']))? $this->estimateData['table_no'] : 0;
+        $this->addedEstimate['volume_no'] = (isset($this->estimateData['volume']))? $this->estimateData['volume'] : 0;
+        $this->addedEstimate['sor_id'] = (isset($this->estimateData['id']))? $this->estimateData['id'] : '';
+        $this->addedEstimate['item_index'] = (isset($this->estimateData['item_index']))? $this->estimateData['item_index'] : '';
+        $this->addedEstimate['col_position'] = (isset($this->estimateData['col_position']))? $this->estimateData['col_position'] : 0;
+        $this->addedEstimate['rate_type'] = (isset($this->estimateData['rate_type']))? $this->estimateData['rate_type'] : '';
         $this->addedEstimateUpdateTrack = rand(1, 1000);
         $this->estimateData['item_number'] = '';
         $this->estimateData['estimate_no'] = '';
@@ -611,8 +620,8 @@ class CreateEstimateProject extends Component
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
         $this->estimateData['total_amount'] = '';
+        // dd($this->addedEstimate);
         $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'estimateData', 'fatchDropdownData', 'selectedCategoryId']);
-
     }
     public function closeModal()
     {

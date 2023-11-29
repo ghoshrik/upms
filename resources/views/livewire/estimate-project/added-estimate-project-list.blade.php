@@ -55,7 +55,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- @dd($allAddedEstimatesData) --}}
                                 @foreach ($allAddedEstimatesData as $key => $addedEstimate)
                                     <tr>
                                         <td>
@@ -71,11 +70,11 @@
                                         <td>
                                             {{-- {{ $addedEstimate['sor_item_number'] ?  $addedEstimate['sor_item_number'] : '---'}} --}}
 
-                                            @if ($addedEstimate['sor_item_number'])
-                                                {{ getSorItemNumber($addedEstimate['sor_item_number']) }}
-                                            @elseif ($addedEstimate['estimate_no'])
+                                            @if ($addedEstimate['sor_item_number'] != '' && $addedEstimate['sor_item_number'] != 0)
+                                                {{ $addedEstimate['sor_item_number'] }}
+                                            @elseif ($addedEstimate['estimate_no'] != 0)
                                                 {{ $addedEstimate['estimate_no'] }}
-                                            @elseif($addedEstimate['rate_no'])
+                                            @elseif($addedEstimate['rate_no'] != 0)
                                                 {{ $addedEstimate['rate_no'] }}
                                             @else
                                                 --
@@ -101,10 +100,14 @@
 
                                         </td>
                                         <td>
+                                            @if ($addedEstimate['qty'] != 0 || $addedEstimate['qty'] != '')
                                             {{ $addedEstimate['qty'] }}
+                                            @endif
                                         </td>
                                         <td>
+                                            @if ($addedEstimate['rate'] != 0 || $addedEstimate['rate'] != '')
                                             {{ $addedEstimate['rate'] }}
+                                            @endif
                                         </td>
                                         <td>
                                             {{ $addedEstimate['total_amount']}}

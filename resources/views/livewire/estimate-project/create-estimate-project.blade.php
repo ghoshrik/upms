@@ -551,10 +551,6 @@
                     column.columns.forEach(function(subColumn) {
                         var subFun;
                         delete subColumn.editor;
-                        if (@json($selectedCategoryId) == 4 && column.field == 'desc_of_item') {
-                            // console.log('hi');
-                            column.isClick = function(e, cell) {};
-                        }
                         if (subColumn.isClick) {
                             subFun = subColumn.isClick = eval('(' + subColumn.isClick + ')');
                         }

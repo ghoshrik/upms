@@ -3,16 +3,12 @@
 namespace App\Http\Livewire\EstimateProject;
 
 use App\Models\EstimatePrepare;
-use Illuminate\Support\Facades\Log;
-use Livewire\Component;
-use ChrisKonnertz\StringCalc\StringCalc;
-use App\Models\SORMaster as ModelsSORMaster;
-use Illuminate\Support\Facades\Auth;
 use App\Models\EstimateUserAssignRecord;
-use ChrisKonnertz\StringCalc\Exceptions\StringCalcException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\SORMaster as ModelsSORMaster;
+use ChrisKonnertz\StringCalc\StringCalc;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Livewire\Component;
 use WireUi\Traits\Actions;
 
 class AddedEstimateProjectList extends Component
@@ -115,7 +111,7 @@ class AddedEstimateProjectList extends Component
         } else {
             $this->dispatchBrowserEvent('alert', [
                 'type' => 'error',
-                'message' => "Minimum select 2 Check boxes"
+                'message' => "Minimum select 2 Check boxes",
             ]);
         }
     }
@@ -146,6 +142,24 @@ class AddedEstimateProjectList extends Component
             if (!array_key_exists("rate_no", $this->addedEstimateData)) {
                 $this->addedEstimateData['rate_no'] = 0;
             }
+            if (!array_key_exists("volume_no", $this->addedEstimateData)) {
+                $this->addedEstimateData['volume_no'] = 0;
+            }
+            if (!array_key_exists("sor_id", $this->addedEstimateData)) {
+                $this->addedEstimateData['sor_id'] = 0;
+            }
+            if (!array_key_exists("item_index", $this->addedEstimateData)) {
+                $this->addedEstimateData['item_index'] = 0;
+            }
+            if (!array_key_exists("table_no", $this->addedEstimateData)) {
+                $this->addedEstimateData['table_no'] = 0;
+            }
+            if (!array_key_exists("page_no", $this->addedEstimateData)) {
+                $this->addedEstimateData['page_no'] = 0;
+            }
+            if (!array_key_exists("col_position", $this->addedEstimateData)) {
+                $this->addedEstimateData['col_position'] = 0;
+            }
             if (!array_key_exists("rate_type", $this->addedEstimateData)) {
                 $this->addedEstimateData['rate_type'] = '';
             }
@@ -160,15 +174,15 @@ class AddedEstimateProjectList extends Component
     public function confDeleteDialog($value): void
     {
         $this->dialog()->confirm([
-            'title'       => 'Are you Sure?',
-            'icon'        => 'error',
-            'accept'      => [
-                'label'  => 'Yes, Delete it',
+            'title' => 'Are you Sure?',
+            'icon' => 'error',
+            'accept' => [
+                'label' => 'Yes, Delete it',
                 'method' => 'deleteEstimate',
                 'params' => $value,
             ],
             'reject' => [
-                'label'  => 'No, cancel'
+                'label' => 'No, cancel',
                 // 'method' => 'cancel',
             ],
         ]);
@@ -180,8 +194,7 @@ class AddedEstimateProjectList extends Component
         Session()->forget('addedProjectEstimateData');
         Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
         $this->level = [];
-        if($this->totalOnSelectedCount == 1)
-        {
+        if ($this->totalOnSelectedCount == 1) {
             $this->reset('totalOnSelectedCount');
         }
         $this->notification()->error(
@@ -198,7 +211,7 @@ class AddedEstimateProjectList extends Component
         $section = $pw->addSection(
             array(
                 'marginLeft' => 600, 'marginRight' => 200,
-                'marginTop' => 600, 'marginBottom' => 200
+                'marginTop' => 600, 'marginBottom' => 200,
             )
         );
         $html = "<h1 style='font-size:24px;font-weight:600;text-align: center;'>Project Estimate Preparation Details</h1>";
@@ -244,7 +257,7 @@ class AddedEstimateProjectList extends Component
         $html .= "</table>";
         foreach ($exportDatas as $key => $export) {
             if ($export['estimate_no']) {
-                $html .= "<p>Estimate Packege ".$export['estimate_no']."</p>";
+                $html .= "<p>Estimate Packege " . $export['estimate_no'] . "</p>";
                 $getEstimateDetails = EstimatePrepare::where('estimate_id', '=', $export['estimate_no'])->get();
                 $html .= "<table style='border: 1px solid black;width:auto'><tr>";
                 $html .= "<th scope='col' style='text-align: center'>Serial No.</th>";
@@ -301,15 +314,15 @@ class AddedEstimateProjectList extends Component
     {
         if ($this->totalOnSelectedCount == 1) {
             try {
-                // dd($this->allAddedEstimatesData);
+                dd($this->allAddedEstimatesData);
                 if ($this->allAddedEstimatesData) {
                     $intId = random_int(100000, 999999);
-                    if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1,'dept_id' => Auth::user()->department_id])) {
+                    if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1, 'dept_id' => Auth::user()->department_id])) {
                         foreach ($this->allAddedEstimatesData as $key => $value) {
                             $insert = [
                                 'estimate_id' => $intId,
                                 'estimate_no' => $value['estimate_no'],
-                                'rate_id' => $value['rate_no'],
+                                'rate_no' => $value['rate_no'],
                                 'dept_id' => $value['dept_id'],
                                 'category_id' => $value['category_id'],
                                 'row_id' => $value['array_id'],
@@ -323,6 +336,12 @@ class AddedEstimateProjectList extends Component
                                 'operation' => $value['operation'],
                                 'created_by' => Auth::user()->id,
                                 'comments' => $value['remarks'],
+                                'page_no' => $value['page_no'],
+                                'table_no' => $value['table_no'],
+                                'volume_no' => $value['volume_no'],
+                                'sor_id' => $value['sor_id'],
+                                'item_index' => $value['item_index'],
+                                'col_position' => $value['col_position'],
                             ];
                             $validateData = Validator::make($insert, [
                                 'estimate_id' => 'required|integer',
@@ -331,7 +350,9 @@ class AddedEstimateProjectList extends Component
                                 'row_id' => 'required|integer',
                             ]);
                             if ($validateData->fails()) {
-                                // dd($validateData->messages());
+                                $this->notification()->error(
+                                    $title = 'Please check all the fields'
+                                );
                             }
                             EstimatePrepare::create($insert);
                         }
@@ -359,7 +380,7 @@ class AddedEstimateProjectList extends Component
                 // session()->flash('serverError', $th->getMessage());
                 $this->emit('showError', $th->getMessage());
             }
-        }else{
+        } else {
             $this->notification()->error(
                 $title = 'Please Calculate total first !!'
             );
