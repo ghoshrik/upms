@@ -3,11 +3,18 @@
 namespace App\Http\Livewire\SorBook\DataTable;
 
 use App\Models\DynamicSorHeader;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
-use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
-use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
+use Illuminate\Support\Facades\Auth;
+use PowerComponents\LivewirePowerGrid\Button;
+use PowerComponents\LivewirePowerGrid\Column;
+use PowerComponents\LivewirePowerGrid\Exportable;
+use PowerComponents\LivewirePowerGrid\Footer;
+use PowerComponents\LivewirePowerGrid\Header;
+use PowerComponents\LivewirePowerGrid\PowerGrid;
+use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
+use PowerComponents\LivewirePowerGrid\Rules\Rule;
+use PowerComponents\LivewirePowerGrid\Rules\RuleActions;use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 
 final class SorHeaderTable extends PowerGridComponent
 {
@@ -19,7 +26,8 @@ final class SorHeaderTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Setup Table's general features
     |
-    */
+     */
+    public $selectVolume;
     public function setUp(): array
     {
         $this->showCheckBox();
@@ -41,16 +49,19 @@ final class SorHeaderTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Provides data to your Table using a Model or Collection
     |
-    */
+     */
 
     /**
-    * PowerGrid datasource.
-    *
-    * @return Builder<\App\Models\DynamicSorHeader>
-    */
+     * PowerGrid datasource.
+     *
+     * @return Builder<\App\Models\DynamicSorHeader>
+     */
     public function datasource(): Builder
     {
-        return DynamicSorHeader::query();
+        return DynamicSorHeader::query()
+            ->where('department_id', Auth::user()->department_id)
+            ->where('volume_no', $this->selectVolume)
+            ->where('created_by', Auth::user()->id);
     }
 
     /*
@@ -59,7 +70,7 @@ final class SorHeaderTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Configure here relationships to be used by the Search and Table Filters.
     |
-    */
+     */
 
     /**
      * Relationship search.
@@ -81,14 +92,16 @@ final class SorHeaderTable extends PowerGridComponent
     | ❗ IMPORTANT: When using closures, you must escape any value coming from
     |    the database using the `e()` Laravel Helper function.
     |
-    */
+     */
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-            ->addColumn('id')
+        //->addColumn('id')
+            ->addColumn('getDeptCategoryName.dept_category_name')
+            ->addColumn('volume_no')
             ->addColumn('table_no')
 
-           /** Example of custom column using a closure **/
+        /** Example of custom column using a closure **/
             ->addColumn('table_no_lower', function (DynamicSorHeader $model) {
                 return strtolower(e($model->table_no));
             })
@@ -104,9 +117,9 @@ final class SorHeaderTable extends PowerGridComponent
     | Include the columns added columns, making them visible on the Table.
     | Each column can be configured with properties, filters, actions...
     |
-    */
+     */
 
-     /**
+    /**
      * PowerGrid Columns.
      *
      * @return array<int, Column>
@@ -114,9 +127,15 @@ final class SorHeaderTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('ID', 'id')
-                ->makeInputRange(),
-
+            //Column::make('ID', 'id')
+            //->makeInputRange(),
+            Column::make('DEPT CATEGORY', 'getDeptCategoryName.dept_category_name')
+            // ->sortable()
+                ->searchable(),
+            Column::make('VOLUME NO', 'volume_no')
+                ->sortable()
+                ->searchable()
+                ->makeInputText(),
             Column::make('TABLE NO', 'table_no')
                 ->sortable()
                 ->searchable()
@@ -132,7 +151,7 @@ final class SorHeaderTable extends PowerGridComponent
             //     ->searchable(),
 
         ]
-;
+        ;
     }
 
     /*
@@ -141,25 +160,24 @@ final class SorHeaderTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Enable the method below only if the Routes below are defined in your app.
     |
-    */
+     */
 
-     /**
+    /**
      * PowerGrid DynamicSorHeader Action Buttons.
      *
      * @return array<int, Button>
      */
 
-
     public function actions(): array
     {
-       return [
-        Button::add('View')
-        ->bladeComponent('view', ['id' => 'id'])
+        return [
+            Button::add('View')
+                ->bladeComponent('view', ['id' => 'id']),
         ];
     }
     public function view($id)
     {
-        $this->emit('openEntryForm',['formType'=>'view', 'id'=>$id]);
+        $this->emit('openEntryForm', ['formType' => 'view', 'id' => $id]);
     }
     /*
     |--------------------------------------------------------------------------
@@ -167,24 +185,24 @@ final class SorHeaderTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Enable the method below to configure Rules for your Table and Action Buttons.
     |
-    */
+     */
 
-     /**
+    /**
      * PowerGrid DynamicSorHeader Action Rules.
      *
      * @return array<int, RuleActions>
      */
 
     /*
-    public function actionRules(): array
-    {
-       return [
+public function actionRules(): array
+{
+return [
 
-           //Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($dynamic-sor-header) => $dynamic-sor-header->id === 1)
-                ->hide(),
-        ];
-    }
-    */
+//Hide button edit for ID 1
+Rule::button('edit')
+->when(fn($dynamic-sor-header) => $dynamic-sor-header->id === 1)
+->hide(),
+];
+}
+ */
 }
