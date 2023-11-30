@@ -100,12 +100,12 @@
 
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['qty'] != 0 || $addedEstimate['qty'] != '')
+                                            @if ($addedEstimate['qty'] != 0 )
                                             {{ $addedEstimate['qty'] }}
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['rate'] != 0 || $addedEstimate['rate'] != '')
+                                            @if ($addedEstimate['rate'] != 0 )
                                             {{ $addedEstimate['rate'] }}
                                             @endif
                                         </td>

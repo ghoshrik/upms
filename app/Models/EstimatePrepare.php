@@ -19,6 +19,11 @@ class EstimatePrepare extends Model
         'sor_item_number',
         'estimate_no',
         'rate_id',
+        'volume_no',
+        'page_no',
+        'table_no',
+        'sor_id',
+        'item_index',
         'item_name',
         'other_name',
         'qty',
@@ -26,7 +31,8 @@ class EstimatePrepare extends Model
         'total_amount',
         'operation',
         'created_by',
-        'comments'
+        'comments',
+        'col_position'
     ];
 
     public function sorNumber()

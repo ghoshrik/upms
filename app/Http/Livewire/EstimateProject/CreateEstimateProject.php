@@ -617,6 +617,7 @@ class CreateEstimateProject extends Component
         $this->estimateData['estimate_no'] = '';
         $this->estimateData['rate_no'] = '';
         $this->estimateData['rate_type'] = '';
+        $this->estimateData['description'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
         $this->estimateData['total_amount'] = '';
