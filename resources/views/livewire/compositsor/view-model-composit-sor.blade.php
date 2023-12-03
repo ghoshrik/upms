@@ -1,6 +1,5 @@
 <div>
-    {{-- Nothing in the world is as soft and yielding as water. --}}
-    <x-modal max-width="5xl" blur wire:model.defer="viewVerifyModal">
+     <x-modal max-width="5xl" blur wire:model.defer="viewVerifyModal">
         <x-card>
             <h3>
                 {{-- @isset($sor_itemno_parent_id, $sor_itemno_parent_index)
@@ -10,9 +9,8 @@
             <table class="table mt-2 table-report">
                 <thead>
                     <tr>
-                        <th class="whitespace-nowrap" style="padding-right:4rem;">#</th>
                         <th class="whitespace-nowrap">ITEM
-                            NUMBER</th>
+                            NUMBER/PAGE NO</th>
                         <th class="whitespace-nowrap" style="width:40%;text-align:center;">
                             DESCRIPTION</th>
 
@@ -27,24 +25,23 @@
                     @isset($this->viewCompositSOR)
                         @foreach ($viewCompositSOR as $lists)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>
+                                <td class="text-wrap">
                                     @if ($lists['is_row'] == 0)
                                         {{ getSorPageNo($lists['sor_itemno_child_id']) }}
                                         {{-- @if (getSorCorrigenda($lists['sor_itemno_child_id'] != null)) --}}
-                                        ({{ getSorCorrigenda($lists['sor_itemno_child_id']) }})
+                                        {{ (getSorCorrigenda($lists['sor_itemno_child_id']) != '') ? '('. getSorCorrigenda($lists['sor_itemno_child_id']) .')' : '' }}
                                         {{-- @endif --}}
                                     @else
                                         {{ $lists['sor_itemno_child'] }}
                                     @endif
                                 </td>
-                                <td>
+                                <td class="text-wrap">
                                     {{ $lists['description'] }}
                                 </td>
-                                <td>
+                                <td class="text-wrap">
                                     {{ getunitName($lists['unit_id']) }}
                                 </td>
-                                <td>
+                                <td class="text-wrap">
                                     {{ $lists['rate'] }}
                                 </td>
                                 {{-- <td>

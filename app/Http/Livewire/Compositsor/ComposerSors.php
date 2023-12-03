@@ -5,14 +5,17 @@ namespace App\Http\Livewire\Compositsor;
 use App\Models\CompositSor;
 use App\Models\SOR;
 use Illuminate\Support\Facades\Auth;
+use Livewire\WithPagination;
 use Livewire\Component;
 
 class ComposerSors extends Component
 {
-    public $formOpen = false, $editFormOpen = false, $updateDataTableTracker;
+    use WithPagination;
+    public $formOpen = false, $editFormOpen = false, $updateDataTableTracker,$viewCompositSOR;
     protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'sorFileDownload' => 'generatePdf', 'refresh' => 'render'];
     public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel, $editId = null, $CountSorListPending;
-    public $composerSor = [], $viewCompositSOR;
+    public $composerSor = [];
+    public $search = '';
 
     public function mount()
     {
@@ -22,7 +25,6 @@ class ComposerSors extends Component
     }
     public function fromEntryControl($data = '')
     {
-        // dd($data);
         $this->openedFormType = is_array($data) ? $data['formType'] : $data;
         $this->isFromOpen = !$this->isFromOpen;
         switch ($this->openedFormType) {
@@ -63,10 +65,7 @@ class ComposerSors extends Component
     // }
     public function viewComposite($composite_id)
     {
-        // $sor_itemno_parent_index = implode('.', str_split($sor_itemno_parent_index));
-        // dd($sor_itemno_parent_index);
         $this->viewCompositSOR = CompositSor::where([['composite_id', $composite_id]])->get();
-        // dd($this->viewCompositSOR);
         $this->emit('viewModal', $this->viewCompositSOR);
     }
     public function render()
@@ -74,19 +73,19 @@ class ComposerSors extends Component
         $this->titel = 'Composit SOR';
         $assets = ['chart', 'animation'];
         $this->updateDataTableTracker = rand(1, 1000);
-        if (Auth::user()->user_type == 1) {
+        if (Auth::user()->id == 592 || Auth::user()->user_type == 1) {
             $this->composerSor = CompositSor::select('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
                 ->groupBy('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
-                ->orderBy('sor_itemno_parent_id','asc')
                 ->get();
         } else {
             $this->composerSor = CompositSor::where('created_by', Auth::user()->id)
                 ->select('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
                 ->groupBy('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
-                ->orderBy('sor_itemno_parent_id','asc')
                 ->get();
         }
-        // dd($this->composerSor);
         return view('livewire.compositsor.composer-sors', compact('assets'));
+        // return view('livewire.compositsor.composer-sors',[
+        //     'composerSor' => $this->composerSor
+        // ]);
     }
 }

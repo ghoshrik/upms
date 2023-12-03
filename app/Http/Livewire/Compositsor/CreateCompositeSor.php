@@ -68,7 +68,7 @@ class CreateCompositeSor extends Component
                 'description' => '',
                 'qty' => '',
                 'unit_id' => '',
-                'table_' => '',
+                'table_' => 1,
             ],
         ];
     }

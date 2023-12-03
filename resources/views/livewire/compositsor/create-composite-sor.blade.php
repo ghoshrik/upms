@@ -45,13 +45,24 @@
                 <div class="col-md-3 col-lg-3 col-sm-3">
                     <div class="form-group">
                         <x-input label="Item No" placeholder="Item No" wire:model.defer="storeItem.item_no"
-                            wire:key="item" readonly />
+                            wire:key="item" />
                     </div>
                 </div>
             </div>
             @if ($storeItem['item_no'] != '')
                 @foreach ($inputsData as $key => $inputData)
                     <div class="row mutipal-add-row">
+                        <div class="col">
+                            <div class="form-group">
+                                <x-select wire:key='table_{{ $key }}' label="Select Option"
+                                    placeholder="Select" wire:model.defer="inputsData.{{ $key }}.table_">
+                                    <x-select.option wire:key="1" label="Table" value="1" />
+                                    <x-select.option wire:key="2" label="Row" value="2" />
+                                    <x-select.option wire:key="3" label="Other" value="3" />
+                                </x-select>
+                            </div>
+                        </div>
+                        @if ($inputsData[$key]['table_'] == 1 || $inputsData[$key]['table_'] == 2)
                         <div class="col">
                             <div class="form-group">
                                 <x-select wire:key="table_no{{ $key }}" label="Table No"
@@ -67,7 +78,7 @@
                                 </x-select>
                             </div>
                         </div>
-                        <div class="col">
+                        {{-- <div class="col">
                             <div class="form-group">
                                 <x-select wire:key='table_{{ $key }}' label="Select Option"
                                     placeholder="Select" wire:model.defer="inputsData.{{ $key }}.table_">
@@ -75,7 +86,7 @@
                                     <x-select.option wire:key="2" label="Row" value="2" />
                                 </x-select>
                             </div>
-                        </div>
+                        </div> --}}
                         {{-- @if ($this->inputsData[$key]['table_'] != '')
                             @if ($this->inputsData[$key]['table_'] == '1') --}}
                         <div class="col">
@@ -137,6 +148,7 @@
                                 </button>
                             </div>
                         </div>
+                        @endif
                     </div>
                 @endforeach
                 <div class="col-md-3">
