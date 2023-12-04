@@ -6,6 +6,7 @@ use App\Models\CompositSor;
 use App\Models\DynamicSorHeader;
 use App\Models\SorCategoryType;
 use App\Models\UnitMaster;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -22,10 +23,9 @@ class CreateCompositeSor extends Component
         'storeItem.dept_category_id' => 'required',
         'storeItem.table_no' => 'required',
         'storeItem.page_no' => 'required|integer',
-
-        'inputsData.*.table_no' => 'required',
+        // 'inputsData.*.table_no' => 'required',
         'inputsData.*.table_' => 'required|integer',
-        'inputsData.*.page_no' => 'required|integer',
+        // 'inputsData.*.page_no' => 'required|integer',
         'inputsData.*.description' => 'required',
         'inputsData.*.unit_id' => 'required|integer',
         'inputsData.*.qty' => 'required',
@@ -36,7 +36,6 @@ class CreateCompositeSor extends Component
         'storeItem.table_no.required' => 'This field is required',
         'storeItem.page_no.required' => 'This field is required',
         'storeItem.page_no.integer' => 'This field data mismatch',
-
         'inputsData.*.table_no.required' => 'This field is required',
         'inputsData.*.table_.required' => 'This field is required',
         'inputsData.*.table_.integer' => 'This field data mismatch',
@@ -52,6 +51,20 @@ class CreateCompositeSor extends Component
     public function mount()
     {
         $this->fetchDropDownData['departmentCategory'] = SorCategoryType::where('department_id', Auth::user()->department_id)->get();
+        $this->fetchDropDownData['types'] = [
+            [
+                'id'=>0,
+                'name'=>'Table'
+            ],
+            [
+                'id'=>1,
+                'name'=>'Row'
+            ],
+            [
+                'id'=>2,
+                'name'=>'Other'
+            ]
+        ];
         $this->fetchDropDownData['tables'] = [];
         $this->fetchDropDownData['pages'] = [];
         $this->storeItem['dept_category_id'] = '';
@@ -72,6 +85,13 @@ class CreateCompositeSor extends Component
             ],
         ];
     }
+    // public function booted()
+    // {
+    //     $this->rules = Arr::collapse([$this->rules, [
+    //         'inputsData.*.table_no' => 'required',
+    //         'inputsData.*.page_no' => 'required|integer',
+    //     ]]);
+    // }
     public function onTableSelect($key)
     {
         if ($this->inputsData[$key]['table_'] == 1) {
@@ -79,10 +99,41 @@ class CreateCompositeSor extends Component
             $this->viewModal = !$this->viewModal;
         }
     }
-
+    public function getCategory($key)
+    {
+        if ($this->inputsData[$key]['table_'] == 0 || $this->inputsData[$key]['table_'] == 1) {
+            $this->inputsData[$key]['rowOrTable'] = 1;
+            $this->inputsData[$key]['table_no'] = '';
+            $this->inputsData[$key]['page_no'] = '';
+            $this->inputsData[$key]['description'] = '';
+            $this->inputsData[$key]['rate'] = '';
+            $this->inputsData[$key]['unit_id'] = '';
+            $this->inputsData[$key]['child_index_id'] = '';
+            $this->inputsData[$key]['item_no'] = '';
+            // $this->rules = Arr::collapse([$this->rules, [
+            //     'inputsData.'.$key.'.table_no' => 'required',
+            //     'inputsData.'.$key.'.page_no' => 'required|integer',
+            // ]]);
+            // $this->messages = Arr::collapse([$this->messages, [
+            //     'inputsData.'.$key.'.table_no.required' => 'This field is required',
+            //     'inputsData.'.$key.'.page_no.required' => 'This field is required',
+            //     'inputsData.'.$key.'.page_no.integer' => 'This field data mismatch',
+            // ]]);
+            // dd($this->rules);
+        } else {
+            $this->inputsData[$key]['table_'] = (int) $this->inputsData[$key]['table_'];
+            $this->inputsData[$key]['rowOrTable'] = 0;
+            $this->inputsData[$key]['table_no'] = '';
+            $this->inputsData[$key]['page_no'] = '';
+            $this->inputsData[$key]['description'] = '';
+            $this->inputsData[$key]['rate'] = '';
+            $this->inputsData[$key]['unit_id'] = '';
+            $this->inputsData[$key]['child_index_id'] = '';
+            $this->inputsData[$key]['item_no'] = '';
+        }
+    }
     public function addNewRow()
     {
-
         $this->inputsData[] = [
             'table_no' => '',
             'page_no' => '',
@@ -91,15 +142,16 @@ class CreateCompositeSor extends Component
             'description' => '',
             'qty' => '',
             'unit_id' => '',
-            'table_' => '',
+            'table_' => 1,
         ];
-        //dd($this->inputsData);
+        $this->getCategory(count($this->inputsData) - 1);
     }
     public function removeRow($index)
     {
         if (count($this->inputsData) > 1) {
             unset($this->inputsData[$index]);
-            $this->inputsData = array_values($this->inputsData);
+            // $this->inputsData = array_values($this->inputsData);
+            // dd($this->inputsData);
             return;
         }
     }
@@ -131,7 +183,7 @@ class CreateCompositeSor extends Component
             $this->fetchDropDownData['getSor'] = DynamicSorHeader::where('id', $this->inputsData[$type]['page_no'])->first();
             $this->sorType = $type;
         }
-        if ($type != 'parent' && $this->inputsData[$type]['table_'] == 1) {
+        if ($type != 'parent' && $this->inputsData[$type]['table_'] == 0) {
             // dd();
             $this->table_no = $this->fetchDropDownData['getSor']['table_no'];
             $this->inputsData[$type]['description'] = $this->fetchDropDownData['getSor']['title'];
@@ -222,6 +274,7 @@ class CreateCompositeSor extends Component
             $this->inputsData[$this->sorType]['sor_id'] = $this->fetchDropDownData['getSor']['id'];
         }
         if ($this->storeItem['item_no'] != '') {
+            $this->getCategory(0);
             $this->fetchDropDownData['child_tables'] = DynamicSorHeader::where('dept_category_id', $this->storeItem['dept_category_id'])->select('table_no')->groupBy('table_no')->get();
             $this->fetchDropDownData['unitMaster'] = UnitMaster::select('id', 'unit_name', 'short_name', 'is_active')->where('is_active', 1)->orderBy('id', 'desc')->get();
         }

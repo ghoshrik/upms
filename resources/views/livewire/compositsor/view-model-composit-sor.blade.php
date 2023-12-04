@@ -1,5 +1,5 @@
 <div>
-     <x-modal max-width="5xl" blur wire:model.defer="viewVerifyModal">
+    <x-modal max-width="5xl" blur wire:model.defer="viewVerifyModal">
         <x-card>
             <h3>
                 {{-- @isset($sor_itemno_parent_id, $sor_itemno_parent_index)
@@ -29,7 +29,7 @@
                                     @if ($lists['is_row'] == 0)
                                         {{ getSorPageNo($lists['sor_itemno_child_id']) }}
                                         {{-- @if (getSorCorrigenda($lists['sor_itemno_child_id'] != null)) --}}
-                                        {{ (getSorCorrigenda($lists['sor_itemno_child_id']) != '') ? '('. getSorCorrigenda($lists['sor_itemno_child_id']) .')' : '' }}
+                                        {{ getSorCorrigenda($lists['sor_itemno_child_id']) != '' ? '(' . getSorCorrigenda($lists['sor_itemno_child_id']) . ')' : '' }}
                                         {{-- @endif --}}
                                     @else
                                         {{ $lists['sor_itemno_child'] }}
@@ -64,8 +64,7 @@
                             x-on:click="close" />
                     </div>
                 </div>
-</div>
-</x-slot>
-</x-card>
-</x-modal>
+            </x-slot>
+        </x-card>
+    </x-modal>
 </div>

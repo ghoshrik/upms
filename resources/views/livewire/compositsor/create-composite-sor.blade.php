@@ -52,59 +52,107 @@
             @if ($storeItem['item_no'] != '')
                 @foreach ($inputsData as $key => $inputData)
                     <div class="row mutipal-add-row">
-                        <div class="col">
+                        <div class="col" wire:key='type_table_{{ $key }}'>
+                            <div class="form-group">
+                                <x-select wire:key='type_table_{{ $key }}' label="Select Option"
+                                    placeholder="Select" wire:model.defer="inputsData.{{ $key }}.table_"
+                                    x-on:select="$wire.getCategory({{ $key }})">
+                                    @foreach ($fetchDropDownData['types'] as $type)
+                                    <x-select.option wire:key="{{ $type['id'] }}" label="{{ $type['name'] }}" value="{{ $type['id'] }}" />
+                                    @endforeach
+                                    {{-- <x-select.option wire:key="1" label="Table" value="0" />
+                                    <x-select.option wire:key="2" label="Row" value="1" />
+                                    <x-select.option wire:key="3" label="Other" value="2" /> --}}
+                                </x-select>
+                            </div>
+                        </div>
+                        @if (($inputsData[$key]['rowOrTable'] == 1 && $inputsData[$key]['table_'] == 0) || $inputsData[$key]['table_'] == 1)
+                            <div class="col">
+                                <div class="form-group">
+                                    <x-select wire:key="table_no{{ $key }}" label="Table No"
+                                        placeholder="Select Table No"
+                                        wire:model.defer="inputsData.{{ $key }}.table_no"
+                                        x-on:select="$wire.getChildPageNo({{ $key }})">
+                                        @isset($fetchDropDownData['child_tables'])
+                                            @foreach ($fetchDropDownData['child_tables'] as $table)
+                                                <x-select.option label="{{ $table['table_no'] }}"
+                                                    value="{{ $table['table_no'] }}" />
+                                            @endforeach
+                                        @endisset
+                                    </x-select>
+                                </div>
+                            </div>
+                            {{-- <div class="col">
                             <div class="form-group">
                                 <x-select wire:key='table_{{ $key }}' label="Select Option"
                                     placeholder="Select" wire:model.defer="inputsData.{{ $key }}.table_">
                                     <x-select.option wire:key="1" label="Table" value="1" />
                                     <x-select.option wire:key="2" label="Row" value="2" />
-                                    <x-select.option wire:key="3" label="Other" value="3" />
                                 </x-select>
                             </div>
-                        </div>
-                        @if ($inputsData[$key]['table_'] == 1 || $inputsData[$key]['table_'] == 2)
-                        <div class="col">
-                            <div class="form-group">
-                                <x-select wire:key="table_no{{ $key }}" label="Table No"
-                                    placeholder="Select Table No"
-                                    wire:model.defer="inputsData.{{ $key }}.table_no"
-                                    x-on:select="$wire.getChildPageNo({{ $key }})">
-                                    @isset($fetchDropDownData['child_tables'])
-                                        @foreach ($fetchDropDownData['child_tables'] as $table)
-                                            <x-select.option label="{{ $table['table_no'] }}"
-                                                value="{{ $table['table_no'] }}" />
-                                        @endforeach
-                                    @endisset
-                                </x-select>
-                            </div>
-                        </div>
-                        {{-- <div class="col">
-                            <div class="form-group">
-                                <x-select wire:key='table_{{ $key }}' label="Select Option"
-                                    placeholder="Select" wire:model.defer="inputsData.{{ $key }}.table_">
-                                    <x-select.option wire:key="1" label="Table" value="1" />
-                                    <x-select.option wire:key="2" label="Row" value="2" />
-                                </x-select>
-                            </div>
-                        </div> --}}
-                        {{-- @if ($this->inputsData[$key]['table_'] != '')
+                            </div> --}}
+                            {{-- @if ($this->inputsData[$key]['table_'] != '')
                             @if ($this->inputsData[$key]['table_'] == '1') --}}
-                        <div class="col">
-                            <div class="form-group">
-                                <x-select wire:key="page_no{{ $key }}" label="Page No"
-                                    placeholder="Select Page No"
-                                    wire:model.defer="inputsData.{{ $key }}.page_no"
-                                    x-on:select="$wire.getDynamicSor({{ $key }})">
-                                    @isset($fetchDropDownData[$key]['child_pages'])
-                                        @foreach ($fetchDropDownData[$key]['child_pages'] as $page)
-                                            <x-select.option
-                                                label="{{ $page['page_no'] . ($page['corrigenda_name'] != null ? ' - ' . $page['corrigenda_name'] : '') }}"
-                                                value="{{ $page['id'] }}" />
-                                        @endforeach
-                                    @endisset
-                                </x-select>
+                            <div class="col">
+                                <div class="form-group">
+                                    <x-select wire:key="page_no{{ $key }}" label="Page No"
+                                        placeholder="Select Page No"
+                                        wire:model.defer="inputsData.{{ $key }}.page_no"
+                                        x-on:select="$wire.getDynamicSor({{ $key }})">
+                                        @isset($fetchDropDownData[$key]['child_pages'])
+                                            @foreach ($fetchDropDownData[$key]['child_pages'] as $page)
+                                                <x-select.option
+                                                    label="{{ $page['page_no'] . ($page['corrigenda_name'] != null ? ' - ' . $page['corrigenda_name'] : '') }}"
+                                                    value="{{ $page['id'] }}" />
+                                            @endforeach
+                                        @endisset
+                                    </x-select>
+                                </div>
                             </div>
-                        </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <x-textarea rows="2" wire:key="description.{{ $key }}"
+                                        wire:model="inputsData.{{ $key }}.description"
+                                        label="{{ trans('cruds.sor.fields.description') }}"
+                                        placeholder="{{ trans('cruds.sor.fields.description') }}" />
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <x-select wire:key="unitmaster.{{ $key }}"
+                                        label="{{ trans('cruds.sor.fields.unit') }}"
+                                        placeholder="Select {{ trans('cruds.sor.fields.unit') }}"
+                                        wire:model="inputsData.{{ $key }}.unit_id">
+                                        @isset($fetchDropDownData['unitMaster'])
+                                            @foreach ($fetchDropDownData['unitMaster'] as $units)
+                                                <x-select.option label="{{ $units['unit_name'] }}"
+                                                    value="{{ $units['id'] }}" />
+                                            @endforeach
+                                        @endisset
+                                    </x-select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <x-input wire:key='qty.{{ $key }}'
+                                        label="{{ trans('cruds.sor.fields.qty') }}"
+                                        placeholder="{{ trans('cruds.sor.fields.qty') }}"
+                                        wire:model.defer="inputsData.{{ $key }}.qty" />
+                                </div>
+                            </div>
+
+                            <div class="col d-flex align-items-center">
+                                <div class="col-md-12">
+                                    <button wire:click="removeRow({{ $key }})"
+                                        class="btn btn-danger rounded-pill btn-ms"
+                                        {{ count($inputsData) < 2 ? 'disabled' : '' }}>
+                                        <span class="btn-inner">
+                                            <x-lucide-trash-2 class="w-4 h-4 text-denger-500" />
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        @else
                         <div class="col">
                             <div class="form-group">
                                 <x-textarea rows="2" wire:key="description.{{ $key }}"
@@ -136,7 +184,6 @@
                                     wire:model.defer="inputsData.{{ $key }}.qty" />
                             </div>
                         </div>
-
                         <div class="col d-flex align-items-center">
                             <div class="col-md-12">
                                 <button wire:click="removeRow({{ $key }})"
