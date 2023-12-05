@@ -964,7 +964,11 @@ class CreateRateAnalysis extends Component
                 $this->estimateData['version'] = '';
                 $this->estimateData['other_name'] = '';
                 $this->estimateData['qty'] = $compositeData['rate'];
-                $this->estimateData['rate'] = 'fetch';
+                // if($compositeData['is_row'] == 3){
+                //     $this->estimateData['rate'] = 'other';
+                // }else{
+                    $this->estimateData['rate'] = 0;
+                // }
                 $this->estimateData['total_amount'] = 0;
                 $this->estimateData['is_row'] = $compositeData['is_row'];
                 $this->addEstimate($key + 1);

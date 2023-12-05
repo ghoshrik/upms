@@ -92,7 +92,7 @@
                                             @endif
                                         </td>
                                         <td class="text-wrap" style="width: 40rem">
-                                            @if ($addedEstimate['sor_item_number'] || $addedEstimate['is_row'] == 0)
+                                            @if ($addedEstimate['sor_item_number'] || $addedEstimate['is_row'] == 0 || $addedEstimate['is_row'] == 3)
                                                 {{ $addedEstimate['description'] }}
                                             @elseif ($addedEstimate['rate_no'])
                                                 {{-- {{ getEstimateDescription($addedEstimate['rate_no']) }} --}}
@@ -116,8 +116,8 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['rate'] != 0)
-                                                @if ($addedEstimate['rate'] == 'fetch' && $selectedArrKey != $key)
+                                            @if ($addedEstimate['rate'] == 0 || $addedEstimate['rate'] != 0)
+                                                @if ($addedEstimate['is_row'] != null && $selectedArrKey != $key && $addedEstimate['is_row'] == 0 || $addedEstimate['is_row'] == 1)
                                                     <x-button
                                                         wire:click="viewDynamicSor({{ $addedEstimate['sor_itemno_child_id'] }},{{ $addedEstimate['sor_item_number'] }},{{ $key }})"
                                                         type="button" class="btn btn-soft-primary btn-sm">
@@ -125,8 +125,23 @@
                                                             <x-lucide-eye class="w-4 h-4 text-gray-500" /> Get Rate
                                                         </span>
                                                     </x-button>
+                                                @elseif ($addedEstimate['is_row'] == 3)
+                                                    <x-input placeholder="Enter Rate" wire:model="allAddedEstimatesData.{{$key}}.rate" wire:blur="calculateValue({{ $key }})" />
+                                                    {{-- <x-button>
+                                                        <span class="btn-inner">
+                                                            <x-lucide-edit class="w-4 h-4 text-gray-500"></x-lucide-edit>
+                                                        </span>
+                                                    </x-button> --}}
                                                 @else
                                                     {{ $addedEstimate['rate'] }}
+                                                    {{-- @if ($addedEstimate['is_row'] != '')
+                                                    hi --}}
+                                                        {{-- <x-button>
+                                                            <span class="btn-inner">
+                                                                <x-lucide-edit class="w-4 h-4 text-gray-500"></x-lucide-edit>
+                                                            </span>
+                                                        </x-button> --}}
+                                                    {{-- @endif --}}
                                                 @endif
                                             @endif
                                         </td>

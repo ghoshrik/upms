@@ -19,7 +19,7 @@ class AddRateAnalysisList extends Component
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
-    public $selectSor, $totalDistance;
+    public $selectSor, $totalDistance,$other_rate;
     public function mount()
     {
         $this->setEstimateDataToSession();
@@ -139,7 +139,17 @@ class AddRateAnalysisList extends Component
             ]);
         }
     }
-
+    public function calculateValue($key)
+    {
+        // dd($this->allAddedEstimatesData[$key]);
+        if($this->allAddedEstimatesData[$key]['rate'] > 0)
+        {
+            $this->allAddedEstimatesData[$key]['total_amount'] = $this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'];
+            $this->allAddedEstimatesData[$key]['total_amount'] = round($this->allAddedEstimatesData[$key]['total_amount'],2);
+            $this->allAddedEstimatesData[$key]['rate'] = $this->allAddedEstimatesData[$key]['rate'];
+            // $this->reset('other_rate');
+        }
+    }
     public function setEstimateDataToSession()
     {
         // dd($this->addedEstimateData);
