@@ -83,6 +83,7 @@ class ComposerSors extends Component
                 ->groupBy('sor_itemno_parent_id', 'dept_category_id', 'sor_itemno_parent_index', 'parent_itemNo', 'composite_id')
                 ->get();
         }
+        // dd($this->composerSor);
         return view('livewire.compositsor.composer-sors', compact('assets'));
         // return view('livewire.compositsor.composer-sors',[
         //     'composerSor' => $this->composerSor

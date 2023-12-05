@@ -11,7 +11,7 @@ class CompositSor extends Model
     protected $table = "composit_sors";
     protected $fillable =
         [
-        "composite_id","dept_category_id", "sor_itemno_parent_id", "sor_itemno_child", "description", "unit_id", "rate", "sor_itemno_child_id","sor_itemno_parent_index","col_position","created_by","updated_by","parent_itemNo"
+        "composite_id","dept_category_id", "sor_itemno_parent_id", "sor_itemno_child", "description", "unit_id", "rate", "sor_itemno_child_id","sor_itemno_parent_index","col_position","created_by","updated_by","parent_itemNo","is_row"
     ];
     public function getDeptCategoryName()
     {
