@@ -954,7 +954,6 @@ class CreateRateAnalysis extends Component
             // dd(json_decode($this->getSor['row_data']));
             // dd($this->getSor);
             foreach ($this->getCompositeDatas as $key => $compositeData) {
-                // dd($compositeData);
                 $this->estimateData['rate_no'] = '';
                 $this->estimateData['dept_id'] = '';
                 $this->estimateData['dept_category_id'] = $compositeData['dept_category_id'];
@@ -964,13 +963,15 @@ class CreateRateAnalysis extends Component
                 $this->estimateData['version'] = '';
                 $this->estimateData['other_name'] = '';
                 $this->estimateData['qty'] = $compositeData['rate'];
-                // if($compositeData['is_row'] == 3){
-                //     $this->estimateData['rate'] = 'other';
-                // }else{
-                    $this->estimateData['rate'] = 0;
-                // }
+                if ($compositeData['is_row'] == 2) {
+                    $this->estimateData['rate_type'] = 'other';
+                } else {
+                    $this->estimateData['rate_type'] = 'fetch';
+                }
+                $this->estimateData['rate'] = 0;
                 $this->estimateData['total_amount'] = 0;
                 $this->estimateData['is_row'] = $compositeData['is_row'];
+                // dd($this->estimateData);
                 $this->addEstimate($key + 1);
             }
         } else {
@@ -1342,6 +1343,10 @@ class CreateRateAnalysis extends Component
             $this->addedEstimate[$key]['version'] = $this->estimateData['version'];
             $this->addedEstimate[$key]['sor_itemno_child_id'] = isset($this->estimateData['sor_itemno_child_id']) ? $this->estimateData['sor_itemno_child_id'] : 0;
             $this->addedEstimate[$key]['is_row'] = isset($this->estimateData['is_row']) ? $this->estimateData['is_row'] : null;
+            if(isset($this->estimateData['rate_type']))
+            {
+                $this->addedEstimate[$key]['rate_type'] = $this->estimateData['rate_type'];
+            }
             $this->addedEstimateUpdateTrack = rand(1, 1000);
             // $this->estimateData['item_number'] = '';
             // $this->estimateData['other_name'] = '';

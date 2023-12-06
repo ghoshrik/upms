@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use WireUi\Traits\Actions;
+use Illuminate\Support\Facades\DB;
 
 class AddRateAnalysisList extends Component
 {
@@ -148,6 +149,17 @@ class AddRateAnalysisList extends Component
             $this->allAddedEstimatesData[$key]['total_amount'] = round($this->allAddedEstimatesData[$key]['total_amount'],2);
             $this->allAddedEstimatesData[$key]['rate'] = $this->allAddedEstimatesData[$key]['rate'];
             // $this->reset('other_rate');
+        }else{
+            $this->allAddedEstimatesData[$key]['rate'] = 0;
+            $this->allAddedEstimatesData[$key]['total_amount'] = 0;
+        }
+    }
+    public function resetRate($key)
+    {
+        if($this->allAddedEstimatesData[$key]['rate'] > 0)
+        {
+            $this->allAddedEstimatesData[$key]['rate'] = 0;
+            $this->allAddedEstimatesData[$key]['total_amount'] = 0;
         }
     }
     public function setEstimateDataToSession()
