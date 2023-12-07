@@ -13,7 +13,7 @@
                         <h3 class="text-dark">{{ $titel }}</h3>
                         <p class="text-primary mb-0">{{ $subTitel }}</p>
                     </div>
-                    @canany(['create sor', 'edit estimate'])
+                    @canany(['create composite-sor', 'edit composite-sor'])
                         <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
                             @if (!$isFromOpen)
                                 <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill"
