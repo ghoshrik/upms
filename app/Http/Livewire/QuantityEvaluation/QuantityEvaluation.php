@@ -65,6 +65,7 @@ class QuantityEvaluation extends Component
     }
     public function fromEntryControl($data='')
     {
+        // dd($data);
         $this->openedFormType = is_array($data) ? $data['formType']:$data;
         $this->isFromOpen = !$this->isFromOpen;
         switch ($this->openedFormType) {

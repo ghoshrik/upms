@@ -10,8 +10,8 @@
             <div class="container-fluid iq-container">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                     <div class="d-flex flex-column">
-                        <h3 class="text-dark">{{$titel}}</h3>
-                    <p class="text-primary mb-0">{{$subTitel}}</p>
+                        <h3 class="text-dark">{{ $titel }}</h3>
+                        <p class="text-primary mb-0">{{ $subTitel }}</p>
                     </div>
                     @canany(['create estimate', 'edit estimate'])
                         <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
@@ -167,8 +167,8 @@
                                     <div class="card-body">
                                         {{-- <livewire:estimate.datatable.estimated-data-table
                                             :wire:key="$updateDataTableTracker" /> --}}
-                                            <livewire:rate-analysis.datatable.estimated-data-table
-                                            :wire:key="$updateDataTableTracker" >
+                                        <livewire:rate-analysis.datatable.estimated-data-table
+                                            :wire:key="$updateDataTableTracker">
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 2)
@@ -188,9 +188,9 @@
                                         stroke="rgb(30, 41, 59)" class="w-36 h-36">
                                         <g fill="none" fill-rule="evenodd" stroke-width="4">
                                             <circle cx="22" cy="22" r="1">
-                                                <animate attributeName="r" begin="0s" dur="1.8s"
-                                                    values="1; 20" calcMode="spline" keyTimes="0; 1"
-                                                    keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite">
+                                                <animate attributeName="r" begin="0s" dur="1.8s" values="1; 20"
+                                                    calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1"
+                                                    repeatCount="indefinite">
                                                 </animate>
                                                 <animate attributeName="stroke-opacity" begin="0s" dur="1.8s"
                                                     values="1; 0" calcMode="spline" keyTimes="0; 1"
@@ -198,9 +198,9 @@
                                                 </animate>
                                             </circle>
                                             <circle cx="22" cy="22" r="1">
-                                                <animate attributeName="r" begin="-0.9s" dur="1.8s"
-                                                    values="1; 20" calcMode="spline" keyTimes="0; 1"
-                                                    keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite">
+                                                <animate attributeName="r" begin="-0.9s" dur="1.8s" values="1; 20"
+                                                    calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1"
+                                                    repeatCount="indefinite">
                                                 </animate>
                                                 <animate attributeName="stroke-opacity" begin="-0.9s" dur="1.8s"
                                                     values="1; 0" calcMode="spline" keyTimes="0; 1"

@@ -129,8 +129,8 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['rate'] == 0 || $addedEstimate['rate'] != 0)
-                                                @isset($addedEstimate['rate_type'])
+                                            @if (isset($addedEstimate['rate_type']) && ($addedEstimate['rate'] == 0 || $addedEstimate['rate'] != 0))
+                                                {{-- @isset($addedEstimate['rate_type']) --}}
                                                     @if ($addedEstimate['rate_type'] == 'fetch')
                                                         @if ($addedEstimate['rate'] > 0)
                                                             {{ $addedEstimate['rate'] }}
@@ -155,7 +155,7 @@
                                                             wire:blur="calculateValue({{ $key }})" />
                                                     @else
                                                     @endif
-                                                @endisset
+                                                {{-- @endisset --}}
                                             @else
                                                 {{ $addedEstimate['rate'] }}
                                                 {{-- @if ($addedEstimate['is_row'] != '')
@@ -181,21 +181,21 @@
                                                 </x-button>
                                             @endif
                                             @if ($arrayRow == $key)
-                                                <x-button
+                                                {{-- <x-button
                                                     wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
                                                     type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                     </span>
-                                                </x-button>
-                                                {{-- <button
+                                                </x-button> --}}
+                                                <button
                                                     onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
                                                     wire:click="deleteEstimate({{ $addedEstimate['array_id'] }})" type="button" class="btn btn-soft-danger btn-sm">
                                                     <span
                                                         class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                     </span>
-                                                </button> --}}
+                                                </button>
                                                 {{-- <button onclick="showDeleteConfirmation({{ $addedEstimate['array_id'] }})" type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete

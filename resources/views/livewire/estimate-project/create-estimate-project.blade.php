@@ -497,7 +497,6 @@
             headerData.forEach(function(column) {
                 var fun;
                 delete column.editor;
-
                 if (column.isClick) {
                     column.isClick = eval('(' + column.isClick + ')');
                     fun = column.isClick;

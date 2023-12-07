@@ -13,25 +13,25 @@
                         <h3 class="text-dark">{{$titel}}</h3>
                     <p class="text-primary mb-0">{{$subTitel}}</p>
                     </div>
-                    {{-- @canany(['create estimate', 'edit estimate']) --}}
-                        <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
-                            @if (!$isFromOpen)
-                                <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
-                                    x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
-                                    <span class="btn-inner">
-                                        <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
-                                    </span>
-                                </button>
-                            @else
-                                <button wire:click="fromEntryControl" class="btn btn-danger rounded-pill "
-                                    x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
-                                    <span class="btn-inner">
-                                        <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
-                                    </span>
-                                </button>
-                            @endif
-                        </div>
-                    {{-- @endcanany --}}
+                    @canany(['create quantity-analysis', 'edit quantity-analysis'])
+                    <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
+                        @if (!$isFromOpen)
+                            <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
+                                x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
+                                <span class="btn-inner">
+                                    <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
+                                </span>
+                            </button>
+                        @else
+                            <button wire:click="fromEntryControl()" class="btn btn-danger rounded-pill "
+                                x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
+                                <span class="btn-inner">
+                                    <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
+                                </span>
+                            </button>
+                        @endif
+                    </div>
+                    @endcanany
                 </div>
             </div>
             {{-- <div class="iq-header-img">
@@ -218,8 +218,8 @@
         </div>
     </div>
 </div>
-<div>
+{{-- <div>
     <livewire:components.modal.quantity-evaluation.quantity-evaluation-view-modal />
     <livewire:components.modal.estimate.estimate-forward-modal />
     <livewire:components.modal.estimate.edit-estimate-modal />
-</div>
+</div> --}}

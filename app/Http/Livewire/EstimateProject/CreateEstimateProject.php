@@ -627,11 +627,11 @@ class CreateEstimateProject extends Component
     public function closeModal()
     {
         $this->viewModal = !$this->viewModal;
-        if ($this->selectedCategoryId == '') {
-            $this->selectSor['page_no'] = '';
-        } else {
+        // if ($this->selectedCategoryId == '') {
+        //     $this->selectSor['page_no'] = '';
+        // } else {
             $this->estimateData['page_no'] = '';
-        }
+        // }
     }
     public function render()
     {

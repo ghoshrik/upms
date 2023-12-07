@@ -45,7 +45,7 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <x-input wire:key="label" wire:model.defer="estimateData.label" label="Lable"
+                                        <x-input wire:key="label" wire:model.defer="estimateData.label" label="Label"
                                             placeholder="Label" />
                                     </div>
                                 </div>
