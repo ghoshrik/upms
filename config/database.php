@@ -77,12 +77,12 @@ return [
             'schema' => 'public',
             'sslmode' => 'prefer',
         ],
-        'pgsql_docu_External' => [
+        'pgsql_docu_external' => [
             'driver' => env('DB_CONNECTION_SECOND'),
             'url' => env('DATABASE_SECOND_URL'),
             'host' => env('DB_HOST_SECOND', '127.0.0.1'),
             'port' => env('DB_PORT_SECOND', '5432'),
-            'database' => env('DB_DATABASE_SECOND', 'forge'),
+            'database' => env('DB_DATABASE_SECOND', 'upms_document'),
             'username' => env('DB_USERNAME_SECOND', 'forge'),
             'password' => env('DB_PASSWORD_SECOND', ''),
             'charset' => 'utf8',
