@@ -174,7 +174,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['total_amount'] = '';
             $this->estimateData['distance'] = '';
             $this->estimateData['rate_type'] = '';
-            $this->render();
+            // $this->render();
         } elseif ($this->selectedCategoryId == 4) {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
             $this->fatchDropdownData['page_no'] = [];
@@ -1309,7 +1309,7 @@ class CreateRateAnalysis extends Component
         $this->estimateData['rate'] = '';
         $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id', 'qty', 'total_amount')->where([['rate_id', $this->estimateData['rate_no']], ['operation', $this->estimateData['rate_type']], ['dept_id', Auth::user()->department_id]])->first();
         // dd($this->fatchDropdownData['rateDetails']);
-        $this->estimateData['total_amount'] = (int) $this->fatchDropdownData['rateDetails']['total_amount'];
+        $this->estimateData['total_amount'] = $this->fatchDropdownData['rateDetails']['total_amount'];
         $this->estimateData['description'] = $this->fatchDropdownData['rateDetails']['description'];
         // $this->estimateData['qty'] = ($this->fatchDropdownData['rateDetails']['qty'] != 0) ? $this->fatchDropdownData['rateDetails']['qty'] : 1;
         $this->estimateData['qty'] = 1;

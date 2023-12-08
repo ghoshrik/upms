@@ -20,6 +20,7 @@ class EstimateViewModal extends Component
             $this->estimate_id = $estimate_id;
             $this->viewEstimates = EstimatePrepare::where('estimate_id',$this->estimate_id)->get();
         }
+        // dd($this->viewEstimates);
     }
     public function download($value)
     {

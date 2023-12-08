@@ -51,7 +51,7 @@
             padding: 0 !important;
         }
     </style>
-    @if ($filtredOffices != null)
+    @if (count($filtredOffices)>0)
         <div class="row">
             <div class="col-md-12 col-lg-12 col-sm-3">
                 <div class="card">
@@ -59,23 +59,23 @@
                         <div class="table-responsive mt-4">
                             <table id="basic-table" class="table table-striped mb-0" role="grid">
                                 <thead>
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
+                                    {{-- <tr> --}}
+                                        {{-- <td>{{ $loop->iteration }}</td>
                                         <td class="text-wrap" style="width: 30rem">{{ $office['office_name'] }}</td>
                                         <td>
                                             {{ $office['office_code'] }}
                                         </td>
                                         <td class="text-wrap" style="width: 30rem">{{ $office['office_address'] }}</td>
-                                        <td>
-                                            @if ($office['user_id'])
-                                                @foreach ($hooUsers as $user)
-                                                    @if ($user['id'] == $office['user_id'])
+                                        <td> --}}
+                                            {{-- @if ($office['user_id']) --}}
+                                                {{-- @foreach ($hooUsers as $user) --}}
+                                                    {{-- @if ($user['id'] == $office['user_id']) --}}
                                                         {{-- <input class="form-group" type="text"
                                                             value="{{ $user['emp_name'] }}" wire:ignore disabled> --}}
-                                                        <label wire:ignore disabled readonly>{{ $user['emp_name'] }}</label>
-                                                    @endif
-                                                @endforeach
-                                            @else
+                                                        {{-- <label wire:ignore disabled readonly>{{ $user['emp_name'] }}</label> --}}
+                                                    {{-- @endif --}}
+                                                {{-- @endforeach --}}
+                                            {{-- @else --}}
                                             {{-- @else --}}
                                             {{-- <select class="form-select" aria-label="Select user"
                                                     wire:key='select-{{ $key }}'
@@ -89,17 +89,17 @@
                                                         </option>
                                                     @endforeach
                                                 </select> --}}
-                                            @endif
+                                            {{-- @endif --}}
 
 
-                                        </td>
-                                        <td>
-                                            <button type="button"
+                                        {{-- </td> --}}
+                                        {{-- <td> --}}
+                                            {{-- <button type="button"
                                                 wire:click="$emit({{ $office['user_id'] ? '"Modify",' . $office['user_id'] . ',' . $office->id . ',' . $office->dist_code . ',' . $office->level_no . '' : '"assignuser",' . $office->id . ',' . $office->dist_code . ',' . $office->level_no . '' }})"
                                                 class="btn btn-soft-{{ $office['user_id'] ? 'warning' : 'primary' }} btn-sm text-dark"
                                                 wire:ignore>
                                                 {{ $office['user_id'] ? 'Modify' : 'Assign Admin' }}
-                                            </button>
+                                            </button> --}}
 
                                             {{-- @isset($office['user_id'])
                                                 <button type="button" class="btn btn-soft-warning btn-sm test-dark" wire:ignore
@@ -116,8 +116,8 @@
                                                 wire:click="assignuser({{ $office['id'] }})">
                                                 <x-lucide-user-check class="w-4 h-4 text-gray-500" />
                                             </button> --}}
-                                        </td>
-                                    </tr>
+                                        {{-- </td> --}}
+                                    {{-- </tr> --}}
                                 </thead>
                                 <tbody>
                                     @isset($filtredOffices)

@@ -2,19 +2,19 @@
 
 namespace App\Http\Livewire\AssignOfficeAdmin;
 
-use App\Models\User;
-use App\Models\Office;
-use Livewire\Component;
 use App\Models\District;
-use WireUi\Traits\Actions;
+use App\Models\Office;
+use App\Models\User;
 use Illuminate\Support\Arr;
-use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
+use Livewire\WithPagination;
+use WireUi\Traits\Actions;
 
 class CreateOfficeAdmin extends Component
 {
     use Actions, WithPagination;
-    public $selectedLevel, $selectedDist, $selectedOffice, $dropdownData = [], $searchCondition = [], $filtredOffices, $hooUsers, $selectedUser, $openAssignAdminId, $openModel = false;
+    public $selectedLevel, $selectedDist, $selectedOffice, $dropdownData = [], $searchCondition = [], $filtredOffices = [], $hooUsers, $selectedUser, $openAssignAdminId, $openModel = false;
     // public $viewMode = false;
     protected $listeners = ['assignuser', 'filter'];
 
@@ -50,7 +50,15 @@ class CreateOfficeAdmin extends Component
             ->select('offices.id as id', 'offices.office_name', 'offices.office_address', 'offices.office_code', 'offices.level_no', 'offices.dist_code', 'users.id as user_id')
             ->orderBy('users.id', 'asc')
             ->get();
-        $this->resetExcept('hooUsers', 'dropdownData', 'filtredOffices', 'selectedLevel', 'selectedDist', 'selectedUser');
+        if (count($this->filtredOffices) == 0) {
+            $this->notification()->error(
+                $title = 'No Data Found'
+            );
+            $this->reset('selectedLevel');
+        }else{
+            $this->resetExcept('hooUsers', 'dropdownData', 'filtredOffices', 'selectedLevel', 'selectedDist', 'selectedUser');
+        }
+        
     }
     private function getSelectedUsers()
     {
@@ -65,7 +73,6 @@ class CreateOfficeAdmin extends Component
     {
         try {
             // $selectUserData = User::where('id', $this->selectedUser[$office_id]);
-
 
             // if ($selectUserData->where('office_id', null)->first()) {
             //     $selectUserData->update(['office_id' => $office_id]);
@@ -117,10 +124,6 @@ class CreateOfficeAdmin extends Component
         $this->openModel = true;
     }
 
-
-
-
-
     public $selectedUserofice;
     public function assignusertoOffice()
     {
@@ -158,9 +161,6 @@ class CreateOfficeAdmin extends Component
         $this->openModel = true;
         // dd($this->modifyUsers['userList']);
     }
-
-
-
 
     public function render()
     {

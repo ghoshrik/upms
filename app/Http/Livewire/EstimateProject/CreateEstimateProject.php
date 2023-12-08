@@ -608,7 +608,7 @@ class CreateEstimateProject extends Component
         $this->addedEstimate['page_no'] = (isset($this->estimateData['page_no']))? $this->estimateData['page_no'] : 0;
         $this->addedEstimate['table_no'] = (isset($this->estimateData['table_no']))? $this->estimateData['table_no'] : 0;
         $this->addedEstimate['volume_no'] = (isset($this->estimateData['volume']))? $this->estimateData['volume'] : 0;
-        $this->addedEstimate['sor_id'] = (isset($this->estimateData['id']))? $this->estimateData['id'] : '';
+        $this->addedEstimate['sor_id'] = (isset($this->estimateData['id']))? $this->estimateData['id'] : 0;
         $this->addedEstimate['item_index'] = (isset($this->estimateData['item_index']))? $this->estimateData['item_index'] : '';
         $this->addedEstimate['col_position'] = (isset($this->estimateData['col_position']))? $this->estimateData['col_position'] : 0;
         $this->addedEstimate['rate_type'] = (isset($this->estimateData['rate_type']))? $this->estimateData['rate_type'] : '';

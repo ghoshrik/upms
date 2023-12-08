@@ -10,7 +10,7 @@ use App\Models\Office;
 use App\Models\RatesAnalysis;
 use App\Models\SOR;
 use App\Models\SorCategoryType;
-use App\Models\SorMaster;
+use App\Models\SORMaster;
 use App\Models\UnitMaster;
 use App\Models\UnitType;
 use App\Models\UsersHasRoles;
@@ -460,6 +460,11 @@ function getDepartmentCategoryName($value)
 {
     $categoryName = SorCategoryType::where('id', $value)->select('dept_category_name')->first();
     return $categoryName['dept_category_name'];
+}
+function getEstimateDesc($estimate_no)
+{
+    $getDescription = SORMaster::select('estimate_id','sorMasterDesc')->where('estimate_id',$estimate_no)->first();
+    return $getDescription['sorMasterDesc'];
 }
 function generatePDF($list, $data, $title)
 {
