@@ -157,7 +157,10 @@
                                                     @endif
                                                 {{-- @endisset --}}
                                             @else
+                                            @if ($addedEstimate['rate'] != 0)
                                                 {{ $addedEstimate['rate'] }}
+                                            @endif
+
                                                 {{-- @if ($addedEstimate['is_row'] != '')
                                                     hi --}}
                                                 {{-- <x-button>

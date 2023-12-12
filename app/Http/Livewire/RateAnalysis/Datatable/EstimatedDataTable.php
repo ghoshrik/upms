@@ -30,9 +30,9 @@ class EstimatedDataTable extends DataTableComponent
             Column::make("DESCRIPTION", "description")
                 ->searchable()
                 ->sortable()
-                ->format( fn($row) => '<span class="text-wrap">'.$row.'</span>')
+                ->format(fn($row) => '<span class="text-wrap">' . $row . '</span>')
                 ->html(),
-            Column::make("TYPE","operation")
+            Column::make("TYPE", "operation")
                 ->searchable()
                 ->sortable(),
             Column::make("TOTAL AMOUNT", "total_amount")
@@ -62,11 +62,16 @@ class EstimatedDataTable extends DataTableComponent
     }
     public function builder(): Builder
     {
-        return RatesAnalysis::query()
-            ->orWhere('operation', 'Total')
-            ->orWhere('operation', 'With Stacking')
-            ->orWhere('operation', 'Without Stacking')
+        // dd(Auth::user()->id);
+        $query = RatesAnalysis::query()
+            ->where(function ($query) {
+                $query->orWhere('operation', 'Total')
+                    ->orWhere('operation', 'With Stacking')
+                    ->orWhere('operation', 'Without Stacking');
+            })
             ->where('created_by', Auth::user()->id);
+
+        return $query;
     }
 
 }
