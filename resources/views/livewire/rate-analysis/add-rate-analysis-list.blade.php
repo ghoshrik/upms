@@ -131,35 +131,36 @@
                                         <td>
                                             @if (isset($addedEstimate['rate_type']) && ($addedEstimate['rate'] == 0 || $addedEstimate['rate'] != 0))
                                                 {{-- @isset($addedEstimate['rate_type']) --}}
-                                                    @if ($addedEstimate['rate_type'] == 'fetch')
-                                                        @if ($addedEstimate['rate'] > 0)
-                                                            {{ $addedEstimate['rate'] }}
-                                                            <x-button class="d-inline" wire:click="resetRate({{$key}})">
-                                                                <span class="btn-inner">
-                                                                    <x-lucide-rotate-ccw
-                                                                        class="w-4 h-4 text-gray-500"></x-lucide-rotate-ccw>
-                                                                </span>
-                                                            </x-button>
-                                                        @else
-                                                            <x-button
-                                                                wire:click="viewDynamicSor({{ $addedEstimate['sor_itemno_child_id'] }},{{ $addedEstimate['sor_item_number'] }},{{ $key }})"
-                                                                type="button" class="btn btn-soft-primary btn-sm">
-                                                                <span class="btn-inner">
-                                                                    <x-lucide-eye class="w-4 h-4 text-gray-500" /> Get Rate
-                                                                </span>
-                                                            </x-button>
-                                                        @endif
-                                                    @elseif ($addedEstimate['rate_type'] == 'other')
-                                                        <x-input placeholder="Enter Rate"
-                                                            wire:model="allAddedEstimatesData.{{ $key }}.rate"
-                                                            wire:blur="calculateValue({{ $key }})" />
+                                                @if ($addedEstimate['rate_type'] == 'fetch')
+                                                    @if ($addedEstimate['rate'] > 0)
+                                                        {{ $addedEstimate['rate'] }}
+                                                        <x-button class="d-inline"
+                                                            wire:click="resetRate({{ $key }})">
+                                                            <span class="btn-inner">
+                                                                <x-lucide-rotate-ccw
+                                                                    class="w-4 h-4 text-gray-500"></x-lucide-rotate-ccw>
+                                                            </span>
+                                                        </x-button>
                                                     @else
+                                                        <x-button
+                                                            wire:click="viewDynamicSor({{ $addedEstimate['sor_itemno_child_id'] }},{{ $addedEstimate['sor_item_number'] }},{{ $key }})"
+                                                            type="button" class="btn btn-soft-primary btn-sm">
+                                                            <span class="btn-inner">
+                                                                <x-lucide-eye class="w-4 h-4 text-gray-500" /> Get Rate
+                                                            </span>
+                                                        </x-button>
                                                     @endif
+                                                @elseif ($addedEstimate['rate_type'] == 'other')
+                                                    <x-input placeholder="Enter Rate"
+                                                        wire:model="allAddedEstimatesData.{{ $key }}.rate"
+                                                        wire:blur="calculateValue({{ $key }})" />
+                                                @else
+                                                @endif
                                                 {{-- @endisset --}}
                                             @else
-                                            @if ($addedEstimate['rate'] != 0)
-                                                {{ $addedEstimate['rate'] }}
-                                            @endif
+                                                @if ($addedEstimate['rate'] != 0)
+                                                    {{ $addedEstimate['rate'] }}
+                                                @endif
 
                                                 {{-- @if ($addedEstimate['is_row'] != '')
                                                     hi --}}
@@ -193,9 +194,9 @@
                                                 </x-button> --}}
                                                 <button
                                                     onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
-                                                    wire:click="deleteEstimate({{ $addedEstimate['array_id'] }})" type="button" class="btn btn-soft-danger btn-sm">
-                                                    <span
-                                                        class="btn-inner">
+                                                    wire:click="deleteEstimate({{ $addedEstimate['array_id'] }})"
+                                                    type="button" class="btn btn-soft-danger btn-sm">
+                                                    <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                     </span>
                                                 </button>
@@ -487,6 +488,55 @@
                     keyboard: false
                 });
                 $("#" + @json($rateTypeModalName)).modal("show");
+            });
+        </script>
+    @endif
+    @if ($testModal)
+        <div>
+            <div class="modal" id="{{ $testModalName }}" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="example-table">Is get item price?</div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="yesBtn" class="btn btn-success">Yes</button>
+                            <button type="button"id="closeBtn" class="btn btn-secondary"
+                                data-dismiss="modal">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.getElementById("closeBtn").addEventListener("click", function() {
+                closeModal();
+            });
+            document.getElementById("yesBtn").addEventListener("click", function() {
+                getItemRate();
+            });
+            function getItemRate() {
+                $('#' + @json($testModalName)).modal('hide');
+                window.Livewire.emit('submitTestModal');
+            }
+            function closeModal() {
+                $('#' + @json($testModalName)).modal('hide');
+                window.Livewire.emit('closeTestModal');
+            }
+            $(document).ready(function() {
+                $("#" + @json($testModalName)).modal({
+                    backdrop: "static",
+                    keyboard: false
+                });
+                $("#" + @json($testModalName)).modal("show");
             });
         </script>
     @endif

@@ -11,16 +11,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use WireUi\Traits\Actions;
-use Illuminate\Support\Facades\DB;
 
 class AddRateAnalysisList extends Component
 {
     use Actions;
-    protected $listeners = ['closeModal1', 'getRatePlaceWise'];
+    protected $listeners = ['closeModal1', 'getRatePlaceWise','closeTestModal','submitTestModal'];
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
-    public $selectSor, $totalDistance,$other_rate;
+    public $selectSor, $totalDistance, $other_rate;
     public function mount()
     {
         $this->setEstimateDataToSession();
@@ -143,21 +142,19 @@ class AddRateAnalysisList extends Component
     public function calculateValue($key)
     {
         // dd($this->allAddedEstimatesData[$key]);
-        if($this->allAddedEstimatesData[$key]['rate'] > 0)
-        {
+        if ($this->allAddedEstimatesData[$key]['rate'] > 0) {
             $this->allAddedEstimatesData[$key]['total_amount'] = $this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'];
-            $this->allAddedEstimatesData[$key]['total_amount'] = round($this->allAddedEstimatesData[$key]['total_amount'],2);
+            $this->allAddedEstimatesData[$key]['total_amount'] = round($this->allAddedEstimatesData[$key]['total_amount'], 2);
             $this->allAddedEstimatesData[$key]['rate'] = $this->allAddedEstimatesData[$key]['rate'];
             // $this->reset('other_rate');
-        }else{
+        } else {
             $this->allAddedEstimatesData[$key]['rate'] = 0;
             $this->allAddedEstimatesData[$key]['total_amount'] = 0;
         }
     }
     public function resetRate($key)
     {
-        if($this->allAddedEstimatesData[$key]['rate'] > 0)
-        {
+        if ($this->allAddedEstimatesData[$key]['rate'] > 0) {
             $this->allAddedEstimatesData[$key]['rate'] = 0;
             $this->allAddedEstimatesData[$key]['total_amount'] = 0;
         }
@@ -447,7 +444,7 @@ class AddRateAnalysisList extends Component
         // }
     }
     public $fetchRatePlaceWise;
-    public $isRateType = false, $rateTypeModalName, $rateType = '';
+    public $isRateType = false, $rateTypeModalName, $rateType = '',$testModal = false,$testModalName,$tempModalData;
     public function getRatePlaceWise($data)
     {
         // dd($data[0]);
@@ -462,29 +459,32 @@ class AddRateAnalysisList extends Component
             $this->rateTypeModalName = "item-wise-rate-type-modal_" . rand(1, 1000);
             $this->rateTypeModalName = str_replace(' ', '_', $this->rateTypeModalName);
         } else {
-            $this->reset('selectedArrKey', 'openSorModal');
-            $this->notification()->error(
-                $title = 'No Rate Found !!'
-            );
+            // $this->notification()->error(
+            //     $title = 'No Rate Found !!'
+            // );
+            $this->testModal = !$this->testModal;
+            $this->tempModalData = $data;
+            $this->testModalName = "item-wise-rate-type-modal_" . rand(1, 1000);
+            $this->testModalName = str_replace(' ', '_', $this->testModalName);
+            // $this->reset('selectedArrKey', 'openSorModal');
         }
-        // $tempValue = $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
-        // if (!empty($fetchRatePlaceWise)) {
-        //     $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = $fetchRatePlaceWise['total_amount'];
-        //     if ($this->allAddedEstimatesData[$this->selectedArrKey]['rate'] != $tempValue) {
-        //         $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
-        //     }
-        //     $this->updateDataTableTracker = rand(1, 1000);
-        //     $this->openSorModal = !$this->openSorModal;
-        // } else {
-        //     $this->reset('selectedArrKey', 'openSorModal');
-        //     $this->notification()->error(
-        //         $title = 'No Rate Found !!'
-        //     );
-        // }
-
-        // dd($this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = 100);
-        // dd($fetchValue);
-        // dd($data);
+    }
+    public function submitTestModal()
+    {
+        $this->notification()->error(
+            $title = 'No Rate Found !!'
+        );
+        if(count($this->tempModalData)>0){
+            $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = $this->tempModalData[0]['rowValue'];
+            $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
+            $this->updateDataTableTracker = rand(1, 1000);
+            $this->reset('selectedArrKey', 'openSorModal', 'tempModalData', 'testModalName','testModal');
+        }
+    }
+    public function closeTestModal()
+    {
+        $this->testModal = !$this->testModal;
+        $this->reset('selectedArrKey', 'openSorModal');
     }
     public function getTypeWiseRate()
     {
