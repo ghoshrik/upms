@@ -444,7 +444,7 @@ class AddRateAnalysisList extends Component
         // }
     }
     public $fetchRatePlaceWise;
-    public $isRateType = false, $rateTypeModalName, $rateType = '',$testModal = false,$testModalName,$tempModalData;
+    public $isRateType = false, $rateTypeModalName, $rateType = '',$isItemModal = false,$isItemModalName,$isItemModalData;
     public function getRatePlaceWise($data)
     {
         // dd($data[0]);
@@ -459,31 +459,28 @@ class AddRateAnalysisList extends Component
             $this->rateTypeModalName = "item-wise-rate-type-modal_" . rand(1, 1000);
             $this->rateTypeModalName = str_replace(' ', '_', $this->rateTypeModalName);
         } else {
-            // $this->notification()->error(
-            //     $title = 'No Rate Found !!'
-            // );
-            $this->testModal = !$this->testModal;
-            $this->tempModalData = $data;
-            $this->testModalName = "item-wise-rate-type-modal_" . rand(1, 1000);
-            $this->testModalName = str_replace(' ', '_', $this->testModalName);
+            $this->notification()->error(
+                $title = 'No Rate Found !!'
+            );
+            $this->isItemModal = !$this->isItemModal;
+            $this->isItemModalData = $data;
+            $this->isItemModalName = "item-wise-rate-type-modal_" . rand(1, 1000);
+            $this->isItemModalName = str_replace(' ', '_', $this->isItemModalName);
             // $this->reset('selectedArrKey', 'openSorModal');
         }
     }
     public function submitTestModal()
     {
-        $this->notification()->error(
-            $title = 'No Rate Found !!'
-        );
-        if(count($this->tempModalData)>0){
-            $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = $this->tempModalData[0]['rowValue'];
+        if(count($this->isItemModalData)>0){
+            $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = $this->isItemModalData[0]['rowValue'];
             $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
             $this->updateDataTableTracker = rand(1, 1000);
-            $this->reset('selectedArrKey', 'openSorModal', 'tempModalData', 'testModalName','testModal');
+            $this->reset('selectedArrKey', 'openSorModal', 'isItemModalData', 'isItemModalName','isItemModal');
         }
     }
     public function closeTestModal()
     {
-        $this->testModal = !$this->testModal;
+        $this->isItemModal = !$this->isItemModal;
         $this->reset('selectedArrKey', 'openSorModal');
     }
     public function getTypeWiseRate()
@@ -516,7 +513,7 @@ class AddRateAnalysisList extends Component
                 if ($this->allAddedEstimatesData) {
                     $intId = random_int(100000, 999999);
                     if (true) {
-                        // $insert = [];
+                        // $insert[] = [];
                         foreach ($this->allAddedEstimatesData as $key => $value) {
                             $insert = [
                                 'rate_id' => $intId,
@@ -535,10 +532,10 @@ class AddRateAnalysisList extends Component
                                 'operation' => $value['operation'],
                                 'created_by' => Auth::user()->id,
                                 'comments' => $value['remarks'],
-                                'sor_id' => $value['sor_id'],
-                                'page_no' => $value['page_no'],
+                                'sor_id' => ($value['sor_id'] != '') ? $value['sor_id'] : 0,
+                                'page_no' => ($value['page_no'] != '') ? $value['page_no'] : 0,
                                 'table_no' => $value['table_no'],
-                                'volume_no' => $value['volume_no'],
+                                'volume_no' => ($value['volume_no'] != '') ? $value['volume_no'] : 0,
                                 'item_index' => $value['item_index'],
                                 'col_position' => (isset($value['col_position'])) ? $value['col_position'] : 0,
                             ];

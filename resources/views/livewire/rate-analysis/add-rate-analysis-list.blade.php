@@ -313,8 +313,7 @@
                                 itemNo: cell.getRow().getIndex(),
                                 colPosition: colIdx
                             }];
-                            var cnf = confirm("Are you sure " + cell.getValue() + " col position " +
-                                colIdx + " ?");
+                            var cnf = confirm("Are you sure " + cell.getValue() + " ?");
                             if (cnf) {
                                 window.Livewire.emit('getRatePlaceWise', getRowData);
                                 $('#' + @json($openSorModalName)).modal('hide');
@@ -366,8 +365,7 @@
                                         itemNo: subrowIndex,
                                         colPosition: colIdx
                                     }];
-                                    var cnf = confirm("Are you sure " + cell.getValue() +
-                                        " col position " + colIdx + " ?");
+                                    var cnf = confirm("Are you sure " + cell.getValue() + " ?");
                                     if (cnf) {
                                         window.Livewire.emit('getRatePlaceWise', getRowData);
                                         $('#' + @json($openSorModalName)).modal('hide');
@@ -491,21 +489,21 @@
             });
         </script>
     @endif
-    @if ($testModal)
+    @if ($isItemModal)
         <div>
-            <div class="modal" id="{{ $testModalName }}" tabindex="-1" role="dialog"
+            <div class="modal" id="{{ $isItemModalName }}" tabindex="-1" role="dialog"
                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">
+                            <h5 class="modal-title" id="exampleModalLabel">No Rate Found on Selected Item.
                             </h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <div id="example-table">Is get item price?</div>
+                            <div id="example-table">Do you want to get item price?</div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" id="yesBtn" class="btn btn-success">Yes</button>
@@ -524,19 +522,19 @@
                 getItemRate();
             });
             function getItemRate() {
-                $('#' + @json($testModalName)).modal('hide');
+                $('#' + @json($isItemModalName)).modal('hide');
                 window.Livewire.emit('submitTestModal');
             }
             function closeModal() {
-                $('#' + @json($testModalName)).modal('hide');
+                $('#' + @json($isItemModalName)).modal('hide');
                 window.Livewire.emit('closeTestModal');
             }
             $(document).ready(function() {
-                $("#" + @json($testModalName)).modal({
+                $("#" + @json($isItemModalName)).modal({
                     backdrop: "static",
                     keyboard: false
                 });
-                $("#" + @json($testModalName)).modal("show");
+                $("#" + @json($isItemModalName)).modal("show");
             });
         </script>
     @endif
