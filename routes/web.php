@@ -45,6 +45,7 @@ use App\Http\Livewire\UserType\UserType;
 use App\Http\Livewire\VendorRegs\VendorList;
 use App\Http\Livewire\DocumentSor\DocumentSors;
 use App\Http\Controllers\ApiController;
+use App\Http\Livewire\ViewSorBook\ViewSorBook;
 // Packages
 use App\Models\User;
 use App\Models\UsersHasRoles;
@@ -177,6 +178,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::post('/update-row-data', [ApiController::class,'updateTableHeader'])->name('update-row-data');
         Route::get('sor-document',DocumentSors::class)->name('sor-document');
 	    Route::post('/sor-file-upload', [ApiController::class,'storeSorUpload'])->name('sor-file-upload');
+        Route::get('view-dynamic-sor',ViewSorBook::class)->name('view-dynamic-sor');
         // Route::prefix('admin',function(){
         Route::get('admin/settings', SettingLists::class)->name('admin.settings');
         // });
