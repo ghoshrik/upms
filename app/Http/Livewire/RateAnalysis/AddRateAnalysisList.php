@@ -15,7 +15,7 @@ use WireUi\Traits\Actions;
 class AddRateAnalysisList extends Component
 {
     use Actions;
-    protected $listeners = ['closeModal1', 'getRatePlaceWise','closeTestModal','submitTestModal'];
+    protected $listeners = ['closeModal1', 'getRatePlaceWise','closeItemModal','submitItemModal'];
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
@@ -89,7 +89,7 @@ class AddRateAnalysisList extends Component
                 }
             }
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddEstimate($tempIndex, Auth::user()->department_id, 0, 0, '', '', '', 0, 0, $result, 'Exp Calculoation', '', $this->remarks);
+            $this->insertAddEstimate($tempIndex, Auth::user()->department_id, 0, 0, '', '', '', 0, 0, round($result,2), 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(
@@ -130,7 +130,7 @@ class AddRateAnalysisList extends Component
             if (!isset($this->selectSor['item_number'])) {
                 $this->selectSor['item_number'] = 0;
             }
-            $this->insertAddEstimate($this->arrayIndex, Auth::user()->department_id, 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, $result, $flag, '', '');
+            $this->insertAddEstimate($this->arrayIndex, Auth::user()->department_id, 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, round($result,2), $flag, '', '');
             $this->totalOnSelectedCount++;
         } else {
             $this->dispatchBrowserEvent('alert', [
@@ -469,16 +469,17 @@ class AddRateAnalysisList extends Component
             // $this->reset('selectedArrKey', 'openSorModal');
         }
     }
-    public function submitTestModal()
+    public function submitItemModal()
     {
         if(count($this->isItemModalData)>0){
             $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = $this->isItemModalData[0]['rowValue'];
             $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
+            $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = round($this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'],2);
             $this->updateDataTableTracker = rand(1, 1000);
             $this->reset('selectedArrKey', 'openSorModal', 'isItemModalData', 'isItemModalName','isItemModal');
         }
     }
-    public function closeTestModal()
+    public function closeItemModal()
     {
         $this->isItemModal = !$this->isItemModal;
         $this->reset('selectedArrKey', 'openSorModal');
@@ -492,6 +493,7 @@ class AddRateAnalysisList extends Component
                     $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = $fetchRate['total_amount'];
                     if ($this->allAddedEstimatesData[$this->selectedArrKey]['rate'] != $tempValue) {
                         $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
+                        $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = round($this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'],2);
                     }
                 }
             }

@@ -523,11 +523,11 @@
             });
             function getItemRate() {
                 $('#' + @json($isItemModalName)).modal('hide');
-                window.Livewire.emit('submitTestModal');
+                window.Livewire.emit('submitItemModal');
             }
             function closeModal() {
                 $('#' + @json($isItemModalName)).modal('hide');
-                window.Livewire.emit('closeTestModal');
+                window.Livewire.emit('closeItemModal');
             }
             $(document).ready(function() {
                 $("#" + @json($isItemModalName)).modal({

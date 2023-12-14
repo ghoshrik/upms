@@ -41,7 +41,7 @@
                                                     {{-- {{ getSorItemNumberDesc($view['sor_item_number']) }} --}}
                                                     {{ $view['description'] }}
                                                 @elseif ($view['rate_no'])
-                                                    {{ getRateDescription($view['rate_no']) }}
+                                                    {{ getRateDescription($view['rate_no'],$view['rate']) }}
                                                 @elseif($view['operation'])
                                                     @if ($view['operation'] == 'Total')
                                                         {{ 'Total of ( ' . $view['row_index'] . ' )' }}
