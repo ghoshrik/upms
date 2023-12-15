@@ -1196,10 +1196,12 @@ class CreateRateAnalysis extends Component
         if ($this->estimateData['item_name'] == 'SOR') {
             if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
                 $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
+                $this->estimateData['total_amount'] = round($this->estimateData['total_amount'],2);
             }
         } else {
             if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
                 $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
+                $this->estimateData['total_amount'] = round($this->estimateData['total_amount'],2);
             }
         }
     }
@@ -1309,7 +1311,7 @@ class CreateRateAnalysis extends Component
         $this->estimateData['rate'] = '';
         $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id', 'qty', 'total_amount')->where([['rate_id', $this->estimateData['rate_no']], ['operation', $this->estimateData['rate_type']], ['dept_id', Auth::user()->department_id]])->first();
         // dd($this->fatchDropdownData['rateDetails']);
-        $this->estimateData['total_amount'] = $this->fatchDropdownData['rateDetails']['total_amount'];
+        $this->estimateData['total_amount'] = round($this->fatchDropdownData['rateDetails']['total_amount'],2);
         $this->estimateData['description'] = $this->fatchDropdownData['rateDetails']['description'];
         // $this->estimateData['qty'] = ($this->fatchDropdownData['rateDetails']['qty'] != 0) ? $this->fatchDropdownData['rateDetails']['qty'] : 1;
         $this->estimateData['qty'] = 1;
@@ -1390,6 +1392,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
             $this->estimateData['page_no'] = '';
+            $this->estimateData['rate_type'] = '';
             $this->estimateData['id'] = '';
             $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor', 'estimateData', 'selectedCategoryId', 'fatchDropdownData']);
         }

@@ -89,7 +89,7 @@ class AddRateAnalysisList extends Component
                 }
             }
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddEstimate($tempIndex, Auth::user()->department_id, 0, 0, '', '', '', 0, 0, round($result,2), 'Exp Calculoation', '', $this->remarks);
+            $this->insertAddEstimate($tempIndex, Auth::user()->department_id, 0, 0, '', '', '', 0, 0, round($result,4), 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(
