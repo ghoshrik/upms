@@ -8,7 +8,7 @@ use Livewire\Component;
 class RateAnalysisViewModal extends Component
 {
     protected $listeners = ['openRateAnalysisModal' => 'openRateAnalysisViewModal'];
-    public $viewModal = false, $rate_id, $viewEstimates = [];
+    public $viewModal = false, $rate_id,$rateDescription, $viewEstimates = [];
 
     public function openRateAnalysisViewModal($rate_id)
     {
@@ -19,6 +19,7 @@ class RateAnalysisViewModal extends Component
         {
             $this->rate_id = $rate_id;
             $this->viewEstimates = RatesAnalysis::where('rate_id',$this->rate_id)->orderBy('row_id')->get();
+            $this->rateDescription = $this->viewEstimates[count($this->viewEstimates)-1]['description'];
         }
         // dd($this->viewEstimates);
     }
