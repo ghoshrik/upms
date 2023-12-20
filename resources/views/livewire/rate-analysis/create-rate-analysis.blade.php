@@ -616,7 +616,8 @@
                                         <div class="col">
                                             <div class="form-group">
                                                 <x-select wire:key='sor-child' label="Child Page No"
-                                                    placeHolder="Select Child Page" wire:model.defer="estimateData.childSorId"
+                                                    placeHolder="Select Child Page"
+                                                    wire:model.defer="estimateData.childSorId"
                                                     x-on:select="$wire.getPlaceWiseComposite()">
                                                     <x-select.option label="{{ $getSor['page_no'] }}"
                                                         value="{{ $getSor['id'] }}" />
@@ -1069,3 +1070,38 @@
         </script>
     @endif
 </div>
+<script>
+    // Save the original fetch function
+    const originalFetch = window.fetch;
+    // Override the fetch function
+    window.fetch = function(url, options) {
+        if (options.method && options.method.toUpperCase() === 'GET') {
+            //     // const base64EncodedBody = btoa(options.body);
+            //     // options.body = base64EncodedBody;
+            //     console.log('get');
+        }
+        if (options.method && options.method.toUpperCase() === 'POST') {
+            const temp = JSON.parse(options.body);
+            temp.updates.forEach(function(t, index) {
+                if (typeof t.payload === 'string') {
+                    // temp.updates[index].payload = t.payload;
+                    return;
+                } else {
+                    temp.updates[index].payload = btoa(JSON.stringify(t.payload));
+                }
+            });
+            options.body = JSON.stringify(temp);
+            console.log(options.body);
+        }
+        console.log(url);
+        // Call the original fetch function
+        return originalFetch(url, options)
+            .then(response => {
+                return response;
+            })
+            .catch(error => {
+                // Handle errors
+                console.error('Error:', error);
+            });
+    };
+</script>
