@@ -4,12 +4,12 @@
             <form id="fileUploadForm" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="row">
-                    <div class="col-md-12 col-lg-3 col-sm-3">
+                    <div class="col-md-3 col-lg-3 col-sm-3">
                         <label for="dept category" style="color:#000;">Category <span style="color:red;">
                                 *</span></label>
                         <select class="form-control" aria-label="Select Category" id="dept_category_id"
                             name="dept_category" required>
-                            <option selected>Select Category</option>
+                            <option value="default" selected disabled>Select Category</option>
                             @isset($deptCategories)
                                 @foreach ($deptCategories as $deptCategory)
                                     <option value="{{ $deptCategory['id'] }}">{{ $deptCategory['dept_category_name'] }}
@@ -18,23 +18,23 @@
                             @endisset
                         </select>
                     </div>
-                    <div class="col-md-12 col-lg-3 col-sm-3">
+                    <div class="col-md-3 col-lg-2 col-sm-3">
                         <label for="dept category" style="color:#000;">Select Volume <span style="color:red;">
                                 *</span></label>
                         <select class="form-control" aria-label="Select Category" id="volume_no" name="volume_no"
                             required>
-                            <option>Select Volume</option>
+                            <option value="default" selected disabled>Select Volume</option>
                             <option value="1">Volume I</option>
                             <option value="2">Volume II</option>
                             <option value="3">Volume III</option>
                         </select>
                     </div>
-                    <div class="col-md-12 col-lg-3 col-sm-3">
+                    <div class="col-md-3 col-lg-3 col-sm-3">
                         <label for="dept category" style="color:#000;">Upload Type <span style="color:red;">
                                 *</span></label>
                         <select class="form-control" aria-label="Select Category" id="upload_at" name="upload_at"
                             required>
-                            <option>Select </option>
+                            <option value="default" selected disabled>Select </option>
                             <option value="0">Useful Tables</option>
                             <option value="1">Support Structure(Diagram)</option>
                             <option value="2">Formula</option>
@@ -49,7 +49,7 @@
 
                         </select>
                     </div>
-                    <div class="col-md-12 col-lg-3 col-sm-3">
+                    <div class="col-md-3 col-lg-3 col-sm-3">
                         <label for="dept category" style="color:#000;">Upload files<span style="color:red;">
                                 *</span></label>
                         <input type="file" placeholder="file upload" required id="file_upload" />
@@ -97,15 +97,15 @@
         const LoadverOverlay = document.getElementById("loaderoverlay");
         /* loading Screen */
 
-        function validateForm() {
-            const fileInput = document.getElementById('file_upload');
-            const deptCategory = document.getElementById('dept_category_id');
-            const volumeNo = document.getElementById('volume_no');
-            const uploadAt = document.getElementById('upload_at');
-            const description = document.getElementById('description');
+        const fileInput = document.getElementById('file_upload');
+        const deptCategory = document.getElementById('dept_category_id');
+        const volumeNo = document.getElementById('volume_no');
+        const uploadAt = document.getElementById('upload_at');
+        const description = document.getElementById('description');
 
-            if (deptCategory === 'Select Category' || volumeNo === 'Select Volume' || uploadAt === 'select' || fileInput ===
-                '') {
+        function validateForm() {
+
+            if (deptCategory === 'default' || volumeNo === 'default' || fileInput === '') {
                 window.$wireui.notify({
                     description: "Please fill in all the required fields.",
                     icon: 'error'
@@ -128,14 +128,8 @@
 
 
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
-
-            const fileInput = document.getElementById('file_upload');
-            const deptCategory = document.getElementById('dept_category_id');
-            const volumeNo = document.getElementById('volume_no');
-            const uploadAt = document.getElementById('upload_at');
-            const description = document.getElementById('description');
             uploadButton.disabled = true;
 
 
@@ -146,30 +140,23 @@
                 LoadverOverlay.style.display = "block";
                 LoadingModel.style.display = "block";
 
-
-                // const jsonStr = JSON.stringify(rowData);
                 const encoder = new TextEncoder();
-                // const jsonDataAsBytes = encoder.encode(jsonStr);
-                // const base64EncodedData = btoa(String.fromCharCode(...jsonDataAsBytes));
-
-
-                const noteencode = encoder.encode(description.value);
-                const base64textencodeData = btoa(String.fromCharCode.apply(null, noteencode));
-
-
-
                 const uploadFile = fileInput.files[0];
                 const render = new FileReader();
-                render.onload = function(event) {
+                render.onload = async function(event) {
                     const base64File = event.target.result.split(',')[1];
+                    const encodedFileName = encodeURIComponent(uploadFile.name);
+                    console.log(encodedFileName);
                     const formData = new FormData();
                     formData.append('file_upload', base64File);
                     formData.append('dept_category_id', deptCategory.value);
                     formData.append('volume_no', volumeNo.value);
                     formData.append('upload_at', uploadAt.value);
-                    formData.append('description', base64textencodeData);
+                    formData.append('description', btoa(String.fromCharCode(...(encoder.encode(
+                        description
+                        .value)))));
 
-                    axios.post('sor-file-upload', formData, {
+                    await axios.post('sor-file-upload', formData, {
                             headers: {
                                 'Content-Type': 'multipart/form-data',
                             }
@@ -202,7 +189,8 @@
                         });
                 };
                 render.readAsDataURL(uploadFile);
-            } else {
+            }
+            /*else {
                 uploadButton.disabled = false;
                 window.$wireui.notify({
                     description: "Form validation failed.",
@@ -210,7 +198,7 @@
                 });
                 LoadverOverlay.style.display = "none";
                 LoadingModel.style.display = "none";
-            }
+            }*/
 
 
         });
