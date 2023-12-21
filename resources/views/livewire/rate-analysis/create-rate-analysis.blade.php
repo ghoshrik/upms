@@ -936,10 +936,10 @@
                                             colPosition: colIdx
                                         }];
                                         if (@json($fetchChildSor == true)) {
-                                            console.log('hi');
+                                            // console.log('hi');
                                             window.Livewire.emit('getCompositePlaceWise', cSor_data)
                                         } else {
-                                            console.log('hlw');
+                                            // console.log('hlw');
                                             window.Livewire.emit('getComposite', cSor_data);
                                         }
                                     } else if (@json($selectedCategoryId) == 5) {
@@ -962,6 +962,8 @@
                         column.columns.forEach(function(subColumn) {
                             var subFun;
                             delete subColumn.editor;
+                            subColumn.formatter = "textarea";
+                            subColumn.variableHeight = true;
                             if (@json($selectedCategoryId) == 4 && column.field == 'desc_of_item') {
                                 // console.log('hi');
                                 column.isClick = function(e, cell) {};
@@ -1036,6 +1038,9 @@
                                 };
                             }
                         });
+                    } else {
+                        column.formatter = "textarea";
+                        column.variableHeight = true;
                     }
                 });
 
@@ -1073,27 +1078,31 @@
 <script>
     // Save the original fetch function
     const originalFetch = window.fetch;
-    // Override the fetch function
+
     window.fetch = function(url, options) {
-        if (options.method && options.method.toUpperCase() === 'GET') {
-            //     // const base64EncodedBody = btoa(options.body);
-            //     // options.body = base64EncodedBody;
-            //     console.log('get');
-        }
-        if (options.method && options.method.toUpperCase() === 'POST') {
+        // if (options.method && options.method.toUpperCase() === 'POST') {
+        try {
             const temp = JSON.parse(options.body);
-            temp.updates.forEach(function(t, index) {
-                if (typeof t.payload === 'string') {
-                    // temp.updates[index].payload = t.payload;
-                    return;
-                } else {
-                    temp.updates[index].payload = btoa(JSON.stringify(t.payload));
-                }
-            });
+
+            if (typeof temp.serverMemo === 'string') {
+                return originalFetch(url, options); // Return the original fetch for this case
+            } else {
+                temp.serverMemo = btoa(unescape(encodeURIComponent(JSON.stringify(temp.serverMemo))));
+            }
+
+            if (typeof temp.updates === 'string') {
+                return originalFetch(url, options); // Return the original fetch for this case
+            } else {
+                temp.updates = btoa(unescape(encodeURIComponent(JSON.stringify(temp.updates))));
+            }
+
             options.body = JSON.stringify(temp);
-            console.log(options.body);
+        } catch (error) {
+            // console.error('Error parsing JSON:', error);
+            return originalFetch(url, options); // Return the original fetch if there's an error parsing JSON
         }
-        console.log(url);
+        // }
+
         // Call the original fetch function
         return originalFetch(url, options)
             .then(response => {
