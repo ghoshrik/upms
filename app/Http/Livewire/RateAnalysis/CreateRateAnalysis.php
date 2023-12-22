@@ -1281,7 +1281,7 @@ class CreateRateAnalysis extends Component
         $this->estimateData['description'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
-        $this->fatchDropdownData['rateDetailsTypes'] = RatesAnalysis::where([['rate_id', $this->estimateData['rate_no']], ['dept_id', Auth::user()->department_id], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculoation']])
+        $this->fatchDropdownData['rateDetailsTypes'] = RatesAnalysis::where([['rate_id', $this->estimateData['rate_no']], ['dept_id', $this->estimateData['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculoation']])
             ->select('rate_id', 'operation')->get();
         // dd($this->fatchDropdownData['rateDetailsTypes']);
     }
@@ -1309,7 +1309,7 @@ class CreateRateAnalysis extends Component
         $this->estimateData['description'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
-        $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id', 'qty', 'total_amount')->where([['rate_id', $this->estimateData['rate_no']], ['operation', $this->estimateData['rate_type']], ['dept_id', Auth::user()->department_id]])->first();
+        $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id', 'qty', 'total_amount')->where([['rate_id', $this->estimateData['rate_no']], ['operation', $this->estimateData['rate_type']], ['dept_id', $this->estimateData['dept_id']]])->first();
         // dd($this->fatchDropdownData['rateDetails']);
         $this->estimateData['total_amount'] = round($this->fatchDropdownData['rateDetails']['total_amount'],2);
         $this->estimateData['description'] = $this->fatchDropdownData['rateDetails']['description'];
