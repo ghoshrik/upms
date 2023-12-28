@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Carbon\Carbon;
-use App\Models\User;
-use Illuminate\Http\Request;
-use App\Models\VerificationCode;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\VerificationCode;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
-use App\Http\Requests\AuthLoginrequest;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -42,10 +41,9 @@ class AuthController extends Controller
         return VerificationCode::create([
             'user_id' => $user,
             'otp' => rand(123456, 999999),
-            'expire_at' => Carbon::now()->addMinutes(2)
+            'expire_at' => Carbon::now()->addMinutes(2),
         ]);
     }
-
 
     public function Userlogin(Request $request)
     {
@@ -61,6 +59,10 @@ class AuthController extends Controller
             ->orWhere('ehrms_id', $request->loginId)
             ->first();
         if ($user) {
+            session([
+                'user_data' => $user,
+                'curr_role' => $user->getRoleNames()[0],
+            ]);
             /* Super Admin*/
             if ($user->is_active == 1 && $user->is_admin == 1) {
                 if ($user && Hash::check($request->password, $user->password)) {
@@ -72,8 +74,7 @@ class AuthController extends Controller
                         'loginId' => __('auth.failed'),
                     ]);
                 }
-            }
-            /* Super Admin*/ elseif ($user->is_active == 1) {
+            } elseif ($user->is_active == 1) {
                 if ($user && Hash::check($request->password, $user->password)) {
                     $resp = $this->generateOtp($user->id);
                     $phoneNumberMasked = preg_replace('/(\d{3})(\d{3})(\d{4})/', 'XXXXXX$3', $user->mobile); // Masked phone number
@@ -121,7 +122,7 @@ class AuthController extends Controller
         // dd(VerificationCode::where('user_id', $request->user_id)->where('otp', $otpcode)->first());
         // dd($otpcode);
 
-        $verificationCode   = VerificationCode::select('verification_codes.*')->where('user_id', Crypt::decryptString($request->userId))->where('otp', $request->otpnum)->first();
+        $verificationCode = VerificationCode::select('verification_codes.*')->where('user_id', Crypt::decryptString($request->userId))->where('otp', $request->otpnum)->first();
         // dd($verificationCode);
         $now = Carbon::now();
         if (!$verificationCode) {
@@ -137,7 +138,7 @@ class AuthController extends Controller
             $user->update(['is_verified' => true]);
 
             $verificationCode->update([
-                'expire_at' => Carbon::now()
+                'expire_at' => Carbon::now(),
             ]);
             Auth::login($user);
 

@@ -2,18 +2,20 @@
 
 namespace App\Http\Livewire\RateAnalysis;
 
+use App\Models\SOR;
+use Livewire\Component;
+use App\Models\SorMaster;
+use App\Models\Department;
+use WireUi\Traits\Actions;
 use App\Models\Carriagesor;
 use App\Models\CompositSor;
-use App\Models\Department;
-use App\Models\DynamicSorHeader;
-use App\Models\EstimatePrepare;
 use App\Models\RatesAnalysis;
-use App\Models\SOR;
+use App\Models\EstimatePrepare;
 use App\Models\SorCategoryType;
-use App\Models\SorMaster;
+use App\Models\DynamicSorHeader;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Component;
-use WireUi\Traits\Actions;
+use Illuminate\Support\Facades\Session;
 
 class CreateRateAnalysis extends Component
 {
@@ -98,7 +100,13 @@ class CreateRateAnalysis extends Component
     // }
     public function mount()
     {
-        $this->dropdownData['allDept'] = Department::select('id', 'department_name')->get();
+        $allDept = Session::get('allDept');
+        if ($allDept != '') {
+            $this->dropdownData['allDept'] = Session::get('allDept');
+        } else {
+            $this->dropdownData['allDept'] = Department::select('id', 'department_name')->get();
+            Session::put('allDept', $this->dropdownData['allDept']);
+        }
         $this->dropdownData['page_no'] = [];
         $this->selectSor['dept_id'] = '';
         $this->selectSor['dept_category_id'] = '';
@@ -118,12 +126,19 @@ class CreateRateAnalysis extends Component
         $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor']);
         $value = $value['_x_bindings']['value'];
         $this->estimateData['item_name'] = $value;
+        $allDept = Session::get('allDept');
         if ($this->selectedCategoryId == 1) {
-            $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+            $this->fatchDropdownData['departments'] = '';
+            if ($allDept != '') {
+                $this->fatchDropdownData['departments'] = Session::get('allDept');
+            } else {
+                $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+                Session::put('allDept', $this->fatchDropdownData['departments']);
+            }
             // $this->fatchDropdownData['table_no'] = DynamicSorHeader::select('table_no')->groupBy('table_no')->get();
             $this->fatchDropdownData['page_no'] = [];
             $this->estimateData['rate_no'] = '';
-            $this->estimateData['dept_id'] = Auth::user()->department_id;
+            $this->estimateData['dept_id'] = (Session::get('user_data')) ? Session::get('user_data.department_id') : '';
             if (!empty($this->estimateData['dept_id'])) {
                 $this->getDeptCategory();
             }
@@ -155,8 +170,14 @@ class CreateRateAnalysis extends Component
             $this->estimateData['total_amount'] = '';
             $this->estimateData['distance'] = '';
         } elseif ($this->selectedCategoryId == 3) {
-            $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
-            $this->estimateData['dept_id'] = Auth::user()->department_id;
+            $this->fatchDropdownData['departments'] = '';
+            if ($allDept != '') {
+                $this->fatchDropdownData['departments'] = Session::get('allDept');
+            } else {
+                $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+                Session::put('allDept', $this->fatchDropdownData['departments']);
+            }
+            $this->estimateData['dept_id'] = (Session::get('user_data')) ? Session::get('user_data.department_id') : '';
             if (!empty($this->estimateData['dept_id'])) {
                 $this->getDeptRates();
             }
@@ -176,10 +197,16 @@ class CreateRateAnalysis extends Component
             $this->estimateData['rate_type'] = '';
             // $this->render();
         } elseif ($this->selectedCategoryId == 4) {
-            $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+            $this->fatchDropdownData['departments'] = '';
+            if ($allDept != '') {
+                $this->fatchDropdownData['departments'] = Session::get('allDept');
+            } else {
+                $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+                Session::put('allDept', $this->fatchDropdownData['departments']);
+            }
             $this->fatchDropdownData['page_no'] = [];
             $this->estimateData['rate_no'] = '';
-            $this->estimateData['dept_id'] = Auth::user()->department_id;
+            $this->estimateData['dept_id'] = (Session::get('user_data')) ? Session::get('user_data.department_id') : '';
             if (!empty($this->estimateData['dept_id'])) {
                 $this->getDeptCategory();
             }
@@ -197,10 +224,22 @@ class CreateRateAnalysis extends Component
             $this->estimateData['distance'] = '';
             $this->estimateData['childSorId'] = '';
         } else {
-            $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
-            $this->fatchDropdownData['table_no'] = DynamicSorHeader::select('table_no')->groupBy('table_no')->get();
+            $this->fatchDropdownData['departments'] = '';
+            if ($allDept != '') {
+                $this->fatchDropdownData['departments'] = Session::get('allDept');
+            } else {
+                $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+                Session::put('allDept', $this->fatchDropdownData['departments']);
+            }
+            // $sessionGetTableNo = Session::get('table_no');
+            // if ($sessionGetTableNo != '') {
+            //     $this->fatchDropdownData['table_no'] = $sessionGetTableNo;
+            // } else {
+            //     $this->fatchDropdownData['table_no'] = DynamicSorHeader::select('table_no')->groupBy('table_no')->get();
+            //     Session::put('table_no', $this->fatchDropdownData['table_no']);
+            // }
             $this->fatchDropdownData['page_no'] = [];
-            $this->estimateData['dept_id'] = Auth::user()->department_id;
+            $this->estimateData['dept_id'] = (Session::get('user_data')) ? Session::get('user_data.department_id') : '';
             if (!empty($this->estimateData['dept_id'])) {
                 $this->getDeptCategory();
             }
@@ -228,11 +267,25 @@ class CreateRateAnalysis extends Component
         $this->fatchDropdownData['volumes'] = [];
         $this->fatchDropdownData['table_no'] = [];
         $this->fatchDropdownData['page_no'] = [];
-        $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
+        $this->fatchDropdownData['departmentsCategory'] = [];
+        $sessionHasDeptCat = Session::get('dept_cat');
+        if ($sessionHasDeptCat != '') {
+            $this->fatchDropdownData['departmentsCategory'] = $sessionHasDeptCat;
+        } else {
+            $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
+            Session::put('dept_cat', $this->fatchDropdownData['departmentsCategory']);
+        }
     }
     public function getSorDeptCategory()
     {
-        $this->dropdownData['sorDepartmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->selectSor['dept_id'])->get();
+        $this->dropdownData['sorDepartmentsCategory'] = [];
+        $sessionHasDeptCat = Session::get('dept_cat');
+        if ($sessionHasDeptCat != '') {
+            $this->dropdownData['sorDepartmentsCategory'] = $sessionHasDeptCat;
+        } else {
+            $this->dropdownData['sorDepartmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->selectSor['dept_id'])->get();
+            Session::put('dept_cat', $this->dropdownData['sorDepartmentsCategory']);
+        }
         $this->selectSor['volume'] = '';
         $this->selectSor['table_no'] = '';
         $this->selectSor['page_no'] = '';
@@ -323,8 +376,15 @@ class CreateRateAnalysis extends Component
         } else {
             $this->estimateData['table_no'] = '';
             $this->estimateData['page_no'] = '';
-            $this->fatchDropdownData['table_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']]])
+            $sessionKey = 'table_no' . '_' . $this->estimateData['dept_id'] . '_' . $this->estimateData['dept_category_id'];
+            $sessionGetTableNo = Session::get($sessionKey);
+            if ($sessionGetTableNo !== null) {
+                $this->fatchDropdownData['table_no'] = $sessionGetTableNo;
+            } else {
+                $this->fatchDropdownData['table_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']]])
                 ->select('table_no')->groupBy('table_no')->get();
+                Session::put($sessionKey, $this->fatchDropdownData['table_no']);
+            }
         }
 
     }
@@ -338,8 +398,17 @@ class CreateRateAnalysis extends Component
         //         ->select('page_no')->get();
         // } else {
         $this->estimateData['id'] = '';
-        $this->fatchDropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']]])
+        $sessionKey = 'page_no'.'_'. $this->estimateData['dept_id'] . '_' . $this->estimateData['dept_category_id'] . '_' . $this->estimateData['table_no'];
+        $sessionGetPageNo = Session::get($sessionKey);
+        if($sessionGetPageNo != '')
+        {
+            $this->fatchDropdownData['page_no'] = $sessionGetPageNo;
+        }else{
+            $this->fatchDropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']]])
             ->select('id', 'page_no', 'corrigenda_name')->get();
+            Session::put($sessionKey,$this->fatchDropdownData['page_no']);
+        }
+
         // }
     }
     public function getDynamicSor()
@@ -1196,12 +1265,12 @@ class CreateRateAnalysis extends Component
         if ($this->estimateData['item_name'] == 'SOR') {
             if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
                 $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
-                $this->estimateData['total_amount'] = round($this->estimateData['total_amount'],2);
+                $this->estimateData['total_amount'] = round($this->estimateData['total_amount'], 2);
             }
         } else {
             if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
                 $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
-                $this->estimateData['total_amount'] = round($this->estimateData['total_amount'],2);
+                $this->estimateData['total_amount'] = round($this->estimateData['total_amount'], 2);
             }
         }
     }
@@ -1311,7 +1380,7 @@ class CreateRateAnalysis extends Component
         $this->estimateData['rate'] = '';
         $this->fatchDropdownData['rateDetails'] = RatesAnalysis::select('description', 'rate_id', 'qty', 'total_amount')->where([['rate_id', $this->estimateData['rate_no']], ['operation', $this->estimateData['rate_type']], ['dept_id', $this->estimateData['dept_id']]])->first();
         // dd($this->fatchDropdownData['rateDetails']);
-        $this->estimateData['total_amount'] = round($this->fatchDropdownData['rateDetails']['total_amount'],2);
+        $this->estimateData['total_amount'] = round($this->fatchDropdownData['rateDetails']['total_amount'], 2);
         $this->estimateData['description'] = $this->fatchDropdownData['rateDetails']['description'];
         // $this->estimateData['qty'] = ($this->fatchDropdownData['rateDetails']['qty'] != 0) ? $this->fatchDropdownData['rateDetails']['qty'] : 1;
         $this->estimateData['qty'] = 1;
@@ -1345,8 +1414,7 @@ class CreateRateAnalysis extends Component
             $this->addedEstimate[$key]['version'] = $this->estimateData['version'];
             $this->addedEstimate[$key]['sor_itemno_child_id'] = isset($this->estimateData['sor_itemno_child_id']) ? $this->estimateData['sor_itemno_child_id'] : 0;
             $this->addedEstimate[$key]['is_row'] = isset($this->estimateData['is_row']) ? $this->estimateData['is_row'] : null;
-            if(isset($this->estimateData['rate_type']))
-            {
+            if (isset($this->estimateData['rate_type'])) {
                 $this->addedEstimate[$key]['rate_type'] = $this->estimateData['rate_type'];
             }
             $this->addedEstimateUpdateTrack = rand(1, 1000);
@@ -1380,6 +1448,7 @@ class CreateRateAnalysis extends Component
             $this->addedEstimate['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
             $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
             $this->addedEstimate['version'] = $this->estimateData['version'];
+            $this->addedEstimate['operation'] = (isset($this->estimateData['rate_type'])) ? $this->estimateData['rate_type'] : '';
             $this->addedEstimate['col_position'] = isset($this->estimateData['col_position']) ? $this->estimateData['col_position'] : 0;
             $this->addedEstimate['is_row'] = isset($this->estimateData['is_row']) ? $this->estimateData['is_row'] : null;
             $this->addedEstimateUpdateTrack = rand(1, 1000);

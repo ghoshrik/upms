@@ -110,6 +110,9 @@
                                             @elseif ($addedEstimate['rate_no'] != 0)
                                                 {{-- {{ getEstimateDescription($addedEstimate['rate_no']) }} --}}
                                                 {{ $addedEstimate['description'] }}
+                                                @if ($addedEstimate['operation'] != '')
+                                                    ( {{ $addedEstimate['operation'] }} )
+                                                @endif
                                                 {{-- {{ $addedEstimate->SOR->sorMasterDesc }} --}}
                                             @elseif ($addedEstimate['arrayIndex'] != '')
                                                 @if ($addedEstimate['remarks'])

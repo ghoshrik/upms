@@ -225,10 +225,17 @@
           <img src="{{asset('images/avatars/avtar_5.png')}}" alt="User-Profile" class="theme-color-yellow-img img-fluid avatar avatar-50 avatar-rounded">
           <img src="{{asset('images/avatars/avtar_3.png')}}" alt="User-Profile" class="theme-color-pink-img img-fluid avatar avatar-50 avatar-rounded"> --}}
                         <div class="caption ms-3 d-none d-md-block ">
-                            <h6 class="mb-0 caption-title">{{ auth()->user()->emp_name ?? '' }}</h6>
-                            @isset(Auth::user()->getRoleNames()[0])
+                            {{-- <h6 class="mb-0 caption-title">{{ auth()->user()->emp_name ?? '' }}</h6> --}}
+                            <h6 class="mb-0 caption-title">{{ session('user_data.emp_name'); }}</h6>
+                            @php
+                                $curr_role = session('curr_role');
+                            @endphp
+                            @isset($curr_role)
                                 <p class="mb-0 caption-sub-title text-capitalize"><span
-                                        class="badge rounded-pill bg-primary">{{ Auth::user()->getRoleNames()[0] }}</span>
+                                        class="badge rounded-pill bg-primary">
+                                        {{-- {{ Auth::user()->getRoleNames()[0] }} --}}
+                                        {{ $curr_role }}
+                                    </span>
                                 </p>
                             @endisset
 
