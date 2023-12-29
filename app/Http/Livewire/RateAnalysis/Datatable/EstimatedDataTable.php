@@ -4,7 +4,7 @@ namespace App\Http\Livewire\RateAnalysis\Datatable;
 
 use App\Models\RatesAnalysis;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 
@@ -14,7 +14,7 @@ class EstimatedDataTable extends DataTableComponent
 
     public function configure(): void
     {
-        $this->setPrimaryKey('estimate_id');
+        $this->setPrimaryKey('id');
         // $this->setDebugEnabled();
     }
 
@@ -63,15 +63,23 @@ class EstimatedDataTable extends DataTableComponent
     public function builder(): Builder
     {
         // dd(Auth::user()->id);
-        $query = RatesAnalysis::query()
-            ->where(function ($query) {
-                $query->orWhere('operation', 'Total')
-                    ->orWhere('operation', 'With Stacking')
-                    ->orWhere('operation', 'Without Stacking');
-            })
-            ->where('created_by', Auth::user()->id);
-
-        return $query;
+        $userData = Session::get('user_data');
+        $sessionKey = 'rate_data' . '_' . $userData->id . '_' . $userData->department_id;
+        // $sessionRateData = Session::get($sessionKey);
+        // dd($sessionRateData);
+        // if ($sessionRateData !== '') {
+        //     return $sessionRateData;
+        // } else {
+            $query = RatesAnalysis::query()
+                ->where(function ($query) {
+                    $query->orWhere('operation', 'Total')
+                        ->orWhere('operation', 'With Stacking')
+                        ->orWhere('operation', 'Without Stacking');
+                })
+                ->where('created_by', $userData->id);
+            // Session::put($sessionKey, $query);
+            return $query;
+        // }
     }
 
 }

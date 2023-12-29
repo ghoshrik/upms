@@ -557,6 +557,8 @@ class AddRateAnalysisList extends Component
                             $title = 'Created Successfully!!'
                         );
                         $this->resetSession();
+                        $sessionKey = 'rate_data' . '_' . $userData->id . '_' . $userData->department_id;
+                        Session()->forget($sessionKey);
                         $this->updateDataTableTracker = rand(1, 1000);
                         $this->emit('openForm');
                         $this->emit('refreshData');

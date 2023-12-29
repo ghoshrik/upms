@@ -2,20 +2,19 @@
 
 namespace App\Http\Livewire\RateAnalysis;
 
-use App\Models\SOR;
-use Livewire\Component;
-use App\Models\SorMaster;
-use App\Models\Department;
-use WireUi\Traits\Actions;
 use App\Models\Carriagesor;
 use App\Models\CompositSor;
-use App\Models\RatesAnalysis;
-use App\Models\EstimatePrepare;
-use App\Models\SorCategoryType;
+use App\Models\Department;
 use App\Models\DynamicSorHeader;
-use Illuminate\Support\Facades\Log;
+use App\Models\EstimatePrepare;
+use App\Models\RatesAnalysis;
+use App\Models\SOR;
+use App\Models\SorCategoryType;
+use App\Models\SorMaster;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class CreateRateAnalysis extends Component
 {
@@ -102,7 +101,7 @@ class CreateRateAnalysis extends Component
     {
         $allDept = Session::get('allDept');
         if ($allDept != '') {
-            $this->dropdownData['allDept'] = Session::get('allDept');
+            $this->dropdownData['allDept'] = $allDept;
         } else {
             $this->dropdownData['allDept'] = Department::select('id', 'department_name')->get();
             Session::put('allDept', $this->dropdownData['allDept']);
@@ -268,23 +267,25 @@ class CreateRateAnalysis extends Component
         $this->fatchDropdownData['table_no'] = [];
         $this->fatchDropdownData['page_no'] = [];
         $this->fatchDropdownData['departmentsCategory'] = [];
-        $sessionHasDeptCat = Session::get('dept_cat');
+        $sessionKey = 'dept_cat' . '_' . session('user_data.department_id');
+        $sessionHasDeptCat = Session::get($sessionKey);
         if ($sessionHasDeptCat != '') {
             $this->fatchDropdownData['departmentsCategory'] = $sessionHasDeptCat;
         } else {
             $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
-            Session::put('dept_cat', $this->fatchDropdownData['departmentsCategory']);
+            Session::put($sessionKey, $this->fatchDropdownData['departmentsCategory']);
         }
     }
     public function getSorDeptCategory()
     {
         $this->dropdownData['sorDepartmentsCategory'] = [];
-        $sessionHasDeptCat = Session::get('dept_cat');
+        $sessionKey = 'dept_cat' . '_' . session('user_data.department_id');
+        $sessionHasDeptCat = Session::get($sessionKey);
         if ($sessionHasDeptCat != '') {
             $this->dropdownData['sorDepartmentsCategory'] = $sessionHasDeptCat;
         } else {
             $this->dropdownData['sorDepartmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->selectSor['dept_id'])->get();
-            Session::put('dept_cat', $this->dropdownData['sorDepartmentsCategory']);
+            Session::put($sessionKey, $this->dropdownData['sorDepartmentsCategory']);
         }
         $this->selectSor['volume'] = '';
         $this->selectSor['table_no'] = '';
@@ -382,7 +383,7 @@ class CreateRateAnalysis extends Component
                 $this->fatchDropdownData['table_no'] = $sessionGetTableNo;
             } else {
                 $this->fatchDropdownData['table_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']]])
-                ->select('table_no')->groupBy('table_no')->get();
+                    ->select('table_no')->groupBy('table_no')->get();
                 Session::put($sessionKey, $this->fatchDropdownData['table_no']);
             }
         }
@@ -398,15 +399,14 @@ class CreateRateAnalysis extends Component
         //         ->select('page_no')->get();
         // } else {
         $this->estimateData['id'] = '';
-        $sessionKey = 'page_no'.'_'. $this->estimateData['dept_id'] . '_' . $this->estimateData['dept_category_id'] . '_' . $this->estimateData['table_no'];
+        $sessionKey = 'page_no' . '_' . $this->estimateData['dept_id'] . '_' . $this->estimateData['dept_category_id'] . '_' . $this->estimateData['table_no'];
         $sessionGetPageNo = Session::get($sessionKey);
-        if($sessionGetPageNo != '')
-        {
+        if ($sessionGetPageNo != '') {
             $this->fatchDropdownData['page_no'] = $sessionGetPageNo;
-        }else{
+        } else {
             $this->fatchDropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']]])
-            ->select('id', 'page_no', 'corrigenda_name')->get();
-            Session::put($sessionKey,$this->fatchDropdownData['page_no']);
+                ->select('id', 'page_no', 'corrigenda_name')->get();
+            Session::put($sessionKey, $this->fatchDropdownData['page_no']);
         }
 
         // }
