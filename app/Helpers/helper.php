@@ -131,10 +131,10 @@ function getEstimateDescription($estimate_no)
     return $estimateDescription['sorMasterDesc'];
 }
 
-function getRateDescription($rate_no,$rate)
+function getRateDescription($rate_no, $rate)
 {
     if ($rate_no) {
-        $rateDescription = RatesAnalysis::where([['rate_id', $rate_no],['total_amount',$rate]])->first();
+        $rateDescription = RatesAnalysis::where([['rate_id', $rate_no], ['total_amount', $rate]])->first();
     }
     return $rateDescription['description'];
 }
@@ -416,14 +416,20 @@ function delete_entries(&$array, $ids_to_delete)
 }
 function getAllAssigenRoles()
 {
-    $roles = UsersHasRoles::join('roles', 'roles.id', '=', 'users_has_roles.role_id')
-        ->where('users_has_roles.user_id', Auth::user()->id)
-        ->select('users_has_roles.role_id as id', 'roles.name as role_name')
-        ->get();
-
+    $userData = Session::get('user_data');
+    $sessionKey = 'user_roles' . '_' . $userData->id;
+    $getSessionRoles = Session::get($sessionKey);
+    if ($getSessionRoles != '') {
+        $roles = $getSessionRoles;
+    } else {
+        $roles = UsersHasRoles::join('roles', 'roles.id', '=', 'users_has_roles.role_id')
+            ->where('users_has_roles.user_id', $userData->id)
+            ->select('users_has_roles.role_id as id', 'roles.name as role_name')
+            ->get();
+    }
     $generatedHtml = '';
     foreach ($roles as $key => $role) {
-        if (Auth::user()->getRoleNames()[0] != $role->role_name) {
+        if ($userData->getRoleNames()[0] != $role->role_name) {
             $generatedHtml .= '<li><a class="dropdown-item badge rounded-pill bg-secondary" href="' . route('change-role', $role->id) . '">' . ucfirst($role->role_name) . '</a></li>';
         }
     }
@@ -463,7 +469,7 @@ function getDepartmentCategoryName($value)
 }
 function getEstimateDesc($estimate_no)
 {
-    $getDescription = SORMaster::select('estimate_id','sorMasterDesc')->where('estimate_id',$estimate_no)->first();
+    $getDescription = SORMaster::select('estimate_id', 'sorMasterDesc')->where('estimate_id', $estimate_no)->first();
     return $getDescription['sorMasterDesc'];
 }
 function generatePDF($list, $data, $title)
@@ -546,9 +552,8 @@ function extractItemNoOfItems($data, &$itemNo, $counter)
             foreach ($data->_subrow as $key => $item) {
                 // dd(isset($item->id) == isset($counter[$key+1]));
                 if (isset($item->id)) {
-                    foreach($counter as $c)
-                    {
-                        if($item->id == $c){
+                    foreach ($counter as $c) {
+                        if ($item->id == $c) {
                             $itemNo .= $item->item_no . ' ';
                         }
                     }
@@ -589,29 +594,29 @@ function getTableDesc($sor_id, $item_no)
         $partialItemId .= $part;
         $convertedArray[] = $partialItemId;
     }
-    $loopCount=1;
-    extractDescOfItems($fetchRow, $descriptions, $convertedArray,$loopCount);
+    $loopCount = 1;
+    extractDescOfItems($fetchRow, $descriptions, $convertedArray, $loopCount);
     return $descriptions;
 }
-function extractDescOfItems($data, &$descriptions, $counter,$loopCount)
-    {
-        // If need parent desc
-        if (isset($data->desc_of_item) && $data->desc_of_item != '') {
-            $descriptions .= $data->desc_of_item . ' ';
-        }
-        if (isset($data->_subrow) ) {
-            foreach ($data->_subrow as $item) {
-                // dd($item,$counter[$loopCount],$item->id);
-                if (isset($item->desc_of_item) && isset($counter[$loopCount]) == $item->id) {
-                    $descriptions .= $item->desc_of_item . ' ';
-                    $loopCount++;
-                }
-                if (!empty($item->_subrow)) {
-                    extractDescOfItems($item->_subrow, $descriptions, $counter,$loopCount);
-                }
+function extractDescOfItems($data, &$descriptions, $counter, $loopCount)
+{
+    // If need parent desc
+    if (isset($data->desc_of_item) && $data->desc_of_item != '') {
+        $descriptions .= $data->desc_of_item . ' ';
+    }
+    if (isset($data->_subrow)) {
+        foreach ($data->_subrow as $item) {
+            // dd($item,$counter[$loopCount],$item->id);
+            if (isset($item->desc_of_item) && isset($counter[$loopCount]) == $item->id) {
+                $descriptions .= $item->desc_of_item . ' ';
+                $loopCount++;
+            }
+            if (!empty($item->_subrow)) {
+                extractDescOfItems($item->_subrow, $descriptions, $counter, $loopCount);
             }
         }
     }
+}
 function getSorTableName($sor_id)
 {
     $fetchRow = DynamicSorHeader::where('id', $sor_id)->select('table_no')->first();

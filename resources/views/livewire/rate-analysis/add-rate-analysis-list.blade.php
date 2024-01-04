@@ -12,11 +12,11 @@
                         <div class="col col-md-6 col-lg-6 mb-2">
                             <div class="row">
                                 <div class="input-group mb-3">
-                                    <input type="text" wire:model="expression" class="form-control"
+                                    <input type="text" wire:model.defer="expression" class="form-control"
                                         placeholder="{{ trans('cruds.estimate.fields.operation') }}"
                                         aria-label="{{ trans('cruds.estimate.fields.operation') }}"
                                         aria-describedby="basic-addon1">
-                                    <input type="text" wire:model="remarks" class="form-control"
+                                    <input type="text" wire:model.defer="remarks" class="form-control"
                                         placeholder="{{ trans('cruds.estimate.fields.remarks') }}"
                                         aria-label="{{ trans('cruds.estimate.fields.remarks') }}"
                                         aria-describedby="basic-addon1">
@@ -102,16 +102,16 @@
                                             @endif
                                         </td>
                                         <td class="text-wrap" style="width: 40rem">
-                                            @if (
-                                                $addedEstimate['sor_item_number'] != 0 ||
-                                                    ($addedEstimate['is_row'] != '' && $addedEstimate['is_row'] == 0) ||
-                                                    $addedEstimate['is_row'] == 2)
+                                            @if ($addedEstimate['sor_item_number'] != 0 || ($addedEstimate['is_row'] != '' && $addedEstimate['is_row'] == 0) || $addedEstimate['is_row'] == 2)
                                                 {{ $addedEstimate['description'] }}
+                                                @if ($addedEstimate['operation'] != '')
+                                                    ({{$addedEstimate['arrayIndex']}}) ({{ $addedEstimate['operation'] }})
+                                                @endif
                                             @elseif ($addedEstimate['rate_no'] != 0)
                                                 {{-- {{ getEstimateDescription($addedEstimate['rate_no']) }} --}}
                                                 {{ $addedEstimate['description'] }}
                                                 @if ($addedEstimate['operation'] != '')
-                                                    ( {{ $addedEstimate['operation'] }} )
+                                                    ({{ $addedEstimate['operation'] }})
                                                 @endif
                                                 {{-- {{ $addedEstimate->SOR->sorMasterDesc }} --}}
                                             @elseif ($addedEstimate['arrayIndex'] != '')
@@ -524,10 +524,12 @@
             document.getElementById("yesBtn").addEventListener("click", function() {
                 getItemRate();
             });
+
             function getItemRate() {
                 $('#' + @json($isItemModalName)).modal('hide');
                 window.Livewire.emit('submitItemModal');
             }
+
             function closeModal() {
                 $('#' + @json($isItemModalName)).modal('hide');
                 window.Livewire.emit('closeItemModal');

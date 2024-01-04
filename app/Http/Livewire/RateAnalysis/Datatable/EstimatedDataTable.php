@@ -76,6 +76,7 @@ class EstimatedDataTable extends DataTableComponent
                         ->orWhere('operation', 'With Stacking')
                         ->orWhere('operation', 'Without Stacking');
                 })
+                ->where('item_name', '=','')
                 ->where('created_by', $userData->id);
             // Session::put($sessionKey, $query);
             return $query;

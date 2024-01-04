@@ -2,15 +2,16 @@
 
 namespace App\Http\Livewire\RateAnalysis;
 
-use App\Models\DynamicSorHeader;
-use App\Models\EstimatePrepare;
-use App\Models\RatesAnalysis;
-use App\Services\CommonFunction;
-use ChrisKonnertz\StringCalc\StringCalc;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use WireUi\Traits\Actions;
+use App\Models\RatesAnalysis;
+use App\Models\EstimatePrepare;
+use App\Models\DynamicSorHeader;
+use App\Services\CommonFunction;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use ChrisKonnertz\StringCalc\StringCalc;
+use Illuminate\Support\Facades\Validator;
 
 class AddRateAnalysisList extends Component
 {
@@ -120,7 +121,8 @@ class AddRateAnalysisList extends Component
             $this->hideWithoutStackBtn = false;
         }
         // dd($this->hideTotalbutton,$this->hideWithStackBtn,$this->hideWithoutStackBtn);
-        if (count($this->level) >= 2 || true) {
+        sort($this->level);
+        if (count($this->level) >= 2 ) {
             $result = 0;
             foreach ($this->level as $key => $array) {
                 $this->arrayStore[] = chr($array + 64);
@@ -133,10 +135,9 @@ class AddRateAnalysisList extends Component
             $this->insertAddEstimate($this->arrayIndex, Auth::user()->department_id, 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, round($result,2), $flag, '', '');
             $this->totalOnSelectedCount++;
         } else {
-            $this->dispatchBrowserEvent('alert', [
-                'type' => 'error',
-                'message' => "Minimum select 2 Check boxes",
-            ]);
+            $this->notification()->error(
+                $title = 'Please select minimum 2 Check boxes'
+            );
         }
     }
     public function calculateValue($key)
@@ -260,6 +261,7 @@ class AddRateAnalysisList extends Component
                 Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
                 $this->reset('addedEstimateData');
             }
+            Session()->put('rateDescription', $this->sorMasterDesc);
             $this->reset('addedEstimateData');
             // dd($this->allAddedEstimatesData);
         }
@@ -510,6 +512,7 @@ class AddRateAnalysisList extends Component
     public function store()
     {
         // dd($this->allAddedEstimatesData);
+        $userData = Session::get('user_data');
         if ($this->totalOnSelectedCount == 1 || true) {
             try {
                 if ($this->allAddedEstimatesData) {
@@ -532,7 +535,7 @@ class AddRateAnalysisList extends Component
                                 'rate' => $value['rate'],
                                 'total_amount' => $value['total_amount'],
                                 'operation' => $value['operation'],
-                                'created_by' => Auth::user()->id,
+                                'created_by' => $userData->id,
                                 'comments' => $value['remarks'],
                                 'sor_id' => ($value['sor_id'] != '') ? $value['sor_id'] : 0,
                                 'page_no' => ($value['page_no'] != '') ? $value['page_no'] : 0,
@@ -557,8 +560,8 @@ class AddRateAnalysisList extends Component
                             $title = 'Created Successfully!!'
                         );
                         $this->resetSession();
-                        $sessionKey = 'rate_data' . '_' . $userData->id . '_' . $userData->department_id;
-                        Session()->forget($sessionKey);
+                        // $sessionKey = 'rate_data' . '_' . $userData->id . '_' . $userData->department_id;
+                        // Session()->forget($sessionKey);
                         $this->updateDataTableTracker = rand(1, 1000);
                         $this->emit('openForm');
                         $this->emit('refreshData');

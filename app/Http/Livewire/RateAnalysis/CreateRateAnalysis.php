@@ -116,7 +116,10 @@ class CreateRateAnalysis extends Component
         $this->selectSor['volume'] = '';
         $this->selectSor['sor_id'] = '';
         $this->selectSor['id'] = '';
-        if (Session()->has('addedEstimateData')) {
+        if (Session()->has('addedRateAnalysisData')) {
+            if(Session()->has('rateDescription')){
+                $this->sorMasterDesc = Session()->get('rateDescription');
+            }
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
     }
@@ -267,7 +270,7 @@ class CreateRateAnalysis extends Component
         $this->fatchDropdownData['table_no'] = [];
         $this->fatchDropdownData['page_no'] = [];
         $this->fatchDropdownData['departmentsCategory'] = [];
-        $sessionKey = 'dept_cat' . '_' . session('user_data.department_id');
+        $sessionKey = 'dept_cat' . '_' . $this->estimateData['dept_id'];
         $sessionHasDeptCat = Session::get($sessionKey);
         if ($sessionHasDeptCat != '') {
             $this->fatchDropdownData['departmentsCategory'] = $sessionHasDeptCat;
@@ -279,7 +282,7 @@ class CreateRateAnalysis extends Component
     public function getSorDeptCategory()
     {
         $this->dropdownData['sorDepartmentsCategory'] = [];
-        $sessionKey = 'dept_cat' . '_' . session('user_data.department_id');
+        $sessionKey = 'sorDept_cat' . '_' . $this->estimateData['dept_id'];
         $sessionHasDeptCat = Session::get($sessionKey);
         if ($sessionHasDeptCat != '') {
             $this->dropdownData['sorDepartmentsCategory'] = $sessionHasDeptCat;
