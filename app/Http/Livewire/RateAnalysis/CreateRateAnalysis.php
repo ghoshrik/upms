@@ -282,7 +282,7 @@ class CreateRateAnalysis extends Component
     public function getSorDeptCategory()
     {
         $this->dropdownData['sorDepartmentsCategory'] = [];
-        $sessionKey = 'sorDept_cat' . '_' . $this->estimateData['dept_id'];
+        $sessionKey = 'sorDept_cat' . '_' . $this->selectSor['dept_id'];
         $sessionHasDeptCat = Session::get($sessionKey);
         if ($sessionHasDeptCat != '') {
             $this->dropdownData['sorDepartmentsCategory'] = $sessionHasDeptCat;
