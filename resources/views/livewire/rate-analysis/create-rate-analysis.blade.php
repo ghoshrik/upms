@@ -846,7 +846,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <div id="example-table"></div>
+                            <div id="tabulator_table"></div>
                         </div>
                         <div class="modal-footer">
                             <button type="button"id="closeBtn" class="btn btn-secondary"
@@ -1070,13 +1070,15 @@
                 });
 
                 delayPromise.then(function() {
-                    var table = new Tabulator("#example-table", {
+                    var table = new Tabulator("#tabulator_table", {
                         height: "711px",
                         columnVertAlign: "bottom",
                         layout: "fitDataFill",
                         columns: headerData,
                         columnHeaderVertAlign: "center",
                         data: rowData,
+                        variableHeight:true,
+                        variableWidth:true,
                         dataTree: true, // Enable the dataTree module
                         dataTreeStartExpanded: true, // Optional: Expand all rows by default
                         dataTreeChildField: "_subrow", // Specify the field name for subrows

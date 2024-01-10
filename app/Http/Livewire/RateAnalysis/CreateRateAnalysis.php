@@ -276,12 +276,12 @@ class CreateRateAnalysis extends Component
         $this->fatchDropdownData['table_no'] = [];
         $this->fatchDropdownData['page_no'] = [];
         $this->fatchDropdownData['departmentsCategory'] = [];
-        $sessionKey = 'dept_cat' . '_' . $this->estimateData['dept_id'];
-        $sessionHasDeptCat = Cache::get($sessionKey);
-        if ($sessionHasDeptCat != '') {
-            $this->fatchDropdownData['departmentsCategory'] = $sessionHasDeptCat;
+        $cacheKey = 'dept_cat' . '_' . $this->estimateData['dept_id'];
+        $cacheHasDeptCat = Cache::get($cacheKey);
+        if ($cacheHasDeptCat != '') {
+            $this->fatchDropdownData['departmentsCategory'] = $cacheHasDeptCat;
         } else {
-            $this->fatchDropdownData['departmentsCategory'] = Cache::remember($sessionKey, now()->addMinutes(720), function () {
+            $this->fatchDropdownData['departmentsCategory'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
                 return SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
             });
         }
@@ -289,12 +289,12 @@ class CreateRateAnalysis extends Component
     public function getSorDeptCategory()
     {
         $this->dropdownData['sorDepartmentsCategory'] = [];
-        $sessionKey = 'sorDept_cat' . '_' . $this->selectSor['dept_id'];
-        $sessionHasDeptCat = Cache::get($sessionKey);
-        if ($sessionHasDeptCat != '') {
-            $this->dropdownData['sorDepartmentsCategory'] = $sessionHasDeptCat;
+        $cacheKey = 'sorDept_cat' . '_' . $this->selectSor['dept_id'];
+        $cacheHasDeptCat = Cache::get($cacheKey);
+        if ($cacheHasDeptCat != '') {
+            $this->dropdownData['sorDepartmentsCategory'] = $cacheHasDeptCat;
         } else {
-            $this->dropdownData['sorDepartmentsCategory'] = Cache::remember($sessionKey, now()->addMinutes(720), function () {
+            $this->dropdownData['sorDepartmentsCategory'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
                 return SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->selectSor['dept_id'])->get();
             });
         }
@@ -404,7 +404,7 @@ class CreateRateAnalysis extends Component
             $cacheKey = 'volume_' . $this->selectSor['dept_id'] . '_' . $this->selectSor['dept_category_id'];
             $getCacheData = Cache::get($cacheKey);
             $this->dropdownData['volumes'] = [];
-            if ($getCacheData !== '') {
+            if ($getCacheData != '') {
                 $this->dropdownData['volumes'] = $getCacheData;
             } else {
                  $this->dropdownData['volumes'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
@@ -419,7 +419,7 @@ class CreateRateAnalysis extends Component
             $cacheKey = 'volume_' . $this->estimateData['dept_id'] . '_' . $this->estimateData['dept_category_id'];
             $getCacheData = Cache::get($cacheKey);
             $this->fatchDropdownData['volumes'] = [];
-            if ($getCacheData !== '') {
+            if ($getCacheData != '') {
                 $this->fatchDropdownData['volumes'] = $getCacheData;
             } else {
                  $this->fatchDropdownData['volumes'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
@@ -450,7 +450,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['page_no'] = '';
             $cacheKey = 'table_no_' . $this->estimateData['dept_id'] . '_' . $this->estimateData['dept_category_id'] . '_' . $this->estimateData['volume'];
             $getCacheData = Cache::get($cacheKey);
-            if ($getCacheData !== null) {
+            if ($getCacheData != '') {
                 $this->fatchDropdownData['table_no'] = $getCacheData;
             } else {
                  $this->fatchDropdownData['table_no'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
