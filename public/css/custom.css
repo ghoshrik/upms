@@ -627,3 +627,14 @@ body.uikit .btn-download {
 /* .dropdown:hover .dropdown-content {
     display: block;
 } */
+/* ---------for tabulator----- */
+.tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-title {
+  white-space: break-spaces !important;
+  font-size: 14px;
+  text-align: center;
+}
+
+.tabulator-row .tabulator-cell {
+  /* box-sizing: content-box !important; */
+  white-space: break-spaces !important;
+}
