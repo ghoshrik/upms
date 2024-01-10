@@ -885,6 +885,15 @@
                         // console.log('hi');
                         column.isClick = function(e, cell) {};
                     }
+                    if (column.field === 'desc_of_item') {
+                        column.frozen = true;
+                    }
+                    if (column.field === 'item_no') {
+                        column.frozen = true;
+                    }
+                    if (column.field === 'unit') {
+                        column.frozen = true;
+                    }
                     if (column.isClick) {
                         column.isClick = eval('(' + column.isClick + ')');
                         fun = column.isClick;
@@ -900,18 +909,22 @@
                             var colId = cell.getField();
                             var allColumn = cell.getTable().columnManager.getColumns();
                             var colIdx = -1;
+                            var colName;
                             for (var i = 0; i < allColumn.length; i++) {
                                 if (allColumn[i]['columns'] && allColumn[i]['columns'].length > 0) {
                                     var allGroupCol = allColumn[i]['columns'];
                                     for (var j = 0; j < allGroupCol.length; j++) {
                                         if (allGroupCol[j].getField() === colId) {
                                             colIdx = i + j;
+                                            colName = allGroupCol[j].getField();
+                                            colName = colName.replace(/_/g, ' ');
                                             break;
                                         }
                                     }
                                 } else {
                                     if (allColumn[i].getField() === colId) {
                                         colIdx = i;
+                                        colName = column.title;
                                         break;
                                     }
                                 }
@@ -923,8 +936,8 @@
                                 itemNo: cell.getRow().getIndex(),
                                 colPosition: colIdx
                             }];
-                            var cnf = confirm("Are you sure " + cell.getValue() + " col position " +
-                                colIdx + " ?");
+                            var cnf = confirm("Are you sure to select " + colName +
+                                " Value = " + cell.getValue() + " ?");
                             if (cnf) {
                                 if (@json($isParent)) {
                                     window.Livewire.emit('getRowValue', getRowData);
@@ -981,6 +994,7 @@
                                     var colId = cell.getField();
                                     var allColumn = cell.getTable().columnManager.getColumns();
                                     var colIdx = -1;
+                                    var colName;
                                     for (var i = 0; i < allColumn.length; i++) {
                                         if (allColumn[i]['columns'] && allColumn[i]['columns']
                                             .length > 0) {
@@ -988,12 +1002,15 @@
                                             for (var j = 0; j < allGroupCol.length; j++) {
                                                 if (allGroupCol[j].getField() === colId) {
                                                     colIdx = i + j;
+                                                    colName = allGroupCol[j].getField();
+                                                    colName = colName.replace(/_/g, ' ');
                                                     break;
                                                 }
                                             }
                                         } else {
                                             if (allColumn[i].getField() === colId) {
                                                 colIdx = i;
+                                                colName = column.title;
                                                 break;
                                             }
                                         }
@@ -1006,8 +1023,8 @@
                                         itemNo: subrowIndex,
                                         colPosition: colIdx
                                     }];
-                                    var cnf = confirm("Are you sure " + cell.getValue() +
-                                        " col position " + colIdx + " ?");
+                                    var cnf = confirm("Are you sure to select " + colName +
+                                        " Value = " + cell.getValue() + " ?");
                                     if (cnf) {
                                         if (@json($isParent)) {
                                             window.Livewire.emit('getRowValue', getRowData);
@@ -1054,9 +1071,11 @@
 
                 delayPromise.then(function() {
                     var table = new Tabulator("#example-table", {
-                        height: "auto",
-                        layout: "fitColumns",
+                        height: "711px",
+                        columnVertAlign: "bottom",
+                        layout: "fitDataFill",
                         columns: headerData,
+                        columnHeaderVertAlign: "center",
                         data: rowData,
                         dataTree: true, // Enable the dataTree module
                         dataTreeStartExpanded: true, // Optional: Expand all rows by default
