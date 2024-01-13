@@ -3,8 +3,8 @@
         <x-card>
             {{-- <div class="modal-content"> --}}
             {{-- <div class="p-0 modal-body"> --}}
-            <div class="p-0 text-center">
-                <x-lucide-clipboard-list class="w-10 h-12 mx-auto text-success" />
+            <div class="p-0 text-center" id="printContent">
+                <x-lucide-clipboard-list class="w-10 h-12 mx-auto text-success print-icon" />
                 <div class="mt-5 text-3xl">Details of Estimate No : {{ $estimate_id }}</div>
                 <div class="mt-2 text-slate-500"> </div>
                 <div>
@@ -99,8 +99,69 @@
                             <x-lucide-download class="w-4 h-4 text-gray-500" /> Download
                         </button>
                     </div> --}}
+                    <div class="flex float-right">
+                        <button class="btn btn-soft-info" onclick="printContent()">
+                            <x-lucide-printer class="w-4 h-4 text-gray-500" /> Print
+                        </button>
+                    </div>
                 </div>
             </x-slot>
         </x-card>
     </x-modal>
 </div>
+<script>
+    function printContent() {
+        var printWindow = window.open('', '_blank', 'width=900,height=800');
+
+        printWindow.document.write('<html><head><title>https://wbupms.wb.gov.in</title></head><body>');
+
+        // Clone the content and append it to the new window
+        var contentToPrint = document.getElementById('printContent').cloneNode(true);
+        printWindow.document.body.appendChild(contentToPrint);
+
+        // Add styles for print inside the script
+        var style = printWindow.document.createElement('style');
+        style.textContent = `
+            @media print {
+                .print-icon {
+                    width: 50px;
+                    height: 50px;
+                    display: block;
+                    margin: 0 auto; /* Center-align the icon */
+                }
+
+                /* Add your print styles here */
+                #printContent {
+                    /* Add styles specific to the print version of #printContent */
+                }
+                /* Table styles */
+                table {
+                    border-collapse: collapse;
+                    width: 100%;
+                }
+
+                th, td {
+                    border: 1px solid #000; /* Add borders to all sides of table cells */
+                    /* padding: 8px; */
+                    text-align: left;
+                }
+
+                th {
+                    background-color: #f2f2f2; /* Set background color for table header */
+                }
+            }
+        `;
+        printWindow.document.head.appendChild(style);
+
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+
+        // Wait for the content to be fully loaded before printing
+        printWindow.onload = function() {
+            printWindow.print();
+            printWindow.onafterprint = function() {
+                printWindow.close();
+            };
+        };
+    }
+</script>
