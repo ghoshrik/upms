@@ -2,21 +2,21 @@
 
 namespace App\Http\Livewire\RateAnalysis;
 
-use Livewire\Component;
-use WireUi\Traits\Actions;
-use App\Models\RatesAnalysis;
-use App\Models\EstimatePrepare;
 use App\Models\DynamicSorHeader;
+use App\Models\EstimatePrepare;
+use App\Models\RatesAnalysis;
 use App\Services\CommonFunction;
+use ChrisKonnertz\StringCalc\StringCalc;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use ChrisKonnertz\StringCalc\StringCalc;
 use Illuminate\Support\Facades\Validator;
+use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class AddRateAnalysisList extends Component
 {
     use Actions;
-    protected $listeners = ['closeModal1', 'getRatePlaceWise','closeItemModal','submitItemModal'];
+    protected $listeners = ['closeModal1', 'getRatePlaceWise', 'closeItemModal', 'submitItemModal'];
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
@@ -90,7 +90,7 @@ class AddRateAnalysisList extends Component
                 }
             }
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddEstimate($tempIndex, Auth::user()->department_id, 0, 0, '', '', '', 0, 0, round($result,4), 'Exp Calculoation', '', $this->remarks);
+            $this->insertAddEstimate($tempIndex, Session::get('user_data.department_id'), 0, 0, '', '', '', 0, 0, round($result, 2), 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(
@@ -122,7 +122,7 @@ class AddRateAnalysisList extends Component
         }
         // dd($this->hideTotalbutton,$this->hideWithStackBtn,$this->hideWithoutStackBtn);
         sort($this->level);
-        if (count($this->level) >= 2 ) {
+        if (count($this->level) >= 2) {
             $result = 0;
             foreach ($this->level as $key => $array) {
                 $this->arrayStore[] = chr($array + 64);
@@ -132,7 +132,7 @@ class AddRateAnalysisList extends Component
             if (!isset($this->selectSor['item_number'])) {
                 $this->selectSor['item_number'] = 0;
             }
-            $this->insertAddEstimate($this->arrayIndex, Auth::user()->department_id, 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, round($result,2), $flag, '', '');
+            $this->insertAddEstimate($this->arrayIndex, Session::get('user_data.department_id'), 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, round($result), $flag, '', '');
             $this->totalOnSelectedCount++;
         } else {
             $this->notification()->error(
@@ -144,6 +144,8 @@ class AddRateAnalysisList extends Component
     {
         // dd($this->allAddedEstimatesData[$key]);
         if ($this->allAddedEstimatesData[$key]['rate'] > 0) {
+            $this->allAddedEstimatesData[$key]['qty'] = round($this->allAddedEstimatesData[$key]['qty'], 3);
+            $this->allAddedEstimatesData[$key]['rate'] = round($this->allAddedEstimatesData[$key]['rate'], 2);
             $this->allAddedEstimatesData[$key]['total_amount'] = $this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'];
             $this->allAddedEstimatesData[$key]['total_amount'] = round($this->allAddedEstimatesData[$key]['total_amount'], 2);
             $this->allAddedEstimatesData[$key]['rate'] = $this->allAddedEstimatesData[$key]['rate'];
@@ -446,7 +448,7 @@ class AddRateAnalysisList extends Component
         // }
     }
     public $fetchRatePlaceWise;
-    public $isRateType = false, $rateTypeModalName, $rateType = '',$isItemModal = false,$isItemModalName,$isItemModalData;
+    public $isRateType = false, $rateTypeModalName, $rateType = '', $isItemModal = false, $isItemModalName, $isItemModalData;
     public function getRatePlaceWise($data)
     {
         // dd($data[0]);
@@ -473,12 +475,13 @@ class AddRateAnalysisList extends Component
     }
     public function submitItemModal()
     {
-        if(count($this->isItemModalData)>0){
-            $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = $this->isItemModalData[0]['rowValue'];
+        if (count($this->isItemModalData) > 0) {
+            $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = round($this->isItemModalData[0]['rowValue'],2);
+            $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] = round($this->allAddedEstimatesData[$this->selectedArrKey]['qty'],3);
             $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
-            $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = round($this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'],2);
+            $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = round($this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'], 2);
             $this->updateDataTableTracker = rand(1, 1000);
-            $this->reset('selectedArrKey', 'openSorModal', 'isItemModalData', 'isItemModalName','isItemModal');
+            $this->reset('selectedArrKey', 'openSorModal', 'isItemModalData', 'isItemModalName', 'isItemModal');
         }
     }
     public function closeItemModal()
@@ -495,7 +498,7 @@ class AddRateAnalysisList extends Component
                     $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = $fetchRate['total_amount'];
                     if ($this->allAddedEstimatesData[$this->selectedArrKey]['rate'] != $tempValue) {
                         $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
-                        $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = round($this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'],2);
+                        $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = round($this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'], 2);
                     }
                 }
             }

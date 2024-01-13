@@ -363,8 +363,8 @@ class CreateRateAnalysis extends Component
         if ($getCacheData != '') {
             $this->dropdownData['page_no'] = $getCacheData;
         } else {
-             $this->dropdownData['page_no'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
-                return  DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']]])
+            $this->dropdownData['page_no'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+                return DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']]])
                     ->select('id', 'page_no', 'corrigenda_name')->orderBy('page_no', 'asc')->get();
             });
         }
@@ -380,8 +380,8 @@ class CreateRateAnalysis extends Component
         if ($getCacheData != '') {
             $this->getSor = $getCacheData;
         } else {
-             $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () {
-                return  DynamicSorHeader::where('id', $this->selectSor['id'])->first();
+            $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+                return DynamicSorHeader::where('id', $this->selectSor['id'])->first();
             });
         }
         if ($this->getSor != null) {
@@ -407,7 +407,7 @@ class CreateRateAnalysis extends Component
             if ($getCacheData != '') {
                 $this->dropdownData['volumes'] = $getCacheData;
             } else {
-                 $this->dropdownData['volumes'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+                $this->dropdownData['volumes'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
                     return DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']]])->select('volume_no')->groupBy('volume_no')->get();
                 });
             }
@@ -422,8 +422,8 @@ class CreateRateAnalysis extends Component
             if ($getCacheData != '') {
                 $this->fatchDropdownData['volumes'] = $getCacheData;
             } else {
-                 $this->fatchDropdownData['volumes'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
-                    return  DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']]])->select('volume_no')->groupBy('volume_no')->get();
+                $this->fatchDropdownData['volumes'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+                    return DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']]])->select('volume_no')->groupBy('volume_no')->get();
                 });
             }
         }
@@ -440,8 +440,8 @@ class CreateRateAnalysis extends Component
             if ($getCacheData != '') {
                 $this->dropdownData['table_no'] = $getCacheData;
             } else {
-                 $this->dropdownData['table_no'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
-                    return  DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']]])
+                $this->dropdownData['table_no'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+                    return DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']]])
                         ->select('table_no')->groupBy('table_no')->get();
                 });
             }
@@ -453,8 +453,8 @@ class CreateRateAnalysis extends Component
             if ($getCacheData != '') {
                 $this->fatchDropdownData['table_no'] = $getCacheData;
             } else {
-                 $this->fatchDropdownData['table_no'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
-                    return  DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']]])
+                $this->fatchDropdownData['table_no'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+                    return DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']]])
                         ->select('table_no')->groupBy('table_no')->get();
                 });
             }
@@ -476,8 +476,8 @@ class CreateRateAnalysis extends Component
         if ($getCacheData != '') {
             $this->fatchDropdownData['page_no'] = $getCacheData;
         } else {
-             $this->fatchDropdownData['page_no'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
-                return  DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']]])
+            $this->fatchDropdownData['page_no'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+                return DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']]])
                     ->select('id', 'page_no', 'corrigenda_name')->orderBy('page_no', 'asc')->get();
             });
         }
@@ -495,8 +495,8 @@ class CreateRateAnalysis extends Component
             if ($getCacheData != '') {
                 $this->getSor = $getCacheData;
             } else {
-                 $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () {
-                    return  DynamicSorHeader::where('id', $this->selectSor['id'])->first();
+                $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+                    return DynamicSorHeader::where('id', $this->selectSor['id'])->first();
                 });
             }
             $this->estimateData['page_no'] = $this->selectSor['page_no'];
@@ -508,7 +508,7 @@ class CreateRateAnalysis extends Component
             if ($getCacheData != '') {
                 $this->getSor = $getCacheData;
             } else {
-                 $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+                $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () {
                     return DynamicSorHeader::where('id', $this->estimateData['id'])->first();
                 });
             }
@@ -1094,7 +1094,7 @@ class CreateRateAnalysis extends Component
         if ($getCompositeCacheData != '') {
             $this->getCompositeDatas = $getCompositeCacheData;
         } else {
-             $this->getCompositeDatas = Cache::remember($compositeCacheKey, now()->addMinutes(720), function () {
+            $this->getCompositeDatas = Cache::remember($compositeCacheKey, now()->addMinutes(720), function () {
                 return CompositSor::where([['sor_itemno_parent_id', $data[0]['parentId']], ['sor_itemno_parent_index', $data[0]['item_index']]])->get();
             });
         }
@@ -1103,12 +1103,12 @@ class CreateRateAnalysis extends Component
             $this->modalName = '';
             $this->viewModal = !$this->viewModal;
             // $this->fetchChildSor = !$this->fetchChildSor;
-            $cacheKey = 'getSor_'.$this->getCompositeDatas[0]['sor_itemno_child_id'];
+            $cacheKey = 'getSor_' . $this->getCompositeDatas[0]['sor_itemno_child_id'];
             $getCacheData = Cache::get($cacheKey);
-            if($getCacheData != ''){
+            if ($getCacheData != '') {
                 $this->getSor = $getCacheData;
-            }else{
-                 $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+            } else {
+                $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () {
                     return DynamicSorHeader::where('id', $this->getCompositeDatas[0]['sor_itemno_child_id'])->first();
                 });
             }
@@ -1369,11 +1369,15 @@ class CreateRateAnalysis extends Component
     {
         if ($this->estimateData['item_name'] == 'SOR') {
             if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
+                $this->estimateData['qty'] = round($this->estimateData['qty'], 3);
+                $this->estimateData['rate'] = round($this->estimateData['rate'], 2);
                 $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
                 $this->estimateData['total_amount'] = round($this->estimateData['total_amount'], 2);
             }
         } else {
             if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
+                $this->estimateData['qty'] = round($this->estimateData['qty'], 3);
+                $this->estimateData['rate'] = round($this->estimateData['rate'], 2);
                 $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
                 $this->estimateData['total_amount'] = round($this->estimateData['total_amount'], 2);
             }
@@ -1513,9 +1517,9 @@ class CreateRateAnalysis extends Component
             $this->addedEstimate[$key]['item_name'] = $this->estimateData['item_name'];
             $this->addedEstimate[$key]['other_name'] = $this->estimateData['other_name'];
             $this->addedEstimate[$key]['description'] = $this->estimateData['description'];
-            $this->addedEstimate[$key]['qty'] = ($this->estimateData['qty'] == '') ? 0 : $this->estimateData['qty'];
-            $this->addedEstimate[$key]['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
-            $this->addedEstimate[$key]['total_amount'] = $this->estimateData['total_amount'];
+            $this->addedEstimate[$key]['qty'] = ($this->estimateData['qty'] == '') ? 0 : round($this->estimateData['qty'], 3);
+            $this->addedEstimate[$key]['rate'] = ($this->estimateData['rate'] == '') ? 0 : round($this->estimateData['rate'], 2);
+            $this->addedEstimate[$key]['total_amount'] = round($this->estimateData['total_amount'], 2);
             $this->addedEstimate[$key]['version'] = $this->estimateData['version'];
             $this->addedEstimate[$key]['sor_itemno_child_id'] = isset($this->estimateData['sor_itemno_child_id']) ? $this->estimateData['sor_itemno_child_id'] : 0;
             $this->addedEstimate[$key]['is_row'] = isset($this->estimateData['is_row']) ? $this->estimateData['is_row'] : null;
