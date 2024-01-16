@@ -7,7 +7,6 @@ use App\Models\EstimatePrepare;
 use App\Models\RatesAnalysis;
 use App\Services\CommonFunction;
 use ChrisKonnertz\StringCalc\StringCalc;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
@@ -20,7 +19,7 @@ class AddRateAnalysisList extends Component
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
-    public $selectSor, $totalDistance, $other_rate;
+    public $selectSor, $totalDistance, $other_rate,$part_no;
     public function mount()
     {
         $this->setEstimateDataToSession();
@@ -60,7 +59,7 @@ class AddRateAnalysisList extends Component
             $this->addedEstimateData['col_position'] = (isset($this->selectSor['col_position'])) ? $this->selectSor['col_position'] : 0;
         }
         $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'selectSor', 'hideTotalbutton', 'hideWithStackBtn', 'hideWithoutStackBtn');
+        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'selectSor', 'hideTotalbutton', 'hideWithStackBtn', 'hideWithoutStackBtn','part_no');
     }
 
     public function expCalc()
@@ -69,24 +68,41 @@ class AddRateAnalysisList extends Component
         $tempIndex = strtoupper($this->expression);
         $stringCalc = new StringCalc();
         try {
-            if ($this->expression) {
-                foreach (str_split($this->expression) as $key => $info) {
-                    $count0 = count($this->allAddedEstimatesData);
-                    if (ctype_alpha($info)) {
-                        $alphabet = strtoupper($info);
-                        $alp_id = ord($alphabet) - 64;
-                        if ($alp_id <= $count0) {
-                            if ($this->allAddedEstimatesData[$alp_id]['array_id']) {
-                                $this->expression = str_replace($info, $this->allAddedEstimatesData[$alp_id]['total_amount'], $this->expression, $key);
-                            }
-                        } else {
-                            $this->notification()->error(
-                                $title = $alphabet . ' is a invalid input'
-                            );
-                        }
-                    } elseif (htmlspecialchars($info) == "%") {
-                        $this->expression = str_replace($info, "/100*", $this->expression, $key);
+            $pattern = '/([-+*\/%])|([a-zA-Z0-9]+)/';
+            preg_match_all($pattern, strtoupper($this->expression), $matches);
+            $this->expression = strtoupper($this->expression);
+            // dd(array_merge($matches[0]));
+            // $result = preg_split($pattern, $this->expression, -1, PREG_SPLIT_NO_EMPTY);
+            // dd($result);
+            // if ($this->expression) {
+            //     foreach (str_split($this->expression) as $key => $info) {
+            //         dd(str_split($this->expression));
+            //         $count0 = count($this->allAddedEstimatesData);
+            //         if (ctype_alpha($info)) {
+            //             $alphabet = strtoupper($info);
+            //             $alp_id = ord($alphabet) - 64;
+            //             if ($alp_id <= $count0 ) {
+            //                 if ($this->allAddedEstimatesData[$alp_id]['array_id']) {
+            //                     $this->expression = str_replace($info, $this->allAddedEstimatesData[$alp_id]['total_amount'], $this->expression, $key);
+            //                 }
+            //             } else {
+            //                 $this->notification()->error(
+            //                     $title = $alphabet . ' is a invalid input'
+            //                 );
+            //             }
+            //         } elseif (htmlspecialchars($info) == "%") {
+            //             $this->expression = str_replace($info, "/100*", $this->expression, $key);
+            //         }
+            //     }
+            // }
+            foreach (array_merge($matches[0]) as $key => $info) {
+                foreach ($this->allAddedEstimatesData as $k => $data) {
+                    if ($data['array_id'] == $info) {
+                        $this->expression = str_replace($info, $this->allAddedEstimatesData[$k]['total_amount'], $this->expression, $key);
                     }
+                }
+                if (htmlspecialchars($info) == "%") {
+                    $this->expression = str_replace($info, "/100*", $this->expression, $key);
                 }
             }
             $result = $stringCalc->calculate($this->expression);
@@ -121,18 +137,23 @@ class AddRateAnalysisList extends Component
             $this->hideWithoutStackBtn = false;
         }
         // dd($this->hideTotalbutton,$this->hideWithStackBtn,$this->hideWithoutStackBtn);
-        sort($this->level);
-        if (count($this->level) >= 2) {
+        // sort($this->level);
+        if (count($this->level) >= 1 ) { //bypass the condition
             $result = 0;
             foreach ($this->level as $key => $array) {
-                $this->arrayStore[] = chr($array + 64);
-                $result = $result + $this->allAddedEstimatesData[$array]['total_amount'];
+                // $this->arrayStore[] = chr($array + 64);
+                $this->arrayStore[] = $array;
+                foreach ($this->allAddedEstimatesData as $k => $value) {
+                    if ($value['array_id'] == $array) {
+                        $result = $result + $this->allAddedEstimatesData[$k]['total_amount'];
+                    }
+                }
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
             if (!isset($this->selectSor['item_number'])) {
                 $this->selectSor['item_number'] = 0;
             }
-            $this->insertAddEstimate($this->arrayIndex, Session::get('user_data.department_id'), 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, round($result), $flag, '', '');
+            $this->insertAddEstimate($this->arrayIndex, Session::get('user_data.department_id'), 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, round($result,2), $flag, '', '');
             $this->totalOnSelectedCount++;
         } else {
             $this->notification()->error(
@@ -164,7 +185,7 @@ class AddRateAnalysisList extends Component
     }
     public function setEstimateDataToSession()
     {
-        // dd($this->addedEstimateData);
+        // dd($this->part_no);
         $this->reset('allAddedEstimatesData');
         if (Session()->has('addedRateAnalysisData')) {
             $this->allAddedEstimatesData = Session()->get('addedRateAnalysisData');
@@ -179,7 +200,7 @@ class AddRateAnalysisList extends Component
                         $addedEstimate['operation'] = '';
                     }
                     if (!array_key_exists("array_id", $addedEstimate)) {
-                        $addedEstimate['array_id'] = $index;
+                        $addedEstimate['array_id'] = $this->part_no . $index;
                     }
                     if (!array_key_exists("arrayIndex", $addedEstimate)) {
                         $addedEstimate['arrayIndex'] = '';
@@ -211,6 +232,9 @@ class AddRateAnalysisList extends Component
                     if (!array_key_exists("is_row", $this->addedEstimateData)) {
                         $this->addedEstimateData['is_row'] = null;
                     }
+                    if (!array_key_exists("unit_id", $this->addedEstimateData)) {
+                        $this->addedEstimateData['unit_id'] = null;
+                    }
                     // if (!array_key_exists("col_position", $this->addedEstimateData)) {
                     //     $this->addedEstimateData['col_position'] = 0;
                     // }
@@ -225,7 +249,7 @@ class AddRateAnalysisList extends Component
                     $this->addedEstimateData['operation'] = '';
                 }
                 if (!array_key_exists("array_id", $this->addedEstimateData)) {
-                    $this->addedEstimateData['array_id'] = $index;
+                    $this->addedEstimateData['array_id'] = $this->part_no . $index;
                 }
                 if (!array_key_exists("arrayIndex", $this->addedEstimateData)) {
                     $this->addedEstimateData['arrayIndex'] = '';
@@ -257,6 +281,9 @@ class AddRateAnalysisList extends Component
                 if (!array_key_exists("is_row", $this->addedEstimateData)) {
                     $this->addedEstimateData['is_row'] = null;
                 }
+                if (!array_key_exists("unit_id", $this->addedEstimateData)) {
+                    $this->addedEstimateData['unit_id'] = null;
+                }
                 foreach ($this->addedEstimateData as $key => $estimate) {
                     $this->allAddedEstimatesData[$index][$key] = $estimate;
                 }
@@ -264,6 +291,7 @@ class AddRateAnalysisList extends Component
                 $this->reset('addedEstimateData');
             }
             Session()->put('rateDescription', $this->sorMasterDesc);
+            Session()->put('ratePartNo',$this->part_no);
             $this->reset('addedEstimateData');
             // dd($this->allAddedEstimatesData);
         }
@@ -288,7 +316,8 @@ class AddRateAnalysisList extends Component
 
     public function deleteEstimate($value)
     {
-        unset($this->allAddedEstimatesData[$value]);
+        $numericValue = preg_replace('/[^0-9]/', '', $value);
+        unset($this->allAddedEstimatesData[$numericValue]);
         Session()->forget('addedRateAnalysisData');
         Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
         $this->level = [];
@@ -476,8 +505,8 @@ class AddRateAnalysisList extends Component
     public function submitItemModal()
     {
         if (count($this->isItemModalData) > 0) {
-            $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = round($this->isItemModalData[0]['rowValue'],2);
-            $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] = round($this->allAddedEstimatesData[$this->selectedArrKey]['qty'],3);
+            $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = round($this->isItemModalData[0]['rowValue'], 2);
+            $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] = round($this->allAddedEstimatesData[$this->selectedArrKey]['qty'], 3);
             $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
             $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = round($this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'], 2);
             $this->updateDataTableTracker = rand(1, 1000);

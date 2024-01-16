@@ -106,12 +106,19 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col col-md-8 col-lg-8 col-sm-12 col-xs-12 mb-2">
+                            <div class="col col-md-6 col-lg-8 col-sm-12 col-xs-12 mb-2">
                                 <x-textarea wire:model.defer="sorMasterDesc" rows="2"
                                     label="{{ trans('cruds.estimate.fields.description') }}"
                                     placeholder="Your project {{ trans('cruds.estimate.fields.description') }}" />
                             </div>
-                            <div class="col col-md-4 col-lg-4 col-sm-12 col-xs-12 mb-2">
+                            <div class="col col-md-3 col-lg-1 col-sm-12 col-xs-12 mb-2" >
+                                @if ($part_no != '')
+                                    <x-input label="Part No" placeholder="Part No" wire:model.defer="part_no" wire:key='part_no' readonly />
+                                @else
+                                    <x-input label="Part No" placeholder="Part No" wire:model.defer="part_no" wire:key='part_no' />
+                                @endif
+                            </div>
+                            <div class="col col-md-3 col-lg-3 col-sm-12 col-xs-12 mb-2">
                                 <div class="form-group">
                                     <x-select wire:key="categoryType"
                                         label="{{ trans('cruds.estimate.fields.category') }}"
@@ -312,6 +319,20 @@
                                     </div>
                                     <div class="col">
                                         <div class="form-group">
+                                            {{-- <x-select wire:key="unit_" label="Unit" placeholder="Select Unit"
+                                                wire:model.defer="estimateData.unit_id">
+                                                @foreach ($fatchDropdownData['units'] as $unit)
+                                                    <x-select.option
+                                                        label="{{ $unit['unit_name'] }}"
+                                                        value="{{ $unit['id'] }}" />
+                                                @endforeach
+                                            </x-select> --}}
+                                            <x-input wire:key='unit_' label="Unit Name" placeholder="Unit Name"
+                                                wire:model.defer="estimateData.unit_id" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
                                             <x-input wire:key="sor_qty"
                                                 label="{{ trans('cruds.estimate.fields.quantity') }}"
                                                 placeholder="{{ trans('cruds.estimate.fields.quantity') }}"
@@ -345,6 +366,20 @@
                                         <div class="form-group">
                                             <x-input wire:key="other_name" wire:model.defer="estimateData.other_name"
                                                 label="Item Name" placeholder="Item Name" />
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            {{-- <x-select wire:key="unit_" label="Unit" placeholder="Select Unit"
+                                            wire:model.defer="estimateData.unit_id">
+                                            @foreach ($fatchDropdownData['units'] as $unit)
+                                                <x-select.option
+                                                    label="{{ $unit['unit_name'] }}"
+                                                    value="{{ $unit['id'] }}" />
+                                            @endforeach
+                                        </x-select> --}}
+                                            <x-input wire:key='unit_' label="Unit Name" placeholder="Unit Name"
+                                                wire:model.defer="estimateData.unit_id" />
                                         </div>
                                     </div>
                                     <div class="col">
@@ -410,6 +445,18 @@
                                                 @endisset
                                             </x-select>
                                         </div>
+                                    </div>
+                                    <div class="form-group">
+                                        {{-- <x-select wire:key="unit_" label="Unit" placeholder="Select Unit"
+                                            wire:model.defer="estimateData.unit_id">
+                                            @foreach ($fatchDropdownData['units'] as $unit)
+                                                <x-select.option
+                                                    label="{{ $unit['unit_name'] }}"
+                                                    value="{{ $unit['id'] }}" />
+                                            @endforeach
+                                        </x-select> --}}
+                                        <x-input wire:key='unit_' label="Unit Name" placeholder="Unit Name"
+                                            wire:model.defer="estimateData.unit_id" readonly />
                                     </div>
                                     <div class="col">
                                         <div class="from-group">
@@ -684,6 +731,20 @@
                                                 wire:model.defer="estimateData.distance" wire:key="distance" />
                                         </div>
                                     </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            {{-- <x-select wire:key="unit_" label="Unit" placeholder="Select Unit"
+                                            wire:model.defer="estimateData.unit_id">
+                                            @foreach ($fatchDropdownData['units'] as $unit)
+                                                <x-select.option
+                                                    label="{{ $unit['unit_name'] }}"
+                                                    value="{{ $unit['id'] }}" />
+                                            @endforeach
+                                        </x-select> --}}
+                                            <x-input wire:key='unit_' label="Unit Name" placeholder="Unit Name"
+                                                wire:model.defer="estimateData.unit_id" />
+                                        </div>
+                                    </div>
                                     {{-- <div class="col-md-3 col-lg-3 col-sm-3">
                                         <div class="form-group search-sor">
                                             <div class="dropdown">
@@ -825,7 +886,7 @@
                 {{-- <livewire:estimate-project.added-estimate-project-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
                     :wire:key="$addedEstimateUpdateTrack" /> --}}
                 <livewire:rate-analysis.add-rate-analysis-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc" :selectSor="$selectSor"
-                    :totalDistance="$distance" :wire:key="$addedEstimateUpdateTrack">
+                    :totalDistance="$distance" :part_no="$part_no" :wire:key="$addedEstimateUpdateTrack">
             </div>
         @endif
     </div>
@@ -932,6 +993,7 @@
                             var getRowData = [{
                                 id: getData['id'],
                                 desc: (getData['desc_of_item']) ? getData['desc_of_item'] : '',
+                                unit: (getData['unit']) ? getData['unit'] : '',
                                 rowValue: cell.getValue(),
                                 itemNo: cell.getRow().getIndex(),
                                 colPosition: colIdx
@@ -1019,6 +1081,7 @@
                                         id: getData['id'],
                                         desc: (getData['desc_of_item']) ? getData[
                                             'desc_of_item'] : '',
+                                        unit: (getData['unit']) ? getData['unit'] : '',
                                         rowValue: cell.getValue(),
                                         itemNo: subrowIndex,
                                         colPosition: colIdx
@@ -1077,8 +1140,8 @@
                         columns: headerData,
                         columnHeaderVertAlign: "center",
                         data: rowData,
-                        variableHeight:true,
-                        variableWidth:true,
+                        variableHeight: true,
+                        variableWidth: true,
                         dataTree: true, // Enable the dataTree module
                         dataTreeStartExpanded: true, // Optional: Expand all rows by default
                         dataTreeChildField: "_subrow", // Specify the field name for subrows

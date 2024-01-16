@@ -56,10 +56,11 @@
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>{{ trans('cruds.estimate.fields.id_helper') }}</th>
-                                    <th>{{ trans('cruds.estimate.fields.item_number') }}</th>
-                                    <th>{{ trans('cruds.estimate.fields.description') }}</th>
+                                    <th class="text-wrap">{{ trans('cruds.estimate.fields.id_helper') }}</th>
+                                    <th>ITEM NO(RATE NO)</th>
+                                    <th class="text-wrap">{{ trans('cruds.estimate.fields.description') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.quantity') }}</th>
+                                    <th>Unit Name</th>
                                     <th>{{ trans('cruds.estimate.fields.per_unit_cost') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.cost') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.action') }}</th>
@@ -76,7 +77,9 @@
                                         </td>
                                         <td>
                                             <div wire:key="{{ $key . 'iNo' }}" class="d-flex align-items-center">
-                                                {{ chr($key + 64) }}
+                                                {{-- {{ 'A'. $key }} --}}
+                                                {{-- {{ chr($key + 64) }} --}}
+                                                {{ $addedEstimate['array_id'] }}
                                             </div>
                                         </td>
                                         <td class="text-wrap">
@@ -101,11 +104,15 @@
                                                 --
                                             @endif
                                         </td>
-                                        <td class="text-wrap" style="width: 40rem">
-                                            @if ($addedEstimate['sor_item_number'] != 0 || ($addedEstimate['is_row'] != '' && $addedEstimate['is_row'] == 0) || $addedEstimate['is_row'] == 2)
+                                        <td class="text-wrap" /*style="width: 50rem;"*/>
+                                            @if (
+                                                $addedEstimate['sor_item_number'] != 0 ||
+                                                    ($addedEstimate['is_row'] != '' && $addedEstimate['is_row'] == 0) ||
+                                                    $addedEstimate['is_row'] == 2)
                                                 {{ $addedEstimate['description'] }}
                                                 @if ($addedEstimate['operation'] != '')
-                                                    ({{$addedEstimate['arrayIndex']}}) ({{ $addedEstimate['operation'] }})
+                                                    ({{ $addedEstimate['arrayIndex'] }})
+                                                    ({{ $addedEstimate['operation'] }})
                                                 @endif
                                             @elseif ($addedEstimate['rate_no'] != 0)
                                                 {{-- {{ getEstimateDescription($addedEstimate['rate_no']) }} --}}
@@ -129,6 +136,11 @@
                                         <td>
                                             @if ($addedEstimate['qty'] != 0)
                                                 {{ $addedEstimate['qty'] }}
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($addedEstimate['unit_id'] != '' && $addedEstimate['unit_id'] != 0)
+                                                {{ $addedEstimate['unit_id'] }}
                                             @endif
                                         </td>
                                         <td>
@@ -197,7 +209,7 @@
                                                 </x-button> --}}
                                                 <button
                                                     onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
-                                                    wire:click="deleteEstimate({{ $addedEstimate['array_id'] }})"
+                                                    wire:click="deleteEstimate('{{ $addedEstimate['array_id'] }}')"
                                                     type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
