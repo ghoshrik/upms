@@ -16,6 +16,7 @@ use App\Models\UnitType;
 use App\Models\UsersHasRoles;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 function removeSession($session)
 {
@@ -576,7 +577,15 @@ function extractItemNoOfItems($data, &$itemNo, $counter)
 }
 function getTableDesc($sor_id, $item_no)
 {
-    $fetchRow = DynamicSorHeader::where('id', $sor_id)->select('row_data')->first();
+    $cacheKey = 'fetchRow_' . $sor_id . '_' . $item_no;
+    $getCacheData = Cache::get($cacheKey);
+    if ($getCacheData != '') {
+        $fetchRow = $getCacheData;
+    } else {
+        $fetchRow = Cache::remember($cacheKey, now()->addMinutes(720), function () use ($sor_id) {
+            return DynamicSorHeader::where('id', $sor_id)->select('row_data')->first();
+        });
+    }
     // $fetchRow = json_decode($fetchRow['row_data']);
     $rowId = explode('.', $item_no)[0];
     foreach (json_decode($fetchRow['row_data']) as $row) {
