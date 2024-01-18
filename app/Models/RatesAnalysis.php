@@ -30,6 +30,7 @@ class RatesAnalysis extends Model
         'operation',
         'created_by',
         'comments',
-        'col_position'
+        'col_position',
+        'unit_id'
     ];
 }

@@ -139,6 +139,14 @@ class CreateRateAnalysis extends Component
         $value = $value['_x_bindings']['value'];
         $this->estimateData['item_name'] = $value;
         $allDept = Cache::get('allDept');
+        $getAllUnit = Cache::get('getUnits');
+        if ($getAllUnit != '') {
+            $this->fatchDropdownData['units'] = $getAllUnit;
+        } else {
+            $this->fatchDropdownData['units'] = Cache::remember('getUnits', now()->addMinutes(720), function () {
+                return UnitMaster::select('id', 'unit_name')->get();
+            });
+        }
         if ($this->selectedCategoryId == 1) {
             $this->fatchDropdownData['departments'] = [];
             if ($allDept != '') {
@@ -170,14 +178,6 @@ class CreateRateAnalysis extends Component
             $this->estimateData['distance'] = '';
             $this->estimateData['unit_id'] = '';
         } elseif ($this->selectedCategoryId == 2) {
-            $getAllUnit = Cache::get('getUnits');
-            if ($getAllUnit != '') {
-                $this->fatchDropdownData['units'] = $getAllUnit;
-            } else {
-                $this->fatchDropdownData['units'] = Cache::remember('getUnits', now()->addMinutes(720), function () {
-                    return UnitMaster::select('id', 'unit_name')->get();
-                });
-            }
             $this->estimateData['id'] = '';
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = '';

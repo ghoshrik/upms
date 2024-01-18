@@ -103,6 +103,9 @@
                               Don’t have an account? <a href="{{route('auth.signup')}}" class="text-underline">Click here to sign up.</a>
                            </p> --}}
                                 </form>
+                                <div class="alert alert-danger mt-2" role="alert">
+                                    <p>Service Un-available on 19/01/2024 from 8:00 AM to 12:00 PM Please Do Not Sign in into the Portal.</p>
+                                </div>
                             </div>
                         </div>
                     </div>

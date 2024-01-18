@@ -111,11 +111,14 @@
                                     label="{{ trans('cruds.estimate.fields.description') }}"
                                     placeholder="Your project {{ trans('cruds.estimate.fields.description') }}" />
                             </div>
-                            <div class="col col-md-3 col-lg-1 col-sm-12 col-xs-12 mb-2" >
+                            <div class="col col-md-3 col-lg-1 col-sm-12 col-xs-12 mb-2">
                                 @if ($part_no != '')
-                                    <x-input label="Part No" placeholder="Part No" wire:model.defer="part_no" wire:key='part_no' readonly />
+                                    <x-input label="Part No" placeholder="Part No" wire:model.defer="part_no"
+                                        wire:key='part_no' readonly />
                                 @else
-                                    <x-input label="Part No" placeholder="Part No" wire:model.defer="part_no" wire:key='part_no' oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '').substring(0, 1);" />
+                                    <x-input label="Part No" placeholder="Part No" wire:model.defer="part_no"
+                                        wire:key='part_no'
+                                        oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '').substring(0, 1);" />
                                 @endif
                             </div>
                             <div class="col col-md-3 col-lg-3 col-sm-12 col-xs-12 mb-2">
@@ -371,22 +374,16 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="unit_" label="Unit" placeholder="Select Unit"
-                                            wire:model.defer="estimateData.unit_id">
-                                            @isset($fatchDropdownData['units'])
-                                                {{-- @dd($fatchDropdownData['units']) --}}
-                                                @foreach ($fatchDropdownData['units'] as $value)
-                                                    {{-- @dd($u['unit_name']) --}}
-                                                    <x-select.option
-                                                    label="{{ $value['unit_name'] }}"
-                                                    value="{{ $value['unit_name'] }}" />
-                                                @endforeach
-                                            @endisset
-                                            {{-- @foreach ($fatchDropdownData['units'] as $unit) --}}
-                                                {{-- <x-select.option
-                                                    label="{{ $unit['unit_name'] }}"
-                                                    value="{{ $unit['unit_name'] }}" /> --}}
-                                            {{-- @endforeach --}}
-                                        </x-select>
+                                                wire:model.defer="estimateData.unit_id">
+                                                @isset($fatchDropdownData['units'])
+                                                    {{-- @dd($fatchDropdownData['units']) --}}
+                                                    @foreach ($fatchDropdownData['units'] as $value)
+                                                        {{-- @dd($u['unit_name']) --}}
+                                                        <x-select.option label="{{ $value['unit_name'] }}"
+                                                            value="{{ $value['unit_name'] }}" />
+                                                    @endforeach
+                                                @endisset
+                                            </x-select>
                                             {{-- <x-input wire:key='unit_' label="Unit Name" placeholder="Unit Name"
                                                 wire:model.defer="estimateData.unit_id" /> --}}
                                         </div>
@@ -455,17 +452,20 @@
                                             </x-select>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        {{-- <x-select wire:key="unit_" label="Unit" placeholder="Select Unit"
-                                            wire:model.defer="estimateData.unit_id">
-                                            @foreach ($fatchDropdownData['units'] as $unit)
-                                                <x-select.option
-                                                    label="{{ $unit['unit_name'] }}"
-                                                    value="{{ $unit['id'] }}" />
-                                            @endforeach
-                                        </x-select> --}}
-                                        <x-input wire:key='unit_' label="Unit Name" placeholder="Unit Name"
-                                            wire:model.defer="estimateData.unit_id" readonly />
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="unit_" label="Unit" placeholder="Select Unit"
+                                                wire:model.defer="estimateData.unit_id">
+                                                @isset($fatchDropdownData['units'])
+                                                    @foreach ($fatchDropdownData['units'] as $value)
+                                                        <x-select.option label="{{ $value['unit_name'] }}"
+                                                            value="{{ $value['unit_name'] }}" />
+                                                    @endforeach
+                                                @endisset
+                                            </x-select>
+                                            {{-- <x-input wire:key='unit_' label="Unit Name" placeholder="Unit Name"
+                                            wire:model.defer="estimateData.unit_id" /> --}}
+                                        </div>
                                     </div>
                                     <div class="col">
                                         <div class="from-group">

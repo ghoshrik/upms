@@ -157,7 +157,7 @@ class AddRateAnalysisList extends Component
             $this->totalOnSelectedCount++;
         } else {
             $this->notification()->error(
-                $title = 'Please select minimum 2 Check boxes'
+                $title = 'Please select minimum 1 Check boxes'
             );
         }
     }
@@ -575,6 +575,7 @@ class AddRateAnalysisList extends Component
                                 'volume_no' => ($value['volume_no'] != '') ? $value['volume_no'] : 0,
                                 'item_index' => $value['item_index'],
                                 'col_position' => (isset($value['col_position'])) ? $value['col_position'] : 0,
+                                'unit_id' => ($value['unit_id'] != '') ? $value['unit_id'] : 0,
                             ];
                             $validateData = Validator::make($insert, [
                                 'rate_id' => 'required|integer',
