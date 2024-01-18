@@ -109,14 +109,7 @@ class CreateRateAnalysis extends Component
                 return Department::select('id', 'department_name')->get();
             });
         }
-        $getAllUnit = Cache::get('getUnits');
-        if ($getAllUnit != '') {
-            $this->fatchDropdownData['units'] = $getAllUnit;
-        } else {
-            $this->fatchDropdownData['units'] = Cache::remember('getUnits', now()->addMinutes(720), function () {
-                return UnitMaster::select('id', 'unit_name')->get();
-            });
-        }
+
         $this->dropdownData['page_no'] = [];
         $this->selectSor['dept_id'] = '';
         $this->selectSor['dept_category_id'] = '';
@@ -131,11 +124,13 @@ class CreateRateAnalysis extends Component
             if (Session()->has('rateDescription')) {
                 $this->sorMasterDesc = Session()->get('rateDescription');
             }
-            if(Session()->has('ratePartNo')){
+            if (Session()->has('ratePartNo')) {
                 $this->part_no = Session()->get('ratePartNo');
             }
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
+        // $alphabetArray = range('A', 'Z');
+        // $this->dropdownData['alphabets'] = $alphabetArray;
     }
     public function changeCategory($value)
     {
@@ -175,6 +170,14 @@ class CreateRateAnalysis extends Component
             $this->estimateData['distance'] = '';
             $this->estimateData['unit_id'] = '';
         } elseif ($this->selectedCategoryId == 2) {
+            $getAllUnit = Cache::get('getUnits');
+            if ($getAllUnit != '') {
+                $this->fatchDropdownData['units'] = $getAllUnit;
+            } else {
+                $this->fatchDropdownData['units'] = Cache::remember('getUnits', now()->addMinutes(720), function () {
+                    return UnitMaster::select('id', 'unit_name')->get();
+                });
+            }
             $this->estimateData['id'] = '';
             $this->estimateData['rate_no'] = '';
             $this->estimateData['dept_id'] = '';

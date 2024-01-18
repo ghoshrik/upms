@@ -545,7 +545,7 @@ class AddRateAnalysisList extends Component
     {
         // dd($this->allAddedEstimatesData);
         $userData = Session::get('user_data');
-        if ($this->totalOnSelectedCount == 1 || true) {
+        if ($this->totalOnSelectedCount >= 1 ) {
             try {
                 if ($this->allAddedEstimatesData) {
                     $intId = random_int(100000, 999999);
@@ -609,7 +609,7 @@ class AddRateAnalysisList extends Component
             }
         } else {
             $this->notification()->error(
-                $title = 'Please Calculate total first !!'
+                $title = 'Please Calculate any of three first !!'
             );
         }
 
