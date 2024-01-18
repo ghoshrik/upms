@@ -19,6 +19,7 @@
 
                                 <th class="whitespace-nowrap" style="text-align:center;">QUANTITY
                                 </th>
+                                <th class="whitespace-nowrap" style="text-align:center;">UNIT NAME</th>
                                 <th class="whitespace-nowrap" style="text-align:right;">UNIT
                                     PRICE</th>
                                 <th class="whitespace-nowrap" style="text-align:center;">COST</th>
@@ -27,7 +28,8 @@
                         <tbody>
                             @foreach ($viewEstimates as $view)
                                 <tr>
-                                    <td>{{ chr($view['row_id'] + 64) }}</td>
+                                    {{-- <td>{{ chr($view['row_id'] + 64) }}</td> --}}
+                                    <td>{{ $view['row_id'] }}</td>
                                     <td>
                                         @if ($view['sor_item_number'])
                                             {{-- {{ getSorItemNumber($view['sor_item_number']) }} --}}
@@ -36,7 +38,7 @@
                                             {{ $view['rate_no'] }}
                                         @endif
                                     </td>
-                                    <td class="text-wrap" style="width: 40rem">
+                                    <td class="text-wrap" style="width: 40rem;text-align:justify;">
                                         @if ($view['sor_item_number'])
                                             {{-- {{ getSorItemNumberDesc($view['sor_item_number']) }} --}}
                                             {{ $view['description'] }}
@@ -59,6 +61,11 @@
                                         @if ($view['qty'] == 0)
                                         @else
                                             {{ $view['qty'] }}
+                                        @endif
+                                    </td>
+                                    <td style="text-align:center;">
+                                        @if ($view['unit_id'] != '' && $view['unit_id'] != 0)
+                                            {{ $view['unit_id'] }}
                                         @endif
                                     </td>
                                     <td style="text-align:center;">
