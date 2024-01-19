@@ -23,7 +23,7 @@ class CreateEstimateProject extends Component
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc;
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
-    public $searchDtaCount, $searchStyle, $searchResData, $quntity_type = 'menual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '',$getSor=[];
+    public $searchDtaCount, $searchStyle, $searchResData, $quntity_type = 'menual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '', $getSor = [];
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -136,7 +136,7 @@ class CreateEstimateProject extends Component
             $this->estimateData['description'] = '';
             $this->estimateData['other_name'] = '';
             $this->estimateData['qty'] = '';
-            $this->estimateData['rate'] = '';
+            $this->estimateData['rate'] = 0;
             $this->estimateData['total_amount'] = '';
         } elseif ($this->estimateData['item_name'] == 'Estimate') {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
@@ -351,15 +351,21 @@ class CreateEstimateProject extends Component
     }
     public function calculateValue()
     {
-        if ($this->estimateData['item_name'] == 'SOR') {
-            if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
-                $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
-                $this->estimateData['total_amount'] = round($this->estimateData['total_amount'],2);
-            }
-        } else {
-            if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
-                $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
-                $this->estimateData['total_amount'] = round($this->estimateData['total_amount'],2);
+        if ($this->estimateData['qty'] != '' && $this->estimateData['rate'] != '') {
+            if ($this->estimateData['item_name'] == 'SOR') {
+                if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
+                    $this->estimateData['qty'] = round($this->estimateData['qty'], 3);
+                    $this->estimateData['rate'] = round($this->estimateData['rate'], 2);
+                    $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
+                    $this->estimateData['total_amount'] = round($this->estimateData['total_amount'], 2);
+                }
+            } else {
+                if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
+                    $this->estimateData['qty'] = round($this->estimateData['qty'], 3);
+                    $this->estimateData['rate'] = round($this->estimateData['rate'], 2);
+                    $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
+                    $this->estimateData['total_amount'] = round($this->estimateData['total_amount'], 2);
+                }
             }
         }
     }
@@ -605,19 +611,20 @@ class CreateEstimateProject extends Component
         $this->addedEstimate['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
         $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
         $this->addedEstimate['version'] = $this->estimateData['version'];
-        $this->addedEstimate['page_no'] = (isset($this->estimateData['page_no']))? $this->estimateData['page_no'] : 0;
-        $this->addedEstimate['table_no'] = (isset($this->estimateData['table_no']))? $this->estimateData['table_no'] : 0;
-        $this->addedEstimate['volume_no'] = (isset($this->estimateData['volume']))? $this->estimateData['volume'] : 0;
-        $this->addedEstimate['sor_id'] = (isset($this->estimateData['id']))? $this->estimateData['id'] : 0;
-        $this->addedEstimate['item_index'] = (isset($this->estimateData['item_index']))? $this->estimateData['item_index'] : '';
-        $this->addedEstimate['col_position'] = (isset($this->estimateData['col_position']))? $this->estimateData['col_position'] : 0;
-        $this->addedEstimate['rate_type'] = (isset($this->estimateData['rate_type']))? $this->estimateData['rate_type'] : '';
+        $this->addedEstimate['page_no'] = (isset($this->estimateData['page_no'])) ? $this->estimateData['page_no'] : 0;
+        $this->addedEstimate['table_no'] = (isset($this->estimateData['table_no'])) ? $this->estimateData['table_no'] : 0;
+        $this->addedEstimate['volume_no'] = (isset($this->estimateData['volume'])) ? $this->estimateData['volume'] : 0;
+        $this->addedEstimate['sor_id'] = (isset($this->estimateData['id'])) ? $this->estimateData['id'] : 0;
+        $this->addedEstimate['item_index'] = (isset($this->estimateData['item_index'])) ? $this->estimateData['item_index'] : '';
+        $this->addedEstimate['col_position'] = (isset($this->estimateData['col_position'])) ? $this->estimateData['col_position'] : 0;
+        $this->addedEstimate['rate_type'] = (isset($this->estimateData['rate_type'])) ? $this->estimateData['rate_type'] : '';
         $this->addedEstimateUpdateTrack = rand(1, 1000);
         $this->estimateData['item_number'] = '';
         $this->estimateData['estimate_no'] = '';
         $this->estimateData['rate_no'] = '';
         $this->estimateData['rate_type'] = '';
         $this->estimateData['description'] = '';
+        $this->estimateData['other_name'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
         $this->estimateData['total_amount'] = '';
@@ -630,7 +637,7 @@ class CreateEstimateProject extends Component
         // if ($this->selectedCategoryId == '') {
         //     $this->selectSor['page_no'] = '';
         // } else {
-            $this->estimateData['page_no'] = '';
+        $this->estimateData['page_no'] = '';
         // }
     }
     public function render()

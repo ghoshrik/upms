@@ -153,7 +153,7 @@ class AddRateAnalysisList extends Component
             if (!isset($this->selectSor['item_number'])) {
                 $this->selectSor['item_number'] = 0;
             }
-            $this->insertAddEstimate($this->arrayIndex, Session::get('user_data.department_id'), 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, round($result,2), $flag, '', '');
+            $this->insertAddEstimate($this->arrayIndex, Session::get('user_data.department_id'), 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, round($result), $flag, '', '');
             $this->totalOnSelectedCount++;
         } else {
             $this->notification()->error(

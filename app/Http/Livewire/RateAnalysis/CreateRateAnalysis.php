@@ -33,12 +33,14 @@ class CreateRateAnalysis extends Component
 
     protected $rules = [
         'sorMasterDesc' => 'required|string',
+        'part_no' => 'required'
         // 'selectedCategoryId' => 'required|integer',
 
     ];
     protected $messages = [
         'sorMasterDesc.required' => 'The description cannot be empty.',
         'sorMasterDesc.string' => 'The description format is not valid.',
+        'part_no.required' => 'Only A to Z as input.'
         // 'selectedCategoryId.required' => 'Selected at least one ',
         // 'selectedCategoryId.integer' => 'This Selected field is Invalid',
         // 'estimateData.other_name.required' => 'selected other name required',
@@ -1524,6 +1526,7 @@ class CreateRateAnalysis extends Component
     {
         // dd($this->estimateData);
         $this->validate();
+        $this->part_no = strtoupper($this->part_no);
         if (isset($key)) {
             $currentIndex = count($this->addedEstimate);
             $key = $currentIndex++;

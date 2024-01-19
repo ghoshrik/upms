@@ -79,7 +79,7 @@ class AddedEstimateProjectList extends Component
                 }
             }
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddEstimate($tempIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Exp Calculoation', '', $this->remarks);
+            $this->insertAddEstimate($tempIndex, 0, 0, 0, '', '', '', 0, 0, round($result,2), 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(
@@ -90,7 +90,7 @@ class AddedEstimateProjectList extends Component
 
     public function showTotalButton()
     {
-        if (count($this->level) > 1) {
+        if (count($this->level) >= 1) {
             $this->openTotalButton = true;
         } else {
             $this->openTotalButton = false;
@@ -99,19 +99,19 @@ class AddedEstimateProjectList extends Component
 
     public function totalOnSelected()
     {
-        if (count($this->level) >= 2) {
+        if (count($this->level) >= 1) {
             $result = 0;
             foreach ($this->level as $key => $array) {
                 $this->arrayStore[] = chr($array + 64);
                 $result = $result + $this->allAddedEstimatesData[$array]['total_amount'];
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
-            $this->insertAddEstimate($this->arrayIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Total', '', '');
+            $this->insertAddEstimate($this->arrayIndex, 0, 0, 0, '', '', '', 0, 0, round($result), 'Total', '', '');
             $this->totalOnSelectedCount++;
         } else {
             $this->dispatchBrowserEvent('alert', [
                 'type' => 'error',
-                'message' => "Minimum select 2 Check boxes",
+                'message' => "Minimum select Check boxes first",
             ]);
         }
     }
