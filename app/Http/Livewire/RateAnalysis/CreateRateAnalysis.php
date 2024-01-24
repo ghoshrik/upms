@@ -40,7 +40,7 @@ class CreateRateAnalysis extends Component
     protected $messages = [
         'sorMasterDesc.required' => 'The description cannot be empty.',
         'sorMasterDesc.string' => 'The description format is not valid.',
-        'part_no.required' => 'Only A to Z as input.'
+        'part_no.required' => 'Only A to Z as input.',
         // 'selectedCategoryId.required' => 'Selected at least one ',
         // 'selectedCategoryId.integer' => 'This Selected field is Invalid',
         // 'estimateData.other_name.required' => 'selected other name required',
@@ -131,6 +131,7 @@ class CreateRateAnalysis extends Component
             }
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
+        // dd(Session()->get('addedRateAnalysisData'));
         // $alphabetArray = range('A', 'Z');
         // $this->dropdownData['alphabets'] = $alphabetArray;
     }
@@ -1118,11 +1119,11 @@ class CreateRateAnalysis extends Component
         if ($getCompositeCacheData != '') {
             $this->getCompositeDatas = $getCompositeCacheData;
         } else {
-            $this->getCompositeDatas = Cache::remember($compositeCacheKey, now()->addMinutes(720), function () {
+            // $this->getCompositeDatas = CompositSor::where([['sor_itemno_parent_id', $data[0]['parentId']], ['sor_itemno_parent_index', $data[0]['item_index']]])->get();
+            $this->getCompositeDatas = Cache::remember($compositeCacheKey, now()->addMinutes(720), function () use($data) {
                 return CompositSor::where([['sor_itemno_parent_id', $data[0]['parentId']], ['sor_itemno_parent_index', $data[0]['item_index']]])->get();
             });
         }
-        // dd($this->getCompositeDatas);
         if (count($this->getCompositeDatas) > 0) {
             $this->modalName = '';
             $this->viewModal = !$this->viewModal;
@@ -1170,6 +1171,7 @@ class CreateRateAnalysis extends Component
                 $this->estimateData['rate'] = 0;
                 $this->estimateData['total_amount'] = 0;
                 $this->estimateData['is_row'] = $compositeData['is_row'];
+                $this->estimateData['unit_id'] = getunitName($compositeData['unit_id']);
                 // dd($this->estimateData);
                 $this->addEstimate($key + 1);
             }
@@ -1553,6 +1555,9 @@ class CreateRateAnalysis extends Component
             $this->addedEstimate[$key]['is_row'] = isset($this->estimateData['is_row']) ? $this->estimateData['is_row'] : null;
             if (isset($this->estimateData['rate_type'])) {
                 $this->addedEstimate[$key]['rate_type'] = $this->estimateData['rate_type'];
+            }
+            if(isset($this->estimateData['unit_id'])){
+                $this->addedEstimate[$key]['unit_id'] = $this->estimateData['unit_id'];
             }
             $this->addedEstimateUpdateTrack = rand(1, 1000);
             // $this->estimateData['item_number'] = '';

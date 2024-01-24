@@ -742,16 +742,16 @@
                                     </div>
                                     <div class="col">
                                         <div class="form-group">
-                                            {{-- <x-select wire:key="unit_" label="Unit" placeholder="Select Unit"
+                                            <x-select wire:key="unit_" label="Unit" placeholder="Select Unit"
                                             wire:model.defer="estimateData.unit_id">
                                             @foreach ($fatchDropdownData['units'] as $unit)
                                                 <x-select.option
                                                     label="{{ $unit['unit_name'] }}"
-                                                    value="{{ $unit['id'] }}" />
+                                                    value="{{ $unit['unit_name'] }}" />
                                             @endforeach
-                                        </x-select> --}}
-                                            <x-input wire:key='unit_' label="Unit Name" placeholder="Unit Name"
-                                                wire:model.defer="estimateData.unit_id" />
+                                        </x-select>
+                                            {{-- <x-input wire:key='unit_' label="Unit Name" placeholder="Unit Name"
+                                                wire:model.defer="estimateData.unit_id" /> --}}
                                         </div>
                                     </div>
                                     {{-- <div class="col-md-3 col-lg-3 col-sm-3">
@@ -1066,6 +1066,7 @@
                                     var allColumn = cell.getTable().columnManager.getColumns();
                                     var colIdx = -1;
                                     var colName;
+                                    var colTitle = column.title;
                                     for (var i = 0; i < allColumn.length; i++) {
                                         if (allColumn[i]['columns'] && allColumn[i]['columns']
                                             .length > 0) {
@@ -1090,7 +1091,7 @@
                                         id: getData['id'],
                                         desc: (getData['desc_of_item']) ? getData[
                                             'desc_of_item'] : '',
-                                        unit: (getData['unit']) ? getData['unit'] : '',
+                                        unit: (getData['unit']) ? getData['unit'] : (getData['unit_'+ colTitle]) ? getData['unit_'+ colTitle] : '',
                                         rowValue: cell.getValue(),
                                         itemNo: subrowIndex,
                                         colPosition: colIdx
