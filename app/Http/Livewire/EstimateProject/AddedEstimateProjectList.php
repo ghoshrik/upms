@@ -16,6 +16,7 @@ class AddedEstimateProjectList extends Component
     use Actions;
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
+    public $part_no;
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
 
     public function mount()
@@ -128,7 +129,7 @@ class AddedEstimateProjectList extends Component
                 $this->addedEstimateData['operation'] = '';
             }
             if (!array_key_exists("array_id", $this->addedEstimateData)) {
-                $this->addedEstimateData['array_id'] = $index;
+                $this->addedEstimateData['array_id'] = $this->part_no.$index;
             }
             if (!array_key_exists("arrayIndex", $this->addedEstimateData)) {
                 $this->addedEstimateData['arrayIndex'] = '';
@@ -163,10 +164,15 @@ class AddedEstimateProjectList extends Component
             if (!array_key_exists("rate_type", $this->addedEstimateData)) {
                 $this->addedEstimateData['rate_type'] = '';
             }
+            if (!array_key_exists("unit_id", $this->addedEstimateData)) {
+                $this->addedEstimateData['unit_id'] = '';
+            }
             foreach ($this->addedEstimateData as $key => $estimate) {
                 $this->allAddedEstimatesData[$index][$key] = $estimate;
             }
             Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
+            Session()->put('projectEstimateDesc', $this->sorMasterDesc);
+            Session()->put('projectEstimatePartNo',$this->part_no);
             $this->reset('addedEstimateData');
         }
     }

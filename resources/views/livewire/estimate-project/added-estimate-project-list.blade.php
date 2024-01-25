@@ -28,9 +28,8 @@
                         <div class="col col-md-6 col-lg-6 mb-2">
                             <div class="btn-group float-right" role="group" aria-label="Basic example">
                                 <button type="button" class="btn btn-soft-primary" wire:click="totalOnSelected"
-                                    @if ($openTotalButton ) {{ '' }}@else {{ 'disabled' }} @endif
-                                    {{-- //bypass && $totalOnSelectedCount!=1 --}}
-                                    >{{ trans('cruds.estimate.fields.total_on_selected') }}
+                                    @if ($openTotalButton) {{ '' }}@else {{ 'disabled' }} @endif
+                                    {{-- //bypass && $totalOnSelectedCount!=1 --}}>{{ trans('cruds.estimate.fields.total_on_selected') }}
                                 </button>
                                 <button type="button" class="btn btn-soft-info" wire:click="exportWord">
                                     <span class="btn-inner">
@@ -51,6 +50,7 @@
                                     <th>{{ trans('cruds.estimate.fields.item_number') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.description') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.quantity') }}</th>
+                                    <th>Unit Name</th>
                                     <th>{{ trans('cruds.estimate.fields.per_unit_cost') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.cost') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.action') }}</th>
@@ -66,7 +66,8 @@
                                         </td>
                                         <td>
                                             <div wire:key="{{ $key . 'iNo' }}" class="d-flex align-items-center">
-                                                {{ chr($key + 64) }}
+                                                {{-- {{ chr($key + 64) }} --}}
+                                                {{ $addedEstimate['array_id'] }}
                                             </div>
                                         </td>
                                         <td>
@@ -84,7 +85,7 @@
                                         </td>
                                         <td class="text-wrap" style="width: 40rem">
                                             @if ($addedEstimate['sor_item_number'] || $addedEstimate['rate_no'])
-                                                {{ $addedEstimate['description'] }}{{ ($addedEstimate['rate_type'] != '') ? ' ( ' .$addedEstimate['rate_type']. ' ) ': ''}}
+                                                {{ $addedEstimate['description'] }}{{ $addedEstimate['rate_type'] != '' ? ' ( ' . $addedEstimate['rate_type'] . ' ) ' : '' }}
                                             @elseif ($addedEstimate['estimate_no'])
                                                 {{ getEstimateDescription($addedEstimate['estimate_no']) }}
                                                 {{-- {{ $addedEstimate->SOR->sorMasterDesc }} --}}
@@ -102,22 +103,26 @@
 
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['qty'] != 0 )
-                                            {{ $addedEstimate['qty'] }}
+                                            @if ($addedEstimate['qty'] != 0)
+                                                {{ $addedEstimate['qty'] }}
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['rate'] != 0 )
-                                            {{ $addedEstimate['rate'] }}
+                                            @if ($addedEstimate['unit_id'] != '' && $addedEstimate['unit_id'] != 0)
+                                                {{ $addedEstimate['unit_id'] }}
                                             @endif
                                         </td>
                                         <td>
-                                            {{ $addedEstimate['total_amount']}}
+                                            @if ($addedEstimate['rate'] != 0)
+                                                {{ $addedEstimate['rate'] }}
+                                            @endif
+                                        </td>
+                                        <td>
+                                            {{ $addedEstimate['total_amount'] }}
                                         </td>
                                         <td>
                                             @if ($addedEstimate['estimate_no'])
-                                                <x-button
-                                                    wire:click="viewModal({{ $addedEstimate['estimate_no'] }})"
+                                                <x-button wire:click="viewModal({{ $addedEstimate['estimate_no'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
@@ -134,9 +139,9 @@
                                                 </x-button> --}}
                                                 <button
                                                     onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
-                                                    wire:click="deleteEstimate({{ $addedEstimate['array_id'] }})" type="button" class="btn btn-soft-danger btn-sm">
-                                                    <span
-                                                        class="btn-inner">
+                                                    wire:click="deleteEstimate({{ $addedEstimate['array_id'] }})"
+                                                    type="button" class="btn btn-soft-danger btn-sm">
+                                                    <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                     </span>
                                                 </button>

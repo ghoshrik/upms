@@ -24,7 +24,7 @@ class RateAnalysisViewModal extends Component
                 $this->viewEstimates = $getCacheData;
             } else {
                 $this->viewEstimates = Cache::remember($cacheKey, now()->addMinutes(720), function () use ($rate_id) {
-                    return RatesAnalysis::where('rate_id', $this->rate_id)->get();
+                    return RatesAnalysis::where('rate_id', $this->rate_id)->orderBy('id')->get();
                 });
             }
             $this->rateDescription = $this->viewEstimates[count($this->viewEstimates) - 1]['description'];
