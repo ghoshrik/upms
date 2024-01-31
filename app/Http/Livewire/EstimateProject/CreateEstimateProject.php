@@ -10,9 +10,9 @@ use App\Models\RatesAnalysis;
 use App\Models\SOR;
 use App\Models\SorCategoryType;
 use App\Models\SorMaster;
-use Illuminate\Support\Arr;
+use App\Models\UnitMaster;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 use WireUi\Traits\Actions;
@@ -22,7 +22,7 @@ class CreateEstimateProject extends Component
     use Actions;
     protected $listeners = ['getRowValue', 'closeModal'];
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc;
-    public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack,$part_no = '';
+    public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack, $part_no = '';
     public $addedEstimate = [];
     public $searchDtaCount, $searchStyle, $searchResData, $quntity_type = 'menual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '', $getSor = [];
     // TODO:: remove $showTableOne if not use
@@ -108,17 +108,36 @@ class CreateEstimateProject extends Component
             if (Session()->has('projectEstimatePartNo')) {
                 $this->part_no = Session()->get('projectEstimatePartNo');
             }
+            if(Session()->has('projectEstimationTotal')){
+                $this->totalOnSelectedCount = Session()->get('projectEstimationTotal');
+            }
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
     }
     public function changeCategory($value)
     {
-        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc','part_no']);
+        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'part_no']);
         $this->part_no = strtoupper($this->part_no);
         $value = $value['_x_bindings']['value'];
         $this->estimateData['item_name'] = $value;
+        $getAllUnit = Cache::get('getUnits');
+        if ($getAllUnit != '') {
+            $this->fatchDropdownData['units'] = $getAllUnit;
+        } else {
+            $this->fatchDropdownData['units'] = Cache::remember('getUnits', now()->addMinutes(720), function () {
+                return UnitMaster::select('id', 'unit_name')->get();
+            });
+        }
         if ($this->estimateData['item_name'] == 'SOR') {
-            $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+            // $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+            $allDept = Cache::get('allDept');
+            if ($allDept != '') {
+                $this->fatchDropdownData['departments'] = $allDept;
+            } else {
+                $this->fatchDropdownData['departments'] = Cache::remember('allDept', now()->addMinutes(720), function () {
+                    return Department::select('id', 'department_name')->get();
+                });
+            }
             $this->fatchDropdownData['page_no'] = [];
             $this->estimateData['estimate_no'] = null;
             $this->estimateData['rate_no'] = '';
@@ -151,7 +170,15 @@ class CreateEstimateProject extends Component
             $this->estimateData['rate'] = 0;
             $this->estimateData['total_amount'] = '';
         } elseif ($this->estimateData['item_name'] == 'Estimate') {
-            $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+            // $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+            $allDept = Cache::get('allDept');
+            if ($allDept != '') {
+                $this->fatchDropdownData['departments'] = $allDept;
+            } else {
+                $this->fatchDropdownData['departments'] = Cache::remember('allDept', now()->addMinutes(720), function () {
+                    return Department::select('id', 'department_name')->get();
+                });
+            }
             $this->estimateData['estimate_no'] = '';
             // $this->estimateData['estimate_desc'] = '';
             $this->estimateData['rate_no'] = '';
@@ -167,7 +194,15 @@ class CreateEstimateProject extends Component
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
         } elseif ($this->estimateData['item_name'] == 'Rate') {
-            $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+            // $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+            $allDept = Cache::get('allDept');
+            if ($allDept != '') {
+                $this->fatchDropdownData['departments'] = $allDept;
+            } else {
+                $this->fatchDropdownData['departments'] = Cache::remember('allDept', now()->addMinutes(720), function () {
+                    return Department::select('id', 'department_name')->get();
+                });
+            }
             $this->estimateData['estimate_no'] = '';
             $this->estimateData['rate_no'] = '';
             $this->estimateData['rate_type'] = '';
@@ -208,7 +243,16 @@ class CreateEstimateProject extends Component
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
         $this->estimateData['total_amount'] = '';
-        $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
+        // $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
+        $cacheKey = 'dept_cat' . '_' . $this->estimateData['dept_id'];
+        $cacheHasDeptCat = Cache::get($cacheKey);
+        if ($cacheHasDeptCat != '') {
+            $this->fatchDropdownData['departmentsCategory'] = $cacheHasDeptCat;
+        } else {
+            $this->fatchDropdownData['departmentsCategory'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+                return SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
+            });
+        }
     }
 
     public function getVersion()
@@ -299,8 +343,17 @@ class CreateEstimateProject extends Component
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
         $this->estimateData['total_amount'] = '';
-        $this->fatchDropdownData['volumes'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']]])->select('volume_no')->groupBy('volume_no')->get();
-
+        // $this->fatchDropdownData['volumes'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']]])->select('volume_no')->groupBy('volume_no')->get();
+        $cacheKey = 'volume_' . $this->estimateData['dept_id'] . '_' . $this->estimateData['dept_category_id'];
+        $getCacheData = Cache::get($cacheKey);
+        $this->fatchDropdownData['volumes'] = [];
+        if ($getCacheData != '') {
+            $this->fatchDropdownData['volumes'] = $getCacheData;
+        } else {
+            $this->fatchDropdownData['volumes'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+                return DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']]])->select('volume_no')->groupBy('volume_no')->get();
+            });
+        }
     }
     public function getTableNo()
     {
@@ -318,10 +371,17 @@ class CreateEstimateProject extends Component
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
         $this->estimateData['total_amount'] = '';
-        $this->fatchDropdownData['table_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']]])
-            ->select('table_no')->groupBy('table_no')->get();
+        // $this->fatchDropdownData['table_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']]])->select('table_no')->groupBy('table_no')->get();
+        $cacheKey = 'table_no_' . $this->estimateData['dept_id'] . '_' . $this->estimateData['dept_category_id'] . '_' . $this->estimateData['volume'];
+        $getCacheData = Cache::get($cacheKey);
+        if ($getCacheData != '') {
+            $this->fatchDropdownData['table_no'] = $getCacheData;
+        } else {
+            $this->fatchDropdownData['table_no'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+                return DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']]])->select('table_no')->groupBy('table_no')->get();
+            });
+        }
         // }
-
     }
     public function getPageNo()
     {
@@ -337,8 +397,18 @@ class CreateEstimateProject extends Component
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
         $this->estimateData['total_amount'] = '';
-        $this->fatchDropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']]])
-            ->select('id', 'page_no', 'corrigenda_name')->get();
+        // $this->fatchDropdownData['page_no'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']]])
+        //     ->select('id', 'page_no', 'corrigenda_name')->get();
+        $cacheKey = 'page_no_' . $this->estimateData['dept_id'] . '_' . $this->estimateData['dept_category_id'] . '_' . $this->estimateData['volume'] . '_' . $this->estimateData['table_no'];
+        $getCacheData = Cache::get($cacheKey);
+        if ($getCacheData != '') {
+            $this->fatchDropdownData['page_no'] = $getCacheData;
+        } else {
+            $this->fatchDropdownData['page_no'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+                return DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']]])
+                    ->select('id', 'page_no', 'corrigenda_name')->orderBy('page_no', 'asc')->orderBy('corrigenda_name', 'asc')->get();
+            });
+        }
         // }
     }
     public function getDynamicSor()
@@ -352,7 +422,16 @@ class CreateEstimateProject extends Component
         //     $this->selectSor['sor_id'] = $this->getSor['id'];
         // } else {
         // $this->getSor = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']], ['page_no', $this->estimateData['page_no']]])->first();
-        $this->getSor = DynamicSorHeader::where('id', $this->estimateData['id'])->first();
+        // $this->getSor = DynamicSorHeader::where('id', $this->estimateData['id'])->first();
+        $cacheKey = 'getSor_' . $this->estimateData['id'];
+        $getCacheData = Cache::get($cacheKey);
+        if ($getCacheData != '') {
+            $this->getSor = $getCacheData;
+        } else {
+            $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+                return DynamicSorHeader::where('id', $this->estimateData['id'])->first();
+            });
+        }
         $this->estimateData['sor_id'] = $this->getSor['id'];
         $this->estimateData['page_no'] = $this->getSor['page_no'];
         // }
@@ -445,7 +524,15 @@ class CreateEstimateProject extends Component
         $this->estimateData['description'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
-        $this->fatchDropdownData['rateDetails'] = RatesAnalysis::where([['rate_no', 0], ['rate_id', $this->estimateData['rate_no']], ['operation', $this->estimateData['rate_type']], ['dept_id', $this->estimateData['dept_id']]])->select('description', 'rate_id', 'qty', 'total_amount')->first();
+        // $this->fatchDropdownData['rateDetails'] = RatesAnalysis::where([['rate_no', 0], ['rate_id', $this->estimateData['rate_no']], ['operation', $this->estimateData['rate_type']], ['dept_id', $this->estimateData['dept_id']]])->select('description', 'rate_id', 'qty', 'total_amount')->first();
+        $cacheKey = 'rateNo_' . $this->estimateData['rate_no'];
+        if (Cache::has($cacheKey)) {
+            $this->fatchDropdownData['rateDetails'] = Cache::get($cacheKey);
+        } else {
+            $this->fatchDropdownData['rateDetails'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+                return RatesAnalysis::where([['rate_no', 0], ['rate_id', $this->estimateData['rate_no']], ['operation', $this->estimateData['rate_type']], ['dept_id', $this->estimateData['dept_id']]])->select('description', 'rate_id', 'qty', 'total_amount')->first();
+            });
+        }
         $this->estimateData['total_amount'] = round($this->fatchDropdownData['rateDetails']['total_amount'], 2);
         $this->estimateData['description'] = $this->fatchDropdownData['rateDetails']['description'];
         $this->estimateData['qty'] = 1;
@@ -622,7 +709,7 @@ class CreateEstimateProject extends Component
         $this->addedEstimate['item_name'] = $this->estimateData['item_name'];
         $this->addedEstimate['other_name'] = $this->estimateData['other_name'];
         $this->addedEstimate['description'] = $this->estimateData['description'];
-        $this->addedEstimate['unit_id'] = $this->estimateData['unit_id'];
+        $this->addedEstimate['unit_id'] = is_numeric($this->estimateData['unit_id']) ? getUnitName($this->estimateData['unit_id']) : $this->estimateData['unit_id'];
         $this->addedEstimate['qty'] = ($this->estimateData['qty'] == '') ? 0 : $this->estimateData['qty'];
         $this->addedEstimate['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
         $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
@@ -643,10 +730,16 @@ class CreateEstimateProject extends Component
         $this->estimateData['other_name'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['unit_id'] = '';
+        if(isset($this->estimateData['id'])){
+            $this->estimateData['id'] = '';
+        }
         $this->estimateData['rate'] = '';
         $this->estimateData['total_amount'] = '';
+        if (isset($this->fatchDropdownData['rateDetailsTypes'])) {
+            $this->fatchDropdownData['rateDetailsTypes'] = [];
+        }
         // dd($this->addedEstimate);
-        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'estimateData', 'fatchDropdownData', 'selectedCategoryId','part_no']);
+        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'estimateData', 'fatchDropdownData', 'selectedCategoryId', 'part_no']);
     }
     public function closeModal()
     {

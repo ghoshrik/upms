@@ -20,8 +20,8 @@
                                         placeholder="{{ trans('cruds.estimate.fields.remarks') }}"
                                         aria-label="{{ trans('cruds.estimate.fields.remarks') }}"
                                         aria-describedby="basic-addon1">
-                                    <button type="button" wire:click="expCalc"
-                                        class="btn btn-soft-primary">Calculate</button>
+                                    <button type="button" wire:click="expCalc" class="btn btn-soft-primary"
+                                        @if ($totalOnSelectedCount < 1) {{ '' }}@else {{ 'disabled' }} @endif>Calculate</button>
                                 </div>
                             </div>
                         </div>
@@ -105,6 +105,12 @@
                                         <td>
                                             @if ($addedEstimate['qty'] != 0)
                                                 {{ $addedEstimate['qty'] }}
+                                                <x-button wire:click="openQtyAnanysisModal({{ $key }})"
+                                                    type="button" class="btn btn-soft-primary btn-sm">
+                                                    <span class="btn-inner">
+                                                        <x-lucide-plus class="w-4 h-4 text-white-500" />
+                                                    </span>
+                                                </x-button>
                                             @endif
                                         </td>
                                         <td>
@@ -139,7 +145,7 @@
                                                 </x-button> --}}
                                                 <button
                                                     onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
-                                                    wire:click="deleteEstimate({{ $addedEstimate['array_id'] }})"
+                                                    wire:click="deleteEstimate('{{ $addedEstimate['array_id'] }}')"
                                                     type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
@@ -163,5 +169,8 @@
                 </div>
             </div>
         </div>
+        @if ($openQtyModal)
+            <livewire:components.modal.rate-analysis.unit-analysis-view-modal :unit_id="$sendArrayKey" :sendArrayDesc="$sendArrayDesc" />
+        @endif
     @endif
 </div>

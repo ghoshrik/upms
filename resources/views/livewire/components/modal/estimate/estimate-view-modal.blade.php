@@ -18,8 +18,9 @@
                                     NAME</th>
                                 <th class="whitespace-nowrap" style="width:40%;text-align:center;">
                                     DESCRIPTION</th>
-
                                 <th class="whitespace-nowrap" style="text-align:center;">QUANTITY
+                                </th>
+                                <th class="whitespace-nowrap" style="text-align:center;">UNIT NAME
                                 </th>
                                 <th class="whitespace-nowrap" style="text-align:right;">UNIT
                                     PRICE</th>
@@ -29,7 +30,8 @@
                         <tbody>
                             @foreach ($viewEstimates as $view)
                                 <tr>
-                                    <td>{{ chr($view['row_id'] + 64) }}</td>
+                                    {{-- <td>{{ chr($view['row_id'] + 64) }}</td> --}}
+                                    <td>{{ $view['row_id'] }}</td>
                                     <td>
                                         @if ($view['sor_item_number'] != '' && $view['sor_item_number'] != 0)
                                             {{-- {{ getSorItemNumber($view['sor_item_number']) }} --}}
@@ -53,7 +55,7 @@
                                             {{ getTableDesc($view['sor_id'],$view['item_index']) }}
                                             {{-- {{ $view['description'] }} --}}
                                         @elseif ($view['rate_id'])
-                                            {{ getRateDescription($view['rate_id']) }}
+                                            {{ getRateDescription($view['rate_id'],$view['operation']) }}
                                         @elseif($view['operation'])
                                             @if ($view['operation'] == 'Total')
                                                 {{ 'Total of ( ' . $view['row_index'] . ' )' }}
@@ -73,6 +75,7 @@
                                             {{ $view['qty'] }}
                                         @endif
                                     </td>
+                                    <td style="text-align: center;">{{ ($view['unit_id'] != 0 ) ? $view['unit_id'] : '' }}</td>
                                     <td style="text-align:center;">
                                         @if ($view['rate'] == 0)
                                         @else

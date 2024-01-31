@@ -2,8 +2,9 @@
 
 namespace App\Http\Livewire\Components\Modal\Estimate;
 
-use App\Models\EstimatePrepare;
 use Livewire\Component;
+use App\Models\EstimatePrepare;
+use Illuminate\Support\Facades\Cache;
 
 class EstimateViewModal extends Component
 {
@@ -18,7 +19,15 @@ class EstimateViewModal extends Component
         if($estimate_id)
         {
             $this->estimate_id = $estimate_id;
-            $this->viewEstimates = EstimatePrepare::where('estimate_id',$this->estimate_id)->get();
+            // $this->viewEstimates = EstimatePrepare::where('estimate_id',$this->estimate_id)->get();
+            $cacheKey = 'projectEstimate_' . $this->estimate_id;
+            if(Cache::has($cacheKey)){
+                $this->viewEstimates = Cache::get($cacheKey);
+            }else{
+                $this->viewEstimates = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+                    return EstimatePrepare::where('estimate_id',$this->estimate_id)->get();
+                });
+            }
         }
         // dd($this->viewEstimates);
     }

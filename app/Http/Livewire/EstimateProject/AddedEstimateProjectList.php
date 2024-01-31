@@ -2,22 +2,24 @@
 
 namespace App\Http\Livewire\EstimateProject;
 
-use App\Models\EstimatePrepare;
-use App\Models\EstimateUserAssignRecord;
-use App\Models\SORMaster as ModelsSORMaster;
-use ChrisKonnertz\StringCalc\StringCalc;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use WireUi\Traits\Actions;
+use App\Models\EstimatePrepare;
+use Illuminate\Support\Facades\Auth;
+use App\Models\EstimateUserAssignRecord;
+use App\Models\SpecificQuantityAnalysis;
+use ChrisKonnertz\StringCalc\StringCalc;
+use App\Models\SORMaster as ModelsSORMaster;
 
 class AddedEstimateProjectList extends Component
 {
     use Actions;
+    protected $listeners = ['unitQtyAdded', 'closeUnitModal'];
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $part_no;
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
+    public $openQtyModal = false, $sendArrayKey = '', $sendArrayDesc = '';
 
     public function mount()
     {
@@ -27,11 +29,79 @@ class AddedEstimateProjectList extends Component
     public function resetSession()
     {
         Session()->forget('addedProjectEstimateData');
+        Session()->forget('modalData');
+        Session()->forget('projectEstimationTotal');
         $this->reset();
     }
     public function viewModal($estimate_id)
     {
         $this->emit('openModal', $estimate_id);
+    }
+    public function openQtyAnanysisModal($key)
+    {
+        $this->openQtyModal = !$this->openQtyModal;
+        $this->sendArrayKey = $this->allAddedEstimatesData[$key]['array_id'];
+        foreach ($this->allAddedEstimatesData as $index => $estimateData) {
+            if ($estimateData['array_id'] === $this->sendArrayKey) {
+                if (!empty($this->allAddedEstimatesData[$key]['description'])) {
+                    $this->sendArrayDesc = $this->allAddedEstimatesData[$key]['description'];
+                } elseif (!empty($this->allAddedEstimatesData[$key]['other_name'])) {
+                    $this->sendArrayDesc = $this->allAddedEstimatesData[$key]['other_name'];
+                }
+            }
+        }
+    }
+    public function unitQtyAdded($data, $overallTotal)
+    {
+        try {
+            $sessionData = session('modalData');
+            if (!is_array($sessionData)) {
+                $sessionData = [];
+            }
+            foreach ($data as $item) {
+                $parentId = $item['parent_id'];
+                $childId = $item['child_id'];
+                $uniqueKey = $parentId . '_' . $childId;
+                if (array_key_exists($parentId, $sessionData)) {
+                    if (array_key_exists($childId, $sessionData[$parentId])) {
+                        $sessionData[$parentId][$childId] = $item;
+                    } else {
+                        $sessionData[$parentId][$childId] = $item;
+                    }
+                } else {
+                    $sessionData[$parentId] = [$childId => $item];
+                }
+            }
+            Session()->put('modalData', $sessionData);
+            foreach ($this->allAddedEstimatesData as $index => $estimateData) {
+                if ($estimateData['array_id'] === $this->sendArrayKey) {
+                    $this->allAddedEstimatesData[$index]['qty'] = $overallTotal;
+                    $this->calculateValue($index);
+                }
+            }
+            Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
+        } catch (\Exception $e) {
+            dd($e);
+        }
+    }
+    public function closeUnitModal()
+    {
+        $this->openQtyModal = !$this->openQtyModal;
+    }
+    public function calculateValue($key)
+    {
+        // dd($this->allAddedEstimatesData[$key]);
+        if ($this->allAddedEstimatesData[$key]['rate'] > 0) {
+            $this->allAddedEstimatesData[$key]['qty'] = round($this->allAddedEstimatesData[$key]['qty'], 3);
+            $this->allAddedEstimatesData[$key]['rate'] = round($this->allAddedEstimatesData[$key]['rate'], 2);
+            $this->allAddedEstimatesData[$key]['total_amount'] = $this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'];
+            $this->allAddedEstimatesData[$key]['total_amount'] = round($this->allAddedEstimatesData[$key]['total_amount'], 2);
+            $this->allAddedEstimatesData[$key]['rate'] = $this->allAddedEstimatesData[$key]['rate'];
+            // $this->reset('other_rate');
+        } else {
+            $this->allAddedEstimatesData[$key]['rate'] = 0;
+            $this->allAddedEstimatesData[$key]['total_amount'] = 0;
+        }
     }
     //calculate estimate list
     public function insertAddEstimate($arrayIndex, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks)
@@ -50,7 +120,7 @@ class AddedEstimateProjectList extends Component
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
         $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount');
+        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'part_no');
     }
 
     public function expCalc()
@@ -59,28 +129,41 @@ class AddedEstimateProjectList extends Component
         $tempIndex = strtoupper($this->expression);
         $stringCalc = new StringCalc();
         try {
-            if ($this->expression) {
-                foreach (str_split($this->expression) as $key => $info) {
-                    $count0 = count($this->allAddedEstimatesData);
-                    if (ctype_alpha($info)) {
-                        $alphabet = strtoupper($info);
-                        $alp_id = ord($alphabet) - 64;
-                        if ($alp_id <= $count0) {
-                            if ($this->allAddedEstimatesData[$alp_id]['array_id']) {
-                                $this->expression = str_replace($info, $this->allAddedEstimatesData[$alp_id]['total_amount'], $this->expression, $key);
-                            }
-                        } else {
-                            $this->notification()->error(
-                                $title = $alphabet . ' is a invalid input'
-                            );
-                        }
-                    } elseif (htmlspecialchars($info) == "%") {
-                        $this->expression = str_replace($info, "/100*", $this->expression, $key);
+            $pattern = '/([-+*\/%])|([a-zA-Z0-9]+)/';
+            preg_match_all($pattern, strtoupper($this->expression), $matches);
+            $this->expression = strtoupper($this->expression);
+            foreach (array_merge($matches[0]) as $key => $info) {
+                foreach ($this->allAddedEstimatesData as $k => $data) {
+                    if ($data['array_id'] == $info) {
+                        $this->expression = str_replace($info, $this->allAddedEstimatesData[$k]['total_amount'], $this->expression, $key);
                     }
                 }
+                if (htmlspecialchars($info) == "%") {
+                    $this->expression = str_replace($info, "/100*", $this->expression, $key);
+                }
             }
+            // if ($this->expression) {
+            //     foreach (str_split($this->expression) as $key => $info) {
+            //         $count0 = count($this->allAddedEstimatesData);
+            //         if (ctype_alpha($info)) {
+            //             $alphabet = strtoupper($info);
+            //             $alp_id = ord($alphabet) - 64;
+            //             if ($alp_id <= $count0) {
+            //                 if ($this->allAddedEstimatesData[$alp_id]['array_id']) {
+            //                     $this->expression = str_replace($info, $this->allAddedEstimatesData[$alp_id]['total_amount'], $this->expression, $key);
+            //                 }
+            //             } else {
+            //                 $this->notification()->error(
+            //                     $title = $alphabet . ' is a invalid input'
+            //                 );
+            //             }
+            //         } elseif (htmlspecialchars($info) == "%") {
+            //             $this->expression = str_replace($info, "/100*", $this->expression, $key);
+            //         }
+            //     }
+            // }
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddEstimate($tempIndex, 0, 0, 0, '', '', '', 0, 0, round($result,2), 'Exp Calculoation', '', $this->remarks);
+            $this->insertAddEstimate($tempIndex, 0, 0, 0, '', '', '', 0, 0, round($result, 2), 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(
@@ -91,7 +174,7 @@ class AddedEstimateProjectList extends Component
 
     public function showTotalButton()
     {
-        if (count($this->level) >= 1) {
+        if (count($this->level) >= 1 && $this->totalOnSelectedCount == 0) {
             $this->openTotalButton = true;
         } else {
             $this->openTotalButton = false;
@@ -103,12 +186,18 @@ class AddedEstimateProjectList extends Component
         if (count($this->level) >= 1) {
             $result = 0;
             foreach ($this->level as $key => $array) {
-                $this->arrayStore[] = chr($array + 64);
-                $result = $result + $this->allAddedEstimatesData[$array]['total_amount'];
+                // $this->arrayStore[] = chr($array + 64);
+                $this->arrayStore[] = $array;
+                foreach ($this->allAddedEstimatesData as $k => $value) {
+                    if ($value['array_id'] == $array) {
+                        $result = $result + $this->allAddedEstimatesData[$k]['total_amount'];
+                    }
+                }
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
             $this->insertAddEstimate($this->arrayIndex, 0, 0, 0, '', '', '', 0, 0, round($result), 'Total', '', '');
-            $this->totalOnSelectedCount++;
+            $this->totalOnSelectedCount = $this->totalOnSelectedCount + 1;
+            Session()->put('projectEstimationTotal', $this->totalOnSelectedCount);
         } else {
             $this->dispatchBrowserEvent('alert', [
                 'type' => 'error',
@@ -122,14 +211,18 @@ class AddedEstimateProjectList extends Component
         $this->reset('allAddedEstimatesData');
         if (Session()->has('addedProjectEstimateData')) {
             $this->allAddedEstimatesData = Session()->get('addedProjectEstimateData');
+            if (Session()->has('projectEstimationTotal')) {
+                $this->totalOnSelectedCount = Session()->get('projectEstimationTotal');
+            }
         }
+        // dd($this->totalOnSelectedCount);
         if ($this->addedEstimateData != null) {
             $index = count($this->allAddedEstimatesData) + 1;
             if (!array_key_exists("operation", $this->addedEstimateData)) {
                 $this->addedEstimateData['operation'] = '';
             }
             if (!array_key_exists("array_id", $this->addedEstimateData)) {
-                $this->addedEstimateData['array_id'] = $this->part_no.$index;
+                $this->addedEstimateData['array_id'] = $this->part_no . $index;
             }
             if (!array_key_exists("arrayIndex", $this->addedEstimateData)) {
                 $this->addedEstimateData['arrayIndex'] = '';
@@ -172,8 +265,9 @@ class AddedEstimateProjectList extends Component
             }
             Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
             Session()->put('projectEstimateDesc', $this->sorMasterDesc);
-            Session()->put('projectEstimatePartNo',$this->part_no);
+            Session()->put('projectEstimatePartNo', $this->part_no);
             $this->reset('addedEstimateData');
+
         }
     }
 
@@ -196,12 +290,14 @@ class AddedEstimateProjectList extends Component
 
     public function deleteEstimate($value)
     {
-        unset($this->allAddedEstimatesData[$value]);
+        $numericValue = preg_replace('/[^0-9]/', '', $value);
+        unset($this->allAddedEstimatesData[$numericValue]);
         Session()->forget('addedProjectEstimateData');
         Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
         $this->level = [];
-        if ($this->totalOnSelectedCount == 1) {
+        if ($this->totalOnSelectedCount >= 1) {
             $this->reset('totalOnSelectedCount');
+            Session()->forget('projectEstimationTotal');
         }
         $this->notification()->error(
             $title = 'Row Deleted Successfully'
@@ -324,6 +420,7 @@ class AddedEstimateProjectList extends Component
                 if ($this->allAddedEstimatesData) {
                     $intId = random_int(100000, 999999);
                     if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1, 'dept_id' => Auth::user()->department_id])) {
+                    // if (true) {
                         foreach ($this->allAddedEstimatesData as $key => $value) {
                             $insert = [
                                 'estimate_id' => $intId,
@@ -348,17 +445,34 @@ class AddedEstimateProjectList extends Component
                                 'sor_id' => $value['sor_id'],
                                 'item_index' => $value['item_index'],
                                 'col_position' => $value['col_position'],
+                                'unit_id' => ($value['unit_id'] != '') ? $value['unit_id'] : 0,
                             ];
-                            $validateData = Validator::make($insert, [
-                                'estimate_id' => 'required|integer',
-                                'dept_id' => 'required|integer',
-                                'category_id' => 'required|integer',
-                                'row_id' => 'required|integer',
-                            ]);
-                            if ($validateData->fails()) {
-                                $this->notification()->error(
-                                    $title = 'Please check all the fields'
-                                );
+                            // $validateData = Validator::make($insert, [
+                            //     'estimate_id' => 'required|integer',
+                            //     'dept_id' => 'required|integer',
+                            //     'category_id' => 'required|integer',
+                            //     'row_id' => 'required|integer',
+                            // ]);
+                            // if ($validateData->fails()) {
+                            //     $this->notification()->error(
+                            //         $title = 'Please check all the fields'
+                            //     );
+                            // }
+                            if (Session()->has('modalData')) {
+                                $modalQtyData = Session()->get('modalData');
+                                if (isset($modalQtyData[$value['array_id']])) {
+                                    $insert2 = [
+                                        'estimate_id' => $intId,
+                                        'rate_id' => (isset($value['rate_no'])) ? $value['rate_no'] : '',
+                                        'row_id' => $value['array_id'],
+                                        'row_data' => json_encode($modalQtyData[$value['array_id']]),
+                                        'type' => $value['item_name'],
+                                        'sor_id' => (isset($value['sor_id'])) ? $value['sor_id'] : '',
+                                        'sor_item_index' => (isset($value['item_index'])) ? $value['item_index'] : '',
+                                        'created_by' => Auth::user()->id
+                                    ];
+                                    SpecificQuantityAnalysis::create($insert2);
+                                }
                             }
                             EstimatePrepare::create($insert);
                         }
