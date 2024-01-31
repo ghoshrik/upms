@@ -2,14 +2,14 @@
 
 namespace App\Http\Livewire\EstimateProject;
 
-use Livewire\Component;
-use WireUi\Traits\Actions;
 use App\Models\EstimatePrepare;
-use Illuminate\Support\Facades\Auth;
 use App\Models\EstimateUserAssignRecord;
+use App\Models\SORMaster as ModelsSORMaster;
 use App\Models\SpecificQuantityAnalysis;
 use ChrisKonnertz\StringCalc\StringCalc;
-use App\Models\SORMaster as ModelsSORMaster;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class AddedEstimateProjectList extends Component
 {
@@ -19,7 +19,7 @@ class AddedEstimateProjectList extends Component
     public $allAddedEstimatesData = [];
     public $part_no;
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
-    public $openQtyModal = false, $sendArrayKey = '', $sendArrayDesc = '';
+    public $openQtyModal = false, $sendArrayKey = '', $sendArrayDesc = '', $getQtySessionData = [];
 
     public function mount()
     {
@@ -73,9 +73,11 @@ class AddedEstimateProjectList extends Component
                 }
             }
             Session()->put('modalData', $sessionData);
+            $this->getQtySessionData = Session()->put('modalData', $sessionData);
             foreach ($this->allAddedEstimatesData as $index => $estimateData) {
                 if ($estimateData['array_id'] === $this->sendArrayKey) {
                     $this->allAddedEstimatesData[$index]['qty'] = $overallTotal;
+                    $this->allAddedEstimatesData[$index]['qtyUpdate'] = true;
                     $this->calculateValue($index);
                 }
             }
@@ -214,6 +216,9 @@ class AddedEstimateProjectList extends Component
             if (Session()->has('projectEstimationTotal')) {
                 $this->totalOnSelectedCount = Session()->get('projectEstimationTotal');
             }
+            if (Session()->has('modalData')) {
+                $this->getQtySessionData = Session()->get('modalData');
+            }
         }
         // dd($this->totalOnSelectedCount);
         if ($this->addedEstimateData != null) {
@@ -290,6 +295,11 @@ class AddedEstimateProjectList extends Component
 
     public function deleteEstimate($value)
     {
+        $sessionData = Session()->get('modalData');
+        if (isset($sessionData[$value])) {
+            unset($sessionData[$value]);
+        }
+        Session()->put('modalData', $sessionData);
         $numericValue = preg_replace('/[^0-9]/', '', $value);
         unset($this->allAddedEstimatesData[$numericValue]);
         Session()->forget('addedProjectEstimateData');
@@ -420,7 +430,7 @@ class AddedEstimateProjectList extends Component
                 if ($this->allAddedEstimatesData) {
                     $intId = random_int(100000, 999999);
                     if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1, 'dept_id' => Auth::user()->department_id])) {
-                    // if (true) {
+                        // if (true) {
                         foreach ($this->allAddedEstimatesData as $key => $value) {
                             $insert = [
                                 'estimate_id' => $intId,
@@ -469,7 +479,7 @@ class AddedEstimateProjectList extends Component
                                         'type' => $value['item_name'],
                                         'sor_id' => (isset($value['sor_id'])) ? $value['sor_id'] : '',
                                         'sor_item_index' => (isset($value['item_index'])) ? $value['item_index'] : '',
-                                        'created_by' => Auth::user()->id
+                                        'created_by' => Auth::user()->id,
                                     ];
                                     SpecificQuantityAnalysis::create($insertQtyAnalysisData);
                                 }

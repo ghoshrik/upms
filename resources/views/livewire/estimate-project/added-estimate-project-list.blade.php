@@ -105,12 +105,21 @@
                                         <td>
                                             @if ($addedEstimate['qty'] != 0)
                                                 {{ $addedEstimate['qty'] }}
-                                                <x-button wire:click="openQtyAnanysisModal({{ $key }})"
-                                                    type="button" class="btn btn-soft-primary btn-sm">
-                                                    <span class="btn-inner">
-                                                        <x-lucide-plus class="w-4 h-4 text-white-500" />
-                                                    </span>
-                                                </x-button>
+                                                @if (isset($addedEstimate['qtyUpdate']))
+                                                    <x-button wire:click="openQtyAnanysisModal({{ $key }})"
+                                                        type="button" class="btn btn-soft-primary btn-sm">
+                                                        <span class="btn-inner">
+                                                            <x-lucide-eye class="w-4 h-4 text-white-500" />
+                                                        </span>
+                                                    </x-button>
+                                                @else
+                                                    <x-button wire:click="openQtyAnanysisModal({{ $key }})"
+                                                        type="button" class="btn btn-soft-primary btn-sm">
+                                                        <span class="btn-inner">
+                                                            <x-lucide-plus class="w-4 h-4 text-white-500" />
+                                                        </span>
+                                                    </x-button>
+                                                @endif
                                             @endif
                                         </td>
                                         <td>
