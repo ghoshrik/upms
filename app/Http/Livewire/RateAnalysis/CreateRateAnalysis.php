@@ -1592,7 +1592,7 @@ class CreateRateAnalysis extends Component
             $this->addedEstimate['operation'] = (isset($this->estimateData['rate_type'])) ? $this->estimateData['rate_type'] : '';
             $this->addedEstimate['col_position'] = isset($this->estimateData['col_position']) ? $this->estimateData['col_position'] : 0;
             $this->addedEstimate['is_row'] = isset($this->estimateData['is_row']) ? $this->estimateData['is_row'] : null;
-            $this->addedEstimate['unit_id'] = $this->estimateData['unit_id'];
+            $this->addedEstimate['unit_id'] = is_numeric($this->estimateData['unit_id']) ? getUnitName($this->estimateData['unit_id']) : $this->estimateData['unit_id'];
             $this->addedEstimateUpdateTrack = rand(1, 1000);
             $this->estimateData['item_number'] = '';
             $this->estimateData['other_name'] = '';
