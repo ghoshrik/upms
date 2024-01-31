@@ -1,5 +1,5 @@
 <div>
-    <x-modal max-width="5xl" blur wire:model.defer="viewModal">
+    <x-modal max-width="" blur wire:model.defer="viewModal">
         <x-card>
             {{-- <div class="modal-content"> --}}
             {{-- <div class="p-0 modal-body"> --}}
@@ -73,13 +73,14 @@
                                         @if ($view['qty'] == 0)
                                         @else
                                             {{ $view['qty'] }}
-                                            <button
-                                                class="collapse-button btn btn-soft-primary btn-sm rounded"
-                                                type="button" aria-expanded="false"
-                                                aria-controls="collapseExample_{{ $view['row_id'] }}"
-                                                onclick="toggleCollapse('{{ $view['row_id'] }}')">
+                                            @if ($view['qty_analysis_data'] != '')
+                                                <button class="collapse-button btn btn-soft-primary btn-sm rounded"
+                                                    type="button" aria-expanded="false"
+                                                    aria-controls="collapseExample_{{ $view['row_id'] }}"
+                                                    onclick="toggleCollapse('{{ $view['row_id'] }}')">
                                                     <x-lucide-eye class="w-4 h-4 text-white-500" />
-                                            </button>
+                                                </button>
+                                            @endif
                                         @endif
                                     </td>
                                     <td style="text-align: center;">
@@ -92,47 +93,49 @@
                                     </td>
                                     <td style="text-align:center;">{{ round($view['total_amount'], 10, 2) }}</td>
                                 </tr>
-                                <tr>
-                                    <td colspan="8">
-                                        @php $serialNumber = 1; @endphp
-                                        @foreach ($this->specificQtyAnalysisData as $data)
-                                            @if ($data['row_id'] == $view['row_id'])
-                                                <div class="collapse" id="collapseExample_{{ $view['row_id'] }}">
-                                                    <div class="card card-body">
-                                                        <table class="table table-bordered">
-                                                            <thead>
+                                @if ($view['qty_analysis_data'] != '')
+                                    <tr>
+                                        <td colspan="8">
+                                            @php $serialNumber = 1; @endphp
+                                            {{-- @foreach ($this->specificQtyAnalysisData as $data)
+                                            @if ($data['row_id'] == $view['row_id']) --}}
+                                            <div class="collapse" id="collapseExample_{{ $view['row_id'] }}">
+                                                <div class="card card-body">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sl.no</th>
+                                                                <th>Member</th>
+                                                                <th>Number</th>
+                                                                <th>Height</th>
+                                                                <th>Breadth</th>
+                                                                <th>Length</th>
+                                                                <th>Unit</th>
+                                                                <th>Total</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (json_decode($view['qty_analysis_data'], true) as $child)
                                                                 <tr>
-                                                                    <th>Sl.no</th>
-                                                                    <th>Member</th>
-                                                                    <th>Number</th>
-                                                                    <th>Height</th>
-                                                                    <th>Breadth</th>
-                                                                    <th>Length</th>
-                                                                    <th>Unit</th>
-                                                                    <th>Total</th>
+                                                                    <td>{{ $serialNumber++ }}</td>
+                                                                    <td>{{ $child['member'] }}</td>
+                                                                    <td>{{ $child['number'] }}</td>
+                                                                    <td>{{ $child['height'] }}</td>
+                                                                    <td>{{ $child['breadth'] }}</td>
+                                                                    <td>{{ $child['length'] }}</td>
+                                                                    <td>{{ getunitName($child['unit']) }}</td>
+                                                                    <td>{{ $child['total'] }}</td>
                                                                 </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @foreach (json_decode($data['row_data'], true) as $child)
-                                                                    <tr>
-                                                                        <td>{{ $serialNumber++ }}</td>
-                                                                        <td>{{ $child['member'] }}</td>
-                                                                        <td>{{ $child['number'] }}</td>
-                                                                        <td>{{ $child['height'] }}</td>
-                                                                        <td>{{ $child['breadth'] }}</td>
-                                                                        <td>{{ $child['length'] }}</td>
-                                                                        <td>{{ getunitName($child['unit']) }}</td>
-                                                                        <td>{{ $child['total'] }}</td>
-                                                                    </tr>
-                                                                @endforeach
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
                                                 </div>
-                                            @endif
-                                        @endforeach
-                                    </td>
-                                </tr>
+                                            </div>
+                                            {{-- @endif
+                                        @endforeach --}}
+                                        </td>
+                                    </tr>
+                                @endif
                             @endforeach
                         </tbody>
                     </table>

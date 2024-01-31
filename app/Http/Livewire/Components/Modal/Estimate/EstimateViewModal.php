@@ -30,7 +30,7 @@ class EstimateViewModal extends Component
                     return EstimatePrepare::where('estimate_id',$this->estimate_id)->get();
                 });
             }
-            $this->specificQtyAnalysisData = SpecificQuantityAnalysis::where('estimate_id',$this->estimate_id)->get();
+            // $this->specificQtyAnalysisData = SpecificQuantityAnalysis::where('estimate_id',$this->estimate_id)->get();
         }
         // dd($this->viewEstimates);
     }
