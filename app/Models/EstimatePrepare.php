@@ -33,7 +33,8 @@ class EstimatePrepare extends Model
         'created_by',
         'comments',
         'col_position',
-        'unit_id'
+        'unit_id',
+        'qty_analysis_data'
     ];
 
     public function sorNumber()

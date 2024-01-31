@@ -73,7 +73,7 @@ class AddedEstimateProjectList extends Component
                 }
             }
             Session()->put('modalData', $sessionData);
-            $this->getQtySessionData = Session()->put('modalData', $sessionData);
+            $this->getQtySessionData = $sessionData;
             foreach ($this->allAddedEstimatesData as $index => $estimateData) {
                 if ($estimateData['array_id'] === $this->sendArrayKey) {
                     $this->allAddedEstimatesData[$index]['qty'] = $overallTotal;
@@ -122,7 +122,7 @@ class AddedEstimateProjectList extends Component
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
         $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'part_no');
+        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'part_no','getQtySessionData');
     }
 
     public function expCalc()
@@ -456,6 +456,7 @@ class AddedEstimateProjectList extends Component
                                 'item_index' => $value['item_index'],
                                 'col_position' => $value['col_position'],
                                 'unit_id' => ($value['unit_id'] != '') ? $value['unit_id'] : 0,
+                                'qty_analysis_data' => (isset($this->getQtySessionData[$value['array_id']])) ? json_encode($this->getQtySessionData[$value['array_id']]) : null,
                             ];
                             // $validateData = Validator::make($insert, [
                             //     'estimate_id' => 'required|integer',
@@ -468,22 +469,24 @@ class AddedEstimateProjectList extends Component
                             //         $title = 'Please check all the fields'
                             //     );
                             // }
-                            if (Session()->has('modalData')) {
-                                $modalQtyData = Session()->get('modalData');
-                                if (isset($modalQtyData[$value['array_id']])) {
-                                    $insertQtyAnalysisData = [
-                                        'estimate_id' => $intId,
-                                        'rate_id' => (isset($value['rate_no'])) ? $value['rate_no'] : '',
-                                        'row_id' => $value['array_id'],
-                                        'row_data' => json_encode($modalQtyData[$value['array_id']]),
-                                        'type' => $value['item_name'],
-                                        'sor_id' => (isset($value['sor_id'])) ? $value['sor_id'] : '',
-                                        'sor_item_index' => (isset($value['item_index'])) ? $value['item_index'] : '',
-                                        'created_by' => Auth::user()->id,
-                                    ];
-                                    SpecificQuantityAnalysis::create($insertQtyAnalysisData);
-                                }
-                            }
+        //-----------store on another table start----------//
+                            // if (Session()->has('modalData')) {
+                            //     $modalQtyData = Session()->get('modalData');
+                            //     if (isset($modalQtyData[$value['array_id']])) {
+                            //         $insertQtyAnalysisData = [
+                            //             'estimate_id' => $intId,
+                            //             'rate_id' => (isset($value['rate_no'])) ? $value['rate_no'] : '',
+                            //             'row_id' => $value['array_id'],
+                            //             'row_data' => json_encode($modalQtyData[$value['array_id']]),
+                            //             'type' => $value['item_name'],
+                            //             'sor_id' => (isset($value['sor_id'])) ? $value['sor_id'] : '',
+                            //             'sor_item_index' => (isset($value['item_index'])) ? $value['item_index'] : '',
+                            //             'created_by' => Auth::user()->id,
+                            //         ];
+                            //         SpecificQuantityAnalysis::create($insertQtyAnalysisData);
+                            //     }
+                            // }
+        //------------End-------------------------------//
                             EstimatePrepare::create($insert);
                         }
                         $data = [
