@@ -461,7 +461,7 @@ class AddedEstimateProjectList extends Component
                             if (Session()->has('modalData')) {
                                 $modalQtyData = Session()->get('modalData');
                                 if (isset($modalQtyData[$value['array_id']])) {
-                                    $insert2 = [
+                                    $insertQtyAnalysisData = [
                                         'estimate_id' => $intId,
                                         'rate_id' => (isset($value['rate_no'])) ? $value['rate_no'] : '',
                                         'row_id' => $value['array_id'],
@@ -471,7 +471,7 @@ class AddedEstimateProjectList extends Component
                                         'sor_item_index' => (isset($value['item_index'])) ? $value['item_index'] : '',
                                         'created_by' => Auth::user()->id
                                     ];
-                                    SpecificQuantityAnalysis::create($insert2);
+                                    SpecificQuantityAnalysis::create($insertQtyAnalysisData);
                                 }
                             }
                             EstimatePrepare::create($insert);
