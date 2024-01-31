@@ -28,7 +28,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($viewEstimates as $view)
+                            @foreach ($viewEstimates as $key => $view)
                                 <tr>
                                     {{-- <td>{{ chr($view['row_id'] + 64) }}</td> --}}
                                     <td>{{ $view['row_id'] }}</td>
@@ -41,7 +41,7 @@
                                         @elseif ($view['estimate_no'] != 0)
                                             {{ getEstimateDesc($view['estimate_no']) }}
                                         @else
-                                        --
+                                            --
                                         @endif
                                     </td>
                                     <td>
@@ -52,10 +52,10 @@
                                     <td class="text-wrap" style="width: 40rem;text-align:justify;">
                                         @if ($view['sor_item_number'])
                                             {{-- {{ getSorItemNumberDesc($view['sor_item_number']) }} --}}
-                                            {{ getTableDesc($view['sor_id'],$view['item_index']) }}
+                                            {{ getTableDesc($view['sor_id'], $view['item_index']) }}
                                             {{-- {{ $view['description'] }} --}}
                                         @elseif ($view['rate_id'])
-                                            {{ getRateDescription($view['rate_id'],$view['operation']) }}
+                                            {{ getRateDescription($view['rate_id'], $view['operation']) }}
                                         @elseif($view['operation'])
                                             @if ($view['operation'] == 'Total')
                                                 {{ 'Total of ( ' . $view['row_index'] . ' )' }}
@@ -73,9 +73,17 @@
                                         @if ($view['qty'] == 0)
                                         @else
                                             {{ $view['qty'] }}
+                                            <button
+                                                class="collapse-button btn btn-soft-primary btn-sm rounded"
+                                                type="button" aria-expanded="false"
+                                                aria-controls="collapseExample_{{ $view['row_id'] }}"
+                                                onclick="toggleCollapse('{{ $view['row_id'] }}')">
+                                                    <x-lucide-eye class="w-4 h-4 text-white-500" />
+                                            </button>
                                         @endif
                                     </td>
-                                    <td style="text-align: center;">{{ ($view['unit_id'] != 0 ) ? $view['unit_id'] : '' }}</td>
+                                    <td style="text-align: center;">
+                                        {{ $view['unit_id'] != 0 ? $view['unit_id'] : '' }}</td>
                                     <td style="text-align:center;">
                                         @if ($view['rate'] == 0)
                                         @else
@@ -84,10 +92,50 @@
                                     </td>
                                     <td style="text-align:center;">{{ round($view['total_amount'], 10, 2) }}</td>
                                 </tr>
+                                <tr>
+                                    <td colspan="8">
+                                        @php $serialNumber = 1; @endphp
+                                        @foreach ($this->specificQtyAnalysisData as $data)
+                                            @if ($data['row_id'] == $view['row_id'])
+                                                <div class="collapse" id="collapseExample_{{ $view['row_id'] }}">
+                                                    <div class="card card-body">
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Sl.no</th>
+                                                                    <th>Member</th>
+                                                                    <th>Number</th>
+                                                                    <th>Height</th>
+                                                                    <th>Breadth</th>
+                                                                    <th>Length</th>
+                                                                    <th>Unit</th>
+                                                                    <th>Total</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (json_decode($data['row_data'], true) as $child)
+                                                                    <tr>
+                                                                        <td>{{ $serialNumber++ }}</td>
+                                                                        <td>{{ $child['member'] }}</td>
+                                                                        <td>{{ $child['number'] }}</td>
+                                                                        <td>{{ $child['height'] }}</td>
+                                                                        <td>{{ $child['breadth'] }}</td>
+                                                                        <td>{{ $child['length'] }}</td>
+                                                                        <td>{{ getunitName($child['unit']) }}</td>
+                                                                        <td>{{ $child['total'] }}</td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
-
                 </div>
             </div>
             {{-- </div> --}}
@@ -114,7 +162,21 @@
     </x-modal>
 </div>
 <script>
+    function toggleCollapse(key) {
+        var collapseExample = document.getElementById('collapseExample_' + key);
+        var ariaExpanded = document.querySelector('.collapse-button').getAttribute('aria-expanded');
+
+        if (ariaExpanded === 'true') {
+            collapseExample.classList.remove('show');
+            document.querySelector('.collapse-button').setAttribute('aria-expanded', 'false');
+        } else {
+            collapseExample.classList.add('show');
+            document.querySelector('.collapse-button').setAttribute('aria-expanded', 'true');
+        }
+    }
+
     function printContent() {
+
         var printWindow = window.open('', '_blank', 'width=900,height=800');
 
         printWindow.document.write('<html><head><title>https://wbupms.wb.gov.in</title></head><body>');

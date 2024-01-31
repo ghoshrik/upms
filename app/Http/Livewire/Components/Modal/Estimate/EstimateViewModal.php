@@ -3,13 +3,15 @@
 namespace App\Http\Livewire\Components\Modal\Estimate;
 
 use Livewire\Component;
+use App\Models\UnitMaster;
 use App\Models\EstimatePrepare;
 use Illuminate\Support\Facades\Cache;
+use App\Models\SpecificQuantityAnalysis;
 
 class EstimateViewModal extends Component
 {
     protected $listeners = ['openModal' => 'openViewModal'];
-    public $viewModal = false, $estimate_id, $viewEstimates = [];
+    public $viewModal = false, $estimate_id, $viewEstimates = [],$specificQtyAnalysisData=[];
 
     public function openViewModal($estimate_id)
     {
@@ -28,6 +30,7 @@ class EstimateViewModal extends Component
                     return EstimatePrepare::where('estimate_id',$this->estimate_id)->get();
                 });
             }
+            $this->specificQtyAnalysisData = SpecificQuantityAnalysis::where('estimate_id',$this->estimate_id)->get();
         }
         // dd($this->viewEstimates);
     }
