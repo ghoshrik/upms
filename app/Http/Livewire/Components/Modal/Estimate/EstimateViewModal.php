@@ -27,7 +27,7 @@ class EstimateViewModal extends Component
                 $this->viewEstimates = Cache::get($cacheKey);
             }else{
                 $this->viewEstimates = Cache::remember($cacheKey, now()->addMinutes(720), function () {
-                    return EstimatePrepare::where('estimate_id',$this->estimate_id)->get();
+                    return EstimatePrepare::where('estimate_id',$this->estimate_id)->orderBy('id')->get();
                 });
             }
             // $this->specificQtyAnalysisData = SpecificQuantityAnalysis::where('estimate_id',$this->estimate_id)->get();
