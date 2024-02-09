@@ -1077,7 +1077,7 @@ class CreateRateAnalysis extends Component
             } elseif (isset($data['upTo_100']) && $this->estimateData['distance'] != 0) {
                 if ($this->estimateData['distance'] >= 50) {
                     if (isset($data['distance'])) {
-                        $this->estimateData['qty'] = $data['distance'];
+                        $this->estimateData['qty'] = ($this->estimateData['distance'] > $data['distance']) ? $data['distance'] : $this->estimateData['distance'];
                         $this->estimateData['total_amount'] = $data['upTo_100'];
                     } else {
                         $this->estimateData['qty'] = 50;
@@ -1093,7 +1093,8 @@ class CreateRateAnalysis extends Component
                 } else {
                     $this->estimateData['total_amount'] = $data['upTo_100'] * $this->estimateData['qty'];
                 }
-                $this->estimateData['distance'] = $this->estimateData['distance'] - $this->estimateData['qty'];
+                $tempDistance = $this->estimateData['distance'] - $this->estimateData['qty'];
+                $this->estimateData['distance'] = ($tempDistance > 0) ? $tempDistance : 0;
                 $this->addEstimate($key + 1);
             } elseif (isset($data['above_100']) && $this->estimateData['distance'] != 0) {
                 $this->estimateData['item_number'] = $getData['id'] . ' ( Zone ' . $getData['zone'] . ')';
@@ -1396,17 +1397,17 @@ class CreateRateAnalysis extends Component
         if ($this->estimateData['qty'] != '' && $this->estimateData['rate'] != '') {
             if ($this->estimateData['item_name'] == 'SOR') {
                 if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
-                    $this->estimateData['qty'] = round($this->estimateData['qty'], 3);
-                    $this->estimateData['rate'] = round($this->estimateData['rate'], 2);
+                    $this->estimateData['qty'] = number_format(round($this->estimateData['qty'], 3), 3, '.', '');
+                    $this->estimateData['rate'] = number_format(round($this->estimateData['rate'], 2), 2, '.', '');
                     $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
-                    $this->estimateData['total_amount'] = round($this->estimateData['total_amount'], 2);
+                    $this->estimateData['total_amount'] = number_format(round($this->estimateData['total_amount'], 2), 2, '.', '');
                 }
             } else {
                 if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
-                    $this->estimateData['qty'] = round($this->estimateData['qty'], 3);
-                    $this->estimateData['rate'] = round($this->estimateData['rate'], 2);
+                    $this->estimateData['qty'] = number_format(round($this->estimateData['qty'], 3), 3, '.', '');
+                    $this->estimateData['rate'] = number_format(round($this->estimateData['rate'], 2), 2, '.', '');
                     $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
-                    $this->estimateData['total_amount'] = round($this->estimateData['total_amount'], 2);
+                    $this->estimateData['total_amount'] = number_format(round($this->estimateData['total_amount'], 2), 2, '.', '');
                 }
             }
         }

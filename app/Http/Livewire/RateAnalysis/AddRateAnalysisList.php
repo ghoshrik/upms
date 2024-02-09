@@ -19,7 +19,7 @@ class AddRateAnalysisList extends Component
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
-    public $selectSor, $totalDistance, $other_rate,$part_no;
+    public $selectSor, $totalDistance, $other_rate, $part_no;
     public function mount()
     {
         $this->setEstimateDataToSession();
@@ -59,7 +59,7 @@ class AddRateAnalysisList extends Component
             $this->addedEstimateData['col_position'] = (isset($this->selectSor['col_position'])) ? $this->selectSor['col_position'] : 0;
         }
         $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'selectSor', 'hideTotalbutton', 'hideWithStackBtn', 'hideWithoutStackBtn','part_no');
+        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'selectSor', 'hideTotalbutton', 'hideWithStackBtn', 'hideWithoutStackBtn', 'part_no');
     }
 
     public function expCalc()
@@ -106,7 +106,7 @@ class AddRateAnalysisList extends Component
                 }
             }
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddEstimate($tempIndex, Session::get('user_data.department_id'), 0, 0, '', '', '', 0, 0, round($result, 2), 'Exp Calculoation', '', $this->remarks);
+            $this->insertAddEstimate($tempIndex, Session::get('user_data.department_id'), 0, 0, '', '', '', 0, 0, number_format(round($result, 2), 2, '.', ''), 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(
@@ -138,7 +138,7 @@ class AddRateAnalysisList extends Component
         }
         // dd($this->hideTotalbutton,$this->hideWithStackBtn,$this->hideWithoutStackBtn);
         // sort($this->level);
-        if (count($this->level) >= 1 ) { //bypass the condition
+        if (count($this->level) >= 1) { //bypass the condition
             $result = 0;
             foreach ($this->level as $key => $array) {
                 // $this->arrayStore[] = chr($array + 64);
@@ -153,7 +153,7 @@ class AddRateAnalysisList extends Component
             if (!isset($this->selectSor['item_number'])) {
                 $this->selectSor['item_number'] = 0;
             }
-            $this->insertAddEstimate($this->arrayIndex, Session::get('user_data.department_id'), 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, round($result), $flag, '', '');
+            $this->insertAddEstimate($this->arrayIndex, Session::get('user_data.department_id'), 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, number_format(round($result), 2, '.', ''), $flag, '', '');
             $this->totalOnSelectedCount++;
         } else {
             $this->notification()->error(
@@ -165,15 +165,15 @@ class AddRateAnalysisList extends Component
     {
         // dd($this->allAddedEstimatesData[$key]);
         if ($this->allAddedEstimatesData[$key]['rate'] > 0) {
-            $this->allAddedEstimatesData[$key]['qty'] = round($this->allAddedEstimatesData[$key]['qty'], 3);
-            $this->allAddedEstimatesData[$key]['rate'] = round($this->allAddedEstimatesData[$key]['rate'], 2);
+            $this->allAddedEstimatesData[$key]['qty'] = number_format(round($this->allAddedEstimatesData[$key]['qty'], 3), 3, '.', '');
+            $this->allAddedEstimatesData[$key]['rate'] = number_format(round($this->allAddedEstimatesData[$key]['rate'], 2), 2, '.', '');
             $this->allAddedEstimatesData[$key]['total_amount'] = $this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'];
-            $this->allAddedEstimatesData[$key]['total_amount'] = round($this->allAddedEstimatesData[$key]['total_amount'], 2);
+            $this->allAddedEstimatesData[$key]['total_amount'] = number_format(round($this->allAddedEstimatesData[$key]['total_amount'], 2), 2, '.', '');
             $this->allAddedEstimatesData[$key]['rate'] = $this->allAddedEstimatesData[$key]['rate'];
             // $this->reset('other_rate');
         } else {
-            $this->allAddedEstimatesData[$key]['rate'] = 0;
-            $this->allAddedEstimatesData[$key]['total_amount'] = 0;
+            $this->allAddedEstimatesData[$key]['rate'] = number_format(0, 2, '.', '');
+            $this->allAddedEstimatesData[$key]['total_amount'] = number_format(0, 2, '.', '');
         }
     }
     public function resetRate($key)
@@ -291,7 +291,7 @@ class AddRateAnalysisList extends Component
                 $this->reset('addedEstimateData');
             }
             Session()->put('rateDescription', $this->sorMasterDesc);
-            Session()->put('ratePartNo',$this->part_no);
+            Session()->put('ratePartNo', $this->part_no);
             $this->reset('addedEstimateData');
             // dd($this->allAddedEstimatesData);
         }
@@ -505,10 +505,10 @@ class AddRateAnalysisList extends Component
     public function submitItemModal()
     {
         if (count($this->isItemModalData) > 0) {
-            $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = round($this->isItemModalData[0]['rowValue'], 2);
-            $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] = round($this->allAddedEstimatesData[$this->selectedArrKey]['qty'], 3);
+            $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = number_format(round($this->isItemModalData[0]['rowValue'], 2), 2, '.', '');
+            $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] = number_format(round($this->allAddedEstimatesData[$this->selectedArrKey]['qty'], 3), 3, '.', '');
             $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
-            $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = round($this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'], 2);
+            $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = number_format(round($this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'], 2), 2, '.', '');
             $this->updateDataTableTracker = rand(1, 1000);
             $this->reset('selectedArrKey', 'openSorModal', 'isItemModalData', 'isItemModalName', 'isItemModal');
         }
@@ -524,10 +524,10 @@ class AddRateAnalysisList extends Component
         if (count($this->fetchRatePlaceWise) > 0) {
             foreach ($this->fetchRatePlaceWise as $fetchRate) {
                 if ($fetchRate['operation'] == $this->rateType) {
-                    $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = $fetchRate['total_amount'];
+                    $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = number_format($fetchRate['total_amount'], 2, '.', '');
                     if ($this->allAddedEstimatesData[$this->selectedArrKey]['rate'] != $tempValue) {
                         $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
-                        $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = round($this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'], 2);
+                        $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = number_format(round($this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'], 2), 2, '.', '');
                     }
                 }
             }
@@ -541,11 +541,11 @@ class AddRateAnalysisList extends Component
             );
         }
     }
-    public function store()
+    public function store($value = '')
     {
         // dd($this->allAddedEstimatesData);
         $userData = Session::get('user_data');
-        if ($this->totalOnSelectedCount >= 1 ) {
+        if ($this->totalOnSelectedCount >= 1) {
             try {
                 if ($this->allAddedEstimatesData) {
                     $intId = random_int(100000, 999999);

@@ -104,34 +104,34 @@
                                                 --
                                             @endif
                                         </td>
-                                        <td class="text-wrap" /*style="width: 50rem;"*/>
-                                            @if (
-                                                $addedEstimate['sor_item_number'] != 0 ||
-                                                    ($addedEstimate['is_row'] != '' && $addedEstimate['is_row'] == 0) ||
-                                                    $addedEstimate['is_row'] == 2)
-                                                {{ $addedEstimate['description'] }}
-                                                @if ($addedEstimate['operation'] != '')
-                                                    ({{ $addedEstimate['arrayIndex'] }})
-                                                    ({{ $addedEstimate['operation'] }})
-                                                @endif
-                                            @elseif ($addedEstimate['rate_no'] != 0)
-                                                {{-- {{ getEstimateDescription($addedEstimate['rate_no']) }} --}}
-                                                {{ $addedEstimate['description'] }}
-                                                @if ($addedEstimate['operation'] != '')
-                                                    ({{ $addedEstimate['operation'] }})
-                                                @endif
-                                                {{-- {{ $addedEstimate->SOR->sorMasterDesc }} --}}
-                                            @elseif ($addedEstimate['arrayIndex'] != '')
-                                                @if ($addedEstimate['remarks'])
-                                                    {{ $addedEstimate['arrayIndex'] . ' ( ' . $addedEstimate['remarks'] . ' ) ' }}
-                                                @elseif ($addedEstimate['operation'] == 'Total')
-                                                    {{ 'Total of ' . $addedEstimate['arrayIndex'] }}
-                                                @else
-                                                    {{ $addedEstimate['arrayIndex'] }}
-                                                @endif
-                                            @else
-                                                {{ $addedEstimate['other_name'] }}
+                                        <td class="text-wrap" /*style="width: 50rem;"* />
+                                        @if (
+                                            $addedEstimate['sor_item_number'] != 0 ||
+                                                ($addedEstimate['is_row'] != '' && $addedEstimate['is_row'] == 0) ||
+                                                $addedEstimate['is_row'] == 2)
+                                            {{ $addedEstimate['description'] }}
+                                            @if ($addedEstimate['operation'] != '')
+                                                ({{ $addedEstimate['arrayIndex'] }})
+                                                ({{ $addedEstimate['operation'] }})
                                             @endif
+                                        @elseif ($addedEstimate['rate_no'] != 0)
+                                            {{-- {{ getEstimateDescription($addedEstimate['rate_no']) }} --}}
+                                            {{ $addedEstimate['description'] }}
+                                            @if ($addedEstimate['operation'] != '')
+                                                ({{ $addedEstimate['operation'] }})
+                                            @endif
+                                            {{-- {{ $addedEstimate->SOR->sorMasterDesc }} --}}
+                                        @elseif ($addedEstimate['arrayIndex'] != '')
+                                            @if ($addedEstimate['remarks'])
+                                                {{ $addedEstimate['arrayIndex'] . ' ( ' . $addedEstimate['remarks'] . ' ) ' }}
+                                            @elseif ($addedEstimate['operation'] == 'Total')
+                                                {{ 'Total of ' . $addedEstimate['arrayIndex'] }}
+                                            @else
+                                                {{ $addedEstimate['arrayIndex'] }}
+                                            @endif
+                                        @else
+                                            {{ $addedEstimate['other_name'] }}
+                                        @endif
                                         </td>
                                         <td>
                                             @if ($addedEstimate['qty'] != 0)
@@ -232,8 +232,13 @@
                     <div class="row">
                         <div class="col-6"> <button type="button" wire:click='resetSession'
                                 class="btn btn-soft-danger rounded-pill float-left">Reset</button></div>
-                        <div class="col-6"><button type="submit" wire:click='store'
-                                class="btn btn-success rounded-pill float-right">Save</button></div>
+                        <div class="col-6">
+                            <button type="submit" wire:click='store'
+                                class="btn btn-success rounded-pill float-right">Save</button>
+                            <button type="submit" wire:click='store("draft")'
+                                class="btn btn-soft-primary rounded-pill float-right mr-2">Draft</button>
+                        </div>
+
                     </div>
                 </div>
             </div>
