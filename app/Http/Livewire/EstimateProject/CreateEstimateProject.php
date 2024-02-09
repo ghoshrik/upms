@@ -2,20 +2,21 @@
 
 namespace App\Http\Livewire\EstimateProject;
 
-use App\Models\Department;
-use App\Models\DynamicSorHeader;
-use App\Models\Esrecommender;
-use App\Models\QultiyEvaluation;
-use App\Models\RatesAnalysis;
 use App\Models\SOR;
-use App\Models\SorCategoryType;
+use Livewire\Component;
 use App\Models\SorMaster;
+use App\Models\Department;
 use App\Models\UnitMaster;
+use WireUi\Traits\Actions;
+use App\Models\Esrecommender;
+use App\Models\RatesAnalysis;
+use App\Models\EstimatePrepare;
+use App\Models\SorCategoryType;
+use App\Models\DynamicSorHeader;
+use App\Models\QultiyEvaluation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
-use Livewire\Component;
-use WireUi\Traits\Actions;
 
 class CreateEstimateProject extends Component
 {
@@ -478,7 +479,8 @@ class CreateEstimateProject extends Component
         //     ->where('estimate_recomender.dept_id', $this->estimateData['dept_id'])
         //     ->where('sor_masters.is_verified', '=', 1)
         //     ->get();
-        $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id', 'dept_id', 'sorMasterDesc', 'status', 'is_verified')->where([['dept_id', $this->estimateData['dept_id']], ['status', 8], ['is_verified', 1]])->get();
+        // $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id', 'dept_id', 'sorMasterDesc', 'status', 'is_verified')->where([['dept_id', $this->estimateData['dept_id']], ['status', 8], ['is_verified', 1]])->get();
+        $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id', 'dept_id', 'sorMasterDesc')->where([['dept_id', $this->estimateData['dept_id']]])->get();
     }
     public function getDeptRates()
     {
@@ -545,9 +547,17 @@ class CreateEstimateProject extends Component
         $this->estimateData['description'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
-        $this->fatchDropdownData['estimateDetails'] = Esrecommender::join('sor_masters', 'estimate_recomender.estimate_id', 'sor_masters.estimate_id')
-            ->where('estimate_recomender.estimate_id', $this->estimateData['estimate_no'])
-            ->where('estimate_recomender.operation', 'Total')->where('sor_masters.is_verified', '=', 1)->first();
+        // $this->fatchDropdownData['estimateDetails'] = Esrecommender::join('sor_masters', 'estimate_recomender.estimate_id', 'sor_masters.estimate_id')
+        //     ->where('estimate_recomender.estimate_id', $this->estimateData['estimate_no'])
+        //     ->where('estimate_recomender.operation', 'Total')->where('sor_masters.is_verified', '=', 1)->first();
+        $this->fatchDropdownData['estimateDetails'] = EstimatePrepare::where('estimate_id', $this->estimateData['estimate_no'])
+            ->where('operation', 'Total')->first();
+        if($this->fatchDropdownData['estimateDetails'] == ''){
+            $this->fatchDropdownData['estimateDetails'] = [];
+            $this->notification()->error(
+                $title = 'No Estimate Found !!'
+            );
+        }
         $this->estimateData['total_amount'] = round($this->fatchDropdownData['estimateDetails']['total_amount'], 2);
         $this->estimateData['description'] = $this->fatchDropdownData['estimateDetails']['sorMasterDesc'];
         $this->estimateData['qty'] = 1;
