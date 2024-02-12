@@ -47,27 +47,23 @@ final class EstimateProjectTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-       return EstimatePrepare::query()
-        ->select(
-            'sor_masters.id',
-            'sor_masters.estimate_id',
-            'estimate_prepares.total_amount',
-            'estimate_statuses.status',
-            DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no'),
+        return EstimatePrepare::query()
+            ->select(
+                'sor_masters.id',
+                'sor_masters.estimate_id',
+                // 'estimate_prepares.total_amount',
+                'estimate_statuses.status',
+                DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no')
             )
-        ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
-        ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-        ->join('estimate_statuses','estimate_statuses.id','=','sor_masters.status')
-        ->where('estimate_user_assign_records.estimate_user_type','=',5)
-        ->where('sor_masters.status','=',1)
-        ->where(function ($query) {
-            $query->where('sor_masters.status', '=', 1)
-                  ->orWhere('sor_masters.status', '=', 10);
-        })
-        ->where('estimate_prepares.operation','=', 'Total')
-        ->where('estimate_prepares.created_by',Auth::user()->id);
-        // return $ss;
+            ->join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'estimate_prepares.estimate_id')
+            ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
+            ->join('estimate_statuses', 'estimate_statuses.id', '=', 'sor_masters.status')
+            ->where('estimate_user_assign_records.estimate_user_type', '=', 5)
+            ->whereIn('sor_masters.status', [1, 10, 12])
+            ->where('estimate_prepares.created_by', Auth::user()->id)
+            ->groupBy('sor_masters.estimate_id','sor_masters.id','estimate_statuses.status');
     }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -104,9 +100,9 @@ final class EstimateProjectTable extends PowerGridComponent
             ->addColumn('id')
             ->addColumn('sor_masters.estimate_id')
             ->addColumn('SOR.sorMasterDesc')
-            ->addColumn('total_amount', function ($row) {
-                return round($row->total_amount, 2);
-            })
+            // ->addColumn('total_amount', function ($row) {
+            //     return round($row->total_amount, 2);
+            // })
             ->addColumn('SOR.getEstimateStatus.status',function ($row){
                 return '<span class="badge badge-pill bg-success">'.$row->status.'</span>';
             });
@@ -136,9 +132,9 @@ final class EstimateProjectTable extends PowerGridComponent
 
             Column::make('DESCRIPTION', 'SOR.sorMasterDesc'),
 
-            Column::make('TOTAL AMOUNT', 'total_amount')
-                ->makeInputRange()
-                ->sortable(),
+            // Column::make('TOTAL AMOUNT', 'total_amount')
+            //     ->makeInputRange()
+            //     ->sortable(),
 
             Column::make('Status', 'SOR.getEstimateStatus.status')
             ->sortable(),

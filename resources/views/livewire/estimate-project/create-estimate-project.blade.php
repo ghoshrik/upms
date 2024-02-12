@@ -502,7 +502,7 @@
             </div>
         </div>
     </div>
-    @if ($addedEstimate != null || Session::has('addedProjectEstimateData'))
+    @if ($addedEstimate != null || Session::has('addedProjectEstimateData') || $editEstimate_id != '')
         <div x-transition.duration.500ms>
             <livewire:estimate-project.added-estimate-project-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
                 :wire:key="$addedEstimateUpdateTrack" :part_no="$part_no" />
@@ -721,7 +721,7 @@
         </script>
     @endif
 </div>
-<script>
+{{-- <script>
     // Save the original fetch function
     const originalFetch = window.fetch;
 
@@ -759,4 +759,4 @@
                 console.error('Error:', error);
             });
     };
-</script>
+</script> --}}

@@ -11,7 +11,7 @@ class SorMaster extends Model
     use HasFactory;
     protected $table = "sor_masters";
     protected $fillable = [
-        'estimate_id', 'sorMasterDesc', 'status', 'is_verified', 'dept_id',
+        'estimate_id', 'sorMasterDesc', 'status', 'is_verified', 'dept_id', 'part_no','created_by'
     ];
     public function estimate()
     {

@@ -2,30 +2,29 @@
 
 namespace App\Http\Livewire\EstimateProject;
 
-use App\Models\SOR;
-use Livewire\Component;
-use App\Models\SorMaster;
 use App\Models\Department;
-use App\Models\UnitMaster;
-use WireUi\Traits\Actions;
-use App\Models\Esrecommender;
-use App\Models\RatesAnalysis;
-use App\Models\EstimatePrepare;
-use App\Models\SorCategoryType;
 use App\Models\DynamicSorHeader;
+use App\Models\EstimatePrepare;
 use App\Models\QultiyEvaluation;
+use App\Models\RatesAnalysis;
+use App\Models\SOR;
+use App\Models\SorCategoryType;
+use App\Models\SorMaster;
+use App\Models\UnitMaster;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
+use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class CreateEstimateProject extends Component
 {
     use Actions;
-    protected $listeners = ['getRowValue', 'closeModal'];
+    protected $listeners = ['getRowValue', 'closeModal', 'editEstimate'];
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc;
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack, $part_no = '';
     public $addedEstimate = [];
-    public $searchDtaCount, $searchStyle, $searchResData, $quntity_type = 'menual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '', $getSor = [];
+    public $searchDtaCount, $searchStyle, $searchResData, $quntity_type = 'menual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '', $getSor = [] ,$editEstimate_id = '';
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -109,11 +108,23 @@ class CreateEstimateProject extends Component
             if (Session()->has('projectEstimatePartNo')) {
                 $this->part_no = Session()->get('projectEstimatePartNo');
             }
-            if(Session()->has('projectEstimationTotal')){
+            if (Session()->has('projectEstimationTotal')) {
                 $this->totalOnSelectedCount = Session()->get('projectEstimationTotal');
             }
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
+    }
+    public function editEstimate($estimate_id)
+    {
+        $fatchEstimateMaster = SORMaster::where([['estimate_id', $estimate_id], ['created_by', Auth::user()->id]])->first();
+        if ($fatchEstimateMaster != '') {
+            $this->sorMasterDesc = $fatchEstimateMaster['sorMasterDesc'];
+            $this->part_no = $fatchEstimateMaster['part_no'];
+            $this->editEstimate_id = $estimate_id;
+            $fatchEstimateData = EstimatePrepare::where('estimate_id', $estimate_id)->where('created_by', Auth::user()->id)->get();
+            $this->emit('setFatchEstimateData',$fatchEstimateData);
+        }
+        // dd($fatchEstimateData);
     }
     public function changeCategory($value)
     {
@@ -552,7 +563,7 @@ class CreateEstimateProject extends Component
         //     ->where('estimate_recomender.operation', 'Total')->where('sor_masters.is_verified', '=', 1)->first();
         $this->fatchDropdownData['estimateDetails'] = EstimatePrepare::where('estimate_id', $this->estimateData['estimate_no'])
             ->where('operation', 'Total')->first();
-        if($this->fatchDropdownData['estimateDetails'] == ''){
+        if ($this->fatchDropdownData['estimateDetails'] == '') {
             $this->fatchDropdownData['estimateDetails'] = [];
             $this->notification()->error(
                 $title = 'No Estimate Found !!'
@@ -740,7 +751,7 @@ class CreateEstimateProject extends Component
         $this->estimateData['other_name'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['unit_id'] = '';
-        if(isset($this->estimateData['id'])){
+        if (isset($this->estimateData['id'])) {
             $this->estimateData['id'] = '';
         }
         $this->estimateData['rate'] = '';

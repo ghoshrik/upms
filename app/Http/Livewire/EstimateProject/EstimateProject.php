@@ -79,7 +79,8 @@ class EstimateProject extends Component
         }
         if(isset($data['id'])){
             // $this->selectedIdForEdit = $data['id'];
-            $this->emit('editEstimateRow',$data['id']);
+            // $this->emit('editEstimateRow',$data['id']);
+            $this->emit('editEstimate',$data['id']);
         }
         $this->updateDataTableTracker = rand(1,1000);
     }

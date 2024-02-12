@@ -5,7 +5,6 @@ namespace App\Http\Livewire\EstimateProject;
 use App\Models\EstimatePrepare;
 use App\Models\EstimateUserAssignRecord;
 use App\Models\SORMaster as ModelsSORMaster;
-use App\Models\SpecificQuantityAnalysis;
 use ChrisKonnertz\StringCalc\StringCalc;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -14,7 +13,7 @@ use WireUi\Traits\Actions;
 class AddedEstimateProjectList extends Component
 {
     use Actions;
-    protected $listeners = ['unitQtyAdded', 'closeUnitModal'];
+    protected $listeners = ['unitQtyAdded', 'closeUnitModal','setFatchEstimateData'];
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $part_no;
@@ -32,6 +31,36 @@ class AddedEstimateProjectList extends Component
         Session()->forget('modalData');
         Session()->forget('projectEstimationTotal');
         $this->reset();
+    }
+    public function setFatchEstimateData($fatchEstimateData){
+        foreach($fatchEstimateData as $estimateData){
+            dd($estimateData);
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['estimate_no'] = $estimateData['estimate_no'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['rate_no'] = $estimateData['rate_id'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['dept_id'] = $estimateData['dept_id'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['dept_category_id'] = $estimateData['category_id'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['item_number'] = $estimateData['sor_item_number'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['item_name'] = $estimateData['item_name'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['other_name'] = $estimateData['other_name'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['description'] = getTableDesc($estimateData['sor_id'],$estimateData['item_index']);
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['unit_id'] = $estimateData['unit_id'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['qty'] = $estimateData['qty'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['rate'] = $estimateData['rate'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['total_amount'] = $estimateData['total_amount'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['version'] = $estimateData['version'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['page_no'] = $estimateData['page_no'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['table_no'] = $estimateData['table_no'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['volume'] = $estimateData['volume_no'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['sor_id'] = $estimateData['sor_id'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['item_index'] = $estimateData['item_index'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['col_position'] = $estimateData['col_position'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['rate_type'] = $estimateData['operation'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['arrayIndex'] = $estimateData['row_index'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['operation'] = $estimateData['operation'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['remarks'] = $estimateData['comments'];
+            $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['created_by'] = $estimateData['created_by'];
+        }
+        dd($this->allAddedEstimatesData);
     }
     public function viewModal($estimate_id)
     {
@@ -122,7 +151,7 @@ class AddedEstimateProjectList extends Component
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
         $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'part_no','getQtySessionData');
+        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'part_no', 'getQtySessionData');
     }
 
     public function expCalc()
@@ -268,6 +297,7 @@ class AddedEstimateProjectList extends Component
             foreach ($this->addedEstimateData as $key => $estimate) {
                 $this->allAddedEstimatesData[$index][$key] = $estimate;
             }
+            dd($this->allAddedEstimatesData);
             Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
             Session()->put('projectEstimateDesc', $this->sorMasterDesc);
             Session()->put('projectEstimatePartNo', $this->part_no);
@@ -422,14 +452,14 @@ class AddedEstimateProjectList extends Component
         $this->reset('exportDatas');
     }
 
-    public function store()
+    public function store($flag = '')
     {
-        if ($this->totalOnSelectedCount == 1) {
+        if ($this->totalOnSelectedCount == 1|| $flag == 'draft') {
             try {
-                // dd($this->allAddedEstimatesData);
-                if ($this->allAddedEstimatesData) {
+                dd($this->allAddedEstimatesData);
+                if ($this->allAddedEstimatesData ) {
                     $intId = random_int(100000, 999999);
-                    if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1, 'dept_id' => Auth::user()->department_id])) {
+                    if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'dept_id' => Auth::user()->department_id,'part_no'=>$this->part_no,'created_by'=>Auth::user()->id])) {
                         // if (true) {
                         foreach ($this->allAddedEstimatesData as $key => $value) {
                             $insert = [
@@ -469,7 +499,7 @@ class AddedEstimateProjectList extends Component
                             //         $title = 'Please check all the fields'
                             //     );
                             // }
-        //-----------store on another table start----------//
+                            //-----------store on another table start----------//
                             // if (Session()->has('modalData')) {
                             //     $modalQtyData = Session()->get('modalData');
                             //     if (isset($modalQtyData[$value['array_id']])) {
@@ -486,7 +516,7 @@ class AddedEstimateProjectList extends Component
                             //         SpecificQuantityAnalysis::create($insertQtyAnalysisData);
                             //     }
                             // }
-        //------------End-------------------------------//
+                            //------------End-------------------------------//
                             EstimatePrepare::create($insert);
                         }
                         $data = [

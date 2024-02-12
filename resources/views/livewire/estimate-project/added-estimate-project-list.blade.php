@@ -172,8 +172,13 @@
                     <div class="row">
                         <div class="col-6"> <button type="button" wire:click='resetSession'
                                 class="btn btn-soft-danger rounded-pill float-left">Reset</button></div>
-                        <div class="col-6"><button type="submit" wire:click='store'
-                                class="btn btn-success rounded-pill float-right">Save</button></div>
+                        <div class="col-6">
+                            <button type="submit" wire:click='store'
+                                class="btn btn-success rounded-pill float-right">Save</button>
+                            <button type="submit" wire:click='store("draft")'
+                                class="btn btn-soft-primary rounded-pill float-right mr-2">Draft</button>
+                        </div>
+
                     </div>
                 </div>
             </div>
