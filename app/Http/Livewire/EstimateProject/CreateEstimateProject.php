@@ -24,7 +24,7 @@ class CreateEstimateProject extends Component
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc;
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack, $part_no = '';
     public $addedEstimate = [];
-    public $searchDtaCount, $searchStyle, $searchResData, $quntity_type = 'menual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '', $getSor = [] ,$editEstimate_id = '';
+    public $searchDtaCount, $searchStyle, $searchResData, $quntity_type = 'menual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '', $getSor = [], $editEstimate_id = '';
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -121,14 +121,19 @@ class CreateEstimateProject extends Component
             $this->sorMasterDesc = $fatchEstimateMaster['sorMasterDesc'];
             $this->part_no = $fatchEstimateMaster['part_no'];
             $this->editEstimate_id = $estimate_id;
-            $fatchEstimateData = EstimatePrepare::where('estimate_id', $estimate_id)->where('created_by', Auth::user()->id)->get();
-            $this->emit('setFatchEstimateData',$fatchEstimateData);
+            if (Session()->has('editProjectEstimateData' . $estimate_id)) {
+                $fatchEstimateData = Session()->get('editProjectEstimateData' . $estimate_id);
+            } else {
+                $fatchEstimateData = EstimatePrepare::where('estimate_id', $estimate_id)->where('created_by', Auth::user()->id)->get();
+            }
+            // dd($fatchEstimateData);
+            $this->emit('setFatchEstimateData', $fatchEstimateData);
         }
-        // dd($fatchEstimateData);
     }
     public function changeCategory($value)
     {
-        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'part_no']);
+        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'part_no', 'editEstimate_id']);
+        // dd($this->addedEstimate,$this->editEstimate_id);
         $this->part_no = strtoupper($this->part_no);
         $value = $value['_x_bindings']['value'];
         $this->estimateData['item_name'] = $value;
@@ -760,7 +765,7 @@ class CreateEstimateProject extends Component
             $this->fatchDropdownData['rateDetailsTypes'] = [];
         }
         // dd($this->addedEstimate);
-        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'estimateData', 'fatchDropdownData', 'selectedCategoryId', 'part_no']);
+        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'estimateData', 'fatchDropdownData', 'selectedCategoryId', 'part_no', 'editEstimate_id']);
     }
     public function closeModal()
     {

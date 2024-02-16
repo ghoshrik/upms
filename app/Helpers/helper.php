@@ -1,22 +1,23 @@
 <?php
 
-use App\Models\SOR;
-use App\Models\Office;
-use App\Models\UnitType;
-use App\Models\SORMaster;
 use App\Models\Department;
-use App\Models\UnitMaster;
 use App\Models\Designation;
-use App\Models\Esrecommender;
-use App\Models\RatesAnalysis;
-use App\Models\UsersHasRoles;
-use App\Models\EstimateStatus;
-use App\Models\EstimatePrepare;
-use App\Models\SorCategoryType;
 use App\Models\DynamicSorHeader;
-use Illuminate\Support\Facades\DB;
+use App\Models\Esrecommender;
+use App\Models\EstimatePrepare;
+use App\Models\EstimateStatus;
+use App\Models\Office;
+use App\Models\RatesAnalysis;
+use App\Models\SOR;
+use App\Models\SorCategoryType;
+use App\Models\SORMaster;
+use App\Models\UnitMaster;
+use App\Models\UnitType;
+use App\Models\UsersHasRoles;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 function removeSession($session)
@@ -578,6 +579,7 @@ function extractItemNoOfItems($data, &$itemNo, $counter)
 }
 function getTableDesc($sor_id, $item_no)
 {
+    // Log::info(json_encode($item_no));
     $cacheKey = 'fetchRow_' . $sor_id . '_' . $item_no;
     $getCacheData = Cache::get($cacheKey);
     if ($getCacheData != '') {
@@ -588,25 +590,29 @@ function getTableDesc($sor_id, $item_no)
         });
     }
     // $fetchRow = json_decode($fetchRow['row_data']);
-    $rowId = explode('.', $item_no)[0];
-    foreach (json_decode($fetchRow['row_data']) as $row) {
-        if ($row->id == $rowId) {
-            $fetchRow = $row;
+    if ($fetchRow != '') {
+        $rowId = explode('.', $item_no)[0];
+        foreach (json_decode($fetchRow['row_data']) as $row) {
+            if ($row->id == $rowId) {
+                $fetchRow = $row;
+            }
         }
-    }
-    $hierarchicalArray = explode(".", $item_no);
-    $convertedArray = [];
-    $partialItemId = "";
-    foreach ($hierarchicalArray as $part) {
-        if ($partialItemId !== "") {
-            $partialItemId .= ".";
+        $hierarchicalArray = explode(".", $item_no);
+        $convertedArray = [];
+        $partialItemId = "";
+        foreach ($hierarchicalArray as $part) {
+            if ($partialItemId !== "") {
+                $partialItemId .= ".";
+            }
+            $partialItemId .= $part;
+            $convertedArray[] = $partialItemId;
         }
-        $partialItemId .= $part;
-        $convertedArray[] = $partialItemId;
+        $loopCount = 1;
+        extractDescOfItems($fetchRow, $descriptions, $convertedArray, $loopCount);
+        return $descriptions;
+    } else {
+        return $descriptions = '';
     }
-    $loopCount = 1;
-    extractDescOfItems($fetchRow, $descriptions, $convertedArray, $loopCount);
-    return $descriptions;
 }
 function extractDescOfItems($data, &$descriptions, $counter, $loopCount)
 {
@@ -616,13 +622,14 @@ function extractDescOfItems($data, &$descriptions, $counter, $loopCount)
     }
     if (isset($data->_subrow)) {
         foreach ($data->_subrow as $item) {
-            // dd($item,$counter[$loopCount],$item->id);
-            if (isset($item->desc_of_item) && isset($counter[$loopCount]) == $item->id) {
-                $descriptions .= $item->desc_of_item . ' ';
-                $loopCount++;
-            }
-            if (!empty($item->_subrow)) {
-                extractDescOfItems($item->_subrow, $descriptions, $counter, $loopCount);
+            if (isset($counter[$loopCount]) && isset($item->desc_of_item)) {
+                if ($counter[$loopCount] == $item->id) {
+                    $descriptions .= $item->desc_of_item . ' ';
+                    $loopCount++;
+                }
+                if (!empty($item->_subrow)) {
+                    extractDescOfItems($item->_subrow, $descriptions, $counter, $loopCount);
+                }
             }
         }
     }

@@ -505,7 +505,7 @@
     @if ($addedEstimate != null || Session::has('addedProjectEstimateData') || $editEstimate_id != '')
         <div x-transition.duration.500ms>
             <livewire:estimate-project.added-estimate-project-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
-                :wire:key="$addedEstimateUpdateTrack" :part_no="$part_no" />
+                :wire:key="$addedEstimateUpdateTrack" :part_no="$part_no" :editEstimate_id="$editEstimate_id" />
         </div>
     @endif
     @if ($viewModal)
