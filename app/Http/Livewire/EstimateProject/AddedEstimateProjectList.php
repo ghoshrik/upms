@@ -22,9 +22,9 @@ class AddedEstimateProjectList extends Component
 
     public function mount()
     {
-        if ($this->editEstimate_id == '') {
+        // if ($this->editEstimate_id == '') {
             $this->setEstimateDataToSession();
-        }
+        // }
     }
 
     public function resetSession()
@@ -45,7 +45,7 @@ class AddedEstimateProjectList extends Component
     public function setFatchEstimateData($fatchEstimateData)
     {
         // dd($fatchEstimateData);
-        $this->reset('allAddedEstimatesData');
+        $this->reset('allAddedEstimatesData','getQtySessionData');
         if (Session()->has('editProjectEstimateData' . $this->editEstimate_id)) {
             $this->allAddedEstimatesData = Session()->get('editProjectEstimateData' . $this->editEstimate_id);
         } else {
@@ -142,7 +142,11 @@ class AddedEstimateProjectList extends Component
                     $this->calculateValue($index);
                 }
             }
-            Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
+            if($this->editEstimate_id == ''){
+                Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
+            }else{
+                Session()->put('editProjectEstimateData' . $this->editEstimate_id, $this->allAddedEstimatesData);
+            }
         } catch (\Exception $e) {
             dd($e);
         }

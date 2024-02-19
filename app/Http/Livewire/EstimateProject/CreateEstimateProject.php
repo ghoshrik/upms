@@ -121,11 +121,15 @@ class CreateEstimateProject extends Component
             $this->sorMasterDesc = $fatchEstimateMaster['sorMasterDesc'];
             $this->part_no = $fatchEstimateMaster['part_no'];
             $this->editEstimate_id = $estimate_id;
-            if (Session()->has('editProjectEstimateData' . $estimate_id)) {
-                $fatchEstimateData = Session()->get('editProjectEstimateData' . $estimate_id);
-            } else {
+            Session()->forget('editProjectEstimateData' . $this->editEstimate_id);
+            Session()->forget('editProjectEstimateDesc' . $this->editEstimate_id);
+            Session()->forget('editProjectEstimatePartNo' . $this->editEstimate_id);
+            Session()->forget('modalData');
+            // if (Session()->has('editProjectEstimateData' . $estimate_id)) {
+            //     $fatchEstimateData = Session()->get('editProjectEstimateData' . $estimate_id);
+            // } else {
                 $fatchEstimateData = EstimatePrepare::where('estimate_id', $estimate_id)->where('created_by', Auth::user()->id)->get();
-            }
+            // }
             // dd($fatchEstimateData);
             $this->emit('setFatchEstimateData', $fatchEstimateData);
         }
