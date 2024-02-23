@@ -622,13 +622,21 @@ function extractDescOfItems($data, &$descriptions, $counter, $loopCount)
     }
     if (isset($data->_subrow)) {
         foreach ($data->_subrow as $item) {
-            if (isset($counter[$loopCount]) && isset($item->desc_of_item)) {
+            if (isset($counter[$loopCount]) ) {
                 if ($counter[$loopCount] == $item->id) {
                     $descriptions .= $item->desc_of_item . ' ';
                     $loopCount++;
                 }
                 if (!empty($item->_subrow)) {
                     extractDescOfItems($item->_subrow, $descriptions, $counter, $loopCount);
+                }
+            }
+        }
+    }else{
+        if(is_array($data) && count($data)>0){
+            foreach($data as $item){
+                if (isset($counter[$loopCount]) == $item->id) {
+                    $descriptions .= $item->desc_of_item . ' ';
                 }
             }
         }

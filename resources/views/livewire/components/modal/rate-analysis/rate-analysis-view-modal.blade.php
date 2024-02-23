@@ -41,7 +41,8 @@
                                     <td class="text-wrap" style="width: 40rem;text-align:justify;">
                                         @if ($view['sor_item_number'])
                                             {{-- {{ getSorItemNumberDesc($view['sor_item_number']) }} --}}
-                                            {{ $view['description'] }}
+                                            {{-- {{ $view['description'] }} --}}
+                                            {{ getTableDesc($view['sor_id'], $view['item_index']) }}
                                         @elseif ($view['rate_no'])
                                             {{ getRateDescription($view['rate_no'], $view['operation']) }}
                                         @elseif($view['operation'])

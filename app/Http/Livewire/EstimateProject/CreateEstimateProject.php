@@ -116,7 +116,8 @@ class CreateEstimateProject extends Component
     }
     public function editEstimate($estimate_id)
     {
-        $fatchEstimateMaster = SORMaster::where([['estimate_id', $estimate_id], ['created_by', Auth::user()->id]])->first();
+        $fatchEstimateMaster = SORMaster::where([['estimate_id', $estimate_id]])->first();
+        // $fatchEstimateMaster = SORMaster::where([['estimate_id', $estimate_id], ['created_by', Auth::user()->id]])->first();
         if ($fatchEstimateMaster != '') {
             $this->sorMasterDesc = $fatchEstimateMaster['sorMasterDesc'];
             $this->part_no = $fatchEstimateMaster['part_no'];
@@ -629,7 +630,8 @@ class CreateEstimateProject extends Component
         }
         // dd($convertedArray);
         $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray, $this->counterForItemNo);
-        $this->extractDescOfItems($fetchRow, $descriptions, $convertedArray);
+        $loopCount = 1;
+        $this->extractDescOfItems($fetchRow, $descriptions, $convertedArray,$loopCount);
         // if ($data != null && $this->selectedCategoryId != '' && $this->isParent == false) {
         // dd('hi');
         // $this->viewModal = !$this->viewModal;
@@ -702,20 +704,22 @@ class CreateEstimateProject extends Component
         }
     }
 
-    public function extractDescOfItems($data, &$descriptions, $counter)
+    public function extractDescOfItems($data, &$descriptions, $counter,$loopCount)
     {
+        // dd($counter);
         if (count($counter) > 1) {
             if (isset($data->desc_of_item) && $data->desc_of_item != '') {
-                $descriptions .= $data->desc_of_item . " ";
+                $descriptions .= $data->desc_of_item . ' ';
             }
-            if (isset($data->_subrow) && count($counter) > 2) {
+            if (isset($data->_subrow)) {
                 foreach ($data->_subrow as $item) {
-                    if (isset($item->_subrow)) {
-                        if (isset($item->desc_of_item)) {
+                    if (isset($counter[$loopCount]) && isset($item->desc_of_item)) {
+                        if ($counter[$loopCount] == $item->id) {
                             $descriptions .= $item->desc_of_item . ' ';
+                            $loopCount++;
                         }
                         if (!empty($item->_subrow)) {
-                            $this->extractDescOfItems($item->_subrow, $descriptions, $counter);
+                            extractDescOfItems($item->_subrow, $descriptions, $counter, $loopCount);
                         }
                     }
                 }

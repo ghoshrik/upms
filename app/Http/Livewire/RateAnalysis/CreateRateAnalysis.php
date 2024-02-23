@@ -1397,17 +1397,44 @@ class CreateRateAnalysis extends Component
         if ($this->estimateData['qty'] != '' && $this->estimateData['rate'] != '') {
             if ($this->estimateData['item_name'] == 'SOR') {
                 if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
-                    $this->estimateData['qty'] = number_format(round($this->estimateData['qty'], 3), 3, '.', '');
-                    $this->estimateData['rate'] = number_format(round($this->estimateData['rate'], 2), 2, '.', '');
+
+                    /*$this->estimateData['qty'] = round($this->estimateData['qty'], 3);
+                    $this->estimateData['rate'] = round($this->estimateData['rate'], 2);
                     $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
-                    $this->estimateData['total_amount'] = number_format(round($this->estimateData['total_amount'], 2), 2, '.', '');
+                    $this->estimateData['total_amount'] = round($this->estimateData['total_amount'], 2);*/
+
+                    switch (Auth::user()->department_id === 47 && (int)$this->estimateData['dept_category_id'] === 2 && Auth::user()->dept_category_id === 2) {
+                        case true:
+                            $this->estimateData['qty'];
+                            $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
+                            $this->estimateData['total_amount'] = round($this->estimateData['total_amount'], 2);
+                            break;
+                        default:
+                            $this->estimateData['qty'] = round($this->estimateData['qty'], 3);
+                            $this->estimateData['rate'] = round($this->estimateData['rate'], 2);
+                            $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
+                            $this->estimateData['total_amount'] = round($this->estimateData['total_amount'], 2);
+                    }
                 }
             } else {
                 if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
-                    $this->estimateData['qty'] = number_format(round($this->estimateData['qty'], 3), 3, '.', '');
-                    $this->estimateData['rate'] = number_format(round($this->estimateData['rate'], 2), 2, '.', '');
-                    $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
-                    $this->estimateData['total_amount'] = number_format(round($this->estimateData['total_amount'], 2), 2, '.', '');
+                    // $this->estimateData['qty'] = round($this->estimateData['qty'], 3);
+                    // $this->estimateData['rate'] = round($this->estimateData['rate'], 2);
+                    // $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
+                    // $this->estimateData['total_amount'] = round($this->estimateData['total_amount'], 2);
+                    switch (Auth::user()->department_id === 47 && Auth::user()->dept_category_id === 2) {
+                        case true:
+                            $this->estimateData['qty'];
+                            $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
+                            $this->estimateData['total_amount'] = round($this->estimateData['total_amount'], 2);
+                            break;
+                        default:
+                            $this->estimateData['qty'] = round($this->estimateData['qty'], 3);
+                            $this->estimateData['rate'] = round($this->estimateData['rate'], 2);
+                            $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
+                            $this->estimateData['total_amount'] = round($this->estimateData['total_amount'], 2);
+                    }
+                    //var_dump(Auth::user()->department_id === 47, Auth::user()->dept_category_id === 2);
                 }
             }
         }
