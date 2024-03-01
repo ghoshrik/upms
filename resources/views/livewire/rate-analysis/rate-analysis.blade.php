@@ -23,10 +23,10 @@
                                     </span>
                                 </button>
                             @else
-                                <button wire:click="fromEntryControl" class="btn btn-danger rounded-pill "
+                                <button wire:click="fromEntryControl" class="btn btn-primary rounded-pill "
                                     x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
                                     <span class="btn-inner">
-                                        <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
+                                        <x-lucide-list class="w-4 h-4 text-gray-500" /> List
                                     </span>
                                 </button>
                             @endif

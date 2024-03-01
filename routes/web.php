@@ -2,9 +2,9 @@
 
 // Controllers
 
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\UserController;
 use App\Http\Livewire\Aafs\AafsProjects;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\AccessType\AccessType;
@@ -15,36 +15,35 @@ use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
 use App\Http\Livewire\Carriagecost\CarriageCosts;
 use App\Http\Livewire\Carriages\Carriagesors;
 use App\Http\Livewire\Compositsor\ComposerSors;
-use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
 // use App\Http\Livewire\TestALL\TestSearch;
+use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
 use App\Http\Livewire\Department\Department;
 use App\Http\Livewire\Designation\Designation;
+use App\Http\Livewire\DocumentSor\DocumentSors;
 use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
 use App\Http\Livewire\EstimateProject\EstimateProject;
 use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
 use App\Http\Livewire\Estimate\EstimatePrepare;
+// use App\Http\Livewire\Permission\Permissions;
 use App\Http\Livewire\ExcelImport\Imports;
 use App\Http\Livewire\MenuManagement\MenuManagement;
-// use App\Http\Livewire\Permission\Permissions;
 use App\Http\Livewire\Milestone\Milestones;
 use App\Http\Livewire\Office\Office;
 use App\Http\Livewire\Permission\Permission;
+use App\Http\Livewire\QuantityEvaluation\QuantityEvaluation;
 use App\Http\Livewire\RateAnalysis\RateAnalysis;
 use App\Http\Livewire\Report\MisReport;
-use App\Http\Livewire\QuantityEvaluation\QuantityEvaluation;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\Roles\Roles;
 use App\Http\Livewire\Setting\SettingLists;
 use App\Http\Livewire\Sorapprove\SorApprovers;
-use App\Http\Livewire\Sor\Sor;
 use App\Http\Livewire\SorBook\DynamicSor;
+use App\Http\Livewire\Sor\Sor;
 use App\Http\Livewire\Tender\Tenders;
 use App\Http\Livewire\Unitsmaster\UnitsMaster;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\UserType\UserType;
 use App\Http\Livewire\VendorRegs\VendorList;
-use App\Http\Livewire\DocumentSor\DocumentSors;
-use App\Http\Controllers\ApiController;
 use App\Http\Livewire\ViewSorBook\ViewSorBook;
 // Packages
 use App\Models\User;
@@ -59,7 +58,7 @@ use Spatie\Permission\Models\Role;
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-*/
+ */
 
 require __DIR__ . '/auth.php';
 // Route::get('set-role', function () {
@@ -104,7 +103,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('user-management', UserManagement::class)->name('user-management');
         });
 
-
         //Department Admin
         Route::group(['middleware' => ['role:Department Admin']], function () {
             Route::get('designation', Designation::class)->name('designation');
@@ -130,7 +128,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('estimate-recommender', EstimateRecomender::class)->name('estimate-recommender');
         });
 
-
         Route::group(['middleware' => ['role:Estimate Preparer (EP)']], function () {
             Route::get('estimate-prepare', EstimatePrepare::class)->name('estimate-prepare');
         });
@@ -140,11 +137,18 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::group(['middleware' => ['role:Project Estimate (EP)']], function () {
             Route::get('estimate-project', EstimateProject::class)->name('estimate-project');
+            //qty analysis api routes
+            Route::post('/store-dynamic-unit-modal-data', [ApiController::class, 'unitQtyAdded'])->name('store-dynamic-unit-modal-data');
+            Route::post('/unit-modal-updated-data', [ApiController::class, 'getunitQtyAdded'])->name('unit-modal-updated-data');
+            Route::post('/delete-unit-modal-data', [ApiController::class, 'deleteUnitRow'])->name('delete-unit-modal-data');
+            Route::post('/store-unit-modal-rule-data', [ApiController::class, 'unitQtyAdded'])->name('store-unit-modal-rule-data');
+            Route::post('/unit-modal-prev-data', [ApiController::class, 'updateDataToSession'])->name('unit-modal-prev-data');
+            Route::post('/get-modal-rule-data', [ApiController::class, 'getRuleData'])->name('get-modal-rule-data');
         });
 
         Route::group(['middleware' => ['role:SOR Preparer']], function () {
             Route::get('prepare-sor', Sor::class)->name('prepare-sor');
-            Route::get('carriageSor',Carriagesors::class)->name('carriageSor');
+            Route::get('carriageSor', Carriagesors::class)->name('carriageSor');
         });
         Route::get('composit-sor', ComposerSors::class)->name('composit-sor');
 
@@ -155,8 +159,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::get('rate-analysis', RateAnalysis::class)->name('rate-analysis');
         Route::get('quantity-evaluation', QuantityEvaluation::class)->name('quantity-evaluation');
-        Route::get('carriage-cost',CarriageCosts::class)->name('carriage-cost'); // Route::get('aafs-project',ProjectList::class)->name('aafs-project'); Route::get('roles', Roles::class)->name('roles'); Route::get('permissions', Permission::class)->name('permissions');
-        Route::get('import',Imports::class)->name('import');
+        Route::get('carriage-cost', CarriageCosts::class)->name('carriage-cost'); // Route::get('aafs-project',ProjectList::class)->name('aafs-project'); Route::get('roles', Roles::class)->name('roles'); Route::get('permissions', Permission::class)->name('permissions');
+        Route::get('import', Imports::class)->name('import');
         Route::get('roles', Roles::class)->name('roles');
         Route::get('permissions', Permission::class)->name('permissions');
 
@@ -174,18 +178,18 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         Route::get('assign-another-office', AssignToAnotherOffice::class)->name('assign-another-office');
         Route::get('dynamic-sor', DynamicSor::class)->name('dynamic-sor');
-        Route::post('/store-dynamic-sor', [ApiController::class,'storeTableHeader'])->name('store-dynamic-sor');
-        Route::post('/update-row-data', [ApiController::class,'updateTableHeader'])->name('update-row-data');
-        Route::get('sor-document',DocumentSors::class)->name('sor-document');
-	    Route::post('/sor-file-upload', [ApiController::class,'storeSorUpload'])->name('sor-file-upload');
-        Route::get('view-dynamic-sor',ViewSorBook::class)->name('view-dynamic-sor');
+        Route::post('/store-dynamic-sor', [ApiController::class, 'storeTableHeader'])->name('store-dynamic-sor');
+        Route::post('/update-row-data', [ApiController::class, 'updateTableHeader'])->name('update-row-data');
+        Route::get('sor-document', DocumentSors::class)->name('sor-document');
+        Route::post('/sor-file-upload', [ApiController::class, 'storeSorUpload'])->name('sor-file-upload');
+        Route::get('view-dynamic-sor', ViewSorBook::class)->name('view-dynamic-sor');
         // Route::prefix('admin',function(){
         Route::get('admin/settings', SettingLists::class)->name('admin.settings');
         // });
 
         //digital signature
-        Route::get('signaturepad',[HomeController::class,'signature'])->name('signaturepad');
-        Route::post('signaturepad',[HomeController::class,'upload'])->name('signaturepad.upload');
+        Route::get('signaturepad', [HomeController::class, 'signature'])->name('signaturepad');
+        Route::post('signaturepad', [HomeController::class, 'upload'])->name('signaturepad.upload');
         Route::get('/create/pdf', [HomeController::class, 'createPDF'])->name('createPDF');
 
         Route::get('change-role/{id}', function ($id) {
@@ -199,9 +203,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         })->name('change-role');
     });
 });
-
-
-
 
 //App Details Page => 'Dashboard'], function() {
 Route::group(['prefix' => 'menu-style'], function () {

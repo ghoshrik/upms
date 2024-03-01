@@ -13,17 +13,17 @@ use WireUi\Traits\Actions;
 class AddedEstimateProjectList extends Component
 {
     use Actions;
-    protected $listeners = ['unitQtyAdded', 'closeUnitModal', 'setFatchEstimateData'];
+    protected $listeners = ['unitQtyAdded', 'closeUnitModal', 'setFatchEstimateData','unitQtyAddedrule', 'deleteUnitRow', 'closeUnitModal', 'updateDataToSession', 'submitGrandTotal'];
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $part_no;
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
     public $openQtyModal = false, $sendArrayKey = '', $sendArrayDesc = '', $getQtySessionData = [], $editEstimate_id;
-
+    public $arrayCount = 0;
     public function mount()
     {
         // if ($this->editEstimate_id == '') {
-            $this->setEstimateDataToSession();
+        $this->setEstimateDataToSession();
         // }
     }
 
@@ -45,7 +45,7 @@ class AddedEstimateProjectList extends Component
     public function setFatchEstimateData($fatchEstimateData)
     {
         // dd($fatchEstimateData);
-        $this->reset('allAddedEstimatesData','getQtySessionData');
+        $this->reset('allAddedEstimatesData', 'getQtySessionData');
         if (Session()->has('editProjectEstimateData' . $this->editEstimate_id)) {
             $this->allAddedEstimatesData = Session()->get('editProjectEstimateData' . $this->editEstimate_id);
         } else {
@@ -95,65 +95,122 @@ class AddedEstimateProjectList extends Component
     {
         $this->emit('openModal', $estimate_id);
     }
-    public function openQtyAnanysisModal($key)
+    public function openQtyModal($key)
     {
         $this->openQtyModal = !$this->openQtyModal;
         $this->sendArrayKey = $this->allAddedEstimatesData[$key]['array_id'];
         foreach ($this->allAddedEstimatesData as $index => $estimateData) {
             if ($estimateData['array_id'] === $this->sendArrayKey) {
+                //dd($this->allAddedEstimatesData);
                 if (!empty($this->allAddedEstimatesData[$key]['description'])) {
                     $this->sendArrayDesc = $this->allAddedEstimatesData[$key]['description'];
                 } elseif (!empty($this->allAddedEstimatesData[$key]['other_name'])) {
                     $this->sendArrayDesc = $this->allAddedEstimatesData[$key]['other_name'];
                 }
+
             }
         }
+        $this->arrayCount = count($this->allAddedEstimatesData);
     }
-    public function unitQtyAdded($data, $overallTotal)
+    public function updateDataToSession($previousData, $parentId)
     {
-        // dd($data);
+        try {
+            // Retrieve the session data containing the modal data
+            $sessionData = session('modalData');
+
+            // Check if the session data is an array
+            if (!is_array($sessionData)) {
+                $sessionData = []; // Initialize sessionData as an empty array if it's not an array
+            }
+
+            // Create an empty array with the specified parentId if it doesn't exist
+            if (!isset($sessionData[$parentId])) {
+                $sessionData[$parentId] = [];
+            }
+            $sessionData[$parentId] = $previousData;
+            foreach ($sessionData[$parentId] as &$data) {
+                if (is_array($data)) {
+                    foreach ($data as &$nestedData) {
+                        if (isset($nestedData['parent_id'])) {
+                            $nestedData['parent_id'] = $parentId;
+                        }
+                    }
+                }
+            }
+
+            // Save session data
+            Session()->put('modalData', $sessionData);
+
+        } catch (\Exception $e) {
+            dd($e);
+        }
+    }
+    public function deleteUnitRow($updateId, $parentId)
+    {
         try {
             $sessionData = session('modalData');
             if (!is_array($sessionData)) {
-                $sessionData = [];
+                return;
             }
-            foreach ($data as $item) {
-                $parentId = $item['parent_id'];
-                $childId = $item['child_id'];
-                $uniqueKey = $parentId . '_' . $childId;
-                // dd($uniqueKey);
-                if (array_key_exists($parentId, $sessionData)) {
-                    // dd('hi');
-                    if (array_key_exists($childId, $sessionData[$parentId])) {
-                        $sessionData[$parentId][$childId] = $item;
-                    } else {
-                        $sessionData[$parentId][$childId] = $item;
+            foreach ($sessionData as $parentId => &$parentData) {
+                if (isset($parentData[$updateId])) {
+                    unset($parentData[$updateId]);
+                    foreach ($parentData['metadata'] as $index => $metadata) {
+                        if ($metadata['id'] === $updateId) {
+                            unset($parentData['metadata'][$index]);
+                            break;
+                        }
                     }
-                } else {
-                    $sessionData[$parentId] = [$childId => $item];
+                    $parentDataWithoutMetadata = $parentData;
+                    unset($parentDataWithoutMetadata['metadata']);
+                    $parentDataWithoutMetadata = array_values($parentDataWithoutMetadata);
+                    $parentData = array_merge($parentDataWithoutMetadata, ['metadata' => array_values($parentData['metadata'])]);
+                    foreach ($parentData['metadata'] as $index => &$metadata) {
+                        $metadata['id'] = $index;
+                    }
+                    $grandTotalOverallTotal = 0;
+                    foreach ($sessionData[$parentId]['metadata'] as $metadata) {
+                        $grandTotalOverallTotal += $metadata['overallTotal'];
+                    }
+                    foreach ($this->allAddedEstimatesData as $index => $estimateData) {
+                        if ($estimateData['array_id'] === $this->sendArrayKey) {
+                            $this->allAddedEstimatesData[$index]['qty'] = $grandTotalOverallTotal;
+                        }
+                    }
+                    // Save session data
+                    Session()->put('modalData', $sessionData);
+                    Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
+                    return;
                 }
-            }
-            Session()->put('modalData', $sessionData);
-            $this->getQtySessionData = $sessionData;
-            foreach ($this->allAddedEstimatesData as $index => $estimateData) {
-                if ($estimateData['array_id'] === $this->sendArrayKey) {
-                    $this->allAddedEstimatesData[$index]['qty'] = $overallTotal;
-                    $this->allAddedEstimatesData[$index]['qtyUpdate'] = true;
-                    $this->calculateValue($index);
-                }
-            }
-            if($this->editEstimate_id == ''){
-                Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
-            }else{
-                Session()->put('editProjectEstimateData' . $this->editEstimate_id, $this->allAddedEstimatesData);
             }
         } catch (\Exception $e) {
             dd($e);
         }
     }
+    public function submitGrandTotal($grandtotal)
+    {
+        foreach ($this->allAddedEstimatesData as $index => $estimateData) {
+            if ($estimateData['array_id'] === $this->sendArrayKey) {
+                $this->allAddedEstimatesData[$index]['qty'] = ($grandtotal == 0) ? 1 : $grandtotal;
+                $this->allAddedEstimatesData[$index]['qtyUpdate'] = true;
+                $this->calculateValue($index);
+            }
+        }
+        Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
+    }
     public function closeUnitModal()
     {
         $this->openQtyModal = !$this->openQtyModal;
+    }
+    private function findItemByArrayId($data, $arrayId)
+    {
+        foreach ($data as &$item) {
+            if ($item['array_id'] === $arrayId) {
+                return $item;
+            }
+        }
+
+        return null;
     }
     public function calculateValue($key)
     {

@@ -55,7 +55,8 @@
                         <table id="basic-table" class="table table-striped mb-0" role="grid">
                             <thead>
                                 <tr>
-                                    <th></th>
+                                    <th><x-checkbox wire:key="checkbox" id="checkbox" wire:model="selectCheckBoxs"
+                                            wire:click="selectAll" title="Select All" /></th>
                                     <th class="text-wrap">{{ trans('cruds.estimate.fields.id_helper') }}</th>
                                     <th>ITEM NO(RATE NO)</th>
                                     <th class="text-wrap">{{ trans('cruds.estimate.fields.description') }}</th>
@@ -105,8 +106,7 @@
                                             @endif
                                         </td>
                                         <td class="text-wrap" /*style="width: 50rem;"* />
-                                        @if (
-                                            $addedEstimate['sor_item_number'] != 0 ||
+                                        @if ($addedEstimate['sor_item_number'] != 0 ||
                                                 ($addedEstimate['is_row'] != '' && $addedEstimate['is_row'] == 0) ||
                                                 $addedEstimate['is_row'] == 2)
                                             {{ $addedEstimate['description'] }}

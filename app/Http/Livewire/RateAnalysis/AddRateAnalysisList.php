@@ -19,7 +19,7 @@ class AddRateAnalysisList extends Component
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
-    public $selectSor, $totalDistance, $other_rate, $part_no;
+    public $selectSor, $totalDistance, $other_rate, $part_no, $selectCheckBoxs = false;
     public function mount()
     {
         $this->setEstimateDataToSession();
@@ -121,6 +121,15 @@ class AddRateAnalysisList extends Component
             $this->openTotalButton = true;
         } else {
             $this->openTotalButton = false;
+        }
+        //for check select all check box
+        if(count($this->level) != count($this->allAddedEstimatesData)){
+            $this->selectCheckBoxs = false;
+        }
+        else if(count($this->level) == count($this->allAddedEstimatesData)){
+            $this->selectCheckBoxs = true;
+        }else{
+            return;
         }
     }
     public $hideTotalbutton = true, $hideWithStackBtn = true, $hideWithoutStackBtn = true;
@@ -539,6 +548,14 @@ class AddRateAnalysisList extends Component
             $this->notification()->error(
                 $title = 'No Rate Found !!'
             );
+        }
+    }
+    public function selectAll()
+    {
+        if ($this->selectCheckBoxs) {
+            $this->level = collect($this->allAddedEstimatesData)->pluck('array_id')->toArray();
+        } else {
+            $this->level = [];
         }
     }
     public function store($value = '')

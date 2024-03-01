@@ -106,14 +106,14 @@
                                             @if ($addedEstimate['qty'] != 0)
                                                 {{ $addedEstimate['qty'] }}
                                                 @if (isset($addedEstimate['qtyUpdate']))
-                                                    <x-button wire:click="openQtyAnanysisModal({{ $key }})"
+                                                    <x-button wire:click="openQtyModal({{ $key }})"
                                                         type="button" class="btn btn-soft-primary btn-sm">
                                                         <span class="btn-inner">
                                                             <x-lucide-eye class="w-4 h-4 text-white-500" />
                                                         </span>
                                                     </x-button>
                                                 @else
-                                                    <x-button wire:click="openQtyAnanysisModal({{ $key }})"
+                                                    <x-button wire:click="openQtyModal({{ $key }})"
                                                         type="button" class="btn btn-soft-primary btn-sm">
                                                         <span class="btn-inner">
                                                             <x-lucide-plus class="w-4 h-4 text-white-500" />
@@ -184,7 +184,7 @@
             </div>
         </div>
         @if ($openQtyModal)
-            <livewire:components.modal.rate-analysis.unit-analysis-view-modal :unit_id="$sendArrayKey" :sendArrayDesc="$sendArrayDesc" />
+            <livewire:components.modal.rate-analysis.unit-analysis-view-modal :unit_id="$sendArrayKey" :sendArrayDesc="$sendArrayDesc" :arrayCount="$arrayCount" />
         @endif
     @endif
 </div>

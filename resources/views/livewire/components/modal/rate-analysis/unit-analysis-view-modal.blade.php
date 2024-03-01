@@ -1,181 +1,488 @@
 <style>
     .error {
+        color: red;
+        font-size: small;
+    }
+
+    div#rowMessage {
+        width: max-content;
+    }
+
+    select#selectOption {
+        width: 10%;
+        background: #1d2b74;
+        color: white;
+        text-align: center;
+    }
+
+    .active {
+        margin-top: 0px;
+    }
+
+    div.dataTables_wrapper div.dataTables_paginate {
+        display: none;
+    }
+
+    .col-sm-12.col-md-7 {
+        display: none;
+    }
+
+    .col-sm-12.col-md-5 {
+        display: none;
+    }
+
+    .actionbuttons {
+        margin-top: 84px;
+    }
+
+    .prevdata {
+        margin-bottom: 24px;
+        margin-right: 21%;
+    }
+
+
+    .button-cell {
+        white-space: nowrap;
+
+    }
+
+    .addbtn {
+        margin-left: 5px;
+    }
+
+    div.dataTables_wrapper div.dataTables_filter input {
+        margin-left: 0.5em;
+        display: inline-block;
+        width: auto;
+        border-radius: 50rem;
+    }
+
+    div.dataTables_wrapper div.dataTables_length select {
+        width: auto;
+        display: inline-block;
+        border-radius: 50rem;
+    }
+
+    .card.input-fields {
+        border-bottom-width: 1px;
+    }
+
+    .firstinput {
+        background-color: #aaaaaa17;
+    }
+
+    .lastinput {
+        background-color: #aaaaaa17;
+    }
+
+    button.btn.btn-primary.calc {
+        width: auto;
+        float: inline-end;
+    }
+
+
+
+    span.ovral-txt {
+        margin-top: 2px;
+    }
+
+    .col-md-12.calculation-result {
+        background: honeydew;
+        width: 21%;
+    }
+
+    .col-md-12.calculation-result.p {
+        font-style: italic;
+        font-weight: 600;
+    }
+
+
+
+    .row.formulae {
+        width: fit-content;
+    }
+
+    span.formula {
+        /* FONT-SIZE: inherit; */
+        FONT-WEIGHT: 800;
+        margin-bottom: 23px;
+        text-decoration-line: underline;
+        color: #000000a8;
+    }
+
+    button.btn-close.delete-row-btn {
+        background: #c03221;
+        color: white;
+        padding-top: 0px;
+    }
+
+    button.btn-add.addbtn {
+        background: darkgray;
+        width: 22px;
+        height: 21px;
+    }
+
+
+
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .modal-footer.rate-analysis {
+        background: #f7f7f7;
+        margin-top: 31px;
+    }
+
+    .modal-header.rate-analysis {
+        background: #f7f7f7;
+    }
+
+
+
+
+    button.btn.rounded-pill.editBtn.delBtn {
+        font-size: x-small;
+    }
+
+
+
+
+
+    .card.input-fields {
+
+        width: 100%;
+    }
+
+    #more {
+        display: none;
+    }
+
+    p.desp {
+        margin-top: 0;
+        margin-bottom: 0rem;
+        color: black;
+    }
+
+    button#myBtn {
+        color: blue;
+        font-size: revert;
+    }
+
+
+    button.btn.btn-primary.calc {
+        float: inline-end;
+    }
+
+    /* new css 25-02-2024 */
+
+    .table thead {
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    .totalSum {
+        width: auto;
+        float: right;
+    }
+
+    .row.submitBtn {
+        margin-top: 6%;
+    }
+
+    #datatable1.table tbody tr td {
+        vertical-align: middle;
+    }
+
+    input.form-control.m-input.empty-field:not(.total),
+    select.form-control.m-input.empty-field {
         border-color: red;
     }
+
+
+    a.selectOption {
+        color: #212529ba;
+        margin-left: 14PX;
+    }
+
+    a.prev-data {
+        color: #212529ba;
+        margin-left: 14PX;
+    }
+
+    .box-border {
+        box-shadow: 0px 1px 2px;
+    }
+
+    .dropdown-menu li:hover {
+        background-color: #3a57e8;
+        color: #f7f7f7
+    }
+
+    .dropdown-menu li a {
+        display: block;
+        padding: 1px 10px;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    ul.dropdown-menu.show {
+        box-shadow: 0px 0px 5px;
+    }
+
+    button.btn.relative.rounded-md.shadow-sm.dropdown-toggle.box-border.show {
+        background-color: #3a57e8;
+        color: white;
+    }
+
+    #rulesDropdown {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 100%;
+        /* Position to the right of its container */
+        margin-top: -1px;
+        box-shadow: 0px 0px 5px;
+        /* Adjust as needed */
+    }
+
+    .dropdown-item:hover {
+        background-color: #3a57e8;
+        color: white;
+        box-shadow: 0px 0px 5px;
+        /* Change to the desired background color */
+    }
+
+    .form-control {
+        text-align: center;
+    }
+
+    .table-container {
+        position: relative;
+    }
+
+    table#dataTable {
+        margin-top: 7%;
+    }
+
+    div#additionalFields {
+        margin-top: 7%;
+    }
+
+    .grandTotalInput.box-border {
+        max-width: fit-content;
+        float: inline-end;
+        margin-right: 51px;
+    }
 </style>
-<div max-width="5xl" class="modal" id="unit-popup-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document" style="MIN-WIDTH: FIT-CONTENT;">
-        <div class="modal-content">
-            <div class="modal-header unit-modal-popup" style="background: #1d2b74;">
-                <h5 class="modal-title" id="unitModalLabel" style="font-weight: bold;color: white;">
-                    {{ ucfirst($sendArrayDesc) }}</h5>
-                <button type="button" id="closeBtn" aria-label="Close">
-                    <span class="cross-btn" aria-hidden="true">&times;</span>
-                </button>
-            </div>
 
+<div class="modal" id="myInput" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content rate-analysis">
+            <?php
+            // Assuming $sendArrayDesc is defined and contains the description
+            $inputstring = ucfirst($sendArrayDesc);
+            $pieces = explode(' ', $inputstring);
+            $first_part = implode(' ', array_splice($pieces, 0, 5));
+            $other_part = implode(' ', $pieces);
+            ?>
+
+            <div class="modal-header rate-analysis">
+                <p class="desp">
+                    <span id="dots"><?php echo $first_part; ?> ...</span>
+                    <span id="more" style="display:none;"><?php echo $first_part . ' ' . $other_part; ?></span>
+                    <button id="myBtn">Read more</button>
+                </p>
+            </div>
             <div class="modal-body">
-                <table class="table">
-                    <span class="error-message-input" style="color: red;font-size: inherit;"></span>
-                    <thead class="headattr" style="text-align: center;">
-                        <tr>
-                            <th>Sl.no</th>
-                            <th>Member</th>
-                            <th>Number</th>
-                            <th>Height</th>
-                            <th>Breadth</th>
-                            <th>Length</th>
-                            <th>Unit</th>
-                            <th></th>
-                            <th>Total</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="inputRows">
-                        @php
-                            $sessionData = Session()->get('modalData');
-                            //@dd($sessionData);
-                            $index = 1;
-                        @endphp
-                        @if (isset($sessionData[$unit_id]))
-                            @foreach ($sessionData[$unit_id] as $item)
+                <div style="width:100%;">
+                    <div class="prevdata row align-items-center">
+
+
+                        <div class="col-md-3">
+                            <div class="dropdown">
+                                <button class="btn relative rounded-md shadow-sm dropdown-toggle box-border"
+                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Select Option
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="selectOption" href="#" data-value="RULE">RULE</a></li>
+                                    <div id="rulesDropdown" style="display: none;" class="dropdown-menu"
+                                        aria-labelledby="dropdownMenuButton">
+                                        <!-- Rules will be dynamically populated here -->
+                                    </div>
+                                    <li><a class="selectOption" href="#" data-value="OTHER">OTHER</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            {{-- @if (empty($rateAnalysisArray[$unit_id]['metadata'])) --}}
+                            @if ($arrayCount > 1)
+                                <div class="dropdown">
+                                    <button
+                                        class="btn relative rounded-md shadow-sm dropdown-toggle box-border"
+                                        id="mySelect" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Select Previous Data
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end" style="width: calc(100% + 1.5rem);">
+                                        <!-- Adjust the width as needed -->
+                                        @isset($dropdownData)
+                                            @foreach ($dropdownData as $listData)
+                                                <li><a class="prev-data" href="#">{{ $listData }}</a></li>
+                                            @endforeach
+                                        @endisset
+                                    </ul>
+                                </div>
+
+                            @endif
+                        </div>
+                        <div class="col-md-6"></div>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="dataTable1" class="table mt-2 table-unit">
+                            <thead>
                                 <tr>
-                                    <td class="rowLabel">{{ $index }}</td>
-                                    <td><input type="text" class="form-control required-field" name="member[]"
-                                            value="{{ $item['member'] }}" data-toggle="tooltip" data-placement="top"
-                                            title="This field is required"> <span class="error-message"
-                                            style="color: red;font-size: small;"></span></td>
-                                    <td><input type="text" class="form-control required-field" name="number[]"
-                                            value="{{ $item['number'] }}" data-toggle="tooltip" data-placement="top"
-                                            title="This field is required"><span class="error-message"
-                                            style="color: red; font-size: small;"></span></td>
-                                    <td><input type="text" class="form-control required-field" name="height[]"
-                                            value="{{ $item['height'] }}" data-toggle="tooltip" data-placement="top"
-                                            title="This field is required"><span class="error-message"
-                                            style="color: red; font-size: small;"></span></td>
-                                    <td><input type="text" class="form-control required-field" name="breadth[]"
-                                            value="{{ $item['breadth'] }}" data-toggle="tooltip" data-placement="top"
-                                            title="This field is required"><span class="error-message"
-                                            style="color: red; font-size: small;"></span></td>
-                                    <td><input type="text" class="form-control required-field" name="length[]"
-                                            value="{{ $item['length'] }}" data-toggle="tooltip" data-placement="top"
-                                            title="This field is required"><span class="error-message"
-                                            style="color: red; font-size: small;"></span></td>
-                                    <td>
-                                        <select class="form-control required-field" name="unit[]" data-toggle="tooltip"
-                                            data-placement="top" title="This field is required">
-                                            <option value="" {{ $item['unit'] == '' ? 'selected' : '' }}>
-                                                Select</option>
-                                            @foreach ($unitMaster as $unit)
-                                                <option value="{{ $unit['id'] }}"
-                                                    {{ $item['unit'] == $unit['id'] ? 'selected' : '' }}>
-                                                    {{ $unit['short_name'] }}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td>=</td>
-                                    <td><input type="text" class="form-control total-input" name="total[]"
-                                            placeholder="0" value="{{ $item['total'] }}"></td>
-                                    <td>
-                                        @if ($index > 0)
-                                            <button type="button" class="btn btn-success addRowBtn"
-                                                style="color: #fff;padding:0px;width: 22px;">+</button>
-                                            <button type="button" class="btn btn-danger deleteRowBtn"
-                                                style="color: #fff; padding: 0px;width: 22px; display: none;">X</button>
-                                        @else
-                                            <button type="button" class="btn btn-success addRowBtn"
-                                                style="color: #fff;padding:0px;width: 22px ">+</button>
-                                            <button type="button" class="btn btn-danger deleteRowBtn"
-                                                style="color: #fff; padding: 0px;width: 22px ">Xxx</button>
-                                        @endif
-                                        <input type="hidden" name="child_id[]" value="{{ $item['child_id'] }}">
-                                    </td>
+                                    <th class="whitespace-nowrap">S.no</th>
+                                    <th class="whitespace-nowrap" style="text-align:center;">Option</th>
+                                    <th class="whitespace-nowrap" style="text-align:center;">Grand total</th>
+                                    <th class="whitespace-nowrap" style="text-align:center;">UNIT NAME</th>
+                                    <th class="whitespace-nowrap" style="text-align:center;">Action</th>
                                 </tr>
-                                @php $index++; @endphp
-                            @endforeach
-                        @else
-                            <tr>
-                                <td class="rowLabel">1</td>
+                            </thead>
 
-                                <td><input type="text" class="form-control required-field" name="member[]"
-                                        data-toggle="tooltip" data-placement="top" title="This field is required">
-                                    <span class="error-message" style="color: red;font-size: small;"></span>
-                                </td>
-                                <td><input type="text" class="form-control required-field" name="number[]"
-                                        data-toggle="tooltip" data-placement="top" title="This field is required">
-                                    <span class="error-message" style="color: red;font-size: small;"></span>
-                                </td>
-                                <td><input type="text" class="form-control required-field" name="height[]"
-                                        data-toggle="tooltip" data-placement="top" title="This field is required">
-                                    <span class="error-message" style="color: red;font-size: small;"></span>
-                                </td>
-                                <td><input type="text" class="form-control required-field" name="breadth[]"
-                                        data-toggle="tooltip" data-placement="top" title="This field is required">
-                                    <span class="error-message" style="color: red;font-size: small;"></span>
-                                </td>
-                                <td><input type="text" class="form-control required-field" name="length[]"
-                                        data-toggle="tooltip" data-placement="top" title="This field is required">
-                                    <span class="error-message" style="color: red;font-size: small;"></span>
-                                </td>
+                            <tbody class="metatable">
+                                @if (isset($rateAnalysisArray[$unit_id]))
+                                    <?php foreach ($rateAnalysisArray[$unit_id]['metadata'] as $index => $metadata): ?>
+                                    <tr>
+                                        <td style="text-align:center;">A<?php echo $index + 1; ?></td>
+                                        <td style="text-align:center;"><?php echo $metadata['type']; ?></td>
+                                        <td style="text-align:center;"><?php echo $metadata['overallTotal']; ?></td>
+                                        <td style="text-align:center;">
+                                            {{ !empty($metadata['unit']) ? $metadata['unit'] : null }}</td>
+                                        <td style="text-align:center;">
+                                            <a type="button"
+                                                class="btn btn-soft-secondary btn-sm mr-2 {{ $metadata['type'] === 'rule' ? 'editBtnrule' : 'editBtn' }}"
+                                                data-id="{{ $metadata['currentId'] }}">
+                                                Edit
+                                            </a>
+                                            <a type="button" class="btn btn-soft-danger btn-sm delBtn"
+                                                data-id="{{ $metadata['currentId'] }}">
+                                                Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                @endif
 
-                                <td>
-                                    <select class="form-control required-field" name="unit[]" data-toggle="tooltip"
-                                        data-placement="top" title="This field is required">
-                                        <option value="" selected>Select</option>
-                                        @if (isset($unitMaster) && !empty($unitMaster))
-                                            @foreach ($unitMaster as $unit)
-                                                <option value="{{ $unit['id'] }}">{{ $unit['short_name'] }}
-                                                </option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                </td>
-                                <td>=</td>
-                                <td>
-                                    <input type="text" class="form-control total-input" name="total[]"
-                                        placeholder="0">
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-success addRowBtn"
-                                        style="color: #fff;padding:0px;width: 22px ">+</button>
-                                    <button type="button" class="btn btn-danger deleteRowBtn"
-                                        style="color: #fff;display: none; padding: 0px;width: 22px ">X</button>
-                                    <input type="hidden" name="child_id[]" value="child_1">
-                                </td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
+                        <div class="grandTotalInput box-border">
+                            <input type="text" id="grandTotalInput" class="form-control" readonly>
+                        </div>
 
-                <div class="overttl" style="float: right;margin-right: 0%;">
-                    <span class="ovral-txt" style="font-weight: 600;">Overall Total</span>
-                    <input type="text" class="form-control overallTotal" placeholder="Overall Total" readonly>
-                    <button type="button" id="submitBtn" class="btn btn-success rounded-pill"
-                        onclick="submitData()" style="margin-top: 14px; float: inline-end;">Submit</button>
+                    </div>
+
+                    <form id="myForm" style="display:none;margin-top: 5%;">
+                        <div class="alert alert-danger" role="alert" id="emptyFieldsAlert" style="display: none;">
+                            Please fill in all fields before submitting.
+                        </div>
+                        <div class="">
+                            <div class="col-lg-12">
+                                <table id="dataTable" class="table">
+                                    <thead>
+                                        <tr class="thead">
+                                            <th>Sl.no</th>
+                                            <th>Member</th>
+                                            <th>Number</th>
+                                            <th>Height</th>
+                                            <th>Breadth</th>
+                                            <th>Length</th>
+                                            <th>Unit</th>
+                                            <th>Total</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="newinput">
+
+
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                        <div class="row totalSum ">
+                            <div class="col">
+                                <input type="text" id="totalSum" class="form-control m-input box-border"
+                                    value="0.00" readonly>
+                            </div>
+                        </div>
+                        <div class="row submitBtn">
+                            <div class="col">
+                                <button id="submitBtn" type="button" class="btn btn-soft-primary"
+                                    style="float:right;">Save</button>
+                            </div>
+                        </div>
+
+
+                    </form>
+                    <div id="additionalFields" style="display: none;">
+
+                        <div class="card input-fields">
+                            <div class="card-body">
+                                <div id="simpson" class="row formulae">
+                                    <span class="formula">Simpson rule:-Area=(w/3)[yfirst + 4(yodd) + 2(yeven) +
+                                        ylast]</span>
+                                </div>
+                                <div id="rowMessage" class="alert alert-info" style="display: none;"></div>
+
+                                <form id="simpsonsRuleForm" class="row g-3 align-items-center">
+                                    <div class="col-md-6">
+                                        <label for="floatingInput">Enter Number of 'Y' Input </label>
+                                        <input type="number" class="form-control" id="Input_for_Y_def"
+                                            placeholder="Enter number of 'Y'" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="floatingInput">Enter value of 'W' </label>
+                                        <input type="number" class="form-control" id="Input_for_W"
+                                            placeholder="Enter number of 'W'" required>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div id="error_message" class="text-danger"></div>
+                                    </div>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
-
-                <div id="example-table"></div>
             </div>
-
-            <div class="modal-footer">
-                <button type="button" id="closeBtn" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <div class="modal-footer rate-analysis" style="display: flex; justify-content: space-between;">
+                <button type="button" id="closeBtn" class="btn btn-soft-danger rounded-pill "
+                    data-dismiss="modal">Close</button>
+                <button id="finalSubmitBtn" type="button" class="btn btn-success rounded-pill ">Submit</button>
             </div>
         </div>
     </div>
 </div>
-
-
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    var currentId = null;
+    var currentruleId = null;
+    var type;
+
     $(document).ready(function() {
+        var unitId = @json($unit_id);
 
-        $("#unit-popup-modal").modal({
-            backdrop: 'static',
-            keyboard: false
+        var myModal = new bootstrap.Modal(document.getElementById('myInput'), {
+            backdrop: 'static'
         });
-
+        myModal.show();
         $(document).off("click", "#closeBtn");
         $(document).on("click", "#closeBtn", function() {
             closeModal();
@@ -183,217 +490,966 @@
         });
 
         function closeModal() {
-            $("#unit-popup-modal").modal('hide');
+            $("#myInput").modal('hide');
             window.Livewire.emit('closeUnitModal');
         }
-        $("#unit-popup-modal").modal("show");
 
-
-
-
-
-        var uniqueChildIdCounter = 0;
-        var overallTotal = 0;
-
-        function calculateTotalAndOverall() {
-            overallTotal = 0;
-
-            $("#inputRows tr").each(function(index, element) {
-                var row = $(this);
-                var number = parseFloat(row.find("input[name='number[]']").val()) || '';
-                var height = parseFloat(row.find("input[name='height[]']").val()) || '';
-                var breadth = parseFloat(row.find("input[name='breadth[]']").val()) || '';
-                var length = parseFloat(row.find("input[name='length[]']").val()) || '';
-
-                if (number === 0 || height === 0 || breadth === 0 || length === 0) {
-                    alert("Please enter valid non-zero numeric values");
-                    row.find("input[name='total[]']").val("");
-                } else {
-                    var total_val = (number * height * breadth * length).toFixed(3);
-                    row.find("input[name='total[]']").val(total_val);
-                }
+        $('#finalSubmitBtn').click(function() {
+            var grandTotal = 0;
+            $('.metatable td:nth-child(3)').each(function() {
+                grandTotal += parseFloat($(this).text());
             });
 
-            $(".total-input").each(function() {
-                overallTotal += parseFloat($(this).val()) || '';
-            });
+            window.Livewire.emit('submitGrandTotal', grandTotal);
+            closeModal();
+            //alert('Grand Total: ' + grandTotal);
+        });
 
-            $(".overallTotal").val(overallTotal);
+        function updateGrandTotal() {
+            var grandTotal = 0;
+            $('.metatable td:nth-child(3)').each(function() {
+                grandTotal += parseFloat($(this).text());
+            });
+            // Set the grand total value in the input box
+            $('#grandTotalInput').val("GrandTotal: " + grandTotal);
+            var tableHeight = $('#dataTable1').height();
+            var tableOffsetTop = $('#dataTable1').offset().top;
+            var grandTotalInputHeight = $('.grandTotalInput').height();
+            var newPositionTop = tableHeight + tableOffsetTop + 20; // Adjust margin as needed
+            $('.grandTotalInput').css('top', newPositionTop + 'px');
         }
-        window.submitData = function() {
-            var isEmpty = false;
-            $("#inputRows input.required-field").each(function() {
-                $(this).removeClass("error").tooltip("dispose");
-                if ($(this).val().trim() === '') {
-                    isEmpty = true;
-                    $(this).addClass("error").tooltip({
-                        title: "This field is required",
-                        placement: "top"
-                    });
-                    return false;
-                } else {
 
-                    $(this).removeClass("error").tooltip("dispose");
-                }
+        // Update grand total whenever tbody content changes
+        $('.metatable').on('DOMSubtreeModified', function() {
+            updateGrandTotal();
+        });
+
+        // Trigger initial calculation when the document is ready
+
+        updateGrandTotal();
+
+        //rule code
+
+        var rules = ["Simpson-rule", "Rule1", "Rule2", "Rule3", "Rule4"];
+
+        function populateRulesDropdown() {
+            var dropdownContent = "";
+            rules.forEach(function(rule) {
+                dropdownContent += `<a class="dropdown-item rule-item" href="#">${rule}</a>`;
             });
-            $("#inputRows select[name='unit[]']").each(function() {
-                if ($(this).val() === '') {
-                    isEmpty = true;
-                    $(this).addClass("error");
-                    $(this).tooltip({
-                        title: "Please select a unit",
-                        placement: "top"
-                    });
-                }
-            });
-            if (isEmpty) {
-                event.preventDefault();
+            $('#rulesDropdown').html(dropdownContent);
+        }
+
+        $('.dropdown-menu').on('mouseover', '.selectOption[data-value="RULE"]', function() {
+            $('#rulesDropdown').show();
+            populateRulesDropdown();
+        });
+
+        $('.dropdown-menu').on('click', '.selectOption[data-value="RULE"]', function() {
+            var form = document.getElementById("simpsonsRuleForm");
+            form.reset();
+            currentId = null;
+            currentruleId = null;
+            type = "";
+            $('#rulesDropdown').show();
+            populateRulesDropdown();
+        });
+
+        $('.dropdown-menu').on('mouseover', '.selectOption[data-value="OTHER"]', function() {
+            $('#rulesDropdown').hide();
+        });
+        $('.dropdown-menu').on('click', '.selectOption[data-value="OTHER"]', function() {
+            $('#rulesDropdown').hide();
+            currentId = null;
+            currentruleId = null;
+            type = "";
+            var tableBody = $("#dataTable tbody");
+            tableBody.empty();
+            addNewRow();
+            updateTotalSum();
+        });
+
+        $('.dropdown').on('mouseleave', function() {
+            $('#rulesDropdown').hide();
+        });
+
+        $('#rulesDropdown').on('click', '.rule-item', function() {
+            var type = $(this).text().trim();
+            if (type === "Simpson-rule") {
+                $('#additionalFields').show();
+                $('#myForm').hide();
+                var form = document.getElementById("simpsonsRuleForm");
+                form.reset();
+                currentId = null;
+                currentruleId = null;
+                type = "";
             } else {
-                var data = [];
-                $("#inputRows tr").each(function(index, element) {
-                    var childId = 'child_' + (index);
-                    var rowData = {
-                        child_id: childId,
-                        parent_id: '{!! $unit_id !!}',
-                        member: $(this).find("input[name='member[]']").val(),
-                        number: $(this).find("input[name='number[]']").val(),
-                        height: $(this).find("input[name='height[]']").val(),
-                        breadth: $(this).find("input[name='breadth[]']").val(),
-                        length: $(this).find("input[name='length[]']").val(),
-                        unit: $(this).find("select[name='unit[]']").val(),
-                        total: $(this).find("input[name='total[]']").val() || '',
-                    };
-                    data.push(rowData);
-                    console.log(data);
-                });
-                window.Livewire.emit('unitQtyAdded', data, overallTotal);
-                closeModal();
+                $('#additionalFields').hide();
+                alert("OOPS! Nothing Found for " + type);
+                var form = document.getElementById("simpsonsRuleForm");
+                form.reset();
+                currentId = null;
+                currentruleId = null;
+                type = "";
+            }
+        });
+
+
+
+
+        $('#myBtn').click(function() {
+            var dots = document.getElementById("dots");
+            var moreText = document.getElementById("more");
+            var btnText = document.getElementById("myBtn");
+
+            if (dots.style.display === "none") {
+                dots.style.display = "inline";
+                btnText.innerHTML = "Read more";
+                moreText.style.display = "none";
+            } else {
+                dots.style.display = "none";
+                btnText.innerHTML = "... Read less";
+                moreText.style.display = "inline";
+            }
+        });
+        var numberOfY = 0;
+        var firstInputResult, lastInputResult, oddSumResult, evenSumResult, areaResult;
+        document.getElementById("Input_for_Y_def").addEventListener("input", function() {
+            handleInputChanges();
+            resetResults();
+        });
+
+        function handleInputChanges() {
+            var numberOfY = parseInt(document.getElementById("Input_for_Y_def").value);
+            var form = document.getElementById("simpsonsRuleForm");
+            var errorMessage = document.getElementById("error_message");
+            errorMessage.textContent = "";
+            var existingYInputs = form.querySelectorAll("input[name^='Input_for_Y']");
+            for (var i = 0; i < existingYInputs.length; i++) {
+                existingYInputs[i].parentNode.remove();
+            }
+            var calculateButton = form.querySelector(".calc");
+            if (calculateButton) {
+                calculateButton.parentNode.remove();
+            }
+            if (numberOfY % 2 !== 0) {
+                errorMessage.textContent = "Please enter even numbers for 'Y'";
+                return;
+            }
+            var inputForW = document.getElementById("Input_for_W").parentNode;
+            for (var i = numberOfY; i >= 1; i--) {
+                var label = document.createElement("label");
+                label.textContent = "Input for Y" + i;
+                var input = document.createElement("input");
+                input.type = "number";
+                input.className = "form-control";
+                input.placeholder = i === 1 ? "Enter value for Y1" : (i === numberOfY ? "Enter value for Y" +
+                    numberOfY : "Enter value for Y");
+                input.required = true;
+                input.name = "Input_for_Y" + i;
+
+                if (i === 1) {
+                    input.classList.add("firstinput");
+                }
+
+                // Add class to the last input
+                if (i === numberOfY) {
+                    input.classList.add("lastinput");
+                }
+
+                var div = document.createElement("div");
+                div.className = "col-md-6";
+                div.appendChild(label);
+                div.appendChild(input);
+                form.insertBefore(div, inputForW.nextSibling);
             }
 
 
-        };
-        $(document).off("input",
-            "input[name='number[]'], input[name='height[]'], input[name='breadth[]'], input[name='length[]']"
-        );
-        $(document).on("input",
-            "input[name='number[]'], input[name='height[]'], input[name='breadth[]'], input[name='length[]']",
-            function() {
-                calculateTotalAndOverall();
-            });
-        $(document).off("input",
-            "input[name='number[]'], input[name='height[]'], input[name='breadth[]'], input[name='length[]']"
-        );
-        $(document).on("input",
-            "input[name='number[]'], input[name='height[]'], input[name='breadth[]'], input[name='length[]']",
-            function() {
-                var inputVal = $(this).val().trim();
-                var errorMessageSpan = $(this).closest('td').find('.error-message');
+            var calculateRow = document.createElement("div");
+            calculateRow.className = "row";
+            var calculateCol = document.createElement("div");
+            calculateCol.className = "col-md-12";
+            var calculateButton = document.createElement("button");
+            calculateButton.type = "button";
+            calculateButton.className = "btn btn-primary calc";
+            calculateButton.textContent = "Calculate";
+            calculateButton.addEventListener("click", calculate);
+            calculateCol.appendChild(calculateButton);
+            calculateRow.appendChild(calculateCol);
+            form.appendChild(calculateRow);
 
-                if (inputVal === '' || isNaN(inputVal) || parseFloat(inputVal) <= 0) {
-                    errorMessageSpan.text("Please enter a valid non-zero value");
-                    if (parseFloat(inputVal) === 0) {
-                        $(this).val(""); // Clear the input value
-                    }
-                } else {
-                    errorMessageSpan.text("");
-                }
-
-                calculateTotalAndOverall();
-            });
-
-        function checkEmptyInput() {
-            var isEmpty = false;
-            $("#inputRows input[name='member[]'], #inputRows input[name='number[]'], #inputRows input[name='height[]'], #inputRows input[name='breadth[]'], #inputRows input[name='length[]']")
-                .each(function() {
-                    if ($(this).val().trim() === '') {
-                        isEmpty = true;
-                        return false;
-                    }
-                });
-
-            return isEmpty;
+            document.getElementById("rowMessage").innerText = "Total number of  'Y' Inputs: " + numberOfY;
+            document.getElementById("rowMessage").style.display = "block";
+            setTimeout(function() {
+                document.getElementById("rowMessage").style.display = "none";
+            }, 1000);
         }
 
 
-        $(document).off("click", "#inputRows .addRowBtn");
-        $(document).on("click", "#inputRows .addRowBtn", function() {
-            var newRow = $("#inputRows tr:last").clone();
-            var currentSerial = parseInt(newRow.find(".rowLabel").text());
-            newRow.find(".rowLabel").text(currentSerial + 1 + ".");
-            newRow.find("input").val("");
-            newRow.find("select[name='unit[]']").val(newRow.find("select[name='unit[]'] option:first")
-                .val());
-            newRow.find(".deleteRowBtn").show();
-            newRow.find(".addRowBtn").show();
-            $("#inputRows tr:last").find(".addRowBtn, .deleteRowBtn").hide();
-            $("#inputRows").append(newRow);
+        function calculate() {
+            //alert(type);
+            var existingResults = document.querySelectorAll(".calculation-result");
+            existingResults.forEach(function(result) {
+                result.remove();
+            });
 
-            uniqueChildIdCounter++;
-        });
+            var inputs = document.querySelectorAll("input[name^='Input_for_Y'], input#Input_for_W");
 
-        $(document).on("click", "#inputRows .deleteRowBtn", function() {
-            var rowCount = $("#inputRows tr").length;
-            if (rowCount > 1) {
-                $(this).closest("tr").remove();
-                $("#inputRows tr:last").find(".addRowBtn").show();
-                $("#inputRows tr:last").find(".deleteRowBtn").hide();
+            // console.log(inputs);
+            var oddSum = 0;
+            var evenSum = 0;
+            var firstInputValue = null;
+            var lastInputValue = null;
+            var hasEmptyField = false;
+            inputs.forEach(function(input, index) {
+                var value = parseFloat(input.value);
+                if (!isNaN(value)) {
+
+                    if (input.id === "Input_for_W") {
+                        if (value === 0) {
+                            hasEmptyField = true;
+                        }
+                    } else {
+
+                        if (index === 1) {
+                            firstInputValue = value;
+                        } else if (index === inputs.length - 1) {
+                            lastInputValue = value;
+                        } else {
+                            if (index % 2 === 0) {
+                                evenSum += value;
+                            } else {
+                                oddSum += value;
+                            }
+                        }
+                    }
+                } else {
+
+                    hasEmptyField = true;
+                }
+            });
+
+
+
+            if (hasEmptyField) {
+                var rowMessage = document.getElementById("rowMessage");
+                rowMessage.textContent = "Please fill in all input fields (including 'W') before calculating.";
+                rowMessage.style.display = "block";
+                rowMessage.classList.add("alert-danger");
+                return;
             } else {
-                $(this).closest("tr").find("input").val("");
-                $(this).closest("tr").find("select[name='unit[]']").val(
-                    $(this).closest("tr").find("select[name='unit[]'] option:first").val()
-                );
+
+                document.getElementById("rowMessage").classList.add("alert-success");
             }
+            var odd = 4 * evenSum;
+            var even = 2 * oddSum;
+            var sum = (firstInputValue + lastInputValue);
+            var area = (document.getElementById("Input_for_W").value / 3) * (firstInputValue + lastInputValue +
+                odd + even);
 
-            calculateTotalAndOverall();
+            var resultContainer = document.createElement("div");
+            resultContainer.className = "col-md-12 calculation-result";
 
-        });
+            var firstInputResult = document.createElement("p");
+            firstInputResult.textContent = "First Input: " + (firstInputValue !== null ? firstInputValue :
+                "N/A");
 
-        calculateTotalAndOverall();
+            var lastInputResult = document.createElement("p");
+            lastInputResult.textContent = "Last Input: " + (lastInputValue !== null ? lastInputValue : "N/A");
 
-        function showAddDeleteButtons() {
-            var rowCount = $("#inputRows tr").length;
-            $("#inputRows tr").each(function(index) {
-                if (index === rowCount - 1) {
-                    $(this).find(".addRowBtn, .deleteRowBtn").show();
-                } else {
-                    $(this).find(".addRowBtn, .deleteRowBtn").hide();
+            var oddSumResult = document.createElement("p");
+            oddSumResult.textContent = "Sum of Even Inputs: " + oddSum;
+
+            var evenSumResult = document.createElement("p");
+            evenSumResult.textContent = "Sum of Odd Inputs: " + evenSum;
+
+            var areaResult = document.createElement("p");
+            var areaRounded = area.toFixed(2);
+
+            var inputValues = {}; // Array to store input values
+
+            inputs.forEach(function(input, index) {
+                var value = parseFloat(input.value);
+                if (!isNaN(value)) {
+                    var name = input.name === "" ? "Input_for_W" : input.name;
+                    inputValues[input.name] = value; // Push value to inputValues array
                 }
             });
-        }
-        showAddDeleteButtons();
+            if (typeof inputValues["Input_for_W"] === "undefined") {
+                inputValues["Input_for_W"] = inputValues[""]; // Set Input_for_W to the value of ""
+                delete inputValues[""]; // Remove the empty string key
+            }
+            var inputForYDefValue = parseInt($("#Input_for_Y_def").val());
+            //var numberOfY = parseInt($("#Input_for_Y_def").val());
 
+            // Include the value of Input_for_def_Y in the inputValues object
+            inputValues["Input_for_def_Y"] = parseFloat(inputForYDefValue);
+            // Prepare ruledata object with input values
+            inputValues["parent_id"] = '{!! $unit_id !!}'; // Append parent_id
+            inputValues["currentruleId"] = currentruleId; // Append currentruleId
+            //inputValues["type"] = type; // Append type
+            inputValues["type"] = "rule";
+            inputValues["unit"] = "Cum";
+            inputValues["overallTotal"] = areaRounded;
+
+            // Prepare ruledata object with input values
+            var ruledata = {
+                input_values: inputValues // Include input values in the ruledata object
+            };
+            // console.log(ruledata);
+            $.ajax({
+                url: '/store-unit-modal-rule-data',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    data: ruledata
+                }),
+                success: function(response) {
+                    var form = document.getElementById("simpsonsRuleForm");
+                    form.reset();
+                    var tableBody1 = $("#dataTable tbody");
+                    tableBody1.empty();
+                    var rateAnalysisArray1 = response.rateAnalysisArray[unitId]['metadata'];
+                    var tableBody = $("#dataTable1 tbody");
+                    tableBody.empty(); // Clear existing rows before appending new ones
+                    var sno = 0;
+                    type = null;
+                    // Iterate over the rateAnalysisArray to create new table rows
+                    $.each(rateAnalysisArray1, function(index, metadata) {
+                        var newRow = $("<tr>");
+                        newRow.append('<td style="text-align:center;">A' + (sno +
+                            1) + '</td>');
+                        newRow.append('<td style="text-align:center;">' + metadata
+                            .type + '</td>');
+                        newRow.append('<td style="text-align:center;">' + metadata
+                            .overallTotal + '</td>');
+                        newRow.append('<td style="text-align:center;">' + metadata
+                            .unit + '</td>');
+
+                        var editButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' + (
+                                metadata.type === 'rule' ?
+                                'editBtnrule' : 'editBtn'),
+                            'data-id': metadata.currentId
+                        }).text('edit');
+
+                        var deleteButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-danger btn-sm delBtn',
+                            'data-id': metadata.currentId
+                        }).text('Delete');
+
+                        var buttonCell = $('<td>').css('text-align', 'center')
+                            .append(editButton).append(' ').append(deleteButton);
+                        newRow.append(buttonCell);
+
+                        // Append the new row to the table body
+                        tableBody.append(newRow);
+                        sno++;
+                    });
+                    if (tableBody.find('tr').length > 0) {
+                        $('#mySelect').hide(); // Show your div
+                    } else {
+                        $('#mySelect').show(); // Hide your div
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+            //  window.Livewire.emit('unitQtyAddedrule', ruledata, areaRounded);
+
+            areaResult.textContent = "Area: " + areaRounded + " cm^3";
+
+            resultContainer.appendChild(firstInputResult);
+            resultContainer.appendChild(lastInputResult);
+            resultContainer.appendChild(oddSumResult);
+            resultContainer.appendChild(evenSumResult);
+            resultContainer.appendChild(areaResult);
+            var form = document.getElementById("simpsonsRuleForm");
+            // form.appendChild(resultContainer);
+        }
+
+        $(document).on("click", ".editBtnrule", function() {
+            currentruleId = this.getAttribute("data-id");
+
+            // Make an AJAX request to fetch data
+            $.ajax({
+                url: '/get-modal-rule-data',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    unitId: unitId,
+                    ruleId: currentruleId
+                }),
+                success: function(response) {
+                    if (response.status) {
+                        $('#additionalFields').show();
+                        $('#myForm').hide();
+                        var sessionData = response.rateAnalysisArray;
+                        // console.log(sessionData);
+
+                        // Populate data into form fields
+                        document.getElementById("Input_for_W").value = sessionData[
+                            'input_values']['Input_for_W'];
+                        document.getElementById("Input_for_Y_def").value = sessionData[
+                            'input_values']['Input_for_def_Y'];
+
+                        // Remove existing Y input fields
+                        var existingYInputs = document.querySelectorAll(
+                            "input[name^='Input_for_Y']");
+                        existingYInputs.forEach(function(input) {
+                            input.parentNode.remove();
+                        });
+
+                        // Append Y input fields from session data
+                        var numberOfYInputs = Object.keys(sessionData['input_values'])
+                            .filter(
+                                key => key.startsWith("Input_for_Y")).length;
+                        for (var i = numberOfYInputs; i >= 1; i--) {
+                            var label = document.createElement("label");
+                            label.textContent = "Input for Y" + i;
+                            var input = document.createElement("input");
+                            input.type = "number";
+                            input.className = "form-control";
+                            input.placeholder = "Enter value for Y" + i;
+                            input.required = true;
+                            input.name = "Input_for_Y" + i;
+                            if (sessionData['input_values']["Input_for_Y" + i]) {
+                                input.value = sessionData['input_values']["Input_for_Y" +
+                                    i
+                                ];
+                            }
+                            var div = document.createElement("div");
+                            div.className = "col-md-6";
+                            div.appendChild(label);
+                            div.appendChild(input);
+                            document.getElementById("simpsonsRuleForm").insertBefore(div,
+                                document
+                                .getElementById("Input_for_W").parentNode.nextSibling);
+                        }
+
+                        var existingCalculateButton = document.querySelector(".calc");
+                        if (existingCalculateButton) {
+                            existingCalculateButton.parentNode.remove();
+                        }
+                        // Add the "Calculate" button
+                        var calculateRow = document.createElement("div");
+                        calculateRow.className = "row";
+                        var calculateCol = document.createElement("div");
+                        calculateCol.className = "col-md-12";
+                        var calculateButton = document.createElement("button");
+                        calculateButton.type = "button";
+                        calculateButton.className = "btn btn-primary  calc";
+                        calculateButton.textContent = "Calculate";
+                        calculateButton.addEventListener("click", calculate);
+                        calculateCol.appendChild(calculateButton);
+                        calculateRow.appendChild(calculateCol);
+                        document.getElementById("simpsonsRuleForm").appendChild(
+                            calculateRow);
+                    } else {
+                        console.error('Error:', response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+        });
+
+
+        // Function to reset the result variables
+        function resetResults() {
+            if (firstInputResult) firstInputResult.textContent = '';
+            if (lastInputResult) lastInputResult.textContent = '';
+            if (oddSumResult) oddSumResult.textContent = '';
+            if (evenSumResult) evenSumResult.textContent = '';
+            if (areaResult) areaResult.textContent = '';
+        }
+
+
+
+        //table code ***********************************************************************************
+
+        function calculateTotal(row) {
+            var length = parseFloat(row.find('.length').val()) || '';
+            var breadth = parseFloat(row.find('.breadth').val()) || '';
+            var height = parseFloat(row.find('.height').val()) || '';
+            var number = parseFloat(row.find('.number').val()) || '';
+            if (length === 0 || breadth === 0 || height === 0 || number === 0) {
+                alert('Input values cannot be 0.');
+                return;
+            }
+            var total = length * breadth * height * number;
+            row.find('.total').val(total.toFixed(2));
+        }
+
+        function updateTotalSum() {
+            var sum = 0;
+            $("#dataTable tbody tr").each(function() {
+                var total = parseFloat($(this).find('.total').val()) || 0;
+                sum += total;
+            });
+            $("#totalSum").val(sum.toFixed(3));
+        }
+        // Bind input event to input fields in each row
+        $(document).delegate(
+            "input[name='length'], input[name='breadth'], input[name='height'], input[name='number']",
+            "input",
+            function() {
+                var row = $(this).closest("tr");
+                calculateTotal(row);
+                updateTotalSum();
+            });
+
+        // Function to add new row
         function addNewRow() {
-            var newRow = $("#inputRows tr:last").clone();
-            var currentSerial = parseInt(newRow.find(".rowLabel").text());
-            newRow.find(".rowLabel").text(currentSerial + 1 + ".");
-            newRow.find("input").val("");
 
-            newRow.find("select[name='unit[]']").val(newRow.find("select[name='unit[]'] option:first").val());
+            var unitOptions = '<option value="">Select Unit</option>';
+            <?php foreach ($unitMaster as $unit): ?>
+            unitOptions += '<option value="<?php echo $unit['short_name']; ?>"><?php echo $unit['short_name']; ?></option>';
+            <?php endforeach; ?>
+            var newRow = $('<tr>' +
+                '<td>' + ($("#dataTable tbody tr").length + 1) + '</td>' +
+                '<td><input type="text" class="form-control m-input member" name="member" placeholder="Member" /></td>' +
+                '<td><input type="text" class="form-control m-input number" name="number" placeholder="Number" /></td>' +
+                '<td><input type="text" class="form-control m-input height" name="height" placeholder="Height" /></td>' +
+                '<td><input type="text" class="form-control m-input breadth" name="breadth" placeholder="Breadth" /></td>' +
+                '<td><input type="text" class="form-control m-input length" name="length" placeholder="Length" /></td>' +
+                '<td><select class="form-control m-input unit" name="unit">' + unitOptions +
+                '</select></td>' +
+                '<td><input type="text" class="form-control m-input total" name="total" placeholder="Total" readonly/></td>' +
+                '<td class="button-cell">' +
+                '<button type="button" class="btn-close delete-row-btn">X</button>' +
+                '<button type="button" class="btn-add addbtn">+</button>' +
+                '</td>' +
+                '</tr>');
 
-            $("#inputRows").append(newRow);
-            calculateTotalAndOverall();
-            showAddDeleteButtons();
-            uniqueChildIdCounter++;
-
+            $("#dataTable tbody").append(newRow);
+            updateButtons();
+            updateTotalSum();
         }
 
-        function deleteRow() {
-            var rowCount = $("#inputRows tr").length;
-            if (rowCount > 1) {
-                $("#inputRows tr:last").remove();
-                showAddDeleteButtons();
 
-            }
-            calculateTotalAndOverall();
 
+        // Function to update buttons visibility
+        function updateButtons() {
+            // Hide delete button for all rows except the last one
+            $("#dataTable tbody tr .delete-row-btn").hide();
+            $("#dataTable tbody tr:last .delete-row-btn").show();
+
+            // Hide add button for all rows except the last one
+            $("#dataTable tbody tr .addbtn").hide();
+            $("#dataTable tbody tr:last .addbtn").show();
         }
-        $(document).off("click", "#inputRows .addRowBtn");
-        $(document).on("click", "#inputRows .addRowBtn", function() {
+
+        // Bind click event to addbtn to add new row
+        $(document).off("click", ".addbtn").on("click", ".addbtn", function() {
             addNewRow();
         });
-        $(document).off("click", "#inputRows .deleteRowBtn");
-        $(document).on("click", "#inputRows .deleteRowBtn", function() {
-            deleteRow();
+
+        // Delete row functionality
+        $(document).on("click", ".delete-row-btn", function() {
+            if ($("#dataTable tbody tr").length > 1) {
+                $(this).closest("tr").remove();
+                updateRowNumbers();
+                updateButtons(); // Update buttons after row deletion
+            }
         });
+
+        // Function to update row numbers
+        function updateRowNumbers() {
+            $("#dataTable tbody tr").each(function(index) {
+                $(this).find("td:first").text(index + 1);
+            });
+        }
+
+        // $(document).off("click", "#myForm").on("click", "#myForm", function() {
+        $("#myForm").submit(function(event) {
+            event.preventDefault();
+            $(".empty-field").tooltip("dispose");
+
+            // Variable to track if any input field is empty
+            var isEmpty = false;
+
+            // Iterate over each row of the table
+            $("#dataTable tbody tr").each(function() {
+                var row = $(this);
+                var emptyFields = [];
+
+                // Iterate over each input/select element within the row
+                row.find("input, select").each(function() {
+                    var field = $(this);
+
+                    // Check if the field is empty
+                    if (!field.val()) {
+                        // Exclude total field from showing tooltip
+                        if (!field.hasClass("total")) {
+                            isEmpty = true;
+                            emptyFields.push(field);
+
+                            field.tooltip({
+                                title: "Required field and cannot be Zero(0)",
+                                placement: "bottom",
+                                trigger: "manual" // Show tooltip manually
+                            });
+                            // Show tooltip on hover
+                            field.hover(function() {
+                                $(this).tooltip("show");
+                            }, function() {
+                                $(this).tooltip("hide");
+                            });
+                        }
+                    } else {
+                        field.removeClass("empty-field");
+
+                        // Remove any existing tooltip
+                        field.tooltip("dispose");
+                    }
+                });
+
+                // Highlight empty fields with red border
+                if (emptyFields.length > 0) {
+                    row.addClass("has-empty-field");
+                    emptyFields.forEach(function(field) {
+                        field.addClass("empty-field");
+                    });
+                } else {
+                    row.removeClass("has-empty-field");
+                }
+            });
+
+            // If any field is empty, prevent form submission
+            if (isEmpty) {
+                return;
+            }
+
+
+
+            var form = this;
+            var rowData = [];
+            var totalSum = parseFloat($("#totalSum").val()) || 0;
+            $("#dataTable tbody tr").each(function() {
+                var row = {};
+                $(this).find("input,select").each(function() {
+                    var name = $(this).attr("name");
+                    var value = $(this).val();
+                    row[name] = value;
+                });
+
+                row['type'] = "other";
+                row['parent_id'] = unitId;
+                row['currentId'] = currentId !== undefined && currentId !== null ?
+                    currentId : currentId === '' ? '' : null;
+                row['overallTotal'] = totalSum;
+                rowData.push(row);
+            });
+            //console.log(rowData);
+            $.ajax({
+                url: '/store-dynamic-unit-modal-data',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    data: rowData,
+                }),
+                success: function(response) {
+                    var tableBody1 = $("#dataTable tbody");
+                    tableBody1.empty();
+                    var rateAnalysisArray1 = response.rateAnalysisArray[unitId]['metadata'];
+
+                    var tableBody = $("#dataTable1 tbody");
+                    tableBody.empty(); // Clear existing rows before appending new ones
+                    var sno = 0;
+                    // Iterate over the rateAnalysisArray to create new table rows
+                    $.each(rateAnalysisArray1, function(index, metadata) {
+                        var newRow = $("<tr>");
+                        newRow.append('<td style="text-align:center;">A' + (sno +
+                            1) + '</td>');
+                        newRow.append('<td style="text-align:center;">' + metadata
+                            .type + '</td>');
+                        newRow.append('<td style="text-align:center;">' + metadata
+                            .overallTotal + '</td>');
+                        newRow.append('<td style="text-align:center;">' + metadata
+                            .unit + '</td>');
+                        var editButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                                (metadata.type === 'rule' ?
+                                    'editBtnrule' : 'editBtn'),
+                            'data-id': metadata.currentId
+                        }).text('edit');
+
+                        var deleteButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-danger btn-sm delBtn',
+                            'data-id': metadata.currentId
+                        }).text('Delete');
+
+                        var buttonCell = $('<td>').css('text-align', 'center')
+                            .append(editButton).append(' ').append(deleteButton);
+                        newRow.append(buttonCell);
+
+                        // Append the new row to the table body
+                        tableBody.append(newRow);
+                        sno++;
+                    });
+                    currentId = null;
+                    addNewRow();
+                    updateTotalSum();
+                    if (tableBody.find('tr').length > 0) {
+                        $('#mySelect').hide(); // Show your div
+                    } else {
+                        $('#mySelect').show(); // Hide your div
+                    }
+                },
+
+                error: function(xhr, status, error) {
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+
+        });
+        $(document).off("click", "#submitBtn").on("click", "#submitBtn", function() {
+            $("#myForm").submit();
+        });
+        $(document).on("click", ".editBtn", function() {
+            $('#additionalFields').hide();
+            $('#myForm').show();
+            var metadataId = $(this).data("id");
+            editRow(metadataId);
+        });
+
+        $(document).off("click", ".delBtn").on("click", ".delBtn", function() {
+            var confirmed = confirm("Are you sure you want to delete this row?");
+            if (confirmed) {
+                $('#additionalFields').hide();
+                $('#myForm').hide();
+                var metadataId = $(this).data("id");
+                deleteRow(metadataId);
+            }
+        });
+
+
+        function deleteRow(rowId) {
+            $.ajax({
+                url: '/delete-unit-modal-data',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    rowId: rowId,
+                    parent_id: unitId,
+                }),
+                success: function(response) {
+                    var tableBody1 = $("#dataTable tbody");
+                    tableBody1.empty();
+                    var rateAnalysisArray1 = response.rateAnalysisArray[unitId]['metadata'];
+                    console.log(rateAnalysisArray1);
+                    var tableBody = $("#dataTable1 tbody");
+                    tableBody.empty();
+                    var sno = 0;
+                    $.each(rateAnalysisArray1, function(index, metadata) {
+                        var newRow = $("<tr>");
+                        newRow.append('<td style="text-align:center;">A' + (sno +
+                            1) + '</td>');
+                        newRow.append('<td style="text-align:center;">' + metadata
+                            .type + '</td>');
+                        newRow.append('<td style="text-align:center;">' + metadata
+                            .overallTotal + '</td>');
+                        newRow.append('<td style="text-align:center;">' + metadata
+                            .unit + '</td>');
+
+                        var editButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' + (
+                                metadata.type === 'rule' ?
+                                'editBtnrule' : 'editBtn'),
+                            'data-id': metadata.currentId
+                        }).text('edit');
+
+                        var deleteButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-danger btn-sm delBtn',
+                            'data-id': metadata.currentId
+                        }).text('Delete');
+
+                        var buttonCell = $('<td>').css('text-align', 'center')
+                            .append(editButton).append(' ').append(deleteButton);
+                        newRow.append(buttonCell);
+                        tableBody.append(newRow);
+                        sno++;
+                    });
+                    addNewRow();
+                    updateTotalSum();
+                    if (tableBody.find('tr').length > 0) {
+                        $('#mySelect').hide();
+                    } else {
+                        $('#mySelect').show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+        }
+
+        function editRow(rowId) {
+            currentId = rowId;
+            $.ajax({
+                url: '/unit-modal-updated-data',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    rowId: rowId,
+                    parent_id: unitId,
+                }),
+                success: function(response) {
+                    var tableBody1 = $("#dataTable tbody");
+                    tableBody1.empty();
+                    var rateAnalysisArray = response.rateAnalysisArray;
+                    rateAnalysisArray.forEach(function(rowData, index) {
+                        //console.log(rowData);
+                        var unitOptions = '<option value="">Select Unit</option>';
+                        <?php foreach ($unitMaster as $unit): ?>
+                        var selected = (rowData && rowData.unit === "<?php echo $unit['short_name']; ?>");
+                        unitOptions += '<option value="<?php echo $unit['short_name']; ?>"' + (selected ?
+                                ' selected' : '') +
+                            '><?php echo $unit['short_name']; ?></option>';
+                        <?php endforeach; ?>
+                        var newRow = $('<tr>' +
+                            '<td>' + (index + 1) + '</td>' +
+                            '<td><input type="text" class="form-control m-input member" name="member" value="' +
+                            (rowData && rowData.member ? rowData.member : '') +
+                            '" placeholder="Member" required/></td>' +
+                            '<td><input type="text" class="form-control m-input number" name="number" value="' +
+                            (rowData && rowData.number ? rowData.number : '') +
+                            '" placeholder="Number" required/></td>' +
+                            '<td><input type="text" class="form-control m-input height" name="height" value="' +
+                            (rowData && rowData.height ? rowData.height : '') +
+                            '" placeholder="Height" required/></td>' +
+                            '<td><input type="text" class="form-control m-input breadth" name="breadth" value="' +
+                            (rowData && rowData.breadth ? rowData.breadth : '') +
+                            '" placeholder="Breadth" required/></td>' +
+                            '<td><input type="text" class="form-control m-input length" name="length" value="' +
+                            (rowData && rowData.length ? rowData.length : '') +
+                            '" placeholder="Length" required/></td>' +
+                            '<td><select class="form-control m-input unit" name="unit">' +
+                            unitOptions + '</select></td>' +
+                            '<td><input type="text" class="form-control m-input total" name="total" value="' +
+                            (rowData && rowData.total ? rowData.total : '') +
+                            '" placeholder="Total" readonly/></td>' +
+                            '<td class="button-cell">' +
+                            '<button type="button" class="btn-close delete-row-btn">X</button>' +
+                            '<button type="button" class="btn-add addbtn">+</button>' +
+                            '</td>' +
+                            '</tr>');
+                        tableBody1.append(newRow);
+                        updateTotalSum();
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+        }
+
+
+        $('.dropdown').on('click', '.prev-data', function(event) {
+            event.preventDefault();
+            var selected_parent_id = $(this).text();
+            var modalData = {!! json_encode(session('modalData')) !!};
+            var selected_parent_id_Data = modalData[selected_parent_id];
+            $.ajax({
+                url: '/unit-modal-prev-data',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    data: selected_parent_id_Data,
+                    parent_id: unitId
+                }),
+                success: function(response) {
+                    var rateAnalysisArray2 = response.rateAnalysisArray[unitId]['metadata'];
+                    var tableBody = $("#dataTable1 tbody");
+                    tableBody.empty();
+                    var sno = 0;
+                    $.each(rateAnalysisArray2, function(index, metadata) {
+                        var newRow = $("<tr>");
+                        newRow.append('<td style="text-align:center;">A' + (sno +
+                            1) + '</td>');
+                        newRow.append('<td style="text-align:center;">' + metadata
+                            .type + '</td>');
+                        newRow.append('<td style="text-align:center;">' + metadata
+                            .overallTotal + '</td>');
+                        newRow.append('<td style="text-align:center;">' + metadata
+                            .unit + '</td>');
+                        var editButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                                (metadata.type === 'rule' ?
+                                    'editBtnrule' : 'editBtn'),
+                            'data-id': metadata.currentId
+                        }).text('edit');
+
+                        var deleteButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-danger btn-sm delBtn',
+                            'data-id': metadata.currentId
+                        }).text('Delete');
+
+                        var buttonCell = $('<td>').css('text-align', 'center')
+                            .append(editButton).append(' ').append(deleteButton);
+                        newRow.append(buttonCell);
+                        tableBody.append(newRow);
+                        sno++;
+                    });
+                    if (tableBody.find('tr').length > 0) {
+                        $('#mySelect').hide();
+                    } else {
+                        $('#mySelect').show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+        });
+
+        function checkTableEmpty() {
+            var tableBody = $("#dataTable1 tbody");
+            if (tableBody.find('tr').length > 0) {
+                $('#mySelect').hide();
+            } else {
+                $('#mySelect').show();
+            }
+        }
+        checkTableEmpty();
+        $('.selectOption').click(function() {
+            var selectedOption = $(this).data('value');
+            $('#selectOptionButton').addClass('btn-clicked');
+            if (selectedOption === "RULE") {} else if (selectedOption === "OTHER") {
+                $('#additionalFields').hide();
+                $('#myForm').show();
+            }
+        });
+        addNewRow();
+        updateTotalSum();
     });
 </script>

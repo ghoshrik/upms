@@ -339,7 +339,7 @@
                                             <x-input wire:key="sor_qty"
                                                 label="{{ trans('cruds.estimate.fields.quantity') }}"
                                                 placeholder="{{ trans('cruds.estimate.fields.quantity') }}"
-                                                wire:model.defer="estimateData.qty" wire:blur="calculateValue" />
+                                                wire:model.defer="estimateData.qty" wire:blur="calculateValue" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" />
                                         </div>
                                     </div>
                                     <div class="col">
@@ -393,7 +393,7 @@
                                             <x-input wire:key="other_qty" wire:model.defer="estimateData.qty"
                                                 wire:blur="calculateValue"
                                                 label="{{ trans('cruds.estimate.fields.quantity') }}"
-                                                placeholder="{{ trans('cruds.estimate.fields.quantity') }}" />
+                                                placeholder="{{ trans('cruds.estimate.fields.quantity') }}" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" />
                                         </div>
                                     </div>
                                     <div class="col">
@@ -401,7 +401,7 @@
                                             <x-input wire:key="other_rate" wire:model.defer="estimateData.rate"
                                                 wire:blur="calculateValue"
                                                 label="{{ trans('cruds.estimate.fields.per_unit_cost') }}"
-                                                placeholder="{{ trans('cruds.estimate.fields.per_unit_cost') }}" />
+                                                placeholder="{{ trans('cruds.estimate.fields.per_unit_cost') }}" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" />
                                         </div>
                                     </div>
                                     <div class="col">
@@ -498,7 +498,7 @@
                                             <x-input wire:key="other_qty" wire:model.defer="estimateData.qty"
                                                 wire:blur="calculateValue"
                                                 label="{{ trans('cruds.estimate.fields.quantity') }}"
-                                                placeholder="{{ trans('cruds.estimate.fields.quantity') }}" />
+                                                placeholder="{{ trans('cruds.estimate.fields.quantity') }}" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" />
                                         </div>
                                     </div>
                                     <div class="col">
@@ -737,7 +737,7 @@
                                     <div class="col-md-2 col-lg-2 col-sm-3">
                                         <div class="form-group">
                                             <x-input label="Distance" placeholder="Distance"
-                                                wire:model.defer="estimateData.distance" wire:key="distance" />
+                                                wire:model.defer="estimateData.distance" wire:key="distance" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" />
                                         </div>
                                     </div>
                                     <div class="col">
