@@ -163,7 +163,7 @@ class AuthController extends Controller
     {
         Auth::guard('web')->logout();
         $request->session()->invalidate();
-        $request->session()->forget();
+        // $request->session()->forget();
         $request->session()->regenerate(true);
         $request->session()->regenerateToken();
 

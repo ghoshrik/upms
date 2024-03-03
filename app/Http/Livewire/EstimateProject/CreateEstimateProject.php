@@ -125,11 +125,11 @@ class CreateEstimateProject extends Component
             Session()->forget('editProjectEstimateData' . $this->editEstimate_id);
             Session()->forget('editProjectEstimateDesc' . $this->editEstimate_id);
             Session()->forget('editProjectEstimatePartNo' . $this->editEstimate_id);
-            Session()->forget('modalData');
+            Session()->forget('editModalData');
             // if (Session()->has('editProjectEstimateData' . $estimate_id)) {
             //     $fatchEstimateData = Session()->get('editProjectEstimateData' . $estimate_id);
             // } else {
-                $fatchEstimateData = EstimatePrepare::where('estimate_id', $estimate_id)->where('created_by', Auth::user()->id)->get();
+                $fatchEstimateData = EstimatePrepare::where('estimate_id', $estimate_id)->where('created_by', Auth::user()->id)->orderBy('id','asc')->get();
             // }
             // dd($fatchEstimateData);
             $this->emit('setFatchEstimateData', $fatchEstimateData);

@@ -2,8 +2,8 @@
 
 namespace App\Http\Livewire\Components\Modal\RateAnalysis;
 
-use Livewire\Component;
 use App\Models\UnitMaster;
+use Livewire\Component;
 
 class UnitAnalysisViewModal extends Component
 {
@@ -11,10 +11,9 @@ class UnitAnalysisViewModal extends Component
     public $unit_id;
     public $unitMaster = [];
     public $rateAnalysisArray = [];
-    public $dropdownData = [], $array_id, $updateKey,$arrayCount;
+    public $dropdownData = [], $array_id, $updateKey, $arrayCount;
     public function mount()
     {
-
         if (Session()->has('modalData')) {
             $this->rateAnalysisArray = Session()->get('modalData');
             //dd($this->rateAnalysisArray);
@@ -27,18 +26,14 @@ class UnitAnalysisViewModal extends Component
                     // If it matches, skip to the next iteration
                     continue;
                 }
-
                 // Add the key to $dropdownData
                 $this->dropdownData[] = $key;
             }
         }
     }
 
-
-
     public function render()
     {
-
         return view('livewire.components.modal.rate-analysis.unit-analysis-view-modal');
     }
 }

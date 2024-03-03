@@ -13,13 +13,13 @@ use WireUi\Traits\Actions;
 class AddedEstimateProjectList extends Component
 {
     use Actions;
-    protected $listeners = ['unitQtyAdded', 'closeUnitModal', 'setFatchEstimateData','unitQtyAddedrule', 'deleteUnitRow', 'closeUnitModal', 'updateDataToSession', 'submitGrandTotal'];
+    protected $listeners = ['unitQtyAdded', 'closeUnitModal', 'setFatchEstimateData', 'unitQtyAddedrule', 'deleteUnitRow', 'closeUnitModal', 'updateDataToSession', 'submitGrandTotal'];
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $part_no;
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
     public $openQtyModal = false, $sendArrayKey = '', $sendArrayDesc = '', $getQtySessionData = [], $editEstimate_id;
-    public $arrayCount = 0;
+    public $arrayCount = 0, $selectCheckBoxs = false;
     public function mount()
     {
         // if ($this->editEstimate_id == '') {
@@ -34,6 +34,7 @@ class AddedEstimateProjectList extends Component
             Session()->forget('editProjectEstimateData' . $this->editEstimate_id);
             Session()->forget('editProjectEstimateDesc' . $this->editEstimate_id);
             Session()->forget('editProjectEstimatePartNo' . $this->editEstimate_id);
+            //Todo::change with editModalData
             Session()->forget('modalData');
         } else {
             Session()->forget('addedProjectEstimateData');
@@ -88,6 +89,7 @@ class AddedEstimateProjectList extends Component
             Session()->put('editProjectEstimateData' . $this->editEstimate_id, $this->allAddedEstimatesData);
             Session()->put('editProjectEstimateDesc' . $this->editEstimate_id, $this->sorMasterDesc);
             Session()->put('editProjectEstimatePartNo' . $this->editEstimate_id, $this->part_no);
+            //Todo::change with editModalData
             Session()->put('modalData', $this->getQtySessionData);
         }
     }
@@ -116,7 +118,8 @@ class AddedEstimateProjectList extends Component
     {
         try {
             // Retrieve the session data containing the modal data
-            $sessionData = session('modalData');
+            //Todo::change with editModalData
+            $sessionData = ($this->editEstimate_id == '') ? session('modalData') : session('modalData');
 
             // Check if the session data is an array
             if (!is_array($sessionData)) {
@@ -137,10 +140,12 @@ class AddedEstimateProjectList extends Component
                     }
                 }
             }
-
             // Save session data
-            Session()->put('modalData', $sessionData);
-
+            if ($this->editEstimate_id == '') {
+                Session()->put('modalData', $sessionData);
+            } else {
+                Session()->put('modalData', $sessionData);
+            }
         } catch (\Exception $e) {
             dd($e);
         }
@@ -148,7 +153,8 @@ class AddedEstimateProjectList extends Component
     public function deleteUnitRow($updateId, $parentId)
     {
         try {
-            $sessionData = session('modalData');
+            //Todo::change with editModalData
+            $sessionData = ($this->editEstimate_id == '') ? session('modalData') : session('modalData');
             if (!is_array($sessionData)) {
                 return;
             }
@@ -178,8 +184,19 @@ class AddedEstimateProjectList extends Component
                         }
                     }
                     // Save session data
-                    Session()->put('modalData', $sessionData);
-                    Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
+                    if ($this->editEstimate_id == '') {
+                        Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
+                        Session()->put('modalData', $sessionData);
+                        // Session()->put('projectEstimateDesc', $this->sorMasterDesc);
+                        // Session()->put('projectEstimatePartNo', $this->part_no);
+                        $this->reset('addedEstimateData');
+                    } else {
+                        Session()->put('editProjectEstimateData' . $this->editEstimate_id, $this->allAddedEstimatesData);
+                        Session()->put('modalData', $sessionData);
+                        // Session()->put('editProjectEstimateDesc' . $this->editEstimate_id, $this->sorMasterDesc);
+                        // Session()->put('editProjectEstimatePartNo' . $this->editEstimate_id, $this->part_no);
+                        $this->reset('addedEstimateData');
+                    }
                     return;
                 }
             }
@@ -196,7 +213,13 @@ class AddedEstimateProjectList extends Component
                 $this->calculateValue($index);
             }
         }
-        Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
+        if ($this->editEstimate_id == '') {
+            Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
+            $this->reset('addedEstimateData');
+        } else {
+            Session()->put('editProjectEstimateData' . $this->editEstimate_id, $this->allAddedEstimatesData);
+            $this->reset('addedEstimateData');
+        }
     }
     public function closeUnitModal()
     {
@@ -295,9 +318,24 @@ class AddedEstimateProjectList extends Component
             );
         }
     }
-
+    public function selectAll()
+    {
+        if ($this->selectCheckBoxs) {
+            $this->level = collect($this->allAddedEstimatesData)->pluck('array_id')->toArray();
+        } else {
+            $this->level = [];
+        }
+    }
     public function showTotalButton()
     {
+        //for check select all check box
+        if (count($this->level) != count($this->allAddedEstimatesData)) {
+            $this->selectCheckBoxs = false;
+        } else if (count($this->level) == count($this->allAddedEstimatesData)) {
+            $this->selectCheckBoxs = true;
+        } else {
+            return;
+        }
         if (count($this->level) >= 1 && $this->totalOnSelectedCount == 0) {
             $this->openTotalButton = true;
         } else {
@@ -334,18 +372,23 @@ class AddedEstimateProjectList extends Component
     {
         // dd('hi');
         $this->reset('allAddedEstimatesData');
-        if (Session()->has('addedProjectEstimateData')) {
-            $this->allAddedEstimatesData = Session()->get('addedProjectEstimateData');
-            if (Session()->has('projectEstimationTotal')) {
-                $this->totalOnSelectedCount = Session()->get('projectEstimationTotal');
-            }
-            if (Session()->has('modalData')) {
-                $this->getQtySessionData = Session()->get('modalData');
-            }
-        }
         if ($this->editEstimate_id != '') {
             if (Session()->has('editProjectEstimateData' . $this->editEstimate_id)) {
                 $this->allAddedEstimatesData = Session()->get('editProjectEstimateData' . $this->editEstimate_id);
+            }
+            //Todo::change with editModalData
+            if (Session()->has('modalData')) {
+                $this->getQtySessionData = Session()->get('modalData');
+            }
+        } else {
+            if (Session()->has('addedProjectEstimateData')) {
+                $this->allAddedEstimatesData = Session()->get('addedProjectEstimateData');
+                if (Session()->has('projectEstimationTotal')) {
+                    $this->totalOnSelectedCount = Session()->get('projectEstimationTotal');
+                }
+                if (Session()->has('modalData')) {
+                    $this->getQtySessionData = Session()->get('modalData');
+                }
             }
         }
         // dd($this->totalOnSelectedCount);
@@ -398,6 +441,7 @@ class AddedEstimateProjectList extends Component
                 $this->allAddedEstimatesData[$index][$key] = $estimate;
             }
             // dd($this->allAddedEstimatesData);
+
             if ($this->editEstimate_id == '') {
                 Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
                 Session()->put('projectEstimateDesc', $this->sorMasterDesc);
@@ -409,8 +453,8 @@ class AddedEstimateProjectList extends Component
                 Session()->put('editProjectEstimatePartNo' . $this->editEstimate_id, $this->part_no);
                 $this->reset('addedEstimateData');
             }
-
         }
+
     }
 
     public function confDeleteDialog($value): void
@@ -432,15 +476,22 @@ class AddedEstimateProjectList extends Component
 
     public function deleteEstimate($value)
     {
-        $sessionData = Session()->get('modalData');
+        $sessionData = ($this->editEstimate_id == '') ? Session()->get('modalData') : Session()->get('modalData');
         if (isset($sessionData[$value])) {
             unset($sessionData[$value]);
         }
-        Session()->put('modalData', $sessionData);
         $numericValue = preg_replace('/[^0-9]/', '', $value);
         unset($this->allAddedEstimatesData[$numericValue]);
-        Session()->forget('addedProjectEstimateData');
-        Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
+        if ($this->editEstimate_id == '') {
+            Session()->forget('addedProjectEstimateData');
+            Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
+            Session()->put('modalData', $sessionData);
+        } else {
+            //Todo::change with editModalData
+            Session()->forget('editProjectEstimateData' . $this->editEstimate_id);
+            Session()->put('editProjectEstimateData' . $this->editEstimate_id, $this->allAddedEstimatesData);
+            Session()->put('modalData', $sessionData);
+        }
         $this->level = [];
         if ($this->totalOnSelectedCount >= 1) {
             $this->reset('totalOnSelectedCount');
@@ -449,6 +500,7 @@ class AddedEstimateProjectList extends Component
         $this->notification()->error(
             $title = 'Row Deleted Successfully'
         );
+        // $this->setEstimateDataToSession();
     }
     // TODO::export word on project estimate
     public function exportWord()
@@ -561,9 +613,10 @@ class AddedEstimateProjectList extends Component
 
     public function store($flag = '')
     {
+        $this->getQtySessionData = session('modalData');
+        // dd($this->getQtySessionData);
         if ($this->totalOnSelectedCount == 1 || $flag == 'draft') {
             try {
-                // dd($this->allAddedEstimatesData);
                 if ($this->allAddedEstimatesData) {
                     $intId = ($this->editEstimate_id == '') ? random_int(100000, 999999) : $this->editEstimate_id;
                     if (($this->editEstimate_id != '') ? ModelsSORMaster::where('estimate_id', $intId)->update(['sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'created_by' => Auth::user()->id]) : ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'dept_id' => Auth::user()->department_id, 'part_no' => $this->part_no, 'created_by' => Auth::user()->id])) {

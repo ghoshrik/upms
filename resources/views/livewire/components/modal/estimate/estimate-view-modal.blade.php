@@ -52,6 +52,11 @@
                                     <td class="text-wrap" style="width: 40rem;text-align:justify;">
                                         @if ($view['sor_item_number'])
                                             {{-- {{ getSorItemNumberDesc($view['sor_item_number']) }} --}}
+
+                                            @if ($view['sor_item_number'])
+                                                <strong>{{ getDepartmentName($view['dept_id']) . ' / ' . getDepartmentCategoryName($view['category_id']) . ' / ' . getSorTableName($view['sor_id']) . ' / Page No: ' . getSorPageNo($view['sor_id']) . (getSorCorrigenda($view['sor_id']) != null ? ' - ' . getSorCorrigenda($view['sor_id']) : '') }}</strong>
+                                                <br />
+                                            @endif
                                             {{ getTableDesc($view['sor_id'], $view['item_index']) }}
                                             {{-- {{ $view['description'] }} --}}
                                         @elseif ($view['rate_id'])
@@ -97,42 +102,167 @@
                                     <tr>
                                         <td colspan="8">
                                             @php $serialNumber = 1; @endphp
-                                            {{-- @foreach ($this->specificQtyAnalysisData as $data)
-                                            @if ($data['row_id'] == $view['row_id']) --}}
+
                                             <div class="collapse" id="collapseExample_{{ $view['row_id'] }}">
                                                 <div class="card card-body">
                                                     <table class="table table-bordered">
                                                         <thead>
                                                             <tr>
-                                                                <th>Sl.no</th>
-                                                                <th>Member</th>
-                                                                <th>Number</th>
-                                                                <th>Height</th>
-                                                                <th>Breadth</th>
-                                                                <th>Length</th>
-                                                                <th>Unit</th>
-                                                                <th>Total</th>
+                                                                <th class="whitespace-nowrap">S.no</th>
+                                                                <th class="whitespace-nowrap"
+                                                                    style="text-align:center;">Option</th>
+                                                                <th class="whitespace-nowrap"
+                                                                    style="text-align:center;">Grand total</th>
+                                                                <th class="whitespace-nowrap"
+                                                                    style="text-align:center;">UNIT NAME</th>
+                                                                <th class="whitespace-nowrap"
+                                                                    style="text-align:center;">Action</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody>
-                                                            @foreach (json_decode($view['qty_analysis_data'], true) as $child)
-                                                                <tr>
-                                                                    <td>{{ $serialNumber++ }}</td>
-                                                                    <td>{{ $child['member'] }}</td>
-                                                                    <td>{{ $child['number'] }}</td>
-                                                                    <td>{{ $child['height'] }}</td>
-                                                                    <td>{{ $child['breadth'] }}</td>
-                                                                    <td>{{ $child['length'] }}</td>
-                                                                    <td>{{ getunitName($child['unit']) }}</td>
-                                                                    <td>{{ $child['total'] }}</td>
-                                                                </tr>
-                                                            @endforeach
+                                                        <tbody class="metatable">
+                                                            <?php
+                                                            $data = json_decode($view['qty_analysis_data'], true);
+                                                            if (isset($data['metadata'])) {
+                                                                $metadataArray = $data['metadata'];
+                                                                foreach ($metadataArray as $index => $metadata) {
+                                                                    ?>
+                                                            <tr>
+                                                                <td style="text-align:center;">A<?php echo $index + 1; ?></td>
+                                                                <td style="text-align:center;"><?php echo $metadata['type']; ?></td>
+                                                                <td style="text-align:center;"><?php echo $metadata['overallTotal']; ?></td>
+                                                                <td style="text-align:center;"><?php echo !empty($metadata['unit']) ? $metadata['unit'] : null; ?></td>
+                                                                <td style="text-align:center;">
+                                                                    <button
+                                                                        class="collapse-button btn btn-soft-primary btn-sm rounded"
+                                                                        type="button" aria-expanded="false"
+                                                                        aria-controls="collapseExample1_{{ $metadata['currentId'] }}"
+                                                                        onclick="toggleCollapse1('{{ $metadata['currentId'] }}')">
+                                                                        <x-lucide-eye class="w-4 h-4 text-white-500" />
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                            <tr class="collapse"
+                                                                id="collapseExample1_{{ $metadata['currentId'] }}">
+                                                                <td colspan="5">
+                                                                    <div class="card card-body">
+                                                                        <?php
+                                                                        if (isset($metadata['currentId'])) {
+                                                                            if(isset($metadata['type']) && $metadata['type'] == "other") { // Corrected the condition
+                                                                        ?>
+                                                                        <table class="table table-bordered">
+                                                                            <thead>
+                                                                                <tr class="thead">
+                                                                                    <th>Sl.no</th>
+                                                                                    <th>Member</th>
+                                                                                    <th>Number</th>
+                                                                                    <th>Height</th>
+                                                                                    <th>Breadth</th>
+                                                                                    <th>Length</th>
+                                                                                    <th>Unit</th>
+                                                                                    <th>Total</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <?php
+                                                                                $data = json_decode($view['qty_analysis_data'], true);
+                                                                                $metadataArrayDetails = $data[$metadata['currentId']];
+                                                                                $serialno= 1;
+                                                                                foreach ($metadataArrayDetails as $index => $metadataDetails) {
+                                                                                    ?>
+                                                                                <tr>
+                                                                                    <td style="text-align:center;">
+                                                                                        <?php echo $serialno; ?></td>
+                                                                                    <td style="text-align:center;">
+                                                                                        <?php echo isset($metadataDetails['member']) ? $metadataDetails['member'] : ''; ?></td>
+                                                                                    <td style="text-align:center;">
+                                                                                        <?php echo isset($metadataDetails['number']) ? $metadataDetails['number'] : ''; ?></td>
+                                                                                    <td style="text-align:center;">
+                                                                                        <?php echo isset($metadataDetails['height']) ? $metadataDetails['height'] : ''; ?></td>
+                                                                                    <td style="text-align:center;">
+                                                                                        <?php echo isset($metadataDetails['breadth']) ? $metadataDetails['breadth'] : ''; ?></td>
+                                                                                    <td style="text-align:center;">
+                                                                                        <?php echo isset($metadataDetails['length']) ? $metadataDetails['length'] : ''; ?></td>
+                                                                                    <td style="text-align:center;">
+                                                                                        <?php echo isset($metadataDetails['unit']) ? $metadataDetails['unit'] : ''; ?></td>
+                                                                                    <td style="text-align:center;">
+                                                                                        <?php echo isset($metadataDetails['total']) ? $metadataDetails['total'] : ''; ?></td>
+                                                                                </tr>
+                                                                                <?php
+                                                                                    $serialno++;
+                                                                                }
+                                                                                ?>
+                                                                            </tbody>
+                                                                        </table>
+                                                                        <?php }
+                                                                        else {?>
+                                                                        <table class="table table-bordered">
+                                                                            <thead>
+                                                                                <tr class="thead">
+                                                                                    <th>Sl.no</th>
+                                                                                    <th>Column</th>
+                                                                                    <th>Value</th>
+
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <?php
+                                                                                $ruledata = json_decode($view['qty_analysis_data'], true);
+                                                                                $metadataArrayDetailss = $ruledata[$metadata['currentId']];
+                                                                                $metadataArrayruleDetails = $metadataArrayDetailss['input_values'];
+                                                                                $serialno = 1;
+
+                                                                                // Define an associative array to map original keys to custom column headings
+                                                                                $columnHeadings = array(
+                                                                                    'type' => 'Type',
+                                                                                    'unit' => 'Unit',
+                                                                                    'parent_id' => 'Parent ID',
+                                                                                    'Input_for_W' => 'No of W',
+                                                                                    'Input_for_def_Y' => 'No of Y',
+                                                                                    'Input_for_Y1' => 'Y1',
+                                                                                    'Input_for_Y2' => 'Y2',
+                                                                                    'Input_for_Y3' => 'Y3',
+                                                                                    'Input_for_Y4' => 'Y4',
+                                                                                    'overallTotal' => 'Total'
+
+                                                                                );
+
+                                                                                foreach ($metadataArrayruleDetails as $key => $value) {
+                                                                                    // Exclude 'currentruleId'
+                                                                                    if ($key !== 'currentruleId') {
+                                                                                        ?>
+                                                                                <tr>
+                                                                                    <td style="text-align:center;">
+                                                                                        <?php echo $serialno; ?></td>
+                                                                                    <td style="text-align:center;">
+                                                                                        <?php echo isset($columnHeadings[$key]) ? $columnHeadings[$key] : ''; ?></td>
+                                                                                    <td style="text-align:center;">
+                                                                                        <?php echo $value; ?></td>
+                                                                                </tr>
+                                                                                <?php
+                                                                                        $serialno++;
+                                                                                    }
+                                                                                }
+                                                                                ?>
+                                                                            </tbody>
+
+                                                                        </table>
+
+                                                                        <?php }
+                                                                        ?>
+                                                                    </div>
+
+                                                                </td>
+                                                            </tr>
+                                                            <?php
+                                                                }
+                                                            }}
+                                                            ?>
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </div>
-                                            {{-- @endif
-                                        @endforeach --}}
+
+
                                         </td>
                                     </tr>
                                 @endif
@@ -177,6 +307,32 @@
             document.querySelector('.collapse-button').setAttribute('aria-expanded', 'true');
         }
     }
+
+    function toggleCollapse1(currentId) {
+        var collapseExample = document.getElementById('collapseExample1_' + currentId);
+        var ariaExpanded = collapseExample.getAttribute('aria-expanded');
+
+        if (ariaExpanded === 'true') {
+            collapseExample.classList.remove('show');
+            collapseExample.setAttribute('aria-expanded', 'false');
+        } else {
+            collapseExample.classList.add('show');
+            collapseExample.setAttribute('aria-expanded', 'true');
+            // AJAX call to fetch details based on currentId
+            // fetchDetails(currentId);
+        }
+    }
+
+    // function fetchDetails(currentId) {
+    //     alert(currentId);
+    // }
+
+    // function updateDetailsTable(metadata) {
+    //     // Update the table with the fetched metadata
+    //     // For demonstration purposes, I'm just logging the metadata to the console
+    //     console.log(metadata);
+    // }
+
 
     function printContent() {
 

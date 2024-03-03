@@ -45,7 +45,8 @@
                         <table id="basic-table" class="table table-striped mb-0" role="grid">
                             <thead>
                                 <tr>
-                                    <th></th>
+                                    <th><x-checkbox wire:key="checkbox" id="checkbox" wire:model="selectCheckBoxs"
+                                        wire:click="selectAll" title="Select All" /></th>
                                     <th>{{ trans('cruds.estimate.fields.id_helper') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.item_number') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.description') }}</th>
@@ -85,6 +86,10 @@
                                         </td>
                                         <td class="text-wrap" style="width: 40rem">
                                             @if ($addedEstimate['sor_item_number'] || $addedEstimate['rate_no'])
+                                                @if ($addedEstimate['sor_item_number'] && $addedEstimate['item_name'])
+                                                    <strong>{{ getDepartmentName($addedEstimate['dept_id']) . ' / ' . getDepartmentCategoryName($addedEstimate['category_id']) . ' / ' . getSorTableName($addedEstimate['sor_id']) . ' / Page No: ' . getSorPageNo($addedEstimate['sor_id']) . (getSorCorrigenda($addedEstimate['sor_id']) != null ? ' - ' . getSorCorrigenda($addedEstimate['sor_id']) : '') }}</strong>
+                                                    <br />
+                                                @endif
                                                 {{ $addedEstimate['description'] }}{{ $addedEstimate['rate_type'] != '' ? ' ( ' . $addedEstimate['rate_type'] . ' ) ' : '' }}
                                             @elseif ($addedEstimate['estimate_no'])
                                                 {{ getEstimateDescription($addedEstimate['estimate_no']) }}
@@ -100,7 +105,6 @@
                                             @else
                                                 {{ $addedEstimate['other_name'] }}
                                             @endif
-
                                         </td>
                                         <td>
                                             @if ($addedEstimate['qty'] != 0)
