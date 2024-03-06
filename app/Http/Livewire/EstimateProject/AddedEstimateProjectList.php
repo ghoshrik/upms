@@ -112,44 +112,83 @@ class AddedEstimateProjectList extends Component
 
             }
         }
-        // dd($this->allAddedEstimatesData);
         $this->arrayCount = count($this->allAddedEstimatesData);
     }
-    
-    public function submitGrandTotal($grandtotal,$key)
+
+    public function submitGrandTotal($grandtotal, $key)
     {
         if (!empty($grandtotal) || !empty($key)) {
-        foreach ($this->allAddedEstimatesData as $index => $estimateData) {
-            if ($estimateData['array_id'] === $this->sendArrayKey) {
-                $this->allAddedEstimatesData[$index]['qty'] = ($grandtotal == 0) ? 1 : $grandtotal;
-                $sessionData = ($this->editEstimate_id == '') ? Session()->get('modalData') : Session()->get('editModalData');
-                if($grandtotal == 0){
-                    unset($sessionData[$key]);
-                    if ($this->editEstimate_id == '') {
-                        Session()->put('modalData',$sessionData);
+            foreach ($this->allAddedEstimatesData as $index => $estimateData) {
+                if ($estimateData['array_id'] === $this->sendArrayKey) {
+                    $this->allAddedEstimatesData[$index]['qty'] = ($grandtotal == 0) ? 1 : $grandtotal;
+                    $sessionData = ($this->editEstimate_id == '') ? Session()->get('modalData') : Session()->get('editModalData');
+                    if ($grandtotal == 0) {
+                        $qtySessionData = ($this->editEstimate_id == '') ? session('modalData') : session('editModalData');
+                        unset($qtySessionData[$key]);
+                        if ($this->editEstimate_id == '') {
+                            Session()->forget('modalData');
+                            Session()->put('modalData', $qtySessionData);
+                        } else {
+                            Session()->forget('editModalData');
+                            Session()->put('editModalData', $qtySessionData);
+                        }
+                        $this->allAddedEstimatesData[$index]['qtyUpdate'] = false;
                     } else {
-                        Session()->put('editModalData',$sessionData);
+                        $this->allAddedEstimatesData[$index]['qtyUpdate'] = true;
                     }
-                $this->allAddedEstimatesData[$index]['qtyUpdate'] = false;
-                }else{
-                $this->allAddedEstimatesData[$index]['qtyUpdate'] = true;
-                $this->calculateValue($index);
+                    $this->calculateValue($index);
+                }
+            }
+            if ($this->editEstimate_id == '') {
+                Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
+                $this->reset('addedEstimateData');
+            } else {
+                Session()->put('editProjectEstimateData' . $this->editEstimate_id, $this->allAddedEstimatesData);
+                $this->reset('addedEstimateData');
+            }
+            $this->updatedEstimateRecalculate();
+            $this->notification()->success(
+                $title = 'Quantity Added Successfully'
+            );
+        }
+    }
+    public function updatedEstimateRecalculate()
+    {
+        $result = 0;
+        $stringCalc = new StringCalc();
+        foreach ($this->allAddedEstimatesData as $key => $value) {
+            if ($value['arrayIndex'] != '') {
+                try {
+                    if ($value['arrayIndex']) {
+                        $pattern = '/([-+*\/%])|([a-zA-Z0-9]+)/';
+                        preg_match_all($pattern, $value['arrayIndex'], $matches);
+                        foreach (array_merge($matches[0]) as $k => $info) {
+                            if (htmlspecialchars($info) == "%") {
+                                $value['arrayIndex'] = str_replace($info, "/100*", $value['arrayIndex'], $k);
+                            } else {
+                                foreach ($this->allAddedEstimatesData as $data) {
+                                    if ($data['array_id'] == $info) {
+                                        if ($data['total_amount'] != '') {
+                                            $value['arrayIndex'] = str_replace($info, $data['total_amount'], $value['arrayIndex'], $k);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    $result = $stringCalc->calculate($value['arrayIndex']);
+                    $this->allAddedEstimatesData[$key]['total_amount'] = $result;
+                    Session()->forget('editEstimateData');
+                    Session()->put('editEstimateData', $this->allAddedEstimatesData);
+                } catch (\Exception $exception) {
+                    $this->dispatchBrowserEvent('alert', [
+                        'type' => 'error',
+                        'message' => $exception->getMessage(),
+                    ]);
                 }
             }
         }
-        if ($this->editEstimate_id == '') {
-            Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
-            $this->reset('addedEstimateData');
-        } else {
-            Session()->put('editProjectEstimateData' . $this->editEstimate_id, $this->allAddedEstimatesData);
-            $this->reset('addedEstimateData');
-        }
-        $this->openQtyModal = !$this->openQtyModal;
-        $this->notification()->success(
-            $title = 'Quantity Added Successfully'
-        );
     }
-}
     public function closeUnitModal()
     {
         $this->openQtyModal = !$this->openQtyModal;
@@ -254,6 +293,7 @@ class AddedEstimateProjectList extends Component
         } else {
             $this->level = [];
         }
+        $this->showTotalButton();
     }
     public function showTotalButton()
     {

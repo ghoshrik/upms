@@ -109,7 +109,7 @@
                                         <td>
                                             @if ($addedEstimate['qty'] != 0)
                                                 {{ $addedEstimate['qty'] }}
-                                                @if (isset($addedEstimate['qtyUpdate']))
+                                                @if (isset($addedEstimate['qtyUpdate']) && $addedEstimate['qtyUpdate']==true)
                                                     <x-button wire:click="openQtyModal({{ $key }})"
                                                         type="button" class="btn btn-soft-primary btn-sm">
                                                         <span class="btn-inner">
