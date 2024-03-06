@@ -150,9 +150,9 @@
 
 
 
-    .col-md-3 {
+    .col-md-3.optionDropdown{
         flex: 0 0 auto;
-        width: 20% !important;
+        width: 20%;
     }
 
     .card.input-fields {
@@ -352,7 +352,7 @@
                 <div style="width:100%;">
                     <div id="successAlert" class="alert" role="alert" style="display: none;"></div>
                     <div class="prevdata row align-items-center">
-                        <div class="col-md-3">
+                        <div class="col-md-3 optionDropdown">
                             <div class="dropdown">
                                 <button class="btn relative rounded-md  dropdown-toggle box-border" type="button"
                                     data-bs-toggle="dropdown" aria-expanded="false">
