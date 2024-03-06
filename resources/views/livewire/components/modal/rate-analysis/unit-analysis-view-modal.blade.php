@@ -114,12 +114,14 @@
         background: #c03221;
         color: white;
         padding-top: 0px;
+        padding-bottom: 8px;
     }
 
     button.btn-add.addbtn {
         background: darkgray;
         width: 22px;
-        height: 21px;
+        border-radius: 3px;
+        color: white;
     }
 
 
@@ -148,7 +150,10 @@
 
 
 
-
+    .col-md-3 {
+        flex: 0 0 auto;
+        width: 20% !important;
+    }
 
     .card.input-fields {
 
@@ -171,24 +176,25 @@
     }
 
 
-    button.btn.btn-primary.calc {
+    button.btn.btn-soft-primary.calc {
         float: inline-end;
     }
 
     /* new css 25-02-2024 */
 
-    .table thead {
+    .table-unit.thead {
         white-space: nowrap;
         text-align: center;
     }
 
-    .totalSum {
+    /* .totalSum {
         width: auto;
         float: right;
-    }
+    } */
 
     .row.submitBtn {
-        margin-top: 6%;
+        margin-top: 2%;
+        margin-right: 35px;
     }
 
     #datatable1.table tbody tr td {
@@ -212,7 +218,7 @@
     }
 
     .box-border {
-        box-shadow: 0px 1px 2px;
+        box-shadow: 1px 1px 5px;
     }
 
     .dropdown-menu li:hover {
@@ -241,10 +247,8 @@
         position: absolute;
         top: 0;
         left: 100%;
-        /* Position to the right of its container */
         margin-top: -1px;
         box-shadow: 0px 0px 5px;
-        /* Adjust as needed */
     }
 
     .dropdown-item:hover {
@@ -254,16 +258,16 @@
         /* Change to the desired background color */
     }
 
-    .form-control {
+    /* .form-control {
         text-align: center;
-    }
+    } */
 
     .table-container {
         position: relative;
     }
 
     table#dataTable {
-        margin-top: 7%;
+        margin-top: 3%;
     }
 
     div#additionalFields {
@@ -271,15 +275,60 @@
     }
 
     .grandTotalInput.box-border {
-        max-width: fit-content;
+        background-color: #e9ecef;
+        width: 20%;
+    }
+
+    .col-md-9.ttlll {
+        text-align: end;
+        margin-top: 8px;
+        font-size: larger;
+    }
+
+    .row-table thead tr {
+        background-color: #F5F6FA;
+        text-align: center;
+    }
+
+    .unit {
+        padding: 5px;
+        padding-top: 1px;
+        padding-bottom: 1px;
+        width: auto;
+        height: 42px;
+
+    }
+
+    div#rowMessage {
+        width: max-content;
+        background: none;
+        border: none;
+        padding: 0px;
+    }
+
+    .card.input-fields {
+        height: 300px;
+        /* Set the height of the card */
+        overflow-y: auto;
+        /* Enable vertical scrolling */
+    }
+
+    .card.input-fields .card-body {
+        overflow-y: auto;
+    }
+
+    div#successAlert {
+        width: max-content;
+        background: none;
+        border: none;
+        padding: 0px;
         float: inline-end;
-        margin-right: 51px;
     }
 </style>
 
 <div class="modal" id="myInput" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
     data-bs-backdrop="static">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable " role="document">
         <div class="modal-content rate-analysis">
             <?php
             // Assuming $sendArrayDesc is defined and contains the description
@@ -296,65 +345,67 @@
                     <button id="myBtn">Read more</button>
                 </p>
             </div>
+
+
+
             <div class="modal-body">
                 <div style="width:100%;">
+                    <div id="successAlert" class="alert" role="alert" style="display: none;"></div>
                     <div class="prevdata row align-items-center">
-
-
                         <div class="col-md-3">
                             <div class="dropdown">
-                                <button class="btn relative rounded-md shadow-sm dropdown-toggle box-border"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button class="btn relative rounded-md  dropdown-toggle box-border" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     Select Option
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li><a class="selectOption" href="#" data-value="RULE">RULE</a></li>
                                     <div id="rulesDropdown" style="display: none;" class="dropdown-menu"
                                         aria-labelledby="dropdownMenuButton">
-                                        <!-- Rules will be dynamically populated here -->
+
                                     </div>
                                     <li><a class="selectOption" href="#" data-value="OTHER">OTHER</a></li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            {{-- @if (empty($rateAnalysisArray[$unit_id]['metadata'])) --}}
+                        <div class="col-md-3 pre">
                             @if ($arrayCount > 1)
-                                <div class="dropdown">
-                                    <button
-                                        class="btn relative rounded-md shadow-sm dropdown-toggle box-border"
-                                        id="mySelect" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Select Previous Data
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end" style="width: calc(100% + 1.5rem);">
-                                        <!-- Adjust the width as needed -->
-                                        @isset($dropdownData)
-                                            @foreach ($dropdownData as $listData)
-                                                <li><a class="prev-data" href="#">{{ $listData }}</a></li>
-                                            @endforeach
-                                        @endisset
-                                    </ul>
-                                </div>
-
+                                @if (!empty($dropdownData))
+                                    <div class="dropdown">
+                                        <button class="btn relative rounded-md  dropdown-toggle box-border"
+                                            id="mySelect" type="button" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            Select Previous Data
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end" style="width: calc(100% + 4.5rem);">
+                                            <!-- Adjust the width as needed -->
+                                            @isset($dropdownData)
+                                                @foreach ($dropdownData as $listData)
+                                                    <li><a class="prev-data" href="#">{{ $listData }}</a></li>
+                                                @endforeach
+                                            @endisset
+                                        </ul>
+                                    </div>
+                                @endif
                             @endif
                         </div>
                         <div class="col-md-6"></div>
                     </div>
 
-                    <div class="table-container">
+                    <div class="table-container" style="height: 100px; overflow-y: auto;">
                         <table id="dataTable1" class="table mt-2 table-unit">
                             <thead>
                                 <tr>
-                                    <th class="whitespace-nowrap">S.no</th>
+                                    <th class="whitespace-nowrap" style="text-align:center;">Sl.no</th>
                                     <th class="whitespace-nowrap" style="text-align:center;">Option</th>
-                                    <th class="whitespace-nowrap" style="text-align:center;">Grand total</th>
+                                    <th class="whitespace-nowrap" style="text-align:center;">Total</th>
                                     <th class="whitespace-nowrap" style="text-align:center;">UNIT NAME</th>
                                     <th class="whitespace-nowrap" style="text-align:center;">Action</th>
                                 </tr>
                             </thead>
 
-                            <tbody class="metatable">
-                                @if (isset($rateAnalysisArray[$unit_id]))
+                            <tbody class="metatable" style="overflow-y:auto;">
+                                @if (isset($rateAnalysisArray[$unit_id]) && isset($rateAnalysisArray[$unit_id]['metadata']))
                                     <?php foreach ($rateAnalysisArray[$unit_id]['metadata'] as $index => $metadata): ?>
                                     <tr>
                                         <td style="text-align:center;">A<?php echo $index + 1; ?></td>
@@ -379,45 +430,58 @@
 
                             </tbody>
                         </table>
-                        <div class="grandTotalInput box-border">
-                            <input type="text" id="grandTotalInput" class="form-control" readonly>
-                        </div>
+
 
                     </div>
 
-                    <form id="myForm" style="display:none;margin-top: 5%;">
+                    <div class="row" id="metagrandtotal" style="overflow-y: auto;margin-top: 26px;">
+                        <div class="col-md-9 ttlll">
+                            Grand Total:
+                        </div>
+                        <div class="col-md-3  grandTotalInput" style="width:20%;">
+                            <input type="text" id="grandTotalInput" class="form-control" readonly>
+                        </div>
+                    </div>
+
+
+
+                    <form id="myForm" style="display:none;">
                         <div class="alert alert-danger" role="alert" id="emptyFieldsAlert" style="display: none;">
                             Please fill in all fields before submitting.
                         </div>
+
                         <div class="">
                             <div class="col-lg-12">
-                                <table id="dataTable" class="table">
-                                    <thead>
-                                        <tr class="thead">
-                                            <th>Sl.no</th>
-                                            <th>Member</th>
-                                            <th>Number</th>
-                                            <th>Height</th>
-                                            <th>Breadth</th>
-                                            <th>Length</th>
-                                            <th>Unit</th>
-                                            <th>Total</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="newinput">
-
-
-
-                                    </tbody>
-                                </table>
-
+                                <div class="table-container">
+                                    <table id="dataTable" class="table row-table">
+                                        <thead>
+                                            <tr class="thead">
+                                                <th>Sl.no</th>
+                                                <th>Member</th>
+                                                <th>Number</th>
+                                                <th>Height</th>
+                                                <th>Breadth</th>
+                                                <th>Length</th>
+                                                <th>Unit</th>
+                                                <th>Total</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="newinput">
+                                            <!-- Table rows will be populated dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                        <div class="row totalSum ">
-                            <div class="col">
-                                <input type="text" id="totalSum" class="form-control m-input box-border"
-                                    value="0.00" readonly>
+
+                        <div class="row" style="margin-top: 16px;">
+                            <div class="col-md-9 ttlll">
+                                Rows Total:
+                            </div>
+                            <div class="col-md-3 grandTotalInput">
+                                <input type="text" id="totalSum" class="form-control m-input" value="0.00"
+                                    readonly>
                             </div>
                         </div>
                         <div class="row submitBtn">
@@ -426,13 +490,12 @@
                                     style="float:right;">Save</button>
                             </div>
                         </div>
-
-
                     </form>
+
                     <div id="additionalFields" style="display: none;">
 
-                        <div class="card input-fields">
-                            <div class="card-body">
+                        <div class="card input-fields overflow-auto">
+                            <div class="card-body overflow-auto">
                                 <div id="simpson" class="row formulae">
                                     <span class="formula">Simpson rule:-Area=(w/3)[yfirst + 4(yodd) + 2(yeven) +
                                         ylast]</span>
@@ -465,12 +528,12 @@
             <div class="modal-footer rate-analysis" style="display: flex; justify-content: space-between;">
                 <button type="button" id="closeBtn" class="btn btn-soft-danger rounded-pill "
                     data-dismiss="modal">Close</button>
-                <button id="finalSubmitBtn" type="button" class="btn btn-success rounded-pill ">Submit</button>
+                <button id="finalSubmitBtn" type="button" class="btn btn-success rounded-pill " disabled>Submit</button>
             </div>
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
 <script>
     var currentId = null;
     var currentruleId = null;
@@ -478,7 +541,8 @@
 
     $(document).ready(function() {
         var unitId = @json($unit_id);
-
+        var editEstimate_Id = @json($editEstimate_id);
+        var arrayCount = @json($arrayCount);
         var myModal = new bootstrap.Modal(document.getElementById('myInput'), {
             backdrop: 'static'
         });
@@ -500,7 +564,7 @@
                 grandTotal += parseFloat($(this).text());
             });
 
-            window.Livewire.emit('submitGrandTotal', grandTotal);
+            window.Livewire.emit('submitGrandTotal', grandTotal, unitId);
             closeModal();
             //alert('Grand Total: ' + grandTotal);
         });
@@ -510,8 +574,11 @@
             $('.metatable td:nth-child(3)').each(function() {
                 grandTotal += parseFloat($(this).text());
             });
-            // Set the grand total value in the input box
-            $('#grandTotalInput').val("GrandTotal: " + grandTotal);
+            if (arrayCount == 0) {
+                 grandTotal = 0;
+            } else {
+                $('#grandTotalInput').val(grandTotal);
+            }
             var tableHeight = $('#dataTable1').height();
             var tableOffsetTop = $('#dataTable1').offset().top;
             var grandTotalInputHeight = $('.grandTotalInput').height();
@@ -612,6 +679,9 @@
                 moreText.style.display = "inline";
             }
         });
+
+
+
         var numberOfY = 0;
         var firstInputResult, lastInputResult, oddSumResult, evenSumResult, areaResult;
         document.getElementById("Input_for_Y_def").addEventListener("input", function() {
@@ -658,7 +728,7 @@
                 }
 
                 var div = document.createElement("div");
-                div.className = "col-md-6";
+                div.className = "col-md-4";
                 div.appendChild(label);
                 div.appendChild(input);
                 form.insertBefore(div, inputForW.nextSibling);
@@ -671,7 +741,7 @@
             calculateCol.className = "col-md-12";
             var calculateButton = document.createElement("button");
             calculateButton.type = "button";
-            calculateButton.className = "btn btn-primary calc";
+            calculateButton.className = "btn btn-soft-primary calc";
             calculateButton.textContent = "Calculate";
             calculateButton.addEventListener("click", calculate);
             calculateCol.appendChild(calculateButton);
@@ -736,6 +806,9 @@
                 rowMessage.textContent = "Please fill in all input fields (including 'W') before calculating.";
                 rowMessage.style.display = "block";
                 rowMessage.classList.add("alert-danger");
+                setTimeout(function() {
+                    document.getElementById("rowMessage").style.display = "none";
+                }, 1000);
                 return;
             } else {
 
@@ -791,6 +864,7 @@
             inputValues["type"] = "rule";
             inputValues["unit"] = "Cum";
             inputValues["overallTotal"] = areaRounded;
+            inputValues["editEstimate_id"] = editEstimate_Id;
 
             // Prepare ruledata object with input values
             var ruledata = {
@@ -852,10 +926,21 @@
                         sno++;
                     });
                     if (tableBody.find('tr').length > 0) {
-                        $('#mySelect').hide(); // Show your div
+                        $('#mySelect').hide();
+                        $('#metagrandtotal').show();
                     } else {
-                        $('#mySelect').show(); // Hide your div
+                        $('#mySelect').show();
+                        $('#metagrandtotal').hide(); // Hide your div
                     }
+                    $('#successAlert').text('Rule Added successfully');
+                    $('#successAlert').addClass('alert-success').removeClass('alert-danger')
+                        .show();
+                        $("#closeBtn").prop("disabled", true);
+                        $("#finalSubmitBtn").prop("disabled", false);
+                    // Optionally, you can hide the alert after a certain duration
+                    setTimeout(function() {
+                        $('#successAlert').hide();
+                    }, 3000); // 3000 milliseconds (5 seconds) example
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
@@ -887,12 +972,15 @@
                 contentType: 'application/json',
                 data: JSON.stringify({
                     unitId: unitId,
-                    ruleId: currentruleId
+                    ruleId: currentruleId,
+                    editEstimate_id: editEstimate_Id
                 }),
                 success: function(response) {
                     if (response.status) {
                         $('#additionalFields').show();
                         $('#myForm').hide();
+                        $("#closeBtn").prop("disabled", true);
+                        $("#finalSubmitBtn").prop("disabled", false);
                         var sessionData = response.rateAnalysisArray;
                         // console.log(sessionData);
 
@@ -947,13 +1035,14 @@
                         calculateCol.className = "col-md-12";
                         var calculateButton = document.createElement("button");
                         calculateButton.type = "button";
-                        calculateButton.className = "btn btn-primary  calc";
+                        calculateButton.className = "btn btn-soft-primary  calc";
                         calculateButton.textContent = "Calculate";
                         calculateButton.addEventListener("click", calculate);
                         calculateCol.appendChild(calculateButton);
                         calculateRow.appendChild(calculateCol);
                         document.getElementById("simpsonsRuleForm").appendChild(
                             calculateRow);
+
                     } else {
                         console.error('Error:', response.message);
                     }
@@ -987,6 +1076,7 @@
                 alert('Input values cannot be 0.');
                 return;
             }
+
             var total = length * breadth * height * number;
             row.find('.total').val(total.toFixed(2));
         }
@@ -1019,15 +1109,15 @@
             var newRow = $('<tr>' +
                 '<td>' + ($("#dataTable tbody tr").length + 1) + '</td>' +
                 '<td><input type="text" class="form-control m-input member" name="member" placeholder="Member" /></td>' +
-                '<td><input type="text" class="form-control m-input number" name="number" placeholder="Number" /></td>' +
-                '<td><input type="text" class="form-control m-input height" name="height" placeholder="Height" /></td>' +
-                '<td><input type="text" class="form-control m-input breadth" name="breadth" placeholder="Breadth" /></td>' +
-                '<td><input type="text" class="form-control m-input length" name="length" placeholder="Length" /></td>' +
+                '<td><input type="number" class="form-control m-input number" name="number" placeholder="Number" /></td>' +
+                '<td><input type="number" class="form-control m-input height" name="height" placeholder="Height" /></td>' +
+                '<td><input type="number" class="form-control m-input breadth" name="breadth" placeholder="Breadth" /></td>' +
+                '<td><input type="number" class="form-control m-input length" name="length" placeholder="Length" /></td>' +
                 '<td><select class="form-control m-input unit" name="unit">' + unitOptions +
                 '</select></td>' +
                 '<td><input type="text" class="form-control m-input total" name="total" placeholder="Total" readonly/></td>' +
                 '<td class="button-cell">' +
-                '<button type="button" class="btn-close delete-row-btn">X</button>' +
+                '<button type="button" class="btn-close delete-row-btn">x</button>' +
                 '<button type="button" class="btn-add addbtn">+</button>' +
                 '</td>' +
                 '</tr>');
@@ -1036,69 +1126,52 @@
             updateButtons();
             updateTotalSum();
         }
-
-
-
-        // Function to update buttons visibility
         function updateButtons() {
-            // Hide delete button for all rows except the last one
-            $("#dataTable tbody tr .delete-row-btn").hide();
-            $("#dataTable tbody tr:last .delete-row-btn").show();
-
-            // Hide add button for all rows except the last one
-            $("#dataTable tbody tr .addbtn").hide();
-            $("#dataTable tbody tr:last .addbtn").show();
+            var tableRows = $("#dataTable tbody tr");
+            tableRows.find(".delete-row-btn").hide();
+            tableRows.last().find(".delete-row-btn").show();
+            tableRows.find(".addbtn").hide();
+            tableRows.last().find(".addbtn").show();
+            if (tableRows.length === 1) {
+                tableRows.find(".delete-row-btn").hide();
+            }
         }
-
-        // Bind click event to addbtn to add new row
         $(document).off("click", ".addbtn").on("click", ".addbtn", function() {
             addNewRow();
+            updateTotalSum();
+            $("#closeBtn").prop("disabled", true);
         });
-
-        // Delete row functionality
         $(document).on("click", ".delete-row-btn", function() {
             if ($("#dataTable tbody tr").length > 1) {
                 $(this).closest("tr").remove();
                 updateRowNumbers();
-                updateButtons(); // Update buttons after row deletion
+                updateButtons();
+                updateTotalSum();
             }
         });
-
-        // Function to update row numbers
         function updateRowNumbers() {
             $("#dataTable tbody tr").each(function(index) {
                 $(this).find("td:first").text(index + 1);
             });
         }
-
-        // $(document).off("click", "#myForm").on("click", "#myForm", function() {
         $("#myForm").submit(function(event) {
             event.preventDefault();
             $(".empty-field").tooltip("dispose");
-
-            // Variable to track if any input field is empty
             var isEmpty = false;
-
-            // Iterate over each row of the table
+            var hasZeroValue = false;
             $("#dataTable tbody tr").each(function() {
                 var row = $(this);
                 var emptyFields = [];
-
-                // Iterate over each input/select element within the row
                 row.find("input, select").each(function() {
                     var field = $(this);
-
-                    // Check if the field is empty
                     if (!field.val()) {
-                        // Exclude total field from showing tooltip
                         if (!field.hasClass("total")) {
                             isEmpty = true;
                             emptyFields.push(field);
-
                             field.tooltip({
                                 title: "Required field and cannot be Zero(0)",
                                 placement: "bottom",
-                                trigger: "manual" // Show tooltip manually
+                                trigger: "manual"
                             });
                             // Show tooltip on hover
                             field.hover(function() {
@@ -1107,15 +1180,13 @@
                                 $(this).tooltip("hide");
                             });
                         }
+                    } else if (parseFloat(field.val()) === 0) {
+                        hasZeroValue = true;
                     } else {
                         field.removeClass("empty-field");
-
-                        // Remove any existing tooltip
                         field.tooltip("dispose");
                     }
                 });
-
-                // Highlight empty fields with red border
                 if (emptyFields.length > 0) {
                     row.addClass("has-empty-field");
                     emptyFields.forEach(function(field) {
@@ -1126,13 +1197,12 @@
                 }
             });
 
-            // If any field is empty, prevent form submission
-            if (isEmpty) {
+            if (isEmpty || hasZeroValue) {
+                if (hasZeroValue) {
+                    alert("Input values cannot be 0.");
+                }
                 return;
             }
-
-
-
             var form = this;
             var rowData = [];
             var totalSum = parseFloat($("#totalSum").val()) || 0;
@@ -1149,9 +1219,11 @@
                 row['currentId'] = currentId !== undefined && currentId !== null ?
                     currentId : currentId === '' ? '' : null;
                 row['overallTotal'] = totalSum;
+
+                row['editEstimate_id'] = editEstimate_Id;
+
                 rowData.push(row);
             });
-            //console.log(rowData);
             $.ajax({
                 url: '/store-dynamic-unit-modal-data',
                 type: 'POST',
@@ -1163,14 +1235,14 @@
                     data: rowData,
                 }),
                 success: function(response) {
+
                     var tableBody1 = $("#dataTable tbody");
                     tableBody1.empty();
                     var rateAnalysisArray1 = response.rateAnalysisArray[unitId]['metadata'];
 
                     var tableBody = $("#dataTable1 tbody");
-                    tableBody.empty(); // Clear existing rows before appending new ones
+                    tableBody.empty();
                     var sno = 0;
-                    // Iterate over the rateAnalysisArray to create new table rows
                     $.each(rateAnalysisArray1, function(index, metadata) {
                         var newRow = $("<tr>");
                         newRow.append('<td style="text-align:center;">A' + (sno +
@@ -1198,8 +1270,6 @@
                         var buttonCell = $('<td>').css('text-align', 'center')
                             .append(editButton).append(' ').append(deleteButton);
                         newRow.append(buttonCell);
-
-                        // Append the new row to the table body
                         tableBody.append(newRow);
                         sno++;
                     });
@@ -1207,10 +1277,20 @@
                     addNewRow();
                     updateTotalSum();
                     if (tableBody.find('tr').length > 0) {
-                        $('#mySelect').hide(); // Show your div
+                        $('#mySelect').hide();
+                        $('#metagrandtotal').show();
                     } else {
-                        $('#mySelect').show(); // Hide your div
+                        $('#mySelect').show();
+                        $('#metagrandtotal').hide();
                     }
+                    $('#successAlert').text('Row Added successfully');
+                    $('#successAlert').addClass('alert-success').removeClass('alert-danger')
+                        .show();
+                    setTimeout(function() {
+                        $('#successAlert').hide();
+                    }, 3000);
+                    $("#closeBtn").prop("disabled", true);
+                        $("#finalSubmitBtn").prop("disabled", false);
                 },
 
                 error: function(xhr, status, error) {
@@ -1221,8 +1301,12 @@
         });
         $(document).off("click", "#submitBtn").on("click", "#submitBtn", function() {
             $("#myForm").submit();
+            $("#finalSubmitBtn").prop("disabled", false);
+            $("#closeBtn").prop("disabled", true);
         });
         $(document).on("click", ".editBtn", function() {
+            $("#closeBtn").prop("disabled", true);
+            $("#finalSubmitBtn").prop("disabled", false);
             $('#additionalFields').hide();
             $('#myForm').show();
             var metadataId = $(this).data("id");
@@ -1235,6 +1319,7 @@
                 $('#additionalFields').hide();
                 $('#myForm').hide();
                 var metadataId = $(this).data("id");
+                $("#closeBtn").prop("disabled", true);
                 deleteRow(metadataId);
             }
         });
@@ -1251,6 +1336,7 @@
                 data: JSON.stringify({
                     rowId: rowId,
                     parent_id: unitId,
+                    editEstimate_id: editEstimate_Id
                 }),
                 success: function(response) {
                     var tableBody1 = $("#dataTable tbody");
@@ -1295,9 +1381,20 @@
                     updateTotalSum();
                     if (tableBody.find('tr').length > 0) {
                         $('#mySelect').hide();
+                        $('#metagrandtotal').show();
                     } else {
                         $('#mySelect').show();
+                        $('#metagrandtotal').hide();
                     }
+
+                    $('#successAlert').text('Row deleted successfully');
+                    $('#successAlert').addClass('alert-danger').removeClass('alert-success')
+                        .show();
+                        $("#finalSubmitBtn").prop("disabled", false);
+                    // Optionally, you can hide the alert after a certain duration
+                    setTimeout(function() {
+                        $('#successAlert').hide();
+                    }, 3000); // 3000 milliseconds (5 seconds) example
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
@@ -1317,6 +1414,7 @@
                 data: JSON.stringify({
                     rowId: rowId,
                     parent_id: unitId,
+                    editEstimate_id: editEstimate_Id
                 }),
                 success: function(response) {
                     var tableBody1 = $("#dataTable tbody");
@@ -1336,16 +1434,16 @@
                             '<td><input type="text" class="form-control m-input member" name="member" value="' +
                             (rowData && rowData.member ? rowData.member : '') +
                             '" placeholder="Member" required/></td>' +
-                            '<td><input type="text" class="form-control m-input number" name="number" value="' +
+                            '<td><input type="number" class="form-control m-input number" name="number" value="' +
                             (rowData && rowData.number ? rowData.number : '') +
                             '" placeholder="Number" required/></td>' +
-                            '<td><input type="text" class="form-control m-input height" name="height" value="' +
+                            '<td><input type="number" class="form-control m-input height" name="height" value="' +
                             (rowData && rowData.height ? rowData.height : '') +
                             '" placeholder="Height" required/></td>' +
-                            '<td><input type="text" class="form-control m-input breadth" name="breadth" value="' +
+                            '<td><input type="number" class="form-control m-input breadth" name="breadth" value="' +
                             (rowData && rowData.breadth ? rowData.breadth : '') +
                             '" placeholder="Breadth" required/></td>' +
-                            '<td><input type="text" class="form-control m-input length" name="length" value="' +
+                            '<td><input type="number" class="form-control m-input length" name="length" value="' +
                             (rowData && rowData.length ? rowData.length : '') +
                             '" placeholder="Length" required/></td>' +
                             '<td><select class="form-control m-input unit" name="unit">' +
@@ -1354,13 +1452,15 @@
                             (rowData && rowData.total ? rowData.total : '') +
                             '" placeholder="Total" readonly/></td>' +
                             '<td class="button-cell">' +
-                            '<button type="button" class="btn-close delete-row-btn">X</button>' +
+                            '<button type="button" class="btn-close delete-row-btn">x</button>' +
                             '<button type="button" class="btn-add addbtn">+</button>' +
                             '</td>' +
                             '</tr>');
                         tableBody1.append(newRow);
                         updateTotalSum();
+                        updateButtons();
                     });
+                    $("#finalSubmitBtn").prop("disabled", false);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
@@ -1372,7 +1472,11 @@
         $('.dropdown').on('click', '.prev-data', function(event) {
             event.preventDefault();
             var selected_parent_id = $(this).text();
-            var modalData = {!! json_encode(session('modalData')) !!};
+            if (editEstimate_Id) {
+                var modalData = {!! json_encode(session('editModalData')) !!};
+            } else {
+                var modalData = {!! json_encode(session('modalData')) !!};
+            }
             var selected_parent_id_Data = modalData[selected_parent_id];
             $.ajax({
                 url: '/unit-modal-prev-data',
@@ -1383,13 +1487,15 @@
                 contentType: 'application/json',
                 data: JSON.stringify({
                     data: selected_parent_id_Data,
-                    parent_id: unitId
+                    parent_id: unitId,
+                    editEstimate_id: editEstimate_Id
                 }),
                 success: function(response) {
                     var rateAnalysisArray2 = response.rateAnalysisArray[unitId]['metadata'];
                     var tableBody = $("#dataTable1 tbody");
                     tableBody.empty();
                     var sno = 0;
+                    var grandTotal = 0;
                     $.each(rateAnalysisArray2, function(index, metadata) {
                         var newRow = $("<tr>");
                         newRow.append('<td style="text-align:center;">A' + (sno +
@@ -1422,9 +1528,20 @@
                     });
                     if (tableBody.find('tr').length > 0) {
                         $('#mySelect').hide();
+                        $('#metagrandtotal').show();
                     } else {
                         $('#mySelect').show();
+                        $('#metagrandtotal').hide();
                     }
+                    $('#successAlert').text('Previous Data Copied successfully');
+                    $('#successAlert').addClass('alert-success').removeClass('alert-danger')
+                        .show();
+                        $("#closeBtn").prop("disabled", true);
+                        $("#finalSubmitBtn").prop("disabled", false);
+                    // Optionally, you can hide the alert after a certain duration
+                    setTimeout(function() {
+                        $('#successAlert').hide();
+                    }, 3000); // 3000 milliseconds (5 seconds) example
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
@@ -1436,15 +1553,22 @@
             var tableBody = $("#dataTable1 tbody");
             if (tableBody.find('tr').length > 0) {
                 $('#mySelect').hide();
+                $('#metagrandtotal').show();
             } else {
                 $('#mySelect').show();
+                $('#metagrandtotal').hide();
+
+
             }
         }
         checkTableEmpty();
         $('.selectOption').click(function() {
             var selectedOption = $(this).data('value');
             $('#selectOptionButton').addClass('btn-clicked');
-            if (selectedOption === "RULE") {} else if (selectedOption === "OTHER") {
+            if (selectedOption === "RULE") {
+
+            } else if (selectedOption === "OTHER") {
+                // $("#closeBtn").prop("disabled", true);
                 $('#additionalFields').hide();
                 $('#myForm').show();
             }

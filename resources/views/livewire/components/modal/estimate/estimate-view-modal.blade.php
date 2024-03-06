@@ -135,19 +135,19 @@
                                                                     <button
                                                                         class="collapse-button btn btn-soft-primary btn-sm rounded"
                                                                         type="button" aria-expanded="false"
-                                                                        aria-controls="collapseExample1_{{ $metadata['currentId'] }}"
-                                                                        onclick="toggleCollapse1('{{ $metadata['currentId'] }}')">
+                                                                        aria-controls="collapseExample1_{{ $metadata['currentId'] }}_{{ $view['row_id'] }}"
+                                                                        onclick="toggleCollapse1('{{ $metadata['currentId'] }}_{{ $view['row_id'] }}')">
                                                                         <x-lucide-eye class="w-4 h-4 text-white-500" />
                                                                     </button>
                                                                 </td>
                                                             </tr>
                                                             <tr class="collapse"
-                                                                id="collapseExample1_{{ $metadata['currentId'] }}">
+                                                                id="collapseExample1_{{ $metadata['currentId'] }}_{{ $view['row_id'] }}">
                                                                 <td colspan="5">
                                                                     <div class="card card-body">
                                                                         <?php
                                                                         if (isset($metadata['currentId'])) {
-                                                                            if(isset($metadata['type']) && $metadata['type'] == "other") { // Corrected the condition
+                                                                            if(isset($metadata['type']) && $metadata['type'] == "other") { 
                                                                         ?>
                                                                         <table class="table table-bordered">
                                                                             <thead>
@@ -309,6 +309,7 @@
     }
 
     function toggleCollapse1(currentId) {
+        //alert(currentId);
         var collapseExample = document.getElementById('collapseExample1_' + currentId);
         var ariaExpanded = collapseExample.getAttribute('aria-expanded');
 
@@ -318,21 +319,9 @@
         } else {
             collapseExample.classList.add('show');
             collapseExample.setAttribute('aria-expanded', 'true');
-            // AJAX call to fetch details based on currentId
-            // fetchDetails(currentId);
+           
         }
     }
-
-    // function fetchDetails(currentId) {
-    //     alert(currentId);
-    // }
-
-    // function updateDetailsTable(metadata) {
-    //     // Update the table with the fetched metadata
-    //     // For demonstration purposes, I'm just logging the metadata to the console
-    //     console.log(metadata);
-    // }
-
 
     function printContent() {
 

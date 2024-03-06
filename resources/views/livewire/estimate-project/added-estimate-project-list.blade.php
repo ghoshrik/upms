@@ -188,7 +188,7 @@
             </div>
         </div>
         @if ($openQtyModal)
-            <livewire:components.modal.rate-analysis.unit-analysis-view-modal :unit_id="$sendArrayKey" :sendArrayDesc="$sendArrayDesc" :arrayCount="$arrayCount" />
+            <livewire:components.modal.rate-analysis.unit-analysis-view-modal :unit_id="$sendArrayKey" :sendArrayDesc="$sendArrayDesc" :arrayCount="$arrayCount" :editEstimate_id="$editEstimate_id" />
         @endif
     @endif
 </div>

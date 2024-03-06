@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-
 class ApiController extends Controller
 {
     public function storeTableHeader(Request $request)
@@ -128,12 +127,17 @@ class ApiController extends Controller
     }
     public function deleteUnitRow(Request $request)
     {
-        // dd($request);
+        //dd($request);
         try {
             $updateId = $request->rowId;
             $parentId = $request->parent_id;
+            $Estimate_id = $request->editEstimate_id;
 
-            $sessionData = session('modalData');
+            if (empty($Estimate_id)) {
+                $sessionData = Session()->get('modalData');
+            } else {
+                $sessionData = Session()->get('editModalData');
+            }
             if (!is_array($sessionData)) {
                 return response()->json([
                     'status' => false,
@@ -172,11 +176,18 @@ class ApiController extends Controller
                     $data['currentId'] = $index;
                 }
                 $sessionData[$parentId]['metadata'] = $metadataArray;
-                Session()->put('modalData', $sessionData);
-                $sessionresData = session('modalData');
+                if (empty($Estimate_id)) {
+                    //($sessionData);
+                    Session()->put('modalData', $sessionData);
+                    $sessionData = Session()->get('modalData');
+                } else {
+                    //dd($sessionData);
+                    Session()->put('editModalData', $sessionData);
+                    $sessionData = Session()->get('editModalData');
+                }
                 return response()->json([
                     'status' => true,
-                    'rateAnalysisArray' => $sessionresData,
+                    'rateAnalysisArray' => $sessionData,
                 ], 200);
             } else {
                 return response()->json([
@@ -185,7 +196,7 @@ class ApiController extends Controller
                 ], 404);
             }
         } catch (\Exception $e) {
-            dd($e);
+            //dd($e);
             return response()->json([
                 'status' => false,
                 'message' => 'An error occurred while processing the request.',
@@ -194,13 +205,13 @@ class ApiController extends Controller
     }
     public function unitQtyAdded(Request $request)
     {
+        // dd($request->data[0][editEstimate_id]);
         try {
-            $sessionData = session('modalData');
-            if (!is_array($sessionData)) {
-                $sessionData = [];
-            }
+
 
             $data = $request->data;
+            //dd($data);
+
             if (isset($data['input_values'])) {
                 $input_values = $data['input_values'];
                 $parentId = isset($input_values['parent_id']) ? $input_values['parent_id'] : null;
@@ -208,13 +219,27 @@ class ApiController extends Controller
                 $type = isset($input_values['type']) ? $input_values['type'] : null;
                 $unit = isset($input_values['unit']) ? $input_values['unit'] : 5;
                 $updateId = isset($input_values['currentruleId']) ? $input_values['currentruleId'] : null;
+                $Estimate_id = isset($input_values['editEstimate_id']) ? $input_values['editEstimate_id'] : null;
             } else {
                 $overalltotal = isset($data[0]['overallTotal']) ? $data[0]['overallTotal'] : null;
                 $parentId = isset($data[0]['parent_id']) ? $data[0]['parent_id'] : null;
                 $type = isset($data[0]['type']) ? $data[0]['type'] : null;
                 $unit = isset($data[0]['unit']) ? $data[0]['unit'] : 5;
                 $updateId = isset($data[0]['currentId']) ? $data[0]['currentId'] : null;
+                $Estimate_id = isset($data[0]['editEstimate_id']) ? $data[0]['editEstimate_id'] : null;
             }
+
+            if (empty($Estimate_id)) {
+                $sessionData = Session()->get('modalData');
+            } else {
+                $sessionData = Session()->get('editModalData');
+            }
+
+            if (!is_array($sessionData)) {
+                $sessionData = [];
+            }
+
+
 
             if (!isset($sessionData[$parentId])) {
                 $sessionData[$parentId] = [];
@@ -274,16 +299,20 @@ class ApiController extends Controller
             }
 
             // Update session data and return response
-            Session()->put('modalData', $sessionData);
-            $this->rateAnalysisArray = $sessionData;
+            if (empty($Estimate_id)) {
+                Session()->put('modalData', $sessionData);
+            } else {
+                Session()->put('editModalData', $sessionData);
+            }
 
+            $this->rateAnalysisArray = $sessionData;
             return response()->json([
                 'message' => 'Data updated successfully',
                 'status' => true,
                 'rateAnalysisArray' => $this->rateAnalysisArray,
             ], 200);
         } catch (\Exception $e) {
-            dd($e);
+            //dd($e);
         }
     }
 
@@ -293,9 +322,14 @@ class ApiController extends Controller
             // dd($request);
             $previousData = $request->data;
             $parentId = $request->parent_id;
+            $Estimate_id = $request->editEstimate_id;
 
             // dd($previousData, $parentId );
-            $sessionData = session('modalData');
+            if (empty($Estimate_id)) {
+                $sessionData = Session()->get('modalData');
+            } else {
+                $sessionData = Session()->get('editModalData');
+            }
 
             // Check if the session data is an array
             if (!is_array($sessionData)) {
@@ -318,8 +352,13 @@ class ApiController extends Controller
                 }
             }
 
-            Session()->put('modalData', $sessionData);
-            $sessionresData = session('modalData');
+            if (empty($Estimate_id)) {
+                Session()->put('modalData', $sessionData);
+                $sessionresData = Session()->get('modalData');
+            } else {
+                Session()->put('editModalData', $sessionData);
+                $sessionresData = Session()->get('editModalData');
+            }
             return response()->json([
                 'status' => true,
                 'rateAnalysisArray' => $sessionresData,
@@ -333,8 +372,14 @@ class ApiController extends Controller
     public function getRuleData(Request $request)
     {
 
-        // dd($request);
-        $sessionData = session('modalData');
+        //dd($request);
+
+        $Estimate_id = $request->editEstimate_id;
+        if (empty($Estimate_id)) {
+            $sessionData = Session()->get('modalData');
+        } else {
+            $sessionData = Session()->get('editModalData');
+        }
 
         $rowdata = $sessionData[$request->unitId][$request->ruleId];
         return response()->json([
@@ -346,7 +391,14 @@ class ApiController extends Controller
 
     public function getunitQtyAdded(Request $request)
     {
-        $sessionData = session('modalData');
+        $Estimate_id = $request->editEstimate_id;
+        //dd($Estimate_id);
+        if (empty($Estimate_id)) {
+            $sessionData = Session()->get('modalData');
+        } else {
+            $sessionData = Session()->get('editModalData');
+            // dd($sesssionData);
+        }
 
         $data = $sessionData[$request->parent_id][$request->rowId];
         return response()->json([
