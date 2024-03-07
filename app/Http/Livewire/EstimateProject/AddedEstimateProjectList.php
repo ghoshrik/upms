@@ -43,6 +43,7 @@ class AddedEstimateProjectList extends Component
         }
         $this->reset();
     }
+
     public function setFatchEstimateData($fatchEstimateData)
     {
         // dd($fatchEstimateData);
@@ -76,6 +77,12 @@ class AddedEstimateProjectList extends Component
                 $this->allAddedEstimatesData[$count]['arrayIndex'] = $estimateData['row_index'];
                 $this->allAddedEstimatesData[$count]['array_id'] = $estimateData['row_id'];
                 $this->allAddedEstimatesData[$count]['operation'] = $estimateData['operation'];
+                if($this->allAddedEstimatesData[$count]['operation'] == "Total")
+                {
+                    $this->reset('totalOnSelectedCount');
+                    $this->totalOnSelectedCount = $this->totalOnSelectedCount + 1;
+                    Session()->put('editProjectEstimationTotal' . $this->editEstimate_id, $this->totalOnSelectedCount);
+                }
                 $this->allAddedEstimatesData[$count]['remarks'] = $estimateData['comments'];
                 // $this->allAddedEstimatesData[count($this->allAddedEstimatesData) + 1]['created_by'] = $estimateData['created_by'];
                 if ($estimateData['qty_analysis_data'] != '') {
@@ -93,10 +100,12 @@ class AddedEstimateProjectList extends Component
             Session()->put('editModalData', $this->getQtySessionData);
         }
     }
+
     public function viewModal($estimate_id)
     {
         $this->emit('openModal', $estimate_id);
     }
+
     public function openQtyModal($key)
     {
         $this->openQtyModal = !$this->openQtyModal;
@@ -152,6 +161,7 @@ class AddedEstimateProjectList extends Component
             );
         }
     }
+
     public function updatedEstimateRecalculate()
     {
         $result = 0;
@@ -178,8 +188,13 @@ class AddedEstimateProjectList extends Component
                     }
                     $result = $stringCalc->calculate($value['arrayIndex']);
                     $this->allAddedEstimatesData[$key]['total_amount'] = $result;
-                    Session()->forget('editEstimateData');
-                    Session()->put('editEstimateData', $this->allAddedEstimatesData);
+                    if ($this->editEstimate_id == '') {
+                        Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
+                        $this->reset('addedEstimateData');
+                    } else {
+                        Session()->put('editProjectEstimateData' . $this->editEstimate_id, $this->allAddedEstimatesData);
+                        $this->reset('addedEstimateData');
+                    }
                 } catch (\Exception $exception) {
                     $this->dispatchBrowserEvent('alert', [
                         'type' => 'error',
@@ -189,10 +204,12 @@ class AddedEstimateProjectList extends Component
             }
         }
     }
+
     public function closeUnitModal()
     {
         $this->openQtyModal = !$this->openQtyModal;
     }
+
     private function findItemByArrayId($data, $arrayId)
     {
         foreach ($data as &$item) {
@@ -203,6 +220,7 @@ class AddedEstimateProjectList extends Component
 
         return null;
     }
+
     public function calculateValue($key)
     {
         // dd($this->allAddedEstimatesData[$key]);
@@ -218,7 +236,7 @@ class AddedEstimateProjectList extends Component
             $this->allAddedEstimatesData[$key]['total_amount'] = 0;
         }
     }
-    //calculate estimate list
+
     public function insertAddEstimate($arrayIndex, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks)
     {
         $this->addedEstimateData['arrayIndex'] = $arrayIndex;
@@ -286,6 +304,7 @@ class AddedEstimateProjectList extends Component
             );
         }
     }
+
     public function selectAll()
     {
         if ($this->selectCheckBoxs) {
@@ -295,6 +314,7 @@ class AddedEstimateProjectList extends Component
         }
         $this->showTotalButton();
     }
+
     public function showTotalButton()
     {
         //for check select all check box
@@ -327,8 +347,13 @@ class AddedEstimateProjectList extends Component
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
             $this->insertAddEstimate($this->arrayIndex, 0, 0, 0, '', '', '', 0, 0, round($result), 'Total', '', '');
-            $this->totalOnSelectedCount = $this->totalOnSelectedCount + 1;
-            Session()->put('projectEstimationTotal', $this->totalOnSelectedCount);
+            if ($this->editEstimate_id == '') {
+                $this->totalOnSelectedCount = $this->totalOnSelectedCount + 1;
+                Session()->put('projectEstimationTotal', $this->totalOnSelectedCount);
+            }else{
+                $this->totalOnSelectedCount = $this->totalOnSelectedCount + 1;
+                Session()->put('editProjectEstimationTotal' . $this->editEstimate_id, $this->totalOnSelectedCount);
+            }
         } else {
             $this->dispatchBrowserEvent('alert', [
                 'type' => 'error',
@@ -471,6 +496,7 @@ class AddedEstimateProjectList extends Component
         );
         // $this->setEstimateDataToSession();
     }
+
     // TODO::export word on project estimate
     public function exportWord()
     {
@@ -707,6 +733,7 @@ class AddedEstimateProjectList extends Component
         }
 
     }
+
     public function render()
     {
         // $this->updateDataTableTracker = rand(1, 1000);

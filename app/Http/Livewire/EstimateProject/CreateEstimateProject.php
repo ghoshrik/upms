@@ -35,6 +35,7 @@ class CreateEstimateProject extends Component
         // 'selectedCategoryId' => 'required|integer',
 
     ];
+
     protected $messages = [
         'sorMasterDesc.required' => 'The description cannot be empty.',
         'sorMasterDesc.string' => 'The description format is not valid.',
@@ -62,6 +63,7 @@ class CreateEstimateProject extends Component
         // 'estimateData.estimate_desc.required' => 'This field is required',
         // 'estimateData.estimate_desc.string' => 'Invalid format input',
     ];
+
     public function booted()
     {
         // if ($this->selectedCategoryId == 1) {
@@ -114,6 +116,7 @@ class CreateEstimateProject extends Component
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
     }
+
     public function editEstimate($estimate_id)
     {
         $fatchEstimateMaster = SORMaster::where([['estimate_id', $estimate_id]])->first();
@@ -135,6 +138,7 @@ class CreateEstimateProject extends Component
             $this->emit('setFatchEstimateData', $fatchEstimateData);
         }
     }
+
     public function changeCategory($value)
     {
         $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'part_no', 'editEstimate_id']);
@@ -377,6 +381,7 @@ class CreateEstimateProject extends Component
             });
         }
     }
+
     public function getTableNo()
     {
         $this->fatchDropdownData['table_no'] = [];
@@ -405,6 +410,7 @@ class CreateEstimateProject extends Component
         }
         // }
     }
+
     public function getPageNo()
     {
 
@@ -433,6 +439,7 @@ class CreateEstimateProject extends Component
         }
         // }
     }
+
     public function getDynamicSor()
     {
         // dd($this->estimateData);
@@ -584,6 +591,7 @@ class CreateEstimateProject extends Component
         $this->estimateData['qty'] = 1;
         $this->estimateData['rate'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
     }
+
     public function getRateDetailsTypes()
     {
         $this->estimateData['total_amount'] = '';
@@ -593,6 +601,7 @@ class CreateEstimateProject extends Component
         $this->fatchDropdownData['rateDetailsTypes'] = RatesAnalysis::where([['rate_id', $this->estimateData['rate_no']], ['dept_id', $this->estimateData['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculoation'], ['rate_no', 0]])->select('rate_id', 'operation')->get();
         // dd($this->fatchDropdownData['rateDetailsTypes']);
     }
+
     public function getRowValue($data)
     {
         // dd($data);
@@ -775,6 +784,7 @@ class CreateEstimateProject extends Component
         // dd($this->addedEstimate);
         $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'estimateData', 'fatchDropdownData', 'selectedCategoryId', 'part_no', 'editEstimate_id']);
     }
+
     public function closeModal()
     {
         $this->viewModal = !$this->viewModal;
@@ -784,6 +794,7 @@ class CreateEstimateProject extends Component
         $this->estimateData['page_no'] = '';
         // }
     }
+
     public function render()
     {
         return view('livewire.estimate-project.create-estimate-project');

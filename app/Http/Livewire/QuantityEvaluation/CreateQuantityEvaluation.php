@@ -98,6 +98,7 @@ class CreateQuantityEvaluation extends Component
     public function mount()
     {
         $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
+        $this->fatchDropdownData['ratesList'] = [];
         $this->selectedDept = Auth::user()->department_id;
         $this->unite =  UnitMaster::select('id', 'unit_name', 'short_name', 'is_active')->where('is_active', 1)->orderBy('id', 'desc')->get();
         if (Session()->has('addedQuantityEvaluationData')) {
@@ -236,7 +237,7 @@ class CreateQuantityEvaluation extends Component
     }
     public function getDeptRates()
     {
-        $this->fatchDropdownData['ratesList'] = '';
+        $this->fatchDropdownData['ratesList'] = [];
         // $this->estimateData['rate_no'] = '';
         // $this->estimateData['description'] = '';
         // $this->estimateData['total_amount'] = '';

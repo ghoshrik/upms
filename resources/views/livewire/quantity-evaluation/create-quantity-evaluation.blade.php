@@ -34,7 +34,7 @@
                                                     @foreach ($fatchDropdownData['ratesList'] as $estimate)
                                                         <x-select.option
                                                             label="{{ $estimate['rate_id'] . ' - ' . $estimate['description'] }}"
-                                                            value="{{ $estimate['rate_id'] }}" {{ ($estimate['rate_id'] == $selectedRate)?'selected':'' }}/>
+                                                            value="{{ $estimate['rate_id'] }}" />
                                                     @endforeach
                                                 @endisset
                                             </x-select>
@@ -51,7 +51,6 @@
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
-                                        {{-- @dd($fetchDropDownData['unitMaster']); --}}
                                         <x-select wire:key="unitmaster" label="{{ trans('cruds.sor.fields.unit') }}"
                                             placeholder="Select {{ trans('cruds.sor.fields.unit') }}"
                                             wire:model.defer="estimateData.unite">
@@ -92,7 +91,7 @@
         @if (!$showTableOne && $addedEstimate != null)
         <livewire:estimate.added-estimate-list :addedEstimateData="$addedEstimate" :key="2" />
         @endif --}}
-            @if ($addedEstimate != null || Session::has('addedProjectEstimateData'))
+            @if ($addedEstimate != null || Session::has('addedQuantityEvaluationData'))
                 <div x-transition.duration.500ms>
                     {{--
             <livewire:estimate-project.added-estimate-project-list :addedEstimateData="$addedEstimate"
