@@ -721,7 +721,7 @@
         </script>
     @endif
 </div>
-{{-- <script>
+<script>
     // Save the original fetch function
     const originalFetch = window.fetch;
 
@@ -759,4 +759,4 @@
                 console.error('Error:', error);
             });
     };
-</script> --}}
+</script>

@@ -708,7 +708,11 @@ class AddedEstimateProjectList extends Component
                             'status' => 1,
                             'user_id' => Auth::user()->id,
                         ];
-                        EstimateUserAssignRecord::updateOrCreate($data);
+                        if(EstimateUserAssignRecord::where('estimate_id',$intId)->get()){
+                            EstimateUserAssignRecord::where('estimate_id',$intId)->update('status',($flag == 'draft') ? 12 : 1);
+                        }else{
+                            EstimateUserAssignRecord::create($data);
+                        }
                         $this->notification()->success(
                             $title = 'Project Estimate Created Successfully!!'
                         );

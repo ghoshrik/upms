@@ -46,7 +46,7 @@
                             <thead>
                                 <tr>
                                     <th><x-checkbox wire:key="checkbox" id="checkbox" wire:model="selectCheckBoxs"
-                                        wire:click="selectAll" title="Select All" /></th>
+                                            wire:click="selectAll" title="Select All" /></th>
                                     <th>{{ trans('cruds.estimate.fields.id_helper') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.item_number') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.description') }}</th>
@@ -84,7 +84,7 @@
                                                 --
                                             @endif
                                         </td>
-                                        <td class="text-wrap" style="width: 40rem">
+                                        <td class="text-wrap">
                                             @if ($addedEstimate['sor_item_number'] || $addedEstimate['rate_no'])
                                                 @if ($addedEstimate['sor_item_number'] && $addedEstimate['item_name'])
                                                     <strong>{{ getDepartmentName($addedEstimate['dept_id']) . ' / ' . getDepartmentCategoryName($addedEstimate['category_id']) . ' / ' . getSorTableName($addedEstimate['sor_id']) . ' / Page No: ' . getSorPageNo($addedEstimate['sor_id']) . (getSorCorrigenda($addedEstimate['sor_id']) != null ? ' - ' . getSorCorrigenda($addedEstimate['sor_id']) : '') }}</strong>
@@ -109,7 +109,7 @@
                                         <td>
                                             @if ($addedEstimate['qty'] != 0)
                                                 {{ $addedEstimate['qty'] }}
-                                                @if (isset($addedEstimate['qtyUpdate']) && $addedEstimate['qtyUpdate']==true)
+                                                @if (isset($addedEstimate['qtyUpdate']) && $addedEstimate['qtyUpdate'] == true)
                                                     <x-button wire:click="openQtyModal({{ $key }})"
                                                         type="button" class="btn btn-soft-primary btn-sm">
                                                         <span class="btn-inner">
@@ -188,7 +188,8 @@
             </div>
         </div>
         @if ($openQtyModal)
-            <livewire:components.modal.rate-analysis.unit-analysis-view-modal :unit_id="$sendArrayKey" :sendArrayDesc="$sendArrayDesc" :arrayCount="$arrayCount" :editEstimate_id="$editEstimate_id" />
+            <livewire:components.modal.rate-analysis.unit-analysis-view-modal :unit_id="$sendArrayKey" :sendArrayDesc="$sendArrayDesc"
+                :arrayCount="$arrayCount" :editEstimate_id="$editEstimate_id" />
         @endif
     @endif
 </div>
