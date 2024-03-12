@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use ChrisKonnertz\StringCalc\StringCalc;
+
 class ApiController extends Controller
 {
     public function storeTableHeader(Request $request)
@@ -407,4 +409,32 @@ class ApiController extends Controller
         ], 200);
 
     }
+
+    public function expCalculater(Request $request)
+    {
+        $result = 0;
+        $stringCalc = new StringCalc();
+        try {
+            $expression =$request->data;
+            $result = $stringCalc->calculate($expression);
+            //dd($result);
+            return response()->json([
+                'status' => true,
+                'result' => $result,
+                'remarks' => $request->remarks,
+                'exp' => $request->exp
+            ], 200);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'status' => false,
+                'error' => $exception->getMessage(), 
+            ], 500);
+        }
+    }
+    
+    
+    
+
+
+
 }

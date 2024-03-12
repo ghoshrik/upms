@@ -240,6 +240,8 @@ class AddedEstimateProjectList extends Component
 
     public function expCalc()
     {
+        //dd($this->allAddedEstimatesData);
+
         $result = 0;
         $tempIndex = strtoupper($this->expression);
         $stringCalc = new StringCalc();
@@ -257,26 +259,8 @@ class AddedEstimateProjectList extends Component
                     $this->expression = str_replace($info, "/100*", $this->expression, $key);
                 }
             }
-            // if ($this->expression) {
-            //     foreach (str_split($this->expression) as $key => $info) {
-            //         $count0 = count($this->allAddedEstimatesData);
-            //         if (ctype_alpha($info)) {
-            //             $alphabet = strtoupper($info);
-            //             $alp_id = ord($alphabet) - 64;
-            //             if ($alp_id <= $count0) {
-            //                 if ($this->allAddedEstimatesData[$alp_id]['array_id']) {
-            //                     $this->expression = str_replace($info, $this->allAddedEstimatesData[$alp_id]['total_amount'], $this->expression, $key);
-            //                 }
-            //             } else {
-            //                 $this->notification()->error(
-            //                     $title = $alphabet . ' is a invalid input'
-            //                 );
-            //             }
-            //         } elseif (htmlspecialchars($info) == "%") {
-            //             $this->expression = str_replace($info, "/100*", $this->expression, $key);
-            //         }
-            //     }
-            // }
+
+            //dd($this->expression);
             $result = $stringCalc->calculate($this->expression);
             $this->insertAddEstimate($tempIndex, 0, 0, 0, '', '', '', 0, 0, round($result, 2), 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
