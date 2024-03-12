@@ -37,9 +37,17 @@
 
     .prevdata {
         margin-bottom: 24px;
-        margin-right: 21%;
+        /* margin-right: 21%; */
     }
 
+    .col-md-3.pre {
+        margin-right: 53px;
+    }
+
+    .col-md-6.cal-exp {
+        margin-top: 21px;
+        margin-left: 44px;
+    }
 
     .button-cell {
         white-space: nowrap;
@@ -103,7 +111,6 @@
     }
 
     span.formula {
-        /* FONT-SIZE: inherit; */
         FONT-WEIGHT: 800;
         margin-bottom: 23px;
         text-decoration-line: underline;
@@ -150,9 +157,9 @@
 
 
 
-    .col-md-3.optionDropdown{
+    .col-md-3.optionDropdown {
         flex: 0 0 auto;
-        width: 20%;
+        width: 16%;
     }
 
     .card.input-fields {
@@ -187,11 +194,6 @@
         text-align: center;
     }
 
-    /* .totalSum {
-        width: auto;
-        float: right;
-    } */
-
     .row.submitBtn {
         margin-top: 2%;
         margin-right: 35px;
@@ -218,7 +220,8 @@
     }
 
     .box-border {
-        box-shadow: 1px 1px 5px;
+        box-shadow: 1px 1px 3px;
+        font: message-box;
     }
 
     .dropdown-menu li:hover {
@@ -255,12 +258,7 @@
         background-color: #3a57e8;
         color: white;
         box-shadow: 0px 0px 5px;
-        /* Change to the desired background color */
     }
-
-    /* .form-control {
-        text-align: center;
-    } */
 
     .table-container {
         position: relative;
@@ -324,6 +322,10 @@
         padding: 0px;
         float: inline-end;
     }
+
+    button.btn.btn-soft-danger.btn-sm.delBtnn {
+        margin-left: 73px;
+    }
 </style>
 
 <div class="modal" id="myInput" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
@@ -342,7 +344,7 @@
                 <p class="desp">
                     <span id="dots"><?php echo $first_part; ?> ...</span>
                     <span id="more" style="display:none;"><?php echo $first_part . ' ' . $other_part; ?></span>
-                    <button id="myBtn">Read more</button>
+                    <button id="myBtn">Read More</button>
                 </p>
             </div>
 
@@ -377,7 +379,7 @@
                                             aria-expanded="false">
                                             Select Previous Data
                                         </button>
-                                        <ul class="dropdown-menu dropdown-menu-end" style="width: calc(100% + 4.5rem);">
+                                        <ul class="dropdown-menu dropdown-menu-end" style="width:88%">
                                             <!-- Adjust the width as needed -->
                                             @isset($dropdownData)
                                                 @foreach ($dropdownData as $listData)
@@ -389,10 +391,27 @@
                                 @endif
                             @endif
                         </div>
-                        <div class="col-md-6"></div>
+                        <div class="col-md-6 cal-exp">
+
+                            <div class="input-group mb-3">
+                                <input type="text" id="expression" class="form-control"
+                                    placeholder="{{ trans('cruds.estimate.fields.operation') }}"
+                                    aria-label="{{ trans('cruds.estimate.fields.operation') }}"
+                                    aria-describedby="basic-addon1">
+                                <input type="text" class="form-control" id="remarks"
+                                    placeholder="{{ trans('cruds.estimate.fields.remarks') }}"
+                                    aria-label="{{ trans('cruds.estimate.fields.remarks') }}"
+                                    aria-describedby="basic-addon1">
+                                <button type="button"
+                                    class="btn btn-soft-primary operationcalculate">Calculate</button>
+                            </div>
+
+
+                        </div>
                     </div>
 
-                    <div class="table-container" style="height: 100px; overflow-y: auto;">
+                    <div class="table-container" style="height: 200px; overflow-y: auto;">
+
                         <table id="dataTable1" class="table mt-2 table-unit">
                             <thead>
                                 <tr>
@@ -528,7 +547,8 @@
             <div class="modal-footer rate-analysis" style="display: flex; justify-content: space-between;">
                 <button type="button" id="closeBtn" class="btn btn-soft-danger rounded-pill "
                     data-dismiss="modal">Close</button>
-                <button id="finalSubmitBtn" type="button" class="btn btn-success rounded-pill " disabled>Submit</button>
+                <button id="finalSubmitBtn" type="button" class="btn btn-success rounded-pill "
+                    disabled>Submit</button>
             </div>
         </div>
     </div>
@@ -574,7 +594,7 @@
                 grandTotal += parseFloat($(this).text());
             });
             if (arrayCount == 0) {
-                 grandTotal = 0;
+                grandTotal = 0;
             } else {
                 $('#grandTotalInput').val(grandTotal);
             }
@@ -660,7 +680,110 @@
             }
         });
 
+        $(".operationcalculate").click(function() {
+            var expression = $("#expression").val();
+            var exp = $("#expression").val(); // Storing original expression
+            var remarks = $("#remarks").val();
+            var editEstimate_Id = @json($editEstimate_id);
+            var unitId = @json($unit_id);
+            var alphaNumericRegex = /[A-Za-z0-9]/;
 
+            // Validation for blank submission
+            if (expression.trim() === "") {
+                alert("Please enter a valid expression.");
+                return; // Stop further execution
+            }
+
+            if (alphaNumericRegex.test(expression)) {
+                var rowIdentifierRegex = /[A-Za-z]\d+/g;
+                var rowIdentifiers = expression.match(rowIdentifierRegex);
+                if (rowIdentifiers) {
+                    var invalidRowIds = [];
+                    rowIdentifiers.forEach(function(rowId) {
+                        var rowIndex = parseInt(rowId.substring(1)) - 1;
+                        var row = $("#dataTable1 tbody tr:eq(" + rowIndex + ")");
+                        if (row.length === 0) {
+                            invalidRowIds.push(rowId);
+                        } else {
+                            var value = parseFloat(row.find("td:eq(2)").text().trim());
+                            expression = expression.replace(rowId, value);
+                        }
+                    });
+                    if (invalidRowIds.length > 0) {
+                        alert("The following row(s) are not present in the table: " + invalidRowIds
+                            .join(", "));
+                        return; // Stop further execution
+                    }
+                }
+            }
+
+            $.ajax({
+                url: '/calculate-unit-modal-expression-data',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    data: expression,
+                    editEstimate_Id: editEstimate_Id,
+                    parent_id: unitId,
+                    remarks: remarks,
+                    exp: exp
+                }),
+                success: function(response) {
+                    $("#expression").val("");
+                    $("#remarks").val("");
+                    var nextRowIndex = 1;
+                    $("#dataTable1 tbody tr").each(function() {
+                        var rowId = $(this).find("td:first-child").text();
+                        var rowIndex = parseInt(rowId.trim().substring(1));
+                        if (rowIndex >= nextRowIndex) {
+                            nextRowIndex = rowIndex + 1;
+                        }
+                    });
+                    var newRowId = "A" + nextRowIndex;
+                    var expressionCellContent = '<td style="text-align:center;">' + response
+                        .exp;
+                    if (response.remarks && response.remarks.trim() !== "") {
+                        expressionCellContent += ' (' + response.remarks + ')';
+                    }
+                    expressionCellContent += '</td>';
+                    var newRow = '<tr>' +
+                        '<td style="text-align:center;">' + newRowId + '</td>' +
+                        expressionCellContent +
+                        '<td style="text-align:center;">' + response.result + '</td>' +
+                        '<td style="text-align:center;"></td>' +
+                        '<td style="text-align:center;"><button type="button" class="btn btn-soft-danger btn-sm delBtnn">Delete</button></td>' +
+                        '</tr>';
+                    $("#dataTable1 tbody").append(newRow);
+                    $(document).off("click", ".delBtnn").on('click', '.delBtnn',
+                        function() {
+                            var confirmed = confirm(
+                                "Are you sure you want to delete this row?");
+                            if (confirmed) {
+                                $(this).closest('tr').remove();
+                            }
+                        });
+
+
+                    $('#metagrandtotal').show();
+
+                },
+
+                error: function(xhr, status, error) {
+                    var errorMessage = "An error occurred while calculating: ";
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMessage += xhr.responseJSON.error;
+                    } else {
+                        errorMessage += xhr.statusText;
+                    }
+                    alert(errorMessage);
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+
+        });
 
 
         $('#myBtn').click(function() {
@@ -670,11 +793,11 @@
 
             if (dots.style.display === "none") {
                 dots.style.display = "inline";
-                btnText.innerHTML = "Read more";
+                btnText.innerHTML = "Read More";
                 moreText.style.display = "none";
             } else {
                 dots.style.display = "none";
-                btnText.innerHTML = "... Read less";
+                btnText.innerHTML = "... Read Less";
                 moreText.style.display = "inline";
             }
         });
@@ -934,8 +1057,8 @@
                     $('#successAlert').text('Rule Added successfully');
                     $('#successAlert').addClass('alert-success').removeClass('alert-danger')
                         .show();
-                        $("#closeBtn").prop("disabled", true);
-                        $("#finalSubmitBtn").prop("disabled", false);
+                    $("#closeBtn").prop("disabled", true);
+                    $("#finalSubmitBtn").prop("disabled", false);
                     // Optionally, you can hide the alert after a certain duration
                     setTimeout(function() {
                         $('#successAlert').hide();
@@ -1125,6 +1248,7 @@
             updateButtons();
             updateTotalSum();
         }
+
         function updateButtons() {
             var tableRows = $("#dataTable tbody tr");
             tableRows.find(".delete-row-btn").hide();
@@ -1148,6 +1272,7 @@
                 updateTotalSum();
             }
         });
+
         function updateRowNumbers() {
             $("#dataTable tbody tr").each(function(index) {
                 $(this).find("td:first").text(index + 1);
@@ -1289,7 +1414,7 @@
                         $('#successAlert').hide();
                     }, 3000);
                     $("#closeBtn").prop("disabled", true);
-                        $("#finalSubmitBtn").prop("disabled", false);
+                    $("#finalSubmitBtn").prop("disabled", false);
                 },
 
                 error: function(xhr, status, error) {
@@ -1389,7 +1514,7 @@
                     $('#successAlert').text('Row deleted successfully');
                     $('#successAlert').addClass('alert-danger').removeClass('alert-success')
                         .show();
-                        $("#finalSubmitBtn").prop("disabled", false);
+                    $("#finalSubmitBtn").prop("disabled", false);
                     // Optionally, you can hide the alert after a certain duration
                     setTimeout(function() {
                         $('#successAlert').hide();
@@ -1535,8 +1660,8 @@
                     $('#successAlert').text('Previous Data Copied successfully');
                     $('#successAlert').addClass('alert-success').removeClass('alert-danger')
                         .show();
-                        $("#closeBtn").prop("disabled", true);
-                        $("#finalSubmitBtn").prop("disabled", false);
+                    $("#closeBtn").prop("disabled", true);
+                    $("#finalSubmitBtn").prop("disabled", false);
                     // Optionally, you can hide the alert after a certain duration
                     setTimeout(function() {
                         $('#successAlert').hide();

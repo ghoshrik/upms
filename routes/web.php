@@ -144,6 +144,10 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::post('/store-unit-modal-rule-data', [ApiController::class, 'unitQtyAdded'])->name('store-unit-modal-rule-data');
             Route::post('/unit-modal-prev-data', [ApiController::class, 'updateDataToSession'])->name('unit-modal-prev-data');
             Route::post('/get-modal-rule-data', [ApiController::class, 'getRuleData'])->name('get-modal-rule-data');
+            Route::post('/calculate-unit-modal-expression-data', [ApiController::class, 'expCalculater'])->name('calculate-unit-modal-expression-data');
+
+
+
         });
 
         Route::group(['middleware' => ['role:SOR Preparer']], function () {
@@ -253,6 +257,11 @@ Route::group(['prefix' => 'errors'], function () {
     Route::get('error500', [HomeController::class, 'error500'])->name('errors.error500');
     Route::get('maintenance', [HomeController::class, 'maintenance'])->name('errors.maintenance');
 });
+
+
+
+
+
 
 //Forms Pages Routs
 // Route::group(['prefix' => 'forms'], function() {
