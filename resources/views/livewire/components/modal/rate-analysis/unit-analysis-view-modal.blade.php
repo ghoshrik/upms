@@ -320,17 +320,21 @@
         background: none;
         border: none;
         padding: 0px;
-        float: inline-end;
+        /* float: inline-end; */
     }
 
     button.btn.btn-soft-danger.btn-sm.delBtnn {
         margin-left: 73px;
     }
+
+    .modal-dialog.modal-xl.modal-dialog-scrollable.unit-mdl {
+        max-width: 1400px;
+    }
 </style>
 
 <div class="modal" id="myInput" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
     data-bs-backdrop="static">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable " role="document">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable unit-mdl" role="document">
         <div class="modal-content rate-analysis">
             <?php
             // Assuming $sendArrayDesc is defined and contains the description
@@ -351,8 +355,7 @@
 
 
             <div class="modal-body">
-                <div style="width:100%;">
-                    <div id="successAlert" class="alert" role="alert" style="display: none;"></div>
+                <div>
                     <div class="prevdata row align-items-center">
                         <div class="col-md-3 optionDropdown">
                             <div class="dropdown">
@@ -391,7 +394,7 @@
                                 @endif
                             @endif
                         </div>
-                        <div class="col-md-6 cal-exp">
+                        <div class="col-md-4 cal-exp">
 
                             <div class="input-group mb-3">
                                 <input type="text" id="expression" class="form-control"
@@ -402,54 +405,82 @@
                                     placeholder="{{ trans('cruds.estimate.fields.remarks') }}"
                                     aria-label="{{ trans('cruds.estimate.fields.remarks') }}"
                                     aria-describedby="basic-addon1">
-                                <button type="button"
+                                <button type="button" id="calexp"
                                     class="btn btn-soft-primary operationcalculate">Calculate</button>
                             </div>
-
-
+                        </div>
+                        <div class="col-md-2">
+                            <div class="input-group mb-3">
+                                <button type="button" class="btn btn-soft-primary" id="totalOnSelected"
+                                    style="font-size: small;padding-top: 12px;padding-bottom: 9px;" disabled>
+                                    {{ trans('cruds.estimate.fields.total_on_selected') }}
+                                </button>
+                            </div>
                         </div>
                     </div>
-
+                    <div id="successAlert" class="alert" role="alert" style="display: none;"></div>
                     <div class="table-container" style="height: 200px; overflow-y: auto;">
-
+                       
                         <table id="dataTable1" class="table mt-2 table-unit">
                             <thead>
                                 <tr>
+                                    <th class="whitespace-nowrap check" style="text-align:center;">
+                                        <input type="checkbox" id="selectAllCheckbox"
+                                            class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 
+                                        border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400
+                                        dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600
+                                        dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600
+                                        dark:focus:ring-offset-secondary-800" />
+                                    </th>
                                     <th class="whitespace-nowrap" style="text-align:center;">Sl.no</th>
                                     <th class="whitespace-nowrap" style="text-align:center;">Option</th>
                                     <th class="whitespace-nowrap" style="text-align:center;">Total</th>
                                     <th class="whitespace-nowrap" style="text-align:center;">UNIT NAME</th>
                                     <th class="whitespace-nowrap" style="text-align:center;">Action</th>
+                                    <th class="whitespace-nowrap" style="text-align:center;"></th>
                                 </tr>
                             </thead>
 
-                            <tbody class="metatable" style="overflow-y:auto;">
+                            <tbody class="metatable" id="metatable_id" style="overflow-y:auto;">
                                 @if (isset($rateAnalysisArray[$unit_id]) && isset($rateAnalysisArray[$unit_id]['metadata']))
                                     <?php foreach ($rateAnalysisArray[$unit_id]['metadata'] as $index => $metadata): ?>
                                     <tr>
+                                        <td style="text-align:center;"><input type="checkbox"
+                                                class=" rowCheckbox form-checkbox rounded transition ease-in-out duration-100 
+                                            border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400
+                                            dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600
+                                            dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600
+                                            dark:focus:ring-offset-secondary-800" />
+                                        </td>
                                         <td style="text-align:center;">A<?php echo $index + 1; ?></td>
                                         <td style="text-align:center;"><?php echo $metadata['type']; ?></td>
                                         <td style="text-align:center;"><?php echo $metadata['overallTotal']; ?></td>
                                         <td style="text-align:center;">
                                             {{ !empty($metadata['unit']) ? $metadata['unit'] : null }}</td>
                                         <td style="text-align:center;">
-                                            <a type="button"
-                                                class="btn btn-soft-secondary btn-sm mr-2 {{ $metadata['type'] === 'rule' ? 'editBtnrule' : 'editBtn' }}"
-                                                data-id="{{ $metadata['currentId'] }}">
-                                                Edit
-                                            </a>
+                                            @if (!isset($metadata['key']))
+                                                <a type="button"
+                                                    class="btn btn-soft-secondary btn-sm mr-2 {{ $metadata['type'] === 'rule' ? 'editBtnrule' : 'editBtn' }}"
+                                                    data-id="{{ $metadata['currentId'] }}">
+                                                    Edit
+                                                </a>
+                                            @endif
                                             <a type="button" class="btn btn-soft-danger btn-sm delBtn"
                                                 data-id="{{ $metadata['currentId'] }}">
                                                 Delete
                                             </a>
                                         </td>
+                                        <td><input type="hidden" id="metagrandval"
+                                                value="{{ isset($metadata['grandTotal']) ? $metadata['grandTotal'] : '0' }}">
+                                        </td>
                                     </tr>
+
                                     <?php endforeach; ?>
                                 @endif
 
                             </tbody>
                         </table>
-
+                        
 
                     </div>
 
@@ -458,7 +489,7 @@
                             Grand Total:
                         </div>
                         <div class="col-md-3  grandTotalInput" style="width:20%;">
-                            <input type="text" id="grandTotalInput" class="form-control" readonly>
+                            <input type="text" id="grandTotalInput" class="form-control" value="0" readonly>
                         </div>
                     </div>
 
@@ -542,6 +573,51 @@
 
                         </div>
                     </div>
+                    <div id="Area-perimeter-rectangle" style="display: none;">
+
+                        <div class="card input-fields overflow-auto">
+                            <div class="card-body overflow-auto">
+                                <div id="simpson" class="row formulae">
+                                    <span class="formula">Area = length x width / Perimeter = 2 (length + width)</span>
+                                </div>
+                                <div id="rowMessage" class="alert alert-info" style="display: none;"></div>
+
+                                <form id="area-perimeter-rectangle" class="row g-3 align-items-center">
+                                    <div class="col-md-6">
+                                        <label for="length">Enter Length </label>
+                                        <input type="number" class="form-control" id="length"
+                                            placeholder="Enter Length" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="width">Enter Width </label>
+                                        <input type="number" class="form-control" id="width"
+                                            placeholder="Enter Width" required>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div id="error_message" class="text-danger"></div>
+                                    </div>
+                                </form>
+
+                                <div id="result" class="row mt-3">
+                                    <div class="col-md-6">
+                                        <input type="radio" id="areaRadio" class="form-check-input"
+                                            name="calcOption" value="area" checked>
+                                        <label class="form-check-label" for="areaRadio">Area</label>
+                                        <span id="areaValue"></span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="radio" id="perimeterRadio" class="form-check-input"
+                                            name="calcOption" value="perimeter">
+                                        <label class="form-check-label" for="perimeterRadio">Perimeter</label>
+                                        <span id="perimeterValue"></span>
+                                    </div>
+                                </div>
+
+                                <button id="saveBtn" type="button" class="btn btn-soft-primary"
+                                    style="float: inline-end;">Save</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer rate-analysis" style="display: flex; justify-content: space-between;">
@@ -558,7 +634,6 @@
     var currentId = null;
     var currentruleId = null;
     var type;
-
     $(document).ready(function() {
         var unitId = @json($unit_id);
         var editEstimate_Id = @json($editEstimate_id);
@@ -577,89 +652,140 @@
             $("#myInput").modal('hide');
             window.Livewire.emit('closeUnitModal');
         }
-
         $('#finalSubmitBtn').click(function() {
             var grandTotal = 0;
-            $('.metatable td:nth-child(3)').each(function() {
-                grandTotal += parseFloat($(this).text());
-            });
-
+            // $('.metatable td:nth-child(3)').each(function() {
+            //     grandTotal += parseFloat($(this).text());
+            // });
+            grandTotal = $('#grandTotalInput').val();
             window.Livewire.emit('submitGrandTotal', grandTotal, unitId);
             closeModal();
-            //alert('Grand Total: ' + grandTotal);
         });
+        // $('#grandTotalInput').on('keyup click keydown keypress keyup mouseenter mouseleave', function() {
+        //     if (!$(this).prop('disabled')) {
+        //         $(this).prop('disabled', true);
+        //     }
+        // });
+
 
         function updateGrandTotal() {
             var grandTotal = 0;
-            $('.metatable td:nth-child(3)').each(function() {
-                grandTotal += parseFloat($(this).text());
-            });
-            if (arrayCount == 0) {
-                grandTotal = 0;
-            } else {
+            $('#dataTable1 tbody tr').each(function() {
+                grandTotal = parseFloat($(this).find('#metagrandval').val());
                 $('#grandTotalInput').val(grandTotal);
+            });
+            if (parseFloat(grandTotal) !== 0) {
+                //alert(grandTotal);
+                $("#calexp").prop("disabled", true);
+                $("#totalOnSelected").prop("disabled", true);
+                $('.optionDropdown button.dropdown-toggle').prop('disabled', true);
             }
             var tableHeight = $('#dataTable1').height();
             var tableOffsetTop = $('#dataTable1').offset().top;
             var grandTotalInputHeight = $('.grandTotalInput').height();
-            var newPositionTop = tableHeight + tableOffsetTop + 20; // Adjust margin as needed
+            var newPositionTop = tableHeight + tableOffsetTop + 20;
             $('.grandTotalInput').css('top', newPositionTop + 'px');
         }
-
-        // Update grand total whenever tbody content changes
         $('.metatable').on('DOMSubtreeModified', function() {
+            $("#metatable_id input[type=checkbox]").change(function() {
+                if (!$(this).is(":checked")) {
+                    $("#selectAllCheckbox").prop("checked", false);
+                }
+            });
             updateGrandTotal();
         });
-
-        // Trigger initial calculation when the document is ready
-
         updateGrandTotal();
-
-        //rule code
-
-        var rules = ["Simpson-rule", "Rule1", "Rule2", "Rule3", "Rule4"];
+        $("#metatable_id input[type=checkbox]").change(function() {
+            if (!$(this).is(":checked")) {
+                $("#selectAllCheckbox").prop("checked", false);
+            }
+        });
+        var rules = ["Simpson-rule", "Area and Perimeter of rectangle", "Rule2", "Rule3", "Rule4"];
 
         function populateRulesDropdown() {
+
             var dropdownContent = "";
             rules.forEach(function(rule) {
                 dropdownContent += `<a class="dropdown-item rule-item" href="#">${rule}</a>`;
             });
             $('#rulesDropdown').html(dropdownContent);
         }
-
         $('.dropdown-menu').on('mouseover', '.selectOption[data-value="RULE"]', function() {
-            $('#rulesDropdown').show();
-            populateRulesDropdown();
-        });
+            var grandTotalValue = $('#grandTotalInput').val();
+            $('.rowCheckbox').prop('checked', false);
+            if (parseFloat(grandTotalValue) === 0) {
+                $('#rulesDropdown').show();
+                populateRulesDropdown();
+            } else {
+                //alert("Total Aready done!");
+                if (!this.acceptenceCriteria()) {
+                    return;
+                }
+            }
 
+        });
         $('.dropdown-menu').on('click', '.selectOption[data-value="RULE"]', function() {
-            var form = document.getElementById("simpsonsRuleForm");
-            form.reset();
-            currentId = null;
-            currentruleId = null;
-            type = "";
-            $('#rulesDropdown').show();
-            populateRulesDropdown();
+            var grandTotalValue = $('#grandTotalInput').val();
+            $('.rowCheckbox').prop('checked', false);
+            if (parseFloat(grandTotalValue) === 0) {
+                var form = document.getElementById("simpsonsRuleForm");
+                form.reset();
+                currentId = null;
+                currentruleId = null;
+                type = "";
+                $('#rulesDropdown').show();
+                populateRulesDropdown();
+            } else {
+                alert("Total Aready done!");
+                if (!this.acceptenceCriteria()) {
+                    return;
+                }
+            }
         });
-
         $('.dropdown-menu').on('mouseover', '.selectOption[data-value="OTHER"]', function() {
             $('#rulesDropdown').hide();
         });
         $('.dropdown-menu').on('click', '.selectOption[data-value="OTHER"]', function() {
-            $('#rulesDropdown').hide();
-            currentId = null;
-            currentruleId = null;
-            type = "";
-            var tableBody = $("#dataTable tbody");
-            tableBody.empty();
-            addNewRow();
-            updateTotalSum();
+            var grandTotalValue = $('#grandTotalInput').val();
+            $('.rowCheckbox').prop('checked', false);
+            if (parseFloat(grandTotalValue) === 0) {
+                $('#rulesDropdown').hide();
+                currentId = null;
+                currentruleId = null;
+                type = "";
+                var tableBody = $("#dataTable tbody");
+                tableBody.empty();
+                addNewRow();
+                updateTotalSum();
+            } else {
+                alert("Total Aready done!");
+                if (!this.acceptenceCriteria()) {
+                    return;
+                }
+            }
+        });
+
+        $('.selectOption').click(function() {
+            var selectedOption = $(this).data('value');
+            $('#selectOptionButton').addClass('btn-clicked');
+            if (selectedOption === "RULE") {} else if (selectedOption === "OTHER") {
+                $('#additionalFields').hide();
+                var grandTotalValue = $('#grandTotalInput').val();
+                $('.rowCheckbox').prop('checked', false);
+                if (parseFloat(grandTotalValue) === 0) {
+                    $('#myForm').show();
+                } else {
+                    alert("Total Aready done!");
+                    if (!this.acceptenceCriteria()) {
+                        return;
+                    }
+                }
+            }
         });
 
         $('.dropdown').on('mouseleave', function() {
             $('#rulesDropdown').hide();
         });
-
         $('#rulesDropdown').on('click', '.rule-item', function() {
             var type = $(this).text().trim();
             if (type === "Simpson-rule") {
@@ -670,6 +796,75 @@
                 currentId = null;
                 currentruleId = null;
                 type = "";
+            } else if (type === "Area and Perimeter of rectangle") {
+                $('#Area-perimeter-rectangle').show();
+
+                function calculate() {
+                    var length = parseFloat($('#length').val());
+                    var width = parseFloat($('#width').val());
+                    if (!isNaN(length) && !isNaN(width) && length > 0 && width > 0) {
+                        var area = length * width;
+                        var perimeter = 2 * (length + width);
+                        $('#areaValue').text(area.toFixed(2));
+                        $('#perimeterValue').text(perimeter.toFixed(2));
+                    } else {
+                        $('#areaValue').text('');
+                        $('#perimeterValue').text('');
+                    }
+                }
+                $('#length, #width').on('input', calculate);
+                $('#saveBtn').on('click', function() {
+                    var length = parseFloat($('#length').val());
+                    var width = parseFloat($('#width').val());
+                    var selectedOption = $('input[name="calcOption"]:checked').val();
+                    if (isNaN(length) || isNaN(width) || length <= 0 || width <= 0) {
+                        alert('Please enter valid values for length and width.');
+                        return;
+                    }
+                    var nextRowIndex = 0;
+                    $("#dataTable1 tbody tr").each(function() {
+                        var rowId = $(this).find("td:nth-child(2)").text();
+                        var rowIndex = parseInt(rowId.trim().substring(1));
+                        if (rowIndex >= nextRowIndex) {
+                            nextRowIndex = rowIndex + 1;
+                        }
+                    });
+                    var newRowId = "A" + nextRowIndex;
+                    var editButton = $('<a>').attr({
+                        'type': 'button',
+                        'class': 'btn btn-soft-secondary btn-sm mr-2 ' + (
+                            selectedOption === "rule" ? 'editBtnrule' : 'editBtn'),
+                        'data-id': newRowId
+                    }).text('Edit');
+                    var deleteButton = $('<a>').attr({
+                        'type': 'button',
+                        'class': 'btn btn-soft-danger btn-sm delBtn',
+                        'data-id': newRowId
+                    }).text('Delete');
+                    var newRow = '<tr>' +
+                        '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>'
+                    '<td style="text-align:center;">' + newRowId + '</td>' +
+                        '<td style="text-align:center;">Rule</td>';
+                    if (selectedOption === "area") {
+                        var area = parseFloat($('#areaValue').text());
+                        newRow += '<td style="text-align:center;">' + area.toFixed(2) +
+                            '</td>';
+                    } else if (selectedOption === "perimeter") {
+                        var perimeter = parseFloat($('#perimeterValue').text());
+                        newRow += '<td style="text-align:center;">' + perimeter
+                            .toFixed(2) + '</td>';
+                    }
+                    newRow += '<td style="text-align:center;"></td>' +
+                        '<td style="text-align:center;">' +
+                        editButton.prop('outerHTML') +
+                        deleteButton.prop('outerHTML') +
+                        '</td>' +
+                        '</tr>';
+                    $("#dataTable1 tbody").append(newRow);
+                    $('#metagrandtotal').show();
+                    $("#closeBtn").prop("disabled", true);
+                    $("#finalSubmitBtn").prop("disabled", false);
+                });
             } else {
                 $('#additionalFields').hide();
                 alert("OOPS! Nothing Found for " + type);
@@ -681,117 +876,10 @@
             }
         });
 
-        $(".operationcalculate").click(function() {
-            var expression = $("#expression").val();
-            var exp = $("#expression").val(); // Storing original expression
-            var remarks = $("#remarks").val();
-            var editEstimate_Id = @json($editEstimate_id);
-            var unitId = @json($unit_id);
-            var alphaNumericRegex = /[A-Za-z0-9]/;
-
-            // Validation for blank submission
-            if (expression.trim() === "") {
-                alert("Please enter a valid expression.");
-                return; // Stop further execution
-            }
-
-            if (alphaNumericRegex.test(expression)) {
-                var rowIdentifierRegex = /[A-Za-z]\d+/g;
-                var rowIdentifiers = expression.match(rowIdentifierRegex);
-                if (rowIdentifiers) {
-                    var invalidRowIds = [];
-                    rowIdentifiers.forEach(function(rowId) {
-                        var rowIndex = parseInt(rowId.substring(1)) - 1;
-                        var row = $("#dataTable1 tbody tr:eq(" + rowIndex + ")");
-                        if (row.length === 0) {
-                            invalidRowIds.push(rowId);
-                        } else {
-                            var value = parseFloat(row.find("td:eq(2)").text().trim());
-                            expression = expression.replace(rowId, value);
-                        }
-                    });
-                    if (invalidRowIds.length > 0) {
-                        alert("The following row(s) are not present in the table: " + invalidRowIds
-                            .join(", "));
-                        return; // Stop further execution
-                    }
-                }
-            }
-
-            $.ajax({
-                url: '/calculate-unit-modal-expression-data',
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    data: expression,
-                    editEstimate_Id: editEstimate_Id,
-                    parent_id: unitId,
-                    remarks: remarks,
-                    exp: exp
-                }),
-                success: function(response) {
-                    $("#expression").val("");
-                    $("#remarks").val("");
-                    var nextRowIndex = 1;
-                    $("#dataTable1 tbody tr").each(function() {
-                        var rowId = $(this).find("td:first-child").text();
-                        var rowIndex = parseInt(rowId.trim().substring(1));
-                        if (rowIndex >= nextRowIndex) {
-                            nextRowIndex = rowIndex + 1;
-                        }
-                    });
-                    var newRowId = "A" + nextRowIndex;
-                    var expressionCellContent = '<td style="text-align:center;">' + response
-                        .exp;
-                    if (response.remarks && response.remarks.trim() !== "") {
-                        expressionCellContent += ' (' + response.remarks + ')';
-                    }
-                    expressionCellContent += '</td>';
-                    var newRow = '<tr>' +
-                        '<td style="text-align:center;">' + newRowId + '</td>' +
-                        expressionCellContent +
-                        '<td style="text-align:center;">' + response.result + '</td>' +
-                        '<td style="text-align:center;"></td>' +
-                        '<td style="text-align:center;"><button type="button" class="btn btn-soft-danger btn-sm delBtnn">Delete</button></td>' +
-                        '</tr>';
-                    $("#dataTable1 tbody").append(newRow);
-                    $(document).off("click", ".delBtnn").on('click', '.delBtnn',
-                        function() {
-                            var confirmed = confirm(
-                                "Are you sure you want to delete this row?");
-                            if (confirmed) {
-                                $(this).closest('tr').remove();
-                            }
-                        });
-
-
-                    $('#metagrandtotal').show();
-
-                },
-
-                error: function(xhr, status, error) {
-                    var errorMessage = "An error occurred while calculating: ";
-                    if (xhr.responseJSON && xhr.responseJSON.error) {
-                        errorMessage += xhr.responseJSON.error;
-                    } else {
-                        errorMessage += xhr.statusText;
-                    }
-                    alert(errorMessage);
-                    console.error('Error occurred:', xhr.responseText);
-                }
-            });
-
-        });
-
-
         $('#myBtn').click(function() {
             var dots = document.getElementById("dots");
             var moreText = document.getElementById("more");
             var btnText = document.getElementById("myBtn");
-
             if (dots.style.display === "none") {
                 dots.style.display = "inline";
                 btnText.innerHTML = "Read More";
@@ -802,9 +890,6 @@
                 moreText.style.display = "inline";
             }
         });
-
-
-
         var numberOfY = 0;
         var firstInputResult, lastInputResult, oddSumResult, evenSumResult, areaResult;
         document.getElementById("Input_for_Y_def").addEventListener("input", function() {
@@ -840,24 +925,18 @@
                     numberOfY : "Enter value for Y");
                 input.required = true;
                 input.name = "Input_for_Y" + i;
-
                 if (i === 1) {
                     input.classList.add("firstinput");
                 }
-
-                // Add class to the last input
                 if (i === numberOfY) {
                     input.classList.add("lastinput");
                 }
-
                 var div = document.createElement("div");
                 div.className = "col-md-4";
                 div.appendChild(label);
                 div.appendChild(input);
                 form.insertBefore(div, inputForW.nextSibling);
             }
-
-
             var calculateRow = document.createElement("div");
             calculateRow.className = "row";
             var calculateCol = document.createElement("div");
@@ -870,7 +949,6 @@
             calculateCol.appendChild(calculateButton);
             calculateRow.appendChild(calculateCol);
             form.appendChild(calculateRow);
-
             document.getElementById("rowMessage").innerText = "Total number of  'Y' Inputs: " + numberOfY;
             document.getElementById("rowMessage").style.display = "block";
             setTimeout(function() {
@@ -878,17 +956,13 @@
             }, 1000);
         }
 
-
         function calculate() {
-            //alert(type);
             var existingResults = document.querySelectorAll(".calculation-result");
             existingResults.forEach(function(result) {
                 result.remove();
             });
 
             var inputs = document.querySelectorAll("input[name^='Input_for_Y'], input#Input_for_W");
-
-            // console.log(inputs);
             var oddSum = 0;
             var evenSum = 0;
             var firstInputValue = null;
@@ -903,7 +977,6 @@
                             hasEmptyField = true;
                         }
                     } else {
-
                         if (index === 1) {
                             firstInputValue = value;
                         } else if (index === inputs.length - 1) {
@@ -917,13 +990,9 @@
                         }
                     }
                 } else {
-
                     hasEmptyField = true;
                 }
             });
-
-
-
             if (hasEmptyField) {
                 var rowMessage = document.getElementById("rowMessage");
                 rowMessage.textContent = "Please fill in all input fields (including 'W') before calculating.";
@@ -934,7 +1003,6 @@
                 }, 1000);
                 return;
             } else {
-
                 document.getElementById("rowMessage").classList.add("alert-success");
             }
             var odd = 4 * evenSum;
@@ -942,58 +1010,42 @@
             var sum = (firstInputValue + lastInputValue);
             var area = (document.getElementById("Input_for_W").value / 3) * (firstInputValue + lastInputValue +
                 odd + even);
-
             var resultContainer = document.createElement("div");
             resultContainer.className = "col-md-12 calculation-result";
-
             var firstInputResult = document.createElement("p");
             firstInputResult.textContent = "First Input: " + (firstInputValue !== null ? firstInputValue :
                 "N/A");
-
             var lastInputResult = document.createElement("p");
             lastInputResult.textContent = "Last Input: " + (lastInputValue !== null ? lastInputValue : "N/A");
-
             var oddSumResult = document.createElement("p");
             oddSumResult.textContent = "Sum of Even Inputs: " + oddSum;
-
             var evenSumResult = document.createElement("p");
             evenSumResult.textContent = "Sum of Odd Inputs: " + evenSum;
-
             var areaResult = document.createElement("p");
             var areaRounded = area.toFixed(2);
-
-            var inputValues = {}; // Array to store input values
-
+            var inputValues = {};
             inputs.forEach(function(input, index) {
                 var value = parseFloat(input.value);
                 if (!isNaN(value)) {
                     var name = input.name === "" ? "Input_for_W" : input.name;
-                    inputValues[input.name] = value; // Push value to inputValues array
+                    inputValues[input.name] = value;
                 }
             });
             if (typeof inputValues["Input_for_W"] === "undefined") {
-                inputValues["Input_for_W"] = inputValues[""]; // Set Input_for_W to the value of ""
-                delete inputValues[""]; // Remove the empty string key
+                inputValues["Input_for_W"] = inputValues[""];
+                delete inputValues[""];
             }
             var inputForYDefValue = parseInt($("#Input_for_Y_def").val());
-            //var numberOfY = parseInt($("#Input_for_Y_def").val());
-
-            // Include the value of Input_for_def_Y in the inputValues object
             inputValues["Input_for_def_Y"] = parseFloat(inputForYDefValue);
-            // Prepare ruledata object with input values
-            inputValues["parent_id"] = '{!! $unit_id !!}'; // Append parent_id
-            inputValues["currentruleId"] = currentruleId; // Append currentruleId
-            //inputValues["type"] = type; // Append type
+            inputValues["parent_id"] = '{!! $unit_id !!}';
+            inputValues["currentruleId"] = currentruleId;
             inputValues["type"] = "rule";
             inputValues["unit"] = "Cum";
             inputValues["overallTotal"] = areaRounded;
             inputValues["editEstimate_id"] = editEstimate_Id;
-
-            // Prepare ruledata object with input values
             var ruledata = {
-                input_values: inputValues // Include input values in the ruledata object
+                input_values: inputValues
             };
-            // console.log(ruledata);
             $.ajax({
                 url: '/store-unit-modal-rule-data',
                 type: 'POST',
@@ -1005,32 +1057,35 @@
                     data: ruledata
                 }),
                 success: function(response) {
+                    $('.rowCheckbox').prop('checked', false);
                     var form = document.getElementById("simpsonsRuleForm");
                     form.reset();
                     var tableBody1 = $("#dataTable tbody");
                     tableBody1.empty();
                     var rateAnalysisArray1 = response.rateAnalysisArray[unitId]['metadata'];
                     var tableBody = $("#dataTable1 tbody");
-                    tableBody.empty(); // Clear existing rows before appending new ones
+                    tableBody.empty();
                     var sno = 0;
                     type = null;
-                    // Iterate over the rateAnalysisArray to create new table rows
                     $.each(rateAnalysisArray1, function(index, metadata) {
                         var newRow = $("<tr>");
-                        newRow.append('<td style="text-align:center;">A' + (sno +
-                            1) + '</td>');
-                        newRow.append('<td style="text-align:center;">' + metadata
-                            .type + '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>'
+                        );
+                        newRow.append('<td style="text-align:center;">A' + (sno + 1) +
+                            '</td>');
+                        newRow.append('<td style="text-align:center;">' + metadata.type +
+                            '</td>');
                         newRow.append('<td style="text-align:center;">' + metadata
                             .overallTotal + '</td>');
-                        newRow.append('<td style="text-align:center;">' + metadata
-                            .unit + '</td>');
+                        newRow.append('<td style="text-align:center;">' + metadata.unit +
+                            '</td>');
 
                         var editButton = $('<a>').attr({
                             'type': 'button',
                             'class': 'btn btn-soft-secondary btn-sm mr-2 ' + (
-                                metadata.type === 'rule' ?
-                                'editBtnrule' : 'editBtn'),
+                                metadata.type === 'rule' ? 'editBtnrule' :
+                                'editBtn'),
                             'data-id': metadata.currentId
                         }).text('edit');
 
@@ -1040,52 +1095,59 @@
                             'data-id': metadata.currentId
                         }).text('Delete');
 
-                        var buttonCell = $('<td>').css('text-align', 'center')
-                            .append(editButton).append(' ').append(deleteButton);
-                        newRow.append(buttonCell);
+                        var grandTotalValue = 0;
+                        var hiddenInput = $('<input>').attr({
+                            'type': 'hidden',
+                            'id': 'metagrandval',
+                            'value': grandTotalValue
+                        });
+                        newRow.append(hiddenInput);
 
-                        // Append the new row to the table body
+                        var buttonCell = $('<td>').css('text-align', 'center').append(
+                            editButton).append(' ').append(deleteButton);
+                        if (metadata.key) {
+                            editButton.remove();
+                        }
+                        newRow.append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
                     });
+
                     if (tableBody.find('tr').length > 0) {
                         $('#mySelect').hide();
                         $('#metagrandtotal').show();
                     } else {
                         $('#mySelect').show();
-                        $('#metagrandtotal').hide(); // Hide your div
+                        $('#metagrandtotal').hide();
                     }
                     $('#successAlert').text('Rule Added successfully');
                     $('#successAlert').addClass('alert-success').removeClass('alert-danger')
                         .show();
                     $("#closeBtn").prop("disabled", true);
                     $("#finalSubmitBtn").prop("disabled", false);
-                    // Optionally, you can hide the alert after a certain duration
                     setTimeout(function() {
                         $('#successAlert').hide();
-                    }, 3000); // 3000 milliseconds (5 seconds) example
+                    }, 2000);
+                    $('.rowCheckbox').prop('checked',
+                        false);
+                    $("#totalOnSelected").prop("disabled", false);
+                    $('#grandTotalInput').val(0);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
                 }
             });
-            //  window.Livewire.emit('unitQtyAddedrule', ruledata, areaRounded);
-
             areaResult.textContent = "Area: " + areaRounded + " cm^3";
-
             resultContainer.appendChild(firstInputResult);
             resultContainer.appendChild(lastInputResult);
             resultContainer.appendChild(oddSumResult);
             resultContainer.appendChild(evenSumResult);
             resultContainer.appendChild(areaResult);
             var form = document.getElementById("simpsonsRuleForm");
-            // form.appendChild(resultContainer);
         }
 
         $(document).on("click", ".editBtnrule", function() {
             currentruleId = this.getAttribute("data-id");
-
-            // Make an AJAX request to fetch data
             $.ajax({
                 url: '/get-modal-rule-data',
                 type: 'POST',
@@ -1104,23 +1166,17 @@
                         $('#myForm').hide();
                         $("#closeBtn").prop("disabled", true);
                         $("#finalSubmitBtn").prop("disabled", false);
+                        $('.rowCheckbox').prop('checked', false);
                         var sessionData = response.rateAnalysisArray;
-                        // console.log(sessionData);
-
-                        // Populate data into form fields
                         document.getElementById("Input_for_W").value = sessionData[
                             'input_values']['Input_for_W'];
                         document.getElementById("Input_for_Y_def").value = sessionData[
                             'input_values']['Input_for_def_Y'];
-
-                        // Remove existing Y input fields
                         var existingYInputs = document.querySelectorAll(
                             "input[name^='Input_for_Y']");
                         existingYInputs.forEach(function(input) {
                             input.parentNode.remove();
                         });
-
-                        // Append Y input fields from session data
                         var numberOfYInputs = Object.keys(sessionData['input_values'])
                             .filter(
                                 key => key.startsWith("Input_for_Y")).length;
@@ -1146,12 +1202,10 @@
                                 document
                                 .getElementById("Input_for_W").parentNode.nextSibling);
                         }
-
                         var existingCalculateButton = document.querySelector(".calc");
                         if (existingCalculateButton) {
                             existingCalculateButton.parentNode.remove();
                         }
-                        // Add the "Calculate" button
                         var calculateRow = document.createElement("div");
                         calculateRow.className = "row";
                         var calculateCol = document.createElement("div");
@@ -1165,7 +1219,6 @@
                         calculateRow.appendChild(calculateCol);
                         document.getElementById("simpsonsRuleForm").appendChild(
                             calculateRow);
-
                     } else {
                         console.error('Error:', response.message);
                     }
@@ -1176,8 +1229,6 @@
             });
         });
 
-
-        // Function to reset the result variables
         function resetResults() {
             if (firstInputResult) firstInputResult.textContent = '';
             if (lastInputResult) lastInputResult.textContent = '';
@@ -1185,10 +1236,6 @@
             if (evenSumResult) evenSumResult.textContent = '';
             if (areaResult) areaResult.textContent = '';
         }
-
-
-
-        //table code ***********************************************************************************
 
         function calculateTotal(row) {
             var length = parseFloat(row.find('.length').val()) || '';
@@ -1199,7 +1246,6 @@
                 alert('Input values cannot be 0.');
                 return;
             }
-
             var total = length * breadth * height * number;
             row.find('.total').val(total.toFixed(2));
         }
@@ -1212,7 +1258,6 @@
             });
             $("#totalSum").val(sum.toFixed(3));
         }
-        // Bind input event to input fields in each row
         $(document).delegate(
             "input[name='length'], input[name='breadth'], input[name='height'], input[name='number']",
             "input",
@@ -1222,9 +1267,7 @@
                 updateTotalSum();
             });
 
-        // Function to add new row
         function addNewRow() {
-
             var unitOptions = '<option value="">Select Unit</option>';
             <?php foreach ($unitMaster as $unit): ?>
             unitOptions += '<option value="<?php echo $unit['short_name']; ?>"><?php echo $unit['short_name']; ?></option>';
@@ -1244,7 +1287,6 @@
                 '<button type="button" class="btn-add addbtn">+</button>' +
                 '</td>' +
                 '</tr>');
-
             $("#dataTable tbody").append(newRow);
             updateButtons();
             updateTotalSum();
@@ -1298,7 +1340,6 @@
                                 placement: "bottom",
                                 trigger: "manual"
                             });
-                            // Show tooltip on hover
                             field.hover(function() {
                                 $(this).tooltip("show");
                             }, function() {
@@ -1338,7 +1379,6 @@
                     var value = $(this).val();
                     row[name] = value;
                 });
-
                 row['type'] = "other";
                 row['parent_id'] = unitId;
                 row['currentId'] = currentId !== undefined && currentId !== null ?
@@ -1360,16 +1400,18 @@
                     data: rowData,
                 }),
                 success: function(response) {
-
                     var tableBody1 = $("#dataTable tbody");
                     tableBody1.empty();
                     var rateAnalysisArray1 = response.rateAnalysisArray[unitId]['metadata'];
-
+                    // console.log(rateAnalysisArray1);
                     var tableBody = $("#dataTable1 tbody");
                     tableBody.empty();
                     var sno = 0;
                     $.each(rateAnalysisArray1, function(index, metadata) {
                         var newRow = $("<tr>");
+                        newRow.append(
+                            '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>'
+                        );
                         newRow.append('<td style="text-align:center;">A' + (sno +
                             1) + '</td>');
                         newRow.append('<td style="text-align:center;">' + metadata
@@ -1391,9 +1433,18 @@
                             'class': 'btn btn-soft-danger btn-sm delBtn',
                             'data-id': metadata.currentId
                         }).text('Delete');
-
+                        var grandTotalValue = 0;
+                        var hiddenInput = $('<input>').attr({
+                            'type': 'hidden',
+                            'id': 'metagrandval',
+                            'value': grandTotalValue
+                        });
+                        newRow.append(hiddenInput);
                         var buttonCell = $('<td>').css('text-align', 'center')
                             .append(editButton).append(' ').append(deleteButton);
+                        if (metadata.key) {
+                            editButton.remove();
+                        }
                         newRow.append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
@@ -1413,23 +1464,25 @@
                         .show();
                     setTimeout(function() {
                         $('#successAlert').hide();
-                    }, 3000);
+                    }, 2000);
                     $("#closeBtn").prop("disabled", true);
                     $("#finalSubmitBtn").prop("disabled", false);
+                    $('.rowCheckbox').prop('checked', false);
+                    $('#grandTotalInput').val(0);
                 },
-
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
                 }
             });
-
         });
         $(document).off("click", "#submitBtn").on("click", "#submitBtn", function() {
             $("#myForm").submit();
             $("#finalSubmitBtn").prop("disabled", false);
             $("#closeBtn").prop("disabled", true);
+            $('.rowCheckbox').prop('checked', false);
         });
         $(document).on("click", ".editBtn", function() {
+            $('.rowCheckbox').prop('checked', false);
             $("#closeBtn").prop("disabled", true);
             $("#finalSubmitBtn").prop("disabled", false);
             $('#additionalFields').hide();
@@ -1437,7 +1490,6 @@
             var metadataId = $(this).data("id");
             editRow(metadataId);
         });
-
         $(document).off("click", ".delBtn").on("click", ".delBtn", function() {
             var confirmed = confirm("Are you sure you want to delete this row?");
             if (confirmed) {
@@ -1445,10 +1497,12 @@
                 $('#myForm').hide();
                 var metadataId = $(this).data("id");
                 $("#closeBtn").prop("disabled", true);
+                $("#totalOnSelected").prop("disabled", false);
+                $('.rowCheckbox').prop('checked', false);
+                $("#calexp").prop("disabled", false);
                 deleteRow(metadataId);
             }
         });
-
 
         function deleteRow(rowId) {
             $.ajax({
@@ -1473,14 +1527,17 @@
                     var sno = 0;
                     $.each(rateAnalysisArray1, function(index, metadata) {
                         var newRow = $("<tr>");
-                        newRow.append('<td style="text-align:center;">A' + (sno +
-                            1) + '</td>');
-                        newRow.append('<td style="text-align:center;">' + metadata
-                            .type + '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>'
+                        );
+                        newRow.append('<td style="text-align:center;">A' + (sno + 1) +
+                            '</td>');
+                        newRow.append('<td style="text-align:center;">' + metadata.type +
+                            '</td>');
                         newRow.append('<td style="text-align:center;">' + metadata
                             .overallTotal + '</td>');
-                        newRow.append('<td style="text-align:center;">' + metadata
-                            .unit + '</td>');
+                        newRow.append('<td style="text-align:center;">' + metadata.unit +
+                            '</td>');
 
                         var editButton = $('<a>').attr({
                             'type': 'button',
@@ -1495,9 +1552,18 @@
                             'class': 'btn btn-soft-danger btn-sm delBtn',
                             'data-id': metadata.currentId
                         }).text('Delete');
-
+                        var grandTotalValue = 0;
+                        var hiddenInput = $('<input>').attr({
+                            'type': 'hidden',
+                            'id': 'metagrandval',
+                            'value': grandTotalValue
+                        });
+                        newRow.append(hiddenInput);
                         var buttonCell = $('<td>').css('text-align', 'center')
                             .append(editButton).append(' ').append(deleteButton);
+                        if (metadata.key) {
+                            editButton.remove();
+                        }
                         newRow.append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
@@ -1511,15 +1577,20 @@
                         $('#mySelect').show();
                         $('#metagrandtotal').hide();
                     }
-
                     $('#successAlert').text('Row deleted successfully');
                     $('#successAlert').addClass('alert-danger').removeClass('alert-success')
                         .show();
                     $("#finalSubmitBtn").prop("disabled", false);
-                    // Optionally, you can hide the alert after a certain duration
                     setTimeout(function() {
                         $('#successAlert').hide();
-                    }, 3000); // 3000 milliseconds (5 seconds) example
+                    }, 2000);
+                    $('.rowCheckbox').prop('checked',
+                        false);
+                    $('#grandTotalInput').val(0);
+                    $("#calexp").prop("disabled", false);
+                    $('.optionDropdown button.dropdown-toggle').prop('disabled', false);
+                    // $("#totalOnSelected").prop("disabled",
+                    //     false);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
@@ -1546,7 +1617,6 @@
                     tableBody1.empty();
                     var rateAnalysisArray = response.rateAnalysisArray;
                     rateAnalysisArray.forEach(function(rowData, index) {
-                        //console.log(rowData);
                         var unitOptions = '<option value="">Select Unit</option>';
                         <?php foreach ($unitMaster as $unit): ?>
                         var selected = (rowData && rowData.unit === "<?php echo $unit['short_name']; ?>");
@@ -1586,14 +1656,14 @@
                         updateButtons();
                     });
                     $("#finalSubmitBtn").prop("disabled", false);
+                    $('.rowCheckbox').prop('checked', false);
+                    $('#grandTotalInput').val(0);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
                 }
             });
         }
-
-
         $('.dropdown').on('click', '.prev-data', function(event) {
             event.preventDefault();
             var selected_parent_id = $(this).text();
@@ -1623,6 +1693,9 @@
                     var grandTotal = 0;
                     $.each(rateAnalysisArray2, function(index, metadata) {
                         var newRow = $("<tr>");
+                        newRow.append(
+                            '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>'
+                        );
                         newRow.append('<td style="text-align:center;">A' + (sno +
                             1) + '</td>');
                         newRow.append('<td style="text-align:center;">' + metadata
@@ -1644,9 +1717,18 @@
                             'class': 'btn btn-soft-danger btn-sm delBtn',
                             'data-id': metadata.currentId
                         }).text('Delete');
-
+                        var grandTotalValue = 0;
+                        var hiddenInput = $('<input>').attr({
+                            'type': 'hidden',
+                            'id': 'metagrandval',
+                            'value': grandTotalValue
+                        });
+                        newRow.append(hiddenInput);
                         var buttonCell = $('<td>').css('text-align', 'center')
                             .append(editButton).append(' ').append(deleteButton);
+                        if (metadata.key) {
+                            editButton.remove();
+                        }
                         newRow.append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
@@ -1663,10 +1745,12 @@
                         .show();
                     $("#closeBtn").prop("disabled", true);
                     $("#finalSubmitBtn").prop("disabled", false);
-                    // Optionally, you can hide the alert after a certain duration
                     setTimeout(function() {
                         $('#successAlert').hide();
-                    }, 3000); // 3000 milliseconds (5 seconds) example
+                    }, 2000);
+                    $('.rowCheckbox').prop('checked',
+                        false);
+                    $('#grandTotalInput').val(0);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
@@ -1682,20 +1766,385 @@
             } else {
                 $('#mySelect').show();
                 $('#metagrandtotal').hide();
-
-
             }
         }
         checkTableEmpty();
         $('.selectOption').click(function() {
             var selectedOption = $(this).data('value');
             $('#selectOptionButton').addClass('btn-clicked');
-            if (selectedOption === "RULE") {
-
-            } else if (selectedOption === "OTHER") {
-                // $("#closeBtn").prop("disabled", true);
+            if (selectedOption === "RULE") {} else if (selectedOption === "OTHER") {
                 $('#additionalFields').hide();
                 $('#myForm').show();
+            }
+        });
+        $("#selectAllCheckbox").change(function() {
+            if ($(this).is(":checked")) {
+                $(".metatable input[type=checkbox]").prop("checked", true);
+            } else {
+                $(".metatable input[type=checkbox]").prop("checked", false);
+            }
+        });
+        $("#selectAllCheckbox, .metatable input[type=checkbox]").change(function() {
+            var anyChecked = false;
+            $(".metatable input[type=checkbox]").each(function() {
+                if ($(this).prop("checked")) {
+                    anyChecked = true;
+                    return false;
+                }
+            });
+            var grandTotalValue = parseFloat($('#grandTotalInput').val());
+            if (anyChecked && grandTotalValue === 0) {
+                $('#totalOnSelected').prop('disabled', false);
+            } else {
+                $('#totalOnSelected').prop('disabled', true);
+            }
+        });
+        $('#totalOnSelected').on('click', function() {
+            var grandTotalValue = $('#grandTotalInput').val();
+            if (parseFloat(grandTotalValue) !== 0) {
+                alert("Total already done!");
+                if (!this.acceptenceCriteria()) {
+                    return;
+                }
+                $("#totalOnSelected").prop("disabled", true);
+            } else {
+                var form = document.getElementById("simpsonsRuleForm");
+                form.reset();
+                currentId = null;
+                currentruleId = null;
+                type = "";
+                $('#additionalFields').hide();
+                $('#myForm').hide();
+                var anyChecked = false;
+                $(".metatable input[type=checkbox]").each(function() {
+                    if ($(this).prop('checked')) {
+                        anyChecked = true;
+                        return false;
+                    }
+                });
+                if (!anyChecked) {
+                    alert('Please select at least one row before clicking the button.');
+                    return;
+                }
+                var expression = '';
+                var totalOverallTotal = 0;
+                $('.metatable tr').each(function() {
+                    var serialNumber = $(this).find('td:eq(1)').text();
+                    if ($(this).find('.rowCheckbox').prop(
+                            'checked')) {
+                        if (serialNumber) {
+                            expression += serialNumber + '+';
+                        }
+                        var overallTotal = $(this).find('td:eq(3)').text();
+                        overallTotal = parseFloat(overallTotal);
+                        if (!isNaN(overallTotal)) {
+                            totalOverallTotal += overallTotal;
+                        }
+                    }
+                });
+                var inputValues = {};
+                expression = expression.slice(0, -1);
+                inputValues["parent_id"] = '{!! $unit_id !!}';
+                inputValues["currentruleId"] = currentruleId;
+                inputValues["type"] = expression;
+                inputValues["unit"] = "Cum";
+                inputValues["overallTotal"] = totalOverallTotal;
+                inputValues["grandTotal"] = totalOverallTotal;
+                inputValues["editEstimate_id"] = editEstimate_Id;
+                inputValues["key"] = "total";
+                var ruledata = {
+                    input_values: inputValues
+                };
+                $.ajax({
+                    url: '/calculate-unit-modal-checkbox-expression-data',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        data: ruledata
+                    }),
+                    success: function(response) {
+                        var tableBody1 = $("#dataTable tbody");
+                        tableBody1.empty();
+                        var rateAnalysisArray1 = response.rateAnalysisArray[unitId][
+                            'metadata'
+                        ];
+                        var tableBody = $("#dataTable1 tbody");
+                        tableBody.empty();
+
+                        var sno = 0;
+                        $.each(rateAnalysisArray1, function(index, metadata) {
+                            var newRow = $("<tr>");
+                            newRow.append(
+                                '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>'
+                            );
+                            newRow.append('<td style="text-align:center;">A' + (
+                                    sno +
+                                    1) +
+                                '</td>');
+                            newRow.append('<td style="text-align:center;">' +
+                                metadata
+                                .type +
+                                '</td>');
+                            newRow.append('<td style="text-align:center;">' +
+                                metadata
+                                .overallTotal + '</td>');
+                            newRow.append('<td style="text-align:center;">' +
+                                metadata
+                                .unit +
+                                '</td>');
+
+                            var editButton = $('<a>').attr({
+                                'type': 'button',
+                                'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                                    (
+                                        metadata.type === 'rule' ?
+                                        'editBtnrule' : 'editBtn'),
+                                'data-id': metadata.currentId
+                            }).text('edit');
+
+                            var deleteButton = $('<a>').attr({
+                                'type': 'button',
+                                'class': 'btn btn-soft-danger btn-sm delBtn',
+                                'data-id': metadata.currentId
+                            }).text('Delete');
+                            var grandTotalValue = 0;
+                        var hiddenInput = $('<input>').attr({
+                            'type': 'hidden',
+                            'id': 'metagrandval',
+                            'value': grandTotalValue
+                        });
+                        newRow.append(hiddenInput);
+                            var buttonCell = $('<td>').css('text-align', 'center')
+                                .append(editButton).append(' ').append(
+                                    deleteButton);
+                            if (metadata.key) {
+                                editButton.remove();
+                            }
+                            newRow.append(buttonCell);
+                            tableBody.append(newRow);
+                            sno++;
+                            $('#grandTotalInput').val(metadata
+                                .overallTotal);
+                        });
+                        addNewRow();
+                        updateTotalSum();
+                        if (tableBody.find('tr').length > 0) {
+                            $('#mySelect').hide();
+                            $('#metagrandtotal').show();
+                        } else {
+                            $('#mySelect').show();
+                            $('#metagrandtotal').hide();
+                        }
+                        $('#successAlert').text('Row Total added successfully');
+                        $('#successAlert').addClass('alert-success').removeClass(
+                                'alert-danger')
+                            .show();
+                        $("#finalSubmitBtn").prop("disabled", false);
+                        setTimeout(function() {
+                            $('#successAlert').hide();
+                        }, 2000);
+                        $('#metagrandtotal').show();
+                        $("#calexp").prop("disabled", true);
+                        $("#closeBtn").prop("disabled", true);
+                        $("#finalSubmitBtn").prop("disabled", false);
+                        $("#totalOnSelected").prop("disabled", true);
+                        $('.rowCheckbox').prop('checked', false);
+                        $('#additionalFields').hide();
+                        $('#myForm').hide();
+                        $('.optionDropdown button.dropdown-toggle').prop('disabled', true);
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMessage = "An error occurred while calculating: ";
+                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                            errorMessage += xhr.responseJSON.error;
+                        } else {
+                            errorMessage += xhr.statusText;
+                        }
+                        alert(errorMessage);
+                        console.error('Error occurred:', xhr.responseText);
+                    }
+                });
+            }
+        });
+
+
+
+        $(".operationcalculate").click(function() {
+            var grandTotalValue = $('#grandTotalInput').val();
+            $('.rowCheckbox').prop('checked', false);
+            if (parseFloat(grandTotalValue) !== 0) {
+                if (!this.acceptenceCriteria()) {
+                    return;
+                }
+                $("#totalOnSelected").prop("disabled", true);
+            } else {
+                var expression = $("#expression").val();
+                // alert(expression);
+                var exp = $("#expression").val();
+                var remarks = $("#remarks").val();
+                var editEstimate_Id = @json($editEstimate_id);
+                var unitId = @json($unit_id);
+                var alphaNumericRegex = /[A-Za-z0-9]/;
+                if (expression.trim() === "") {
+                    alert("Please enter a valid expression.");
+                    return;
+                }
+                if (alphaNumericRegex.test(expression)) {
+                    var rowIdentifierRegex = /[A-Za-z]\d+/g;
+                    var rowIdentifiers = expression.match(rowIdentifierRegex);
+                    if (rowIdentifiers) {
+                        var invalidRowIds = [];
+                        rowIdentifiers.forEach(function(rowId) {
+                            var rowIndex = parseInt(rowId.substring(1)) - 1;
+                            var row = $("#dataTable1 tbody tr:eq(" + rowIndex + ")");
+                            if (row.length === 0) {
+                                invalidRowIds.push(rowId);
+                            } else {
+                                var value = parseFloat(row.find("td:eq(3)").text().trim());
+                                expression = expression.replace(rowId, value);
+                            }
+                        });
+                        if (invalidRowIds.length > 0) {
+                            alert("The following row(s) are not present in the table: " + invalidRowIds
+                                .join(", "));
+                            return;
+                        }
+                    }
+                }
+
+                var inputValues = {};
+                //expression = expression.slice(0, -1);
+                //alert(expression);
+                inputValues["parent_id"] = '{!! $unit_id !!}';
+                inputValues["currentruleId"] = currentruleId;
+                inputValues["type"] = exp;
+                inputValues["unit"] = "Cum";
+                inputValues["overallTotal"] = expression;
+                // inputValues["grandTotal"] = totalOverallTotal;
+                inputValues["editEstimate_id"] = editEstimate_Id;
+                inputValues["key"] = "total";
+                inputValues["remarks"] = remarks;
+                var ruledata = {
+                    input_values: inputValues
+                };
+                $.ajax({
+                    url: '/calculate-unit-modal-expression-data',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        data: ruledata
+                    }),
+                    success: function(response) {
+                        $("#expression").val("");
+                        $("#remarks").val("");
+                        $('.rowCheckbox').prop('checked', false);
+                        var tableBody1 = $("#dataTable tbody");
+                        tableBody1.empty();
+                        var rateAnalysisArray2 = response.rateAnalysisArray[unitId][
+                            'metadata'
+                        ];
+
+                       // console.log(rateAnalysisArray2);
+                        var tableBody = $("#dataTable1 tbody");
+                        tableBody.empty();
+
+                        var sno = 0;
+                        $.each(rateAnalysisArray2, function(index, metadata) {
+                            var newRow = $("<tr>");
+                            newRow.append(
+                                '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>'
+                            );
+                            newRow.append('<td style="text-align:center;">A' + (
+                                    sno +
+                                    1) +
+                                '</td>');
+                            newRow.append('<td style="text-align:center;">' +
+                                metadata.type + (metadata.remarks ? ' (' +
+                                    metadata.remarks + ')' : '') +
+                                '</td>');
+                            newRow.append('<td style="text-align:center;">' +
+                                metadata
+                                .overallTotal + '</td>');
+                            newRow.append('<td style="text-align:center;">' +
+                                metadata
+                                .unit +
+                                '</td>');
+                            var editButton = $('<a>').attr({
+                                'type': 'button',
+                                'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                                    (
+                                        metadata.type === 'rule' ?
+                                        'editBtnrule' : 'editBtn'),
+                                'data-id': metadata.currentId
+                            }).text('edit');
+
+                            var deleteButton = $('<a>').attr({
+                                'type': 'button',
+                                'class': 'btn btn-soft-danger btn-sm delBtn',
+                                'data-id': metadata.currentId
+                            }).text('Delete');
+                            var grandTotalValue = 0;
+                        var hiddenInput = $('<input>').attr({
+                            'type': 'hidden',
+                            'id': 'metagrandval',
+                            'value': grandTotalValue
+                        });
+                        newRow.append(hiddenInput);
+                            var buttonCell = $('<td>').css('text-align', 'center')
+                                .append(editButton).append(' ').append(
+                                    deleteButton);
+                            if (metadata.key) {
+                                editButton.remove();
+                            }
+                            newRow.append(buttonCell);
+                            tableBody.append(newRow);
+                            sno++;
+
+                        });
+                        addNewRow();
+                        updateTotalSum();
+                        if (tableBody.find('tr').length > 0) {
+                            $('#mySelect').hide();
+                            $('#metagrandtotal').show();
+                        } else {
+                            $('#mySelect').show();
+                            $('#metagrandtotal').hide();
+                        }
+                        $('#successAlert').text('Row  added successfully');
+                        $('#successAlert').addClass('alert-success').removeClass(
+                                'alert-danger')
+                            .show();
+                        $("#finalSubmitBtn").prop("disabled", false);
+                        setTimeout(function() {
+                            $('#successAlert').hide();
+                        }, 2000);
+                        $('#metagrandtotal').show();
+                        $("#calexp").prop("disabled", true);
+                        $("#closeBtn").prop("disabled", true);
+                        $("#finalSubmitBtn").prop("disabled", false);
+                        $("#totalOnSelected").prop("disabled", true);
+                        $('.rowCheckbox').prop('checked', false);
+                        $('#additionalFields').hide();
+                        $('#myForm').hide();
+                        
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMessage = "An error occurred while calculating: ";
+                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                            errorMessage += xhr.responseJSON.error;
+                        } else {
+                            errorMessage += xhr.statusText;
+                        }
+                        alert(errorMessage);
+                        console.error('Error occurred:', xhr.responseText);
+                    }
+                });
             }
         });
         addNewRow();
