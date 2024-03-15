@@ -411,8 +411,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="input-group mb-3">
-                                <button type="button" class="btn btn-soft-primary" id="totalOnSelected"
-                                    style="font-size: small;padding-top: 12px;padding-bottom: 9px;" disabled>
+                                <button type="button" class="btn btn-soft-primary" id="totalOnSelected" disabled>
                                     {{ trans('cruds.estimate.fields.total_on_selected') }}
                                 </button>
                             </div>
