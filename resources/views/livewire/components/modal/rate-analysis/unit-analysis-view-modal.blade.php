@@ -1119,7 +1119,8 @@
                         newRow.append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
-                        $('#grandTotalInput').val(metadata.grandTotal);
+                        $('#grandTotalInput').val(metadata.grandTotal !== undefined && metadata.grandTotal !== null ? metadata.grandTotal : 0);
+
                     });
 
                     if (tableBody.find('tr').length > 0) {
@@ -1139,7 +1140,7 @@
                     }, 2000);
                     $('.rowCheckbox').prop('checked',
                         false);
-                    $("#totalOnSelected").prop("disabled", false);
+                    $("#totalOnSelected").prop("disabled", true);
                    // $('#grandTotalInput').val(0);
                 },
                 error: function(xhr, status, error) {
@@ -1459,7 +1460,8 @@
                         newRow.append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
-                        $('#grandTotalInput').val(metadata.grandTotal);
+                        $('#grandTotalInput').val(metadata.grandTotal !== undefined && metadata.grandTotal !== null ? metadata.grandTotal : 0);
+
                     });
                     currentId = null;
                     addNewRow();
@@ -1566,7 +1568,7 @@
                             'class': 'btn btn-soft-danger btn-sm delBtn',
                             'data-id': metadata.currentId
                         }).text('Delete');
-                        var grandTotalValue = 0;
+                        var grandTotalValue = metadata.grandTotal;
                         var hiddenInput = $('<input>').attr({
                             'type': 'hidden',
                             'id': 'metagrandval',
@@ -1581,7 +1583,8 @@
                         newRow.append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
-                        $('#grandTotalInput').val(metadata.grandTotal);
+                        $('#grandTotalInput').val(metadata.grandTotal !== undefined && metadata.grandTotal !== null ? metadata.grandTotal : 0);
+
                     });
                     addNewRow();
                     updateTotalSum();
@@ -1601,7 +1604,7 @@
                     }, 2000);
                     $('.rowCheckbox').prop('checked',
                         false);
-                    $('#grandTotalInput').val(0);
+                    //$('#grandTotalInput').val(0);
                     $("#calexp").prop("disabled", false);
                     $('.optionDropdown button.dropdown-toggle').prop('disabled', false);
                     // $("#totalOnSelected").prop("disabled",
@@ -1749,7 +1752,8 @@
                         newRow.append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
-                        $('#grandTotalInput').val(metadata.grandTotal);
+                        $('#grandTotalInput').val(metadata.grandTotal !== undefined && metadata.grandTotal !== null ? metadata.grandTotal : 0);
+
                     });
                     if (tableBody.find('tr').length > 0) {
                         $('#mySelect').hide();
@@ -2123,7 +2127,8 @@
                             newRow.append(buttonCell);
                             tableBody.append(newRow);
                             sno++;
-                            $('#grandTotalInput').val(metadata.grandTotal);
+                            $('#grandTotalInput').val(metadata.grandTotal !== undefined && metadata.grandTotal !== null ? metadata.grandTotal : 0);
+
                         });
                         addNewRow();
                         updateTotalSum();

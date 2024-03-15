@@ -273,7 +273,8 @@ class ApiController extends Controller
             }
             $grandTotalOverallTotal = 0;
             foreach ($sessionData[$parentId]['metadata'] as $metadata) {
-                $grandTotalOverallTotal += $metadata['overallTotal'];
+                $overallTotal = floatval($metadata['overallTotal']);
+                $grandTotalOverallTotal += $overallTotal;
             }
             if (empty($Estimate_id)) {
                 Session()->put('modalData', $sessionData);
@@ -293,6 +294,7 @@ class ApiController extends Controller
                 'rateAnalysisArray' => $this->rateAnalysisArray,
             ], 200);
         } catch (\Exception $e) {
+            dd($e);
           
         }
     }
