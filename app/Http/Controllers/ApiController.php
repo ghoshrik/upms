@@ -207,7 +207,7 @@ class ApiController extends Controller
     }
     public function unitQtyAdded(Request $request)
     {
-
+        //dd($request);
         try {
             $data = $request->data;
             //dd($data);
@@ -460,45 +460,11 @@ class ApiController extends Controller
 }
 
     
+// public function unitQtyAdded1(Request $request)
+// {
+//  dd($request);
+// }   
 
-    
-
-    public function expcheckCalculater(Request $request)
-    {
-        try {
-        $Estimate_id = $request->editEstimate_Id;
-        if (empty($Estimate_id)) {
-            $sessionData = Session()->get('modalData');
-        } else {
-            $sessionData = Session()->get('editModalData');
-            // dd($sesssionData);
-        }
-
-          //dd($sessionData);
-       
-            $total =$request->data;
-            $expression = $request->expression;
-            //dd($result);
-            return response()->json([
-                'status' => true,
-                'result' => $total,
-                'exp' => $expression
-            ], 200);
-        } catch (\Exception $exception) {
-            return response()->json([
-                'status' => false,
-                'error' => $exception->getMessage(), 
-            ], 500);
-        }
-
-        // if (empty($Estimate_id)) {
-        //     Session()->put('modalData', $sessionData);
-        //     $sessionresData = Session()->get('modalData');
-        // } else {
-        //     Session()->put('editModalData', $sessionData);
-        //     $sessionresData = Session()->get('editModalData');
-        // }
-
-    }
+   
 
 }
