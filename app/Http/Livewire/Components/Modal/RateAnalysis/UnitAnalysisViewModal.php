@@ -22,8 +22,9 @@ class UnitAnalysisViewModal extends Component
          //dd("modal",$this->rateAnalysisArray);
         }else{
             $this->rateAnalysisArray = Session()->get('editModalData');
-         //dd("editmodal",$this->rateAnalysisArray);
+        // dd("editmodal",$this->rateAnalysisArray);
         }
+        //dd($this->rateAnalysisArray);
         $this->unitMaster = UnitMaster::all();
         if (isset($this->rateAnalysisArray) && is_array($this->rateAnalysisArray)) {
         if (count($this->rateAnalysisArray) > 0) {

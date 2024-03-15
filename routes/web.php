@@ -145,8 +145,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::post('/unit-modal-prev-data', [ApiController::class, 'updateDataToSession'])->name('unit-modal-prev-data');
             Route::post('/get-modal-rule-data', [ApiController::class, 'getRuleData'])->name('get-modal-rule-data');
             Route::post('/calculate-unit-modal-expression-data', [ApiController::class, 'expCalculater'])->name('calculate-unit-modal-expression-data');
+            Route::post('/calculate-unit-modal-checkbox-expression-data', [ApiController::class, 'unitQtyAdded'])->name('calculate-unit-modal-checkbox-expression-data');
 
-
+            
 
         });
 
