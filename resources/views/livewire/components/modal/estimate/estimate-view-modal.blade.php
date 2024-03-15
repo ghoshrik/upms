@@ -147,7 +147,7 @@
                                                                     <div class="card card-body">
                                                                         <?php
                                                                         if (isset($metadata['currentId'])) {
-                                                                            if(isset($metadata['type']) && $metadata['type'] == "other") { 
+                                                                            if(isset($metadata['type']) && $metadata['type'] == "other") {
                                                                         ?>
                                                                         <table class="table table-bordered">
                                                                             <thead>
@@ -297,14 +297,14 @@
 <script>
     function toggleCollapse(key) {
         var collapseExample = document.getElementById('collapseExample_' + key);
-        var ariaExpanded = document.querySelector('.collapse-button').getAttribute('aria-expanded');
+        var ariaExpanded = collapseExample.getAttribute('aria-expanded');
 
         if (ariaExpanded === 'true') {
             collapseExample.classList.remove('show');
-            document.querySelector('.collapse-button').setAttribute('aria-expanded', 'false');
+            collapseExample.setAttribute('aria-expanded', 'false');
         } else {
             collapseExample.classList.add('show');
-            document.querySelector('.collapse-button').setAttribute('aria-expanded', 'true');
+            collapseExample.setAttribute('aria-expanded', 'true');
         }
     }
 
@@ -319,7 +319,7 @@
         } else {
             collapseExample.classList.add('show');
             collapseExample.setAttribute('aria-expanded', 'true');
-           
+
         }
     }
 
@@ -331,6 +331,11 @@
 
         // Clone the content and append it to the new window
         var contentToPrint = document.getElementById('printContent').cloneNode(true);
+        // Remove all buttons from the cloned content
+        var buttons = contentToPrint.querySelectorAll('button');
+        buttons.forEach(function(button) {
+            button.remove();
+        });
         printWindow.document.body.appendChild(contentToPrint);
 
         // Add styles for print inside the script
