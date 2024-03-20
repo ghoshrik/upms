@@ -365,6 +365,9 @@ class ApiController extends Controller
         }
 
         $rowdata = $sessionData[$request->unitId][$request->ruleId];
+        $rowdata['input_values']['current_id'] = $request->ruleId;
+
+       // dd($rowdata);
         return response()->json([
             'status' => true,
             'rateAnalysisArray' => $rowdata,

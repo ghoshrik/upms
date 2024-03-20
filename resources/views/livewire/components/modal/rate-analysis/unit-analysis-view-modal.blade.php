@@ -346,8 +346,12 @@
 
             <div class="modal-header rate-analysis">
                 <p class="desp">
-                    <span id="dots"><?php echo $first_part; ?> ...</span>
-                    <span id="more" style="display:none;"><?php echo $first_part . ' ' . $other_part; ?></span>
+                    <span id="dots">
+                        <?php echo $first_part; ?> ...
+                    </span>
+                    <span id="more" style="display:none;">
+                        <?php echo $first_part . ' ' . $other_part; ?>
+                    </span>
                     <button id="myBtn">Read More</button>
                 </p>
             </div>
@@ -451,21 +455,42 @@
                                             dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600
                                             dark:focus:ring-offset-secondary-800" />
                                         </td>
-                                        <td style="text-align:center;">A<?php echo $index + 1; ?></td>
+                                        <td style="text-align:center;">A
+                                            <?php echo $index + 1; ?>
+                                        </td>
                                         <td style="text-align:center;">
                                             <?php echo $metadata['type']; ?>
                                             <?php if(isset($metadata['remarks']) && !empty($metadata['remarks'])): ?>
-                                            [<?php echo $metadata['remarks']; ?>]
+                                            [
+                                            <?php echo $metadata['remarks']; ?>]
                                             <?php endif; ?>
                                         </td>
 
-                                        <td style="text-align:center;"><?php echo $metadata['overallTotal']; ?></td>
+                                        <td style="text-align:center;">
+                                            <?php echo $metadata['overallTotal']; ?>
+                                        </td>
                                         <td style="text-align:center;">
                                             {{ !empty($metadata['unit']) ? $metadata['unit'] : null }}</td>
                                         <td style="text-align:center;">
+                                            @php $editButtonClass = null; @endphp
                                             @if (!isset($metadata['key']))
+                                                @php
+                                                    if ($metadata['btntype'] == 1) {
+                                                        $editButtonClass = 'editBtnrule';
+                                                    } elseif ($metadata['btntype'] == 2) {
+                                                        $editButtonClass = 'editBtn';
+                                                    } elseif ($metadata['btntype'] == 3) {
+                                                        $editButtonClass = 'defaultbtn';
+                                                    } elseif ($metadata['btntype'] == 4) {
+                                                        $editButtonClass = 'saBtn';
+                                                    } elseif ($metadata['btntype'] == 5) {
+                                                        $editButtonClass = 'apcbtn';
+                                                    } else {
+                                                        $editButtonClass = 'defaultbtn';
+                                                    }
+                                                @endphp
                                                 <a type="button"
-                                                    class="btn btn-soft-secondary btn-sm mr-2 {{ $metadata['type'] === 'rule' ? 'editBtnrule' : 'editBtn' }}"
+                                                    class="btn btn-soft-secondary btn-sm mr-2 {{ $editButtonClass }}"
                                                     data-id="{{ $metadata['currentId'] }}">
                                                     Edit
                                                 </a>
@@ -623,6 +648,104 @@
                             </div>
                         </div>
                     </div>
+                    <div id="surfaceArea-volume-rectangle" style="display: none;">
+
+                        <div class="card input-fields overflow-auto">
+                            <div class="card-body overflow-auto">
+                                <div id="simpson" class="row formulae">
+                                    <span class="formula">Surface Area = 2(wl+hl+hw)</span>
+                                </div>
+                                <div id="rowMessage" class="alert alert-info" style="display: none;"></div>
+
+                                <form id="surfaceArea-volume-rectangle" class="row g-3 align-items-center">
+                                    <div class="col-md-6">
+                                        <label for="length">Enter Length</label>
+                                        <input type="number" class="form-control" name="salength" id="salength"
+                                            placeholder="Enter Length" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="width">Enter Width</label>
+                                        <input type="number" class="form-control" name="sawidth" id="sawidth"
+                                            placeholder="Enter Width" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="height">Enter Height</label>
+                                        <input type="number" class="form-control" name="saheight" id="saheight"
+                                            placeholder="Enter Height" required>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div id="error_message" class="text-danger"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-end">
+                                            <button id="saveBtn1" type="submit" class="btn btn-soft-primary"
+                                                style="width:auto">Save</button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Area-perimeter-circle" style="display:none;">
+
+                        <div class="card input-fields overflow-auto">
+                            <div class="card-body overflow-auto">
+                                <div id="simpson" class="row formulae">
+                                    <span class="formula">Area of Circle = πR2 / Perimeter = 2πR</span>
+                                </div>
+                                <div id="rowMessage" class="alert alert-info" style="display: none;"></div>
+                                <div class="col-md-3">
+                                    <div class="dropdown">
+                                        <button class="btn relative rounded-md  dropdown-toggle box-border"
+                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Select Shape
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="selectOptionn" href="#" data-value="circle">Full
+                                                    Circle</a></li>
+                                            <li><a class="selectOptionn" href="#" data-value="semiCircle">Semi
+                                                    Circle</a></li>
+                                            <li><a class="selectOptionn" href="#"
+                                                    data-value="quarterCircle">Quarter Circle</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <form id="area-perimeter-circle" class="row g-3 align-items-center">
+                                    <div class="col-md-6">
+                                        <label for="radius">Enter radius </label>
+                                        <input type="number" class="form-control" id="radius"
+                                            placeholder="Enter radius" required>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div id="error_message" class="text-danger"></div>
+                                    </div>
+                                </form>
+
+                                <div id="result-circle" class="row mt-3">
+                                    <div class="col-md-6">
+                                        <input type="radio" id="areaRadiocircle" class="form-check-input"
+                                            name="calcOptionn" value="area" checked>
+                                        <label class="form-check-label" for="areaRadio">Area</label>
+                                        <span id="areaValue"></span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="radio" id="perimeterRadiocircle" class="form-check-input"
+                                            name="calcOptionn" value="perimeter">
+                                        <label class="form-check-label" for="perimeterRadio">Perimeter</label>
+                                        <span id="perimeterValue"></span>
+                                    </div>
+                                </div>
+
+                                <button id="saveBtnn" type="submit" class="btn btn-soft-primary"
+                                    style="float: inline-end;">Save</button>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
             <div class="modal-footer rate-analysis" style="display: flex; justify-content: space-between;">
@@ -639,6 +762,11 @@
     var currentId = null;
     var currentruleId = null;
     var type;
+    var area = 0;
+    var perimeter = 0;
+    var type = '';
+    var dataValue = null;
+    var selectedOption = '';
     $(document).ready(function() {
         var unitId = @json($unit_id);
         var editEstimate_Id = @json($editEstimate_id);
@@ -706,16 +834,27 @@
                 $("#selectAllCheckbox").prop("checked", false);
             }
         });
-        var rules = ["Simpson-rule", "Area and Perimeter of rectangle", "Rule2", "Rule3", "Rule4"];
+        var rules = ["Simpson-rule", "Area and Perimeter of rectangle", "surfaceArea-volume-rectangle",
+            "Area and Perimeter of circle",
+            "Rule4"
+        ];
+        var ruleDataValues = {
+            "Simpson-rule": "1",
+            "Area and Perimeter of rectangle": "3",
+            "surfaceArea-volume-rectangle": "4",
+            "Area and Perimeter of circle": "5",
+            "Rule4": "6"
+        };
 
         function populateRulesDropdown() {
-
             var dropdownContent = "";
             rules.forEach(function(rule) {
-                dropdownContent += `<a class="dropdown-item rule-item" href="#">${rule}</a>`;
+                dropdownContent +=
+                    `<a class="dropdown-item rule-item" data-value="${ruleDataValues[rule]}" href="#">${rule}</a>`;
             });
             $('#rulesDropdown').html(dropdownContent);
         }
+
         $('.dropdown-menu').on('mouseover', '.selectOption[data-value="RULE"]', function() {
             var grandTotalValue = $('#grandTotalInput').val();
             $('.rowCheckbox').prop('checked', false);
@@ -723,13 +862,13 @@
                 $('#rulesDropdown').show();
                 populateRulesDropdown();
             } else {
-                //alert("Total Aready done!");
-                if (!this.acceptenceCriteria()) {
+                //alert("Total Already done!");
+                if (!this.acceptanceCriteria()) {
                     return;
                 }
             }
-
         });
+
         $('.dropdown-menu').on('click', '.selectOption[data-value="RULE"]', function() {
             var grandTotalValue = $('#grandTotalInput').val();
             $('.rowCheckbox').prop('checked', false);
@@ -793,199 +932,254 @@
             $('#rulesDropdown').hide();
         });
         $('#rulesDropdown').on('click', '.rule-item', function() {
-            var type = $(this).text().trim();
-            if (type === "Simpson-rule") {
+            type = $(this).text().trim();
+            dataValue = $(this).data('value');
+            // alert(dataValue);
+            if (dataValue === 1) {
                 $('#additionalFields').show();
                 $('#myForm').hide();
+                $('#Area-perimeter-rectangle').hide();
+                $('#surfaceArea-volume-rectangle').hide();
                 var form = document.getElementById("simpsonsRuleForm");
                 form.reset();
                 currentId = null;
                 currentruleId = null;
-                type = "";
-            } else if (type === "Area and Perimeter of rectangle") {
+                // type = "";
+            } else if (dataValue === 3) {
                 $('#Area-perimeter-rectangle').show();
+                $('#surfaceArea-volume-rectangle').hide();
+                $('#additionalFields').hide();
+                $('#myForm').hide();
+                var form = document.getElementById("area-perimeter-rectangle");
+                form.reset();
+                currentId = null;
+                currentruleId = null;
+                // type = "";
 
-                var area = 0;
-                var perimeter = 0;
+            } else if (dataValue === 4) {
+                $('#surfaceArea-volume-rectangle').show();
+                $('#Area-perimeter-rectangle').hide();
+                $('#additionalFields').hide();
+                $('#myForm').hide();
+                $('#surfaceArea-volume-rectangle').trigger('reset');
+                currentId = null;
+                currentruleId = null;
+                // type = "";
 
-                // Function to calculate area and perimeter
-                function calculate() {
-                    var length = parseFloat($('#length').val());
-                    var width = parseFloat($('#width').val());
-                    if (!isNaN(length) && !isNaN(width) && length > 0 && width > 0) {
-                        area = length * width;
-                        perimeter = 2 * (length + width);
-                        $('#areaValue').text(area.toFixed(2));
-                        $('#perimeterValue').text(perimeter.toFixed(2));
-                    } else {
-                        $('#areaValue').text('');
-                        $('#perimeterValue').text('');
-                    }
-                }
+            } else if (dataValue === 5) {
+                $('#Area-perimeter-circle').show();
+                $('#surfaceArea-volume-rectangle').hide();
+                $('#Area-perimeter-rectangle').hide();
+                $('#additionalFields').hide();
+                $('#myForm').hide();
+                $('#surfaceArea-volume-rectangle').trigger('reset');
+                currentId = null;
+                currentruleId = null;
+                // type = "";
 
-                // Event listener for input changes in length and width fields
-                $('#length, #width').on('input', calculate);
-
-                // Event listener for save button click
-                $('#saveBtn').on('click', function() {
-                    var length = parseFloat($('#length').val());
-                    var width = parseFloat($('#width').val());
-                    var selectedOption = $('input[name="calcOption"]:checked').val();
-                    if (isNaN(length) || isNaN(width) || length <= 0 || width <= 0) {
-                        alert('Please enter valid values for length and width.');
-                        return;
-                    }
-                    if (selectedOption === 'area') {
-                        var totalOverallTotal = area.toFixed(2);
-                    } else if (selectedOption === 'perimeter') {
-                        var totalOverallTotal = perimeter.toFixed(2);
-                    }
-
-
-                    var inputValues = {};
-
-                    inputValues["parent_id"] = unitId;
-                    inputValues["currentruleId"] = currentruleId;
-                    inputValues["type"] = selectedOption;
-                    inputValues["unit"] = "Cum";
-                    inputValues["overallTotal"] = totalOverallTotal !== '' ? totalOverallTotal :
-                        0;
-                    inputValues["editEstimate_id"] = editEstimate_Id;
-                    var ruledata = {
-                        input_values: inputValues
-                    };
-                    // console.log(ruledata);
-                    $.ajax({
-                        url: '/calculate-rule-area-perimeter',
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        contentType: 'application/json',
-                        data: JSON.stringify({
-                            data: ruledata
-                        }),
-                        success: function(response) {
-                            var tableBody1 = $("#dataTable tbody");
-                            tableBody1.empty();
-                            var rateAnalysisArray1 = response.rateAnalysisArray[
-                                unitId][
-                                'metadata'
-                            ];
-                            var tableBody = $("#dataTable1 tbody");
-                            tableBody.empty();
-
-                            var sno = 0;
-                            $.each(rateAnalysisArray1, function(index, metadata) {
-                                var newRow = $("<tr>");
-                                newRow.append(
-                                    '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>'
-                                );
-                                newRow.append(
-                                    '<td style="text-align:center;">A' +
-                                    (
-                                        sno +
-                                        1) +
-                                    '</td>');
-                                newRow.append(
-                                    '<td style="text-align:center;">' +
-                                    metadata.type + (metadata.remarks ?
-                                        ' (' +
-                                        metadata.remarks + ')' : '') +
-                                    '</td>');
-                                newRow.append(
-                                    '<td style="text-align:center;">' +
-                                    metadata
-                                    .overallTotal + '</td>');
-                                newRow.append(
-                                    '<td style="text-align:center;">' +
-                                    metadata
-                                    .unit +
-                                    '</td>');
-
-                                var editButton = $('<a>').attr({
-                                    'type': 'button',
-                                    'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
-                                        (
-                                            metadata.type ===
-                                            'rule' ?
-                                            'editBtnrule' :
-                                            'editBtn'),
-                                    'data-id': metadata.currentId
-                                }).text('edit');
-
-                                var deleteButton = $('<a>').attr({
-                                    'type': 'button',
-                                    'class': 'btn btn-soft-danger btn-sm delBtn',
-                                    'data-id': metadata.currentId
-                                }).text('Delete');
-                                var grandTotalValue = 0;
-                                var hiddenInput = $('<input>').attr({
-                                    'type': 'hidden',
-                                    'id': 'metagrandval',
-                                    'value': grandTotalValue
-                                });
-                                newRow.append(hiddenInput);
-                                var buttonCell = $('<td>').css('text-align',
-                                        'center')
-                                    .append(editButton).append(' ').append(
-                                        deleteButton);
-                                if (metadata.key) {
-                                    editButton.remove();
-                                }
-                                newRow.append(buttonCell);
-                                tableBody.append(newRow);
-                                sno++;
-                                // $('#grandTotalInput').val(metadata.overallTotal);
-                            });
-                            addNewRow();
-                            updateTotalSum();
-                            if (tableBody.find('tr').length > 0) {
-                                $('#mySelect').hide();
-                                $('#metagrandtotal').show();
-                            } else {
-                                $('#mySelect').show();
-                                $('#metagrandtotal').hide();
-                            }
-                            $('#successAlert').text('Row Total added successfully');
-                            $('#successAlert').addClass('alert-success')
-                                .removeClass(
-                                    'alert-danger')
-                                .show();
-                            $("#finalSubmitBtn").prop("disabled", false);
-                            setTimeout(function() {
-                                $('#successAlert').hide();
-                            }, 2000);
-                            $('#metagrandtotal').show();
-                            $("#closeBtn").prop("disabled", true);
-                            $("#finalSubmitBtn").prop("disabled", false);
-                            $('.rowCheckbox').prop('checked', false);
-                            $('#additionalFields').hide();
-                            $('#myForm').hide();
-                        },
-                        error: function(xhr, status, error) {
-                            var errorMessage =
-                                "An error occurred while calculating: ";
-                            if (xhr.responseJSON && xhr.responseJSON.error) {
-                                errorMessage += xhr.responseJSON.error;
-                            } else {
-                                errorMessage += xhr.statusText;
-                            }
-                            alert(errorMessage);
-                            console.error('Error occurred:', xhr.responseText);
-                        }
-                    });
-                });
             } else {
                 $('#additionalFields').hide();
+                $('#Area-perimeter-rectangle').hide();
+                $('#surfaceArea-volume-rectangle').hide();
                 alert("OOPS! Nothing Found for " + type);
                 var form = document.getElementById("simpsonsRuleForm");
                 form.reset();
                 currentId = null;
                 currentruleId = null;
-                type = "";
+                //type = "";
             }
+            // Function to calculate area and perimeter
+
         });
+
+        function calculateAreaPerimeter() {
+            var length = parseFloat($('#length').val());
+            var width = parseFloat($('#width').val());
+            if (!isNaN(length) && !isNaN(width) && length > 0 && width > 0) {
+                area = length * width;
+                perimeter = 2 * (length + width);
+                $('#areaValue').text(area.toFixed(2));
+                $('#perimeterValue').text(perimeter.toFixed(2));
+            } else {
+                $('#areaValue').text('');
+                $('#perimeterValue').text('');
+            }
+        }
+        // Event listener for input changes in length and width fields
+        $('#length, #width').on('input', calculateAreaPerimeter);
+
+        // Event listener for save button click
+        $('#saveBtn').on('click', function() {
+            var length = parseFloat($('#length').val());
+            var width = parseFloat($('#width').val());
+            selectedOption = $('input[name="calcOption"]:checked').val();
+            if (isNaN(length) || isNaN(width) || length <= 0 || width <= 0) {
+                alert('Please enter valid values for length and width.');
+                return;
+            }
+            if (selectedOption === 'area') {
+                var totalOverallTotal = area.toFixed(2);
+            } else if (selectedOption === 'perimeter') {
+                var totalOverallTotal = perimeter.toFixed(2);
+            }
+
+            var inputValues = {};
+            inputValues["parent_id"] = unitId;
+            inputValues["currentruleId"] = currentruleId;
+            inputValues["type"] = type + '(' + selectedOption + ')';
+            inputValues["btntype"] = dataValue;
+            inputValues["unit"] = "Cum";
+            inputValues["overallTotal"] = totalOverallTotal !== '' ? totalOverallTotal :
+                0;
+            inputValues["length"] = length;
+            inputValues["width"] = width;
+            inputValues["editEstimate_id"] = editEstimate_Id;
+            var ruledata = {
+                input_values: inputValues
+            };
+            // console.log(ruledata);
+            $.ajax({
+                url: '/calculate-rule-area-perimeter',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    data: ruledata
+                }),
+                success: function(response) {
+                    var tableBody1 = $("#dataTable tbody");
+                    tableBody1.empty();
+                    var rateAnalysisArray1 = response.rateAnalysisArray[
+                        unitId][
+                        'metadata'
+                    ];
+                    var tableBody = $("#dataTable1 tbody");
+                    tableBody.empty();
+
+                    var sno = 0;
+                    $.each(rateAnalysisArray1, function(index, metadata) {
+                        var newRow = $("<tr>");
+                        newRow.append(
+                            '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>'
+                        );
+                        newRow.append(
+                            '<td style="text-align:center;">A' +
+                            (
+                                sno +
+                                1) +
+                            '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;">' +
+                            metadata.type + (metadata.remarks ?
+                                ' (' +
+                                metadata.remarks + ')' : '') +
+                            '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;">' +
+                            metadata
+                            .overallTotal + '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;">' +
+                            metadata
+                            .unit +
+                            '</td>');
+
+                        var editButtonClass = '';
+                        if (metadata.btntype === 1) {
+                            editButtonClass = 'editBtnrule';
+                        } else if (metadata.btntype === 2) {
+                            editButtonClass = 'editBtn';
+                        } else if (metadata.btntype === 3) {
+                            editButtonClass = 'defaultbtn';
+                        } else if (metadata.btntype === 4) {
+                            editButtonClass = 'sabtn';
+                        } else if (metadata.btntype === 5) {
+                            editButtonClass = 'apcbtn';
+                        } else {
+                            editButtonClass = 'defaultbtn';
+                        }
+
+                        var editButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                                editButtonClass,
+                            'data-id': metadata.currentId
+                        }).text('edit');
+
+                        var deleteButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-danger btn-sm delBtn',
+                            'data-id': metadata.currentId
+                        }).text('Delete');
+                        var grandTotalValue = 0;
+                        var hiddenInput = $('<input>').attr({
+                            'type': 'hidden',
+                            'id': 'metagrandval',
+                            'value': grandTotalValue
+                        });
+                        newRow.append(hiddenInput);
+                        var buttonCell = $('<td>').css('text-align',
+                                'center')
+                            .append(editButton).append(' ').append(
+                                deleteButton);
+                        if (metadata.key) {
+                            editButton.remove();
+                        }
+                        newRow.append(buttonCell);
+                        tableBody.append(newRow);
+                        sno++;
+                        // $('#grandTotalInput').val(metadata.overallTotal);
+                    });
+                    addNewRow();
+                    updateTotalSum();
+                    if (tableBody.find('tr').length > 0) {
+                        $('#mySelect').hide();
+                        $('#metagrandtotal').show();
+                    } else {
+                        $('#mySelect').show();
+                        $('#metagrandtotal').hide();
+                    }
+                    $('#successAlert').text('Row Total added successfully');
+                    $('#successAlert').addClass('alert-success')
+                        .removeClass(
+                            'alert-danger')
+                        .show();
+                    $("#finalSubmitBtn").prop("disabled", false);
+                    setTimeout(function() {
+                        $('#successAlert').hide();
+                    }, 2000);
+                    $('#metagrandtotal').show();
+                    $("#closeBtn").prop("disabled", true);
+                    $("#finalSubmitBtn").prop("disabled", false);
+                    $('.rowCheckbox').prop('checked', false);
+                    $('#additionalFields').hide();
+                    $('#myForm').hide();
+                    var form = document.getElementById(
+                        "area-perimeter-rectangle");
+                    form.reset();
+                    currentId = null;
+                    currentruleId = null;
+                    // type = "";
+                    $('#areaValue').text('');
+                    $('#perimeterValue').text('');
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage =
+                        "An error occurred while calculating: ";
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMessage += xhr.responseJSON.error;
+                    } else {
+                        errorMessage += xhr.statusText;
+                    }
+                    alert(errorMessage);
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+        });
+
+
 
         $('#myBtn').click(function() {
             var dots = document.getElementById("dots");
@@ -1068,6 +1262,7 @@
         }
 
         function calculate() {
+
             var existingResults = document.querySelectorAll(".calculation-result");
             existingResults.forEach(function(result) {
                 result.remove();
@@ -1150,7 +1345,8 @@
             inputValues["Input_for_def_Y"] = parseFloat(inputForYDefValue);
             inputValues["parent_id"] = '{!! $unit_id !!}';
             inputValues["currentruleId"] = currentruleId;
-            inputValues["type"] = "rule";
+            inputValues["type"] = "Simpson-rule";
+            inputValues["btntype"] = 1;
             inputValues["unit"] = "Cum";
             inputValues["overallTotal"] = areaRounded;
             inputValues["editEstimate_id"] = editEstimate_Id;
@@ -1195,11 +1391,25 @@
                         newRow.append('<td style="text-align:center;">' + metadata.unit +
                             '</td>');
 
+                        var editButtonClass = '';
+                        if (metadata.btntype === 1) {
+                            editButtonClass = 'editBtnrule';
+                        } else if (metadata.btntype === 2) {
+                            editButtonClass = 'editBtn';
+                        } else if (metadata.btntype === 3) {
+                            editButtonClass = 'defaultbtn';
+                        } else if (metadata.btntype === 4) {
+                            editButtonClass = 'sabtn';
+                        } else if (metadata.btntype === 5) {
+                            editButtonClass = 'apcbtn';
+                        } else {
+                            editButtonClass = 'defaultbtn';
+                        }
+
                         var editButton = $('<a>').attr({
                             'type': 'button',
-                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' + (
-                                metadata.type === 'rule' ? 'editBtnrule' :
-                                'editBtn'),
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                                editButtonClass,
                             'data-id': metadata.currentId
                         }).text('edit');
 
@@ -1497,6 +1707,7 @@
                     row[name] = value;
                 });
                 row['type'] = "other";
+                row['btntype'] = "2";
                 row['parent_id'] = unitId;
                 row['currentId'] = currentId !== undefined && currentId !== null ?
                     currentId : currentId === '' ? '' : null;
@@ -1539,11 +1750,26 @@
                             .overallTotal + '</td>');
                         newRow.append('<td style="text-align:center;">' + metadata
                             .unit + '</td>');
+
+                        var editButtonClass = '';
+                        if (metadata.btntype === 1) {
+                            editButtonClass = 'editBtnrule';
+                        } else if (metadata.btntype === 2) {
+                            editButtonClass = 'editBtn';
+                        } else if (metadata.btntype === 3) {
+                            editButtonClass = 'defaultbtn';
+                        } else if (metadata.btntype === 4) {
+                            editButtonClass = 'sabtn';
+                        } else if (metadata.btntype === 5) {
+                            editButtonClass = 'apcbtn';
+                        } else {
+                            editButtonClass = 'defaultbtn';
+                        }
+
                         var editButton = $('<a>').attr({
                             'type': 'button',
                             'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
-                                (metadata.type === 'rule' ?
-                                    'editBtnrule' : 'editBtn'),
+                                editButtonClass,
                             'data-id': metadata.currentId
                         }).text('edit');
 
@@ -1664,11 +1890,26 @@
                         newRow.append('<td style="text-align:center;">' + metadata.unit +
                             '</td>');
 
+
+                        var editButtonClass = '';
+                        if (metadata.btntype === 1) {
+                            editButtonClass = 'editBtnrule';
+                        } else if (metadata.btntype === 2) {
+                            editButtonClass = 'editBtn';
+                        } else if (metadata.btntype === 3) {
+                            editButtonClass = 'defaultbtn';
+                        } else if (metadata.btntype === 4) {
+                            editButtonClass = 'sabtn';
+                        } else if (metadata.btntype === 5) {
+                            editButtonClass = 'apcbtn';
+                        } else {
+                            editButtonClass = 'defaultbtn';
+                        }
+
                         var editButton = $('<a>').attr({
                             'type': 'button',
-                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' + (
-                                metadata.type === 'rule' ?
-                                'editBtnrule' : 'editBtn'),
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                                editButtonClass,
                             'data-id': metadata.currentId
                         }).text('edit');
 
@@ -1834,11 +2075,26 @@
                             .overallTotal + '</td>');
                         newRow.append('<td style="text-align:center;">' + metadata
                             .unit + '</td>');
+
+                        var editButtonClass = '';
+                        if (metadata.btntype === 1) {
+                            editButtonClass = 'editBtnrule';
+                        } else if (metadata.btntype === 2) {
+                            editButtonClass = 'editBtn';
+                        } else if (metadata.btntype === 3) {
+                            editButtonClass = 'defaultbtn';
+                        } else if (metadata.btntype === 4) {
+                            editButtonClass = 'sabtn';
+                        } else if (metadata.btntype === 5) {
+                            editButtonClass = 'apcbtn';
+                        } else {
+                            editButtonClass = 'defaultbtn';
+                        }
+
                         var editButton = $('<a>').attr({
                             'type': 'button',
                             'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
-                                (metadata.type === 'rule' ?
-                                    'editBtnrule' : 'editBtn'),
+                                editButtonClass,
                             'data-id': metadata.currentId
                         }).text('edit');
 
@@ -2030,12 +2286,25 @@
                                 .unit +
                                 '</td>');
 
+                            var editButtonClass = '';
+                            if (metadata.btntype === 1) {
+                                editButtonClass = 'editBtnrule';
+                            } else if (metadata.btntype === 2) {
+                                editButtonClass = 'editBtn';
+                            } else if (metadata.btntype === 3) {
+                                editButtonClass = 'defaultbtn';
+                            } else if (metadata.btntype === 4) {
+                                editButtonClass = 'sabtn';
+                            } else if (metadata.btntype === 5) {
+                                editButtonClass = 'apcbtn';
+                            } else {
+                                editButtonClass = 'defaultbtn';
+                            }
+
                             var editButton = $('<a>').attr({
                                 'type': 'button',
                                 'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
-                                    (
-                                        metadata.type === 'rule' ?
-                                        'editBtnrule' : 'editBtn'),
+                                    editButtonClass,
                                 'data-id': metadata.currentId
                             }).text('edit');
 
@@ -2209,12 +2478,26 @@
                                 metadata
                                 .unit +
                                 '</td>');
+
+                            var editButtonClass = '';
+                            if (metadata.btntype === 1) {
+                                editButtonClass = 'editBtnrule';
+                            } else if (metadata.btntype === 2) {
+                                editButtonClass = 'editBtn';
+                            } else if (metadata.btntype === 3) {
+                                editButtonClass = 'defaultbtn';
+                            } else if (metadata.btntype === 4) {
+                                editButtonClass = 'sabtn';
+                            } else if (metadata.btntype === 5) {
+                                editButtonClass = 'apcbtn';
+                            } else {
+                                editButtonClass = 'defaultbtn';
+                            }
+
                             var editButton = $('<a>').attr({
                                 'type': 'button',
                                 'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
-                                    (
-                                        metadata.type === 'rule' ?
-                                        'editBtnrule' : 'editBtn'),
+                                    editButtonClass,
                                 'data-id': metadata.currentId
                             }).text('edit');
 
@@ -2287,40 +2570,506 @@
         addNewRow();
         updateTotalSum();
 
-        // function updateDeleteButtons(array) {
-        //     var tableBody = $("#dataTable1 tbody");
-        //     var rows = tableBody.find('tr');
-        //     var expFound = false;
-        //     if (expFound) {
-        //         rows.not(rows.last()).find('.delBtn')
-        //     .remove(); // Remove delete buttons from all rows except the last row
-        //         var lastRow = rows.last();
-        //         var deleteButton = lastRow.find('.delBtn');
-        //         if (deleteButton.length === 0) {
-        //             deleteButton = $('<a>').attr({
-        //                 'type': 'button',
-        //                 'class': 'btn btn-soft-danger btn-sm delBtn',
-        //                 'data-id': lastRow.data('metadata').currentId
-        //             }).text('Delete');
-        //             var buttonCell = $('<td>').css('text-align', 'center').append(deleteButton);
-        //             lastRow.append(buttonCell);
+
+        $('#surfaceArea-volume-rectangle').submit(function(event) {
+            event.preventDefault();
+            var length = $('#salength').val();
+            var width = $('#sawidth').val();
+            var height = $('#saheight').val();
+
+            var surfaceArea = 2 * (length * width + length * height + width * height);
+
+            var inputValues = {};
+            inputValues["parent_id"] = unitId;
+            inputValues["currentruleId"] = currentruleId;
+            inputValues["type"] = "Surface Area of Rectangle";
+            inputValues["btntype"] = dataValue;
+            inputValues["unit"] = "Cum";
+            inputValues["overallTotal"] = surfaceArea !== '' ? surfaceArea :
+                0;
+            inputValues["length"] = length;
+            inputValues["width"] = width;
+            inputValues["width"] = height;
+            inputValues["editEstimate_id"] = editEstimate_Id;
+            var ruledata = {
+                input_values: inputValues
+            };
+            console.log(ruledata);
+            $.ajax({
+                url: '/calculate-rule-surface-area',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    data: ruledata
+                }),
+                success: function(response) {
+                    var tableBody1 = $("#dataTable tbody");
+                    tableBody1.empty();
+                    var rateAnalysisArray1 = response.rateAnalysisArray[
+                        unitId][
+                        'metadata'
+                    ];
+                    var tableBody = $("#dataTable1 tbody");
+                    tableBody.empty();
+
+                    var sno = 0;
+                    $.each(rateAnalysisArray1, function(index, metadata) {
+                        var newRow = $("<tr>");
+                        newRow.append(
+                            '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>'
+                        );
+                        newRow.append(
+                            '<td style="text-align:center;">A' +
+                            (
+                                sno +
+                                1) +
+                            '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;">' +
+                            metadata.type + (metadata.remarks ?
+                                ' (' +
+                                metadata.remarks + ')' : '') +
+                            '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;">' +
+                            metadata
+                            .overallTotal + '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;">' +
+                            metadata
+                            .unit +
+                            '</td>');
+
+                        var editButtonClass = '';
+                        if (metadata.btntype === 1) {
+                            editButtonClass = 'editBtnrule';
+                        } else if (metadata.btntype === 2) {
+                            editButtonClass = 'editBtn';
+                        } else if (metadata.btntype === 3) {
+                            editButtonClass = 'defaultbtn';
+                        } else if (metadata.btntype === 4) {
+                            editButtonClass = 'sabtn';
+                        } else if (metadata.btntype === 5) {
+                            editButtonClass = 'apcbtn';
+                        } else {
+                            editButtonClass = 'defaultbtn';
+                        }
+
+                        var editButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                                editButtonClass,
+                            'data-id': metadata.currentId
+                        }).text('edit');
+
+                        var deleteButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-danger btn-sm delBtn',
+                            'data-id': metadata.currentId
+                        }).text('Delete');
+                        var grandTotalValue = 0;
+                        var hiddenInput = $('<input>').attr({
+                            'type': 'hidden',
+                            'id': 'metagrandval',
+                            'value': grandTotalValue
+                        });
+                        newRow.append(hiddenInput);
+                        var buttonCell = $('<td>').css('text-align',
+                                'center')
+                            .append(editButton).append(' ').append(
+                                deleteButton);
+                        if (metadata.key) {
+                            editButton.remove();
+                        }
+                        newRow.append(buttonCell);
+                        tableBody.append(newRow);
+                        sno++;
+                        // $('#grandTotalInput').val(metadata.overallTotal);
+                    });
+                    addNewRow();
+                    updateTotalSum();
+                    if (tableBody.find('tr').length > 0) {
+                        $('#mySelect').hide();
+                        $('#metagrandtotal').show();
+                    } else {
+                        $('#mySelect').show();
+                        $('#metagrandtotal').hide();
+                    }
+                    $('#successAlert').text('Row added successfully');
+                    $('#successAlert').addClass('alert-success')
+                        .removeClass(
+                            'alert-danger')
+                        .show();
+                    $("#finalSubmitBtn").prop("disabled", false);
+                    setTimeout(function() {
+                        $('#successAlert').hide();
+                    }, 2000);
+                    $('#metagrandtotal').show();
+                    $("#closeBtn").prop("disabled", true);
+                    $("#finalSubmitBtn").prop("disabled", false);
+                    $('.rowCheckbox').prop('checked', false);
+                    $('#additionalFields').hide();
+                    $('#myForm').hide();
+                    $('#salength').val('');
+                    $('#sawidth').val('');
+                    $('#saheight').val('');
+                    currentId = null;
+                    currentruleId = null;
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage =
+                        "An error occurred while calculating: ";
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMessage += xhr.responseJSON.error;
+                    } else {
+                        errorMessage += xhr.statusText;
+                    }
+                    alert(errorMessage);
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+
+
+        });
+        $(document).on("click", ".sabtn", function() {
+            currentruleId = this.getAttribute("data-id");
+            $('#surfaceArea-volume-rectangle').show();
+            $('#Area-perimeter-rectangle').hide();
+            $('#additionalFields').hide();
+            $('#myForm').hide();
+
+            $.ajax({
+                url: '/get-modal-rule-data',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    unitId: unitId,
+                    ruleId: currentruleId,
+                    editEstimate_id: editEstimate_Id
+                }),
+                success: function(response) {
+                    console.log(response.rateAnalysisArray.input_values);
+
+                    $('#salength').val(response.rateAnalysisArray.input_values.length);
+                    $('#sawidth').val(response.rateAnalysisArray.input_values.width);
+                    $('#saheight').val(response.rateAnalysisArray.input_values.height);
+
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+        });
+
+        $(document).on("click", ".defaultbtn", function() {
+            currentruleId = this.getAttribute("data-id");
+            $('#Area-perimeter-rectangle').show();
+            $('#additionalFields').hide();
+            $('#myForm').hide();
+
+            $.ajax({
+                url: '/get-modal-rule-data',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    unitId: unitId,
+                    ruleId: currentruleId,
+                    editEstimate_id: editEstimate_Id
+                }),
+                success: function(response) {
+                    console.log(response.rateAnalysisArray.input_values);
+
+                    $('#length').val(response.rateAnalysisArray.input_values.length);
+                    $('#width').val(response.rateAnalysisArray.input_values.width);
+
+                    var type = response.rateAnalysisArray.input_values.type;
+                    var textInBracket = type.match(/\(([^)]+)\)/)[1];
+                    if (textInBracket === 'area') {
+                        $('#areaValue').text(response.rateAnalysisArray.input_values
+                            .overallTotal);
+                        $('#perimeterValue').text(''); // Clear perimeter value
+                    } else if (textInBracket === 'perimeter') {
+                        $('#perimeterValue').text(response.rateAnalysisArray.input_values
+                            .overallTotal);
+                        $('#areaValue').text(''); // Clear area value
+                    }
+
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+        });
+
+        //     $('#calculateBtn').click(function() {
+        //     var radius = parseFloat($('#radius').val());
+        //     var shape = $('#shape').val(); // Get the selected shape from the dropdown
+        //     var calculationType = $('input[name="calculation"]:checked').val(); // Get the selected calculation type (area or perimeter)
+
+        //     if (!isNaN(radius)) {
+        //         var area, perimeter;
+        //         if (shape === 'circle') {
+        //             area = Math.PI * Math.pow(radius, 2);
+        //             perimeter = 2 * Math.PI * radius;
+        //         } else if (shape === 'semiCircle') {
+        //             area = 0.5 * Math.PI * Math.pow(radius, 2);
+        //             perimeter = Math.PI * radius + 2 * radius;
+        //         } else if (shape === 'quarterCircle') {
+        //             area = 0.25 * Math.PI * Math.pow(radius, 2);
+        //             perimeter = 0.5 * Math.PI * radius + 2 * radius;
+        //         }
+
+        //         // Display the calculated result based on the selected calculation type
+        //         if (calculationType === 'area') {
+        //             $('#areaValue').text(area.toFixed(2));
+        //             $('#perimeterValue').text(''); // Clear perimeter value
+        //         } else {
+        //             $('#areaValue').text(''); // Clear area value
+        //             $('#perimeterValue').text(perimeter.toFixed(2));
         //         }
         //     } else {
-        //         rows.each(function() {
-        //             var deleteButton = $(this).find('.delBtn');
-        //             if (deleteButton.length === 0) {
-        //                 deleteButton = $('<a>').attr({
-        //                     'type': 'button',
-        //                     'class': 'btn btn-soft-danger btn-sm delBtn',
-        //                     'data-id': $(this).data('metadata').currentId
-        //                 }).text('Delete');
-        //                 var buttonCell = $('<td>').css('text-align', 'center').append(deleteButton);
-        //                 $(this).append(buttonCell);
-        //             }
-        //         });
+        //         // Handle invalid input (e.g., non-numeric radius)
+        //         $('#areaValue').text('');
+        //         $('#perimeterValue').text('');
+        //         $('#error_message').text('Please enter a valid radius.');
         //     }
-        // }
+        // });
 
+        $('.selectOptionn').click(function() {
+            var selectedShape = $(this).attr('data-value');
+            $('.dropdown-toggle').text($(this).text());
+            if (selectedShape === 'circle') {
+                $('.formula').html('Area of Circle = πR<sup>2</sup> / Perimeter = 2πR');
+            } else if (selectedShape === 'semiCircle') {
+                $('.formula').html(
+                    'Area of Semi-circle = πR<sup>2</sup>/2 + R<sup>2</sup> / Perimeter = πR + 2R');
+            } else if (selectedShape === 'quarterCircle') {
+                $('.formula').html(
+                    'Area of Quarter Circle = πR<sup>2</sup>/4 + R<sup>2</sup> / Perimeter = πR/2 + 2R'
+                );
+            }
+        });
+
+        $('.dropdown-menu .selectOptionn').on('click', function() {
+            $('.dropdown-menu .selectOptionn').removeClass('active');
+            $(this).addClass('active');
+        });
+        $('#saveBtnn').on('click', function() {
+            var totalOverallTotal = 0;
+            var selectedcircleShape = $('.dropdown-menu .selectOptionn.active').attr('data-value');
+            var type = 'Area and perimeter of ' + selectedcircleShape;
+            var radius = parseFloat($('#radius').val());
+           // console.log('Radius:', radius);
+            var calculationType = $('input[name="calcOptionn"]:checked').val();
+            var area, perimeter;
+            if (selectedcircleShape === 'circle') {
+                area = Math.PI * Math.pow(radius, 2);
+                perimeter = 2 * Math.PI * radius;
+            } else if (selectedcircleShape === 'semiCircle') {
+                area = 0.5 * Math.PI * Math.pow(radius, 2);
+                perimeter = Math.PI * radius + 2 * radius;
+            } else if (selectedcircleShape === 'quarterCircle') {
+                area = 0.25 * Math.PI * Math.pow(radius, 2);
+                perimeter = 0.5 * Math.PI * radius + 2 * radius;
+            }
+        
+            if (calculationType === 'area') {
+                totalOverallTotal = parseFloat(area.toFixed(2));
+            } else {
+                totalOverallTotal = parseFloat(perimeter.toFixed(2));
+            }
+           // console.log('Total Overall Total:', totalOverallTotal);
+            var inputValues = {};
+            inputValues["parent_id"] = unitId;
+            inputValues["currentruleId"] = currentruleId;
+            inputValues["type"] = type + '(' + calculationType + ')';
+            inputValues["btntype"] = dataValue;
+            inputValues["unit"] = "Cum";
+            inputValues["overallTotal"] = totalOverallTotal !== '' ? totalOverallTotal :
+                0;
+            inputValues["radius"] = radius;
+
+            inputValues["editEstimate_id"] = editEstimate_Id;
+            var ruledata = {
+                input_values: inputValues
+            };
+            console.log(ruledata);
+             $.ajax({
+                url: '/calculate-rule-area-perimeter-circle',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    data: ruledata
+                }),
+                success: function(response) {
+                    var tableBody1 = $("#dataTable tbody");
+                    tableBody1.empty();
+                    var rateAnalysisArray1 = response.rateAnalysisArray[
+                        unitId][
+                        'metadata'
+                    ];
+                    var tableBody = $("#dataTable1 tbody");
+                    tableBody.empty();
+
+                    var sno = 0;
+                    $.each(rateAnalysisArray1, function(index, metadata) {
+                        var newRow = $("<tr>");
+                        newRow.append(
+                            '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>'
+                        );
+                        newRow.append(
+                            '<td style="text-align:center;">A' +
+                            (
+                                sno +
+                                1) +
+                            '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;">' +
+                            metadata.type + (metadata.remarks ?
+                                ' (' +
+                                metadata.remarks + ')' : '') +
+                            '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;">' +
+                            metadata
+                            .overallTotal + '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;">' +
+                            metadata
+                            .unit +
+                            '</td>');
+
+                        var editButtonClass = '';
+                        if (metadata.btntype === 1) {
+                            editButtonClass = 'editBtnrule';
+                        } else if (metadata.btntype === 2) {
+                            editButtonClass = 'editBtn';
+                        } else if (metadata.btntype === 3) {
+                            editButtonClass = 'defaultbtn';
+                        } else if (metadata.btntype === 4) {
+                            editButtonClass = 'sabtn';
+                        } else if (metadata.btntype === 5) {
+                            editButtonClass = 'apcbtn';
+                        } else {
+                            editButtonClass = 'defaultbtn';
+                        }
+
+                        var editButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                                editButtonClass,
+                            'data-id': metadata.currentId
+                        }).text('edit');
+
+                        var deleteButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-danger btn-sm delBtn',
+                            'data-id': metadata.currentId
+                        }).text('Delete');
+                        var grandTotalValue = 0;
+                        var hiddenInput = $('<input>').attr({
+                            'type': 'hidden',
+                            'id': 'metagrandval',
+                            'value': grandTotalValue
+                        });
+                        newRow.append(hiddenInput);
+                        var buttonCell = $('<td>').css('text-align',
+                                'center')
+                            .append(editButton).append(' ').append(
+                                deleteButton);
+                        if (metadata.key) {
+                            editButton.remove();
+                        }
+                        newRow.append(buttonCell);
+                        tableBody.append(newRow);
+                        sno++;
+                        // $('#grandTotalInput').val(metadata.overallTotal);
+                    });
+                    addNewRow();
+                    updateTotalSum();
+                    if (tableBody.find('tr').length > 0) {
+                        $('#mySelect').hide();
+                        $('#metagrandtotal').show();
+                    } else {
+                        $('#mySelect').show();
+                        $('#metagrandtotal').hide();
+                    }
+                    $('#successAlert').text('Row  added successfully');
+                    $('#successAlert').addClass('alert-success')
+                        .removeClass(
+                            'alert-danger')
+                        .show();
+                    $("#finalSubmitBtn").prop("disabled", false);
+                    setTimeout(function() {
+                        $('#successAlert').hide();
+                    }, 2000);
+                    $('#metagrandtotal').show();
+                    $("#closeBtn").prop("disabled", true);
+                    $("#finalSubmitBtn").prop("disabled", false);
+                    $('.rowCheckbox').prop('checked', false);
+                    $('#additionalFields').hide();
+                    $('#myForm').hide();
+                    var form = document.getElementById(
+                        "area-perimeter-circle");
+                    form.reset();
+                    currentId = null;
+                    currentruleId = null;
+
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage =
+                        "An error occurred while calculating: ";
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMessage += xhr.responseJSON.error;
+                    } else {
+                        errorMessage += xhr.statusText;
+                    }
+                    alert(errorMessage);
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+        });
+        $(document).on("click", ".apcbtn", function() {
+            currentruleId = this.getAttribute("data-id");
+            $('#Area-perimeter-circle').show();
+            $('#surfaceArea-volume-rectangle').hide();
+            $('#Area-perimeter-rectangle').hide();
+            $('#additionalFields').hide();
+            $('#myForm').hide();
+
+            $.ajax({
+                url: '/get-modal-rule-data',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    unitId: unitId,
+                    ruleId: currentruleId,
+                    editEstimate_id: editEstimate_Id
+                }),
+                success: function(response) {
+                    console.log(response.rateAnalysisArray.input_values);
+                    $('#radius').val(response.rateAnalysisArray.input_values.radius);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+        });
 
     });
 </script>
