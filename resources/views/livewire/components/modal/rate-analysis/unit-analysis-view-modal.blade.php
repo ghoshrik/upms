@@ -330,6 +330,13 @@
     .modal-dialog.modal-xl.modal-dialog-scrollable.unit-mdl {
         max-width: 1400px;
     }
+
+    .highlight {
+        border: 1px solid red;
+    }
+    .col-md-6.areaRadiocircle {
+    width: auto;
+}
 </style>
 
 <div class="modal" id="myInput" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
@@ -475,6 +482,7 @@
                                             @php $editButtonClass = null; @endphp
                                             @if (!isset($metadata['key']))
                                                 @php
+                                                if(isset($metadata['btntype'])){
                                                     if ($metadata['btntype'] == 1) {
                                                         $editButtonClass = 'editBtnrule';
                                                     } elseif ($metadata['btntype'] == 2) {
@@ -488,6 +496,7 @@
                                                     } else {
                                                         $editButtonClass = 'defaultbtn';
                                                     }
+                                                } 
                                                 @endphp
                                                 <a type="button"
                                                     class="btn btn-soft-secondary btn-sm mr-2 {{ $editButtonClass }}"
@@ -577,8 +586,7 @@
                         <div class="card input-fields overflow-auto">
                             <div class="card-body overflow-auto">
                                 <div id="simpson" class="row formulae">
-                                    <span class="formula">Simpson rule:-Area=(w/3)[yfirst + 4(yodd) + 2(yeven) +
-                                        ylast]</span>
+                                    <span class="formula"></span>
                                 </div>
                                 <div id="rowMessage" class="alert alert-info" style="display: none;"></div>
 
@@ -608,7 +616,7 @@
                         <div class="card input-fields overflow-auto">
                             <div class="card-body overflow-auto">
                                 <div id="simpson" class="row formulae">
-                                    <span class="formula">Area = length x width / Perimeter = 2 (length + width)</span>
+                                    <span class="formula"></span>
                                 </div>
                                 <div id="rowMessage" class="alert alert-info" style="display: none;"></div>
 
@@ -628,7 +636,7 @@
                                     </div>
                                 </form>
 
-                                <div id="result" class="row mt-3">
+                                <div id="result-circle" class="row mt-3" style="width: 19%;">
                                     <div class="col-md-6">
                                         <input type="radio" id="areaRadio" class="form-check-input"
                                             name="calcOption" value="area" checked>
@@ -653,25 +661,25 @@
                         <div class="card input-fields overflow-auto">
                             <div class="card-body overflow-auto">
                                 <div id="simpson" class="row formulae">
-                                    <span class="formula">Surface Area = 2(wl+hl+hw)</span>
+                                    <span class="formula"></span>
                                 </div>
                                 <div id="rowMessage" class="alert alert-info" style="display: none;"></div>
 
                                 <form id="surfaceArea-volume-rectangle" class="row g-3 align-items-center">
                                     <div class="col-md-6">
                                         <label for="length">Enter Length</label>
-                                        <input type="number" class="form-control" name="salength" id="salength"
-                                            placeholder="Enter Length" required>
+                                        <input type="number" class="form-control salength" name="salength"
+                                            id="salength" placeholder="Enter Length" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="width">Enter Width</label>
-                                        <input type="number" class="form-control" name="sawidth" id="sawidth"
-                                            placeholder="Enter Width" required>
+                                        <input type="number" class="form-control sawidth" name="sawidth"
+                                            id="sawidth" placeholder="Enter Width" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="height">Enter Height</label>
-                                        <input type="number" class="form-control" name="saheight" id="saheight"
-                                            placeholder="Enter Height" required>
+                                        <input type="number" class="form-control saheight" name="saheight"
+                                            id="saheight" placeholder="Enter Height" required>
                                     </div>
                                     <div class="col-md-12">
                                         <div id="error_message" class="text-danger"></div>
@@ -692,15 +700,18 @@
                         <div class="card input-fields overflow-auto">
                             <div class="card-body overflow-auto">
                                 <div id="simpson" class="row formulae">
-                                    <span class="formula">Area of Circle = πR2 / Perimeter = 2πR</span>
+                                    <span class="formula"></span>
                                 </div>
                                 <div id="rowMessage" class="alert alert-info" style="display: none;"></div>
                                 <div class="col-md-3">
                                     <div class="dropdown">
-                                        <button class="btn relative rounded-md  dropdown-toggle box-border"
+                                        <button
+                                            class="btn relative rounded-md  dropdown-toggle box-border circle-dropdown"
                                             type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             Select Shape
                                         </button>
+                                        <div id="dropdownMessage" class="text-danger" style="display:none;">Select
+                                            circle type first</div>
                                         <ul class="dropdown-menu">
                                             <li><a class="selectOptionn" href="#" data-value="circle">Full
                                                     Circle</a></li>
@@ -708,30 +719,39 @@
                                                     Circle</a></li>
                                             <li><a class="selectOptionn" href="#"
                                                     data-value="quarterCircle">Quarter Circle</a></li>
+                                            <li><a class="selectOptionn" href="#"
+                                                    data-value="Surface Area of Sphere">Surface Area of Sphere</a></li>
+                                            <li><a class="selectOptionn" href="#"
+                                                    data-value="Volume of Sphere">Volume of Sphere</a></li>
+                                            <li><a class="selectOptionn" href="#"
+                                                    data-value="Surface Area of Hemisphere">Surface Area of
+                                                    Hemisphere</a></li>
+                                            <li><a class="selectOptionn" href="#"
+                                                    data-value="Volume of Hemisphere">Volume of Hemisphere</a></li>
                                         </ul>
                                     </div>
                                 </div>
 
-                                <form id="area-perimeter-circle" class="row g-3 align-items-center">
+                                <form id="area-perimeter-circle" class="row g-3 align-items-center"
+                                    style="margin-top:2px;">
                                     <div class="col-md-6">
                                         <label for="radius">Enter radius </label>
                                         <input type="number" class="form-control" id="radius"
-                                            placeholder="Enter radius" required>
+                                            placeholder="Enter radius" required style="width:26%;">
                                     </div>
 
-                                    <div class="col-md-12">
-                                        <div id="error_message" class="text-danger"></div>
-                                    </div>
+                                    <div id="radiusMessage" class="text-danger" style="display:none;margin-top: 0;">
+                                        Required field</div>
                                 </form>
 
                                 <div id="result-circle" class="row mt-3">
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 areaRadiocircle">
                                         <input type="radio" id="areaRadiocircle" class="form-check-input"
                                             name="calcOptionn" value="area" checked>
                                         <label class="form-check-label" for="areaRadio">Area</label>
                                         <span id="areaValue"></span>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 perimeterRadiocircle">
                                         <input type="radio" id="perimeterRadiocircle" class="form-check-input"
                                             name="calcOptionn" value="perimeter">
                                         <label class="form-check-label" for="perimeterRadio">Perimeter</label>
@@ -759,6 +779,7 @@
 </div>
 
 <script>
+    window.scrollTo(0, 1000);
     var currentId = null;
     var currentruleId = null;
     var type;
@@ -834,14 +855,14 @@
                 $("#selectAllCheckbox").prop("checked", false);
             }
         });
-        var rules = ["Simpson-rule", "Area and Perimeter of rectangle", "surfaceArea-volume-rectangle",
+        var rules = ["Simpson-rule", "Area and Perimeter of rectangle", "Surface Area & volume of rectangle",
             "Area and Perimeter of circle",
             "Rule4"
         ];
         var ruleDataValues = {
             "Simpson-rule": "1",
             "Area and Perimeter of rectangle": "3",
-            "surfaceArea-volume-rectangle": "4",
+            "Surface Area & volume of rectangle": "4",
             "Area and Perimeter of circle": "5",
             "Rule4": "6"
         };
@@ -913,12 +934,19 @@
         $('.selectOption').click(function() {
             var selectedOption = $(this).data('value');
             $('#selectOptionButton').addClass('btn-clicked');
-            if (selectedOption === "RULE") {} else if (selectedOption === "OTHER") {
+            if (selectedOption === "RULE") {
+                return;
+            } 
+            else if (selectedOption === "OTHER") {
                 $('#additionalFields').hide();
                 var grandTotalValue = $('#grandTotalInput').val();
                 $('.rowCheckbox').prop('checked', false);
                 if (parseFloat(grandTotalValue) === 0) {
                     $('#myForm').show();
+                    $('#Area-perimeter-circle').hide();
+                    $('#surfaceArea-volume-rectangle').hide();
+                    $('#Area-perimeter-rectangle').hide();
+                    $('#additionalFields').hide();
                 } else {
                     alert("Total Aready done!");
                     if (!this.acceptenceCriteria()) {
@@ -934,11 +962,16 @@
         $('#rulesDropdown').on('click', '.rule-item', function() {
             type = $(this).text().trim();
             dataValue = $(this).data('value');
-            // alert(dataValue);
+
+             //alert(dataValue);
             if (dataValue === 1) {
+                $('.formula').html(`Formula : Simpson rule:-Area=(w/3)[yfirst + 4(yodd) +
+                                        2(yeven) +
+                                        ylast]`);
                 $('#additionalFields').show();
                 $('#myForm').hide();
                 $('#Area-perimeter-rectangle').hide();
+                $('#Area-perimeter-circle').hide();
                 $('#surfaceArea-volume-rectangle').hide();
                 var form = document.getElementById("simpsonsRuleForm");
                 form.reset();
@@ -946,7 +979,11 @@
                 currentruleId = null;
                 // type = "";
             } else if (dataValue === 3) {
+                $('.formula').html(`Formula : Area = length x width / Perimeter = 2 (length +
+                                        width)`);
+
                 $('#Area-perimeter-rectangle').show();
+                $('#Area-perimeter-circle').hide();
                 $('#surfaceArea-volume-rectangle').hide();
                 $('#additionalFields').hide();
                 $('#myForm').hide();
@@ -957,7 +994,9 @@
                 // type = "";
 
             } else if (dataValue === 4) {
+                $('.formula').html(`Formula : Surface Area = 2(wl+hl+hw)`);
                 $('#surfaceArea-volume-rectangle').show();
+                $('#Area-perimeter-circle').hide();
                 $('#Area-perimeter-rectangle').hide();
                 $('#additionalFields').hide();
                 $('#myForm').hide();
@@ -967,6 +1006,8 @@
                 // type = "";
 
             } else if (dataValue === 5) {
+                $('.formula').html(`Formula : Area of Circle = πR2 / Perimeter of Circle = 2πR (π
+                                        ≈ 3.14)`);
                 $('#Area-perimeter-circle').show();
                 $('#surfaceArea-volume-rectangle').hide();
                 $('#Area-perimeter-rectangle').hide();
@@ -978,14 +1019,14 @@
                 // type = "";
 
             } else {
+                $('#Area-perimeter-circle').hide();
                 $('#additionalFields').hide();
                 $('#Area-perimeter-rectangle').hide();
                 $('#surfaceArea-volume-rectangle').hide();
                 alert("OOPS! Nothing Found for " + type);
-                var form = document.getElementById("simpsonsRuleForm");
-                form.reset();
                 currentId = null;
                 currentruleId = null;
+                return;
                 //type = "";
             }
             // Function to calculate area and perimeter
@@ -2332,8 +2373,7 @@
                             $('#grandTotalInput').val(metadata
                                 .overallTotal);
                         });
-                        addNewRow();
-                        updateTotalSum();
+
                         if (tableBody.find('tr').length > 0) {
                             $('#mySelect').hide();
                             $('#metagrandtotal').show();
@@ -2567,9 +2607,8 @@
                 });
             }
         });
-        addNewRow();
-        updateTotalSum();
-
+        // addNewRow();
+        // updateTotalSum();
 
         $('#surfaceArea-volume-rectangle').submit(function(event) {
             event.preventDefault();
@@ -2577,8 +2616,23 @@
             var width = $('#sawidth').val();
             var height = $('#saheight').val();
 
+            if (!length || !width || !height) {
+                if (!length) $('#salength').addClass('highlight');
+                else $('.salength').removeClass('highlight');
+                if (!width) $('#sawidth').addClass('highlight');
+                else $('.sawidth').removeClass('highlight');
+                if (!height) $('#saheight').addClass('highlight');
+                else $('.saheight').removeClass('highlight');
+            } else {
+                $('.salength').removeClass('highlight');
+                $('.sawidth').removeClass('highlight');
+                $('.saheight').removeClass('highlight');
+            }
+            if (isNaN(length) || isNaN(width) || isNaN(height) || length <= 0 || width <= 0 || height <= 0) {
+                alert('Please enter valid values for length,width and height.');
+                return;
+            }
             var surfaceArea = 2 * (length * width + length * height + width * height);
-
             var inputValues = {};
             inputValues["parent_id"] = unitId;
             inputValues["currentruleId"] = currentruleId;
@@ -2594,7 +2648,7 @@
             var ruledata = {
                 input_values: inputValues
             };
-            console.log(ruledata);
+            //console.log(ruledata);
             $.ajax({
                 url: '/calculate-rule-surface-area',
                 type: 'POST',
@@ -2731,8 +2785,6 @@
                     console.error('Error occurred:', xhr.responseText);
                 }
             });
-
-
         });
         $(document).on("click", ".sabtn", function() {
             currentruleId = this.getAttribute("data-id");
@@ -2754,12 +2806,10 @@
                     editEstimate_id: editEstimate_Id
                 }),
                 success: function(response) {
-                    console.log(response.rateAnalysisArray.input_values);
-
+                   //console.log(response.rateAnalysisArray.input_values);
                     $('#salength').val(response.rateAnalysisArray.input_values.length);
                     $('#sawidth').val(response.rateAnalysisArray.input_values.width);
                     $('#saheight').val(response.rateAnalysisArray.input_values.height);
-
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
@@ -2772,7 +2822,6 @@
             $('#Area-perimeter-rectangle').show();
             $('#additionalFields').hide();
             $('#myForm').hide();
-
             $.ajax({
                 url: '/get-modal-rule-data',
                 type: 'POST',
@@ -2787,10 +2836,8 @@
                 }),
                 success: function(response) {
                     console.log(response.rateAnalysisArray.input_values);
-
                     $('#length').val(response.rateAnalysisArray.input_values.length);
                     $('#width').val(response.rateAnalysisArray.input_values.width);
-
                     var type = response.rateAnalysisArray.input_values.type;
                     var textInBracket = type.match(/\(([^)]+)\)/)[1];
                     if (textInBracket === 'area') {
@@ -2800,7 +2847,7 @@
                     } else if (textInBracket === 'perimeter') {
                         $('#perimeterValue').text(response.rateAnalysisArray.input_values
                             .overallTotal);
-                        $('#areaValue').text(''); // Clear area value
+                        $('#areaValue').text(''); 
                     }
 
                 },
@@ -2810,54 +2857,54 @@
             });
         });
 
-        //     $('#calculateBtn').click(function() {
-        //     var radius = parseFloat($('#radius').val());
-        //     var shape = $('#shape').val(); // Get the selected shape from the dropdown
-        //     var calculationType = $('input[name="calculation"]:checked').val(); // Get the selected calculation type (area or perimeter)
-
-        //     if (!isNaN(radius)) {
-        //         var area, perimeter;
-        //         if (shape === 'circle') {
-        //             area = Math.PI * Math.pow(radius, 2);
-        //             perimeter = 2 * Math.PI * radius;
-        //         } else if (shape === 'semiCircle') {
-        //             area = 0.5 * Math.PI * Math.pow(radius, 2);
-        //             perimeter = Math.PI * radius + 2 * radius;
-        //         } else if (shape === 'quarterCircle') {
-        //             area = 0.25 * Math.PI * Math.pow(radius, 2);
-        //             perimeter = 0.5 * Math.PI * radius + 2 * radius;
-        //         }
-
-        //         // Display the calculated result based on the selected calculation type
-        //         if (calculationType === 'area') {
-        //             $('#areaValue').text(area.toFixed(2));
-        //             $('#perimeterValue').text(''); // Clear perimeter value
-        //         } else {
-        //             $('#areaValue').text(''); // Clear area value
-        //             $('#perimeterValue').text(perimeter.toFixed(2));
-        //         }
-        //     } else {
-        //         // Handle invalid input (e.g., non-numeric radius)
-        //         $('#areaValue').text('');
-        //         $('#perimeterValue').text('');
-        //         $('#error_message').text('Please enter a valid radius.');
-        //     }
-        // });
 
         $('.selectOptionn').click(function() {
             var selectedShape = $(this).attr('data-value');
-            $('.dropdown-toggle').text($(this).text());
+            $('.circle-dropdown').text($(this).text());
+            var pi = "π"; 
             if (selectedShape === 'circle') {
-                $('.formula').html('Area of Circle = πR<sup>2</sup> / Perimeter = 2πR');
+                $('.formula').html(`Formula: Area of Circle = ${pi}R<sup>2</sup> / Perimeter = 2${pi}R`);
+                $('.perimeterRadiocircle').show();
+                $('.areaRadiocircle').show();
             } else if (selectedShape === 'semiCircle') {
                 $('.formula').html(
-                    'Area of Semi-circle = πR<sup>2</sup>/2 + R<sup>2</sup> / Perimeter = πR + 2R');
+                    `Formula: Area of Semi-circle = ${pi}R<sup>2</sup>/2 + R<sup>2</sup> / Perimeter = ${pi}R + 2R`
+                );
+                $('.perimeterRadiocircle').show();
+                $('.areaRadiocircle').show();
             } else if (selectedShape === 'quarterCircle') {
                 $('.formula').html(
-                    'Area of Quarter Circle = πR<sup>2</sup>/4 + R<sup>2</sup> / Perimeter = πR/2 + 2R'
+                    `Formula: Area of Quarter Circle = ${pi}R<sup>2</sup>/4 + R<sup>2</sup> / Perimeter = ${pi}R/2 + 2R`
                 );
+                $('.perimeterRadiocircle').show();
+                $('.areaRadiocircle').show();
+            } else if (selectedShape === 'Surface Area of Sphere') {
+                $('.formula').html(`Formula: Surface Area of Sphere = 4${pi}R<sup>2</sup>`);
+                $('input[name="calcOptionn"]').prop('checked', false)
+                $('.perimeterRadiocircle').hide();
+                $('.areaRadiocircle').show();
+            } else if (selectedShape === 'Volume of Sphere') {
+                $('.formula').html(`Formula: Volume of Sphere = ${pi}R<sup>3</sup>`);
+                $('input[name="calcOptionn"]').prop('checked', false)
+                $('.perimeterRadiocircle').hide();
+                $('.areaRadiocircle').hide();
+            } else if (selectedShape === 'Surface Area of Hemisphere') {
+                $('.formula').html(
+                    `Formula: Surface Area of Hemisphere = 2${pi}R<sup>2</sup> + ${pi}R<sup>2</sup>`);
+                $('input[name="calcOptionn"]').prop('checked', false)
+                $('.perimeterRadiocircle').hide();
+                $('.areaRadiocircle').hide();
+            } 
+            else if (selectedShape === 'Volume of Hemisphere') {
+                $('.formula').html(`Formula: Volume of Hemisphere = 2/3${pi}R<sup>3</sup>`);
+                $('input[name="calcOptionn"]').prop('checked', false)
+                $('.perimeterRadiocircle').hide();
+                $('.areaRadiocircle').hide();
+            }else {
+                $('.formula').html('');
             }
         });
+
 
         $('.dropdown-menu .selectOptionn').on('click', function() {
             $('.dropdown-menu .selectOptionn').removeClass('active');
@@ -2868,178 +2915,227 @@
             var selectedcircleShape = $('.dropdown-menu .selectOptionn.active').attr('data-value');
             var type = 'Area and perimeter of ' + selectedcircleShape;
             var radius = parseFloat($('#radius').val());
-           // console.log('Radius:', radius);
             var calculationType = $('input[name="calcOptionn"]:checked').val();
             var area, perimeter;
-            if (selectedcircleShape === 'circle') {
-                area = Math.PI * Math.pow(radius, 2);
-                perimeter = 2 * Math.PI * radius;
-            } else if (selectedcircleShape === 'semiCircle') {
-                area = 0.5 * Math.PI * Math.pow(radius, 2);
-                perimeter = Math.PI * radius + 2 * radius;
-            } else if (selectedcircleShape === 'quarterCircle') {
-                area = 0.25 * Math.PI * Math.pow(radius, 2);
-                perimeter = 0.5 * Math.PI * radius + 2 * radius;
-            }
-        
-            if (calculationType === 'area') {
-                totalOverallTotal = parseFloat(area.toFixed(2));
+            if (!selectedcircleShape) {
+                $('.circle-dropdown').addClass('highlight');
             } else {
-                totalOverallTotal = parseFloat(perimeter.toFixed(2));
+                $('.circle-dropdown').removeClass('highlight');
             }
-           // console.log('Total Overall Total:', totalOverallTotal);
-            var inputValues = {};
-            inputValues["parent_id"] = unitId;
-            inputValues["currentruleId"] = currentruleId;
-            inputValues["type"] = type + '(' + calculationType + ')';
-            inputValues["btntype"] = dataValue;
-            inputValues["unit"] = "Cum";
-            inputValues["overallTotal"] = totalOverallTotal !== '' ? totalOverallTotal :
-                0;
-            inputValues["radius"] = radius;
-
-            inputValues["editEstimate_id"] = editEstimate_Id;
-            var ruledata = {
-                input_values: inputValues
-            };
-            console.log(ruledata);
-             $.ajax({
-                url: '/calculate-rule-area-perimeter-circle',
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    data: ruledata
-                }),
-                success: function(response) {
-                    var tableBody1 = $("#dataTable tbody");
-                    tableBody1.empty();
-                    var rateAnalysisArray1 = response.rateAnalysisArray[
-                        unitId][
-                        'metadata'
-                    ];
-                    var tableBody = $("#dataTable1 tbody");
-                    tableBody.empty();
-
-                    var sno = 0;
-                    $.each(rateAnalysisArray1, function(index, metadata) {
-                        var newRow = $("<tr>");
-                        newRow.append(
-                            '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>'
-                        );
-                        newRow.append(
-                            '<td style="text-align:center;">A' +
-                            (
-                                sno +
-                                1) +
-                            '</td>');
-                        newRow.append(
-                            '<td style="text-align:center;">' +
-                            metadata.type + (metadata.remarks ?
-                                ' (' +
-                                metadata.remarks + ')' : '') +
-                            '</td>');
-                        newRow.append(
-                            '<td style="text-align:center;">' +
-                            metadata
-                            .overallTotal + '</td>');
-                        newRow.append(
-                            '<td style="text-align:center;">' +
-                            metadata
-                            .unit +
-                            '</td>');
-
-                        var editButtonClass = '';
-                        if (metadata.btntype === 1) {
-                            editButtonClass = 'editBtnrule';
-                        } else if (metadata.btntype === 2) {
-                            editButtonClass = 'editBtn';
-                        } else if (metadata.btntype === 3) {
-                            editButtonClass = 'defaultbtn';
-                        } else if (metadata.btntype === 4) {
-                            editButtonClass = 'sabtn';
-                        } else if (metadata.btntype === 5) {
-                            editButtonClass = 'apcbtn';
-                        } else {
-                            editButtonClass = 'defaultbtn';
-                        }
-
-                        var editButton = $('<a>').attr({
-                            'type': 'button',
-                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
-                                editButtonClass,
-                            'data-id': metadata.currentId
-                        }).text('edit');
-
-                        var deleteButton = $('<a>').attr({
-                            'type': 'button',
-                            'class': 'btn btn-soft-danger btn-sm delBtn',
-                            'data-id': metadata.currentId
-                        }).text('Delete');
-                        var grandTotalValue = 0;
-                        var hiddenInput = $('<input>').attr({
-                            'type': 'hidden',
-                            'id': 'metagrandval',
-                            'value': grandTotalValue
-                        });
-                        newRow.append(hiddenInput);
-                        var buttonCell = $('<td>').css('text-align',
-                                'center')
-                            .append(editButton).append(' ').append(
-                                deleteButton);
-                        if (metadata.key) {
-                            editButton.remove();
-                        }
-                        newRow.append(buttonCell);
-                        tableBody.append(newRow);
-                        sno++;
-                        // $('#grandTotalInput').val(metadata.overallTotal);
-                    });
-                    addNewRow();
-                    updateTotalSum();
-                    if (tableBody.find('tr').length > 0) {
-                        $('#mySelect').hide();
-                        $('#metagrandtotal').show();
-                    } else {
-                        $('#mySelect').show();
-                        $('#metagrandtotal').hide();
-                    }
-                    $('#successAlert').text('Row  added successfully');
-                    $('#successAlert').addClass('alert-success')
-                        .removeClass(
-                            'alert-danger')
-                        .show();
-                    $("#finalSubmitBtn").prop("disabled", false);
-                    setTimeout(function() {
-                        $('#successAlert').hide();
-                    }, 2000);
-                    $('#metagrandtotal').show();
-                    $("#closeBtn").prop("disabled", true);
-                    $("#finalSubmitBtn").prop("disabled", false);
-                    $('.rowCheckbox').prop('checked', false);
-                    $('#additionalFields').hide();
-                    $('#myForm').hide();
-                    var form = document.getElementById(
-                        "area-perimeter-circle");
-                    form.reset();
-                    currentId = null;
-                    currentruleId = null;
-
-                },
-                error: function(xhr, status, error) {
-                    var errorMessage =
-                        "An error occurred while calculating: ";
-                    if (xhr.responseJSON && xhr.responseJSON.error) {
-                        errorMessage += xhr.responseJSON.error;
-                    } else {
-                        errorMessage += xhr.statusText;
-                    }
-                    alert(errorMessage);
-                    console.error('Error occurred:', xhr.responseText);
+            if (!selectedcircleShape) {
+                $('#dropdownMessage').show();
+            } else {
+                $('#dropdownMessage').hide();
+            }
+            if (!radius) {
+                $('#radiusMessage').show();
+            } else {
+                $('#radiusMessage').hide();
+            }
+            if (!radius) {
+                $('#radius').addClass('highlight');
+            } else {
+                $('#radius').removeClass('highlight');
+            }
+            if (!calculationType) {
+                $('input[name="calcOptionn"]').addClass('highlight');
+            } else {
+                $('input[name="calcOptionn"]').removeClass('highlight');
+            }
+            if (selectedcircleShape === "Volume of Sphere" || selectedcircleShape === "Volume of Hemisphere") {
+                calculationType = "volume";
+            }
+            if (selectedcircleShape === 'Surface Area of Hemisphere') {
+                calculationType = "Area";
+            }
+            if (selectedcircleShape && calculationType && radius) {
+                if (selectedcircleShape === 'circle') {
+                    area = Math.PI * Math.pow(radius, 2);
+                    perimeter = 2 * Math.PI * radius;
+                } else if (selectedcircleShape === 'semiCircle') {
+                    area = 0.5 * Math.PI * Math.pow(radius, 2);
+                    perimeter = Math.PI * radius + 2 * radius;
+                } else if (selectedcircleShape === 'quarterCircle') {
+                    area = 0.25 * Math.PI * Math.pow(radius, 2);
+                    perimeter = 0.5 * Math.PI * radius + 2 * radius;
+                } else if (selectedcircleShape === 'Surface Area of Sphere') {
+                    area = 4 * Math.PI * Math.pow(radius, 2);
+                    type = selectedcircleShape;
+                } else if (selectedcircleShape === 'Volume of Sphere') {
+                    area = (4 / 3) * Math.PI * Math.pow(radius, 3);
+                    type = selectedcircleShape;
+                } else if (selectedcircleShape === 'Surface Area of Hemisphere') {
+                    var curvedSurfaceArea = 2 * Math.PI * Math.pow(radius, 2);
+                    var circularBaseArea = Math.PI * Math.pow(radius, 2);
+                    area = curvedSurfaceArea + circularBaseArea;
+                    type = selectedcircleShape;
+                }else if (selectedcircleShape === 'Volume of Hemisphere') {
+                    area = (2/3) * Math.PI * Math.pow(radius, 3);
+                    type = selectedcircleShape;
                 }
-            });
+                if (calculationType === 'area') {
+                    totalOverallTotal = parseFloat(area.toFixed(2));
+                } else if (calculationType === 'perimeter') {
+                    totalOverallTotal = parseFloat(perimeter.toFixed(2));
+                } else {
+                    totalOverallTotal = parseFloat(area.toFixed(2));
+                }
+                var inputValues = {};
+                inputValues["parent_id"] = unitId;
+                inputValues["currentruleId"] = currentruleId;
+                inputValues["type"] = type + '(' + calculationType + ')';
+                inputValues["selectedcircleShape"] = selectedcircleShape;
+                inputValues["calculationType"] = calculationType;
+                inputValues["btntype"] = dataValue;
+                inputValues["unit"] = "Cum";
+                inputValues["overallTotal"] = totalOverallTotal !== '' ? totalOverallTotal :
+                    0;
+                inputValues["radius"] = radius;
+                inputValues["editEstimate_id"] = editEstimate_Id;
+                var ruledata = {
+                    input_values: inputValues
+                };
+                //console.log(ruledata);
+                $.ajax({
+                    url: '/calculate-rule-area-perimeter-circle',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        data: ruledata
+                    }),
+                    success: function(response) {
+                        var tableBody1 = $("#dataTable tbody");
+                        tableBody1.empty();
+                        var rateAnalysisArray1 = response.rateAnalysisArray[
+                            unitId][
+                            'metadata'
+                        ];
+                        var tableBody = $("#dataTable1 tbody");
+                        tableBody.empty();
+                        var sno = 0;
+                        $.each(rateAnalysisArray1, function(index, metadata) {
+                            var newRow = $("<tr>");
+                            newRow.append(
+                                '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>'
+                            );
+                            newRow.append(
+                                '<td style="text-align:center;">A' +
+                                (
+                                    sno +
+                                    1) +
+                                '</td>');
+                            newRow.append(
+                                '<td style="text-align:center;">' +
+                                metadata.type + (metadata.remarks ?
+                                    ' (' +
+                                    metadata.remarks + ')' : '') +
+                                '</td>');
+                            newRow.append(
+                                '<td style="text-align:center;">' +
+                                metadata
+                                .overallTotal + '</td>');
+                            newRow.append(
+                                '<td style="text-align:center;">' +
+                                metadata
+                                .unit +
+                                '</td>');
+
+                            var editButtonClass = '';
+                            if (metadata.btntype === 1) {
+                                editButtonClass = 'editBtnrule';
+                            } else if (metadata.btntype === 2) {
+                                editButtonClass = 'editBtn';
+                            } else if (metadata.btntype === 3) {
+                                editButtonClass = 'defaultbtn';
+                            } else if (metadata.btntype === 4) {
+                                editButtonClass = 'sabtn';
+                            } else if (metadata.btntype === 5) {
+                                editButtonClass = 'apcbtn';
+                            } else {
+                                editButtonClass = 'defaultbtn';
+                            }
+                            var editButton = $('<a>').attr({
+                                'type': 'button',
+                                'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                                    editButtonClass,
+                                'data-id': metadata.currentId
+                            }).text('edit');
+                            var deleteButton = $('<a>').attr({
+                                'type': 'button',
+                                'class': 'btn btn-soft-danger btn-sm delBtn',
+                                'data-id': metadata.currentId
+                            }).text('Delete');
+                            var grandTotalValue = 0;
+                            var hiddenInput = $('<input>').attr({
+                                'type': 'hidden',
+                                'id': 'metagrandval',
+                                'value': grandTotalValue
+                            });
+                            newRow.append(hiddenInput);
+                            var buttonCell = $('<td>').css('text-align',
+                                    'center')
+                                .append(editButton).append(' ').append(
+                                    deleteButton);
+                            if (metadata.key) {
+                                editButton.remove();
+                            }
+                            newRow.append(buttonCell);
+                            tableBody.append(newRow);
+                            sno++;
+                        });
+                        addNewRow();
+                        updateTotalSum();
+                        if (tableBody.find('tr').length > 0) {
+                            $('#mySelect').hide();
+                            $('#metagrandtotal').show();
+                        } else {
+                            $('#mySelect').show();
+                            $('#metagrandtotal').hide();
+                        }
+                        $('#successAlert').text('Row  added successfully');
+                        $('#successAlert').addClass('alert-success')
+                            .removeClass(
+                                'alert-danger')
+                            .show();
+                        $("#finalSubmitBtn").prop("disabled", false);
+                        setTimeout(function() {
+                            $('#successAlert').hide();
+                        }, 2000);
+                        $('#metagrandtotal').show();
+                        $("#closeBtn").prop("disabled", true);
+                        $("#finalSubmitBtn").prop("disabled", false);
+                        $('.rowCheckbox').prop('checked', false);
+                        $('#additionalFields').hide();
+                        $('#myForm').hide();
+                        var form = document.getElementById(
+                            "area-perimeter-circle");
+                        form.reset();
+                        $('.dropdown-menu').find('.selected').removeClass('selected');
+                        $('.dropdown-menu').find('.active').removeClass('active');
+                        $('.dropdown-menu').find('.show').removeClass('show');
+                        $('.dropdown-menu').find('.dropdown-toggle').attr('aria-expanded',
+                            'false');
+                        $('.circle-dropdown').text('Select Shape');
+                        $('input[name="calcOptionn"]').prop('checked', false);
+                        currentId = null;
+                        currentruleId = null;
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMessage =
+                            "An error occurred while calculating: ";
+                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                            errorMessage += xhr.responseJSON.error;
+                        } else {
+                            errorMessage += xhr.statusText;
+                        }
+                        alert(errorMessage);
+                        console.error('Error occurred:', xhr.responseText);
+                    }
+                });
+            }
         });
         $(document).on("click", ".apcbtn", function() {
             currentruleId = this.getAttribute("data-id");
@@ -3048,7 +3144,6 @@
             $('#Area-perimeter-rectangle').hide();
             $('#additionalFields').hide();
             $('#myForm').hide();
-
             $.ajax({
                 url: '/get-modal-rule-data',
                 type: 'POST',
@@ -3063,13 +3158,36 @@
                 }),
                 success: function(response) {
                     console.log(response.rateAnalysisArray.input_values);
+                   var checkCalculationType = response.rateAnalysisArray.input_values.calculationType;
+                    if(checkCalculationType === 'area' || checkCalculationType === 'perimeter'){
+                        $('.perimeterRadiocircle').show();
+                        $('.areaRadiocircle').show();
+                    }else{
+                        $('.perimeterRadiocircle').hide();
+                         $('.areaRadiocircle').hide();
+                    }
+
                     $('#radius').val(response.rateAnalysisArray.input_values.radius);
+                    $('.dropdown-menu').find('a[data-value="' + response.rateAnalysisArray
+                        .input_values.selectedcircleShape + '"]').addClass('selected');
+                    var selectedOptionText = $('.dropdown-menu').find('a[data-value="' +
+                        response.rateAnalysisArray
+                        .input_values.selectedcircleShape + '"]').text();
+                    $('.circle-dropdown').text(selectedOptionText);
+                    var calculationType = response.rateAnalysisArray
+                        .input_values.calculationType;
+                    $('input[name="calcOptionn"]').removeAttr(
+                        'checked');
+                    $('input[name="calcOptionn"][value="' + calculationType + '"]').prop(
+                        'checked', true);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
                 }
             });
         });
-
+        addNewRow();
+        updateTotalSum();
+        $('input[name="calcOptionn"]').prop('checked', false);
     });
 </script>
