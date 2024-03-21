@@ -411,8 +411,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="input-group mb-3">
-                                <button type="button" class="btn btn-soft-primary" id="totalOnSelected"
-                                    style="font-size: small;padding-top: 12px;padding-bottom: 9px;" disabled>
+                                <button type="button" class="btn btn-soft-primary" id="totalOnSelected" disabled>
                                     {{ trans('cruds.estimate.fields.total_on_selected') }}
                                 </button>
                             </div>
@@ -420,13 +419,13 @@
                     </div>
                     <div id="successAlert" class="alert" role="alert" style="display: none;"></div>
                     <div class="table-container" style="height: 200px; overflow-y: auto;">
-                       
+
                         <table id="dataTable1" class="table mt-2 table-unit">
                             <thead>
                                 <tr>
                                     <th class="whitespace-nowrap check" style="text-align:center;">
                                         <input type="checkbox" id="selectAllCheckbox"
-                                            class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 
+                                            class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100
                                         border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400
                                         dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600
                                         dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600
@@ -446,14 +445,20 @@
                                     <?php foreach ($rateAnalysisArray[$unit_id]['metadata'] as $index => $metadata): ?>
                                     <tr>
                                         <td style="text-align:center;"><input type="checkbox"
-                                                class=" rowCheckbox form-checkbox rounded transition ease-in-out duration-100 
+                                                class=" rowCheckbox form-checkbox rounded transition ease-in-out duration-100
                                             border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400
                                             dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600
                                             dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600
                                             dark:focus:ring-offset-secondary-800" />
                                         </td>
                                         <td style="text-align:center;">A<?php echo $index + 1; ?></td>
-                                        <td style="text-align:center;"><?php echo $metadata['type']; ?></td>
+                                        <td style="text-align:center;">
+                                            <?php echo $metadata['type']; ?>
+                                            <?php if(isset($metadata['remarks']) && !empty($metadata['remarks'])): ?>
+                                                [<?php echo $metadata['remarks']; ?>]
+                                            <?php endif; ?>
+                                        </td>
+
                                         <td style="text-align:center;"><?php echo $metadata['overallTotal']; ?></td>
                                         <td style="text-align:center;">
                                             {{ !empty($metadata['unit']) ? $metadata['unit'] : null }}</td>
@@ -480,7 +485,7 @@
 
                             </tbody>
                         </table>
-                        
+
 
                     </div>
 
@@ -689,6 +694,7 @@
             $("#metatable_id input[type=checkbox]").change(function() {
                 if (!$(this).is(":checked")) {
                     $("#selectAllCheckbox").prop("checked", false);
+                    $("#totalOnSelected").prop("disabled", false);
                 }
             });
             updateGrandTotal();
@@ -1062,6 +1068,7 @@
                     var tableBody1 = $("#dataTable tbody");
                     tableBody1.empty();
                     var rateAnalysisArray1 = response.rateAnalysisArray[unitId]['metadata'];
+                    console.log(rateAnalysisArray1);
                     var tableBody = $("#dataTable1 tbody");
                     tableBody.empty();
                     var sno = 0;
@@ -1073,8 +1080,10 @@
                         );
                         newRow.append('<td style="text-align:center;">A' + (sno + 1) +
                             '</td>');
-                        newRow.append('<td style="text-align:center;">' + metadata.type +
-                            '</td>');
+                            newRow.append('<td style="text-align:center;">' +
+                                metadata.type + (metadata.remarks ? ' (' +
+                                    metadata.remarks + ')' : '') +
+                                '</td>');
                         newRow.append('<td style="text-align:center;">' + metadata
                             .overallTotal + '</td>');
                         newRow.append('<td style="text-align:center;">' + metadata.unit +
@@ -1094,7 +1103,7 @@
                             'data-id': metadata.currentId
                         }).text('Delete');
 
-                        var grandTotalValue = 0;
+                        var grandTotalValue =  0;
                         var hiddenInput = $('<input>').attr({
                             'type': 'hidden',
                             'id': 'metagrandval',
@@ -1110,6 +1119,8 @@
                         newRow.append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
+                        $('#grandTotalInput').val(metadata.grandTotal !== undefined && metadata.grandTotal !== null ? metadata.grandTotal : 0);
+
                     });
 
                     if (tableBody.find('tr').length > 0) {
@@ -1129,8 +1140,8 @@
                     }, 2000);
                     $('.rowCheckbox').prop('checked',
                         false);
-                    $("#totalOnSelected").prop("disabled", false);
-                    $('#grandTotalInput').val(0);
+                    $("#totalOnSelected").prop("disabled", true);
+                   // $('#grandTotalInput').val(0);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
@@ -1413,8 +1424,10 @@
                         );
                         newRow.append('<td style="text-align:center;">A' + (sno +
                             1) + '</td>');
-                        newRow.append('<td style="text-align:center;">' + metadata
-                            .type + '</td>');
+                            newRow.append('<td style="text-align:center;">' +
+                                metadata.type + (metadata.remarks ? ' (' +
+                                    metadata.remarks + ')' : '') +
+                                '</td>');
                         newRow.append('<td style="text-align:center;">' + metadata
                             .overallTotal + '</td>');
                         newRow.append('<td style="text-align:center;">' + metadata
@@ -1447,6 +1460,8 @@
                         newRow.append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
+                        $('#grandTotalInput').val(metadata.grandTotal !== undefined && metadata.grandTotal !== null ? metadata.grandTotal : 0);
+
                     });
                     currentId = null;
                     addNewRow();
@@ -1467,7 +1482,7 @@
                     $("#closeBtn").prop("disabled", true);
                     $("#finalSubmitBtn").prop("disabled", false);
                     $('.rowCheckbox').prop('checked', false);
-                    $('#grandTotalInput').val(0);
+                   //$('#grandTotalInput').val(0);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
@@ -1531,8 +1546,10 @@
                         );
                         newRow.append('<td style="text-align:center;">A' + (sno + 1) +
                             '</td>');
-                        newRow.append('<td style="text-align:center;">' + metadata.type +
-                            '</td>');
+                            newRow.append('<td style="text-align:center;">' +
+                                metadata.type + (metadata.remarks ? ' (' +
+                                    metadata.remarks + ')' : '') +
+                                '</td>');
                         newRow.append('<td style="text-align:center;">' + metadata
                             .overallTotal + '</td>');
                         newRow.append('<td style="text-align:center;">' + metadata.unit +
@@ -1551,7 +1568,7 @@
                             'class': 'btn btn-soft-danger btn-sm delBtn',
                             'data-id': metadata.currentId
                         }).text('Delete');
-                        var grandTotalValue = 0;
+                        var grandTotalValue = metadata.grandTotal;
                         var hiddenInput = $('<input>').attr({
                             'type': 'hidden',
                             'id': 'metagrandval',
@@ -1566,6 +1583,8 @@
                         newRow.append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
+                        $('#grandTotalInput').val(metadata.grandTotal !== undefined && metadata.grandTotal !== null ? metadata.grandTotal : 0);
+
                     });
                     addNewRow();
                     updateTotalSum();
@@ -1585,7 +1604,7 @@
                     }, 2000);
                     $('.rowCheckbox').prop('checked',
                         false);
-                    $('#grandTotalInput').val(0);
+                    //$('#grandTotalInput').val(0);
                     $("#calexp").prop("disabled", false);
                     $('.optionDropdown button.dropdown-toggle').prop('disabled', false);
                     // $("#totalOnSelected").prop("disabled",
@@ -1656,7 +1675,7 @@
                     });
                     $("#finalSubmitBtn").prop("disabled", false);
                     $('.rowCheckbox').prop('checked', false);
-                    $('#grandTotalInput').val(0);
+                  //  $('#grandTotalInput').val(0);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
@@ -1697,8 +1716,10 @@
                         );
                         newRow.append('<td style="text-align:center;">A' + (sno +
                             1) + '</td>');
-                        newRow.append('<td style="text-align:center;">' + metadata
-                            .type + '</td>');
+                            newRow.append('<td style="text-align:center;">' +
+                                metadata.type + (metadata.remarks ? ' (' +
+                                    metadata.remarks + ')' : '') +
+                                '</td>');
                         newRow.append('<td style="text-align:center;">' + metadata
                             .overallTotal + '</td>');
                         newRow.append('<td style="text-align:center;">' + metadata
@@ -1731,6 +1752,8 @@
                         newRow.append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
+                        $('#grandTotalInput').val(metadata.grandTotal !== undefined && metadata.grandTotal !== null ? metadata.grandTotal : 0);
+
                     });
                     if (tableBody.find('tr').length > 0) {
                         $('#mySelect').hide();
@@ -1749,7 +1772,7 @@
                     }, 2000);
                     $('.rowCheckbox').prop('checked',
                         false);
-                    $('#grandTotalInput').val(0);
+                   // $('#grandTotalInput').val(0);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
@@ -1847,8 +1870,8 @@
                 inputValues["currentruleId"] = currentruleId;
                 inputValues["type"] = expression;
                 inputValues["unit"] = "Cum";
-                inputValues["overallTotal"] = totalOverallTotal;
-                inputValues["grandTotal"] = totalOverallTotal;
+                inputValues["overallTotal"] = totalOverallTotal !== '' ? totalOverallTotal : 0;
+                inputValues["grandTotal"] = totalOverallTotal !== '' ? totalOverallTotal : 0;
                 inputValues["editEstimate_id"] = editEstimate_Id;
                 inputValues["key"] = "total";
                 var ruledata = {
@@ -1884,8 +1907,8 @@
                                     1) +
                                 '</td>');
                             newRow.append('<td style="text-align:center;">' +
-                                metadata
-                                .type +
+                                metadata.type + (metadata.remarks ? ' (' +
+                                    metadata.remarks + ')' : '') +
                                 '</td>');
                             newRow.append('<td style="text-align:center;">' +
                                 metadata
@@ -1910,12 +1933,12 @@
                                 'data-id': metadata.currentId
                             }).text('Delete');
                             var grandTotalValue = 0;
-                        var hiddenInput = $('<input>').attr({
-                            'type': 'hidden',
-                            'id': 'metagrandval',
-                            'value': grandTotalValue
-                        });
-                        newRow.append(hiddenInput);
+                            var hiddenInput = $('<input>').attr({
+                                'type': 'hidden',
+                                'id': 'metagrandval',
+                                'value': grandTotalValue
+                            });
+                            newRow.append(hiddenInput);
                             var buttonCell = $('<td>').css('text-align', 'center')
                                 .append(editButton).append(' ').append(
                                     deleteButton);
@@ -2049,7 +2072,7 @@
                             'metadata'
                         ];
 
-                       // console.log(rateAnalysisArray2);
+                        // console.log(rateAnalysisArray2);
                         var tableBody = $("#dataTable1 tbody");
                         tableBody.empty();
 
@@ -2089,12 +2112,12 @@
                                 'data-id': metadata.currentId
                             }).text('Delete');
                             var grandTotalValue = 0;
-                        var hiddenInput = $('<input>').attr({
-                            'type': 'hidden',
-                            'id': 'metagrandval',
-                            'value': grandTotalValue
-                        });
-                        newRow.append(hiddenInput);
+                            var hiddenInput = $('<input>').attr({
+                                'type': 'hidden',
+                                'id': 'metagrandval',
+                                'value': grandTotalValue
+                            });
+                            newRow.append(hiddenInput);
                             var buttonCell = $('<td>').css('text-align', 'center')
                                 .append(editButton).append(' ').append(
                                     deleteButton);
@@ -2104,6 +2127,7 @@
                             newRow.append(buttonCell);
                             tableBody.append(newRow);
                             sno++;
+                            $('#grandTotalInput').val(metadata.grandTotal !== undefined && metadata.grandTotal !== null ? metadata.grandTotal : 0);
 
                         });
                         addNewRow();
@@ -2131,7 +2155,7 @@
                         $('.rowCheckbox').prop('checked', false);
                         $('#additionalFields').hide();
                         $('#myForm').hide();
-                        
+
                     },
                     error: function(xhr, status, error) {
                         var errorMessage = "An error occurred while calculating: ";

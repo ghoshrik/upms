@@ -693,7 +693,7 @@ class AddedEstimateProjectList extends Component
                             'user_id' => Auth::user()->id,
                         ];
                         if(EstimateUserAssignRecord::where('estimate_id',$intId)->get()){
-                            EstimateUserAssignRecord::where('estimate_id',$intId)->update('status',($flag == 'draft') ? 12 : 1);
+                            EstimateUserAssignRecord::where('estimate_id',$intId)->update(['status',($flag == 'draft') ? 12 : 1]);
                         }else{
                             EstimateUserAssignRecord::create($data);
                         }

@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\DynamicSorHeader;
 use App\Models\SorDocument;
+use ChrisKonnertz\StringCalc\StringCalc;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use ChrisKonnertz\StringCalc\StringCalc;
 
 class ApiController extends Controller
 {
@@ -273,7 +273,8 @@ class ApiController extends Controller
             }
             $grandTotalOverallTotal = 0;
             foreach ($sessionData[$parentId]['metadata'] as $metadata) {
-                $grandTotalOverallTotal += $metadata['overallTotal'];
+                $overallTotal = floatval($metadata['overallTotal']);
+                $grandTotalOverallTotal += $overallTotal;
             }
             if (empty($Estimate_id)) {
                 Session()->put('modalData', $sessionData);
@@ -281,19 +282,17 @@ class ApiController extends Controller
                 Session()->put('editModalData', $sessionData);
             }
 
-
-
             $this->rateAnalysisArray = $sessionData;
 
-
-           // dd($this->rateAnalysisArray);
+            // dd($this->rateAnalysisArray);
             return response()->json([
                 'message' => 'Data updated successfully',
                 'status' => true,
                 'rateAnalysisArray' => $this->rateAnalysisArray,
             ], 200);
         } catch (\Exception $e) {
-          
+            dd($e);
+
         }
     }
 
@@ -390,102 +389,98 @@ class ApiController extends Controller
     }
 
     public function expCalculater(Request $request)
-{
-    $overallTotal = 0;
-    $stringCalc = new StringCalc();
-    try {
-        $data = $request->data;
-      
-        if (isset($data['input_values'])) {
-            $input_values = $data['input_values'];
-            $parentId = isset($input_values['parent_id']) ? $input_values['parent_id'] : null;
-            $overallTotal = isset($input_values['overallTotal']) ? $input_values['overallTotal'] : null;
-            $overallTotal = $stringCalc->calculate($overallTotal); // Calculate overallTotal
-            $type = isset($input_values['type']) ? $input_values['type'] : null;
-            $unit = isset($input_values['unit']) ? $input_values['unit'] : 5;
-            $updateId = isset($input_values['currentruleId']) ? $input_values['currentruleId'] : null;
-            $Estimate_id = isset($input_values['editEstimate_id']) ? $input_values['editEstimate_id'] : null;
-            $remarks = isset($input_values['remarks']) ? $input_values['remarks'] : null;
-            $data['input_values']['overallTotal'] = $overallTotal;
-        }
-       
-        if (empty($Estimate_id)) {
-            $sessionData = Session()->get('modalData');
-        } else {
-            $sessionData = Session()->get('editModalData');
-        }
-        if (!is_array($sessionData)) {
-            $sessionData = [];
-        }
-        if (!isset($sessionData[$parentId])) {
-            $sessionData[$parentId] = [];
-        }
-        if (!isset($sessionData[$parentId]['metadata'])) {
-            $sessionData[$parentId]['metadata'] = [];
-        }
+    {
+        $overallTotal = 0;
+        $stringCalc = new StringCalc();
+        try {
+            $data = $request->data;
+
+            if (isset($data['input_values'])) {
+                $input_values = $data['input_values'];
+                $parentId = isset($input_values['parent_id']) ? $input_values['parent_id'] : null;
+                $overallTotal = isset($input_values['overallTotal']) ? $input_values['overallTotal'] : null;
+                $overallTotal = $stringCalc->calculate($overallTotal); // Calculate overallTotal
+                $type = isset($input_values['type']) ? $input_values['type'] : null;
+                $unit = isset($input_values['unit']) ? $input_values['unit'] : 5;
+                $updateId = isset($input_values['currentruleId']) ? $input_values['currentruleId'] : null;
+                $Estimate_id = isset($input_values['editEstimate_id']) ? $input_values['editEstimate_id'] : null;
+                $remarks = isset($input_values['remarks']) ? $input_values['remarks'] : null;
+                $data['input_values']['overallTotal'] = $overallTotal;
+            }
+
+            if (empty($Estimate_id)) {
+                $sessionData = Session()->get('modalData');
+            } else {
+                $sessionData = Session()->get('editModalData');
+            }
+            if (!is_array($sessionData)) {
+                $sessionData = [];
+            }
+            if (!isset($sessionData[$parentId])) {
+                $sessionData[$parentId] = [];
+            }
+            if (!isset($sessionData[$parentId]['metadata'])) {
+                $sessionData[$parentId]['metadata'] = [];
+            }
             $index = array_key_exists('metadata', $sessionData[$parentId]) ? count($sessionData[$parentId]['metadata']) : 0;
 
             $sessionData[$parentId][] = $data;
             $metadata = $data['input_values'];
             $metadata['currentId'] = $index;
-            $metadata['overallTotal'] = $overallTotal; 
+            $metadata['overallTotal'] = $overallTotal;
             $sessionData[$parentId]['metadata'][] = $metadata;
-        
-           if (empty($Estimate_id)) {
-            Session()->put('modalData', $sessionData);
-            $sessionresData = Session()->get('modalData');
-        } else {
-            Session()->put('editModalData', $sessionData);
-            $sessionresData = Session()->get('editModalData');
+
+            if (empty($Estimate_id)) {
+                Session()->put('modalData', $sessionData);
+                $sessionresData = Session()->get('modalData');
+            } else {
+                Session()->put('editModalData', $sessionData);
+                $sessionresData = Session()->get('editModalData');
+            }
+
+            $this->rateAnalysisArray = $sessionresData;
+
+            //dd($this->rateAnalysisArray);
+            return response()->json([
+                'message' => 'Data updated successfully',
+                'status' => true,
+                'remarks' => $remarks,
+                'rateAnalysisArray' => $this->rateAnalysisArray,
+            ], 200);
+
+        } catch (\Exception $exception) {
+            return response()->json([
+                'status' => false,
+                'error' => $exception->getMessage(),
+            ], 500);
         }
-
-        $this->rateAnalysisArray = $sessionresData;
-
-        //dd($this->rateAnalysisArray);
-        return response()->json([
-            'message' => 'Data updated successfully',
-            'status' => true,
-            'remarks' =>  $remarks,
-            'rateAnalysisArray' => $this->rateAnalysisArray,
-        ], 200);
-
-    } catch (\Exception $exception) {
-        return response()->json([
-            'status' => false,
-            'error' => $exception->getMessage(), 
-        ], 500);
     }
-}
-
-    
-
-    
 
     public function expcheckCalculater(Request $request)
     {
         try {
-        $Estimate_id = $request->editEstimate_Id;
-        if (empty($Estimate_id)) {
-            $sessionData = Session()->get('modalData');
-        } else {
-            $sessionData = Session()->get('editModalData');
-            // dd($sesssionData);
-        }
+            $Estimate_id = $request->editEstimate_Id;
+            if (empty($Estimate_id)) {
+                $sessionData = Session()->get('modalData');
+            } else {
+                $sessionData = Session()->get('editModalData');
+                // dd($sesssionData);
+            }
 
-          //dd($sessionData);
-       
-            $total =$request->data;
+            //dd($sessionData);
+
+            $total = $request->data;
             $expression = $request->expression;
             //dd($result);
             return response()->json([
                 'status' => true,
                 'result' => $total,
-                'exp' => $expression
+                'exp' => $expression,
             ], 200);
         } catch (\Exception $exception) {
             return response()->json([
                 'status' => false,
-                'error' => $exception->getMessage(), 
+                'error' => $exception->getMessage(),
             ], 500);
         }
 
