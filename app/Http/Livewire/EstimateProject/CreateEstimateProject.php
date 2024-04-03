@@ -24,7 +24,7 @@ class CreateEstimateProject extends Component
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc;
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack, $part_no = '';
     public $addedEstimate = [];
-    public $searchDtaCount, $searchStyle, $searchResData, $quntity_type = 'menual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '', $getSor = [], $editEstimate_id = '';
+    public $searchDtaCount, $searchStyle, $searchResData, $quntity_type = 'manual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '', $getSor = [], $editEstimate_id = '';
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify

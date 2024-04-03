@@ -60,7 +60,11 @@
                                             {{ getTableDesc($view['sor_id'], $view['item_index']) }}
                                             {{-- {{ $view['description'] }} --}}
                                         @elseif ($view['rate_id'])
-                                            {{ getRateDescription($view['rate_id'], $view['operation']) }}
+                                            @php
+                                                $getRateDet = getRateDescription($view['rate_id'], $view['rate']);
+                                            @endphp
+                                            {{ $getRateDet['description'] }}{{ $getRateDet['operation'] != '' ? ' ( ' . $getRateDet['operation'] . ' )' : '' }}
+                                            {{-- {{ getRateDescription($view['rate_id'], $view['operation']) }} --}}
                                         @elseif($view['operation'])
                                             @if ($view['operation'] == 'Total')
                                                 {{ 'Total of ( ' . $view['row_index'] . ' )' }}

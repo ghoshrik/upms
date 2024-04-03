@@ -134,12 +134,18 @@ function getEstimateDescription($estimate_no)
     return $estimateDescription['sorMasterDesc'];
 }
 
-function getRateDescription($rate_no, $rate)
+function getRateDescription($rate_no, $total_amount)
 {
+    $rateDescription = [];
     if ($rate_no) {
-        $rateDescription = RatesAnalysis::where([['rate_id', $rate_no], ['operation', $rate]])->first();
+        // temp fetching by total amount
+        $rateDescription = RatesAnalysis::where([['rate_id', $rate_no], ['total_amount', $total_amount]])->select('description','operation','comments')->first();
     }
-    return $rateDescription['description'];
+    if($rateDescription != ''){
+        return $rateDescription;
+    }else{
+        return $rateDescription = ['description' => '','operation' => '','comments' => ''];
+    }
 }
 
 function getSorItemNumber($sor_item_number)
