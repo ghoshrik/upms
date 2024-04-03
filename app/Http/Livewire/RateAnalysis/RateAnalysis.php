@@ -79,7 +79,7 @@ class RateAnalysis extends Component
         }
         if(isset($data['id'])){
             // $this->selectedIdForEdit = $data['id'];
-            $this->emit('editEstimateRow',$data['id']);
+            $this->emit('editRate',$data['id']);
         }
         $this->updateDataTableTracker = rand(1,1000);
     }

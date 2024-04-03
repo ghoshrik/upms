@@ -15,19 +15,58 @@ use WireUi\Traits\Actions;
 class AddRateAnalysisList extends Component
 {
     use Actions;
-    protected $listeners = ['closeModal1', 'getRatePlaceWise', 'closeItemModal', 'submitItemModal'];
+    protected $listeners = ['closeModal1', 'getRatePlaceWise', 'closeItemModal', 'submitItemModal', 'setFetchRateData'];
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
-    public $selectSor, $totalDistance, $other_rate, $part_no, $selectCheckBoxs = false;
+    public $selectSor, $totalDistance, $other_rate, $part_no, $selectCheckBoxs = false, $editRate_id;
     public function mount()
     {
         $this->setEstimateDataToSession();
     }
-
+    public function setFetchRateData($fetchRateData)
+    {
+        $this->reset('allAddedEstimatesData');
+        if (Session()->has('editRateData' . $this->editRate_id)) {
+            $this->allAddedEstimatesData = Session()->get('editRateData' . $this->editRate_id);
+        } else {
+            // dd($fetchRateData);
+            foreach ($fetchRateData as $rateData) {
+                $count = count($this->allAddedEstimatesData) + 1;
+                $this->allAddedEstimatesData[$count]['array_id'] = $rateData['row_id'];
+                $this->allAddedEstimatesData[$count]['rate_no'] = $rateData['rate_no'];
+                $this->allAddedEstimatesData[$count]['dept_id'] = $rateData['dept_id'];
+                $this->allAddedEstimatesData[$count]['category_id'] = $rateData['category_id'];
+                $this->allAddedEstimatesData[$count]['sor_item_number'] = $rateData['sor_item_number'];
+                $this->allAddedEstimatesData[$count]['volume_no'] = $rateData['volume_no'];
+                $this->allAddedEstimatesData[$count]['table_no'] = $rateData['table_no'];
+                $this->allAddedEstimatesData[$count]['page_no'] = $rateData['page_no'];
+                $this->allAddedEstimatesData[$count]['sor_id'] = $rateData['sor_id'];
+                $this->allAddedEstimatesData[$count]['item_index'] = $rateData['item_index'];
+                $this->allAddedEstimatesData[$count]['item_name'] = $rateData['item_name'];
+                $this->allAddedEstimatesData[$count]['other_name'] = $rateData['other_name'];
+                $this->allAddedEstimatesData[$count]['description'] = $rateData['description'];
+                $this->allAddedEstimatesData[$count]['qty'] = $rateData['qty'];
+                $this->allAddedEstimatesData[$count]['rate'] = $rateData['rate'];
+                $this->allAddedEstimatesData[$count]['total_amount'] = $rateData['total_amount'];
+                // $this->allAddedEstimatesData[$count]['version'] = $rateData['version'];
+                $this->allAddedEstimatesData[$count]['operation'] = $rateData['operation'];
+                $this->allAddedEstimatesData[$count]['col_position'] = $rateData['col_position'];
+                $this->allAddedEstimatesData[$count]['is_row'] = '';
+                $this->allAddedEstimatesData[$count]['unit_id'] = $rateData['unit_id'];
+                $this->allAddedEstimatesData[$count]['arrayIndex'] = $rateData['row_index'];
+                $this->allAddedEstimatesData[$count]['remarks'] = $rateData['comments'];
+            }
+            Session()->put('editRateData' . $this->editRate_id, $this->allAddedEstimatesData);
+        }
+    }
     public function resetSession()
     {
-        Session()->forget('addedRateAnalysisData');
+        if ($this->editRate_id != '') {
+            Session()->forget('editRateData' . $this->editRate_id);
+        } else {
+            Session()->forget('addedRateAnalysisData');
+        }
         $this->reset();
     }
     public function viewModal($rate_id)
@@ -59,7 +98,7 @@ class AddRateAnalysisList extends Component
             $this->addedEstimateData['col_position'] = (isset($this->selectSor['col_position'])) ? $this->selectSor['col_position'] : 0;
         }
         $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'selectSor', 'hideTotalbutton', 'hideWithStackBtn', 'hideWithoutStackBtn', 'part_no');
+        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'selectSor', 'hideTotalbutton', 'hideWithStackBtn', 'hideWithoutStackBtn', 'part_no', 'editRate_id');
     }
 
     public function expCalc()
@@ -123,12 +162,11 @@ class AddRateAnalysisList extends Component
             $this->openTotalButton = false;
         }
         //for check select all check box
-        if(count($this->level) != count($this->allAddedEstimatesData)){
+        if (count($this->level) != count($this->allAddedEstimatesData)) {
             $this->selectCheckBoxs = false;
-        }
-        else if(count($this->level) == count($this->allAddedEstimatesData)){
+        } else if (count($this->level) == count($this->allAddedEstimatesData)) {
             $this->selectCheckBoxs = true;
-        }else{
+        } else {
             return;
         }
     }
@@ -196,10 +234,17 @@ class AddRateAnalysisList extends Component
     {
         // dd($this->part_no);
         $this->reset('allAddedEstimatesData');
-        if (Session()->has('addedRateAnalysisData')) {
-            $this->allAddedEstimatesData = Session()->get('addedRateAnalysisData');
-            // dd( $this->allAddedEstimatesData);
+        if ($this->editRate_id != '') {
+            if (Session()->has('editRateData' . $this->editRate_id)) {
+                $this->allAddedEstimatesData = Session()->get('editRateData' . $this->editRate_id);
+            }
+        } else {
+            if (Session()->has('addedRateAnalysisData')) {
+                $this->allAddedEstimatesData = Session()->get('addedRateAnalysisData');
+                // dd( $this->allAddedEstimatesData);
+            }
         }
+
         if ($this->addedEstimateData != null) {
             // dd($this->addedEstimateData);
             if (CommonFunction::hasNestedArrays($this->addedEstimateData)) {
@@ -250,7 +295,7 @@ class AddRateAnalysisList extends Component
                     foreach ($addedEstimate as $key => $estimate) {
                         $this->allAddedEstimatesData[$index][$key] = $estimate;
                     }
-                    Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
+                    // Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
                 }
             } else {
                 $index = count($this->allAddedEstimatesData) + 1;
@@ -296,11 +341,19 @@ class AddRateAnalysisList extends Component
                 foreach ($this->addedEstimateData as $key => $estimate) {
                     $this->allAddedEstimatesData[$index][$key] = $estimate;
                 }
-                Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
-                $this->reset('addedEstimateData');
+                // Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
+                // $this->reset('addedEstimateData');
             }
-            Session()->put('rateDescription', $this->sorMasterDesc);
-            Session()->put('ratePartNo', $this->part_no);
+            if ($this->editRate_id != '') {
+                Session()->put('editRateData' . $this->editRate_id, $this->allAddedEstimatesData);
+                // Session()->put('editRateDescription'. $this->editRate_id, $this->sorMasterDesc);
+                // Session()->put('editRatePartNo'. $this->editRate_id, $this->part_no);
+            } else {
+                Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
+                Session()->put('rateDescription', $this->sorMasterDesc);
+                Session()->put('ratePartNo', $this->part_no);
+            }
+
             $this->reset('addedEstimateData');
             // dd($this->allAddedEstimatesData);
         }
@@ -327,8 +380,13 @@ class AddRateAnalysisList extends Component
     {
         $numericValue = preg_replace('/[^0-9]/', '', $value);
         unset($this->allAddedEstimatesData[$numericValue]);
-        Session()->forget('addedRateAnalysisData');
-        Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
+        if ($this->editRate_id != '') {
+            Session()->forget('editRateData' . $this->editRate_id);
+            Session()->put('editRateData' . $this->editRate_id, $this->allAddedEstimatesData);
+        } else {
+            Session()->forget('addedRateAnalysisData');
+            Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
+        }
         $this->level = [];
         if ($this->totalOnSelectedCount == 1) {
             $this->reset('totalOnSelectedCount');

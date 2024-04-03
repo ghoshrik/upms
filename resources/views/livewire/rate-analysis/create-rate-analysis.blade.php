@@ -890,12 +890,12 @@
         @if (!$showTableOne && $addedEstimate != null)
         <livewire:estimate.added-estimate-list :addedEstimateData="$addedEstimate" :key="2" />
         @endif --}}
-        @if ($addedEstimate != null || Session::has('addedRateAnalysisData'))
+        @if ($addedEstimate != null || Session::has('addedRateAnalysisData') || $editRate_id != '')
             <div x-transition.duration.500ms>
                 {{-- <livewire:estimate-project.added-estimate-project-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
                     :wire:key="$addedEstimateUpdateTrack" /> --}}
                 <livewire:rate-analysis.add-rate-analysis-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc" :selectSor="$selectSor"
-                    :totalDistance="$distance" :part_no="$part_no" :wire:key="$addedEstimateUpdateTrack">
+                    :totalDistance="$distance" :part_no="$part_no" :wire:key="$addedEstimateUpdateTrack" :editRate_id="$editRate_id">
             </div>
         @endif
     </div>
@@ -1169,7 +1169,7 @@
         </script>
     @endif
 </div>
-<script>
+{{-- <script>
     // Save the original fetch function
     const originalFetch = window.fetch;
 
@@ -1207,4 +1207,4 @@
                 console.error('Error:', error);
             });
     };
-</script>
+</script> --}}
