@@ -21,12 +21,12 @@ use WireUi\Traits\Actions;
 class CreateRateAnalysis extends Component
 {
     use Actions;
-    protected $listeners = ['getRowValue', 'closeModal', 'getComposite', 'getCompositePlaceWise'];
+    protected $listeners = ['getRowValue', 'closeModal', 'getComposite', 'getCompositePlaceWise','editRate'];
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc, $selectSor = [], $dropdownData = [], $part_no = '';
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack;
     public $addedEstimate = [];
     public $searchDtaCount, $searchStyle, $searchResData, $totalDistance;
-    public $getSor, $viewModal = false, $modalName = '', $counterForItemNo = 0, $isParent = false;
+    public $getSor, $viewModal = false, $modalName = '', $counterForItemNo = 0, $isParent = false,$editRate_id;
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -137,7 +137,7 @@ class CreateRateAnalysis extends Component
     }
     public function changeCategory($value)
     {
-        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor', 'part_no']);
+        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor', 'part_no','editRate_id']);
         $this->part_no = strtoupper($this->part_no);
         $value = $value['_x_bindings']['value'];
         $this->estimateData['item_name'] = $value;
@@ -289,6 +289,21 @@ class CreateRateAnalysis extends Component
             $this->estimateData['distance'] = '';
             $this->estimateData['unit_id'] = '';
         }
+    }
+    public function editRate($rate_id){
+        $this->editRate_id = $rate_id;
+        $fetchRates = RatesAnalysis::where('rate_id',$this->editRate_id)->orderBy('id','asc')->get();
+        $rowCount = count($fetchRates);
+        $this->sorMasterDesc = $fetchRates[$rowCount-1]['description'];
+        if(ctype_alnum($fetchRates[0]['row_id'])){
+            $this->part_no = preg_replace("/[^A-Z]+/", "", $fetchRates[0]['row_id']);
+        }else{
+            $this->part_no = '';
+        }
+        Session()->forget('editRateData' . $this->editRate_id);
+        // Session()->forget('editRateDescription'. $this->editRate_id);
+        // Session()->forget('editRatePartNo'. $this->editRate_id);
+        $this->emit('setFetchRateData',$fetchRates);
     }
     public function getDeptCategory()
     {
@@ -1595,7 +1610,7 @@ class CreateRateAnalysis extends Component
             // $this->estimateData['rate'] = '';
             // $this->estimateData['total_amount'] = '';
             // dd($this->addedEstimate);
-            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor', 'estimateData', 'distance', 'part_no']);
+            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor', 'estimateData', 'distance', 'part_no','editRate_id']);
         } else {
             // dd("key");
             $this->reset('addedEstimate');
@@ -1634,7 +1649,7 @@ class CreateRateAnalysis extends Component
             $this->estimateData['page_no'] = '';
             $this->estimateData['rate_type'] = '';
             $this->estimateData['id'] = '';
-            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor', 'estimateData', 'selectedCategoryId', 'fatchDropdownData', 'part_no']);
+            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'dropdownData', 'selectSor', 'estimateData', 'selectedCategoryId', 'fatchDropdownData', 'part_no','editRate_id']);
         }
         // dd($this->addedEstimate);
     }

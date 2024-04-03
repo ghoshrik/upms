@@ -24,7 +24,7 @@ class CreateEstimateProject extends Component
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc;
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack, $part_no = '';
     public $addedEstimate = [];
-    public $searchDtaCount, $searchStyle, $searchResData, $quntity_type = 'menual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '', $getSor = [], $editEstimate_id = '';
+    public $searchDtaCount, $searchStyle, $searchResData, $quntity_type = 'manual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '', $getSor = [], $editEstimate_id = '';
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -132,7 +132,7 @@ class CreateEstimateProject extends Component
             // if (Session()->has('editProjectEstimateData' . $estimate_id)) {
             //     $fatchEstimateData = Session()->get('editProjectEstimateData' . $estimate_id);
             // } else {
-                $fatchEstimateData = EstimatePrepare::where('estimate_id', $estimate_id)->where('created_by', Auth::user()->id)->orderBy('id','asc')->get();
+            $fatchEstimateData = EstimatePrepare::where('estimate_id', $estimate_id)->where('created_by', Auth::user()->id)->orderBy('id', 'asc')->get();
             // }
             // dd($fatchEstimateData);
             $this->emit('setFatchEstimateData', $fatchEstimateData);
@@ -476,17 +476,23 @@ class CreateEstimateProject extends Component
         if ($this->estimateData['qty'] != '' && $this->estimateData['rate'] != '') {
             if ($this->estimateData['item_name'] == 'SOR') {
                 if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
-                    $this->estimateData['qty'] = round($this->estimateData['qty'], 3);
-                    $this->estimateData['rate'] = round($this->estimateData['rate'], 2);
+                    $this->estimateData['qty'] = number_format(round($this->estimateData['qty'], 3),3);
+                    $this->estimateData['qty'] = str_replace(',', '',$this->estimateData['qty']);
+                    $this->estimateData['rate'] = number_format(round($this->estimateData['rate'], 2),2);
+                    $this->estimateData['rate'] = str_replace(',', '',$this->estimateData['rate']);
                     $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
-                    $this->estimateData['total_amount'] = round($this->estimateData['total_amount'], 2);
+                    $this->estimateData['total_amount'] = number_format(round($this->estimateData['total_amount'], 2),2);
+                    $this->estimateData['total_amount'] = str_replace(',', '',$this->estimateData['total_amount']);
                 }
             } else {
                 if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
-                    $this->estimateData['qty'] = round($this->estimateData['qty'], 3);
-                    $this->estimateData['rate'] = round($this->estimateData['rate'], 2);
+                    $this->estimateData['qty'] = number_format(round($this->estimateData['qty'], 3),3);
+                    $this->estimateData['qty'] = str_replace(',', '',$this->estimateData['qty']);
+                    $this->estimateData['rate'] = number_format(round($this->estimateData['rate'], 2),2);
+                    $this->estimateData['rate'] = str_replace(',', '',$this->estimateData['rate']);
                     $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
-                    $this->estimateData['total_amount'] = round($this->estimateData['total_amount'], 2);
+                    $this->estimateData['total_amount'] = number_format(round($this->estimateData['total_amount'], 2),2);
+                    $this->estimateData['total_amount'] = str_replace(',', '',$this->estimateData['total_amount']);
                 }
             }
         }
@@ -640,9 +646,9 @@ class CreateEstimateProject extends Component
         // dd($convertedArray);
         $this->extractItemNoOfItems($fetchRow, $itemNo, $convertedArray, $this->counterForItemNo);
         $loopCount = 1;
-        $this->extractDescOfItems($fetchRow, $descriptions, $convertedArray,$loopCount);
+        $this->extractDescOfItems($fetchRow, $descriptions, $convertedArray, $loopCount);
         // if ($data != null && $this->selectedCategoryId != '' && $this->isParent == false) {
-        // dd('hi');
+        // dd($descriptions);
         // $this->viewModal = !$this->viewModal;
         $this->estimateData['description'] = $descriptions . " " . $data[0]['desc'];
         $this->estimateData['qty'] = 1;
@@ -713,28 +719,27 @@ class CreateEstimateProject extends Component
         }
     }
 
-    public function extractDescOfItems($data, &$descriptions, $counter,$loopCount)
+    public function extractDescOfItems($data, &$descriptions, $counter, $loopCount)
     {
-        // dd($counter);
-        if (count($counter) > 1) {
-            if (isset($data->desc_of_item) && $data->desc_of_item != '') {
-                $descriptions .= $data->desc_of_item . ' ';
-            }
+        // dd($data);
+        if (isset($data->desc_of_item) && $data->desc_of_item != '') {
+            $descriptions .= $data->desc_of_item . ' ';
+        }
+        if (count($counter) > 2) {
             if (isset($data->_subrow)) {
                 foreach ($data->_subrow as $item) {
                     if (isset($counter[$loopCount]) && isset($item->desc_of_item)) {
-                        if ($counter[$loopCount] == $item->id) {
+                        if ($counter[$loopCount] === $item->id) {
                             $descriptions .= $item->desc_of_item . ' ';
                             $loopCount++;
                         }
                         if (!empty($item->_subrow)) {
-                            extractDescOfItems($item->_subrow, $descriptions, $counter, $loopCount);
+                            $this->extractDescOfItems($item->_subrow, $descriptions, $counter, $loopCount);
                         }
                     }
                 }
             }
         }
-
     }
 
     public function addEstimate()
@@ -792,6 +797,7 @@ class CreateEstimateProject extends Component
         //     $this->selectSor['page_no'] = '';
         // } else {
         $this->estimateData['page_no'] = '';
+        $this->estimateData['id'] = '';
         // }
     }
 

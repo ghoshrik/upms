@@ -85,12 +85,18 @@
                                             @endif
                                         </td>
                                         <td class="text-wrap">
-                                            @if ($addedEstimate['sor_item_number'] || $addedEstimate['rate_no'])
+                                            @if ($addedEstimate['sor_item_number'])
                                                 @if ($addedEstimate['sor_item_number'] && $addedEstimate['item_name'])
                                                     <strong>{{ getDepartmentName($addedEstimate['dept_id']) . ' / ' . getDepartmentCategoryName($addedEstimate['category_id']) . ' / ' . getSorTableName($addedEstimate['sor_id']) . ' / Page No: ' . getSorPageNo($addedEstimate['sor_id']) . (getSorCorrigenda($addedEstimate['sor_id']) != null ? ' - ' . getSorCorrigenda($addedEstimate['sor_id']) : '') }}</strong>
                                                     <br />
                                                 @endif
-                                                {{ $addedEstimate['description'] }}{{ $addedEstimate['rate_type'] != '' ? ' ( ' . $addedEstimate['rate_type'] . ' ) ' : '' }}
+                                                {{ $addedEstimate['description'] }}
+                                            @elseif ($addedEstimate['rate_no'])
+                                            @php
+                                                $getRateDet = getRateDescription($addedEstimate['rate_no'], $addedEstimate['rate']);
+                                            @endphp
+                                                {{ $getRateDet['description'] }}{{ ($getRateDet['operation'] != '') ? ' ( ' . $getRateDet['operation'] . ' )' : '' }}
+                                                {{-- {{ getRateDescription($addedEstimate['rate_no'], $addedEstimate['rate']) }}{{ $addedEstimate['rate_type'] != '' ? ' ( ' . $addedEstimate['rate_type'] . ' ) ' : '' }} --}}
                                             @elseif ($addedEstimate['estimate_no'])
                                                 {{ getEstimateDescription($addedEstimate['estimate_no']) }}
                                                 {{-- {{ $addedEstimate->SOR->sorMasterDesc }} --}}

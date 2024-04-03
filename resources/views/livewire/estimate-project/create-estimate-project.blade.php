@@ -42,7 +42,7 @@
                         </div>
                         @if (!empty($estimateData))
                             @if ($estimateData['item_name'] == 'SOR')
-                                <div class="row" style="transition: all 2s ease-out">
+                                <div class="row" style="transition: all 2s ease-out" wire:key='{{ $estimateData['item_name'] }}'>
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
@@ -219,7 +219,7 @@
                                 </div>
                             @endif
                             @if ($estimateData['item_name'] == 'Other')
-                                <div class="row">
+                                <div class="row" wire:key='{{ $estimateData['item_name'] }}'>
                                     <div class="col">
                                         <div class="form-group">
                                             <x-input wire:key="other_name" wire:model.defer="estimateData.other_name"
@@ -268,7 +268,7 @@
                                 </div>
                             @endif
                             @if ($estimateData['item_name'] == 'Estimate')
-                                <div class="row">
+                                <div class="row" wire:key='{{ $estimateData['item_name'] }}'>
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="dept"
@@ -356,7 +356,7 @@
                                 </div>
                             @endif
                             @if ($estimateData['item_name'] == 'Rate')
-                                <div class="row">
+                                <div class="row" wire:key='{{ $estimateData['item_name'] }}'>
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="dept"
@@ -422,14 +422,14 @@
                                             wire:model.defer="quntity_type_id"
                                             x-on:select="$wire.changeQuntity($event.target)" :options="[
                                                 ['name' => 'Qutity Evaluation', 'id' => 1],
-                                                ['name' => 'Menual', 'id' => 2],
+                                                ['name' => 'Manual', 'id' => 2],
                                             ]"
                                             option-label="name" option-value="id" />
                                     </div>
                                     @if ($quntity_type_id == 2)
                                         <div class="col">
                                             <div class="form-group">
-                                                <x-input wire:key="qty_menual" wire:model.defer="estimateData.qty"
+                                                <x-input wire:key="qty_manual" wire:model.defer="estimateData.qty"
                                                     wire:blur="calculateValue"
                                                     label="{{ trans('cruds.estimate.fields.quantity') }}"
                                                     placeholder="{{ trans('cruds.estimate.fields.quantity') }}" oninput="this.value = this.value.replace(/[^0-9.]/g, '');" />

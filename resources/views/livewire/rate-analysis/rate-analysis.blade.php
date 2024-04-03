@@ -59,7 +59,7 @@
                 </div>
             @elseif($isFromOpen && $openedFormType == 'edit')
                 <div x-transition.duration.900ms>
-                    <livewire:estimate-project.edit-estimate-project />
+                    <livewire:rate-analysis.create-rate-analysis />
                 </div>
             @else
                 <div x-transition.duration.500ms>

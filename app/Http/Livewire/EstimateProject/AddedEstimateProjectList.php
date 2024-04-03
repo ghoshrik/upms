@@ -77,8 +77,7 @@ class AddedEstimateProjectList extends Component
                 $this->allAddedEstimatesData[$count]['arrayIndex'] = $estimateData['row_index'];
                 $this->allAddedEstimatesData[$count]['array_id'] = $estimateData['row_id'];
                 $this->allAddedEstimatesData[$count]['operation'] = $estimateData['operation'];
-                if($this->allAddedEstimatesData[$count]['operation'] == "Total")
-                {
+                if ($this->allAddedEstimatesData[$count]['operation'] == "Total") {
                     $this->reset('totalOnSelectedCount');
                     $this->totalOnSelectedCount = $this->totalOnSelectedCount + 1;
                     Session()->put('editProjectEstimationTotal' . $this->editEstimate_id, $this->totalOnSelectedCount);
@@ -225,11 +224,14 @@ class AddedEstimateProjectList extends Component
     {
         // dd($this->allAddedEstimatesData[$key]);
         if ($this->allAddedEstimatesData[$key]['rate'] > 0) {
-            $this->allAddedEstimatesData[$key]['qty'] = round($this->allAddedEstimatesData[$key]['qty'], 3);
-            $this->allAddedEstimatesData[$key]['rate'] = round($this->allAddedEstimatesData[$key]['rate'], 2);
+            $this->allAddedEstimatesData[$key]['qty'] = number_format(round($this->allAddedEstimatesData[$key]['qty'], 3), 3);
+            $this->allAddedEstimatesData[$key]['qty'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['qty']);
+            $this->allAddedEstimatesData[$key]['rate'] = number_format(round($this->allAddedEstimatesData[$key]['rate'], 2), 2);
+            $this->allAddedEstimatesData[$key]['rate'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['rate']);
             $this->allAddedEstimatesData[$key]['total_amount'] = $this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'];
-            $this->allAddedEstimatesData[$key]['total_amount'] = round($this->allAddedEstimatesData[$key]['total_amount'], 2);
-            $this->allAddedEstimatesData[$key]['rate'] = $this->allAddedEstimatesData[$key]['rate'];
+            $this->allAddedEstimatesData[$key]['total_amount'] = number_format(round($this->allAddedEstimatesData[$key]['total_amount'], 2), 2);
+            $this->allAddedEstimatesData[$key]['total_amount'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['total_amount']);
+            // $this->allAddedEstimatesData[$key]['rate'] = $this->allAddedEstimatesData[$key]['rate'];
             // $this->reset('other_rate');
         } else {
             $this->allAddedEstimatesData[$key]['rate'] = 0;
@@ -334,7 +336,7 @@ class AddedEstimateProjectList extends Component
             if ($this->editEstimate_id == '') {
                 $this->totalOnSelectedCount = $this->totalOnSelectedCount + 1;
                 Session()->put('projectEstimationTotal', $this->totalOnSelectedCount);
-            }else{
+            } else {
                 $this->totalOnSelectedCount = $this->totalOnSelectedCount + 1;
                 Session()->put('editProjectEstimationTotal' . $this->editEstimate_id, $this->totalOnSelectedCount);
             }
@@ -692,9 +694,10 @@ class AddedEstimateProjectList extends Component
                             'status' => 1,
                             'user_id' => Auth::user()->id,
                         ];
-                        if(EstimateUserAssignRecord::where('estimate_id',$intId)->get()){
-                            EstimateUserAssignRecord::where('estimate_id',$intId)->update(['status',($flag == 'draft') ? 12 : 1]);
-                        }else{
+                        $getData = EstimateUserAssignRecord::where('estimate_id', $intId)->get();
+                        if (count($getData) == 1) {
+                            EstimateUserAssignRecord::where('estimate_id', $intId)->update(['status', ($flag == 'draft') ? 12 : 1]);
+                        } else {
                             EstimateUserAssignRecord::create($data);
                         }
                         $this->notification()->success(
