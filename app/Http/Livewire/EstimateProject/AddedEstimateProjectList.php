@@ -105,6 +105,10 @@ class AddedEstimateProjectList extends Component
         $this->emit('openModal', $estimate_id);
     }
 
+    public function viewRateModal($rate_no){
+        $this->emit('openRateAnalysisModal',$rate_no);
+    }
+
     public function openQtyModal($key)
     {
         $this->openQtyModal = !$this->openQtyModal;
@@ -694,9 +698,9 @@ class AddedEstimateProjectList extends Component
                             'status' => 1,
                             'user_id' => Auth::user()->id,
                         ];
-                        $getData = EstimateUserAssignRecord::where('estimate_id', $intId)->get();
+                        $getData = ModelsSORMaster::where('estimate_id', $intId)->get();
                         if (count($getData) == 1) {
-                            EstimateUserAssignRecord::where('estimate_id', $intId)->update(['status', ($flag == 'draft') ? 12 : 1]);
+                            EstimateUserAssignRecord::where('estimate_id', $intId)->update(['status' => ($flag == 'draft') ? 12 : 1]);
                         } else {
                             EstimateUserAssignRecord::create($data);
                         }

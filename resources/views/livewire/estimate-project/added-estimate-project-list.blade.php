@@ -77,9 +77,9 @@
                                             @if ($addedEstimate['sor_item_number'] != '' && $addedEstimate['sor_item_number'] != 0)
                                                 {{ $addedEstimate['sor_item_number'] }}
                                             @elseif ($addedEstimate['estimate_no'] != 0)
-                                                {{ $addedEstimate['estimate_no'] }}
+                                                {{ $addedEstimate['estimate_no'] }}{{ ' ( '. $addedEstimate['item_name'] . ' )' }}
                                             @elseif($addedEstimate['rate_no'] != 0)
-                                                {{ $addedEstimate['rate_no'] }}
+                                                {{ $addedEstimate['rate_no'] }}{{ ' ( '. $addedEstimate['item_name'] . ' )' }}
                                             @else
                                                 --
                                             @endif
@@ -148,6 +148,14 @@
                                         <td>
                                             @if ($addedEstimate['estimate_no'])
                                                 <x-button wire:click="viewModal({{ $addedEstimate['estimate_no'] }})"
+                                                    type="button" class="btn btn-soft-primary btn-sm">
+                                                    <span class="btn-inner">
+                                                        <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
+                                                    </span>
+                                                </x-button>
+                                            @endif
+                                            @if ($addedEstimate['rate_no'])
+                                                <x-button wire:click="viewRateModal({{ $addedEstimate['rate_no'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-eye class="w-4 h-4 text-gray-500" /> View

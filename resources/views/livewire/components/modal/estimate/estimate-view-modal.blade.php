@@ -39,7 +39,8 @@
                                         @elseif ($view['rate_id'] != 0)
                                             {{ $view['rate_id'] }}
                                         @elseif ($view['estimate_no'] != 0)
-                                            {{ getEstimateDesc($view['estimate_no']) }}
+                                            {{-- {{ getEstimateDesc($view['estimate_no']) }} --}}
+                                            {{ $view['estimate_no'] }}
                                         @else
                                             --
                                         @endif
@@ -52,7 +53,6 @@
                                     <td class="text-wrap" style="width: 40rem;text-align:justify;">
                                         @if ($view['sor_item_number'])
                                             {{-- {{ getSorItemNumberDesc($view['sor_item_number']) }} --}}
-
                                             @if ($view['sor_item_number'])
                                                 <strong>{{ getDepartmentName($view['dept_id']) . ' / ' . getDepartmentCategoryName($view['category_id']) . ' / ' . getSorTableName($view['sor_id']) . ' / Page No: ' . getSorPageNo($view['sor_id']) . (getSorCorrigenda($view['sor_id']) != null ? ' - ' . getSorCorrigenda($view['sor_id']) : '') }}</strong>
                                                 <br />
@@ -65,6 +65,8 @@
                                             @endphp
                                             {{ $getRateDet['description'] }}{{ $getRateDet['operation'] != '' ? ' ( ' . $getRateDet['operation'] . ' )' : '' }}
                                             {{-- {{ getRateDescription($view['rate_id'], $view['operation']) }} --}}
+                                        @elseif ($view['estimate_no'] != 0)
+                                            {{ getEstimateDesc($view['estimate_no']) }}
                                         @elseif($view['operation'])
                                             @if ($view['operation'] == 'Total')
                                                 {{ 'Total of ( ' . $view['row_index'] . ' )' }}

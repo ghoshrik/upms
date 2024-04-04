@@ -10,8 +10,8 @@
             <div class="container-fluid iq-container">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                     <div class="d-flex flex-column">
-                        <h3 class="text-dark">{{$titel}}</h3>
-                    <p class="text-primary mb-0">{{$subTitel}}</p>
+                        <h3 class="text-dark">{{ $titel }}</h3>
+                        <p class="text-primary mb-0">{{ $subTitel }}</p>
                     </div>
                     @canany(['create estimate', 'edit estimate'])
                         <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
@@ -84,8 +84,8 @@
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                                 stroke-width="2" stroke-linecap="round"
                                                                 stroke-linejoin="round">
-                                                                <rect x="2" y="4" width="20"
-                                                                    height="5" rx="2"></rect>
+                                                                <rect x="2" y="4" width="20" height="5"
+                                                                    rx="2"></rect>
                                                                 <path d="M4 9v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9">
                                                                 </path>
                                                                 <path d="M10 13h4"></path>
@@ -140,8 +140,8 @@
                                                             data-max-value="{{ $counterData['totalDataCount'] }}"
                                                             data-value="{{ $counterData['revertedDataCount'] }}"
                                                             data-type="percent" wire:ignore>
-                                                            <svg class="card-slie-arrow " width="24"
-                                                                height="24" viewBox="0 0 24 24" fill="none"
+                                                            <svg class="card-slie-arrow " width="24" height="24"
+                                                                viewBox="0 0 24 24" fill="none"
                                                                 stroke="currentColor" stroke-width="2"
                                                                 stroke-linecap="round" stroke-linejoin="round">
                                                                 <polyline points="9 14 4 9 9 4"></polyline>
@@ -168,20 +168,23 @@
                                     <div class="card-body">
                                         {{-- <livewire:estimate-project.data-table.estimate-project-table
                                             :wire:key="$updateDataTableTracker" /> --}}
-                                        <livewire:estimate-project.data-table.estimate-project-table :wire:key="$updateDataTableTracker"/>
+                                        <livewire:estimate-project.data-table.estimate-project-table
+                                            :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 2)
                                 <div class="card">
                                     <div class="card-body">
                                         {{-- <livewire:estimate-project.data-table.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" /> --}}
-                                        <livewire:estimate-project.datatable.powergrid.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" />
+                                        <livewire:estimate-project.datatable.powergrid.forwarded-estimate-project-table
+                                            :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 3)
                                 <div class="card">
                                     <div class="card-body">
-                                        <livewire:estimate-project.data-table.reverted-estimate-project-table :wire:key="$updateDataTableTracker" />
+                                        <livewire:estimate-project.data-table.reverted-estimate-project-table
+                                            :wire:key="$updateDataTableTracker" />
                                         {{-- <livewire:estimate-project.datatable.powergrid.estimate-revert-table :wire:key="$updateDataTableTracker" /> --}}
                                     </div>
                                 </div>
@@ -224,8 +227,7 @@
         </div>
     </div>
 </div>
-<div>
-    <livewire:components.modal.estimate.estimate-view-modal />
-    <livewire:components.modal.estimate.estimate-forward-modal />
-    <livewire:components.modal.estimate.edit-estimate-modal />
-</div>
+<livewire:components.modal.estimate.estimate-view-modal />
+<livewire:components.modal.rate-analysis.rate-analysis-view-modal />
+<livewire:components.modal.estimate.estimate-forward-modal />
+<livewire:components.modal.estimate.edit-estimate-modal />
