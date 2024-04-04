@@ -698,9 +698,9 @@ class AddedEstimateProjectList extends Component
                             'status' => 1,
                             'user_id' => Auth::user()->id,
                         ];
-                        $getData = ModelsSORMaster::where('estimate_id', $intId)->get();
+                        $getData = EstimateUserAssignRecord::where([['estimate_id', $intId],['is_done',0]])->get();
                         if (count($getData) == 1) {
-                            EstimateUserAssignRecord::where('estimate_id', $intId)->update(['status' => ($flag == 'draft') ? 12 : 1]);
+                            EstimateUserAssignRecord::where([['estimate_id', $intId],['is_done',0]])->update(['status' => ($flag == 'draft') ? 12 : 1]);
                         } else {
                             EstimateUserAssignRecord::create($data);
                         }

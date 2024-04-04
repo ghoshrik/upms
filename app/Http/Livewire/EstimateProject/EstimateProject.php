@@ -41,7 +41,8 @@ class EstimateProject extends Component
         ->count();
         $this->counterData['draftDataCount'] = EstimateUserAssignRecord::where(function($query){
             $query->where('status',1)
-            ->orWhere('status',10);
+            ->orWhere('status',10)
+            ->orWhere('status',12);
         })
         ->where('user_id',Auth::user()->id)
         ->where('is_done',0)
