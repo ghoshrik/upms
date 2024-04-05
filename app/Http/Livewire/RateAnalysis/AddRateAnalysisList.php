@@ -16,48 +16,48 @@ class AddRateAnalysisList extends Component
 {
     use Actions;
     protected $listeners = ['closeModal1', 'getRatePlaceWise', 'closeItemModal', 'submitItemModal', 'setFetchRateData'];
-    public $addedEstimateData = [];
-    public $allAddedEstimatesData = [];
-    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
+    public $addedRateData = [];
+    public $allAddedRateData = [];
+    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalRate = 0, $arrayIndex, $arrayRow, $rateMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
     public $selectSor, $totalDistance, $other_rate, $part_no, $selectCheckBoxs = false, $editRate_id;
     public function mount()
     {
-        $this->setEstimateDataToSession();
+        $this->setRateDataToSession();
     }
     public function setFetchRateData($fetchRateData)
     {
-        $this->reset('allAddedEstimatesData');
+        $this->reset('allAddedRateData');
         if (Session()->has('editRateData' . $this->editRate_id)) {
-            $this->allAddedEstimatesData = Session()->get('editRateData' . $this->editRate_id);
+            $this->allAddedRateData = Session()->get('editRateData' . $this->editRate_id);
         } else {
             // dd($fetchRateData);
             foreach ($fetchRateData as $rateData) {
-                $count = count($this->allAddedEstimatesData) + 1;
-                $this->allAddedEstimatesData[$count]['array_id'] = $rateData['row_id'];
-                $this->allAddedEstimatesData[$count]['rate_no'] = $rateData['rate_no'];
-                $this->allAddedEstimatesData[$count]['dept_id'] = $rateData['dept_id'];
-                $this->allAddedEstimatesData[$count]['category_id'] = $rateData['category_id'];
-                $this->allAddedEstimatesData[$count]['sor_item_number'] = $rateData['sor_item_number'];
-                $this->allAddedEstimatesData[$count]['volume_no'] = $rateData['volume_no'];
-                $this->allAddedEstimatesData[$count]['table_no'] = $rateData['table_no'];
-                $this->allAddedEstimatesData[$count]['page_no'] = $rateData['page_no'];
-                $this->allAddedEstimatesData[$count]['sor_id'] = $rateData['sor_id'];
-                $this->allAddedEstimatesData[$count]['item_index'] = $rateData['item_index'];
-                $this->allAddedEstimatesData[$count]['item_name'] = $rateData['item_name'];
-                $this->allAddedEstimatesData[$count]['other_name'] = $rateData['other_name'];
-                $this->allAddedEstimatesData[$count]['description'] = $rateData['description'];
-                $this->allAddedEstimatesData[$count]['qty'] = $rateData['qty'];
-                $this->allAddedEstimatesData[$count]['rate'] = $rateData['rate'];
-                $this->allAddedEstimatesData[$count]['total_amount'] = $rateData['total_amount'];
-                // $this->allAddedEstimatesData[$count]['version'] = $rateData['version'];
-                $this->allAddedEstimatesData[$count]['operation'] = $rateData['operation'];
-                $this->allAddedEstimatesData[$count]['col_position'] = $rateData['col_position'];
-                $this->allAddedEstimatesData[$count]['is_row'] = '';
-                $this->allAddedEstimatesData[$count]['unit_id'] = $rateData['unit_id'];
-                $this->allAddedEstimatesData[$count]['arrayIndex'] = $rateData['row_index'];
-                $this->allAddedEstimatesData[$count]['remarks'] = $rateData['comments'];
+                $count = count($this->allAddedRateData) + 1;
+                $this->allAddedRateData[$count]['array_id'] = $rateData['row_id'];
+                $this->allAddedRateData[$count]['rate_no'] = $rateData['rate_no'];
+                $this->allAddedRateData[$count]['dept_id'] = $rateData['dept_id'];
+                $this->allAddedRateData[$count]['category_id'] = $rateData['category_id'];
+                $this->allAddedRateData[$count]['sor_item_number'] = $rateData['sor_item_number'];
+                $this->allAddedRateData[$count]['volume_no'] = $rateData['volume_no'];
+                $this->allAddedRateData[$count]['table_no'] = $rateData['table_no'];
+                $this->allAddedRateData[$count]['page_no'] = $rateData['page_no'];
+                $this->allAddedRateData[$count]['sor_id'] = $rateData['sor_id'];
+                $this->allAddedRateData[$count]['item_index'] = $rateData['item_index'];
+                $this->allAddedRateData[$count]['item_name'] = $rateData['item_name'];
+                $this->allAddedRateData[$count]['other_name'] = $rateData['other_name'];
+                $this->allAddedRateData[$count]['description'] = $rateData['description'];
+                $this->allAddedRateData[$count]['qty'] = $rateData['qty'];
+                $this->allAddedRateData[$count]['rate'] = $rateData['rate'];
+                $this->allAddedRateData[$count]['total_amount'] = $rateData['total_amount'];
+                // $this->allAddedRateData[$count]['version'] = $rateData['version'];
+                $this->allAddedRateData[$count]['operation'] = $rateData['operation'];
+                $this->allAddedRateData[$count]['col_position'] = $rateData['col_position'];
+                $this->allAddedRateData[$count]['is_row'] = '';
+                $this->allAddedRateData[$count]['unit_id'] = $rateData['unit_id'];
+                $this->allAddedRateData[$count]['arrayIndex'] = $rateData['row_index'];
+                $this->allAddedRateData[$count]['remarks'] = $rateData['comments'];
             }
-            Session()->put('editRateData' . $this->editRate_id, $this->allAddedEstimatesData);
+            Session()->put('editRateData' . $this->editRate_id, $this->allAddedRateData);
         }
     }
     public function resetSession()
@@ -74,31 +74,31 @@ class AddRateAnalysisList extends Component
         $this->emit('openModal', $rate_id);
     }
     //calculate estimate list
-    public function insertAddEstimate($arrayIndex, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks)
+    public function insertAddRate($arrayIndex, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks)
     {
-        $this->addedEstimateData['arrayIndex'] = $arrayIndex;
-        $this->addedEstimateData['dept_id'] = $dept_id;
-        $this->addedEstimateData['category_id'] = $category_id;
-        $this->addedEstimateData['sor_item_number'] = $sor_item_number;
-        $this->addedEstimateData['item_name'] = $item_name;
-        $this->addedEstimateData['other_name'] = $other_name;
-        $this->addedEstimateData['description'] = $description;
-        $this->addedEstimateData['qty'] = $qty;
-        $this->addedEstimateData['rate'] = $rate;
-        $this->addedEstimateData['total_amount'] = $total_amount;
-        $this->addedEstimateData['operation'] = $operation;
-        $this->addedEstimateData['version'] = $version;
-        $this->addedEstimateData['remarks'] = $remarks;
-        if ($this->selectSor['sor_id'] != '' && $this->addedEstimateData['operation'] == 'Total' || $this->addedEstimateData['operation'] == 'With Stacking' || $this->addedEstimateData['operation'] == 'Without Stacking') {
-            $this->addedEstimateData['sor_id'] = $this->selectSor['sor_id'];
-            $this->addedEstimateData['table_no'] = $this->selectSor['table_no'];
-            $this->addedEstimateData['page_no'] = $this->selectSor['page_no'];
-            $this->addedEstimateData['volume_no'] = $this->selectSor['volume'];
-            $this->addedEstimateData['item_index'] = (isset($this->selectSor['item_index'])) ? $this->selectSor['item_index'] : 0;
-            $this->addedEstimateData['col_position'] = (isset($this->selectSor['col_position'])) ? $this->selectSor['col_position'] : 0;
+        $this->addedRateData['arrayIndex'] = $arrayIndex;
+        $this->addedRateData['dept_id'] = $dept_id;
+        $this->addedRateData['category_id'] = $category_id;
+        $this->addedRateData['sor_item_number'] = $sor_item_number;
+        $this->addedRateData['item_name'] = $item_name;
+        $this->addedRateData['other_name'] = $other_name;
+        $this->addedRateData['description'] = $description;
+        $this->addedRateData['qty'] = $qty;
+        $this->addedRateData['rate'] = $rate;
+        $this->addedRateData['total_amount'] = $total_amount;
+        $this->addedRateData['operation'] = $operation;
+        $this->addedRateData['version'] = $version;
+        $this->addedRateData['remarks'] = $remarks;
+        if ($this->selectSor['sor_id'] != '' && $this->addedRateData['operation'] == 'Total' || $this->addedRateData['operation'] == 'With Stacking' || $this->addedRateData['operation'] == 'Without Stacking') {
+            $this->addedRateData['sor_id'] = $this->selectSor['sor_id'];
+            $this->addedRateData['table_no'] = $this->selectSor['table_no'];
+            $this->addedRateData['page_no'] = $this->selectSor['page_no'];
+            $this->addedRateData['volume_no'] = $this->selectSor['volume'];
+            $this->addedRateData['item_index'] = (isset($this->selectSor['item_index'])) ? $this->selectSor['item_index'] : 0;
+            $this->addedRateData['col_position'] = (isset($this->selectSor['col_position'])) ? $this->selectSor['col_position'] : 0;
         }
-        $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'selectSor', 'hideTotalbutton', 'hideWithStackBtn', 'hideWithoutStackBtn', 'part_no', 'editRate_id');
+        $this->setRateDataToSession();
+        $this->resetExcept('allAddedRateData', 'rateMasterDesc', 'totalOnSelectedCount', 'selectSor', 'hideTotalbutton', 'hideWithStackBtn', 'hideWithoutStackBtn', 'part_no', 'editRate_id');
     }
 
     public function expCalc()
@@ -116,13 +116,13 @@ class AddRateAnalysisList extends Component
             // if ($this->expression) {
             //     foreach (str_split($this->expression) as $key => $info) {
             //         dd(str_split($this->expression));
-            //         $count0 = count($this->allAddedEstimatesData);
+            //         $count0 = count($this->allAddedRateData);
             //         if (ctype_alpha($info)) {
             //             $alphabet = strtoupper($info);
             //             $alp_id = ord($alphabet) - 64;
             //             if ($alp_id <= $count0 ) {
-            //                 if ($this->allAddedEstimatesData[$alp_id]['array_id']) {
-            //                     $this->expression = str_replace($info, $this->allAddedEstimatesData[$alp_id]['total_amount'], $this->expression, $key);
+            //                 if ($this->allAddedRateData[$alp_id]['array_id']) {
+            //                     $this->expression = str_replace($info, $this->allAddedRateData[$alp_id]['total_amount'], $this->expression, $key);
             //                 }
             //             } else {
             //                 $this->notification()->error(
@@ -135,9 +135,9 @@ class AddRateAnalysisList extends Component
             //     }
             // }
             foreach (array_merge($matches[0]) as $key => $info) {
-                foreach ($this->allAddedEstimatesData as $k => $data) {
+                foreach ($this->allAddedRateData as $k => $data) {
                     if ($data['array_id'] == $info) {
-                        $this->expression = str_replace($info, $this->allAddedEstimatesData[$k]['total_amount'], $this->expression, $key);
+                        $this->expression = str_replace($info, $this->allAddedRateData[$k]['total_amount'], $this->expression, $key);
                     }
                 }
                 if (htmlspecialchars($info) == "%") {
@@ -145,7 +145,7 @@ class AddRateAnalysisList extends Component
                 }
             }
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddEstimate($tempIndex, Session::get('user_data.department_id'), 0, 0, '', '', '', 0, 0, number_format(round($result, 2), 2, '.', ''), 'Exp Calculoation', '', $this->remarks);
+            $this->insertAddRate($tempIndex, Session::get('user_data.department_id'), 0, 0, '', '', '', 0, 0, number_format(round($result, 2), 2, '.', ''), 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(
@@ -162,9 +162,9 @@ class AddRateAnalysisList extends Component
             $this->openTotalButton = false;
         }
         //for check select all check box
-        if (count($this->level) != count($this->allAddedEstimatesData)) {
+        if (count($this->level) != count($this->allAddedRateData)) {
             $this->selectCheckBoxs = false;
-        } else if (count($this->level) == count($this->allAddedEstimatesData)) {
+        } else if (count($this->level) == count($this->allAddedRateData)) {
             $this->selectCheckBoxs = true;
         } else {
             return;
@@ -190,9 +190,9 @@ class AddRateAnalysisList extends Component
             foreach ($this->level as $key => $array) {
                 // $this->arrayStore[] = chr($array + 64);
                 $this->arrayStore[] = $array;
-                foreach ($this->allAddedEstimatesData as $k => $value) {
+                foreach ($this->allAddedRateData as $k => $value) {
                     if ($value['array_id'] == $array) {
-                        $result = $result + $this->allAddedEstimatesData[$k]['total_amount'];
+                        $result = $result + $this->allAddedRateData[$k]['total_amount'];
                     }
                 }
             }
@@ -200,7 +200,7 @@ class AddRateAnalysisList extends Component
             if (!isset($this->selectSor['item_number'])) {
                 $this->selectSor['item_number'] = 0;
             }
-            $this->insertAddEstimate($this->arrayIndex, Session::get('user_data.department_id'), 0, $this->selectSor['selectedSOR'], '', '', $this->sorMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, number_format(round($result), 2, '.', ''), $flag, '', '');
+            $this->insertAddRate($this->arrayIndex, Session::get('user_data.department_id'), 0, $this->selectSor['selectedSOR'], '', '', $this->rateMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, number_format(round($result), 2, '.', ''), $flag, '', '');
             $this->totalOnSelectedCount++;
         } else {
             $this->notification()->error(
@@ -210,152 +210,152 @@ class AddRateAnalysisList extends Component
     }
     public function calculateValue($key)
     {
-        // dd($this->allAddedEstimatesData[$key]);
-        if ($this->allAddedEstimatesData[$key]['rate'] > 0) {
-            $this->allAddedEstimatesData[$key]['qty'] = number_format(round($this->allAddedEstimatesData[$key]['qty'], 3), 3, '.', '');
-            $this->allAddedEstimatesData[$key]['rate'] = number_format(round($this->allAddedEstimatesData[$key]['rate'], 2), 2, '.', '');
-            $this->allAddedEstimatesData[$key]['total_amount'] = $this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'];
-            $this->allAddedEstimatesData[$key]['total_amount'] = number_format(round($this->allAddedEstimatesData[$key]['total_amount'], 2), 2, '.', '');
-            $this->allAddedEstimatesData[$key]['rate'] = $this->allAddedEstimatesData[$key]['rate'];
+        // dd($this->allAddedRateData[$key]);
+        if ($this->allAddedRateData[$key]['rate'] > 0) {
+            $this->allAddedRateData[$key]['qty'] = number_format(round($this->allAddedRateData[$key]['qty'], 3), 3, '.', '');
+            $this->allAddedRateData[$key]['rate'] = number_format(round($this->allAddedRateData[$key]['rate'], 2), 2, '.', '');
+            $this->allAddedRateData[$key]['total_amount'] = $this->allAddedRateData[$key]['qty'] * $this->allAddedRateData[$key]['rate'];
+            $this->allAddedRateData[$key]['total_amount'] = number_format(round($this->allAddedRateData[$key]['total_amount'], 2), 2, '.', '');
+            $this->allAddedRateData[$key]['rate'] = $this->allAddedRateData[$key]['rate'];
             // $this->reset('other_rate');
         } else {
-            $this->allAddedEstimatesData[$key]['rate'] = number_format(0, 2, '.', '');
-            $this->allAddedEstimatesData[$key]['total_amount'] = number_format(0, 2, '.', '');
+            $this->allAddedRateData[$key]['rate'] = number_format(0, 2, '.', '');
+            $this->allAddedRateData[$key]['total_amount'] = number_format(0, 2, '.', '');
         }
     }
     public function resetRate($key)
     {
-        if ($this->allAddedEstimatesData[$key]['rate'] > 0) {
-            $this->allAddedEstimatesData[$key]['rate'] = 0;
-            $this->allAddedEstimatesData[$key]['total_amount'] = 0;
+        if ($this->allAddedRateData[$key]['rate'] > 0) {
+            $this->allAddedRateData[$key]['rate'] = 0;
+            $this->allAddedRateData[$key]['total_amount'] = 0;
         }
     }
-    public function setEstimateDataToSession()
+    public function setRateDataToSession()
     {
         // dd($this->part_no);
-        $this->reset('allAddedEstimatesData');
+        $this->reset('allAddedRateData');
         if ($this->editRate_id != '') {
             if (Session()->has('editRateData' . $this->editRate_id)) {
-                $this->allAddedEstimatesData = Session()->get('editRateData' . $this->editRate_id);
+                $this->allAddedRateData = Session()->get('editRateData' . $this->editRate_id);
             }
         } else {
             if (Session()->has('addedRateAnalysisData')) {
-                $this->allAddedEstimatesData = Session()->get('addedRateAnalysisData');
-                // dd( $this->allAddedEstimatesData);
+                $this->allAddedRateData = Session()->get('addedRateAnalysisData');
+                // dd( $this->allAddedRateData);
             }
         }
 
-        if ($this->addedEstimateData != null) {
-            // dd($this->addedEstimateData);
-            if (CommonFunction::hasNestedArrays($this->addedEstimateData)) {
-                foreach ($this->addedEstimateData as $addedEstimate) {
-                    $index = count($this->allAddedEstimatesData) + 1;
-                    if (!array_key_exists("operation", $addedEstimate)) {
-                        $addedEstimate['operation'] = '';
+        if ($this->addedRateData != null) {
+            // dd($this->addedRateData);
+            if (CommonFunction::hasNestedArrays($this->addedRateData)) {
+                foreach ($this->addedRateData as $addedRate) {
+                    $index = count($this->allAddedRateData) + 1;
+                    if (!array_key_exists("operation", $addedRate)) {
+                        $addedRate['operation'] = '';
                     }
-                    if (!array_key_exists("array_id", $addedEstimate)) {
-                        $addedEstimate['array_id'] = $this->part_no . $index;
+                    if (!array_key_exists("array_id", $addedRate)) {
+                        $addedRate['array_id'] = $this->part_no . $index;
                     }
-                    if (!array_key_exists("arrayIndex", $addedEstimate)) {
-                        $addedEstimate['arrayIndex'] = '';
+                    if (!array_key_exists("arrayIndex", $addedRate)) {
+                        $addedRate['arrayIndex'] = '';
                     }
-                    if (!array_key_exists("remarks", $addedEstimate)) {
-                        $addedEstimate['remarks'] = '';
+                    if (!array_key_exists("remarks", $addedRate)) {
+                        $addedRate['remarks'] = '';
                     }
-                    if (!array_key_exists("rate_no", $addedEstimate)) {
-                        $addedEstimate['rate_no'] = 0;
+                    if (!array_key_exists("rate_no", $addedRate)) {
+                        $addedRate['rate_no'] = 0;
                     }
-                    if (!array_key_exists("volume_no", $this->addedEstimateData)) {
-                        $this->addedEstimateData['volume_no'] = 0;
+                    if (!array_key_exists("volume_no", $this->addedRateData)) {
+                        $this->addedRateData['volume_no'] = 0;
                     }
-                    if (!array_key_exists("sor_id", $this->addedEstimateData)) {
-                        $this->addedEstimateData['sor_id'] = 0;
+                    if (!array_key_exists("sor_id", $this->addedRateData)) {
+                        $this->addedRateData['sor_id'] = 0;
                     }
-                    if (!array_key_exists("item_index", $this->addedEstimateData)) {
-                        $this->addedEstimateData['item_index'] = 0;
+                    if (!array_key_exists("item_index", $this->addedRateData)) {
+                        $this->addedRateData['item_index'] = 0;
                     }
-                    if (!array_key_exists("table_no", $this->addedEstimateData)) {
-                        $this->addedEstimateData['table_no'] = 0;
+                    if (!array_key_exists("table_no", $this->addedRateData)) {
+                        $this->addedRateData['table_no'] = 0;
                     }
-                    if (!array_key_exists("page_no", $this->addedEstimateData)) {
-                        $this->addedEstimateData['page_no'] = 0;
+                    if (!array_key_exists("page_no", $this->addedRateData)) {
+                        $this->addedRateData['page_no'] = 0;
                     }
-                    if (!array_key_exists("sor_itemno_child_id", $this->addedEstimateData)) {
-                        $this->addedEstimateData['sor_itemno_child_id'] = 0;
+                    if (!array_key_exists("sor_itemno_child_id", $this->addedRateData)) {
+                        $this->addedRateData['sor_itemno_child_id'] = 0;
                     }
-                    if (!array_key_exists("is_row", $this->addedEstimateData)) {
-                        $this->addedEstimateData['is_row'] = null;
+                    if (!array_key_exists("is_row", $this->addedRateData)) {
+                        $this->addedRateData['is_row'] = null;
                     }
-                    if (!array_key_exists("unit_id", $this->addedEstimateData)) {
-                        $this->addedEstimateData['unit_id'] = null;
+                    if (!array_key_exists("unit_id", $this->addedRateData)) {
+                        $this->addedRateData['unit_id'] = null;
                     }
-                    // if (!array_key_exists("col_position", $this->addedEstimateData)) {
-                    //     $this->addedEstimateData['col_position'] = 0;
+                    // if (!array_key_exists("col_position", $this->addedRateData)) {
+                    //     $this->addedRateData['col_position'] = 0;
                     // }
-                    foreach ($addedEstimate as $key => $estimate) {
-                        $this->allAddedEstimatesData[$index][$key] = $estimate;
+                    foreach ($addedRate as $key => $estimate) {
+                        $this->allAddedRateData[$index][$key] = $estimate;
                     }
-                    // Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
+                    // Session()->put('addedRateAnalysisData', $this->allAddedRateData);
                 }
             } else {
-                $index = count($this->allAddedEstimatesData) + 1;
-                if (!array_key_exists("operation", $this->addedEstimateData)) {
-                    $this->addedEstimateData['operation'] = '';
+                $index = count($this->allAddedRateData) + 1;
+                if (!array_key_exists("operation", $this->addedRateData)) {
+                    $this->addedRateData['operation'] = '';
                 }
-                if (!array_key_exists("array_id", $this->addedEstimateData)) {
-                    $this->addedEstimateData['array_id'] = $this->part_no . $index;
+                if (!array_key_exists("array_id", $this->addedRateData)) {
+                    $this->addedRateData['array_id'] = $this->part_no . $index;
                 }
-                if (!array_key_exists("arrayIndex", $this->addedEstimateData)) {
-                    $this->addedEstimateData['arrayIndex'] = '';
+                if (!array_key_exists("arrayIndex", $this->addedRateData)) {
+                    $this->addedRateData['arrayIndex'] = '';
                 }
-                if (!array_key_exists("remarks", $this->addedEstimateData)) {
-                    $this->addedEstimateData['remarks'] = '';
+                if (!array_key_exists("remarks", $this->addedRateData)) {
+                    $this->addedRateData['remarks'] = '';
                 }
-                if (!array_key_exists("rate_no", $this->addedEstimateData)) {
-                    $this->addedEstimateData['rate_no'] = 0;
+                if (!array_key_exists("rate_no", $this->addedRateData)) {
+                    $this->addedRateData['rate_no'] = 0;
                 }
-                if (!array_key_exists("volume_no", $this->addedEstimateData)) {
-                    $this->addedEstimateData['volume_no'] = 0;
+                if (!array_key_exists("volume_no", $this->addedRateData)) {
+                    $this->addedRateData['volume_no'] = 0;
                 }
-                if (!array_key_exists("sor_id", $this->addedEstimateData)) {
-                    $this->addedEstimateData['sor_id'] = 0;
+                if (!array_key_exists("sor_id", $this->addedRateData)) {
+                    $this->addedRateData['sor_id'] = 0;
                 }
-                if (!array_key_exists("item_index", $this->addedEstimateData)) {
-                    $this->addedEstimateData['item_index'] = 0;
+                if (!array_key_exists("item_index", $this->addedRateData)) {
+                    $this->addedRateData['item_index'] = 0;
                 }
-                if (!array_key_exists("table_no", $this->addedEstimateData)) {
-                    $this->addedEstimateData['table_no'] = 0;
+                if (!array_key_exists("table_no", $this->addedRateData)) {
+                    $this->addedRateData['table_no'] = 0;
                 }
-                if (!array_key_exists("page_no", $this->addedEstimateData)) {
-                    $this->addedEstimateData['page_no'] = 0;
+                if (!array_key_exists("page_no", $this->addedRateData)) {
+                    $this->addedRateData['page_no'] = 0;
                 }
-                if (!array_key_exists("col_position", $this->addedEstimateData)) {
-                    $this->addedEstimateData['col_position'] = 0;
+                if (!array_key_exists("col_position", $this->addedRateData)) {
+                    $this->addedRateData['col_position'] = 0;
                 }
-                if (!array_key_exists("is_row", $this->addedEstimateData)) {
-                    $this->addedEstimateData['is_row'] = null;
+                if (!array_key_exists("is_row", $this->addedRateData)) {
+                    $this->addedRateData['is_row'] = null;
                 }
-                if (!array_key_exists("unit_id", $this->addedEstimateData)) {
-                    $this->addedEstimateData['unit_id'] = null;
+                if (!array_key_exists("unit_id", $this->addedRateData)) {
+                    $this->addedRateData['unit_id'] = null;
                 }
-                foreach ($this->addedEstimateData as $key => $estimate) {
-                    $this->allAddedEstimatesData[$index][$key] = $estimate;
+                foreach ($this->addedRateData as $key => $estimate) {
+                    $this->allAddedRateData[$index][$key] = $estimate;
                 }
-                // Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
-                // $this->reset('addedEstimateData');
+                // Session()->put('addedRateAnalysisData', $this->allAddedRateData);
+                // $this->reset('addedRateData');
             }
             if ($this->editRate_id != '') {
-                Session()->put('editRateData' . $this->editRate_id, $this->allAddedEstimatesData);
-                // Session()->put('editRateDescription'. $this->editRate_id, $this->sorMasterDesc);
+                Session()->put('editRateData' . $this->editRate_id, $this->allAddedRateData);
+                // Session()->put('editRateDescription'. $this->editRate_id, $this->rateMasterDesc);
                 // Session()->put('editRatePartNo'. $this->editRate_id, $this->part_no);
             } else {
-                Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
-                Session()->put('rateDescription', $this->sorMasterDesc);
+                Session()->put('addedRateAnalysisData', $this->allAddedRateData);
+                Session()->put('rateDescription', $this->rateMasterDesc);
                 Session()->put('ratePartNo', $this->part_no);
             }
 
-            $this->reset('addedEstimateData');
-            // dd($this->allAddedEstimatesData);
+            $this->reset('addedRateData');
+            // dd($this->allAddedRateData);
         }
     }
 
@@ -376,16 +376,16 @@ class AddRateAnalysisList extends Component
         ]);
     }
 
-    public function deleteEstimate($value)
+    public function deleteRate($value)
     {
         $numericValue = preg_replace('/[^0-9]/', '', $value);
-        unset($this->allAddedEstimatesData[$numericValue]);
+        unset($this->allAddedRateData[$numericValue]);
         if ($this->editRate_id != '') {
             Session()->forget('editRateData' . $this->editRate_id);
-            Session()->put('editRateData' . $this->editRate_id, $this->allAddedEstimatesData);
+            Session()->put('editRateData' . $this->editRate_id, $this->allAddedRateData);
         } else {
             Session()->forget('addedRateAnalysisData');
-            Session()->put('addedRateAnalysisData', $this->allAddedEstimatesData);
+            Session()->put('addedRateAnalysisData', $this->allAddedRateData);
         }
         $this->level = [];
         if ($this->totalOnSelectedCount == 1) {
@@ -398,7 +398,7 @@ class AddRateAnalysisList extends Component
     // TODO::export word on project estimate
     public function exportWord()
     {
-        $exportDatas = array_values($this->allAddedEstimatesData);
+        $exportDatas = array_values($this->allAddedRateData);
         // dd($exportDatas);
         $date = date('Y-m-d');
         $pw = new \PhpOffice\PhpWord\PhpWord();
@@ -540,7 +540,7 @@ class AddRateAnalysisList extends Component
         // if ($this->selectedCategoryId == '') {
         //     $this->selectSor['page_no'] = '';
         // } else {
-        //     $this->estimateData['page_no'] = '';
+        //     $this->rateData['page_no'] = '';
         // }
     }
     public $fetchRatePlaceWise;
@@ -572,10 +572,10 @@ class AddRateAnalysisList extends Component
     public function submitItemModal()
     {
         if (count($this->isItemModalData) > 0) {
-            $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = number_format(round($this->isItemModalData[0]['rowValue'], 2), 2, '.', '');
-            $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] = number_format(round($this->allAddedEstimatesData[$this->selectedArrKey]['qty'], 3), 3, '.', '');
-            $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
-            $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = number_format(round($this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'], 2), 2, '.', '');
+            $this->allAddedRateData[$this->selectedArrKey]['rate'] = number_format(round($this->isItemModalData[0]['rowValue'], 2), 2, '.', '');
+            $this->allAddedRateData[$this->selectedArrKey]['qty'] = number_format(round($this->allAddedRateData[$this->selectedArrKey]['qty'], 3), 3, '.', '');
+            $this->allAddedRateData[$this->selectedArrKey]['total_amount'] = $this->allAddedRateData[$this->selectedArrKey]['qty'] * $this->allAddedRateData[$this->selectedArrKey]['rate'];
+            $this->allAddedRateData[$this->selectedArrKey]['total_amount'] = number_format(round($this->allAddedRateData[$this->selectedArrKey]['total_amount'], 2), 2, '.', '');
             $this->updateDataTableTracker = rand(1, 1000);
             $this->reset('selectedArrKey', 'openSorModal', 'isItemModalData', 'isItemModalName', 'isItemModal');
         }
@@ -587,14 +587,14 @@ class AddRateAnalysisList extends Component
     }
     public function getTypeWiseRate()
     {
-        $tempValue = $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
+        $tempValue = $this->allAddedRateData[$this->selectedArrKey]['rate'];
         if (count($this->fetchRatePlaceWise) > 0) {
             foreach ($this->fetchRatePlaceWise as $fetchRate) {
                 if ($fetchRate['operation'] == $this->rateType) {
-                    $this->allAddedEstimatesData[$this->selectedArrKey]['rate'] = number_format($fetchRate['total_amount'], 2, '.', '');
-                    if ($this->allAddedEstimatesData[$this->selectedArrKey]['rate'] != $tempValue) {
-                        $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = $this->allAddedEstimatesData[$this->selectedArrKey]['qty'] * $this->allAddedEstimatesData[$this->selectedArrKey]['rate'];
-                        $this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'] = number_format(round($this->allAddedEstimatesData[$this->selectedArrKey]['total_amount'], 2), 2, '.', '');
+                    $this->allAddedRateData[$this->selectedArrKey]['rate'] = number_format($fetchRate['total_amount'], 2, '.', '');
+                    if ($this->allAddedRateData[$this->selectedArrKey]['rate'] != $tempValue) {
+                        $this->allAddedRateData[$this->selectedArrKey]['total_amount'] = $this->allAddedRateData[$this->selectedArrKey]['qty'] * $this->allAddedRateData[$this->selectedArrKey]['rate'];
+                        $this->allAddedRateData[$this->selectedArrKey]['total_amount'] = number_format(round($this->allAddedRateData[$this->selectedArrKey]['total_amount'], 2), 2, '.', '');
                     }
                 }
             }
@@ -611,25 +611,25 @@ class AddRateAnalysisList extends Component
     public function selectAll()
     {
         if ($this->selectCheckBoxs) {
-            $this->level = collect($this->allAddedEstimatesData)->pluck('array_id')->toArray();
+            $this->level = collect($this->allAddedRateData)->pluck('array_id')->toArray();
         } else {
             $this->level = [];
         }
     }
     public function store($value = '')
     {
-        // dd($this->allAddedEstimatesData);
+        // dd($this->allAddedRateData);
         $userData = Session::get('user_data');
         if ($this->totalOnSelectedCount >= 1) {
             try {
-                if ($this->allAddedEstimatesData) {
+                if ($this->allAddedRateData) {
                     $intId = random_int(100000, 999999);
                     if (true) {
                         // $insert[] = [];
-                        foreach ($this->allAddedEstimatesData as $key => $value) {
+                        foreach ($this->allAddedRateData as $key => $value) {
                             $insert = [
                                 'rate_id' => $intId,
-                                'description' => (count($this->allAddedEstimatesData) == $key) ? str_replace(',', ' ', $this->sorMasterDesc) : str_replace(',', ' ', $value['description']),
+                                'description' => (count($this->allAddedRateData) == $key) ? str_replace(',', ' ', $this->rateMasterDesc) : str_replace(',', ' ', $value['description']),
                                 'rate_no' => (int) $value['rate_no'],
                                 'dept_id' => $value['dept_id'],
                                 'category_id' => $value['category_id'],
@@ -693,7 +693,7 @@ class AddRateAnalysisList extends Component
     public function render()
     {
         $this->updateDataTableTracker = rand(1, 1000);
-        $this->arrayRow = count($this->allAddedEstimatesData);
+        $this->arrayRow = count($this->allAddedRateData);
         return view('livewire.rate-analysis.add-rate-analysis-list');
     }
 }

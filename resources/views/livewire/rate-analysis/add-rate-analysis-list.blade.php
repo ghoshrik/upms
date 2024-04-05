@@ -1,5 +1,5 @@
 <div>
-    @if ($allAddedEstimatesData != null)
+    @if ($allAddedRateData != null)
         <div class="col-md-12 col-lg-12">
             <div class="card overflow-hidden">
                 <div class="card-header d-flex justify-content-between flex-wrap">
@@ -68,33 +68,33 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- @dd($allAddedEstimatesData) --}}
-                                @foreach ($allAddedEstimatesData as $key => $addedEstimate)
+                                {{-- @dd($allAddedRateData) --}}
+                                @foreach ($allAddedRateData as $key => $addedRate)
                                     <tr>
                                         <td>
                                             <x-checkbox wire:key="{{ $key . 'checkbox' }}" id="checkbox"
-                                                wire:model.defer="level" value="{{ $addedEstimate['array_id'] }}"
+                                                wire:model.defer="level" value="{{ $addedRate['array_id'] }}"
                                                 wire:click="showTotalButton" />
                                         </td>
                                         <td>
                                             <div wire:key="{{ $key . 'iNo' }}" class="d-flex align-items-center">
                                                 {{-- {{ 'A'. $key }} --}}
                                                 {{-- {{ chr($key + 64) }} --}}
-                                                {{ $addedEstimate['array_id'] }}
+                                                {{ $addedRate['array_id'] }}
                                             </div>
                                         </td>
                                         <td class="text-wrap">
-                                            {{-- {{ $addedEstimate['sor_item_number'] ?  $addedEstimate['sor_item_number'] : '---'}} --}}
+                                            {{-- {{ $addedRate['sor_item_number'] ?  $addedRate['sor_item_number'] : '---'}} --}}
 
-                                            @if ($addedEstimate['sor_item_number'])
-                                                {{-- {{ getSorItemNumber($addedEstimate['sor_item_number']) }} --}}
-                                                {{ $addedEstimate['sor_item_number'] }}
-                                            @elseif ($addedEstimate['rate_no'])
-                                                {{ $addedEstimate['rate_no'] }}
-                                            @elseif ($addedEstimate['is_row'] != '' && $addedEstimate['is_row'] != 2)
+                                            @if ($addedRate['sor_item_number'])
+                                                {{-- {{ getSorItemNumber($addedRate['sor_item_number']) }} --}}
+                                                {{ $addedRate['sor_item_number'] }}
+                                            @elseif ($addedRate['rate_no'])
+                                                {{ $addedRate['rate_no'] }}
+                                            @elseif ($addedRate['is_row'] != '' && $addedRate['is_row'] != 2)
                                                 @php
-                                                    // $getDynamicSorDetails = DynamicSorHeader::where('id',$addedEstimate['sor_itemno_child_id'])->select('table_no','page_no','corrigenda_name')->first();
-                                                    $getDynamicSorDetails = DB::select('SELECT table_no, page_no, corrigenda_name FROM dynamic_table_header WHERE id = :id', ['id' => $addedEstimate['sor_itemno_child_id']]);
+                                                    // $getDynamicSorDetails = DynamicSorHeader::where('id',$addedRate['sor_itemno_child_id'])->select('table_no','page_no','corrigenda_name')->first();
+                                                    $getDynamicSorDetails = DB::select('SELECT table_no, page_no, corrigenda_name FROM dynamic_table_header WHERE id = :id', ['id' => $addedRate['sor_itemno_child_id']]);
                                                 @endphp
                                                 @if ($getDynamicSorDetails[0]->corrigenda_name != '')
                                                     {{ $getDynamicSorDetails[0]->table_no . ' (' . $getDynamicSorDetails[0]->page_no . ') ' . $getDynamicSorDetails[0]->corrigenda_name }}
@@ -106,49 +106,49 @@
                                             @endif
                                         </td>
                                         <td class="text-wrap" /*style="width: 50rem;"* />
-                                        @if ($addedEstimate['sor_item_number'] != 0 ||
-                                                ($addedEstimate['is_row'] != '' && $addedEstimate['is_row'] == 0) ||
-                                                $addedEstimate['is_row'] == 2)
-                                            {{ $addedEstimate['description'] }}
-                                            @if ($addedEstimate['operation'] != '')
-                                                ({{ $addedEstimate['arrayIndex'] }})
-                                                ({{ $addedEstimate['operation'] }})
+                                        @if ($addedRate['sor_item_number'] != 0 ||
+                                                ($addedRate['is_row'] != '' && $addedRate['is_row'] == 0) ||
+                                                $addedRate['is_row'] == 2)
+                                            {{ $addedRate['description'] }}
+                                            @if ($addedRate['operation'] != '')
+                                                ({{ $addedRate['arrayIndex'] }})
+                                                ({{ $addedRate['operation'] }})
                                             @endif
-                                        @elseif ($addedEstimate['rate_no'] != 0)
-                                            {{-- {{ getEstimateDescription($addedEstimate['rate_no']) }} --}}
-                                            {{ $addedEstimate['description'] }}
-                                            @if ($addedEstimate['operation'] != '')
-                                                ({{ $addedEstimate['operation'] }})
+                                        @elseif ($addedRate['rate_no'] != 0)
+                                            {{-- {{ getEstimateDescription($addedRate['rate_no']) }} --}}
+                                            {{ $addedRate['description'] }}
+                                            @if ($addedRate['operation'] != '')
+                                                ({{ $addedRate['operation'] }})
                                             @endif
-                                            {{-- {{ $addedEstimate->SOR->sorMasterDesc }} --}}
-                                        @elseif ($addedEstimate['arrayIndex'] != '')
-                                            @if ($addedEstimate['remarks'])
-                                                {{ $addedEstimate['arrayIndex'] . ' ( ' . $addedEstimate['remarks'] . ' ) ' }}
-                                            @elseif ($addedEstimate['operation'] == 'Total')
-                                                {{ 'Total of ' . $addedEstimate['arrayIndex'] }}
+                                            {{-- {{ $addedRate->SOR->rateMasterDesc }} --}}
+                                        @elseif ($addedRate['arrayIndex'] != '')
+                                            @if ($addedRate['remarks'])
+                                                {{ $addedRate['arrayIndex'] . ' ( ' . $addedRate['remarks'] . ' ) ' }}
+                                            @elseif ($addedRate['operation'] == 'Total')
+                                                {{ 'Total of ' . $addedRate['arrayIndex'] }}
                                             @else
-                                                {{ $addedEstimate['arrayIndex'] }}
+                                                {{ $addedRate['arrayIndex'] }}
                                             @endif
                                         @else
-                                            {{ $addedEstimate['other_name'] }}
+                                            {{ $addedRate['other_name'] }}
                                         @endif
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['qty'] != 0)
-                                                {{ $addedEstimate['qty'] }}
+                                            @if ($addedRate['qty'] != 0)
+                                                {{ $addedRate['qty'] }}
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['unit_id'] != '' && $addedEstimate['unit_id'] != 0)
-                                                {{ $addedEstimate['unit_id'] }}
+                                            @if ($addedRate['unit_id'] != '' && $addedRate['unit_id'] != 0)
+                                                {{ $addedRate['unit_id'] }}
                                             @endif
                                         </td>
                                         <td>
-                                            @if (isset($addedEstimate['rate_type']) && ($addedEstimate['rate'] == 0 || $addedEstimate['rate'] != 0))
-                                                {{-- @isset($addedEstimate['rate_type']) --}}
-                                                @if ($addedEstimate['rate_type'] == 'fetch')
-                                                    @if ($addedEstimate['rate'] > 0)
-                                                        {{ $addedEstimate['rate'] }}
+                                            @if (isset($addedRate['rate_type']) && ($addedRate['rate'] == 0 || $addedRate['rate'] != 0))
+                                                {{-- @isset($addedRate['rate_type']) --}}
+                                                @if ($addedRate['rate_type'] == 'fetch')
+                                                    @if ($addedRate['rate'] > 0)
+                                                        {{ $addedRate['rate'] }}
                                                         <x-button class="d-inline"
                                                             wire:click="resetRate({{ $key }})">
                                                             <span class="btn-inner">
@@ -158,26 +158,26 @@
                                                         </x-button>
                                                     @else
                                                         <x-button
-                                                            wire:click="viewDynamicSor({{ $addedEstimate['sor_itemno_child_id'] }},{{ $addedEstimate['sor_item_number'] }},{{ $key }})"
+                                                            wire:click="viewDynamicSor({{ $addedRate['sor_itemno_child_id'] }},{{ $addedRate['sor_item_number'] }},{{ $key }})"
                                                             type="button" class="btn btn-soft-primary btn-sm">
                                                             <span class="btn-inner">
                                                                 <x-lucide-eye class="w-4 h-4 text-gray-500" /> Get Rate
                                                             </span>
                                                         </x-button>
                                                     @endif
-                                                @elseif ($addedEstimate['rate_type'] == 'other')
+                                                @elseif ($addedRate['rate_type'] == 'other')
                                                     <x-input placeholder="Enter Rate"
-                                                        wire:model="allAddedEstimatesData.{{ $key }}.rate"
+                                                        wire:model="allAddedRateData.{{ $key }}.rate"
                                                         wire:blur="calculateValue({{ $key }})" />
                                                 @else
                                                 @endif
                                                 {{-- @endisset --}}
                                             @else
-                                                @if ($addedEstimate['rate'] != 0)
-                                                    {{ $addedEstimate['rate'] }}
+                                                @if ($addedRate['rate'] != 0)
+                                                    {{ $addedRate['rate'] }}
                                                 @endif
 
-                                                {{-- @if ($addedEstimate['is_row'] != '')
+                                                {{-- @if ($addedRate['is_row'] != '')
                                                     hi --}}
                                                 {{-- <x-button>
                                                             <span class="btn-inner">
@@ -188,11 +188,11 @@
                                             @endif
                                         </td>
                                         <td>
-                                            {{ $addedEstimate['total_amount'] }}
+                                            {{ $addedRate['total_amount'] }}
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['rate_no'])
-                                                <x-button wire:click="viewRateModal({{ $addedEstimate['rate_no'] }})"
+                                            @if ($addedRate['rate_no'])
+                                                <x-button wire:click="viewRateModal({{ $addedRate['rate_no'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
@@ -201,7 +201,7 @@
                                             @endif
                                             @if ($arrayRow == $key)
                                                 {{-- <x-button
-                                                    wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
+                                                    wire:click="confDeleteDialog({{ $addedRate['array_id'] }})"
                                                     type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
@@ -209,13 +209,13 @@
                                                 </x-button> --}}
                                                 <button
                                                     onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
-                                                    wire:click="deleteEstimate('{{ $addedEstimate['array_id'] }}')"
+                                                    wire:click="deleteRate('{{ $addedRate['array_id'] }}')"
                                                     type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                     </span>
                                                 </button>
-                                                {{-- <button onclick="showDeleteConfirmation({{ $addedEstimate['array_id'] }})" type="button" class="btn btn-soft-danger btn-sm">
+                                                {{-- <button onclick="showDeleteConfirmation({{ $addedRate['array_id'] }})" type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                     </span>
@@ -576,7 +576,7 @@
         //     cancelButtonText: 'Cancel'
         // }).then((result) => {
         //     if (result.isConfirmed) {
-        //         // Call the deleteEstimate() function with the provided arrayId
+        //         // Call the deleteRate() function with the provided arrayId
         //         Livewire.emit('deleteEstimate', arrayId);
         //     }
         // });

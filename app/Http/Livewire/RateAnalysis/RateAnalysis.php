@@ -11,7 +11,7 @@ class RateAnalysis extends Component
 {
     public $formOpen = false, $editFormOpen = false,$updateDataTableTracker,$selectedTab = 1,$counterData=[];
     protected $listeners = ['openForm' => 'fromEntryControl','refreshData' => 'mount','showError'=>'setErrorAlert'];
-    public $openedFormType= 'create',$isFromOpen = true,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
+    public $openedFormType= 'create',$isFromOpen = true,$subTitel = "Create",$selectedIdForEdit,$errorMessage,$titel;
     public function mount()
     {
         $this->draftData();
