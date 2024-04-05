@@ -129,7 +129,6 @@ class ApiController extends Controller
     }
     public function deleteUnitRow(Request $request)
     {
-        //dd($request);
         try {
             $updateId = $request->rowId;
             $parentId = $request->parent_id;
@@ -146,8 +145,6 @@ class ApiController extends Controller
                     'message' => 'Session data is not an array.',
                 ], 400);
             }
-
-            // Step 1: Check if parent ID exists in sessionData
             if (isset($sessionData[$parentId])) {
                 unset($sessionData[$parentId]['metadata']);
                 foreach ($sessionData[$parentId] as $index => &$data) {
@@ -179,11 +176,9 @@ class ApiController extends Controller
                 }
                 $sessionData[$parentId]['metadata'] = $metadataArray;
                 if (empty($Estimate_id)) {
-                    //($sessionData);
                     Session()->put('modalData', $sessionData);
                     $sessionData = Session()->get('modalData');
                 } else {
-                    //dd($sessionData);
                     Session()->put('editModalData', $sessionData);
                     $sessionData = Session()->get('editModalData');
                 }
@@ -198,7 +193,6 @@ class ApiController extends Controller
                 ], 404);
             }
         } catch (\Exception $e) {
-            //dd($e);
             return response()->json([
                 'status' => false,
                 'message' => 'An error occurred while processing the request.',
@@ -207,10 +201,9 @@ class ApiController extends Controller
     }
     public function unitQtyAdded(Request $request)
     {
-        //dd($request);
         try {
             $data = $request->data;
-            //dd($data);
+       
             if (isset($data['input_values'])) {
                 $input_values = $data['input_values'];
                 $parentId = isset($input_values['parent_id']) ? $input_values['parent_id'] : null;
@@ -241,6 +234,7 @@ class ApiController extends Controller
             if (!isset($sessionData[$parentId]['metadata'])) {
                 $sessionData[$parentId]['metadata'] = [];
             }
+            $hideDeletebutton = 0;
             if ($updateId === '' || $updateId === null) {
                 $index = array_key_exists('metadata', $sessionData[$parentId]) ? count($sessionData[$parentId]['metadata']) : 0;
                 $sessionData[$parentId][] = $data;
@@ -250,12 +244,16 @@ class ApiController extends Controller
                     $metadata = $data['input_values'];
                 }
                 $metadata['currentId'] = $index;
+                //dd($metadata['key']);
+                $hideDeletebutton = isset($metadata['key']) && $metadata['key'] === 'total' ? 1 : 0;
+                //dd($hideDeletebutton);
                 $sessionData[$parentId]['metadata'][] = $metadata;
             } else {
                 unset($sessionData[$parentId]['metadata']);
                 if (isset($sessionData[$parentId][$updateId])) {
                     $sessionData[$parentId][$updateId] = $data;
                     $metadataArray = [];
+                    $updateTotalOverallTotal = 0;
                     foreach ($sessionData[$parentId] as $index => $data) {
                         if (isset($data[0])) {
                             $metadata = $data[0];
@@ -263,12 +261,22 @@ class ApiController extends Controller
                             $metadata = $data['input_values'];
                         }
                         $metadataArray[$index] = $metadata;
+                        
+                        if (!isset($metadata['expcalculate']) || $metadata['expcalculate'] !== 'Sumtotal') {
+                            $updateTotalOverallTotal += $metadata['overallTotal'];
+                        }
+                        
+                        if (isset($metadata['expcalculate']) && $metadata['expcalculate'] === 'Sumtotal') {
+                            $metadata['overallTotal'] = $updateTotalOverallTotal;
+                            $metadata['grandTotal'] = $updateTotalOverallTotal;
+                        }
+                        
+                        if (isset($metadata['key']) && $metadata['key'] === 'total') {
+                            $hideDeletebutton = 1;
+                        }
                     }
-                    foreach ($metadataArray as $index => &$data) {
-                        $data['currentId'] = $index;
-                    }
-
-                    $sessionData[$parentId]['metadata'] = $metadataArray;
+                    
+                $sessionData[$parentId]['metadata'] = $metadataArray;
                 }
             }
             $grandTotalOverallTotal = 0;
@@ -276,25 +284,25 @@ class ApiController extends Controller
                 $overallTotal = floatval($metadata['overallTotal']);
                 $grandTotalOverallTotal += $overallTotal;
             }
+
+            //dd($hideDeletebutton);
+            //$sessionData[$parentId]['metadata']['hideDeletebutton'] = $hideDeletebutton;
+            //dd($sessionData);
             if (empty($Estimate_id)) {
                 Session()->put('modalData', $sessionData);
             } else {
                 Session()->put('editModalData', $sessionData);
             }
-
-
-
+           
             $this->rateAnalysisArray = $sessionData;
-
-
-           // dd($this->rateAnalysisArray);
             return response()->json([
                 'message' => 'Data updated successfully',
                 'status' => true,
+                //'deletestatus' => $hideDeletebutton,
                 'rateAnalysisArray' => $this->rateAnalysisArray,
             ], 200);
         } catch (\Exception $e) {
-            dd($e);
+            //dd($e);
           
         }
     }
@@ -302,27 +310,19 @@ class ApiController extends Controller
     public function updateDataToSession(Request $request)
     {
         try {
-            // dd($request);
             $previousData = $request->data;
             $parentId = $request->parent_id;
             $Estimate_id = $request->editEstimate_id;
-
-            // dd($previousData, $parentId );
             if (empty($Estimate_id)) {
                 $sessionData = Session()->get('modalData');
             } else {
                 $sessionData = Session()->get('editModalData');
             }
-
-            // Check if the session data is an array
             if (!is_array($sessionData)) {
-                $sessionData = []; // Initialize sessionData as an empty array if it's not an array
+                $sessionData = [];
             }
-
-            // Create an empty array with the specified parentId if it doesn't exist
             if (!isset($sessionData[$parentId])) {
                 $sessionData[$parentId] = [];
-                // dd( $sessionData);
             }
             $sessionData[$parentId] = $previousData;
             foreach ($sessionData[$parentId] as &$data) {
@@ -334,7 +334,6 @@ class ApiController extends Controller
                     }
                 }
             }
-
             if (empty($Estimate_id)) {
                 Session()->put('modalData', $sessionData);
                 $sessionresData = Session()->get('modalData');
@@ -346,28 +345,20 @@ class ApiController extends Controller
                 'status' => true,
                 'rateAnalysisArray' => $sessionresData,
             ], 200);
-
         } catch (\Exception $e) {
-            dd($e);
         }
     }
 
     public function getRuleData(Request $request)
     {
-
-        //dd($request);
-
         $Estimate_id = $request->editEstimate_id;
         if (empty($Estimate_id)) {
             $sessionData = Session()->get('modalData');
         } else {
             $sessionData = Session()->get('editModalData');
         }
-
         $rowdata = $sessionData[$request->unitId][$request->ruleId];
         $rowdata['input_values']['current_id'] = $request->ruleId;
-
-       // dd($rowdata);
         return response()->json([
             'status' => true,
             'rateAnalysisArray' => $rowdata,
@@ -378,20 +369,16 @@ class ApiController extends Controller
     public function getunitQtyAdded(Request $request)
     {
         $Estimate_id = $request->editEstimate_id;
-        //dd($Estimate_id);
         if (empty($Estimate_id)) {
             $sessionData = Session()->get('modalData');
         } else {
             $sessionData = Session()->get('editModalData');
-            // dd($sesssionData);
         }
-
         $data = $sessionData[$request->parent_id][$request->rowId];
         return response()->json([
             'status' => true,
             'rateAnalysisArray' => $data,
         ], 200);
-
     }
 
     public function expCalculater(Request $request)
@@ -400,12 +387,11 @@ class ApiController extends Controller
     $stringCalc = new StringCalc();
     try {
         $data = $request->data;
-      
         if (isset($data['input_values'])) {
             $input_values = $data['input_values'];
             $parentId = isset($input_values['parent_id']) ? $input_values['parent_id'] : null;
             $overallTotal = isset($input_values['overallTotal']) ? $input_values['overallTotal'] : null;
-            $overallTotal = $stringCalc->calculate($overallTotal); // Calculate overallTotal
+            $overallTotal = $stringCalc->calculate($overallTotal); 
             $type = isset($input_values['type']) ? $input_values['type'] : null;
             $unit = isset($input_values['unit']) ? $input_values['unit'] : 5;
             $updateId = isset($input_values['currentruleId']) ? $input_values['currentruleId'] : null;
@@ -427,15 +413,15 @@ class ApiController extends Controller
         }
         if (!isset($sessionData[$parentId]['metadata'])) {
             $sessionData[$parentId]['metadata'] = [];
-        }
+        } 
+           // $hideDeletebutton = 0;
             $index = array_key_exists('metadata', $sessionData[$parentId]) ? count($sessionData[$parentId]['metadata']) : 0;
-
             $sessionData[$parentId][] = $data;
             $metadata = $data['input_values'];
             $metadata['currentId'] = $index;
             $metadata['overallTotal'] = $overallTotal; 
+           // $hideDeletebutton = isset($metadata['key']) && $metadata['key'] === 'total' ? 1 : 0;
             $sessionData[$parentId]['metadata'][] = $metadata;
-        
            if (empty($Estimate_id)) {
             Session()->put('modalData', $sessionData);
             $sessionresData = Session()->get('modalData');
@@ -443,13 +429,11 @@ class ApiController extends Controller
             Session()->put('editModalData', $sessionData);
             $sessionresData = Session()->get('editModalData');
         }
-
         $this->rateAnalysisArray = $sessionresData;
-
-        //dd($this->rateAnalysisArray);
         return response()->json([
             'message' => 'Data updated successfully',
             'status' => true,
+            //'deletestatus' => $hideDeletebutton,
             'remarks' =>  $remarks,
             'rateAnalysisArray' => $this->rateAnalysisArray,
         ], 200);
@@ -462,12 +446,41 @@ class ApiController extends Controller
     }
 }
 
-    
-// public function unitQtyAdded1(Request $request)
-// {
-//  dd($request);
-// }   
 
-   
+ // } else {
+            //     unset($sessionData[$parentId]['metadata']);
+            //     if (isset($sessionData[$parentId][$updateId])) {
+            //         $sessionData[$parentId][$updateId] = $data;
+            //         $metadataArray = [];
+            //         $updateTotalOverallTotal = 0;
+            //         foreach ($sessionData[$parentId] as $index => $data) {
+                        
+            //             if (isset($data[0])) {
+            //                 $metadata = $data[0];
+            //             } else {
+            //                 $metadata = $data['input_values'];
+            //             }
+            //             $metadataArray[$index] = $metadata;
+            //         }
+            //         $hideDeletebutton = '';
+            //         foreach ($metadataArray as $index => &$data) {
+            //             if (!isset($data['expcalculate']) || $data['expcalculate'] !== 'Sumtotal') {
+            //                 $updateTotalOverallTotal += $data['overallTotal'];
+            //             }
+            //             if (isset($data['expcalculate']) && $data['expcalculate'] === 'Sumtotal') {
+            //                 $data['overallTotal'] = $updateTotalOverallTotal;
+            //                 $data['grandTotal'] = $updateTotalOverallTotal;
+            //             }
+            //             if (isset($data['key']) && $data['key'] === 'total') {
+            //                 $hideDeletebutton = 1;
+            //             }else{
+            //                 $hideDeletebutton = 0;
+            //             }
 
+            //             $data['currentId'] = $index;
+            //         }
+            //         //dd($metadataArray);
+            //         $sessionData[$parentId]['metadata'] = $metadataArray;
+            //     }
+            // }
 }
