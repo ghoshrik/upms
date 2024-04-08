@@ -269,7 +269,7 @@
     }
 
     div#additionalFields {
-        margin-top: 7%;
+        margin-top: 1%;
     }
 
     .grandTotalInput.box-border {
@@ -429,8 +429,11 @@
                             </div>
                         </div>
                     </div>
-                    <div id="successAlert" class="alert" role="alert" style="display: none;"></div>
-                    <div class="table-container" style="height: 200px; overflow-y: auto;">
+                    <div>
+                        <div id="successAlert" class="alert" role="alert" style="display: none;"></div>
+                    </div>
+                    
+                    <div class="table-container" style="height: 200px; overflow-y: auto; margin-top: 3%;">
 
                         <table id="dataTable1" class="table mt-2 table-unit">
                             <thead>
@@ -492,11 +495,16 @@
                                                     }
                                                 }
                                             @endphp
-                                            @if (!isset($metadata['key']))
-                                                <a type="button"
-                                                    class="btn btn-soft-secondary btn-sm mr-2 {{ $editButtonClass }}"
-                                                    data-id="{{ $metadata['currentId'] }}">Edit</a>
-                                            @endif
+                                          @if (!isset($metadata['key']))
+                                          
+                                          @if (isset($metadata['currentId']))
+                                              <a type="button"
+                                                 class="btn btn-soft-secondary btn-sm mr-2 {{ $editButtonClass }} fetchdetails"
+                                                 data-id="{{ $metadata['currentId'] }}">Edit</a>
+                                          @endif
+                                          
+                                      @endif
+                                      
                                             <?php if ($metadata === $lastTotalRow): ?>
                                             <a type="button" class="btn btn-soft-danger btn-sm delBtn"
                                                 data-id="{{ $metadata['currentId'] }}">Delete</a>
@@ -576,7 +584,7 @@
                     <div id="additionalFields" style="display: none;">
 
                         <div class="card input-fields overflow-auto">
-                            <div class="card-body overflow-auto">
+                            <div class="card-body overflow-auto" style="background-color: #f4f8fb;">
                                 <div id="simpson" class="row formulae">
                                     <span class="formula"></span>
                                 </div>
@@ -603,10 +611,10 @@
 
                         </div>
                     </div>
-                    <div id="Area-perimeter-rectangle" style="display: none;">
+                    <div id="Area-perimeter-rectangle" style="display: none; margin-top: 1%;">
 
                         <div class="card input-fields overflow-auto">
-                            <div class="card-body overflow-auto">
+                            <div class="card-body overflow-auto" style="background-color: #f4f8fb;">
                                 <div id="simpson" class="row formulae">
                                     <span class="formula"></span>
                                 </div>
@@ -649,10 +657,10 @@
                             </div>
                         </div>
                     </div>
-                    <div id="surfaceArea-volume-rectangle" style="display: none;">
+                    <div id="surfaceArea-volume-rectangle" style="display: none; margin-top: 1%;">
 
                         <div class="card input-fields overflow-auto">
-                            <div class="card-body overflow-auto">
+                            <div class="card-body overflow-auto" style="background-color: #f4f8fb;">
                                 <div id="simpson" class="row formulae">
                                     <span class="formula"></span>
                                 </div>
@@ -691,10 +699,10 @@
                             </div>
                         </div>
                     </div>
-                    <div id="Area-perimeter-circle" style="display:none;">
+                    <div id="Area-perimeter-circle" style="display:none; margin-top: 1%;">
 
                         <div class="card input-fields overflow-auto">
-                            <div class="card-body overflow-auto">
+                            <div class="card-body overflow-auto" style="background-color: #f4f8fb;">
                                 <div id="simpson" class="row formulae">
                                     <span class="formula"></span>
                                 </div>
@@ -775,11 +783,11 @@
         </div>
     </div>
 </div>
-
+<script src="/dist/jquery-msgpopup.js"></script>
 <script>
     window.scrollTo(0, 1000);
     var currentId = null;
-    var currentruleId = null;
+    var currentId = null;
     var area = 0;
     var perimeter = 0;
     var type = '';
@@ -817,8 +825,7 @@
         //         $(this).prop('disabled', true);
         //     }
         // });
-
-
+       
         function updateGrandTotal() {
             var grandTotal = 0;
             $('#dataTable1 tbody tr').each(function() {
@@ -894,7 +901,7 @@
                 var form = document.getElementById("simpsonsRuleForm");
                 form.reset();
                 currentId = null;
-                currentruleId = null;
+                currentId = null;
                 type = "";
                 $('#rulesDropdown').show();
                 populateRulesDropdown();
@@ -914,7 +921,7 @@
             if (parseFloat(grandTotalValue) === 0) {
                 $('#rulesDropdown').hide();
                 currentId = null;
-                currentruleId = null;
+                currentId = null;
                 type = "";
                 var tableBody = $("#dataTable tbody");
                 tableBody.empty();
@@ -970,7 +977,7 @@
                 var form = document.getElementById("simpsonsRuleForm");
                 form.reset();
                 currentId = null;
-                currentruleId = null;
+                currentId = null;
                 // type = "";
             } else if (dataValue === 3) {
                 $('.formula').html(`Formula : Area = length x width / Perimeter = 2 (length +
@@ -984,7 +991,7 @@
                 var form = document.getElementById("area-perimeter-rectangle");
                 form.reset();
                 currentId = null;
-                currentruleId = null;
+                currentId = null;
                 // type = "";
 
             } else if (dataValue === 4) {
@@ -996,12 +1003,13 @@
                 $('#myForm').hide();
                 $('#surfaceArea-volume-rectangle').trigger('reset');
                 currentId = null;
-                currentruleId = null;
+                currentId = null;
                 // type = "";
 
             } else if (dataValue === 5) {
                 $('.formula').html(`Formula : Area of Circle = πR2 / Perimeter of Circle = 2πR (π
                                         ≈ 3.14)`);
+                $('#Area-perimeter-circle').trigger('reset');
                 $('#Area-perimeter-circle').show();
                 $('#surfaceArea-volume-rectangle').hide();
                 $('#Area-perimeter-rectangle').hide();
@@ -1009,7 +1017,7 @@
                 $('#myForm').hide();
                 $('#surfaceArea-volume-rectangle').trigger('reset');
                 currentId = null;
-                currentruleId = null;
+                currentId = null;
                 // type = "";
 
             } else if (dataValue === 6) {
@@ -1024,7 +1032,7 @@
                 $('#myForm').hide();
                 $('#surfaceArea-volume-rectangle').trigger('reset');
                 currentId = null;
-                currentruleId = null;
+                currentId = null;
                 // type = "";
 
             } else {
@@ -1034,7 +1042,7 @@
                 $('#surfaceArea-volume-rectangle').hide();
                 alert("OOPS! Nothing Found for " + type);
                 currentId = null;
-                currentruleId = null;
+                currentId = null;
                 return;
                 //type = "";
             }
@@ -1078,7 +1086,7 @@
 
             var inputValues = {};
             inputValues["parent_id"] = unitId;
-            inputValues["currentruleId"] = currentruleId;
+            inputValues["currentId"] = currentId;
             if (!type) {
                 type = 'Area and perimeter of rectangle';
             }
@@ -1113,6 +1121,7 @@
                         unitId][
                         'metadata'
                     ];
+                    console.log(rateAnalysisArray1);
                     var tableBody = $("#dataTable1 tbody");
                     tableBody.empty();
 
@@ -1157,27 +1166,17 @@
                             editButtonClass = 'apcbtn';
                         }
                         
-                        var editButtonDataId;
-
-                        if (metadata.currentId === null || metadata.currentId ===
-                            undefined) {
-                            editButtonDataId = metadata.currentruleId;
-                        } else if (metadata.currentruleId === null || metadata
-                            .currentruleId === undefined) {
-                            editButtonDataId = metadata.currentId;
-                        }
-
-                       
+                    
                         var editButton = $('<a>').attr({
                             'type': 'button',
-                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 fetchdetails ' +
                                 editButtonClass,
-                            'data-id': editButtonDataId
+                            'data-id': metadata.currentId
                         }).text('edit');
                         var deleteButton = $('<a>').attr({
                             'type': 'button',
                             'class': 'btn btn-soft-danger btn-sm delBtn',
-                            'data-id': editButtonDataId
+                            'data-id': metadata.currentId
                         }).text('Delete');
                         var grandTotalValue = metadata.grandTotal;
                         var hiddenInput = $('<input>').attr({
@@ -1209,15 +1208,18 @@
                         $('#mySelect').show();
                         $('#metagrandtotal').hide();
                     }
+                    $().msgpopup({
+                         text: 'Test message',
+                    });
                     $('#successAlert').text('Row Total added successfully');
                     $('#successAlert').addClass('alert-success')
                         .removeClass(
                             'alert-danger')
                         .show();
                     $("#finalSubmitBtn").prop("disabled", false);
-                    setTimeout(function() {
-                        $('#successAlert').hide();
-                    }, 2000);
+                    // setTimeout(function() {
+                    //     $('#successAlert').hide();
+                    // }, 2000);
                     $('#metagrandtotal').show();
                     $("#closeBtn").prop("disabled", true);
                     $("#finalSubmitBtn").prop("disabled", false);
@@ -1229,10 +1231,11 @@
                         "area-perimeter-rectangle");
                     form.reset();
                     currentId = null;
-                    currentruleId = null;
+                    currentId = null;
                     // type = "";
                     $('#areaValue').text('');
                     $('#perimeterValue').text('');
+                    $("#calexp").prop("disabled", false);
                 },
                 error: function(xhr, status, error) {
                     var errorMessage =
@@ -1413,7 +1416,7 @@
             var inputForYDefValue = parseInt($("#Input_for_Y_def").val());
             inputValues["Input_for_def_Y"] = parseFloat(inputForYDefValue);
             inputValues["parent_id"] = '{!! $unit_id !!}';
-            inputValues["currentruleId"] = currentruleId;
+            inputValues["currentId"] = currentId;
             inputValues["type"] = "Simpson-rule";
             inputValues["btntype"] = 1;
             inputValues["unit"] = "Cum";
@@ -1473,27 +1476,17 @@
                             editButtonClass = 'apcbtn';
                         }
                         
-                        var editButtonDataId;
-
-                        if (metadata.currentId === null || metadata.currentId ===
-                            undefined) {
-                            editButtonDataId = metadata.currentruleId;
-                        } else if (metadata.currentruleId === null || metadata
-                            .currentruleId === undefined) {
-                            editButtonDataId = metadata.currentId;
-                        }
-
                        
                         var editButton = $('<a>').attr({
                             'type': 'button',
-                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 fetchdetails ' +
                                 editButtonClass,
-                            'data-id': editButtonDataId
+                            'data-id': metadata.currentId
                         }).text('edit');
                         var deleteButton = $('<a>').attr({
                             'type': 'button',
                             'class': 'btn btn-soft-danger btn-sm delBtn',
-                            'data-id': editButtonDataId
+                            'data-id': metadata.currentId
                         }).text('Delete');
                         var grandTotalValue = metadata.grandTotal;
                         var hiddenInput = $('<input>').attr({
@@ -1535,6 +1528,7 @@
                         false);
                     $("#totalOnSelected").prop("disabled", true);
                     $('.optionDropdown button.dropdown-toggle').prop('disabled', false);
+                    $("#calexp").prop("disabled", false);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
@@ -1550,7 +1544,7 @@
         }
 
         $(document).on("click", ".editBtnrule", function() {
-            currentruleId = this.getAttribute("data-id");
+            currentId = this.getAttribute("data-id");
             $.ajax({
                 url: '/get-modal-rule-data',
                 type: 'POST',
@@ -1560,7 +1554,7 @@
                 contentType: 'application/json',
                 data: JSON.stringify({
                     unitId: unitId,
-                    ruleId: currentruleId,
+                    ruleId: currentId,
                     editEstimate_id: editEstimate_Id
                 }),
                 success: function(response) {
@@ -1843,27 +1837,18 @@
                             editButtonClass = 'apcbtn';
                         }
                         
-                        var editButtonDataId;
-
-                        if (metadata.currentId === null || metadata.currentId ===
-                            undefined) {
-                            editButtonDataId = metadata.currentruleId;
-                        } else if (metadata.currentruleId === null || metadata
-                            .currentruleId === undefined) {
-                            editButtonDataId = metadata.currentId;
-                        }
-
+                    
                        
                         var editButton = $('<a>').attr({
                             'type': 'button',
-                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 fetchdetails ' +
                                 editButtonClass,
-                            'data-id': editButtonDataId
+                            'data-id': metadata.currentId
                         }).text('edit');
                         var deleteButton = $('<a>').attr({
                             'type': 'button',
                             'class': 'btn btn-soft-danger btn-sm delBtn',
-                            'data-id': editButtonDataId
+                            'data-id': metadata.currentId
                         }).text('Delete');
                         var grandTotalValue = metadata.grandTotal;
                         var hiddenInput = $('<input>').attr({
@@ -1906,6 +1891,7 @@
                     $("#finalSubmitBtn").prop("disabled", false);
                     $('.rowCheckbox').prop('checked', false);
                     $('.optionDropdown button.dropdown-toggle').prop('disabled', false);
+                    $("#calexp").prop("disabled", false);
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
@@ -2003,27 +1989,18 @@
                             editButtonClass = 'apcbtn';
                         }
                         
-                        var editButtonDataId;
-
-                        if (metadata.currentId === null || metadata.currentId ===
-                            undefined) {
-                            editButtonDataId = metadata.currentruleId;
-                        } else if (metadata.currentruleId === null || metadata
-                            .currentruleId === undefined) {
-                            editButtonDataId = metadata.currentId;
-                        }
-
+                       
                        
                         var editButton = $('<a>').attr({
                             'type': 'button',
-                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 fetchdetails ' +
                                 editButtonClass,
-                            'data-id': editButtonDataId
+                            'data-id':metadata.currentId
                         }).text('edit');
                         var deleteButton = $('<a>').attr({
                             'type': 'button',
                             'class': 'btn btn-soft-danger btn-sm delBtn',
-                            'data-id': editButtonDataId
+                            'data-id': metadata.currentId
                         }).text('Delete');
                         var grandTotalValue = metadata.grandTotal;
                         var hiddenInput = $('<input>').attr({
@@ -2197,27 +2174,18 @@
                             editButtonClass = 'apcbtn';
                         }
                         
-                        var editButtonDataId;
-
-                        if (metadata.currentId === null || metadata.currentId ===
-                            undefined) {
-                            editButtonDataId = metadata.currentruleId;
-                        } else if (metadata.currentruleId === null || metadata
-                            .currentruleId === undefined) {
-                            editButtonDataId = metadata.currentId;
-                        }
-
+                        
                        
                         var editButton = $('<a>').attr({
                             'type': 'button',
-                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 fetchdetails ' +
                                 editButtonClass,
-                            'data-id': editButtonDataId
+                            'data-id': metadata.currentId
                         }).text('edit');
                         var deleteButton = $('<a>').attr({
                             'type': 'button',
                             'class': 'btn btn-soft-danger btn-sm delBtn',
-                            'data-id': editButtonDataId
+                            'data-id': metadata.currentId
                         }).text('Delete');
                         var grandTotalValue = metadata.grandTotal;
                         var hiddenInput = $('<input>').attr({
@@ -2318,7 +2286,7 @@
                 var form = document.getElementById("simpsonsRuleForm");
                 form.reset();
                 currentId = null;
-                currentruleId = null;
+                currentId = null;
                 type = "";
                 $('#additionalFields').hide();
                 $('#myForm').hide();
@@ -2352,7 +2320,7 @@
                 var inputValues = {};
                 expression = expression.slice(0, -1);
                 inputValues["parent_id"] = '{!! $unit_id !!}';
-                inputValues["currentruleId"] = currentruleId;
+                inputValues["currentId"] = currentId;
                 inputValues["type"] = expression;
                 inputValues["unit"] = "Cum";
                 inputValues["overallTotal"] = totalOverallTotal !== '' ? totalOverallTotal : 0;
@@ -2418,27 +2386,18 @@
                                 editButtonClass = 'apcbtn';
                             }
                             
-                        var editButtonDataId;
-
-                        if (metadata.currentId === null || metadata.currentId ===
-                            undefined) {
-                            editButtonDataId = metadata.currentruleId;
-                        } else if (metadata.currentruleId === null || metadata
-                            .currentruleId === undefined) {
-                            editButtonDataId = metadata.currentId;
-                        }
-
+                      
                        
                             var editButton = $('<a>').attr({
                                 'type': 'button',
-                                'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                                'class': 'btn btn-soft-secondary btn-sm mr-2 fetchdetails ' +
                                     editButtonClass,
-                                'data-id': editButtonDataId
+                                'data-id': metadata.currentId
                             }).text('edit');
                             var deleteButton = $('<a>').attr({
                                 'type': 'button',
                                 'class': 'btn btn-soft-danger btn-sm delBtn',
-                                'data-id': editButtonDataId
+                                'data-id': metadata.currentId
                             }).text('Delete');
                             var grandTotalValue = metadata.grandTotal;
                             var hiddenInput = $('<input>').attr({
@@ -2549,7 +2508,7 @@
                 //expression = expression.slice(0, -1);
                 //alert(expression);
                 inputValues["parent_id"] = '{!! $unit_id !!}';
-                inputValues["currentruleId"] = currentruleId;
+                inputValues["currentId"] = currentId;
                 inputValues["type"] = exp;
                 inputValues["unit"] = "Cum";
                 inputValues["overallTotal"] = expression;
@@ -2619,27 +2578,18 @@
                                 editButtonClass = 'apcbtn';
                             }
                             
-                        var editButtonDataId;
-
-                        if (metadata.currentId === null || metadata.currentId ===
-                            undefined) {
-                            editButtonDataId = metadata.currentruleId;
-                        } else if (metadata.currentruleId === null || metadata
-                            .currentruleId === undefined) {
-                            editButtonDataId = metadata.currentId;
-                        }
-
+                       
                        
                             var editButton = $('<a>').attr({
                                 'type': 'button',
-                                'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                                'class': 'btn btn-soft-secondary btn-sm mr-2 fetchdetails ' +
                                     editButtonClass,
-                                'data-id': editButtonDataId
+                                'data-id': metadata.currentId
                             }).text('edit');
                             var deleteButton = $('<a>').attr({
                                 'type': 'button',
                                 'class': 'btn btn-soft-danger btn-sm delBtn',
-                                'data-id': editButtonDataId
+                                'data-id': metadata.currentId
                             }).text('Delete');
                             var grandTotalValue = metadata.grandTotal;
                             var hiddenInput = $('<input>').attr({
@@ -2709,8 +2659,8 @@
             var length = $('#salength').val();
             var width = $('#sawidth').val();
             var height = $('#saheight').val();
-            var currentruleId = $('#btn-type1').val();
-            alert("CURRANTID" + currentruleId);
+            var currentId = $('#btn-type1').val();
+            //alert("CURRANTID-" + currentId);
             if (!length || !width || !height) {
                 if (!length) $('#salength').addClass('highlight');
                 else $('.salength').removeClass('highlight');
@@ -2728,11 +2678,11 @@
                 alert('Please enter valid values for length,width and height.');
                 return;
             }
-            // currentruleId = this.getAttribute("data-id")
+            // currentId = this.getAttribute("data-id")
             var surfaceArea = 2 * (length * width + length * height + width * height);
             var inputValues = {};
             inputValues["parent_id"] = unitId;
-            inputValues["currentruleId"] = currentruleId;
+            inputValues["currentId"] = currentId;
             inputValues["type"] = "Surface Area of Rectangle";
 
             inputValues["btntype"] = 4;
@@ -2808,27 +2758,19 @@
                             editButtonClass = 'apcbtn';
                         }
                         
-                        var editButtonDataId;
-
-                        if (metadata.currentId === null || metadata.currentId ===
-                            undefined) {
-                            editButtonDataId = metadata.currentruleId;
-                        } else if (metadata.currentruleId === null || metadata
-                            .currentruleId === undefined) {
-                            editButtonDataId = metadata.currentId;
-                        }
+                        
 
                        
                         var editButton = $('<a>').attr({
                             'type': 'button',
-                            'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 fetchdetails ' +
                                 editButtonClass,
-                            'data-id': editButtonDataId
+                            'data-id': metadata.currentId
                         }).text('edit');
                         var deleteButton = $('<a>').attr({
                             'type': 'button',
                             'class': 'btn btn-soft-danger btn-sm delBtn',
-                            'data-id': editButtonDataId
+                            'data-id': metadata.currentId
                         }).text('Delete');
                         var grandTotalValue = metadata.grandTotal;
                         var hiddenInput = $('<input>').attr({
@@ -2880,7 +2822,7 @@
                     $('#sawidth').val('');
                     $('#saheight').val('');
                     currentId = null;
-                    currentruleId = null;
+                    currentId = null;
                 },
                 error: function(xhr, status, error) {
                     var errorMessage =
@@ -2896,8 +2838,8 @@
             });
         });
         $(document).on("click", ".sabtn", function() {
-            currentruleId = this.getAttribute("data-id");
-            alert(currentruleId);
+            currentId = this.getAttribute("data-id");
+            //alert(currentId);
             $('#surfaceArea-volume-rectangle').show();
             $('#Area-perimeter-rectangle').hide();
             $('#additionalFields').hide();
@@ -2913,11 +2855,11 @@
                 contentType: 'application/json',
                 data: JSON.stringify({
                     unitId: unitId,
-                    ruleId: currentruleId,
+                    ruleId: currentId,
                     editEstimate_id: editEstimate_Id
                 }),
                 success: function(response) {
-                    console.log(response.rateAnalysisArray.input_values.currentId);
+                    console.log(response.rateAnalysisArray.input_values);
                     $('#salength').val(response.rateAnalysisArray.input_values.length);
                     $('#sawidth').val(response.rateAnalysisArray.input_values.width);
                     $('#saheight').val(response.rateAnalysisArray.input_values.height);
@@ -2932,7 +2874,7 @@
         });
 
         $(document).on("click", ".defaultbtn", function() {
-            currentruleId = this.getAttribute("data-id");
+            currentId = this.getAttribute("data-id");
             $('#Area-perimeter-rectangle').show();
             $('#additionalFields').hide();
             $('#myForm').hide();
@@ -2948,7 +2890,7 @@
                 contentType: 'application/json',
                 data: JSON.stringify({
                     unitId: unitId,
-                    ruleId: currentruleId,
+                    ruleId: currentId,
                     editEstimate_id: editEstimate_Id
                 }),
                 success: function(response) {
@@ -3038,8 +2980,8 @@
         });
         $('#saveBtnn').on('click', function() {
             var totalOverallTotal = 0;
-            currentruleId = parseFloat($('#btntype').val());
-            //alert(currentruleId);
+            currentId = parseFloat($('#btntype').val());
+            //alert(currentId);
             //var selectedcircleShape = $('.dropdown-menu').find('a.selected').attr('data-value');
             var selectedcircleShape = $('.dropdown-menu').find('a.selectOptionn.active').attr(
                 'data-value');
@@ -3114,7 +3056,7 @@
                 }
                 var inputValues = {};
                 inputValues["parent_id"] = unitId;
-                inputValues["currentruleId"] = currentruleId;
+                inputValues["currentId"] = currentId;
                 inputValues["type"] = type + '(' + calculationType + ')';
                 inputValues["selectedcircleShape"] = selectedcircleShape;
                 inputValues["calculationType"] = calculationType;
@@ -3127,7 +3069,7 @@
                 var ruledata = {
                     input_values: inputValues
                 };
-                //console.log(ruledata);
+                console.log(ruledata);
                 $.ajax({
                     url: '/calculate-rule-area-perimeter-circle',
                     type: 'POST',
@@ -3139,13 +3081,14 @@
                         data: ruledata
                     }),
                     success: function(response) {
+
                         var tableBody1 = $("#dataTable tbody");
                         tableBody1.empty();
                         var rateAnalysisArray1 = response.rateAnalysisArray[
                             unitId][
                             'metadata'
                         ];
-                        console.log(rateAnalysisArray1);
+                       
                         var tableBody = $("#dataTable1 tbody");
                         tableBody.empty();
                         var sno = 0;
@@ -3189,27 +3132,18 @@
                                 editButtonClass = 'apcbtn';
                             }
                             
-                        var editButtonDataId;
-
-                        if (metadata.currentId === null || metadata.currentId ===
-                            undefined) {
-                            editButtonDataId = metadata.currentruleId;
-                        } else if (metadata.currentruleId === null || metadata
-                            .currentruleId === undefined) {
-                            editButtonDataId = metadata.currentId;
-                        }
-
+                      
                        
                             var editButton = $('<a>').attr({
                                 'type': 'button',
-                                'class': 'btn btn-soft-secondary btn-sm mr-2 ' +
+                                'class': 'btn btn-soft-secondary btn-sm mr-2 fetchdetails ' +
                                     editButtonClass,
-                                'data-id': editButtonDataId
+                                'data-id': metadata.currentId
                             }).text('edit');
                             var deleteButton = $('<a>').attr({
                                 'type': 'button',
                                 'class': 'btn btn-soft-danger btn-sm delBtn',
-                                'data-id': editButtonDataId
+                                'data-id': metadata.currentId
                             }).text('Delete');
                             var grandTotalValue = metadata.grandTotal;
                             var hiddenInput = $('<input>').attr({
@@ -3268,7 +3202,9 @@
                         $('.circle-dropdown').text('Select Shape');
                         $('input[name="calcOptionn"]').prop('checked', false);
                         currentId = null;
-                        currentruleId = null;
+                        currentId = null;
+                        $('#btntype').val('');
+                        $('.optionDropdown button.dropdown-toggle').prop('disabled', false);
                     },
                     error: function(xhr, status, error) {
                         var errorMessage =
@@ -3285,8 +3221,8 @@
             }
         });
         $(document).on("click", ".apcbtn", function() {
-            //alert("click");
-            currentruleId = this.getAttribute("data-id");
+            //alert("click");fetchdetails
+            currentId = this.getAttribute("data-id");
             $('#Area-perimeter-circle').show();
             $('#surfaceArea-volume-rectangle').hide();
             $('#Area-perimeter-rectangle').hide();
@@ -3301,7 +3237,7 @@
                 contentType: 'application/json',
                 data: JSON.stringify({
                     unitId: unitId,
-                    ruleId: currentruleId,
+                    ruleId: currentId,
                     editEstimate_id: editEstimate_Id
                 }),
                 success: function(response) {
@@ -3317,7 +3253,7 @@
                         $('.areaRadiocircle').hide();
                     }
 
-                    $('#btntype').val(response.rateAnalysisArray.input_values.current_id);
+                    $('#btntype').val(response.rateAnalysisArray.input_values.currentId);
                     $('#radius').val(response.rateAnalysisArray.input_values.radius);
                     $('.dropdown-menu').find('a[data-value="' + response.rateAnalysisArray
                         .input_values.selectedcircleShape + '"]').addClass('active');
@@ -3338,8 +3274,24 @@
                 }
             });
         });
+
+
         addNewRow();
         updateTotalSum();
         $('input[name="calcOptionn"]').prop('checked', false);
+
+      $(document).on("click", ".fetchdetails", function() {
+        fetchRowDetails(this);
+      });
+    
     });
+
+    function fetchRowDetails(btn) {
+        $('.formula').html('');
+        var row = btn.closest('tr');
+        var cells = row.cells; 
+        var serialNumber = cells[1].innerText;
+        var option = cells[2].innerText;
+        $('.formula').html('<span>'+ serialNumber + '</span><span>: ' + option + '</span>');
+    }
 </script>
