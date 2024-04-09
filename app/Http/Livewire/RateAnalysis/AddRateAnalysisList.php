@@ -2,15 +2,16 @@
 
 namespace App\Http\Livewire\RateAnalysis;
 
-use App\Models\DynamicSorHeader;
-use App\Models\EstimatePrepare;
-use App\Models\RatesAnalysis;
-use App\Services\CommonFunction;
-use ChrisKonnertz\StringCalc\StringCalc;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use WireUi\Traits\Actions;
+use App\Models\RatesMaster;
+use App\Models\RatesAnalysis;
+use App\Models\EstimatePrepare;
+use App\Models\DynamicSorHeader;
+use App\Services\CommonFunction;
+use Illuminate\Support\Facades\Session;
+use ChrisKonnertz\StringCalc\StringCalc;
+use Illuminate\Support\Facades\Validator;
 
 class AddRateAnalysisList extends Component
 {
@@ -623,9 +624,12 @@ class AddRateAnalysisList extends Component
         if ($this->totalOnSelectedCount >= 1) {
             try {
                 if ($this->allAddedRateData) {
-                    $intId = random_int(100000, 999999);
+                    $intId = ($this->editRate_id != '') ? $this->editRate_id : random_int(100000, 999999);
+
                     if (true) {
                         // $insert[] = [];
+                        RatesMaster::create(["rate_id"=>$intId,"rate_description"=>str_replace(',', ' ', $this->rateMasterDesc),"part_no"=>$this->part_no,"created_by"=>$userData->id,"dept_id"=>$userData->department_id,"status"=>1]);
+                        RatesMaster::where('rate_id',$intId)->update(["rate_description"=>str_replace(',', ' ', $this->rateMasterDesc),"part_no"=>$this->part_no,"status"=>12]);
                         foreach ($this->allAddedRateData as $key => $value) {
                             $insert = [
                                 'rate_id' => $intId,
