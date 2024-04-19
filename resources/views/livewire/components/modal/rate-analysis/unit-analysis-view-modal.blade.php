@@ -740,6 +740,9 @@
 
         });
         function closeModal() {
+            var grandTotal = 0;
+            grandTotal = $('#grandTotalInput').val();
+            window.Livewire.emit('closeAndReset', grandTotal, unitId);
             $("#myInput").modal('hide');
             window.Livewire.emit('closeUnitModal');
         }
@@ -769,6 +772,7 @@
                 $("#calexp").prop("disabled", true);
                 $("#totalOnSelected").prop("disabled", true);
                 $('.optionDropdown button.dropdown-toggle').prop('disabled', true);
+                
             }
             var tableHeight = $('#dataTable1').height();
             var tableOffsetTop = $('#dataTable1').offset().top;
@@ -1023,7 +1027,9 @@
                         unitId][
                         'metadata'
                     ];
-                    console.log(rateAnalysisArray1);
+                    if ($.isEmptyObject(rateAnalysisArray1)) {
+                        $("#closeBtn").html("Close");
+                     } 
                     var tableBody = $("#dataTable1 tbody");
                     tableBody.empty();
                     var sno = 0;
@@ -1089,6 +1095,13 @@
                             tableBody.find('.delBtn').remove();
                             buttonCell.append(deleteButton);
                         }
+                        if (metadata.hasOwnProperty('expcalculate')) {
+                            $("#finalSubmitBtn").prop("disabled", false);
+                             $("#closeBtn").html("Reset & close");
+                        }else{
+                            $("#finalSubmitBtn").prop("disabled", true);
+                             $("#closeBtn").html("Reset & close");
+                        }
                         newRow.append(hiddenInput).append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
@@ -1111,13 +1124,13 @@
                         .removeClass(
                             'alert-danger')
                         .show();
-                    $("#finalSubmitBtn").prop("disabled", false);
+                    //$("#finalSubmitBtn").prop("disabled", false);
                     setTimeout(function() {
                         $('#successAlert').hide();
                     }, 2000);
                     $('#metagrandtotal').show();
-                    $("#closeBtn").prop("disabled", true);
-                    $("#finalSubmitBtn").prop("disabled", false);
+                   
+                   // $("#finalSubmitBtn").prop("disabled", false);
                     $('.rowCheckbox').prop('checked', false);
                     $('#additionalFields').hide();
                     $('#myForm').hide();
@@ -1327,6 +1340,9 @@
                     var tableBody1 = $("#dataTable tbody");
                     tableBody1.empty();
                     var rateAnalysisArray1 = response.rateAnalysisArray[unitId]['metadata'];
+                    if ($.isEmptyObject(rateAnalysisArray1)) {
+                        $("#closeBtn").html("Close");
+                     } 
                     var tableBody = $("#dataTable1 tbody");
                     tableBody.empty();
                     var sno = 0;
@@ -1383,6 +1399,13 @@
                             tableBody.find('.delBtn').remove();
                             buttonCell.append(deleteButton);
                         }
+                        if (metadata.hasOwnProperty('expcalculate')) {
+                            $("#finalSubmitBtn").prop("disabled", false);
+                             $("#closeBtn").html("Reset & close");
+                        }else{
+                            $("#finalSubmitBtn").prop("disabled", true);
+                             $("#closeBtn").html("Reset & close");
+                        }
                         newRow.append(hiddenInput).append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
@@ -1400,8 +1423,8 @@
                     $('#successAlert').text('Rule Added successfully');
                     $('#successAlert').addClass('alert-success').removeClass('alert-danger')
                         .show();
-                    $("#closeBtn").prop("disabled", true);
-                    $("#finalSubmitBtn").prop("disabled", false);
+                   //  $("#closeBtn").html("Reset & close");
+                    //$("#finalSubmitBtn").prop("disabled", false);
                     setTimeout(function() {
                         $('#successAlert').hide();
                     }, 2000);
@@ -1444,8 +1467,8 @@
                         $('#Area-perimeter-rectangle').hide();
                         $('#Area-perimeter-circle').hide();
                         $('#surfaceArea-volume-rectangle').hide();
-                        $("#closeBtn").prop("disabled", true);
-                        $("#finalSubmitBtn").prop("disabled", false);
+                       //  $("#closeBtn").html("Reset & close");
+                       // $("#finalSubmitBtn").prop("disabled", false);
                         $('.rowCheckbox').prop('checked', false);
                         var sessionData = response.rateAnalysisArray;
                         document.getElementById("Input_for_W").value = sessionData[
@@ -1580,7 +1603,7 @@
         $(document).off("click", ".addbtn").on("click", ".addbtn", function() {
             addNewRow();
             updateTotalSum();
-            $("#closeBtn").prop("disabled", true);
+             $("#closeBtn").html("Reset & close");
         });
         $(document).on("click", ".delete-row-btn", function() {
             if ($("#dataTable tbody tr").length > 1) {
@@ -1677,7 +1700,9 @@
                     var tableBody1 = $("#dataTable tbody");
                     tableBody1.empty();
                     var rateAnalysisArray1 = response.rateAnalysisArray[unitId]['metadata'];
-                    // console.log(rateAnalysisArray1);
+                    if ($.isEmptyObject(rateAnalysisArray1)) {
+                        $("#closeBtn").html("Close");
+                     } 
                     var tableBody = $("#dataTable1 tbody");
                     tableBody.empty();
                     var sno = 0;
@@ -1733,6 +1758,13 @@
                             tableBody.find('.delBtn').remove();
                             buttonCell.append(deleteButton);
                         }
+                        if (metadata.hasOwnProperty('expcalculate')) {
+                            $("#finalSubmitBtn").prop("disabled", false);
+                             $("#closeBtn").html("Reset & close");
+                        }else{
+                            $("#finalSubmitBtn").prop("disabled", true);
+                             $("#closeBtn").html("Reset & close");
+                        }
                         newRow.append(hiddenInput).append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
@@ -1756,8 +1788,8 @@
                     setTimeout(function() {
                         $('#successAlert').hide();
                     }, 2000);
-                    $("#closeBtn").prop("disabled", true);
-                    $("#finalSubmitBtn").prop("disabled", false);
+                   //  $("#closeBtn").html("Reset & close");
+                   // $("#finalSubmitBtn").prop("disabled", false);
                     $('.rowCheckbox').prop('checked', false);
                     $('.optionDropdown button.dropdown-toggle').prop('disabled', false);
                     $("#calexp").prop("disabled", false);
@@ -1769,13 +1801,13 @@
         });
         $(document).off("click", "#submitBtn").on("click", "#submitBtn", function() {
             $("#myForm").submit();
-            $("#finalSubmitBtn").prop("disabled", false);
-            $("#closeBtn").prop("disabled", true);
+           // $("#finalSubmitBtn").prop("disabled", false);
+             $("#closeBtn").html("Reset & close");
             $('.rowCheckbox').prop('checked', false);
         });
         $(document).on("click", ".editBtn", function() {
             $('.rowCheckbox').prop('checked', false);
-            $("#closeBtn").prop("disabled", true);
+             $("#closeBtn").html("Reset & close");
             $("#finalSubmitBtn").prop("disabled", false);
             $('#additionalFields').hide();
             $('#Area-perimeter-rectangle').hide();
@@ -1791,7 +1823,7 @@
                 $('#additionalFields').hide();
                 $('#myForm').hide();
                 var metadataId = $(this).data("id");
-                $("#closeBtn").prop("disabled", true);
+                 $("#closeBtn").html("Reset & close");
                 $("#totalOnSelected").prop("disabled", false);
                 $('.rowCheckbox').prop('checked', false);
                 $("#calexp").prop("disabled", false);
@@ -1815,6 +1847,9 @@
                     var tableBody1 = $("#dataTable tbody");
                     tableBody1.empty();
                     var rateAnalysisArray1 = response.rateAnalysisArray[unitId]['metadata'];
+                     if ($.isEmptyObject(rateAnalysisArray1)) {
+                        $("#closeBtn").html("Close");
+                     } 
                     var hasKey = false;
                     for (var i = 0; i < rateAnalysisArray1.length; i++) {
                         if (rateAnalysisArray1[i].key) {
@@ -1876,6 +1911,13 @@
                             tableBody.find('.delBtn').remove();
                             buttonCell.append(deleteButton);
                         }
+                        if (metadata.hasOwnProperty('expcalculate')) {
+                            $("#finalSubmitBtn").prop("disabled", false);
+                             $("#closeBtn").html("Reset & close");
+                        }else{
+                            $("#finalSubmitBtn").prop("disabled", true);
+                             $("#closeBtn").html("Reset & close");
+                        }
                         newRow.append(hiddenInput).append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
@@ -1894,7 +1936,7 @@
                     $('#successAlert').text('Row deleted successfully');
                     $('#successAlert').addClass('alert-danger').removeClass('alert-success')
                         .show();
-                    $("#finalSubmitBtn").prop("disabled", false);
+                   // $("#finalSubmitBtn").prop("disabled", false);
                     setTimeout(function() {
                         $('#successAlert').hide();
                     }, 2000);
@@ -1966,7 +2008,7 @@
                         updateTotalSum();
                         updateButtons();
                     });
-                    $("#finalSubmitBtn").prop("disabled", false);
+                  //  $("#finalSubmitBtn").prop("disabled", false);
                     $('.rowCheckbox').prop('checked', false);
                 },
                 error: function(xhr, status, error) {
@@ -1997,6 +2039,9 @@
                 }),
                 success: function(response) {
                     var rateAnalysisArray2 = response.rateAnalysisArray[unitId]['metadata'];
+                    if ($.isEmptyObject(rateAnalysisArray2)) {
+                        $("#closeBtn").html("Close");
+                     } 
                     var tableBody = $("#dataTable1 tbody");
                     tableBody.empty();
                     var sno = 0;
@@ -2052,6 +2097,13 @@
                             tableBody.find('.delBtn').remove();
                             buttonCell.append(deleteButton);
                         }
+                        if (metadata.hasOwnProperty('expcalculate')) {
+                            $("#finalSubmitBtn").prop("disabled", false);
+                             $("#closeBtn").html("Reset & close");
+                        }else{
+                            $("#finalSubmitBtn").prop("disabled", true);
+                             $("#closeBtn").html("Reset & close");
+                        }
                         newRow.append(hiddenInput).append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
@@ -2069,8 +2121,8 @@
                     $('#successAlert').text('Previous Data Copied successfully');
                     $('#successAlert').addClass('alert-success').removeClass('alert-danger')
                         .show();
-                    $("#closeBtn").prop("disabled", true);
-                    $("#finalSubmitBtn").prop("disabled", false);
+                     $("#closeBtn").html("Reset & close");
+                   // $("#finalSubmitBtn").prop("disabled", false);
                     setTimeout(function() {
                         $('#successAlert').hide();
                     }, 2000);
@@ -2195,7 +2247,9 @@
                         var rateAnalysisArray1 = response.rateAnalysisArray[unitId][
                             'metadata'
                         ];
-                        console.log(rateAnalysisArray1);
+                        if ($.isEmptyObject(rateAnalysisArray1)) {
+                        $("#closeBtn").html("Close");
+                     } 
                         var tableBody = $("#dataTable1 tbody");
                         tableBody.empty();
 
@@ -2257,6 +2311,13 @@
                                 tableBody.find('.delBtn').remove();
                                 buttonCell.append(deleteButton);
                             }
+                            if (metadata.hasOwnProperty('expcalculate')) {
+                            $("#finalSubmitBtn").prop("disabled", false);
+                             $("#closeBtn").html("Reset & close");
+                        }else{
+                            $("#finalSubmitBtn").prop("disabled", true);
+                             $("#closeBtn").html("Reset & close");
+                        }
                             newRow.append(hiddenInput).append(buttonCell);
                             tableBody.append(newRow);
                             sno++;
@@ -2275,14 +2336,14 @@
                         $('#successAlert').addClass('alert-success').removeClass(
                                 'alert-danger')
                             .show();
-                        $("#finalSubmitBtn").prop("disabled", false);
+                       // $("#finalSubmitBtn").prop("disabled", false);
                         setTimeout(function() {
                             $('#successAlert').hide();
                         }, 2000);
                         $('#metagrandtotal').show();
                         $("#calexp").prop("disabled", true);
-                        $("#closeBtn").prop("disabled", true);
-                        $("#finalSubmitBtn").prop("disabled", false);
+                         $("#closeBtn").html("Reset & close");
+                        //$("#finalSubmitBtn").prop("disabled", false);
                         $("#totalOnSelected").prop("disabled", true);
                         $('.rowCheckbox').prop('checked', false);
                         $('#additionalFields').hide();
@@ -2376,6 +2437,9 @@
                         var rateAnalysisArray2 = response.rateAnalysisArray[unitId][
                             'metadata'
                         ];
+                        if ($.isEmptyObject(rateAnalysisArray2)) {
+                        $("#closeBtn").html("Close");
+                     } 
                         var tableBody = $("#dataTable1 tbody");
                         tableBody.empty();
                         var sno = 0;
@@ -2436,6 +2500,13 @@
                                 tableBody.find('.delBtn').remove();
                                 buttonCell.append(deleteButton);
                             }
+                            if (metadata.hasOwnProperty('expcalculate')) {
+                            $("#finalSubmitBtn").prop("disabled", false);
+                             $("#closeBtn").html("Reset & close");
+                        }else{
+                            $("#finalSubmitBtn").prop("disabled", true);
+                             $("#closeBtn").html("Reset & close");
+                        }
                             newRow.append(hiddenInput).append(buttonCell);
                             tableBody.append(newRow);
                             sno++;
@@ -2456,14 +2527,14 @@
                         $('#successAlert').addClass('alert-success').removeClass(
                                 'alert-danger')
                             .show();
-                        $("#finalSubmitBtn").prop("disabled", false);
+                       // $("#finalSubmitBtn").prop("disabled", false);
                         setTimeout(function() {
                             $('#successAlert').hide();
                         }, 2000);
                         $('#metagrandtotal').show();
                         $("#calexp").prop("disabled", false);
-                        $("#closeBtn").prop("disabled", true);
-                        $("#finalSubmitBtn").prop("disabled", false);
+                         $("#closeBtn").html("Reset & close");
+                       // $("#finalSubmitBtn").prop("disabled", false);
                         $("#totalOnSelected").prop("disabled", true);
                         $('.rowCheckbox').prop('checked', false);
                         $('#additionalFields').hide();
@@ -2541,6 +2612,9 @@
                         unitId][
                         'metadata'
                     ];
+                    if ($.isEmptyObject(rateAnalysisArray1)) {
+                        $("#closeBtn").html("Close");
+                     } 
                     var tableBody = $("#dataTable1 tbody");
                     tableBody.empty();
                     var sno = 0;
@@ -2605,6 +2679,13 @@
                             tableBody.find('.delBtn').remove();
                             buttonCell.append(deleteButton);
                         }
+                        if (metadata.hasOwnProperty('expcalculate')) {
+                            $("#finalSubmitBtn").prop("disabled", false);
+                             $("#closeBtn").html("Reset & close");
+                        }else{
+                            $("#finalSubmitBtn").prop("disabled", true);
+                             $("#closeBtn").html("Reset & close");
+                        }
                         newRow.append(hiddenInput).append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
@@ -2627,14 +2708,14 @@
                         .removeClass(
                             'alert-danger')
                         .show();
-                    $("#finalSubmitBtn").prop("disabled", false);
+                   // $("#finalSubmitBtn").prop("disabled", false);
                     setTimeout(function() {
                         $('#successAlert').hide();
                     }, 2000);
                     $("#calexp").prop("disabled", false);
                     $('#metagrandtotal').show();
-                    $("#closeBtn").prop("disabled", true);
-                    $("#finalSubmitBtn").prop("disabled", false);
+                     $("#closeBtn").html("Reset & close");
+                   // $("#finalSubmitBtn").prop("disabled", false);
                     $('.rowCheckbox').prop('checked', false);
                     $('#additionalFields').hide();
                     $('#myForm').hide();
@@ -2889,6 +2970,9 @@
                         tableBody1.empty();
                         var rateAnalysisArray1 = response.rateAnalysisArray[
                             unitId]['metadata'];
+                            if ($.isEmptyObject(rateAnalysisArray1)) {
+                        $("#closeBtn").html("Close");
+                     } 
                         var tableBody = $("#dataTable1 tbody");
                         tableBody.empty();
                         var sno = 0;
@@ -2955,6 +3039,13 @@
                                 tableBody.find('.delBtn').remove();
                                 buttonCell.append(deleteButton);
                             }
+                            if (metadata.hasOwnProperty('expcalculate')) {
+                            $("#finalSubmitBtn").prop("disabled", false);
+                             $("#closeBtn").html("Reset & close");
+                        }else{
+                            $("#finalSubmitBtn").prop("disabled", true);
+                             $("#closeBtn").html("Reset & close");
+                        }
                             newRow.append(hiddenInput).append(buttonCell);
                             tableBody.append(newRow);
                             sno++;
@@ -2976,13 +3067,13 @@
                             .removeClass(
                                 'alert-danger')
                             .show();
-                        $("#finalSubmitBtn").prop("disabled", false);
+                       // $("#finalSubmitBtn").prop("disabled", false);
                         setTimeout(function() {
                             $('#successAlert').hide();
                         }, 2000);
                         $('#metagrandtotal').show();
-                        $("#closeBtn").prop("disabled", true);
-                        $("#finalSubmitBtn").prop("disabled", false);
+                         $("#closeBtn").html("Reset & close");
+                       // $("#finalSubmitBtn").prop("disabled", false);
                         $('.rowCheckbox').prop('checked', false);
                         $('#additionalFields').hide();
                         $('#myForm').hide();
