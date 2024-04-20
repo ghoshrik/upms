@@ -1,5 +1,5 @@
 <div>
-    <x-modal max-width="5xl" blur wire:model.defer="viewModal">
+    <x-modal max-width="" blur wire:model.defer="viewModal">
         <x-card>
             {{-- <div class="modal-content"> --}}
             {{-- <div class="p-0 modal-body"> --}}
@@ -57,9 +57,9 @@
                                             {{-- {{ getRateDescription($view['rate_no'], $view['rate']) }} --}}
                                         @elseif($view['operation'])
                                             @if ($view['operation'] == 'Total')
-                                                {{ 'Total of ( ' . $view['row_index'] . ' )' }}
+                                                {{ 'Total of ( ' . str_replace('+', ' + ', $view['row_index']) . ' )' }}
                                             @else
-                                                {{ $view['row_index'] }}
+                                                {{ str_replace('+', ' + ', $view['row_index']) }}{{ ($view['operation'] != 'Exp Calculoation') ? ' ( ' . $view['operation'] . ' )' : '' }}
                                                 @if ($view['comments'] != '')
                                                     {{ '( ' . $view['comments'] . ' )' }}
                                                 @endif

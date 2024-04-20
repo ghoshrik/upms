@@ -111,7 +111,7 @@
                                                 $addedRate['is_row'] == 2)
                                             {{ $addedRate['description'] }}
                                             @if ($addedRate['operation'] != '')
-                                                ({{ $addedRate['arrayIndex'] }})
+                                                ({{ str_replace('+', ' + ', $addedRate['arrayIndex']) }})
                                                 ({{ $addedRate['operation'] }})
                                             @endif
                                         @elseif ($addedRate['rate_no'] != 0)
@@ -123,11 +123,11 @@
                                             {{-- {{ $addedRate->SOR->rateMasterDesc }} --}}
                                         @elseif ($addedRate['arrayIndex'] != '')
                                             @if ($addedRate['remarks'])
-                                                {{ $addedRate['arrayIndex'] . ' ( ' . $addedRate['remarks'] . ' ) ' }}
+                                                {{ str_replace('+', ' + ', $addedRate['arrayIndex']) . ' ( ' . $addedRate['remarks'] . ' ) ' }}
                                             @elseif ($addedRate['operation'] == 'Total')
-                                                {{ 'Total of ' . $addedRate['arrayIndex'] }}
+                                                {{ 'Total of ' . str_replace('+', ' + ', $addedRate['arrayIndex']) }}
                                             @else
-                                                {{ $addedRate['arrayIndex'] }}
+                                                {{ str_replace('+', ' + ', $addedRate['arrayIndex']) }}
                                             @endif
                                         @else
                                             {{ $addedRate['other_name'] }}

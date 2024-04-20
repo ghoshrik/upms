@@ -1,6 +1,9 @@
 <div>
+    <div wire:loading.delay.longest>
+        <div class="spinner-border text-primary loader-position" role="status"></div>
+    </div>
     @if ($allAddedEstimatesData != null)
-        <div class="col-md-12 col-lg-12">
+        <div wire:loading.delay.longest.class="loading" class="col-md-12 col-lg-12">
             <div class="card overflow-hidden">
                 <div class="card-header d-flex justify-content-between flex-wrap">
                     <div class="header-title">
@@ -102,9 +105,9 @@
                                                 {{-- {{ $addedEstimate->SOR->sorMasterDesc }} --}}
                                             @elseif ($addedEstimate['arrayIndex'])
                                                 @if ($addedEstimate['remarks'])
-                                                    {{ $addedEstimate['arrayIndex'] . ' ( ' . $addedEstimate['remarks'] . ' ) ' }}
+                                                    {{ str_replace('+', ' + ', $addedEstimate['arrayIndex']) . ' ( ' . $addedEstimate['remarks'] . ' ) ' }}
                                                 @elseif ($addedEstimate['operation'] == 'Total')
-                                                    {{ 'Total of ' . $addedEstimate['arrayIndex'] }}
+                                                    {{ 'Total of ( ' . str_replace('+', ' + ', $addedEstimate['arrayIndex']) .' )' }}
                                                 @else
                                                     {{ $addedEstimate['arrayIndex'] }}
                                                 @endif

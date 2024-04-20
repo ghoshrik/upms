@@ -91,11 +91,9 @@ class AddedEstimateProjectList extends Component
                     }
                 }
             }
-            // dd($this->getQtySessionData);
             Session()->put('editProjectEstimateData' . $this->editEstimate_id, $this->allAddedEstimatesData);
             Session()->put('editProjectEstimateDesc' . $this->editEstimate_id, $this->sorMasterDesc);
             Session()->put('editProjectEstimatePartNo' . $this->editEstimate_id, $this->part_no);
-            //Todo::change with editModalData
             Session()->put('editModalData', $this->getQtySessionData);
         }
     }
@@ -360,6 +358,9 @@ class AddedEstimateProjectList extends Component
             if (Session()->has('editProjectEstimateData' . $this->editEstimate_id)) {
                 $this->allAddedEstimatesData = Session()->get('editProjectEstimateData' . $this->editEstimate_id);
             }
+            if (Session()->has('editProjectEstimationTotal' . $this->editEstimate_id)) {
+                $this->totalOnSelectedCount = Session()->get('editProjectEstimationTotal' . $this->editEstimate_id);
+            }
             //Todo::change with editModalData
             if (Session()->has('editModalData')) {
                 $this->getQtySessionData = Session()->get('editModalData');
@@ -479,7 +480,7 @@ class AddedEstimateProjectList extends Component
         $this->level = [];
         if ($this->totalOnSelectedCount >= 1) {
             $this->reset('totalOnSelectedCount');
-            Session()->forget('projectEstimationTotal');
+            ($this->editEstimate_id == '') ? Session()->forget('projectEstimationTotal') : Session()->forget('editProjectEstimationTotal' . $this->editEstimate_id);
         }
         $this->notification()->error(
             $title = 'Row Deleted Successfully'
@@ -705,7 +706,7 @@ class AddedEstimateProjectList extends Component
                             EstimateUserAssignRecord::create($data);
                         }
                         $this->notification()->success(
-                            $title = 'Project Estimate Created Successfully!!'
+                            $title = ($flag != 'draft') ? 'Project Estimate Created Successfully!!' : 'Project Estimate Drafted Successfully!!'
                         );
                         $this->resetSession();
                         $this->updateDataTableTracker = rand(1, 1000);

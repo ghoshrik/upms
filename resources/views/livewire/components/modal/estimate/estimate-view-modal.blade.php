@@ -69,9 +69,9 @@
                                             {{ getEstimateDesc($view['estimate_no']) }}
                                         @elseif($view['operation'])
                                             @if ($view['operation'] == 'Total')
-                                                {{ 'Total of ( ' . $view['row_index'] . ' )' }}
+                                                {{ 'Total of ( ' . str_replace('+', ' + ', $view['row_index']) . ' )' }}
                                             @else
-                                                {{ $view['row_index'] }}
+                                                {{ str_replace('+', ' + ', $view['row_index']) }}
                                                 @if ($view['comments'] != '')
                                                     {{ '( ' . $view['comments'] . ' )' }}
                                                 @endif

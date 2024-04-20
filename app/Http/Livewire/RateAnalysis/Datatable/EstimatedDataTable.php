@@ -42,6 +42,13 @@ class EstimatedDataTable extends DataTableComponent
             //     ->sortable()
             //     ->format( fn($row) => '<span class="badge bg-soft-primary fs-6">'.$row.'</span>')
             //         ->html(),
+            Column::make("Status", "rate_id")
+                ->format(function ($value, $row, Column $column) {
+                    return view('components.data-table-components.buttons.status', [
+                        'value' => $value,
+                        'type' => 'Rate',
+                    ]);
+                }),
             Column::make("Actions", "rate_id")
                 ->format(
                     fn($value, $row, Column $column) => view('livewire.action-components.rate-analysis.action-buttons')->withValue($value)),
@@ -70,16 +77,16 @@ class EstimatedDataTable extends DataTableComponent
         // if ($sessionRateData !== '') {
         //     return $sessionRateData;
         // } else {
-            $query = RatesAnalysis::query()
-                ->where(function ($query) {
-                    $query->orWhere('operation', 'Total')
-                        ->orWhere('operation', 'With Stacking')
-                        ->orWhere('operation', 'Without Stacking');
-                })
-                ->where('item_name', '=','')
-                ->where('created_by', $userData->id);
-            // Session::put($sessionKey, $query);
-            return $query;
+        $query = RatesAnalysis::query()
+            ->where(function ($query) {
+                $query->orWhere('operation', 'Total')
+                    ->orWhere('operation', 'With Stacking')
+                    ->orWhere('operation', 'Without Stacking');
+            })
+            ->where('item_name', '=', '')
+            ->where('created_by', $userData->id);
+        // Session::put($sessionKey, $query);
+        return $query;
         // }
     }
 

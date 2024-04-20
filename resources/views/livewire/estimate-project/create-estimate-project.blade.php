@@ -179,7 +179,7 @@
                                     <div class="col">
                                         <div class="form-group">
                                             @if ($estimateData['unit_id'] == 0 || $estimateData['unit_id'] == '')
-                                                <x-select wire:key="unit_" label="Unit" placeholder="Select Unit"
+                                                <x-select wire:key="unit_{{rand(1,1000)}}" label="Unit" placeholder="Select Unit"
                                                     wire:model.defer="estimateData.unit_id">
                                                     @foreach ($fatchDropdownData['units'] as $unit)
                                                         <x-select.option label="{{ $unit['unit_name'] }}"
@@ -187,7 +187,7 @@
                                                     @endforeach
                                                 </x-select>
                                             @else
-                                                <x-input wire:key='unit_' label="Unit Name" placeholder="Unit Name"
+                                                <x-input wire:key='unit_{{rand(1,1000)}}' label="Unit Name" placeholder="Unit Name"
                                                     wire:model.defer="estimateData.unit_id" readonly />
                                             @endif
                                         </div>
@@ -356,7 +356,7 @@
                                 </div>
                             @endif
                             @if ($estimateData['item_name'] == 'Rate')
-                                <div class="row" wire:key='{{ $estimateData['item_name'] }}'>
+                                <div class="row" wire:key='{{ $estimateData['item_name'] }}{{rand(1,1000)}}'>
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="dept"

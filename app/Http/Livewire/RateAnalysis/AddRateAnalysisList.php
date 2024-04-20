@@ -9,6 +9,7 @@ use App\Models\RatesAnalysis;
 use App\Models\EstimatePrepare;
 use App\Models\DynamicSorHeader;
 use App\Services\CommonFunction;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 use ChrisKonnertz\StringCalc\StringCalc;
 use Illuminate\Support\Facades\Validator;
@@ -621,15 +622,17 @@ class AddRateAnalysisList extends Component
     {
         // dd($this->allAddedRateData);
         $userData = Session::get('user_data');
-        if ($this->totalOnSelectedCount >= 1) {
+        if ($this->totalOnSelectedCount >= 1 ) {
             try {
                 if ($this->allAddedRateData) {
                     $intId = ($this->editRate_id != '') ? $this->editRate_id : random_int(100000, 999999);
-
-                    if (true) {
+                    if (($this->editRate_id != '') ?  RatesMaster::where('rate_id', $intId)->update(['rate_description' => str_replace(',', ' ', $this->rateMasterDesc),'created_by' => $userData->id,'part_no' => $this->part_no, 'status' => ($value == "draft") ? 12 : 1]) : RatesMaster::create(['rate_id' => $intId, 'rate_description' => str_replace(',', ' ', $this->rateMasterDesc), 'part_no' => $this->part_no, 'created_by' => $userData->id, 'dept_id' => $userData->department_id, 'status' => ($value == "draft") ? 12 : 1])) {
+                        // ($this->editEstimate_id != '') ? ModelsSORMaster::where('estimate_id', $intId)->update(['sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'created_by' => Auth::user()->id]) : ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'dept_id' => Auth::user()->department_id, 'part_no' => $this->part_no, 'created_by' => Auth::user()->id])
                         // $insert[] = [];
-                        RatesMaster::create(["rate_id"=>$intId,"rate_description"=>str_replace(',', ' ', $this->rateMasterDesc),"part_no"=>$this->part_no,"created_by"=>$userData->id,"dept_id"=>$userData->department_id,"status"=>1]);
-                        RatesMaster::where('rate_id',$intId)->update(["rate_description"=>str_replace(',', ' ', $this->rateMasterDesc),"part_no"=>$this->part_no,"status"=>12]);
+                        if ($this->editRate_id != '') {
+                            RatesAnalysis::where('rate_id', $intId)->delete();
+                            Cache::forget('rate_details_' . $intId);
+                        }
                         foreach ($this->allAddedRateData as $key => $value) {
                             $insert = [
                                 'rate_id' => $intId,
