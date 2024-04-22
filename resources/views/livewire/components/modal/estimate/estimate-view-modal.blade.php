@@ -8,7 +8,7 @@
                 <div class="mt-5 text-3xl">Details of Estimate No : {{ $estimate_id }}</div>
                 <div class="mt-2 text-slate-500"> </div>
                 <div>
-                    <table class="table mt-2 table-report">
+                    <table class="table mt-2 table-report" >
                         <thead>
                             <tr>
                                 <th class="whitespace-nowrap" style="padding-right:4rem;">#</th>
@@ -106,7 +106,7 @@
                                 </tr>
                                 @if ($view['qty_analysis_data'] != '')
                                     <tr>
-                                        <td colspan="8">
+                                        <td colspan="8" style=" border-bottom-width: 0;">
                                             @php $serialNumber = 1; @endphp
 
                                             <div class="collapse" id="collapseExample_{{ $view['row_id'] }}">
@@ -130,6 +130,7 @@
                                                             $data = json_decode($view['qty_analysis_data'], true);
                                                             if (isset($data['metadata'])) {
                                                                 $metadataArray = $data['metadata'];
+                                                               // dd($metadataArray);
                                                                 foreach ($metadataArray as $index => $metadata) {
                                                                     ?>
                                                             <tr>
@@ -138,14 +139,17 @@
                                                                 <td style="text-align:center;"><?php echo $metadata['overallTotal']; ?></td>
                                                                 <td style="text-align:center;"><?php echo !empty($metadata['unit']) ? $metadata['unit'] : null; ?></td>
                                                                 <td style="text-align:center;">
-                                                                    <button
-                                                                        class="collapse-button btn btn-soft-primary btn-sm rounded"
-                                                                        type="button" aria-expanded="false"
-                                                                        aria-controls="collapseExample1_{{ $metadata['currentId'] }}_{{ $view['row_id'] }}"
-                                                                        onclick="toggleCollapse1('{{ $metadata['currentId'] }}_{{ $view['row_id'] }}')">
-                                                                        <x-lucide-eye class="w-4 h-4 text-white-500" />
-                                                                    </button>
+                                                                    @if (!isset($metadata['key']))
+                                                                        <button class="collapse-button btn btn-soft-primary btn-sm rounded"
+                                                                                type="button"
+                                                                                aria-expanded="false"
+                                                                                aria-controls="collapseExample1_{{ $metadata['currentId'] }}_{{ $view['row_id'] }}"
+                                                                                onclick="toggleCollapse1('{{ $metadata['currentId'] }}_{{ $view['row_id'] }}')">
+                                                                            <x-lucide-eye class="w-4 h-4 text-white-500" />
+                                                                        </button>
+                                                                    @endif
                                                                 </td>
+                                                                
                                                             </tr>
                                                             <tr class="collapse"
                                                                 id="collapseExample1_{{ $metadata['currentId'] }}_{{ $view['row_id'] }}">
@@ -200,59 +204,53 @@
                                                                             </tbody>
                                                                         </table>
                                                                         <?php }
-                                                                        else {?>
-                                                                        <table class="table table-bordered">
-                                                                            <thead>
-                                                                                <tr class="thead">
-                                                                                    <th>Sl.no</th>
-                                                                                    <th>Column</th>
-                                                                                    <th>Value</th>
+                                                                        else {
+                                                                        $columnHeadings = array(
+                                                                        'type' => 'Rule',
+                                                                        'unit' => 'Unit',
+                                                                        'parent_id' => 'Row',
+                                                                        'length' => 'Length',
+                                                                        'width' => 'Breadth',
+                                                                        'height' => 'Height',
+                                                                        'remarks' => 'Remarks',
+                                                                        'Input_for_W' => 'Input W',
+                                                                        'Input_for_def_Y' => 'No of Y',
+                                                                        'Input_for_Y1' => 'Y1',
+                                                                        'Input_for_Y2' => 'Y2',
+                                                                        'Input_for_Y3' => 'Y3',
+                                                                        'Input_for_Y4' => 'Y4',
+                                                                        'overallTotal' => 'Total'
+                                                                    );
 
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                                <?php
-                                                                                $ruledata = json_decode($view['qty_analysis_data'], true);
-                                                                                $metadataArrayDetailss = $ruledata[$metadata['currentId']];
-                                                                                $metadataArrayruleDetails = $metadataArrayDetailss['input_values'];
-                                                                                $serialno = 1;
-
-                                                                                // Define an associative array to map original keys to custom column headings
-                                                                                $columnHeadings = array(
-                                                                                    'type' => 'Type',
-                                                                                    'unit' => 'Unit',
-                                                                                    'parent_id' => 'Parent ID',
-                                                                                    'Input_for_W' => 'No of W',
-                                                                                    'Input_for_def_Y' => 'No of Y',
-                                                                                    'Input_for_Y1' => 'Y1',
-                                                                                    'Input_for_Y2' => 'Y2',
-                                                                                    'Input_for_Y3' => 'Y3',
-                                                                                    'Input_for_Y4' => 'Y4',
-                                                                                    'overallTotal' => 'Total'
-
-                                                                                );
-
-                                                                                foreach ($metadataArrayruleDetails as $key => $value) {
-                                                                                    // Exclude 'currentruleId'
-                                                                                    if ($key !== 'currentruleId') {
-                                                                                        ?>
-                                                                                <tr>
+                                                                    $ruledata = json_decode($view['qty_analysis_data'], true);
+                                                                    $metadataArrayDetailss = $ruledata[$metadata['currentId']];
+                                                                    $metadataArrayruleDetails = $metadataArrayDetailss['input_values'];
+                                                                    $keysToExclude = ['currentId', 'editEstimate_id', 'btntype', 'exp', 'key','parent_id'];
+                                                                    ?>
+                                                                   <table class="table table-bordered">
+                                                                    <thead>
+                                                                        <tr class="thead">
+                                                                            <th>Sl.no</th>
+                                                                            <?php foreach ($columnHeadings as $headkey => $heading): ?>
+                                                                                <?php if (!in_array($headkey, $keysToExclude) && isset($metadataArrayruleDetails[$headkey])): ?>
+                                                                                    <th><?php echo $heading; ?></th>
+                                                                                <?php endif; ?>
+                                                                            <?php endforeach; ?>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="text-align:center;">1</td> <!-- Serial Number -->
+                                                                            <?php foreach ($columnHeadings as $headkey => $heading): ?>
+                                                                                <?php if (!in_array($headkey, $keysToExclude) && isset($metadataArrayruleDetails[$headkey])): ?>
                                                                                     <td style="text-align:center;">
-                                                                                        <?php echo $serialno; ?></td>
-                                                                                    <td style="text-align:center;">
-                                                                                        <?php echo isset($columnHeadings[$key]) ? $columnHeadings[$key] : ''; ?></td>
-                                                                                    <td style="text-align:center;">
-                                                                                        <?php echo $value; ?></td>
-                                                                                </tr>
-                                                                                <?php
-                                                                                        $serialno++;
-                                                                                    }
-                                                                                }
-                                                                                ?>
-                                                                            </tbody>
-
-                                                                        </table>
-
+                                                                                        <?php echo $metadataArrayruleDetails[$headkey]; ?>
+                                                                                    </td>
+                                                                                <?php endif; ?>
+                                                                            <?php endforeach; ?>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
                                                                         <?php }
                                                                         ?>
                                                                     </div>
