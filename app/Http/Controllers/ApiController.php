@@ -243,6 +243,8 @@ class ApiController extends Controller
                     $metadata = $data['input_values'];
                 }
                 $metadata['currentId'] = $index;
+                $new_unit=$sessionData[$parentId]['metadata'][0]['unit'];
+                $metadata['unit'] = $new_unit;
                 $sessionData[$parentId]['metadata'][] = $metadata;
             }else {
                 unset($sessionData[$parentId]['metadata']);
@@ -258,6 +260,7 @@ class ApiController extends Controller
                         }
                         if (!isset($metadata['expcalculate'])) {
                             $updateTotalOverallTotal += floatval($metadata['overallTotal']);
+                          
                         }
                         $metadataArray[$index] = $metadata;
                     }
@@ -265,6 +268,8 @@ class ApiController extends Controller
                         if (isset($data['expcalculate']) && $data['expcalculate'] === 'Sumtotal') {
                             $data['overallTotal'] = $updateTotalOverallTotal;
                             $data['grandTotal'] = $updateTotalOverallTotal;
+                            $data['unit'] = $unit;
+                            
                         }
                         $data['currentId'] = $index;
                     }

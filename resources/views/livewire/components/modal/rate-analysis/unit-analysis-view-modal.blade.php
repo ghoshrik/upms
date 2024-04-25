@@ -85,6 +85,7 @@
         width: auto;
         float: inline-end;
     }
+
     span.ovral-txt {
         margin-top: 2px;
     }
@@ -93,10 +94,12 @@
         background: honeydew;
         width: 21%;
     }
+
     .col-md-12.calculation-result.p {
         font-style: italic;
         font-weight: 600;
     }
+
     .row.formulae {
         width: fit-content;
     }
@@ -121,11 +124,13 @@
         border-radius: 3px;
         color: white;
     }
+
     table {
         font-family: arial, sans-serif;
         border-collapse: collapse;
         width: 100%;
     }
+
     .modal-footer.rate-analysis {
         background: #f7f7f7;
         margin-top: 31px;
@@ -134,29 +139,36 @@
     .modal-header.rate-analysis {
         background: #f7f7f7;
     }
+
     button.btn.rounded-pill.editBtn.delBtn {
         font-size: x-small;
     }
+
     .col-md-3.optionDropdown {
         flex: 0 0 auto;
         width: 16%;
     }
+
     .card.input-fields {
 
         width: 100%;
     }
+
     #more {
         display: none;
     }
+
     p.desp {
         margin-top: 0;
         margin-bottom: 0rem;
         color: black;
     }
+
     button#myBtn {
         color: blue;
         font-size: revert;
     }
+
     button.btn.btn-soft-primary.calc {
         float: inline-end;
     }
@@ -457,17 +469,19 @@
                                                         $editButtonClass = 'sabtn';
                                                     } elseif ($metadata['btntype'] == 5) {
                                                         $editButtonClass = 'apcbtn';
+                                                    } else if ($metadata['btntype'] === 6) {
+                                                        $editButtonClass = 'vcbtn';
                                                     }
                                                 }
                                             @endphp
-                                          @if (!isset($metadata['key']))
-                                          @if (isset($metadata['currentId']))
-                                              <a type="button"
-                                                 class="btn btn-soft-secondary btn-sm mr-2 {{ $editButtonClass }} fetchdetails"
-                                                 data-id="{{ $metadata['currentId'] }}">Edit</a>
-                                          @endif
-                                          
-                                      @endif
+                                            @if (!isset($metadata['key']))
+                                                @if (isset($metadata['currentId']))
+                                                    <a type="button"
+                                                        class="btn btn-soft-secondary btn-sm mr-2 {{ $editButtonClass }} fetchdetails"
+                                                        data-id="{{ $metadata['currentId'] }}">Edit</a>
+                                                @endif
+
+                                            @endif
                                             <?php if ($metadata === $lastTotalRow): ?>
                                             <a type="button" class="btn btn-soft-danger btn-sm delBtn"
                                                 data-id="{{ $metadata['currentId'] }}">Delete</a>
@@ -490,6 +504,9 @@
                             <input type="text" id="grandTotalInput" class="form-control" value="0" readonly>
                         </div>
                     </div>
+
+
+
                     <form id="myForm" style="display:none;">
                         <div class="alert alert-danger" role="alert" id="emptyFieldsAlert" style="display: none;">
                             Please fill in all fields before submitting.
@@ -503,9 +520,9 @@
                                                 <th>Sl.no</th>
                                                 <th>Member</th>
                                                 <th>Number</th>
-                                                <th>Height</th>
-                                                <th>Breadth</th>
                                                 <th>Length</th>
+                                                <th>Breadth</th>
+                                                <th>Height</th>
                                                 <th>Unit</th>
                                                 <th>Total</th>
                                                 <th>Action</th>
@@ -610,8 +627,7 @@
                                 </div>
                                 <div id="rowMessage" class="alert alert-info" style="display: none;"></div>
                                 <form id="surfaceArea-volume-rectangle" class="row g-3 align-items-center">
-                                    <input type="hidden" class="form-control btn-type"
-                                        id="btn-type1">
+                                    <input type="hidden" class="form-control btn-type" id="btn-type2">
                                     <div class="col-md-6">
                                         <label for="length">Enter Length</label>
                                         <input type="number" class="form-control salength" name="salength"
@@ -633,6 +649,41 @@
                                     <div class="row">
                                         <div class="col text-end">
                                             <button id="saveBtn1" type="submit" class="btn btn-soft-primary"
+                                                style="width:auto">Save</button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Volume-of-cylinder" style="display: none; margin-top: 1%;">
+                        <div class="card input-fields overflow-auto">
+                            <div class="card-body overflow-auto" style="background-color: #f4f8fb;">
+                                <div id="simpson" class="row formulae">
+                                    <span class="formula"></span>
+                                </div>
+                                <div id="rowMessage" class="alert alert-info" style="display: none;"></div>
+                                <form id="Volume-of-cylinder" class="row g-3 align-items-center">
+                                    <input type="hidden" class="form-control btn-type" id="btn-type2">
+                                    <div class="col-md-6">
+                                        <label for="length">Enter Diameter
+                                        </label>
+                                        <input type="number" class="form-control diameter" name="diameter"
+                                            id="diameter" placeholder="Enter value" required>
+                                    </div>
+                                
+                                    <div class="col-md-6">
+                                        <label for="height">Enter Height</label>
+                                        <input type="number" class="form-control dia-height" name="dia-height"
+                                            id="dia-height" placeholder="Enter value" required>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div id="error_message" class="text-danger"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-end">
+                                            <button id="saveBtn2" type="submit" class="btn btn-soft-primary"
                                                 style="width:auto">Save</button>
                                         </div>
                                     </div>
@@ -739,6 +790,7 @@
             closeModal();
 
         });
+
         function closeModal() {
             var grandTotal = 0;
             grandTotal = $('#grandTotalInput').val();
@@ -753,33 +805,34 @@
             // });
             grandTotal = $('#grandTotalInput').val();
             window.Livewire.emit('submitGrandTotal', grandTotal, unitId);
-            closeModal();
+            $("#myInput").modal('hide');
         });
         // $('#grandTotalInput').on('keyup click keydown keypress keyup mouseenter mouseleave', function() {
         //     if (!$(this).prop('disabled')) {
         //         $(this).prop('disabled', true);
         //     }
         // });
-       
-        function updateGrandTotal() {
+
+     function updateGrandTotal() {
             var grandTotal = 0;
             $('#dataTable1 tbody tr').each(function() {
-                grandTotal = parseFloat($(this).find('#metagrandval').val());
-                $('#grandTotalInput').val(grandTotal);
-            });
+            var grandTotal = parseFloat($(this).find('#metagrandval').val());
+            var roundedGrandTotal = grandTotal.toFixed(2);
+            $('#grandTotalInput').val(roundedGrandTotal);
+        });
             if (parseFloat(grandTotal) !== 0) {
                 //alert(grandTotal);
                 $("#calexp").prop("disabled", true);
                 $("#totalOnSelected").prop("disabled", true);
                 $('.optionDropdown button.dropdown-toggle').prop('disabled', true);
-                
+
             }
             var tableHeight = $('#dataTable1').height();
             var tableOffsetTop = $('#dataTable1').offset().top;
             var grandTotalInputHeight = $('.grandTotalInput').height();
             var newPositionTop = tableHeight + tableOffsetTop + 20;
             $('.grandTotalInput').css('top', newPositionTop + 'px');
-        }
+         }
         $('.metatable').on('DOMSubtreeModified', function() {
             $("#metatable_id input[type=checkbox]").change(function() {
                 if (!$(this).is(":checked")) {
@@ -796,15 +849,16 @@
             }
         });
         var rules = ["Simpson-rule", "Area and Perimeter of rectangle", "Surface Area & volume of rectangle",
-            "Area and Perimeter of circle",
+            "Area and Perimeter of circle","Volume of Cylinder",
         ];
         var ruleDataValues = {
             "Simpson-rule": "1",
             "Area and Perimeter of rectangle": "3",
             "Surface Area & volume of rectangle": "4",
             "Area and Perimeter of circle": "5",
-            "Area Perimeter and volume of cone": "6"
+            "Volume of Cylinder": "6"
         };
+
         function populateRulesDropdown() {
             var dropdownContent = "";
             rules.forEach(function(rule) {
@@ -938,17 +992,18 @@
                 $('#surfaceArea-volume-rectangle').trigger('reset');
                 currentId = null;
             } else if (dataValue === 6) {
-                $('.formula').html(
-                    `Formula : Area of Circle = πR<sup>2</sup>, Perimeter of Circle = 2πR, Volume of Cone = (1/3)πr<sup>2</sup>h`
-                );
-                $('#Area-perimeter-circle-cone').show();
+                $('.formula').html(`Formula : Volume of Cylinder = πd2 * h / 4 (π
+                                        ≈ 3.14)`);
+                $('#Volume-of-cylinder').show();
+                $('#Volume-of-cylinder').trigger('reset');
+                $('#Area-perimeter-circle').hide();
                 $('#surfaceArea-volume-rectangle').hide();
                 $('#Area-perimeter-rectangle').hide();
                 $('#additionalFields').hide();
                 $('#myForm').hide();
                 $('#surfaceArea-volume-rectangle').trigger('reset');
-                currentId = null;
             } else {
+                $('#Volume-of-cylinder').hide();
                 $('#Area-perimeter-circle').hide();
                 $('#additionalFields').hide();
                 $('#Area-perimeter-rectangle').hide();
@@ -1019,8 +1074,8 @@
                     data: ruledata
                 }),
                 success: function(response) {
-                  console.log("1");
-                   
+                    console.log("1");
+
                     var tableBody1 = $("#dataTable tbody");
                     tableBody1.empty();
                     var rateAnalysisArray1 = response.rateAnalysisArray[
@@ -1029,7 +1084,7 @@
                     ];
                     if ($.isEmptyObject(rateAnalysisArray1)) {
                         $("#closeBtn").html("Close");
-                     } 
+                    }
                     var tableBody = $("#dataTable1 tbody");
                     tableBody.empty();
                     var sno = 0;
@@ -1070,6 +1125,8 @@
                             editButtonClass = 'sabtn';
                         } else if (metadata.btntype === 5) {
                             editButtonClass = 'apcbtn';
+                        }else if (metadata.btntype === 6) {
+                            editButtonClass = 'vcbtn';
                         }
                         var editButton = $('<a>').attr({
                             'type': 'button',
@@ -1097,10 +1154,10 @@
                         }
                         if (metadata.hasOwnProperty('expcalculate')) {
                             $("#finalSubmitBtn").prop("disabled", false);
-                             $("#closeBtn").html("Reset & close");
-                        }else{
+                            $("#closeBtn").html("Reset & close");
+                        } else {
                             $("#finalSubmitBtn").prop("disabled", true);
-                             $("#closeBtn").html("Reset & close");
+                            $("#closeBtn").html("Reset & close");
                         }
                         newRow.append(hiddenInput).append(buttonCell);
                         tableBody.append(newRow);
@@ -1129,10 +1186,17 @@
                         $('#successAlert').hide();
                     }, 2000);
                     $('#metagrandtotal').show();
-                   
-                   // $("#finalSubmitBtn").prop("disabled", false);
+
+                    // $("#finalSubmitBtn").prop("disabled", false);
                     $('.rowCheckbox').prop('checked', false);
+                    $('#Area-perimeter-rectangle').hide();
+                    $('#Area-perimeter-circle').hide();
+                    $('#surfaceArea-volume-rectangle').hide();
                     $('#additionalFields').hide();
+                    $('#myForm').hide();
+                    var form = document.getElementById("area-perimeter-rectangle");
+                    form.reset();
+                    currentId = null;
                     $('#myForm').hide();
                     var form = document.getElementById(
                         "area-perimeter-rectangle");
@@ -1176,6 +1240,7 @@
             handleInputChanges();
             resetResults();
         });
+
         function handleInputChanges() {
             var numberOfY = parseInt(document.getElementById("Input_for_Y_def").value);
             var form = document.getElementById("simpsonsRuleForm");
@@ -1234,6 +1299,7 @@
                 document.getElementById("rowMessage").style.display = "none";
             }, 1000);
         }
+
         function calculate() {
             var existingResults = document.querySelectorAll(".calculation-result");
             existingResults.forEach(function(result) {
@@ -1342,7 +1408,7 @@
                     var rateAnalysisArray1 = response.rateAnalysisArray[unitId]['metadata'];
                     if ($.isEmptyObject(rateAnalysisArray1)) {
                         $("#closeBtn").html("Close");
-                     } 
+                    }
                     var tableBody = $("#dataTable1 tbody");
                     tableBody.empty();
                     var sno = 0;
@@ -1374,6 +1440,8 @@
                             editButtonClass = 'sabtn';
                         } else if (metadata.btntype === 5) {
                             editButtonClass = 'apcbtn';
+                        }else if (metadata.btntype === 6) {
+                            editButtonClass = 'vcbtn';
                         }
                         var editButton = $('<a>').attr({
                             'type': 'button',
@@ -1401,10 +1469,10 @@
                         }
                         if (metadata.hasOwnProperty('expcalculate')) {
                             $("#finalSubmitBtn").prop("disabled", false);
-                             $("#closeBtn").html("Reset & close");
-                        }else{
+                            $("#closeBtn").html("Reset & close");
+                        } else {
                             $("#finalSubmitBtn").prop("disabled", true);
-                             $("#closeBtn").html("Reset & close");
+                            $("#closeBtn").html("Reset & close");
                         }
                         newRow.append(hiddenInput).append(buttonCell);
                         tableBody.append(newRow);
@@ -1423,7 +1491,7 @@
                     $('#successAlert').text('Rule Added successfully');
                     $('#successAlert').addClass('alert-success').removeClass('alert-danger')
                         .show();
-                   //  $("#closeBtn").html("Reset & close");
+                    //  $("#closeBtn").html("Reset & close");
                     //$("#finalSubmitBtn").prop("disabled", false);
                     setTimeout(function() {
                         $('#successAlert').hide();
@@ -1433,6 +1501,14 @@
                     $("#totalOnSelected").prop("disabled", true);
                     $('.optionDropdown button.dropdown-toggle').prop('disabled', false);
                     $("#calexp").prop("disabled", false);
+                    $('#additionalFields').hide();
+                    // $('#myForm').hide();
+                    // $('#Area-perimeter-rectangle').hide();
+                    // $('#Area-perimeter-circle').hide();
+                    // $('#surfaceArea-volume-rectangle').hide();
+                    var form = document.getElementById("simpsonsRuleForm");
+                    form.reset();
+                    currentId = null;
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
@@ -1467,8 +1543,8 @@
                         $('#Area-perimeter-rectangle').hide();
                         $('#Area-perimeter-circle').hide();
                         $('#surfaceArea-volume-rectangle').hide();
-                       //  $("#closeBtn").html("Reset & close");
-                       // $("#finalSubmitBtn").prop("disabled", false);
+                        //  $("#closeBtn").html("Reset & close");
+                        // $("#finalSubmitBtn").prop("disabled", false);
                         $('.rowCheckbox').prop('checked', false);
                         var sessionData = response.rateAnalysisArray;
                         document.getElementById("Input_for_W").value = sessionData[
@@ -1531,6 +1607,7 @@
                 }
             });
         });
+
         function resetResults() {
             if (firstInputResult) firstInputResult.textContent = '';
             if (lastInputResult) lastInputResult.textContent = '';
@@ -1538,19 +1615,38 @@
             if (evenSumResult) evenSumResult.textContent = '';
             if (areaResult) areaResult.textContent = '';
         }
+
         function calculateTotal(row) {
-            var length = parseFloat(row.find('.length').val()) || '';
-            var breadth = parseFloat(row.find('.breadth').val()) || '';
-            var height = parseFloat(row.find('.height').val()) || '';
-            var number = parseFloat(row.find('.number').val()) || '';
+            var length = parseFloat(row.find('.length').val()) || 1;
+            var breadth = parseFloat(row.find('.breadth').val()) || 1;
+            var height = parseFloat(row.find('.height').val()) || 1;
+            var number = parseFloat(row.find('.number').val()) || 1;
+
+            // Check if inputs are visible, if not, set their values to 0
+            if (row.find('.length').hasClass('hidden')) {
+                length = 1;
+            }
+            if (row.find('.breadth').hasClass('hidden')) {
+                breadth = 1;
+            }
+            if (row.find('.height').hasClass('hidden')) {
+                height = 1;
+            }
+            if (row.find('.number').hasClass('hidden')) {
+                number = 1;
+            }
+
             if (length === 0 || breadth === 0 || height === 0 || number === 0) {
                 alert('Input values cannot be 0.');
                 return;
             }
+
             var total = length * breadth * height * number;
             row.find('.total').val(total.toFixed(2));
         }
+
         function updateTotalSum() {
+            //alert("updatetotalsum");
             var sum = 0;
             $("#dataTable tbody tr").each(function() {
                 var total = parseFloat($(this).find('.total').val()) || 0;
@@ -1558,14 +1654,23 @@
             });
             $("#totalSum").val(sum.toFixed(3));
         }
-        $(document).delegate(
+
+        // $(document).delegate(
+        //     "input[name='length'], input[name='breadth'], input[name='height'], input[name='number']",
+        //     "input",
+        //     function() {
+        //         var row = $(this).closest("tr");
+        //         calculateTotal(row);
+        //         updateTotalSum();
+        //     });
+        $(document).on('input',
             "input[name='length'], input[name='breadth'], input[name='height'], input[name='number']",
-            "input",
             function() {
                 var row = $(this).closest("tr");
                 calculateTotal(row);
                 updateTotalSum();
             });
+
         function addNewRow() {
             var unitOptions = '<option value="">Select Unit</option>';
             <?php foreach ($unitMaster as $unit): ?>
@@ -1575,9 +1680,21 @@
                 '<td>' + ($("#dataTable tbody tr").length + 1) + '</td>' +
                 '<td><input type="text" class="form-control m-input member" name="member" placeholder="Member" /></td>' +
                 '<td><input type="number" class="form-control m-input number" name="number" placeholder="Number" /></td>' +
-                '<td><input type="number" class="form-control m-input height" name="height" placeholder="Height" /></td>' +
-                '<td><input type="number" class="form-control m-input breadth" name="breadth" placeholder="Breadth" /></td>' +
-                '<td><input type="number" class="form-control m-input length" name="length" placeholder="Length" /></td>' +
+                '<td><div class="input-group">' +
+                '<input type="number" class="form-control m-input length" name="length" placeholder="Length" />' +
+                '<button type="button" class="btn btn-danger remove-field-btn length">X</button>' +
+                '<button type="button" class="btn btn-success add-btn-length"> + add length</button>' +
+                '</div></td>' +
+                '<td><div class="input-group">' +
+                '<input type="number" class="form-control m-input breadth" name="breadth" placeholder="Breadth" />' +
+                '<button type="button" class="btn btn-danger remove-field-btn breadth">X</button>' +
+                '<button type="button" class="btn btn-success add-btn-breadth">+ add breadth</button>' +
+                '</div></td>' +
+                '<td><div class="input-group">' +
+                '<input type="number" class="form-control m-input height" name="height" placeholder="Height" />' +
+                '<button type="button" class="btn btn-danger remove-field-btn height">X</button>' +
+                '<button type="button" class="btn btn-success add-btn-height">+ add height</button>' +
+                '</div></td>' +
                 '<td><select class="form-control m-input unit" name="unit">' + unitOptions +
                 '</select></td>' +
                 '<td><input type="text" class="form-control m-input total" name="total" placeholder="Total" readonly/></td>' +
@@ -1586,10 +1703,86 @@
                 '<button type="button" class="btn-add addbtn">+</button>' +
                 '</td>' +
                 '</tr>');
+            newRow.find(
+                '.length, .remove-field-btn.length, .breadth, .remove-field-btn.breadth, .height, .remove-field-btn.height'
+            ).hide();
+
+            newRow.find('.remove-field-btn').click(function() {
+                var inputGroup = $(this).parent();
+                var inputField = inputGroup.find('input');
+                var addBtnClass = $(this).siblings('.btn-success').attr('class').split(' ').find(
+                    function(className) {
+                        return className.startsWith('add-btn-');
+                    });
+                //console.log(addBtnClass);
+                // Hide the input field and show the corresponding add button
+                inputField.val('').addClass('hidden');
+                $(this).hide();
+                $('.' + addBtnClass).show();
+
+                // Trigger input event to recalculate total sum after removing the input
+                $(this).closest('tr').find('input').trigger('input');
+            });
+
+
+
+            newRow.find('.add-btn-length').click(function() {
+                var inputGroup = $(this).parent();
+                var removeBtn = inputGroup.find('.remove-field-btn');
+                var lengthInput = inputGroup.find('.length');
+
+                // Show only the input field and hide the add button
+                lengthInput.removeClass('hidden').show();
+                $(this).hide();
+                removeBtn.show();
+            });
+
+            newRow.find('.add-btn-breadth').click(function() {
+                var inputGroup = $(this).parent();
+                var removeBtn = inputGroup.find('.remove-field-btn');
+                var breadthInput = inputGroup.find('.breadth');
+
+                // Show only the input field and hide the add button
+                breadthInput.removeClass('hidden').show();
+                $(this).hide();
+                removeBtn.show();
+            });
+
+            newRow.find('.add-btn-height').click(function() {
+                var inputGroup = $(this).parent();
+                var removeBtn = inputGroup.find('.remove-field-btn');
+                var heightInput = inputGroup.find('.height');
+
+                // Show only the input field and hide the add button
+                heightInput.removeClass('hidden').show();
+                $(this).hide();
+                removeBtn.show();
+            });
+
+            newRow.find('input[type="number"]').on('input', function() {
+                var value = $(this).val();
+                if (value !== "" && !isNaN(value)) {
+
+                    if (value.startsWith('.')) {
+                        $(this).val('0' + value);
+                    } else if (value === '0') {
+                        $(this).val(value);
+                    }
+                }
+            });
+
             $("#dataTable tbody").append(newRow);
             updateButtons();
             updateTotalSum();
         }
+
+
+
+
+
+
+
+
         function updateButtons() {
             var tableRows = $("#dataTable tbody tr");
             tableRows.find(".delete-row-btn").hide();
@@ -1601,9 +1794,16 @@
             }
         }
         $(document).off("click", ".addbtn").on("click", ".addbtn", function() {
-            addNewRow();
+            var lastRow = $("#dataTable tbody tr:last");
+            var newRow = lastRow.clone();
+            var rowIndex = $("#dataTable tbody tr").length + 1;
+            newRow.find('td:first').text(rowIndex);
+
+            // Append the cloned row to the table body
+            $("#dataTable tbody").append(newRow);
+
             updateTotalSum();
-             $("#closeBtn").html("Reset & close");
+            $("#closeBtn").html("Reset & close");
         });
         $(document).on("click", ".delete-row-btn", function() {
             if ($("#dataTable tbody tr").length > 1) {
@@ -1613,12 +1813,14 @@
                 updateTotalSum();
             }
         });
+
         function updateRowNumbers() {
             $("#dataTable tbody tr").each(function(index) {
                 $(this).find("td:first").text(index + 1);
             });
         }
         $("#myForm").submit(function(event) {
+            // alert("clicked");
             event.preventDefault();
             $(".empty-field").tooltip("dispose");
             var isEmpty = false;
@@ -1659,12 +1861,12 @@
                     row.removeClass("has-empty-field");
                 }
             });
-            if (isEmpty || hasZeroValue) {
-                if (hasZeroValue) {
-                    alert("Input values cannot be 0.");
-                }
-                return;
-            }
+            // if (isEmpty || hasZeroValue) {
+            //     if (hasZeroValue) {
+            //         alert("Input values cannot be 0.");
+            //     }
+            //     return;
+            // }
             var form = this;
             var rowData = [];
             var totalSum = parseFloat($("#totalSum").val()) || 0;
@@ -1686,6 +1888,8 @@
 
                 rowData.push(row);
             });
+
+            //console.log(rowData);
             $.ajax({
                 url: '/store-dynamic-unit-modal-data',
                 type: 'POST',
@@ -1702,7 +1906,7 @@
                     var rateAnalysisArray1 = response.rateAnalysisArray[unitId]['metadata'];
                     if ($.isEmptyObject(rateAnalysisArray1)) {
                         $("#closeBtn").html("Close");
-                     } 
+                    }
                     var tableBody = $("#dataTable1 tbody");
                     tableBody.empty();
                     var sno = 0;
@@ -1733,6 +1937,8 @@
                             editButtonClass = 'sabtn';
                         } else if (metadata.btntype === 5) {
                             editButtonClass = 'apcbtn';
+                        } else if (metadata.btntype === 6) {
+                            editButtonClass = 'vcbtn';
                         }
                         var editButton = $('<a>').attr({
                             'type': 'button',
@@ -1760,10 +1966,10 @@
                         }
                         if (metadata.hasOwnProperty('expcalculate')) {
                             $("#finalSubmitBtn").prop("disabled", false);
-                             $("#closeBtn").html("Reset & close");
-                        }else{
+                            $("#closeBtn").html("Reset & close");
+                        } else {
                             $("#finalSubmitBtn").prop("disabled", true);
-                             $("#closeBtn").html("Reset & close");
+                            $("#closeBtn").html("Reset & close");
                         }
                         newRow.append(hiddenInput).append(buttonCell);
                         tableBody.append(newRow);
@@ -1788,8 +1994,8 @@
                     setTimeout(function() {
                         $('#successAlert').hide();
                     }, 2000);
-                   //  $("#closeBtn").html("Reset & close");
-                   // $("#finalSubmitBtn").prop("disabled", false);
+                    //  $("#closeBtn").html("Reset & close");
+                    // $("#finalSubmitBtn").prop("disabled", false);
                     $('.rowCheckbox').prop('checked', false);
                     $('.optionDropdown button.dropdown-toggle').prop('disabled', false);
                     $("#calexp").prop("disabled", false);
@@ -1801,13 +2007,13 @@
         });
         $(document).off("click", "#submitBtn").on("click", "#submitBtn", function() {
             $("#myForm").submit();
-           // $("#finalSubmitBtn").prop("disabled", false);
-             $("#closeBtn").html("Reset & close");
+            // $("#finalSubmitBtn").prop("disabled", false);
+            $("#closeBtn").html("Reset & close");
             $('.rowCheckbox').prop('checked', false);
         });
         $(document).on("click", ".editBtn", function() {
             $('.rowCheckbox').prop('checked', false);
-             $("#closeBtn").html("Reset & close");
+            $("#closeBtn").html("Reset & close");
             $("#finalSubmitBtn").prop("disabled", false);
             $('#additionalFields').hide();
             $('#Area-perimeter-rectangle').hide();
@@ -1823,13 +2029,14 @@
                 $('#additionalFields').hide();
                 $('#myForm').hide();
                 var metadataId = $(this).data("id");
-                 $("#closeBtn").html("Reset & close");
+                $("#closeBtn").html("Reset & close");
                 $("#totalOnSelected").prop("disabled", false);
                 $('.rowCheckbox').prop('checked', false);
                 $("#calexp").prop("disabled", false);
                 deleteRow(metadataId);
             }
         });
+
         function deleteRow(rowId) {
             $.ajax({
                 url: '/delete-unit-modal-data',
@@ -1847,9 +2054,9 @@
                     var tableBody1 = $("#dataTable tbody");
                     tableBody1.empty();
                     var rateAnalysisArray1 = response.rateAnalysisArray[unitId]['metadata'];
-                     if ($.isEmptyObject(rateAnalysisArray1)) {
+                    if ($.isEmptyObject(rateAnalysisArray1)) {
                         $("#closeBtn").html("Close");
-                     } 
+                    }
                     var hasKey = false;
                     for (var i = 0; i < rateAnalysisArray1.length; i++) {
                         if (rateAnalysisArray1[i].key) {
@@ -1886,12 +2093,14 @@
                             editButtonClass = 'sabtn';
                         } else if (metadata.btntype === 5) {
                             editButtonClass = 'apcbtn';
+                        } else if (metadata.btntype === 6) {
+                            editButtonClass = 'vcbtn';
                         }
                         var editButton = $('<a>').attr({
                             'type': 'button',
                             'class': 'btn btn-soft-secondary btn-sm mr-2 fetchdetails ' +
                                 editButtonClass,
-                            'data-id':metadata.currentId
+                            'data-id': metadata.currentId
                         }).text('edit');
                         var deleteButton = $('<a>').attr({
                             'type': 'button',
@@ -1913,16 +2122,16 @@
                         }
                         if (metadata.hasOwnProperty('expcalculate')) {
                             $("#finalSubmitBtn").prop("disabled", false);
-                             $("#closeBtn").html("Reset & close");
-                        }else{
+                            $("#closeBtn").html("Reset & close");
+                        } else {
                             $("#finalSubmitBtn").prop("disabled", true);
-                             $("#closeBtn").html("Reset & close");
+                            $("#closeBtn").html("Reset & close");
                         }
                         newRow.append(hiddenInput).append(buttonCell);
                         tableBody.append(newRow);
                         sno++;
                         $('#grandTotalInput').val(metadata.grandTotal !== undefined &&
-                          metadata.grandTotal !== null ? metadata.grandTotal : 0);
+                            metadata.grandTotal !== null ? metadata.grandTotal : 0);
                     });
                     addNewRow();
                     updateTotalSum();
@@ -1936,13 +2145,20 @@
                     $('#successAlert').text('Row deleted successfully');
                     $('#successAlert').addClass('alert-danger').removeClass('alert-success')
                         .show();
-                   // $("#finalSubmitBtn").prop("disabled", false);
+                    // $("#finalSubmitBtn").prop("disabled", false);
                     setTimeout(function() {
                         $('#successAlert').hide();
                     }, 2000);
                     $('.rowCheckbox').prop('checked',
                         false);
-                    //$('#grandTotalInput').val(0);
+                    $('#Area-perimeter-circle').trigger('reset');
+                    $('#Area-perimeter-circle').hide();
+                    $('#surfaceArea-volume-rectangle').hide();
+                    $('#Area-perimeter-rectangle').hide();
+                    $('#additionalFields').hide();
+                    $('#myForm').hide();
+                    $('#surfaceArea-volume-rectangle').trigger('reset');
+                    currentId = null;
                     $("#calexp").prop("disabled", false);
                     $('.optionDropdown button.dropdown-toggle').prop('disabled', false);
                 },
@@ -1951,6 +2167,89 @@
                 }
             });
         }
+
+
+        function checkInputs() {
+            var isEmpty = false;
+            $("#dataTable tbody input").each(function() {
+                if ($(this).val() === '') {
+                    isEmpty = true;
+                    return false; // Exit the loop early if an empty input is found
+                }
+            });
+            return isEmpty;
+        }
+
+        function updateButtons() {
+            var tableRows = $("#dataTable tbody tr");
+            tableRows.find(".delete-row-btn").hide();
+            tableRows.last().find(".delete-row-btn").show();
+            tableRows.find(".addbtn").hide();
+            tableRows.last().find(".addbtn").show();
+            if (tableRows.length === 1) {
+                tableRows.find(".delete-row-btn").hide();
+            }
+            $('#dataTable tbody tr').each(function() {
+                var lengthInput = $(this).find('.length');
+                var breadthInput = $(this).find('.breadth');
+                var heightInput = $(this).find('.height');
+                var addLengthBtn = $(this).find('.add-btn-length');
+                var addBreadthBtn = $(this).find('.add-btn-breadth');
+                var addHeightBtn = $(this).find('.add-btn-height');
+                var removeLengthBtn = $(this).find('.remove-field-btn.length');
+                // console.log(removeLengthBtn);
+                var removeBreadthBtn = $(this).find('.remove-field-btn.breadth');
+                var removeHeightBtn = $(this).find('.remove-field-btn.height');
+
+
+                // Check if length input is empty
+                if (lengthInput.val() === '' || lengthInput.val() === null) {
+                    //alert("length");
+                    lengthInput.hide();
+                    addLengthBtn.show();
+                    removeLengthBtn.hide();
+                } else {
+                    lengthInput.show();
+                    addLengthBtn.hide();
+                    removeLengthBtn.show();
+                }
+
+                // Check if breadth input is empty
+                if (breadthInput.val() === '' || lengthInput.val() === null) {
+                    // alert("breadth");
+                    breadthInput.hide();
+                    addBreadthBtn.show();
+                    removeBreadthBtn.hide();
+                } else {
+                    breadthInput.show();
+                    addBreadthBtn.hide();
+                    removeBreadthBtn.show();
+                }
+
+                // Check if height input is empty
+                if (heightInput.val() === '' || lengthInput.val() === null) {
+                    // alert("height");
+                    heightInput.hide();
+                    addHeightBtn.show();
+                    removeHeightBtn.hide();
+                } else {
+                    heightInput.show();
+                    addHeightBtn.hide();
+                    removeHeightBtn.show();
+                }
+            });
+        }
+
+
+
+
+        updateButtons();
+
+
+        $("#dataTable tbody").on('input', 'input', function() {
+            updateButtons(); // Call the function whenever any input value changes
+        });
+
         function editRow(rowId) {
             currentId = rowId;
             $.ajax({
@@ -1969,6 +2268,7 @@
                     var tableBody1 = $("#dataTable tbody");
                     tableBody1.empty();
                     var rateAnalysisArray = response.rateAnalysisArray;
+                    console.log(rateAnalysisArray);
                     rateAnalysisArray.forEach(function(rowData, index) {
                         var unitOptions = '<option value="">Select Unit</option>';
                         <?php foreach ($unitMaster as $unit): ?>
@@ -1985,15 +2285,39 @@
                             '<td><input type="number" class="form-control m-input number" name="number" value="' +
                             (rowData && rowData.number ? rowData.number : '') +
                             '" placeholder="Number" required/></td>' +
-                            '<td><input type="number" class="form-control m-input height" name="height" value="' +
-                            (rowData && rowData.height ? rowData.height : '') +
-                            '" placeholder="Height" required/></td>' +
-                            '<td><input type="number" class="form-control m-input breadth" name="breadth" value="' +
-                            (rowData && rowData.breadth ? rowData.breadth : '') +
-                            '" placeholder="Breadth" required/></td>' +
-                            '<td><input type="number" class="form-control m-input length" name="length" value="' +
+                            '<td>' +
+                            '<div class="input-group">' +
+                            '<input type="number" class="form-control m-input length" name="length" value="' +
                             (rowData && rowData.length ? rowData.length : '') +
-                            '" placeholder="Length" required/></td>' +
+                            '" placeholder="Length" required/>' +
+                            '<div class="input-group-append">' +
+                            '<button type="button" class="btn btn-danger remove-field-btn length">X</button>' +
+                            '<button type="button" class="btn btn-success add-btn-length">+ add length</button>' +
+                            '</div>' +
+                            '</div>' +
+                            '</td>' +
+                            '<td>' +
+                            '<div class="input-group">' +
+                            '<input type="number" class="form-control m-input breadth" name="breadth" value="' +
+                            (rowData && rowData.breadth ? rowData.breadth : '') +
+                            '" placeholder="Breadth" required/>' +
+                            '<div class="input-group-append">' +
+                            '<button type="button" class="btn btn-danger remove-field-btn breadth">X</button>' +
+                            '<button type="button" class="btn btn-success add-btn-breadth">+ add breadth</button>' +
+                            '</div>' +
+                            '</div>' +
+                            '</td>' +
+                            '<td>' +
+                            '<div class="input-group">' +
+                            '<input type="number" class="form-control m-input height" name="height" value="' +
+                            (rowData && rowData.height ? rowData.height : '') +
+                            '" placeholder="Height" required/>' +
+                            '<div class="input-group-append">' +
+                            '<button type="button" class="btn btn-danger remove-field-btn height">X</button>' +
+                            '<button type="button" class="btn btn-success add-btn-height">+ add height</button>' +
+                            '</div>' +
+                            '</div>' +
+                            '</td>' +
                             '<td><select class="form-control m-input unit" name="unit">' +
                             unitOptions + '</select></td>' +
                             '<td><input type="text" class="form-control m-input total" name="total" value="' +
@@ -2004,11 +2328,12 @@
                             '<button type="button" class="btn-add addbtn">+</button>' +
                             '</td>' +
                             '</tr>');
+
                         tableBody1.append(newRow);
-                        updateTotalSum();
-                        updateButtons();
                     });
-                  //  $("#finalSubmitBtn").prop("disabled", false);
+
+                    updateTotalSum(); // Update total sum after populating the table
+                    updateButtons(); // Update button visibility after populating the table
                     $('.rowCheckbox').prop('checked', false);
                 },
                 error: function(xhr, status, error) {
@@ -2016,6 +2341,57 @@
                 }
             });
         }
+
+
+        $("#dataTable tbody").on('click', '.remove-field-btn', function() {
+            var inputGroup = $(this).closest('td').find('.form-control');
+            inputGroup.val('').hide();
+            $(this).hide();
+
+            // Check the specific class of the input field
+            var inputClass = inputGroup.attr('class');
+            if (inputClass.includes('length') && inputGroup.val() === '') {
+                $(this).siblings('.add-btn-length').show();
+            } else if (inputClass.includes('breadth') && inputGroup.val() === '') {
+                $(this).siblings('.add-btn-breadth').show();
+            } else if (inputClass.includes('height') && inputGroup.val() === '') {
+                $(this).siblings('.add-btn-height').show();
+            }
+        });
+
+        $("#dataTable tbody").on('click', '.add-btn-length', function() {
+            var inputGroup = $(this).closest('td').find('.form-control');
+            inputGroup.show();
+            $(this).hide();
+            $(this).siblings('.remove-field-btn').show();
+        });
+
+        $("#dataTable tbody").on('click', '.add-btn-breadth', function() {
+            var inputGroup = $(this).closest('td').find('.form-control');
+            inputGroup.show();
+            $(this).hide();
+            $(this).siblings('.remove-field-btn').show();
+        });
+
+        $("#dataTable tbody").on('click', '.add-btn-height', function() {
+            var inputGroup = $(this).closest('td').find('.form-control');
+            inputGroup.show();
+            $(this).hide();
+            $(this).siblings('.remove-field-btn').show();
+        });
+        $("#dataTable tbody").on('input', '.form-control', function() {
+            var value = $(this).val();
+            if (value !== "" && !isNaN(value)) {
+                if (value.startsWith('.')) {
+                    $(this).val('0' + value);
+                } else if (value === '0') {
+                    $(this).val(value);
+                }
+            }
+        });
+
+
+
         $('.dropdown').on('click', '.prev-data', function(event) {
             event.preventDefault();
             var selected_parent_id = $(this).text();
@@ -2041,7 +2417,7 @@
                     var rateAnalysisArray2 = response.rateAnalysisArray[unitId]['metadata'];
                     if ($.isEmptyObject(rateAnalysisArray2)) {
                         $("#closeBtn").html("Close");
-                     } 
+                    }
                     var tableBody = $("#dataTable1 tbody");
                     tableBody.empty();
                     var sno = 0;
@@ -2072,6 +2448,8 @@
                             editButtonClass = 'sabtn';
                         } else if (metadata.btntype === 5) {
                             editButtonClass = 'apcbtn';
+                        } else if (metadata.btntype === 6) {
+                            editButtonClass = 'vcbtn';
                         }
                         var editButton = $('<a>').attr({
                             'type': 'button',
@@ -2099,10 +2477,10 @@
                         }
                         if (metadata.hasOwnProperty('expcalculate')) {
                             $("#finalSubmitBtn").prop("disabled", false);
-                             $("#closeBtn").html("Reset & close");
-                        }else{
+                            $("#closeBtn").html("Reset & close");
+                        } else {
                             $("#finalSubmitBtn").prop("disabled", true);
-                             $("#closeBtn").html("Reset & close");
+                            $("#closeBtn").html("Reset & close");
                         }
                         newRow.append(hiddenInput).append(buttonCell);
                         tableBody.append(newRow);
@@ -2121,8 +2499,8 @@
                     $('#successAlert').text('Previous Data Copied successfully');
                     $('#successAlert').addClass('alert-success').removeClass('alert-danger')
                         .show();
-                     $("#closeBtn").html("Reset & close");
-                   // $("#finalSubmitBtn").prop("disabled", false);
+                    $("#closeBtn").html("Reset & close");
+                    // $("#finalSubmitBtn").prop("disabled", false);
                     setTimeout(function() {
                         $('#successAlert').hide();
                     }, 2000);
@@ -2134,6 +2512,7 @@
                 }
             });
         });
+
         function checkTableEmpty() {
             var tableBody = $("#dataTable1 tbody");
             if (tableBody.find('tr').length > 0) {
@@ -2248,8 +2627,8 @@
                             'metadata'
                         ];
                         if ($.isEmptyObject(rateAnalysisArray1)) {
-                        $("#closeBtn").html("Close");
-                     } 
+                            $("#closeBtn").html("Close");
+                        }
                         var tableBody = $("#dataTable1 tbody");
                         tableBody.empty();
 
@@ -2285,7 +2664,9 @@
                                 editButtonClass = 'sabtn';
                             } else if (metadata.btntype === 5) {
                                 editButtonClass = 'apcbtn';
-                            }
+                            } else if (metadata.btntype === 6) {
+                            editButtonClass = 'vcbtn';
+                        }
                             var editButton = $('<a>').attr({
                                 'type': 'button',
                                 'class': 'btn btn-soft-secondary btn-sm mr-2 fetchdetails ' +
@@ -2312,17 +2693,16 @@
                                 buttonCell.append(deleteButton);
                             }
                             if (metadata.hasOwnProperty('expcalculate')) {
-                            $("#finalSubmitBtn").prop("disabled", false);
-                             $("#closeBtn").html("Reset & close");
-                        }else{
-                            $("#finalSubmitBtn").prop("disabled", true);
-                             $("#closeBtn").html("Reset & close");
-                        }
+                                $("#finalSubmitBtn").prop("disabled", false);
+                                $("#closeBtn").html("Reset & close");
+                            } else {
+                                $("#finalSubmitBtn").prop("disabled", true);
+                                $("#closeBtn").html("Reset & close");
+                            }
                             newRow.append(hiddenInput).append(buttonCell);
                             tableBody.append(newRow);
                             sno++;
-                            $('#grandTotalInput').val(metadata
-                                .overallTotal);
+                            //$('#grandTotalInput').val(metadata.overallTotal);
                         });
 
                         if (tableBody.find('tr').length > 0) {
@@ -2336,18 +2716,24 @@
                         $('#successAlert').addClass('alert-success').removeClass(
                                 'alert-danger')
                             .show();
-                       // $("#finalSubmitBtn").prop("disabled", false);
+                        // $("#finalSubmitBtn").prop("disabled", false);
                         setTimeout(function() {
                             $('#successAlert').hide();
                         }, 2000);
                         $('#metagrandtotal').show();
                         $("#calexp").prop("disabled", true);
-                         $("#closeBtn").html("Reset & close");
+                        $("#closeBtn").html("Reset & close");
                         //$("#finalSubmitBtn").prop("disabled", false);
                         $("#totalOnSelected").prop("disabled", true);
                         $('.rowCheckbox').prop('checked', false);
+                        $('#Area-perimeter-circle').trigger('reset');
+                        $('#Area-perimeter-circle').hide();
+                        $('#surfaceArea-volume-rectangle').hide();
+                        $('#Area-perimeter-rectangle').hide();
                         $('#additionalFields').hide();
                         $('#myForm').hide();
+                        $('#surfaceArea-volume-rectangle').trigger('reset');
+                        currentId = null;
                         $('.optionDropdown button.dropdown-toggle').prop('disabled', true);
                     },
                     error: function(xhr, status, error) {
@@ -2438,8 +2824,8 @@
                             'metadata'
                         ];
                         if ($.isEmptyObject(rateAnalysisArray2)) {
-                        $("#closeBtn").html("Close");
-                     } 
+                            $("#closeBtn").html("Close");
+                        }
                         var tableBody = $("#dataTable1 tbody");
                         tableBody.empty();
                         var sno = 0;
@@ -2474,7 +2860,9 @@
                                 editButtonClass = 'sabtn';
                             } else if (metadata.btntype === 5) {
                                 editButtonClass = 'apcbtn';
-                            }
+                            } else if (metadata.btntype === 6) {
+                            editButtonClass = 'vcbtn';
+                        }
                             var editButton = $('<a>').attr({
                                 'type': 'button',
                                 'class': 'btn btn-soft-secondary btn-sm mr-2 fetchdetails ' +
@@ -2501,12 +2889,12 @@
                                 buttonCell.append(deleteButton);
                             }
                             if (metadata.hasOwnProperty('expcalculate')) {
-                            $("#finalSubmitBtn").prop("disabled", false);
-                             $("#closeBtn").html("Reset & close");
-                        }else{
-                            $("#finalSubmitBtn").prop("disabled", true);
-                             $("#closeBtn").html("Reset & close");
-                        }
+                                $("#finalSubmitBtn").prop("disabled", false);
+                                $("#closeBtn").html("Reset & close");
+                            } else {
+                                $("#finalSubmitBtn").prop("disabled", true);
+                                $("#closeBtn").html("Reset & close");
+                            }
                             newRow.append(hiddenInput).append(buttonCell);
                             tableBody.append(newRow);
                             sno++;
@@ -2527,14 +2915,14 @@
                         $('#successAlert').addClass('alert-success').removeClass(
                                 'alert-danger')
                             .show();
-                       // $("#finalSubmitBtn").prop("disabled", false);
+                        // $("#finalSubmitBtn").prop("disabled", false);
                         setTimeout(function() {
                             $('#successAlert').hide();
                         }, 2000);
                         $('#metagrandtotal').show();
                         $("#calexp").prop("disabled", false);
-                         $("#closeBtn").html("Reset & close");
-                       // $("#finalSubmitBtn").prop("disabled", false);
+                        $("#closeBtn").html("Reset & close");
+                        // $("#finalSubmitBtn").prop("disabled", false);
                         $("#totalOnSelected").prop("disabled", true);
                         $('.rowCheckbox').prop('checked', false);
                         $('#additionalFields').hide();
@@ -2586,7 +2974,7 @@
             inputValues["type"] = "Surface Area of Rectangle";
             inputValues["btntype"] = 4;
             inputValues["unit"] = "Cum";
-            inputValues["overallTotal"] = surfaceArea !== '' ? surfaceArea :0;
+            inputValues["overallTotal"] = surfaceArea !== '' ? surfaceArea : 0;
             inputValues["length"] = length;
             inputValues["width"] = width;
             inputValues["height"] = height;
@@ -2614,14 +3002,15 @@
                     ];
                     if ($.isEmptyObject(rateAnalysisArray1)) {
                         $("#closeBtn").html("Close");
-                     } 
+                    }
                     var tableBody = $("#dataTable1 tbody");
                     tableBody.empty();
                     var sno = 0;
                     $.each(rateAnalysisArray1, function(index, metadata) {
                         var newRow = $("<tr>");
                         newRow.append(
-                            '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>');
+                            '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>'
+                        );
                         newRow.append(
                             '<td style="text-align:center;">A' +
                             (
@@ -2654,6 +3043,8 @@
                             editButtonClass = 'sabtn';
                         } else if (metadata.btntype === 5) {
                             editButtonClass = 'apcbtn';
+                        } else if (metadata.btntype === 6) {
+                            editButtonClass = 'vcbtn';
                         }
                         var editButton = $('<a>').attr({
                             'type': 'button',
@@ -2681,10 +3072,10 @@
                         }
                         if (metadata.hasOwnProperty('expcalculate')) {
                             $("#finalSubmitBtn").prop("disabled", false);
-                             $("#closeBtn").html("Reset & close");
-                        }else{
+                            $("#closeBtn").html("Reset & close");
+                        } else {
                             $("#finalSubmitBtn").prop("disabled", true);
-                             $("#closeBtn").html("Reset & close");
+                            $("#closeBtn").html("Reset & close");
                         }
                         newRow.append(hiddenInput).append(buttonCell);
                         tableBody.append(newRow);
@@ -2708,20 +3099,26 @@
                         .removeClass(
                             'alert-danger')
                         .show();
-                   // $("#finalSubmitBtn").prop("disabled", false);
+                    // $("#finalSubmitBtn").prop("disabled", false);
                     setTimeout(function() {
                         $('#successAlert').hide();
                     }, 2000);
                     $("#calexp").prop("disabled", false);
                     $('#metagrandtotal').show();
-                     $("#closeBtn").html("Reset & close");
-                   // $("#finalSubmitBtn").prop("disabled", false);
+                    $("#closeBtn").html("Reset & close");
+                    // $("#finalSubmitBtn").prop("disabled", false);
                     $('.rowCheckbox').prop('checked', false);
                     $('#additionalFields').hide();
                     $('#myForm').hide();
                     $('#salength').val('');
                     $('#sawidth').val('');
                     $('#saheight').val('');
+                    $('#surfaceArea-volume-rectangle').hide();
+                    $('#Area-perimeter-circle').hide();
+                    $('#Area-perimeter-rectangle').hide();
+                    $('#additionalFields').hide();
+                    $('#myForm').hide();
+                    $('#surfaceArea-volume-rectangle').trigger('reset');
                     currentId = null;
                 },
                 error: function(xhr, status, error) {
@@ -2733,6 +3130,230 @@
                         errorMessage += xhr.statusText;
                     }
                     alert(errorMessage);
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+        });
+        $('#Volume-of-cylinder').submit(function(event) {
+            //alert("clicked");
+            event.preventDefault();
+            var diameter = $('#diameter').val();
+            var height = $('#dia-height').val();
+            var currentId = $('#btn-type2').val();
+            if (!diameter || !width || !height) {
+                if (!diameter) $('#diameter').addClass('highlight');
+                else $('.diameter').removeClass('highlight');
+                if (!height) $('#dia-height').addClass('highlight');
+                else $('.dia-height').removeClass('highlight');
+            } else {
+                $('.diameter').removeClass('highlight');
+                $('.dia-height').removeClass('highlight');
+            }
+            if (isNaN(diameter) || isNaN(height) || diameter <= 0 || height <=
+                0) {
+                alert('Please enter valid values for length,width and height.');
+                return;
+            }
+
+
+
+
+            // currentId = this.getAttribute("data-id")
+            var volume_of_cylinder = parseFloat((Math.PI * Math.pow(diameter, 2) * height / 4).toFixed(2));
+            var inputValues = {};
+            inputValues["parent_id"] = unitId;
+            inputValues["currentId"] = currentId;
+            inputValues["type"] = "Volume of Cylinder";
+            inputValues["btntype"] = 6;
+            inputValues["unit"] = "Cum";
+            inputValues["overallTotal"] = volume_of_cylinder !== '' ? volume_of_cylinder : 0;
+            inputValues["diameter"] = diameter;
+            inputValues["height"] = height;
+            inputValues["editEstimate_id"] = editEstimate_Id;
+            var ruledata = {
+                input_values: inputValues
+            };
+            console.log(ruledata);
+            $.ajax({
+                url: '/calculate-rule-surface-area',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    data: ruledata
+                }),
+                success: function(response) {
+                    var tableBody1 = $("#dataTable tbody");
+                    tableBody1.empty();
+                    var rateAnalysisArray1 = response.rateAnalysisArray[
+                        unitId][
+                        'metadata'
+                    ];
+                    if ($.isEmptyObject(rateAnalysisArray1)) {
+                        $("#closeBtn").html("Close");
+                    }
+                    var tableBody = $("#dataTable1 tbody");
+                    tableBody.empty();
+                    var sno = 0;
+                    $.each(rateAnalysisArray1, function(index, metadata) {
+                        var newRow = $("<tr>");
+                        newRow.append(
+                            '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>'
+                        );
+                        newRow.append(
+                            '<td style="text-align:center;">A' +
+                            (
+                                sno +
+                                1) +
+                            '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;">' +
+                            metadata.type + (metadata.remarks ?
+                                ' (' +
+                                metadata.remarks + ')' : '') +
+                            '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;">' +
+                            metadata
+                            .overallTotal + '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;">' +
+                            metadata
+                            .unit +
+                            '</td>');
+                        var editButtonClass = '';
+                        if (metadata.btntype === 1) {
+                            editButtonClass = 'editBtnrule';
+                        } else if (metadata.btntype === 2) {
+                            editButtonClass = 'editBtn';
+                        } else if (metadata.btntype === 3) {
+                            editButtonClass = 'defaultbtn';
+                        } else if (metadata.btntype === 4) {
+                            editButtonClass = 'sabtn';
+                        } else if (metadata.btntype === 5) {
+                            editButtonClass = 'apcbtn';
+                        }else if (metadata.btntype === 6) {
+                            editButtonClass = 'vcbtn';
+                        }
+                        var editButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 fetchdetails ' +
+                                editButtonClass,
+                            'data-id': metadata.currentId
+                        }).text('edit');
+                        var deleteButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-danger btn-sm delBtn',
+                            'data-id': metadata.currentId
+                        }).text('Delete');
+                        var grandTotalValue = metadata.grandTotal;
+                        var hiddenInput = $('<input>').attr({
+                            'type': 'hidden',
+                            'id': 'metagrandval',
+                            'value': grandTotalValue
+                        });
+                        var buttonCell = $('<td>').css('text-align', 'center')
+                            .append(editButton).append(' ').append(deleteButton);
+                        if (metadata.hasOwnProperty('key')) {
+                            editButton.remove();
+                            tableBody.find('.delBtn').remove();
+                            buttonCell.append(deleteButton);
+                        }
+                        if (metadata.hasOwnProperty('expcalculate')) {
+                            $("#finalSubmitBtn").prop("disabled", false);
+                            $("#closeBtn").html("Reset & close");
+                        } else {
+                            $("#finalSubmitBtn").prop("disabled", true);
+                            $("#closeBtn").html("Reset & close");
+                        }
+                        newRow.append(hiddenInput).append(buttonCell);
+                        tableBody.append(newRow);
+                        sno++;
+                        $('#grandTotalInput').val(metadata.grandTotal !==
+                            undefined && metadata.grandTotal !== null ?
+                            metadata.grandTotal : 0);
+                    });
+                    addNewRow();
+                    updateTotalSum();
+                    if (tableBody.find('tr').length > 0) {
+                        $('#mySelect').hide();
+                        $('#metagrandtotal').show();
+                    } else {
+                        $('#mySelect').show();
+                        $('#metagrandtotal').hide();
+                    }
+                    $('.optionDropdown button.dropdown-toggle').prop('disabled', false);
+                    $('#successAlert').text('Row added successfully');
+                    $('#successAlert').addClass('alert-success')
+                        .removeClass(
+                            'alert-danger')
+                        .show();
+                    // $("#finalSubmitBtn").prop("disabled", false);
+                    setTimeout(function() {
+                        $('#successAlert').hide();
+                    }, 2000);
+                    $("#calexp").prop("disabled", false);
+                    $('#metagrandtotal').show();
+                    $("#closeBtn").html("Reset & close");
+                    // $("#finalSubmitBtn").prop("disabled", false);
+                    $('.rowCheckbox').prop('checked', false);
+                    $('#additionalFields').hide();
+                    $('#myForm').hide();
+                    $('#salength').val('');
+                    $('#sawidth').val('');
+                    $('#saheight').val('');
+                    $('#surfaceArea-volume-rectangle').hide();
+                    $('#Area-perimeter-circle').hide();
+                    $('#Volume-of-cylinder').hide();
+                    $('#Volume-of-cylinder').trigger('reset');
+                    $('#Area-perimeter-rectangle').hide();
+                    $('#additionalFields').hide();
+                    $('#myForm').hide();
+                    $('#surfaceArea-volume-rectangle').trigger('reset');
+                    currentId = null;
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage =
+                        "An error occurred while calculating: ";
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMessage += xhr.responseJSON.error;
+                    } else {
+                        errorMessage += xhr.statusText;
+                    }
+                    alert(errorMessage);
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+        });
+        $(document).on("click", ".vcbtn", function() {
+            currentId = this.getAttribute("data-id");
+            $('#Volume-of-cylinder').show();
+            $('#surfaceArea-volume-rectangle').hide();
+            $('#Area-perimeter-rectangle').hide();
+            $('#additionalFields').hide();
+            $('#myForm').hide();
+            $('#Area-perimeter-circle').hide();
+            $.ajax({
+                url: '/get-modal-rule-data',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    unitId: unitId,
+                    ruleId: currentId,
+                    editEstimate_id: editEstimate_Id
+                }),
+                success: function(response) {
+                    console.log(response.rateAnalysisArray.input_values);
+                    $('#diameter').val(response.rateAnalysisArray.input_values.diameter);
+                    $('#dia-height').val(response.rateAnalysisArray.input_values.height);
+                    $('#btn-type2').val(response.rateAnalysisArray.input_values.currentId);
+                },
+                error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
                 }
             });
@@ -2949,7 +3570,7 @@
                 inputValues["calculationType"] = calculationType;
                 inputValues["btntype"] = 5;
                 inputValues["unit"] = "Cum";
-                inputValues["overallTotal"] = totalOverallTotal !== '' ? totalOverallTotal :0;
+                inputValues["overallTotal"] = totalOverallTotal !== '' ? totalOverallTotal : 0;
                 inputValues["radius"] = radius;
                 inputValues["editEstimate_id"] = editEstimate_Id;
                 var ruledata = {
@@ -2970,9 +3591,9 @@
                         tableBody1.empty();
                         var rateAnalysisArray1 = response.rateAnalysisArray[
                             unitId]['metadata'];
-                            if ($.isEmptyObject(rateAnalysisArray1)) {
-                        $("#closeBtn").html("Close");
-                     } 
+                        if ($.isEmptyObject(rateAnalysisArray1)) {
+                            $("#closeBtn").html("Close");
+                        }
                         var tableBody = $("#dataTable1 tbody");
                         tableBody.empty();
                         var sno = 0;
@@ -3013,6 +3634,8 @@
                                 editButtonClass = 'sabtn';
                             } else if (metadata.btntype === 5) {
                                 editButtonClass = 'apcbtn';
+                            }else if (metadata.btntype === 6) {
+                              editButtonClass = 'vcbtn';
                             }
                             var editButton = $('<a>').attr({
                                 'type': 'button',
@@ -3040,12 +3663,12 @@
                                 buttonCell.append(deleteButton);
                             }
                             if (metadata.hasOwnProperty('expcalculate')) {
-                            $("#finalSubmitBtn").prop("disabled", false);
-                             $("#closeBtn").html("Reset & close");
-                        }else{
-                            $("#finalSubmitBtn").prop("disabled", true);
-                             $("#closeBtn").html("Reset & close");
-                        }
+                                $("#finalSubmitBtn").prop("disabled", false);
+                                $("#closeBtn").html("Reset & close");
+                            } else {
+                                $("#finalSubmitBtn").prop("disabled", true);
+                                $("#closeBtn").html("Reset & close");
+                            }
                             newRow.append(hiddenInput).append(buttonCell);
                             tableBody.append(newRow);
                             sno++;
@@ -3067,13 +3690,13 @@
                             .removeClass(
                                 'alert-danger')
                             .show();
-                       // $("#finalSubmitBtn").prop("disabled", false);
+                        // $("#finalSubmitBtn").prop("disabled", false);
                         setTimeout(function() {
                             $('#successAlert').hide();
                         }, 2000);
                         $('#metagrandtotal').show();
-                         $("#closeBtn").html("Reset & close");
-                       // $("#finalSubmitBtn").prop("disabled", false);
+                        $("#closeBtn").html("Reset & close");
+                        // $("#finalSubmitBtn").prop("disabled", false);
                         $('.rowCheckbox').prop('checked', false);
                         $('#additionalFields').hide();
                         $('#myForm').hide();
@@ -3088,9 +3711,16 @@
                             'false');
                         $('.circle-dropdown').text('Select Shape');
                         $('input[name="calcOptionn"]').prop('checked', false);
-                        currentId = null;
                         $('#btntype').val('');
                         $('.optionDropdown button.dropdown-toggle').prop('disabled', false);
+                        $('#Area-perimeter-rectangle').hide();
+                        $('#Area-perimeter-circle').hide();
+                        $('#surfaceArea-volume-rectangle').hide();
+                        $('#additionalFields').hide();
+                        $('#myForm').hide();
+                        var form = document.getElementById("area-perimeter-rectangle");
+                        form.reset();
+                        currentId = null;
                     },
                     error: function(xhr, status, error) {
                         var errorMessage =
@@ -3159,16 +3789,17 @@
         addNewRow();
         updateTotalSum();
         $('input[name="calcOptionn"]').prop('checked', false);
-      $(document).on("click", ".fetchdetails", function() {
-        fetchRowDetails(this);
-      });
+        $(document).on("click", ".fetchdetails", function() {
+            fetchRowDetails(this);
+        });
     });
+
     function fetchRowDetails(btn) {
         $('.formula').html('');
         var row = btn.closest('tr');
-        var cells = row.cells; 
+        var cells = row.cells;
         var serialNumber = cells[1].innerText;
         var option = cells[2].innerText;
-        $('.formula').html('<span>'+ serialNumber + '</span><span>: ' + option + '</span>');
+        $('.formula').html('<span>' + serialNumber + '</span><span>: ' + option + '</span>');
     }
 </script>

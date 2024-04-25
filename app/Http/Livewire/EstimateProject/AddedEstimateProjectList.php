@@ -99,6 +99,7 @@ class AddedEstimateProjectList extends Component
     }
     public function openQtyModal($key)
     {
+        
         $this->openQtyModal = !$this->openQtyModal;
         $this->sendArrayKey = $this->allAddedEstimatesData[$key]['array_id'];
         foreach ($this->allAddedEstimatesData as $index => $estimateData) {
@@ -108,6 +109,8 @@ class AddedEstimateProjectList extends Component
                     $this->sendArrayDesc = $this->allAddedEstimatesData[$key]['description'];
                 } elseif (!empty($this->allAddedEstimatesData[$key]['other_name'])) {
                     $this->sendArrayDesc = $this->allAddedEstimatesData[$key]['other_name'];
+                }elseif(!empty($this->allAddedEstimatesData[$key]['estimate_no'])){
+                    $this->sendArrayDesc = getEstimateDescription($this->allAddedEstimatesData[$key]['estimate_no']);
                 }
 
             }
@@ -155,6 +158,7 @@ class AddedEstimateProjectList extends Component
     public function closeAndReset($grandtotal, $key)
     {
         if (!empty($grandtotal) || !empty($key)) {
+            $grandtotal =0;
             foreach ($this->allAddedEstimatesData as $index => $estimateData) {
                 if ($estimateData['array_id'] === $this->sendArrayKey) {
                     $this->allAddedEstimatesData[$index]['qty'] = ($grandtotal == 0) ? 1 : $grandtotal;
