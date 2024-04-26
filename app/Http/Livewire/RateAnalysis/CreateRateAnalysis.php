@@ -2,21 +2,22 @@
 
 namespace App\Http\Livewire\RateAnalysis;
 
+use App\Models\SOR;
+use Livewire\Component;
+use App\Models\SorMaster;
+use App\Models\Department;
+use App\Models\UnitMaster;
+use WireUi\Traits\Actions;
 use App\Models\Carriagesor;
 use App\Models\CompositSor;
-use App\Models\Department;
-use App\Models\DynamicSorHeader;
-use App\Models\EstimatePrepare;
+use App\Models\RatesMaster;
 use App\Models\RatesAnalysis;
-use App\Models\SOR;
+use App\Models\EstimatePrepare;
 use App\Models\SorCategoryType;
-use App\Models\SorMaster;
-use App\Models\UnitMaster;
+use App\Models\DynamicSorHeader;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
-use Livewire\Component;
-use WireUi\Traits\Actions;
 
 class CreateRateAnalysis extends Component
 {
@@ -129,7 +130,7 @@ class CreateRateAnalysis extends Component
             if (Session()->has('ratePartNo')) {
                 $this->part_no = Session()->get('ratePartNo');
             }
-            $this->addedRateUpdateTrack = rand(1, 1000);
+            // $this->addedRateUpdateTrack = rand(1, 1000);
         }
         // dd(Session()->get('addedRateAnalysisData'));
         // $alphabetArray = range('A', 'Z');
@@ -292,18 +293,15 @@ class CreateRateAnalysis extends Component
     }
     public function editRate($rate_id){
         $this->editRate_id = $rate_id;
+        $rate_desc = RatesMaster::where('rate_id',$this->editRate_id)->first();
+        $this->rateMasterDesc = $rate_desc['rate_description'];
+        $this->part_no = $rate_desc['part_no'];
         $fetchRates = RatesAnalysis::where('rate_id',$this->editRate_id)->orderBy('id','asc')->get();
-        $rowCount = count($fetchRates);
-        $this->rateMasterDesc = $fetchRates[$rowCount-1]['description'];
-        if(ctype_alnum($fetchRates[0]['row_id'])){
-            $this->part_no = preg_replace("/[^A-Z]+/", "", $fetchRates[0]['row_id']);
-        }else{
-            $this->part_no = '';
-        }
         Session()->forget('editRateData' . $this->editRate_id);
         // Session()->forget('editRateDescription'. $this->editRate_id);
         // Session()->forget('editRatePartNo'. $this->editRate_id);
         $this->emit('setFetchRateData',$fetchRates);
+        // $this->addedRateUpdateTrack = rand(1, 1000);
     }
     public function getDeptCategory()
     {
@@ -1626,6 +1624,7 @@ class CreateRateAnalysis extends Component
     }
     public function render()
     {
+        $this->addedRateUpdateTrack = rand(1, 1000);
         return view('livewire.rate-analysis.create-rate-analysis');
     }
 }

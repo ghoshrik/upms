@@ -107,7 +107,7 @@
                         </div>
                         <div class="row">
                             <div class="col col-md-6 col-lg-8 col-sm-12 col-xs-12 mb-2">
-                                <x-textarea wire:model.defer="rateMasterDesc" rows="2"
+                                <x-textarea wire:model="rateMasterDesc" rows="2"
                                     label="{{ trans('cruds.estimate.fields.description') }}"
                                     placeholder="Your project {{ trans('cruds.estimate.fields.description') }}" />
                             </div>
