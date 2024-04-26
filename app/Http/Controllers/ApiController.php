@@ -243,8 +243,11 @@ class ApiController extends Controller
                     $metadata = $data['input_values'];
                 }
                 $metadata['currentId'] = $index;
-                $new_unit=$sessionData[$parentId]['metadata'][0]['unit'];
-                $metadata['unit'] = $new_unit;
+                if (!empty($sessionData[$parentId]['metadata'][0]['unit'])){
+                    $new_unit=$sessionData[$parentId]['metadata'][0]['unit'];
+                    $metadata['unit'] = $new_unit;
+                }
+                
                 $sessionData[$parentId]['metadata'][] = $metadata;
             }else {
                 unset($sessionData[$parentId]['metadata']);
@@ -414,8 +417,19 @@ class ApiController extends Controller
             $metadata = $data['input_values'];
             $metadata['currentId'] = $index;
             $metadata['overallTotal'] = $overallTotal; 
+
+            
+            if (!empty($sessionData[$parentId]['metadata'][0]['unit'])){
+                $new_unit=$sessionData[$parentId]['metadata'][0]['unit'];
+                $metadata['unit'] = $new_unit;
+            }
+
             $sessionData[$parentId]['metadata'][] = $metadata;
-           if (empty($Estimate_id)) {
+
+            //dd($sessionData);
+            
+           
+         if (empty($Estimate_id)) {
             Session()->put('modalData', $sessionData);
             $sessionresData = Session()->get('modalData');
         } else {

@@ -1682,18 +1682,18 @@
                 '<td><input type="number" class="form-control m-input number" name="number" placeholder="Number" /></td>' +
                 '<td><div class="input-group">' +
                 '<input type="number" class="form-control m-input length" name="length" placeholder="Length" />' +
-                '<button type="button" class="btn btn-danger remove-field-btn length">X</button>' +
-                '<button type="button" class="btn btn-success add-btn-length"> + add length</button>' +
+                '<button type="button" class="btn btn-soft-danger remove-field-btn length">X</button>' +
+                '<button type="button" class="btn btn-soft-primary add-btn-length"> + add length</button>' +
                 '</div></td>' +
                 '<td><div class="input-group">' +
                 '<input type="number" class="form-control m-input breadth" name="breadth" placeholder="Breadth" />' +
-                '<button type="button" class="btn btn-danger remove-field-btn breadth">X</button>' +
-                '<button type="button" class="btn btn-success add-btn-breadth">+ add breadth</button>' +
+                '<button type="button" class="btn btn-soft-danger remove-field-btn breadth">X</button>' +
+                '<button type="button" class="btn btn-soft-primary add-btn-breadth">+ add breadth</button>' +
                 '</div></td>' +
                 '<td><div class="input-group">' +
                 '<input type="number" class="form-control m-input height" name="height" placeholder="Height" />' +
-                '<button type="button" class="btn btn-danger remove-field-btn height">X</button>' +
-                '<button type="button" class="btn btn-success add-btn-height">+ add height</button>' +
+                '<button type="button" class="btn btn-soft-danger remove-field-btn height">X</button>' +
+                '<button type="button" class="btn btn-soft-primary add-btn-height">+ add height</button>' +
                 '</div></td>' +
                 '<td><select class="form-control m-input unit" name="unit">' + unitOptions +
                 '</select></td>' +
@@ -1710,7 +1710,7 @@
             newRow.find('.remove-field-btn').click(function() {
                 var inputGroup = $(this).parent();
                 var inputField = inputGroup.find('input');
-                var addBtnClass = $(this).siblings('.btn-success').attr('class').split(' ').find(
+                var addBtnClass = $(this).siblings('.btn-soft-primary').attr('class').split(' ').find(
                     function(className) {
                         return className.startsWith('add-btn-');
                     });
@@ -1801,7 +1801,7 @@
 
             // Append the cloned row to the table body
             $("#dataTable tbody").append(newRow);
-
+            updateButtons();
             updateTotalSum();
             $("#closeBtn").html("Reset & close");
         });
@@ -2291,8 +2291,8 @@
                             (rowData && rowData.length ? rowData.length : '') +
                             '" placeholder="Length" required/>' +
                             '<div class="input-group-append">' +
-                            '<button type="button" class="btn btn-danger remove-field-btn length">X</button>' +
-                            '<button type="button" class="btn btn-success add-btn-length">+ add length</button>' +
+                            '<button type="button" class="btn btn-soft-danger remove-field-btn length">X</button>' +
+                            '<button type="button" class="btn btn-soft-primary add-btn-length">+ add length</button>' +
                             '</div>' +
                             '</div>' +
                             '</td>' +
@@ -2302,8 +2302,8 @@
                             (rowData && rowData.breadth ? rowData.breadth : '') +
                             '" placeholder="Breadth" required/>' +
                             '<div class="input-group-append">' +
-                            '<button type="button" class="btn btn-danger remove-field-btn breadth">X</button>' +
-                            '<button type="button" class="btn btn-success add-btn-breadth">+ add breadth</button>' +
+                            '<button type="button" class="btn btn-soft-danger remove-field-btn breadth">X</button>' +
+                            '<button type="button" class="btn btn-soft-primary add-btn-breadth">+ add breadth</button>' +
                             '</div>' +
                             '</div>' +
                             '</td>' +
@@ -2313,8 +2313,8 @@
                             (rowData && rowData.height ? rowData.height : '') +
                             '" placeholder="Height" required/>' +
                             '<div class="input-group-append">' +
-                            '<button type="button" class="btn btn-danger remove-field-btn height">X</button>' +
-                            '<button type="button" class="btn btn-success add-btn-height">+ add height</button>' +
+                            '<button type="button" class="btn btn-soft-danger remove-field-btn height">X</button>' +
+                            '<button type="button" class="btn btn-soft-primary add-btn-height">+ add height</button>' +
                             '</div>' +
                             '</div>' +
                             '</td>' +
