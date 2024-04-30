@@ -2,39 +2,39 @@
 
 namespace App\Http\Livewire\RateAnalysis;
 
-use App\Models\SOR;
-use Livewire\Component;
-use App\Models\SorMaster;
-use App\Models\Department;
-use App\Models\UnitMaster;
-use WireUi\Traits\Actions;
 use App\Models\Carriagesor;
 use App\Models\CompositSor;
-use App\Models\RatesMaster;
-use App\Models\RatesAnalysis;
-use App\Models\EstimatePrepare;
-use App\Models\SorCategoryType;
+use App\Models\Department;
 use App\Models\DynamicSorHeader;
+use App\Models\EstimatePrepare;
+use App\Models\RatesAnalysis;
+use App\Models\RatesMaster;
+use App\Models\SOR;
+use App\Models\SorCategoryType;
+use App\Models\SorMaster;
+use App\Models\UnitMaster;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
+use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class CreateRateAnalysis extends Component
 {
     use Actions;
-    protected $listeners = ['getRowValue', 'closeModal', 'getComposite', 'getCompositePlaceWise','editRate'];
+    protected $listeners = ['getRowValue', 'closeModal', 'getComposite', 'getCompositePlaceWise', 'editRate'];
     public $rateData = [], $getCategory = [], $fatchDropdownData = [], $rateMasterDesc, $selectSor = [], $dropdownData = [], $part_no = '';
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedRateUpdateTrack;
     public $addedRate = [];
-    public $searchDtaCount, $searchStyle, $searchResData, $totalDistance;
-    public $getSor, $viewModal = false, $modalName = '', $counterForItemNo = 0, $isParent = false,$editRate_id;
+    public $searchDtaCount, $searchStyle = 'none', $searchResData, $totalDistance;
+    public $getSor, $viewModal = false, $modalName = '', $counterForItemNo = 0, $isParent = false, $editRate_id;
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
 
     protected $rules = [
         'rateMasterDesc' => 'required|string',
-        'part_no' => 'required'
+        'part_no' => 'required',
         // 'selectedCategoryId' => 'required|integer',
 
     ];
@@ -138,7 +138,7 @@ class CreateRateAnalysis extends Component
     }
     public function changeCategory($value)
     {
-        $this->resetExcept(['addedRate', 'selectedCategoryId', 'addedRateUpdateTrack', 'rateMasterDesc', 'dropdownData', 'selectSor', 'part_no','editRate_id']);
+        $this->resetExcept(['addedRate', 'selectedCategoryId', 'addedRateUpdateTrack', 'rateMasterDesc', 'dropdownData', 'selectSor', 'part_no', 'editRate_id']);
         $this->part_no = strtoupper($this->part_no);
         $value = $value['_x_bindings']['value'];
         $this->rateData['item_name'] = $value;
@@ -291,16 +291,17 @@ class CreateRateAnalysis extends Component
             $this->rateData['unit_id'] = '';
         }
     }
-    public function editRate($rate_id){
+    public function editRate($rate_id)
+    {
         $this->editRate_id = $rate_id;
-        $rate_desc = RatesMaster::where('rate_id',$this->editRate_id)->first();
+        $rate_desc = RatesMaster::where('rate_id', $this->editRate_id)->first();
         $this->rateMasterDesc = $rate_desc['rate_description'];
         $this->part_no = $rate_desc['part_no'];
-        $fetchRates = RatesAnalysis::where('rate_id',$this->editRate_id)->orderBy('id','asc')->get();
+        $fetchRates = RatesAnalysis::where('rate_id', $this->editRate_id)->orderBy('id', 'asc')->get();
         Session()->forget('editRateData' . $this->editRate_id);
         // Session()->forget('editRateDescription'. $this->editRate_id);
         // Session()->forget('editRatePartNo'. $this->editRate_id);
-        $this->emit('setFetchRateData',$fetchRates);
+        $this->emit('setFetchRateData', $fetchRates);
         // $this->addedRateUpdateTrack = rand(1, 1000);
     }
     public function getDeptCategory()
@@ -521,9 +522,8 @@ class CreateRateAnalysis extends Component
 
         // }
     }
-    public function getDynamicSor()
+    public function getDynamicSor($id='')
     {
-        // dd($this->rateData);
         $this->getSor = [];
         if ($this->selectedCategoryId == '') {
             // $this->getSor = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']], ['page_no', $this->selectSor['page_no']]])->first();
@@ -540,17 +540,21 @@ class CreateRateAnalysis extends Component
             $this->selectSor['sor_id'] = $this->getSor['id'];
         } else {
             // $this->getSor = DynamicSorHeader::where([['department_id', $this->rateData['dept_id']], ['dept_category_id', $this->rateData['dept_category_id']], ['volume_no', $this->rateData['volume']], ['table_no', $this->rateData['table_no']], ['page_no', $this->rateData['page_no']]])->first();
-            $cacheKey = 'getSor_' . $this->rateData['id'];
+            $cacheKey = 'getSor_' . ($id != '') ? $id : $this->rateData['id'];
             $getCacheData = Cache::get($cacheKey);
             if ($getCacheData != '') {
                 $this->getSor = $getCacheData;
             } else {
-                $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () {
-                    return DynamicSorHeader::where('id', $this->rateData['id'])->first();
+                $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () use($id){
+                    return DynamicSorHeader::where('id', ($id != '') ? $id : $this->rateData['id'])->first();
                 });
             }
             $this->rateData['sor_id'] = $this->getSor['id'];
             $this->rateData['page_no'] = $this->getSor['page_no'];
+            if($this->searchKeyWord != ''){
+                $this->rateData['volume'] = $this->getSor['volume'];
+                $this->rateData['table_no'] = $this->getSor['table_no'];
+            }
         }
         if ($this->getSor != null) {
             $this->viewModal = !$this->viewModal;
@@ -621,6 +625,13 @@ class CreateRateAnalysis extends Component
                 $this->viewModal = !$this->viewModal;
                 $this->isParent = !$this->isParent;
             }
+        }
+        if($this->searchKeyWord != '')
+        {
+            // $this->reset('searchKeyWord');
+            $this->fatchDropdownData['searchDetails'] = [];
+            $this->searchStyle = 'none';
+            // $this->clearSearch();
         }
 
         // dd($this->selectSor);
@@ -728,6 +739,35 @@ class CreateRateAnalysis extends Component
             );
         }
     }
+    public $searchKeyWord = '';
+    public function textSearchSOR()
+    {
+        $this->fatchDropdownData['searchDetails'] = [];
+        $this->fatchDropdownData['searchDetails'] = DynamicSorHeader::where('department_id', $this->rateData['dept_id'])
+            ->whereRaw("to_tsvector('english', row_data) @@ plainto_tsquery('english', ?)", [$this->searchKeyWord])
+            ->selectRaw("id,page_no,table_no, ts_headline('english', row_data::text, plainto_tsquery('english', ?)) AS highlighted_row_data", [$this->searchKeyWord])
+            ->get();
+        // $this->fatchDropdownData['searchDetails'] = DynamicSorHeader::where('department_id', $this->rateData['dept_id'])
+        //     ->whereRaw("to_tsvector('english', row_data::text || ' ' || table_no) @@ plainto_tsquery('english', ?)", [$this->searchKeyWord])
+        //     ->selectRaw("id,page_no,table_no, ts_headline('english', row_data::text || ' ' || table_no, plainto_tsquery('english', ?)) AS highlighted_row_data", [$this->searchKeyWord])
+        //     ->get();
+        // $this->searchStyle = 'block';
+        if (count($this->fatchDropdownData['searchDetails']) > 0) {
+            $this->searchDtaCount = (count($this->fatchDropdownData['searchDetails']) > 0);
+            $this->searchStyle = 'block';
+        } else {
+            $this->searchStyle = 'none';
+            $this->notification()->error(
+                $title = 'Not data found !!' . $this->selectSor['selectedSOR']
+            );
+        }
+    }
+
+    public function clearSearch(){
+        $this->reset('searchKeyWord');
+        $this->searchStyle = 'none';
+    }
+
     public function getSorItemDetails($id)
     {
         $this->searchResData = SOR::where('id', $id)->get();
@@ -1110,7 +1150,7 @@ class CreateRateAnalysis extends Component
             $this->getCompositeDatas = $getCompositeCacheData;
         } else {
             // $this->getCompositeDatas = CompositSor::where([['sor_itemno_parent_id', $data[0]['parentId']], ['sor_itemno_parent_index', $data[0]['item_index']]])->get();
-            $this->getCompositeDatas = Cache::remember($compositeCacheKey, now()->addMinutes(720), function () use($data) {
+            $this->getCompositeDatas = Cache::remember($compositeCacheKey, now()->addMinutes(720), function () use ($data) {
                 return CompositSor::where([['sor_itemno_parent_id', $data[0]['parentId']], ['sor_itemno_parent_index', $data[0]['item_index']]])->get();
             });
         }
@@ -1378,7 +1418,7 @@ class CreateRateAnalysis extends Component
                     $this->rateData['total_amount'] = floatval($this->rateData['qty']) * floatval($this->rateData['rate']);
                     $this->rateData['total_amount'] = round($this->rateData['total_amount'], 2);*/
 
-                    switch (Auth::user()->department_id === 47 && (int)$this->rateData['dept_category_id'] === 2 && Auth::user()->dept_category_id === 2) {
+                    switch (Auth::user()->department_id === 47 && (int) $this->rateData['dept_category_id'] === 2 && Auth::user()->dept_category_id === 2) {
                         case true:
                             $this->rateData['qty'];
                             $this->rateData['total_amount'] = floatval($this->rateData['qty']) * floatval($this->rateData['rate']);
@@ -1558,7 +1598,7 @@ class CreateRateAnalysis extends Component
             if (isset($this->rateData['rate_type'])) {
                 $this->addedRate[$key]['rate_type'] = $this->rateData['rate_type'];
             }
-            if(isset($this->rateData['unit_id'])){
+            if (isset($this->rateData['unit_id'])) {
                 $this->addedRate[$key]['unit_id'] = $this->rateData['unit_id'];
             }
             $this->addedRateUpdateTrack = rand(1, 1000);
@@ -1570,7 +1610,7 @@ class CreateRateAnalysis extends Component
             // $this->rateData['rate'] = '';
             // $this->rateData['total_amount'] = '';
             // dd($this->addedRate);
-            $this->resetExcept(['addedRate', 'showTableOne', 'addedRateUpdateTrack', 'rateMasterDesc', 'dropdownData', 'selectSor', 'rateData', 'distance', 'part_no','editRate_id']);
+            $this->resetExcept(['addedRate', 'showTableOne', 'addedRateUpdateTrack', 'rateMasterDesc', 'dropdownData', 'selectSor', 'rateData', 'distance', 'part_no', 'editRate_id']);
         } else {
             // dd("key");
             $this->reset('addedRate');
@@ -1609,7 +1649,7 @@ class CreateRateAnalysis extends Component
             $this->rateData['page_no'] = '';
             $this->rateData['rate_type'] = '';
             $this->rateData['id'] = '';
-            $this->resetExcept(['addedRate', 'showTableOne', 'addedRateUpdateTrack', 'rateMasterDesc', 'dropdownData', 'selectSor', 'rateData', 'selectedCategoryId', 'fatchDropdownData', 'part_no','editRate_id']);
+            $this->resetExcept(['addedRate', 'showTableOne', 'addedRateUpdateTrack', 'rateMasterDesc', 'dropdownData', 'selectSor', 'rateData', 'selectedCategoryId', 'fatchDropdownData', 'part_no', 'editRate_id']);
         }
         // dd($this->addedRate);
     }
