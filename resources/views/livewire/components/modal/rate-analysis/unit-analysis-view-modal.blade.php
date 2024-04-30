@@ -323,6 +323,18 @@
     .col-md-6.areaRadiocircle {
         width: auto;
     }
+
+    button.btn.btn-soft-primary.add-btn-breadth {
+        width: 100%;
+    }
+
+    button.btn.btn-soft-primary.add-btn-height {
+        width: 100%;
+    }
+
+    button.btn.btn-soft-primary.add-btn-length {
+        width: 100%;
+    }
 </style>
 
 <div class="modal" id="myInput" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
@@ -469,7 +481,7 @@
                                                         $editButtonClass = 'sabtn';
                                                     } elseif ($metadata['btntype'] == 5) {
                                                         $editButtonClass = 'apcbtn';
-                                                    } else if ($metadata['btntype'] === 6) {
+                                                    } elseif ($metadata['btntype'] === 6) {
                                                         $editButtonClass = 'vcbtn';
                                                     }
                                                 }
@@ -672,7 +684,7 @@
                                         <input type="number" class="form-control diameter" name="diameter"
                                             id="diameter" placeholder="Enter value" required>
                                     </div>
-                                
+
                                     <div class="col-md-6">
                                         <label for="height">Enter Height</label>
                                         <input type="number" class="form-control dia-height" name="dia-height"
@@ -794,10 +806,15 @@
         function closeModal() {
             var grandTotal = 0;
             grandTotal = $('#grandTotalInput').val();
-            window.Livewire.emit('closeAndReset', grandTotal, unitId);
+            if (confirm("Are you sure you want to close and reset?")) {
+                window.Livewire.emit('closeAndReset', grandTotal, unitId);
+            } else {
+                return;
+            }
             $("#myInput").modal('hide');
             window.Livewire.emit('closeUnitModal');
         }
+
         $('#finalSubmitBtn').click(function() {
             var grandTotal = 0;
             // $('.metatable td:nth-child(3)').each(function() {
@@ -813,13 +830,13 @@
         //     }
         // });
 
-     function updateGrandTotal() {
+        function updateGrandTotal() {
             var grandTotal = 0;
             $('#dataTable1 tbody tr').each(function() {
-            var grandTotal = parseFloat($(this).find('#metagrandval').val());
-            var roundedGrandTotal = grandTotal.toFixed(2);
-            $('#grandTotalInput').val(roundedGrandTotal);
-        });
+                var grandTotal = parseFloat($(this).find('#metagrandval').val());
+                var roundedGrandTotal = grandTotal.toFixed(2);
+                $('#grandTotalInput').val(roundedGrandTotal);
+            });
             if (parseFloat(grandTotal) !== 0) {
                 //alert(grandTotal);
                 $("#calexp").prop("disabled", true);
@@ -832,7 +849,7 @@
             var grandTotalInputHeight = $('.grandTotalInput').height();
             var newPositionTop = tableHeight + tableOffsetTop + 20;
             $('.grandTotalInput').css('top', newPositionTop + 'px');
-         }
+        }
         $('.metatable').on('DOMSubtreeModified', function() {
             $("#metatable_id input[type=checkbox]").change(function() {
                 if (!$(this).is(":checked")) {
@@ -849,7 +866,7 @@
             }
         });
         var rules = ["Simpson-rule", "Area and Perimeter of rectangle", "Surface Area & volume of rectangle",
-            "Area and Perimeter of circle","Volume of Cylinder",
+            "Area and Perimeter of circle", "Volume of Cylinder",
         ];
         var ruleDataValues = {
             "Simpson-rule": "1",
@@ -1125,7 +1142,7 @@
                             editButtonClass = 'sabtn';
                         } else if (metadata.btntype === 5) {
                             editButtonClass = 'apcbtn';
-                        }else if (metadata.btntype === 6) {
+                        } else if (metadata.btntype === 6) {
                             editButtonClass = 'vcbtn';
                         }
                         var editButton = $('<a>').attr({
@@ -1440,7 +1457,7 @@
                             editButtonClass = 'sabtn';
                         } else if (metadata.btntype === 5) {
                             editButtonClass = 'apcbtn';
-                        }else if (metadata.btntype === 6) {
+                        } else if (metadata.btntype === 6) {
                             editButtonClass = 'vcbtn';
                         }
                         var editButton = $('<a>').attr({
@@ -1616,44 +1633,8 @@
             if (areaResult) areaResult.textContent = '';
         }
 
-        function calculateTotal(row) {
-            var length = parseFloat(row.find('.length').val()) || 1;
-            var breadth = parseFloat(row.find('.breadth').val()) || 1;
-            var height = parseFloat(row.find('.height').val()) || 1;
-            var number = parseFloat(row.find('.number').val()) || 1;
 
-            // Check if inputs are visible, if not, set their values to 0
-            if (row.find('.length').hasClass('hidden')) {
-                length = 1;
-            }
-            if (row.find('.breadth').hasClass('hidden')) {
-                breadth = 1;
-            }
-            if (row.find('.height').hasClass('hidden')) {
-                height = 1;
-            }
-            if (row.find('.number').hasClass('hidden')) {
-                number = 1;
-            }
 
-            if (length === 0 || breadth === 0 || height === 0 || number === 0) {
-                alert('Input values cannot be 0.');
-                return;
-            }
-
-            var total = length * breadth * height * number;
-            row.find('.total').val(total.toFixed(2));
-        }
-
-        function updateTotalSum() {
-            //alert("updatetotalsum");
-            var sum = 0;
-            $("#dataTable tbody tr").each(function() {
-                var total = parseFloat($(this).find('.total').val()) || 0;
-                sum += total;
-            });
-            $("#totalSum").val(sum.toFixed(3));
-        }
 
         // $(document).delegate(
         //     "input[name='length'], input[name='breadth'], input[name='height'], input[name='number']",
@@ -1663,8 +1644,16 @@
         //         calculateTotal(row);
         //         updateTotalSum();
         //     });
+        function updateTotalSum() {
+            var sum = 0;
+            $("#dataTable tbody tr").each(function() {
+                var total = parseFloat($(this).find('.total').val()) || 0;
+                sum += total;
+            });
+            $("#totalSum").val(sum.toFixed(3));
+        }
         $(document).on('input',
-            "input[name='length'], input[name='breadth'], input[name='height'], input[name='number']",
+            'input[name="length"], input[name="breadth"], input[name="height"], input[name="number"]',
             function() {
                 var row = $(this).closest("tr");
                 calculateTotal(row);
@@ -1697,7 +1686,7 @@
                 '</div></td>' +
                 '<td><select class="form-control m-input unit" name="unit">' + unitOptions +
                 '</select></td>' +
-                '<td><input type="text" class="form-control m-input total" name="total" placeholder="Total" readonly/></td>' +
+                '<td><input type="text" class="form-control m-input total" name="total" placeholder="Total" value="00.00" readonly/></td>' +
                 '<td class="button-cell">' +
                 '<button type="button" class="btn-close delete-row-btn">x</button>' +
                 '<button type="button" class="btn-add addbtn">+</button>' +
@@ -1708,22 +1697,43 @@
             ).hide();
 
             newRow.find('.remove-field-btn').click(function() {
+
                 var inputGroup = $(this).parent();
                 var inputField = inputGroup.find('input');
                 var addBtnClass = $(this).siblings('.btn-soft-primary').attr('class').split(' ').find(
                     function(className) {
                         return className.startsWith('add-btn-');
                     });
-                //console.log(addBtnClass);
+
+                // Reset input field value to 1
+                //inputField.val('1');
+
                 // Hide the input field and show the corresponding add button
-                inputField.val('').addClass('hidden');
+                inputField.addClass('hidden');
                 $(this).hide();
                 $('.' + addBtnClass).show();
 
-                // Trigger input event to recalculate total sum after removing the input
-                $(this).closest('tr').find('input').trigger('input');
-            });
+                // Find the total input field in the same row
+                var totalInput = $(this).closest('tr').find('input[name="total"]');
 
+                // Calculate total product for the current row by iterating over its input fields
+                var totalProduct = 0.00; // Initialize to 1 for multiplication
+                $(this).closest('tr').find('.length, .breadth, .height, .number').each(function() {
+                    var inputValue = parseFloat($(this).val());
+                    if (!isNaN(inputValue) && !$(this).hasClass('hidden')) {
+                        totalProduct *=
+                            inputValue; // Use multiplication if input field is not hidden
+                    }
+                });
+
+                // Set the total product in the total input field for the current row
+                totalInput.val(totalProduct.toFixed(2)); // Rounded to 2 decimal places
+
+                // Trigger input event manually to recalculate total sum after removing the input field
+                totalInput.trigger('input');
+
+                updateTotalSum(); // Update the total sum for all rows
+            });
 
 
             newRow.find('.add-btn-length').click(function() {
@@ -1772,9 +1782,12 @@
             });
 
             $("#dataTable tbody").append(newRow);
+            newRow.find('.length, .breadth, .height, .number').trigger('input');
             updateButtons();
             updateTotalSum();
         }
+
+
 
 
 
@@ -1799,12 +1812,22 @@
             var rowIndex = $("#dataTable tbody tr").length + 1;
             newRow.find('td:first').text(rowIndex);
 
+            // Update the selected value of the cloned select element
+            var selectedUnit = lastRow.find('.unit').val();
+            newRow.find('.unit').val(selectedUnit);
+
             // Append the cloned row to the table body
             $("#dataTable tbody").append(newRow);
+
+            // Manually trigger input event on input fields to update total sum
+            newRow.find('.length, .breadth, .height, .number').trigger('input');
+
             updateButtons();
             updateTotalSum();
             $("#closeBtn").html("Reset & close");
         });
+
+
         $(document).on("click", ".delete-row-btn", function() {
             if ($("#dataTable tbody tr").length > 1) {
                 $(this).closest("tr").remove();
@@ -1819,18 +1842,61 @@
                 $(this).find("td:first").text(index + 1);
             });
         }
+
+
+        $('.length, .breadth, .height, .number').on('keyup change', function() {
+            var row = $(this).closest('tr');
+            calculateTotal(row);
+        });
+
+
+        function calculateTotal(row) {
+            var lengthInput = row.find('.length');
+            var breadthInput = row.find('.breadth');
+            var heightInput = row.find('.height');
+            var numberInput = row.find('.number');
+
+            // Check if any of the input values are zero for visible fields only
+            if (!lengthInput.hasClass('hidden') && !breadthInput.hasClass('hidden') &&
+                !heightInput.hasClass('hidden') && !numberInput.hasClass('hidden')) {
+                var length = parseFloat(lengthInput.val()) || 1;
+                var breadth = parseFloat(breadthInput.val()) || 1;
+                var height = parseFloat(heightInput.val()) || 1;
+                var number = parseFloat(numberInput.val()) || 1;
+
+                if (length === 0 || breadth === 0 || height === 0 || number === 0) {
+                    alert('Input values cannot be 0.');
+                    return;
+                }
+            }
+
+            var total = length * breadth * height * number;
+
+            // Set the total value with proper formatting
+            var totalValue = total.toFixed(2);
+           
+            if (totalValue == 1) {
+                totalValue = '0.00';
+            }
+
+            // Set the total value in the corresponding input field
+            row.find('.total').val(totalValue);
+        }
+
         $("#myForm").submit(function(event) {
-            // alert("clicked");
             event.preventDefault();
             $(".empty-field").tooltip("dispose");
             var isEmpty = false;
             var hasZeroValue = false;
+
             $("#dataTable tbody tr").each(function() {
                 var row = $(this);
                 var emptyFields = [];
+
                 row.find("input, select").each(function() {
                     var field = $(this);
-                    if (!field.val()) {
+                    if (!field.val() && (!field.hasClass("hidden") && !field.is(
+                            ":hidden"))) { // Skip hidden and display:none fields
                         if (!field.hasClass("total")) {
                             isEmpty = true;
                             emptyFields.push(field);
@@ -1845,13 +1911,16 @@
                                 $(this).tooltip("hide");
                             });
                         }
-                    } else if (parseFloat(field.val()) === 0) {
+                    } else if (parseFloat(field.val()) === 0 && (!field.hasClass(
+                            "hidden") && !field.is(
+                            ":hidden"))) { // Skip hidden and display:none fields
                         hasZeroValue = true;
                     } else {
                         field.removeClass("empty-field");
                         field.tooltip("dispose");
                     }
                 });
+
                 if (emptyFields.length > 0) {
                     row.addClass("has-empty-field");
                     emptyFields.forEach(function(field) {
@@ -1861,12 +1930,14 @@
                     row.removeClass("has-empty-field");
                 }
             });
-            // if (isEmpty || hasZeroValue) {
-            //     if (hasZeroValue) {
-            //         alert("Input values cannot be 0.");
-            //     }
-            //     return;
-            // }
+
+            if (isEmpty || hasZeroValue) {
+                if (hasZeroValue) {
+                    alert("Input values cannot be 0.");
+                }
+                return;
+            }
+
             var form = this;
             var rowData = [];
             var totalSum = parseFloat($("#totalSum").val()) || 0;
@@ -2321,7 +2392,7 @@
                             '<td><select class="form-control m-input unit" name="unit">' +
                             unitOptions + '</select></td>' +
                             '<td><input type="text" class="form-control m-input total" name="total" value="' +
-                            (rowData && rowData.total ? rowData.total : '') +
+                            (rowData && rowData.total ? rowData.total : 0.00) +
                             '" placeholder="Total" readonly/></td>' +
                             '<td class="button-cell">' +
                             '<button type="button" class="btn-close delete-row-btn">x</button>' +
@@ -2347,7 +2418,8 @@
             var inputGroup = $(this).closest('td').find('.form-control');
             inputGroup.val('').hide();
             $(this).hide();
-
+            var row = $(this).closest('tr');
+            calculateTotall(row);
             // Check the specific class of the input field
             var inputClass = inputGroup.attr('class');
             if (inputClass.includes('length') && inputGroup.val() === '') {
@@ -2357,7 +2429,41 @@
             } else if (inputClass.includes('height') && inputGroup.val() === '') {
                 $(this).siblings('.add-btn-height').show();
             }
+
         });
+
+
+        function calculateTotall(row) {
+            var lengthInput = row.find('.length');
+            var breadthInput = row.find('.breadth');
+            var heightInput = row.find('.height');
+            var numberInput = row.find('.number');
+
+            // Check if any of the input values are zero for visible fields only
+            if (!lengthInput.hasClass('hidden') && !breadthInput.hasClass('hidden') &&
+                !heightInput.hasClass('hidden') && !numberInput.hasClass('hidden')) {
+                var length = parseFloat(lengthInput.val()) || 1;
+                var breadth = parseFloat(breadthInput.val()) || 1;
+                var height = parseFloat(heightInput.val()) || 1;
+                var number = parseFloat(numberInput.val()) || 1;
+
+                if (length === 0 || breadth === 0 || height === 0 || number === 0) {
+                    alert('Input values cannot be 0.');
+                    return;
+                }
+            }
+
+            var total = length * breadth * height * number;
+
+            // Set the total value with proper formatting
+            var totalValue = total.toFixed(2);
+            if (isNaN(totalValue)) {
+                totalValue = '0.00';
+            }
+
+            // Set the total value in the corresponding input field
+            row.find('.total').val(totalValue);
+        }
 
         $("#dataTable tbody").on('click', '.add-btn-length', function() {
             var inputGroup = $(this).closest('td').find('.form-control');
@@ -2665,8 +2771,8 @@
                             } else if (metadata.btntype === 5) {
                                 editButtonClass = 'apcbtn';
                             } else if (metadata.btntype === 6) {
-                            editButtonClass = 'vcbtn';
-                        }
+                                editButtonClass = 'vcbtn';
+                            }
                             var editButton = $('<a>').attr({
                                 'type': 'button',
                                 'class': 'btn btn-soft-secondary btn-sm mr-2 fetchdetails ' +
@@ -2861,8 +2967,8 @@
                             } else if (metadata.btntype === 5) {
                                 editButtonClass = 'apcbtn';
                             } else if (metadata.btntype === 6) {
-                            editButtonClass = 'vcbtn';
-                        }
+                                editButtonClass = 'vcbtn';
+                            }
                             var editButton = $('<a>').attr({
                                 'type': 'button',
                                 'class': 'btn btn-soft-secondary btn-sm mr-2 fetchdetails ' +
@@ -3159,7 +3265,8 @@
 
 
             // currentId = this.getAttribute("data-id")
-            var volume_of_cylinder = parseFloat((Math.PI * Math.pow(diameter, 2) * height / 4).toFixed(2));
+            var volume_of_cylinder = parseFloat((Math.PI * Math.pow(diameter, 2) * height / 4).toFixed(
+                2));
             var inputValues = {};
             inputValues["parent_id"] = unitId;
             inputValues["currentId"] = currentId;
@@ -3234,7 +3341,7 @@
                             editButtonClass = 'sabtn';
                         } else if (metadata.btntype === 5) {
                             editButtonClass = 'apcbtn';
-                        }else if (metadata.btntype === 6) {
+                        } else if (metadata.btntype === 6) {
                             editButtonClass = 'vcbtn';
                         }
                         var editButton = $('<a>').attr({
@@ -3634,8 +3741,8 @@
                                 editButtonClass = 'sabtn';
                             } else if (metadata.btntype === 5) {
                                 editButtonClass = 'apcbtn';
-                            }else if (metadata.btntype === 6) {
-                              editButtonClass = 'vcbtn';
+                            } else if (metadata.btntype === 6) {
+                                editButtonClass = 'vcbtn';
                             }
                             var editButton = $('<a>').attr({
                                 'type': 'button',
