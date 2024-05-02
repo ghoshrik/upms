@@ -1696,43 +1696,24 @@
                 '.length, .remove-field-btn.length, .breadth, .remove-field-btn.breadth, .height, .remove-field-btn.height'
             ).hide();
 
+         
             newRow.find('.remove-field-btn').click(function() {
-
-                var inputGroup = $(this).parent();
-                var inputField = inputGroup.find('input');
-                var addBtnClass = $(this).siblings('.btn-soft-primary').attr('class').split(' ').find(
-                    function(className) {
-                        return className.startsWith('add-btn-');
-                    });
-
-                // Reset input field value to 1
-                //inputField.val('1');
-
-                // Hide the input field and show the corresponding add button
-                inputField.addClass('hidden');
+                var inputGroup = $(this).closest('td').find('.form-control');
+                inputGroup.val('').hide();
                 $(this).hide();
-                $('.' + addBtnClass).show();
+                var row = $(this).closest('tr');
+                calculateTotal(row);
 
-                // Find the total input field in the same row
-                var totalInput = $(this).closest('tr').find('input[name="total"]');
-
-                // Calculate total product for the current row by iterating over its input fields
-                var totalProduct = 0.00; // Initialize to 1 for multiplication
-                $(this).closest('tr').find('.length, .breadth, .height, .number').each(function() {
-                    var inputValue = parseFloat($(this).val());
-                    if (!isNaN(inputValue) && !$(this).hasClass('hidden')) {
-                        totalProduct *=
-                            inputValue; // Use multiplication if input field is not hidden
+                    // Check the specific class of the input field
+                    var inputClass = inputGroup.attr('class');
+                    if (inputClass.includes('length') && inputGroup.val() === '') {
+                        $(this).siblings('.add-btn-length').show();
+                    } else if (inputClass.includes('breadth') && inputGroup.val() === '') {
+                        $(this).siblings('.add-btn-breadth').show();
+                    } else if (inputClass.includes('height') && inputGroup.val() === '') {
+                        $(this).siblings('.add-btn-height').show();
                     }
-                });
-
-                // Set the total product in the total input field for the current row
-                totalInput.val(totalProduct.toFixed(2)); // Rounded to 2 decimal places
-
-                // Trigger input event manually to recalculate total sum after removing the input field
-                totalInput.trigger('input');
-
-                updateTotalSum(); // Update the total sum for all rows
+                
             });
 
 
@@ -1874,13 +1855,14 @@
 
             // Set the total value with proper formatting
             var totalValue = total.toFixed(2);
-           
+
             if (totalValue == 1) {
                 totalValue = '0.00';
             }
 
             // Set the total value in the corresponding input field
             row.find('.total').val(totalValue);
+            updateTotalSum();
         }
 
         $("#myForm").submit(function(event) {
