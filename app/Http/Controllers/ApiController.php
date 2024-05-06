@@ -203,7 +203,7 @@ class ApiController extends Controller
     {
         try {
             $data = $request->data;
-       
+
             if (isset($data['input_values'])) {
                 $input_values = $data['input_values'];
                 $parentId = isset($input_values['parent_id']) ? $input_values['parent_id'] : null;
@@ -243,6 +243,11 @@ class ApiController extends Controller
                     $metadata = $data['input_values'];
                 }
                 $metadata['currentId'] = $index;
+                if (!empty($sessionData[$parentId]['metadata'][0]['unit'])){
+                    $new_unit=$sessionData[$parentId]['metadata'][0]['unit'];
+                    $metadata['unit'] = $new_unit;
+                }
+
                 $sessionData[$parentId]['metadata'][] = $metadata;
             }else {
                 unset($sessionData[$parentId]['metadata']);
@@ -258,6 +263,7 @@ class ApiController extends Controller
                         }
                         if (!isset($metadata['expcalculate'])) {
                             $updateTotalOverallTotal += floatval($metadata['overallTotal']);
+
                         }
                         $metadataArray[$index] = $metadata;
                     }
@@ -265,13 +271,15 @@ class ApiController extends Controller
                         if (isset($data['expcalculate']) && $data['expcalculate'] === 'Sumtotal') {
                             $data['overallTotal'] = $updateTotalOverallTotal;
                             $data['grandTotal'] = $updateTotalOverallTotal;
+                            $data['unit'] = $unit;
+
                         }
                         $data['currentId'] = $index;
                     }
                     $sessionData[$parentId]['metadata'] = $metadataArray;
                 }
             }
-            
+
             $grandTotalOverallTotal = 0;
             foreach ($sessionData[$parentId]['metadata'] as $metadata) {
                 $overallTotal = floatval($metadata['overallTotal']);
@@ -283,7 +291,7 @@ class ApiController extends Controller
             } else {
                 Session()->put('editModalData', $sessionData);
             }
-           
+
             $this->rateAnalysisArray = $sessionData;
             return response()->json([
                 'message' => 'Data updated successfully',
@@ -292,7 +300,7 @@ class ApiController extends Controller
             ], 200);
         } catch (\Exception $e) {
             //dd($e);
-          
+
         }
     }
 
@@ -381,7 +389,7 @@ class ApiController extends Controller
             $input_values = $data['input_values'];
             $parentId = isset($input_values['parent_id']) ? $input_values['parent_id'] : null;
             $overallTotal = isset($input_values['overallTotal']) ? $input_values['overallTotal'] : null;
-            $overallTotal = $stringCalc->calculate($overallTotal); 
+            $overallTotal = $stringCalc->calculate($overallTotal);
             $type = isset($input_values['type']) ? $input_values['type'] : null;
             $unit = isset($input_values['unit']) ? $input_values['unit'] : 5;
             $updateId = isset($input_values['currentId']) ? $input_values['currentId'] : null;
@@ -389,7 +397,7 @@ class ApiController extends Controller
             $remarks = isset($input_values['remarks']) ? $input_values['remarks'] : null;
             $data['input_values']['overallTotal'] = $overallTotal;
         }
-       
+
         if (empty($Estimate_id)) {
             $sessionData = Session()->get('modalData');
         } else {
@@ -403,14 +411,25 @@ class ApiController extends Controller
         }
         if (!isset($sessionData[$parentId]['metadata'])) {
             $sessionData[$parentId]['metadata'] = [];
-        } 
+        }
         $index = array_key_exists('metadata', $sessionData[$parentId]) ? count($sessionData[$parentId]['metadata']) : 0;
             $sessionData[$parentId][] = $data;
             $metadata = $data['input_values'];
             $metadata['currentId'] = $index;
             $metadata['overallTotal'] = $overallTotal;
+
+
+            if (!empty($sessionData[$parentId]['metadata'][0]['unit'])){
+                $new_unit=$sessionData[$parentId]['metadata'][0]['unit'];
+                $metadata['unit'] = $new_unit;
+            }
+
             $sessionData[$parentId]['metadata'][] = $metadata;
-           if (empty($Estimate_id)) {
+
+            //dd($sessionData);
+
+
+         if (empty($Estimate_id)) {
             Session()->put('modalData', $sessionData);
             $sessionresData = Session()->get('modalData');
         } else {
@@ -428,7 +447,7 @@ class ApiController extends Controller
     } catch (\Exception $exception) {
         return response()->json([
             'status' => false,
-            'error' => $exception->getMessage(), 
+            'error' => $exception->getMessage(),
         ], 500);
     }
 }
@@ -441,7 +460,7 @@ class ApiController extends Controller
             //         $metadataArray = [];
             //         $updateTotalOverallTotal = 0;
             //         foreach ($sessionData[$parentId] as $index => $data) {
-                        
+
             //             if (isset($data[0])) {
             //                 $metadata = $data[0];
             //             } else {

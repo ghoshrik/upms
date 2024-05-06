@@ -13,7 +13,7 @@ use WireUi\Traits\Actions;
 class AddedEstimateProjectList extends Component
 {
     use Actions;
-    protected $listeners = ['closeUnitModal', 'setFatchEstimateData', 'submitGrandTotal'];
+    protected $listeners = ['closeUnitModal', 'setFatchEstimateData', 'submitGrandTotal','closeAndReset'];
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $part_no;
@@ -109,6 +109,7 @@ class AddedEstimateProjectList extends Component
 
     public function openQtyModal($key)
     {
+
         $this->openQtyModal = !$this->openQtyModal;
         $this->sendArrayKey = $this->allAddedEstimatesData[$key]['array_id'];
         foreach ($this->allAddedEstimatesData as $index => $estimateData) {
@@ -118,6 +119,8 @@ class AddedEstimateProjectList extends Component
                     $this->sendArrayDesc = $this->allAddedEstimatesData[$key]['description'];
                 } elseif (!empty($this->allAddedEstimatesData[$key]['other_name'])) {
                     $this->sendArrayDesc = $this->allAddedEstimatesData[$key]['other_name'];
+                }elseif(!empty($this->allAddedEstimatesData[$key]['estimate_no'])){
+                    $this->sendArrayDesc = getEstimateDescription($this->allAddedEstimatesData[$key]['estimate_no']);
                 }
 
             }
@@ -162,7 +165,41 @@ class AddedEstimateProjectList extends Component
             );
         }
     }
+    public function closeAndReset($grandtotal, $key)
+    {
+        if (!empty($grandtotal) || !empty($key)) {
+            $grandtotal =0;
+            foreach ($this->allAddedEstimatesData as $index => $estimateData) {
+                if ($estimateData['array_id'] === $this->sendArrayKey) {
+                    $this->allAddedEstimatesData[$index]['qty'] = ($grandtotal == 0) ? 1 : $grandtotal;
+                    $sessionData = ($this->editEstimate_id == '') ? Session()->get('modalData') : Session()->get('editModalData');
+                    if ($grandtotal == 0) {
+                        $qtySessionData = ($this->editEstimate_id == '') ? session('modalData') : session('editModalData');
+                        unset($qtySessionData[$key]);
+                        if ($this->editEstimate_id == '') {
+                            Session()->forget('modalData');
+                            Session()->put('modalData', $qtySessionData);
+                        } else {
+                            Session()->forget('editModalData');
+                            Session()->put('editModalData', $qtySessionData);
+                        }
+                        $this->allAddedEstimatesData[$index]['qtyUpdate'] = false;
+                    } else {
+                        $this->allAddedEstimatesData[$index]['qtyUpdate'] = true;
+                    }
+                    $this->calculateValue($index);
+                }
+            }
+            if ($this->editEstimate_id == '') {
+                Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
+                $this->reset('addedEstimateData');
+            } else {
+                Session()->put('editProjectEstimateData' . $this->editEstimate_id, $this->allAddedEstimatesData);
+                $this->reset('addedEstimateData');
+            }
 
+        }
+    }
     public function updatedEstimateRecalculate()
     {
         $result = 0;
