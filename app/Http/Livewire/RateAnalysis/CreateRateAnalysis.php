@@ -28,6 +28,7 @@ class CreateRateAnalysis extends Component
     public $addedRate = [];
     public $searchDtaCount, $searchStyle = 'none', $searchResData, $totalDistance;
     public $getSor, $viewModal = false, $modalName = '', $counterForItemNo = 0, $isParent = false, $editRate_id;
+    public $searchKeyWord = '';
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -522,7 +523,7 @@ class CreateRateAnalysis extends Component
 
         // }
     }
-    public function getDynamicSor($id='')
+    public function getDynamicSor($id = '')
     {
         $this->getSor = [];
         if ($this->selectedCategoryId == '') {
@@ -545,13 +546,13 @@ class CreateRateAnalysis extends Component
             if ($getCacheData != '') {
                 $this->getSor = $getCacheData;
             } else {
-                $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () use($id){
+                $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () use ($id) {
                     return DynamicSorHeader::where('id', ($id != '') ? $id : $this->rateData['id'])->first();
                 });
             }
             $this->rateData['sor_id'] = $this->getSor['id'];
             $this->rateData['page_no'] = $this->getSor['page_no'];
-            if($this->searchKeyWord != ''){
+            if ($this->searchKeyWord != '') {
                 $this->rateData['volume'] = $this->getSor['volume'];
                 $this->rateData['table_no'] = $this->getSor['table_no'];
             }
@@ -626,8 +627,7 @@ class CreateRateAnalysis extends Component
                 $this->isParent = !$this->isParent;
             }
         }
-        if($this->searchKeyWord != '')
-        {
+        if ($this->searchKeyWord != '') {
             // $this->reset('searchKeyWord');
             $this->fatchDropdownData['searchDetails'] = [];
             $this->searchStyle = 'none';
@@ -739,32 +739,54 @@ class CreateRateAnalysis extends Component
             );
         }
     }
-    public $searchKeyWord = '';
     public function textSearchSOR()
     {
         $this->fatchDropdownData['searchDetails'] = [];
-        $this->fatchDropdownData['searchDetails'] = DynamicSorHeader::where('department_id', $this->rateData['dept_id'])
-            ->whereRaw("to_tsvector('english', row_data) @@ plainto_tsquery('english', ?)", [$this->searchKeyWord])
-            ->selectRaw("id,page_no,table_no, ts_headline('english', row_data::text, plainto_tsquery('english', ?)) AS highlighted_row_data", [$this->searchKeyWord])
-            ->get();
+        if (isset($this->rateData['dept_id']) && $this->rateData['dept_id'] != '') {
+            if (isset($this->rateData['dept_category_id']) && $this->rateData['dept_category_id'] != '') {
+                $this->fatchDropdownData['searchDetails'] = DynamicSorHeader::where([['department_id', $this->rateData['dept_id']], ['dept_category_id', $this->rateData['dept_category_id']]])
+                    ->whereRaw("to_tsvector('english', row_data) @@ plainto_tsquery('english', ?)", [$this->searchKeyWord])
+                    ->selectRaw("id,page_no,table_no, ts_headline('english', row_data::text, plainto_tsquery('english', ?)) AS highlighted_row_data", [$this->searchKeyWord])
+                    ->get();
+                if (count($this->fatchDropdownData['searchDetails']) > 0) {
+                    $this->searchDtaCount = (count($this->fatchDropdownData['searchDetails']) > 0);
+                    $this->searchStyle = 'block';
+                } else {
+                    $this->searchStyle = 'none';
+                    $this->notification()->error(
+                        $title = 'Not data found !!' . $this->searchKeyWord
+                    );
+                }
+            } else {
+                $this->notification()->error(
+                    $title = 'Select Department Category'
+                );
+            }
+        } else {
+            $this->notification()->error(
+                $title = 'Select Department First'
+            );
+        }
         // $this->fatchDropdownData['searchDetails'] = DynamicSorHeader::where('department_id', $this->rateData['dept_id'])
         //     ->whereRaw("to_tsvector('english', row_data::text || ' ' || table_no) @@ plainto_tsquery('english', ?)", [$this->searchKeyWord])
         //     ->selectRaw("id,page_no,table_no, ts_headline('english', row_data::text || ' ' || table_no, plainto_tsquery('english', ?)) AS highlighted_row_data", [$this->searchKeyWord])
         //     ->get();
         // $this->searchStyle = 'block';
-        if (count($this->fatchDropdownData['searchDetails']) > 0) {
-            $this->searchDtaCount = (count($this->fatchDropdownData['searchDetails']) > 0);
-            $this->searchStyle = 'block';
-        } else {
-            $this->searchStyle = 'none';
-            $this->notification()->error(
-                $title = 'Not data found !!' . $this->selectSor['selectedSOR']
-            );
-        }
+
     }
 
-    public function clearSearch(){
+    public function clearSearch()
+    {
         $this->reset('searchKeyWord');
+        $this->rateData['sor_id'] = '';
+        $this->rateData['page_no'] = '';
+        $this->rateData['table_no'] = '';
+        $this->rateData['volume'] = '';
+        $this->rateData['description'] = '';
+        $this->rateData['qty'] = '';
+        $this->rateData['rate'] = '';
+        $this->rateData['total_amount'] = '';
+        $this->rateData['unit_id'] = '';
         $this->searchStyle = 'none';
     }
 

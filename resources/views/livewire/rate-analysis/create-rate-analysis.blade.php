@@ -185,7 +185,7 @@
                                     <div x-show="showSearch" class="col">
                                         <div class="form-group search-sor" style="position: relative;">
                                             <x-input wire:key="search" class="dropbtn" wire:model.defer="searchKeyWord"
-                                                wire:keydown.tab="textSearchSOR" label="Search SOR" placeholder="Search Here" />
+                                                wire:keydown.tab="textSearchSOR" label="Search SOR" placeholder="Write Here and Tab" />
                                             <button type="button" class="clear-btn" wire:click="clearSearch" style="position: absolute; top: 68%; right: 8px; transform: translateY(-50%); cursor: pointer; background: none; border: none;">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="16" height="16">
                                                     <path
@@ -212,7 +212,7 @@
                                     </div>
                                     <div class="col-md-2" x-show="showSearch" style="margin-top: 26px">
                                         <div class="form-group float-right">
-                                            <button type="button" @click="showSearch = !showSearch" class="btn btn-soft-danger rounded-pill"><x-lucide-x class="w-4 h-4 text-gray-500" />Close Search</button>
+                                            <button type="button" @click="showSearch = !showSearch; $wire.clearSearch()" class="btn btn-soft-danger rounded-pill"><x-lucide-x class="w-4 h-4 text-gray-500" />Close Search</button>
                                         </div>
                                     </div>
                                     <div x-show="!showSearch" class="col">

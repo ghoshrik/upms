@@ -800,6 +800,7 @@
         $(document).on("click", "#close-unit-modalBtn", function() {
             if ($(this).html() === "Close") {
                 $("#myInput").modal('hide');
+                window.Livewire.emit('closeUnitModal');
              } else {
                 closeModal();
             }

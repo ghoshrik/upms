@@ -24,7 +24,8 @@ class CreateEstimateProject extends Component
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc;
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack, $part_no = '';
     public $addedEstimate = [];
-    public $searchDtaCount, $searchStyle, $searchResData, $quntity_type = 'manual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '', $getSor = [], $editEstimate_id = '';
+    public $searchDtaCount, $searchStyle = 'none', $searchResData, $quntity_type = 'manual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '', $getSor = [], $editEstimate_id = '';
+    public $searchKeyWord = '';
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -329,6 +330,56 @@ class CreateEstimateProject extends Component
         }
     }
 
+    public function textSearchSOR()
+    {
+        $this->fatchDropdownData['searchDetails'] = [];
+        if (isset($this->estimateData['dept_id']) && $this->estimateData['dept_id'] != '') {
+            if (isset($this->estimateData['dept_category_id']) && $this->estimateData['dept_category_id'] != '') {
+                $this->fatchDropdownData['searchDetails'] = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']]])
+                    ->whereRaw("to_tsvector('english', row_data) @@ plainto_tsquery('english', ?)", [$this->searchKeyWord])
+                    ->selectRaw("id,page_no,table_no, ts_headline('english', row_data::text, plainto_tsquery('english', ?)) AS highlighted_row_data", [$this->searchKeyWord])
+                    ->get();
+                if (count($this->fatchDropdownData['searchDetails']) > 0) {
+                    $this->searchDtaCount = (count($this->fatchDropdownData['searchDetails']) > 0);
+                    $this->searchStyle = 'block';
+                } else {
+                    $this->searchStyle = 'none';
+                    $this->notification()->error(
+                        $title = 'Not data found !!' . $this->searchKeyWord
+                    );
+                }
+            } else {
+                $this->notification()->error(
+                    $title = 'Select Department Category'
+                );
+            }
+        } else {
+            $this->notification()->error(
+                $title = 'Select Department First'
+            );
+        }
+        // $this->fatchDropdownData['searchDetails'] = DynamicSorHeader::where('department_id', $this->rateData['dept_id'])
+        //     ->whereRaw("to_tsvector('english', row_data::text || ' ' || table_no) @@ plainto_tsquery('english', ?)", [$this->searchKeyWord])
+        //     ->selectRaw("id,page_no,table_no, ts_headline('english', row_data::text || ' ' || table_no, plainto_tsquery('english', ?)) AS highlighted_row_data", [$this->searchKeyWord])
+        //     ->get();
+        // $this->searchStyle = 'block';
+
+    }
+
+    public function clearSearch()
+    {
+        $this->reset('searchKeyWord');
+        $this->estimateData['id'] = '';
+        $this->estimateData['page_no'] = '';
+        $this->estimateData['table_no'] = '';
+        $this->estimateData['volume'] = '';
+        $this->estimateData['description'] = '';
+        $this->estimateData['qty'] = '';
+        $this->estimateData['rate'] = '';
+        $this->estimateData['total_amount'] = '';
+        $this->estimateData['unit_id'] = '';
+        $this->searchStyle = 'none';
+    }
     public function getItemDetails($id)
     {
         // $this->estimateData['description'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['description'];
@@ -440,7 +491,7 @@ class CreateEstimateProject extends Component
         // }
     }
 
-    public function getDynamicSor()
+    public function getDynamicSor($id = '')
     {
         // dd($this->estimateData);
         $this->getSor = [];
@@ -452,17 +503,21 @@ class CreateEstimateProject extends Component
         // } else {
         // $this->getSor = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']], ['page_no', $this->estimateData['page_no']]])->first();
         // $this->getSor = DynamicSorHeader::where('id', $this->estimateData['id'])->first();
-        $cacheKey = 'getSor_' . $this->estimateData['id'];
+        $cacheKey = 'getSor_' . ($id != '') ? $id : $this->estimateData['id'];
         $getCacheData = Cache::get($cacheKey);
         if ($getCacheData != '') {
             $this->getSor = $getCacheData;
         } else {
-            $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () {
-                return DynamicSorHeader::where('id', $this->estimateData['id'])->first();
+            $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () use ($id){
+                return DynamicSorHeader::where('id', ($id != '') ? $id : $this->estimateData['id'])->first();
             });
         }
-        $this->estimateData['sor_id'] = $this->getSor['id'];
+        $this->estimateData['id'] = $this->getSor['id'];
         $this->estimateData['page_no'] = $this->getSor['page_no'];
+        if ($this->searchKeyWord != '') {
+            $this->estimateData['volume'] = $this->getSor['volume'];
+            $this->estimateData['table_no'] = $this->getSor['table_no'];
+        }
         // }
         if ($this->getSor != null) {
             $this->viewModal = !$this->viewModal;
@@ -673,6 +728,12 @@ class CreateEstimateProject extends Component
 
         // dd($this->selectSor);
         // dd($this->estimateData);
+        if ($this->searchKeyWord != '') {
+            // $this->reset('searchKeyWord');
+            $this->fatchDropdownData['searchDetails'] = [];
+            $this->searchStyle = 'none';
+            // $this->clearSearch();
+        }
     }
 
     public function extractItemNoOfItems($data, &$itemNo, $counter, $position)
