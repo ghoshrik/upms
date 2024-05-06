@@ -799,8 +799,11 @@
         myModal.show();
         $(document).off("click", "#close-unit-modalBtn");
         $(document).on("click", "#close-unit-modalBtn", function() {
-            closeModal();
-
+            if ($(this).html() === "Close") {
+                $("#myInput").modal('hide');
+             } else {
+                closeModal();
+            }
         });
 
         function closeModal() {
