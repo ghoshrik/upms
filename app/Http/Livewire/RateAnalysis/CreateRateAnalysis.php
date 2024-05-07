@@ -541,7 +541,7 @@ class CreateRateAnalysis extends Component
             $this->selectSor['sor_id'] = $this->getSor['id'];
         } else {
             // $this->getSor = DynamicSorHeader::where([['department_id', $this->rateData['dept_id']], ['dept_category_id', $this->rateData['dept_category_id']], ['volume_no', $this->rateData['volume']], ['table_no', $this->rateData['table_no']], ['page_no', $this->rateData['page_no']]])->first();
-            $cacheKey = 'getSor_' . ($id != '') ? $id : $this->rateData['id'];
+            $cacheKey = 'getSor_' . (($id != '') ? $id : $this->rateData['id']);
             $getCacheData = Cache::get($cacheKey);
             if ($getCacheData != '') {
                 $this->getSor = $getCacheData;
@@ -1682,6 +1682,7 @@ class CreateRateAnalysis extends Component
             $this->selectSor['page_no'] = '';
         } else {
             $this->rateData['page_no'] = '';
+            $this->rateData['id'] = '';
         }
     }
     public function render()

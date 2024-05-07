@@ -493,7 +493,7 @@ class CreateEstimateProject extends Component
 
     public function getDynamicSor($id = '')
     {
-        // dd($this->estimateData);
+        // dd($id,$this->estimateData);
         $this->getSor = [];
         // if ($this->selectedCategoryId == '') {
         //     // $this->getSor = DynamicSorHeader::where([['department_id', $this->selectSor['dept_id']], ['dept_category_id', $this->selectSor['dept_category_id']], ['volume_no', $this->selectSor['volume']], ['table_no', $this->selectSor['table_no']], ['page_no', $this->selectSor['page_no']]])->first();
@@ -503,7 +503,7 @@ class CreateEstimateProject extends Component
         // } else {
         // $this->getSor = DynamicSorHeader::where([['department_id', $this->estimateData['dept_id']], ['dept_category_id', $this->estimateData['dept_category_id']], ['volume_no', $this->estimateData['volume']], ['table_no', $this->estimateData['table_no']], ['page_no', $this->estimateData['page_no']]])->first();
         // $this->getSor = DynamicSorHeader::where('id', $this->estimateData['id'])->first();
-        $cacheKey = 'getSor_' . ($id != '') ? $id : $this->estimateData['id'];
+        $cacheKey = 'getSor_' . (($id != '') ? $id : $this->estimateData['id']);
         $getCacheData = Cache::get($cacheKey);
         if ($getCacheData != '') {
             $this->getSor = $getCacheData;
