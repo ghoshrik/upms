@@ -31,6 +31,9 @@ class AddRateAnalysisList extends Component
         $this->reset('allAddedRateData');
         if (Session()->has('editRateData' . $this->editRate_id)) {
             $this->allAddedRateData = Session()->get('editRateData' . $this->editRate_id);
+            if(Session()->has('editTotalOnSelectCount' . $this->editRate_id)){
+                $this->totalOnSelectedCount = Session()->get('editTotalOnSelectCount' . $this->editRate_id);
+            }
         } else {
             // dd($fetchRateData);
             foreach ($fetchRateData as $rateData) {
@@ -53,6 +56,10 @@ class AddRateAnalysisList extends Component
                 $this->allAddedRateData[$count]['total_amount'] = $rateData['total_amount'];
                 // $this->allAddedRateData[$count]['version'] = $rateData['version'];
                 $this->allAddedRateData[$count]['operation'] = $rateData['operation'];
+                if($this->allAddedRateData[$count]['operation'] == 'With Stacking' || $this->allAddedRateData[$count]['operation'] == 'Without Stacking' || $this->allAddedRateData[$count]['operation'] == 'Total'){
+                    $this->reset('totalOnSelectedCount');
+                    $this->totalOnSelectedCount++;
+                }
                 $this->allAddedRateData[$count]['col_position'] = $rateData['col_position'];
                 $this->allAddedRateData[$count]['is_row'] = '';
                 $this->allAddedRateData[$count]['unit_id'] = $rateData['unit_id'];
@@ -60,6 +67,7 @@ class AddRateAnalysisList extends Component
                 $this->allAddedRateData[$count]['remarks'] = $rateData['comments'];
             }
             Session()->put('editRateData' . $this->editRate_id, $this->allAddedRateData);
+            Session()->put('editTotalOnSelectCount' . $this->editRate_id, $this->totalOnSelectedCount);
         }
     }
     public function resetSession()
@@ -239,6 +247,9 @@ class AddRateAnalysisList extends Component
         if ($this->editRate_id != '') {
             if (Session()->has('editRateData' . $this->editRate_id)) {
                 $this->allAddedRateData = Session()->get('editRateData' . $this->editRate_id);
+                if(Session()->has('editTotalOnSelectCount' . $this->editRate_id)){
+                    $this->totalOnSelectedCount = Session()->get('editTotalOnSelectCount' . $this->editRate_id);
+                }
             }
         } else {
             if (Session()->has('addedRateAnalysisData')) {
@@ -620,7 +631,7 @@ class AddRateAnalysisList extends Component
     }
     public function store($value = '')
     {
-        // dd($this->allAddedRateData);
+        // dd($this->totalOnSelectedCount);
         $userData = Session::get('user_data');
         if ($this->totalOnSelectedCount >= 1 ) {
             try {
