@@ -17,7 +17,6 @@ use App\Models\UsersHasRoles;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 function removeSession($session)
@@ -139,12 +138,12 @@ function getRateDescription($rate_no, $total_amount)
     $rateDescription = [];
     if ($rate_no) {
         // temp fetching by total amount
-        $rateDescription = RatesAnalysis::where([['rate_id', $rate_no], ['total_amount', $total_amount]])->select('description','operation','comments')->first();
+        $rateDescription = RatesAnalysis::where([['rate_id', $rate_no], ['total_amount', $total_amount]])->select('description', 'operation', 'comments')->first();
     }
-    if($rateDescription != ''){
+    if ($rateDescription != '') {
         return $rateDescription;
-    }else{
-        return $rateDescription = ['description' => '','operation' => '','comments' => ''];
+    } else {
+        return $rateDescription = ['description' => '', 'operation' => '', 'comments' => ''];
     }
 }
 
@@ -628,9 +627,11 @@ function extractDescOfItems($data, &$descriptions, $counter, $loopCount)
     }
     if (isset($data->_subrow)) {
         foreach ($data->_subrow as $item) {
-            if (isset($counter[$loopCount]) ) {
-                if ($counter[$loopCount] == $item->id) {
-                    $descriptions .= $item->desc_of_item . ' ';
+            if (isset($counter[$loopCount])) {
+                if ($counter[$loopCount] === $item->id) {
+                    if (isset($item->desc_of_item)) {
+                        $descriptions .= $item->desc_of_item . ' ';
+                    }
                     $loopCount++;
                 }
                 if (!empty($item->_subrow)) {
@@ -638,11 +639,19 @@ function extractDescOfItems($data, &$descriptions, $counter, $loopCount)
                 }
             }
         }
-    }else{
-        if(is_array($data) && count($data)>0){
-            foreach($data as $item){
-                if (isset($counter[$loopCount]) == $item->id) {
-                    $descriptions .= $item->desc_of_item . ' ';
+    } else {
+        if (is_array($data) && count($data) > 0) {
+            foreach ($data as $item) {
+                if (isset($counter[$loopCount])) {
+                    if ($counter[$loopCount] === $item->id) {
+                        if (isset($item->desc_of_item)) {
+                            $descriptions .= $item->desc_of_item . ' ';
+                        }
+                        $loopCount++;
+                    }
+                    if (!empty($item->_subrow)) {
+                        extractDescOfItems($item->_subrow, $descriptions, $counter, $loopCount);
+                    }
                 }
             }
         }

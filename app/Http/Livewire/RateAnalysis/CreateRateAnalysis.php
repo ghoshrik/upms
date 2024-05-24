@@ -1687,7 +1687,7 @@ class CreateRateAnalysis extends Component
     }
     public function render()
     {
-        $this->addedRateUpdateTrack = rand(1, 1000);
+        // $this->addedRateUpdateTrack = rand(1, 1000);
         return view('livewire.rate-analysis.create-rate-analysis');
     }
 }
