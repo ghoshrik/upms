@@ -821,7 +821,11 @@ class CreateEstimateProject extends Component
         $this->addedEstimate['unit_id'] = is_numeric($this->estimateData['unit_id']) ? getUnitName($this->estimateData['unit_id']) : $this->estimateData['unit_id'];
         $this->addedEstimate['qty'] = ($this->estimateData['qty'] == '') ? 0 : $this->estimateData['qty'];
         $this->addedEstimate['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
-        $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
+        if(str_contains($this->addedEstimate['unit_id'], '%')){
+            $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'] / 100;
+        }else{
+            $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
+        }
         $this->addedEstimate['version'] = $this->estimateData['version'];
         $this->addedEstimate['page_no'] = (isset($this->estimateData['page_no'])) ? $this->estimateData['page_no'] : 0;
         $this->addedEstimate['table_no'] = (isset($this->estimateData['table_no'])) ? $this->estimateData['table_no'] : 0;

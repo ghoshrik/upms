@@ -267,7 +267,7 @@ class AddedEstimateProjectList extends Component
             $this->allAddedEstimatesData[$key]['qty'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['qty']);
             $this->allAddedEstimatesData[$key]['rate'] = number_format(round($this->allAddedEstimatesData[$key]['rate'], 2), 2);
             $this->allAddedEstimatesData[$key]['rate'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['rate']);
-            $this->allAddedEstimatesData[$key]['total_amount'] = $this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'];
+            $this->allAddedEstimatesData[$key]['total_amount'] = (str_contains($this->allAddedEstimatesData[$key]['unit_id'], '%')) ? (($this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'])/100) : $this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'];
             $this->allAddedEstimatesData[$key]['total_amount'] = number_format(round($this->allAddedEstimatesData[$key]['total_amount'], 2), 2);
             $this->allAddedEstimatesData[$key]['total_amount'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['total_amount']);
             // $this->allAddedEstimatesData[$key]['rate'] = $this->allAddedEstimatesData[$key]['rate'];
