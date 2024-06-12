@@ -179,7 +179,7 @@ class CreateUser extends Component
                 $description = 'Something went wrong.'
             );
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+            // dd($th->getMessage());
             $this->emit('showError', $th->getMessage());
         }
     }

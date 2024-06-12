@@ -7,6 +7,20 @@
                 </div>
                 <div wire:loading.delay.longest.class="loading" class="card-body">
                     <div class="row">
+                        @isset($fetchDropdownData['departments'])
+                            <div class="col-md-12 col-sm-6 col-lg-12">
+                                <div class="form-group">
+                                    <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
+                                        placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
+                                        wire:model.defer="officeData.department_id">
+                                        @foreach ($fetchDropdownData['departments'] as $department)
+                                            <x-select.option label="{{ $department['department_name'] }}"
+                                                value="{{ $department['id'] }}" />
+                                        @endforeach
+                                    </x-select>
+                                </div>
+                            </div>
+                        @endisset
                         <div class="col-md-12 col-sm-6 col-lg-12">
                             <div class="form-group">
                                 <x-input label="{{ trans('cruds.office.fields.office_name') }}"
@@ -23,15 +37,12 @@
                         </div>
                         <div class="col-md-6 col-lg-6 col-sm-6">
                             <x-select label="Select Office {{ trans('cruds.office.fields.level') }}"
-                                placeholder="Select Office {{ trans('cruds.office.fields.level') }}" :options="[
-                                    ['name' => 'L1 Level', 'id' => 1],
-                                    ['name' => 'L2 Level', 'id' => 2],
-                                    ['name' => 'L3 Level', 'id' => 3],
-                                    ['name' => 'L4 Level', 'id' => 4],
-                                    ['name' => 'L5 Level', 'id' => 5],
-                                    ['name' => 'L6 Level', 'id' => 6],
-                                ]"
-                                option-label="name" option-value="id" wire:model.defer="selectedOption.level" />
+                                placeholder="Select Office {{ trans('cruds.office.fields.level') }}"
+                                wire:model.defer="selectedOption.level">
+                                @foreach ($fetchDropdownData['levels'] as $level)
+                                    <x-select.option label="{{ $level['name'] }}" value="{{ $level['id'] }}" />
+                                @endforeach
+                            </x-select>
                         </div>
                         <div class="col-md-6 col-sm-3 col-lg-6">
                             <div class="form-group">

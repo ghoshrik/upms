@@ -2,17 +2,18 @@
 
 namespace App\Http\Livewire\Office;
 
+use App\Models\Department;
+use App\Models\District;
 use App\Models\GP;
-use App\Models\Role;
 use App\Models\Office;
 use App\Models\Taluka;
-use Livewire\Component;
-use App\Models\District;
 use App\Models\Urban_body;
-use WireUi\Traits\Actions;
-use Illuminate\Support\Arr;
 use App\Models\Urban_body_Name;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class CreateOffice extends Component
 {
@@ -28,43 +29,64 @@ class CreateOffice extends Component
             'gp_code' => '',
             'urban_code' => '',
             'ward_code' => '',
-            'level'=>''
+            'level' => '',
         ];
         $this->officeData = [
             'office_address' => '',
             'office_name' => '',
             'office_code' => '',
-            'department_id'=> Auth::user()->department_id
+            'department_id' => (Auth::user()->department_id != 0) ? Auth::user()->department_id : '',
         ];
+        $this->fetchDropdownData['levels'] = [
+            ['name' => 'L1 Level', 'id' => 1],
+            ['name' => 'L2 Level', 'id' => 2],
+            ['name' => 'L3 Level', 'id' => 3],
+            ['name' => 'L4 Level', 'id' => 4],
+            ['name' => 'L5 Level', 'id' => 5],
+            ['name' => 'L6 Level', 'id' => 6],
+        ];
+        if (Auth::user()->user_type == 2) {
+            $allDept = Cache::get('allDept');
+            if ($allDept != '') {
+                $this->fetchDropdownData['departments'] = $allDept;
+            } else {
+                $this->fetchDropdownData['departments'] = Cache::remember('allDept', now()->addMinutes(720), function () {
+                    return Department::select('id', 'department_name')->get();
+                });
+            }
+            $this->fetchDropdownData['levels'] = [
+                ['name' => 'L1 Level', 'id' => 1]
+            ];
+        }
     }
 
     protected $rules = [
-        'officeData.office_address'=>'required|string|max:255',
-        'officeData.office_name'=>'required|string',
-        'officeData.office_code'=>'required|string|unique:offices,office_code',
-        'selectedOption.dist_code'=>'required|integer',
-        'selectedOption.In_area'=>'required|integer',
-        'selectedOption.level'=>'required|integer',
+        'officeData.office_address' => 'required|string|max:255',
+        'officeData.office_name' => 'required|string',
+        'officeData.office_code' => 'required|string|unique:offices,office_code',
+        'selectedOption.dist_code' => 'required|integer',
+        'selectedOption.In_area' => 'required|integer',
+        'selectedOption.level' => 'required|integer',
     ];
     protected $messages = [
-        'officeData.office_address.required'=>'This field is required',
-        'officeData.office_address.string'=>'This is not valid input',
-        'officeData.office_name.required'=>'This field is required',
-        'officeData.office_code.string'=>'invalid Format',
-        'officeData.office_code.required'=>'This field is required',
-        'officeData.office_code.unique'=>'Already exists office',
-        'officeData.office_name.string'=>'invalid Format',
-        'selectedOption.dist_code.required'=>'This field is required',
-        'selectedOption.dist_code.integer'=>'Invalid field',
-        'selectedOption.In_area.required'=>'This field is required',
-        'selectedOption.In_area.required'=>'Invalid format',
-        "selectedOption.gp_code.required"=>"This field is required",
-        'selectedOption.rural_block_code.required'=>'This field is required',
-        'selectedOption.rural_block_code.integer'=>'Invalid format',
-        'selectedOption.urban_code.required'=>'This field is required',
-        'selectedOption.ward_code.integer'=>'Invalid format',
-        'selectedOption.level.integer'=>'Invalid format',
-        'selectedOption.level.required'=>'This field is required'
+        'officeData.office_address.required' => 'This field is required',
+        'officeData.office_address.string' => 'This is not valid input',
+        'officeData.office_name.required' => 'This field is required',
+        'officeData.office_code.string' => 'invalid Format',
+        'officeData.office_code.required' => 'This field is required',
+        'officeData.office_code.unique' => 'Already exists office',
+        'officeData.office_name.string' => 'invalid Format',
+        'selectedOption.dist_code.required' => 'This field is required',
+        'selectedOption.dist_code.integer' => 'Invalid field',
+        'selectedOption.In_area.required' => 'This field is required',
+        'selectedOption.In_area.required' => 'Invalid format',
+        "selectedOption.gp_code.required" => "This field is required",
+        'selectedOption.rural_block_code.required' => 'This field is required',
+        'selectedOption.rural_block_code.integer' => 'Invalid format',
+        'selectedOption.urban_code.required' => 'This field is required',
+        'selectedOption.ward_code.integer' => 'Invalid format',
+        'selectedOption.level.integer' => 'Invalid format',
+        'selectedOption.level.required' => 'This field is required',
     ];
     public function updated($param)
     {
@@ -72,18 +94,16 @@ class CreateOffice extends Component
     }
     public function booted()
     {
-        if ($this->selectedOption['In_area'] == 1)
-        {
-            $this->rules =  Arr::collapse([$this->rules, [
-                'selectedOption.rural_block_code' =>'required|integer',
-                'selectedOption.gp_code' =>'required|integer'
+        if ($this->selectedOption['In_area'] == 1) {
+            $this->rules = Arr::collapse([$this->rules, [
+                'selectedOption.rural_block_code' => 'required|integer',
+                'selectedOption.gp_code' => 'required|integer',
             ]]);
         }
-        if ($this->selectedOption['In_area'] == 2)
-        {
-            $this->rules =  Arr::collapse([$this->rules, [
-                'selectedOption.urban_code'=>'required|integer',
-                'selectedOption.ward_code'=>'required|integer',
+        if ($this->selectedOption['In_area'] == 2) {
+            $this->rules = Arr::collapse([$this->rules, [
+                'selectedOption.urban_code' => 'required|integer',
+                'selectedOption.ward_code' => 'required|integer',
             ]]);
         }
 
@@ -113,17 +133,17 @@ class CreateOffice extends Component
         try {
             $insert = array_merge($this->selectedOption, $this->officeData);
             $insert = [
-                'in_area'=>$this->selectedOption['In_area'],
-                'department_id'=>$this->officeData['department_id'],
-                'office_name'=>$this->officeData['office_name'],
-                'office_code'=>$this->officeData['office_code'],
-                'office_address'=>$this->officeData['office_address'],
-                'dist_code'=>$this->selectedOption['dist_code'],
-                'rural_block_code'=>($this->selectedOption['rural_block_code']=='') ? 0 :$this->selectedOption['dist_code'],
-                'gp_code'=>($this->selectedOption['gp_code']=='') ? 0 :$this->selectedOption['dist_code'],
-                'urban_code'=>($this->selectedOption['urban_code']=='') ? 0 :$this->selectedOption['urban_code'],
-                'ward_code'=>($this->selectedOption['ward_code']=='') ? 0 :$this->selectedOption['ward_code'],
-                'level_no'=>$this->selectedOption['level']
+                'in_area' => $this->selectedOption['In_area'],
+                'department_id' => $this->officeData['department_id'],
+                'office_name' => $this->officeData['office_name'],
+                'office_code' => $this->officeData['office_code'],
+                'office_address' => $this->officeData['office_address'],
+                'dist_code' => $this->selectedOption['dist_code'],
+                'rural_block_code' => ($this->selectedOption['rural_block_code'] == '') ? 0 : $this->selectedOption['dist_code'],
+                'gp_code' => ($this->selectedOption['gp_code'] == '') ? 0 : $this->selectedOption['dist_code'],
+                'urban_code' => ($this->selectedOption['urban_code'] == '') ? 0 : $this->selectedOption['urban_code'],
+                'ward_code' => ($this->selectedOption['ward_code'] == '') ? 0 : $this->selectedOption['ward_code'],
+                'level_no' => $this->selectedOption['level'],
             ];
             // dd($insert);
             Office::create($insert);

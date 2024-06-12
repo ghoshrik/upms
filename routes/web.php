@@ -104,7 +104,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         });
 
         //Department Admin
-        Route::group(['middleware' => ['role:Department Admin']], function () {
+        Route::group(['middleware' => ['role:Department Admin|State Admin']], function () {
             Route::get('designation', Designation::class)->name('designation');
             Route::get('office', Office::class)->name('office');
             Route::get('assign-office-admin', AssignOfficeAdmin::class)->name('assign-office-admin');
@@ -149,9 +149,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::post('/calculate-rule-area-perimeter', [ApiController::class, 'unitQtyAdded'])->name('calculate-rule-area-perimeter');
             Route::post('/calculate-rule-surface-area', [ApiController::class, 'unitQtyAdded'])->name('calculate-rule-surface-area');
             Route::post('/calculate-rule-area-perimeter-circle', [ApiController::class, 'unitQtyAdded'])->name('calculate-rule-area-perimeter-circle');
-            
-            
-            
+
+
+
         });
 
         Route::group(['middleware' => ['role:SOR Preparer']], function () {

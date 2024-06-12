@@ -211,7 +211,7 @@ final class OfficeTable extends PowerGridComponent
      */
     public function datasource(): Builder
     {
-        return Office::query()
+        $query = Office::query()
             ->select(
                 'id',
                 'office_name',
@@ -226,8 +226,13 @@ final class OfficeTable extends PowerGridComponent
                 'level_no',
                 'office_code',
                 DB::raw('ROW_NUMBER() OVER (ORDER BY offices.id) as serial_no')
-            )
-            ->where('offices.department_id', Auth::user()->department_id);;
+            );
+            if(Auth::user()->user_type === 2){
+                $query->where('offices.level_no',1);
+            }else{
+                $query->where('offices.department_id', Auth::user()->department_id);
+            }
+            return $query;
     }
 
     /*

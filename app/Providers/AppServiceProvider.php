@@ -33,7 +33,6 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('Super Admin') ? true : null;
         });
         Schema::defaultStringLength(191);
-
         view()->composer('*', function ($menus) {
             if (Session::has('menus')) {
                 $menusData = Session::get('menus');
