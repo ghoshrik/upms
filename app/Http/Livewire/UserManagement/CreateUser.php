@@ -96,6 +96,8 @@ class CreateUser extends Component
         if (Auth::user()->user_type == 2) {
             $this->getDropdownData('DEPT');
             $this->getDropdownData('DES');
+            $this->getDropdownData('LEVEL');
+            $this->dropDownData['offices'] = [];
         }
         if (Auth::user()->user_type == 3) {
             $this->getDropdownData('LEVEL');
@@ -119,7 +121,19 @@ class CreateUser extends Component
                     $this->dropDownData['designations'] = Designation::all();
                 }
             } elseif ($lookingFor === 'LEVEL') {
-                $this->dropDownData['level'] = true;
+                $this->dropDownData['levels'] = [
+                    ['name' => 'L1 Level', 'id' => 1],
+                    ['name' => 'L2 Level', 'id' => 2],
+                    ['name' => 'L3 Level', 'id' => 3],
+                    ['name' => 'L4 Level', 'id' => 4],
+                    ['name' => 'L5 Level', 'id' => 5],
+                    ['name' => 'L6 Level', 'id' => 6],
+                ];
+                if (Auth::user()->user_type == 2) {
+                    $this->dropDownData['levels'] = [
+                        ['name' => 'L1 Level', 'id' => 1],
+                    ];
+                }
             } else {
                 // $this->allUserTypes = UserType::where('parent_id', Auth::user()->user_type)->get();
             }
@@ -129,8 +143,8 @@ class CreateUser extends Component
     }
     public function fetchLevelWiseOffice()
     {
-        if ($this->selectLevel) {
-            $this->dropDownData['offices'] = Office::where([['department_id', Auth::user()->department_id], ['level_no', $this->selectLevel]])->get();
+        if ($this->selectLevel || (Auth::user()->user_type == 2)) {
+            $this->dropDownData['offices'] = Office::where([['department_id', $this->newUserData['department_id']], ['level_no', (Auth::user()->user_type == 2) ? 1 : $this->selectLevel]])->get();
         }
     }
     public function updated($param)
@@ -139,12 +153,12 @@ class CreateUser extends Component
     }
     public function store()
     {
-        $this->validate();
+        // $this->validate();
         // dd($this->newUserData);
         try {
-
             unset($this->newUserData['confirm_password']);
             $userType = UserType::where('parent_id', Auth::user()->user_type)->first();
+            dd($assignRoleDetails = $newUserDetails->syncRoles([$userType->type]));
             if (isset($userType)) {
                 $this->newUserData['user_type'] = $userType['id'];
                 $this->newUserData['department_id'] = (Auth::user()->user_type == 2) ? $this->newUserData['department_id'] : Auth::user()->department_id;

@@ -8,7 +8,7 @@
                 <div class="card-body">
                     <div class="row">
                         @isset($dropDownData['departments'])
-                            <div class="col-md-4 col-lg-4 col-sm-4">
+                            <div class="col-md-4 col-lg-4 col-sm-12">
                                 <div class="form-group">
                                     <x-select label="{{ trans('cruds.user-management.fields.department') }}"
                                         placeholder="Select {{ trans('cruds.user-management.fields.department') }}"
@@ -21,9 +21,8 @@
                                 </div>
                             </div>
                         @endisset
-
                         @isset($dropDownData['designations'])
-                            <div class="col-md-4 col-lg-4 col-sm-4">
+                            <div class="col-md-4 col-lg-4 col-sm-12">
                                 <div class="form-group">
                                     <x-select label="Designation" placeholder="Select Designation"
                                         wire:model.defer="newUserData.designation_id">
@@ -35,24 +34,20 @@
                                 </div>
                             </div>
                         @endisset
-                        @isset($dropDownData['level'])
-                            <div class="col-md-4 col-lg-4 col-sm-4">
-                                <x-select label="{{ trans('cruds.user-management.fields.office_lvl') }}"
-                                    placeholder="{{ trans('cruds.user-management.fields.office_lvl') }}" :options="[
-                                        ['name' => 'L1 Level', 'id' => 1],
-                                        ['name' => 'L2 Level', 'id' => 2],
-                                        ['name' => 'L3 Level', 'id' => 3],
-                                        ['name' => 'L4 Level', 'id' => 4],
-                                        ['name' => 'L5 Level', 'id' => 5],
-                                        ['name' => 'L6 Level', 'id' => 6],
-                                    ]"
-                                    option-label="name" option-value="id" wire:model.defer="selectLevel"
-                                    x-on:select="$wire.fetchLevelWiseOffice()" />
+                        @isset($dropDownData['levels'])
+                            <div class="col-md-4 col-lg-4 col-sm-12">
+                                <x-select label="Select Office {{ trans('cruds.office.fields.level') }}"
+                                    placeholder="Select Office {{ trans('cruds.office.fields.level') }}"
+                                    wire:model.defer="selectLevel" x-on:select="$wire.fetchLevelWiseOffice()">
+                                    @foreach ($dropDownData['levels'] as $level)
+                                        <x-select.option label="{{ $level['name'] }}" value="{{ $level['id'] }}" />
+                                    @endforeach
+                                </x-select>
                             </div>
                         @endisset
 
                         @isset($dropDownData['offices'])
-                            <div class="col-md-4 col-lg-4 col-sm-4">
+                            <div class="col-md-4 col-lg-4 col-sm-12">
                                 <div class="form-group">
                                     <x-select label="{{ trans('cruds.user-management.fields.office_name') }}"
                                         placeholder="Select {{ trans('cruds.user-management.fields.office_name') }}"
@@ -66,35 +61,35 @@
                             </div>
                         @endisset
 
-                        <div class="col-md-4 col-lg-4 col-sm-3">
+                        <div class="col-md-4 col-lg-4 col-sm-12">
                             <div class="form-group">
                                 <x-input wire:model.lazy="newUserData.ehrms_id"
                                     label="{{ trans('cruds.user-management.fields.ehrms_id') }}"
                                     placeholder="{{ trans('cruds.user-management.fields.ehrms_id') }}" />
                             </div>
                         </div>
-                        <div class="col-md-4 col-lg-4 col-sm-4">
+                        <div class="col-md-4 col-lg-4 col-sm-12">
                             <div class="form-group">
                                 <x-input wire:model.defer="newUserData.emp_name"
                                     label="{{ trans('cruds.user-management.fields.employee_name') }}"
                                     placeholder="Enter {{ trans('cruds.user-management.fields.employee_name') }}" />
                             </div>
                         </div>
-                        <div class="col-md-4 col-lg-4 col-sm-4">
+                        <div class="col-md-4 col-lg-4 col-sm-12">
                             <div class="form-group">
                                 <x-input wire:model.defer="newUserData.username"
                                     label="{{ trans('cruds.user-management.fields.username') }}"
                                     placeholder="{{ trans('cruds.user-management.fields.username') }}" />
                             </div>
                         </div>
-                        <div class="col-md-4 col-lg-4 col-sm-4">
+                        <div class="col-md-4 col-lg-4 col-sm-12">
                             <div class="form-group">
                                 <x-input wire:model.lazy="newUserData.email"
                                     label="{{ trans('cruds.user-management.fields.email_id') }}"
                                     placeholder="Enter Employee {{ trans('cruds.user-management.fields.email_id') }} " />
                             </div>
                         </div>
-                        <div class="col-md-4 col-lg-4 col-sm-4">
+                        <div class="col-md-4 col-lg-4 col-sm-12">
                             <div class="form-group">
                                 <x-input wire:model.lazy="newUserData.mobile"
                                     label="{{ trans('cruds.user-management.fields.mobile') }}"
