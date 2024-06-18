@@ -16,13 +16,14 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-lg-6">
                             <div class="form-group">
-                                <x-select label="Parent Type"
-                                    placeholder="Select Parent Type"
+                                <x-select label="Parent Type" placeholder="Select Parent Type"
                                     wire:model.defer="formData.user_type_id">
-                                    @foreach ($dropdownData['user_types_list'] as $user_type)
-                                        <x-select.option label="{{ $user_type['type'] }}"
-                                            value="{{ $user_type['id'] }}" />
-                                    @endforeach
+                                    @isset($dropdownData['user_types_list'])
+                                        @foreach ($dropdownData['user_types_list'] as $user_type)
+                                            <x-select.option label="{{ $user_type['type'] }}"
+                                                value="{{ $user_type['id'] }}" />
+                                        @endforeach
+                                    @endisset
                                 </x-select>
                             </div>
                         </div>

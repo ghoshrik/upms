@@ -4,13 +4,13 @@ namespace App\Http\Livewire\DepartmentCategory;
 
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class DeptCategoryTable extends DataTableComponent
 {
-    // protected $model = SorCategoryType::class;
+    // protected $model = DepartmentCategories::class;
 
     public function configure(): void
     {
@@ -39,7 +39,7 @@ class DeptCategoryTable extends DataTableComponent
     }
     public function builder(): Builder
     {
-        return SorCategoryType::query()
+        return DepartmentCategories::query()
             ->where('sor_category_types.department_id','=',Auth::user()->department_id);
     }
 }

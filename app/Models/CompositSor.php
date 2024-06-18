@@ -15,7 +15,7 @@ class CompositSor extends Model
     ];
     public function getDeptCategoryName()
     {
-        return $this->belongsTo(SorCategoryType::class, 'dept_category_id', 'id');
+        return $this->belongsTo(DepartmentCategories::class, 'dept_category_id', 'id');
     }
     public function ParentSORItemNo()
     {

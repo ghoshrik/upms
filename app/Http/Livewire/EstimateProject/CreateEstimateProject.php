@@ -8,7 +8,7 @@ use App\Models\EstimatePrepare;
 use App\Models\QultiyEvaluation;
 use App\Models\RatesAnalysis;
 use App\Models\SOR;
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use App\Models\SorMaster;
 use App\Models\UnitMaster;
 use Illuminate\Support\Facades\Auth;
@@ -270,14 +270,14 @@ class CreateEstimateProject extends Component
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
         $this->estimateData['total_amount'] = '';
-        // $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
+        // $this->fatchDropdownData['departmentsCategory'] = DepartmentCategories::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
         $cacheKey = 'dept_cat' . '_' . $this->estimateData['dept_id'];
         $cacheHasDeptCat = Cache::get($cacheKey);
         if ($cacheHasDeptCat != '') {
             $this->fatchDropdownData['departmentsCategory'] = $cacheHasDeptCat;
         } else {
             $this->fatchDropdownData['departmentsCategory'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
-                return SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
+                return DepartmentCategories::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
             });
         }
     }

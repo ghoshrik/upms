@@ -9,7 +9,7 @@ use App\Models\Department;
 use WireUi\Traits\Actions;
 use App\Models\SORCategory;
 use Illuminate\Support\Arr;
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
@@ -115,7 +115,7 @@ class CreateEstimate extends Component
 
     public function getDeptCategory()
     {
-        $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
+        $this->fatchDropdownData['departmentsCategory'] = DepartmentCategories::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
     }
 
     public function getVersion()

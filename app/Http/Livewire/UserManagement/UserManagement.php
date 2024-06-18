@@ -4,6 +4,7 @@ namespace App\Http\Livewire\UserManagement;
 
 use App\Models\User;
 use Livewire\Component;
+use App\Models\UserType;
 use Illuminate\Support\Facades\Auth;
 
 class UserManagement extends Component

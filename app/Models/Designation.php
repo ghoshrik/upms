@@ -10,7 +10,7 @@ class Designation extends Model
     use HasFactory;
     protected $table = 'designations';
     protected $fillable = [
-        'designation_name'
+        'designation_name','level_no'
     ];
     // public function fetchDesignationName()
     // {

@@ -5,7 +5,7 @@ namespace App\Http\Livewire\Compositsor;
 use Livewire\Component;
 use App\Models\UnitMaster;
 use WireUi\Traits\Actions;
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use App\Models\DynamicSorHeader;
 use Illuminate\Support\Facades\Session;
 
@@ -16,7 +16,7 @@ class Create extends Component
     public $fetchDropDownData = [], $storeItem = [], $inputsData = [], $viewModal = false, $table_no, $page_no, $modalName, $counterForItemNo = 0, $sorType;
     public function mount()
     {
-        $this->fetchDropDownData['departmentCategory'] = SorCategoryType::where('department_id', Session::get('user_data.department_id'))->get();
+        $this->fetchDropDownData['departmentCategory'] = DepartmentCategories::where('department_id', Session::get('user_data.department_id'))->get();
         $this->fetchDropDownData['tables'] = [];
         $this->fetchDropDownData['pages'] = [];
         $this->storeItem['dept_category_id'] = '';

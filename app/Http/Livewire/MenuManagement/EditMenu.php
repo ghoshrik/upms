@@ -3,12 +3,11 @@
 namespace App\Http\Livewire\MenuManagement;
 
 use App\Models\Menu;
-use App\Models\User;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Spatie\Permission\Models\Permission;
-use WireUi\Traits\Actions;
-use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
+use WireUi\Traits\Actions;
 
 class EditMenu extends Component
 {
@@ -16,11 +15,10 @@ class EditMenu extends Component
 
     public $dropDownData = [], $formatedPermission = [], $newMenuData = [], $selectedMenu;
 
-
     public function mount($id)
     {
         // dd(User::role('Estimate Preparer (EP)')->get());
-        $this->selectedMenu = Menu::where('id',$id)->first();
+        $this->selectedMenu = Menu::where('id', $id)->first();
         $this->newMenuData = [
             'title' => $this->selectedMenu->title,
             'parent_id' => $this->selectedMenu->parent_id,
@@ -81,34 +79,38 @@ class EditMenu extends Component
     }
     public function store()
     {
-        $permissionsRoles = $this->dropDownData['permissionsRoles'];
-        $selectedIndex = $this->newMenuData['permissions_roles'];
-        $selectedPermissionRole = $permissionsRoles[$selectedIndex];
-        $this->newMenuData['permissions_roles'] = (is_array($selectedPermissionRole)) ? $selectedPermissionRole['name'] : $selectedPermissionRole;
-
-        $this->selectedMenu->title = $this->newMenuData['title'];
-        $this->selectedMenu->parent_id = $this->newMenuData['parent_id'];
-        $this->selectedMenu->icon = $this->newMenuData['icon'];
-        $this->selectedMenu->link = $this->newMenuData['link'];
-        $this->selectedMenu->link_type = $this->newMenuData['link_type'];
-        $this->selectedMenu->piority = $this->newMenuData['piority'];
-        $this->selectedMenu->permission_or_role = $this->newMenuData['permission_or_role'];
-        $this->selectedMenu->permissions_roles = $this->newMenuData['permissions_roles'];
-        // dd(is_array($selectedPermissionRole),$permissionsRoles,$selectedIndex,$selectedPermissionRole,$this->selectedMenu);
-        if ($this->selectedMenu->update()) {
-            $this->notification()->success(
-                $title = 'Success',
-                $description =  'Menu Updated successfully!'
+        try {
+            $permissionsRoles = $this->dropDownData['permissionsRoles'];
+            $selectedIndex = $this->newMenuData['permissions_roles'];
+            $selectedPermissionRole = $permissionsRoles[$selectedIndex];
+            $this->newMenuData['permissions_roles'] = (is_array($selectedPermissionRole)) ? $selectedPermissionRole['name'] : $selectedPermissionRole;
+            $this->selectedMenu->title = $this->newMenuData['title'];
+            $this->selectedMenu->parent_id = $this->newMenuData['parent_id'];
+            $this->selectedMenu->icon = $this->newMenuData['icon'];
+            $this->selectedMenu->link = $this->newMenuData['link'];
+            $this->selectedMenu->link_type = $this->newMenuData['link_type'];
+            $this->selectedMenu->piority = $this->newMenuData['piority'];
+            $this->selectedMenu->permission_or_role = $this->newMenuData['permission_or_role'];
+            $this->selectedMenu->permissions_roles = $this->newMenuData['permissions_roles'];
+            // Attempt to update the menu
+            if ($this->selectedMenu->update()) {
+                $this->notification()->success(
+                    $title = 'Success',
+                    $description = 'Menu Updated successfully!'
+                );
+                $this->emit('openEntryForm');
+                $this->reset();
+                // return;
+            }
+        } catch (\Exception $e) {
+            // Catch any exception and display an error notification
+            $this->notification()->error(
+                $title = 'Error !!!',
+                $description = 'An unexpected error occurred: ' . $e->getMessage()
             );
-            $this->reset();
-            $this->emit('openEntryForm');
-            return;
         }
-        $this->notification()->error(
-            $title = 'Error !!!',
-            $description = 'Something went wrong.'
-        );
     }
+
     public function render()
     {
         return view('livewire.menu-management.edit-menu');

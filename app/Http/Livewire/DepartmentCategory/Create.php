@@ -4,7 +4,7 @@ namespace App\Http\Livewire\DepartmentCategory;
 
 use Livewire\Component;
 use WireUi\Traits\Actions;
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use Illuminate\Support\Facades\Auth;
 
 class Create extends Component
@@ -26,7 +26,7 @@ class Create extends Component
     {
         $validateData = $this->validate();
         try {
-            SorCategoryType::create([
+            DepartmentCategories::create([
                 'department_id'=> Auth::user()->department_id,
                 'dept_category_name'=>$this->dept_category_name
             ]);

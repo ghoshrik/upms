@@ -3,7 +3,7 @@
 namespace App\Http\Livewire\ViewSorBook;
 
 use Livewire\Component;
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use App\Models\DynamicSorHeader;
 
 class ViewBookList extends Component
@@ -12,14 +12,14 @@ class ViewBookList extends Component
     public function render()
     {
         $getData = DynamicSorHeader::where('id', $this->selectedIdForEdit)->first();
-        $this->dept_category = SorCategoryType::select('id', 'dept_category_name')->where('id', '=', $getData['dept_category_id'])->first();
+        $this->dept_category = DepartmentCategories::select('id', 'dept_category_name')->where('id', '=', $getData['dept_category_id'])->first();
         $this->dept_category_id = $this->dept_category['id'];
         $this->field['headerData'] = json_decode($getData['header_data'], true);
         $this->rowData = json_decode($getData['row_data'], true);
         $this->field['tableNo'] = $getData['table_no'];
         $this->field['title'] = $getData['title'];
         $this->field['dept_category'] = $getData['dept_category_id'];
-        $this->field['dept_category'] = SorCategoryType::select('dept_category_name')->where('id', $this->field['dept_category'])->first();
+        $this->field['dept_category'] = DepartmentCategories::select('dept_category_name')->where('id', $this->field['dept_category'])->first();
         $this->field['volumeNo'] = $getData['volume_no'];
         if ($this->field['volumeNo'] == 1) {
             $this->field['volumeNo'] = "Volume I";

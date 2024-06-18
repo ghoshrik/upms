@@ -9,7 +9,7 @@ use WireUi\Traits\Actions;
 use App\Models\Carriagesor;
 use App\Models\SOR;
 use Livewire\WithFileUploads;
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use Illuminate\Support\Facades\Auth;
 
 class CreateCarriageSor extends Component
@@ -66,7 +66,7 @@ class CreateCarriageSor extends Component
 
         $this->inputsData = [
             [
-                // 'dept_cate_id'=>SorCategoryType::where('department_id', Auth::user()->department_id)->get(),
+                // 'dept_cate_id'=>DepartmentCategories::where('department_id', Auth::user()->department_id)->get(),
                 'item_no'=>'',
                 // 'Item_no'=>'',
                 'description'=>'',
@@ -77,7 +77,7 @@ class CreateCarriageSor extends Component
             ]
         ];
         // $this->fetchDropDownData['carriageSor'] = '';
-        $this->fetchDropDownData['departmentCategory'] = SorCategoryType::select('id','dept_category_name','department_id')->where('department_id', Auth::user()->department_id)->get();
+        $this->fetchDropDownData['departmentCategory'] = DepartmentCategories::select('id','dept_category_name','department_id')->where('department_id', Auth::user()->department_id)->get();
         // $this->fetchDropDownData['sor_parent_id']=SOR::select('id','Item_details')->where('department_id',Auth::user()->department_id)->where('dept_category_id',$this->fetchDropDownData['departmentCategory'])->get();
         // // dd($this->fetchDropDownData['sor_parent_id']);
         $this->fetchDropDownData['unitMaster'] =  UnitMaster::select('id', 'unit_name', 'short_name', 'is_active')->where('is_active', 1)->orderBy('id', 'desc')->get();
@@ -115,7 +115,7 @@ class CreateCarriageSor extends Component
         $key = $inpuDataCount - 1;
         $this->inputsData[] =
             [
-                // 'dept_cate_id'=>SorCategoryType::where('department_id', Auth::user()->department_id)->get(),
+                // 'dept_cate_id'=>DepartmentCategories::where('department_id', Auth::user()->department_id)->get(),
                 'item_no'=>'',
                 // 'Item_no'=>'',
                 'description'=>'',

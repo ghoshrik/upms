@@ -7,7 +7,7 @@ use App\Models\SOR;
 use Livewire\Component;
 use App\Models\Department;
 use WireUi\Traits\Actions;
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use Illuminate\Support\Facades\Auth;
 
 class CreateCarriageCost extends Component
@@ -20,7 +20,7 @@ class CreateCarriageCost extends Component
     public function mount()
     {
         $this->dropdownData['allDept'] = Department::select('id', 'department_name')->where('id', Auth::user()->department_id)->get();
-        $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('sor_category_types.id', 'sor_category_types.dept_category_name')
+        $this->fatchDropdownData['departmentsCategory'] = DepartmentCategories::select('sor_category_types.id', 'sor_category_types.dept_category_name')
                                                         // ->join('')
                                                         ->join('carriagesors','carriagesors.dept_category_id','=','sor_category_types.id')
                                                         ->where('carriagesors.dept_id', '=', Auth::user()->department_id)

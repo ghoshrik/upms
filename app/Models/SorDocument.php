@@ -16,7 +16,7 @@ class SorDocument extends Model
 
     public function deptCategories()
     {
-        return $this->belongsTo(SorCategoryType::class, 'dept_category_id');
+        return $this->belongsTo(DepartmentCategories::class, 'dept_category_id');
     }
     public function scopeSearch($query, $value)
     {

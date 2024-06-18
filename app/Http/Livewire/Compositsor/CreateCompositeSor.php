@@ -4,7 +4,7 @@ namespace App\Http\Livewire\Compositsor;
 
 use App\Models\CompositSor;
 use App\Models\DynamicSorHeader;
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use App\Models\UnitMaster;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -50,7 +50,7 @@ class CreateCompositeSor extends Component
 
     public function mount()
     {
-        $this->fetchDropDownData['departmentCategory'] = SorCategoryType::where('department_id', Auth::user()->department_id)->get();
+        $this->fetchDropDownData['departmentCategory'] = DepartmentCategories::where('department_id', Auth::user()->department_id)->get();
         $this->fetchDropDownData['types'] = [
             [
                 'id'=>0,

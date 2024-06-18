@@ -7,7 +7,7 @@ use WireUi\Traits\Actions;
 use App\Models\DocumentSor;
 use App\Models\SorDocument;
 use Livewire\WithFileUploads;
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -90,7 +90,7 @@ class CreateDocumentSor extends Component
 
 	if(Auth::user()->dept_category_id !=null)
 	{
-		$this->deptCategories = SorCategoryType::select('sor_category_types.id','sor_category_types.dept_category_name')
+		$this->deptCategories = DepartmentCategories::select('sor_category_types.id','sor_category_types.dept_category_name')
 		->join('departments','departments.id','=','sor_category_types.department_id')
 		->where('sor_category_types.department_id','=',Auth::user()->department_id)
 		->where('sor_category_types.id','=',Auth::user()->dept_category_id)
@@ -99,7 +99,7 @@ class CreateDocumentSor extends Component
 	}
 	else
 	{
-		$this->deptCategories = SorCategoryType::select('sor_category_types.id','sor_category_types.dept_category_name')
+		$this->deptCategories = DepartmentCategories::select('sor_category_types.id','sor_category_types.dept_category_name')
 		->join('departments','departments.id','=','sor_category_types.department_id')
 		->where('sor_category_types.department_id','=',Auth::user()->department_id)
 		->groupBy('sor_category_types.id')

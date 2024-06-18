@@ -59,7 +59,7 @@
                         <div class="col-md-12 col-lg-12 col-sm-3">
                             <div class="card">
                                 <div class="card-body">
-                                   <livewire:assign-dept-admin.assign-department-admin-list />
+                                   {{-- <livewire:assign-dept-admin.assign-department-admin-list /> --}}
                                 </div>
                             </div>
                         </div>

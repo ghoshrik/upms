@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Designation;
 
+use App\Models\Levels;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 use App\Models\Designation as ModelsDesignation;
@@ -10,18 +11,22 @@ class CreateDesignation extends Component
 {
     use Actions;
 
-    public $designation_name ,$updatedDataTableTracker;
+    public $designation_name, $dropdownData=[],$level_no ,$updatedDataTableTracker;
     protected $rules = [
         'designation_name' => 'required|string|unique:designations,designation_name|max:255',
+        'level_no' => 'required'
     ];
     protected $messages =
     [
         'designation_name.required' => 'This field is required',
         'designation_name.string' => 'This field must be string',
         'designation_name.unique' => 'This designation name already exists',
-        'designation_name.max' => 'Not allow'
+        'designation_name.max' => 'Not allow',
+        'level_no.required' => 'This field is required'
     ];
-
+    public function mount(){
+        $this->dropdownData['levels'] = Levels::all();
+    }
     public function updated($param)
     {
         $this->validateOnly($param);
@@ -37,6 +42,7 @@ class CreateDesignation extends Component
             );
             $this->updatedDataTableTracker = rand(1,1000);
             $this->emit('openEntryForm');
+            $this->reset();
         } catch (\Throwable $th) {
             $this->emit('showError', $th->getMessage());
         }

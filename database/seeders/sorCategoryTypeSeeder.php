@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use Illuminate\Database\Seeder;
 
 class sorCategoryTypeSeeder extends Seeder
@@ -39,7 +39,7 @@ class sorCategoryTypeSeeder extends Seeder
 
         foreach($category as $cate)
         {
-            SorCategoryType::create($cate);
+            DepartmentCategories::create($cate);
         }
     }
 }

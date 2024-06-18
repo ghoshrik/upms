@@ -10,7 +10,7 @@ use App\Models\Department;
 use App\Models\UnitMaster;
 use WireUi\Traits\Actions;
 use Livewire\WithFileUploads;
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -71,7 +71,7 @@ class CreateSor extends Component
                 // 'file_upload' => ''
             ]
         ];
-        $this->fetchDropDownData['departmentCategory'] = SorCategoryType::where('department_id', Auth::user()->department_id)->get();
+        $this->fetchDropDownData['departmentCategory'] = DepartmentCategories::where('department_id', Auth::user()->department_id)->get();
         $this->fetchDropDownData['unitMaster'] =  UnitMaster::select('id', 'unit_name', 'short_name', 'is_active')->where('is_active', 1)->orderBy('id', 'desc')->get();
     }
 

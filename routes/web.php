@@ -68,8 +68,8 @@ require __DIR__ . '/auth.php';
 //     }
 //     $user = Auth::user()->id;
 //     $user = User::find($user)->first();
-//     $user = User::where('id',$user)->first();
-//     $user->syncRoles("Department Admin");
+    // $user = User::where('id',2)->first();
+    // $user->syncRoles("State Admin");
 // });
 
 // Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
@@ -99,7 +99,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
             Route::get('mis-report', MisReport::class)->name('mis-report');
         });
-        Route::group(['middleware' => ['role:State Admin|Department Admin|Office Admin']], function () {
+        Route::group(['middleware' => ['role:Super Admin|State Admin|Department Admin|Office Admin']], function () {
             Route::get('user-management', UserManagement::class)->name('user-management');
         });
 
@@ -112,7 +112,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('unit-master', UnitsMaster::class)->name('unit-master');
             Route::get('department-category', DepartmentCategoryList::class)->name('department-category');
         });
-
         //Office Admin
         Route::group(['middleware' => ['role:Office Admin']], function () {
             Route::get('assign-role', AssignRole::class)->name('assign-role');

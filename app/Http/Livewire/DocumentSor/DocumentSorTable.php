@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\DocumentSor;
 
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use App\Models\SorDocument;
 use Livewire\Component;
 use Livewire\WithPagination;

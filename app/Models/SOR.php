@@ -45,7 +45,7 @@ class SOR extends Model
     }
     public function getDeptCategoryName()
     {
-        return $this->belongsTo(SorCategoryType::class, 'dept_category_id');
+        return $this->belongsTo(DepartmentCategories::class, 'dept_category_id');
     }
     public function getUnitsName()
     {

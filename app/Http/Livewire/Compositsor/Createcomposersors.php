@@ -9,7 +9,7 @@ use WireUi\Traits\Actions;
 use App\Models\ComposerSor;
 use App\Models\CompositSor;
 use Livewire\WithFileUploads;
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -91,7 +91,7 @@ class Createcomposersors extends Component
         $this->storeItem['dept_category_id'] = '';
         // $this->storeItem['parentSorItemNo'] = '';
         $this->storeItem['file_upload'] = '';
-        $this->fetchDropDownData['departmentCategory'] = SorCategoryType::where('department_id', Auth::user()->department_id)->get();
+        $this->fetchDropDownData['departmentCategory'] = DepartmentCategories::where('department_id', Auth::user()->department_id)->get();
         $this->fetchDropDownData['unitMaster'] =  UnitMaster::select('id', 'unit_name', 'short_name', 'is_active')->where('is_active', 1)->orderBy('id', 'desc')->get();
     }
 
@@ -122,7 +122,7 @@ class Createcomposersors extends Component
     {
         // dd($this->storeItem['dept_category_id']);
         $this->fetchDropDownData['SORItemNo'] = SOR::select('id', 'Item_details')->where('dept_category_id', $this->storeItem['dept_category_id'])->get();
-        //$this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
+        //$this->fatchDropdownData['departmentsCategory'] = DepartmentCategories::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
     }
     public function resetValus($resetAll = false)
     {

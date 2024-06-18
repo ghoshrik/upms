@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Carbon\Carbon;
 use App\Models\SORCategory;
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use Illuminate\Database\Seeder;
 
 class SorCategoriesSeeder extends Seeder

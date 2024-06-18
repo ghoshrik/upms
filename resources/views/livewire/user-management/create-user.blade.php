@@ -7,6 +7,19 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
+                        @isset($dropDownData['states'])
+                            <div class="col-md-4 col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <x-select label="States List" placeholder="Select State"
+                                        wire:model.defer="newUserData.state_code">
+                                        @foreach ($dropDownData['states'] as $state)
+                                            <x-select.option label="{{ $state['state_name'] }}"
+                                                value="{{ $state['state_code'] }}" />
+                                        @endforeach
+                                    </x-select>
+                                </div>
+                            </div>
+                        @endisset
                         @isset($dropDownData['departments'])
                             <div class="col-md-4 col-lg-4 col-sm-12">
                                 <div class="form-group">
@@ -16,19 +29,6 @@
                                         @foreach ($dropDownData['departments'] as $department)
                                             <x-select.option label="{{ $department['department_name'] }}"
                                                 value="{{ $department['id'] }}" />
-                                        @endforeach
-                                    </x-select>
-                                </div>
-                            </div>
-                        @endisset
-                        @isset($dropDownData['designations'])
-                            <div class="col-md-4 col-lg-4 col-sm-12">
-                                <div class="form-group">
-                                    <x-select label="Designation" placeholder="Select Designation"
-                                        wire:model.defer="newUserData.designation_id">
-                                        @foreach ($dropDownData['designations'] as $designation)
-                                            <x-select.option label="{{ $designation['designation_name'] }}"
-                                                value="{{ $designation['id'] }}" />
                                         @endforeach
                                     </x-select>
                                 </div>
@@ -45,7 +45,19 @@
                                 </x-select>
                             </div>
                         @endisset
-
+                        @isset($dropDownData['designations'])
+                            <div class="col-md-4 col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <x-select label="Designation" placeholder="Select Designation"
+                                        wire:model.defer="newUserData.designation_id">
+                                        @foreach ($dropDownData['designations'] as $designation)
+                                            <x-select.option label="{{ $designation['designation_name'] }}"
+                                                value="{{ $designation['id'] }}" />
+                                        @endforeach
+                                    </x-select>
+                                </div>
+                            </div>
+                        @endisset
                         @isset($dropDownData['offices'])
                             <div class="col-md-4 col-lg-4 col-sm-12">
                                 <div class="form-group">

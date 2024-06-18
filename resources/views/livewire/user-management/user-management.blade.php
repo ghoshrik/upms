@@ -67,7 +67,7 @@
                             <div class="card">
                                 <div class="card-body">
 
-                                    <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+                                    {{-- <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
                                         @foreach ($tabs as $tab)
                                             <li class="nav-item" role="presentation">
                                                 <button
@@ -78,12 +78,12 @@
                                                     aria-selected="true">{{ $tab['title'] }}</button>
                                             </li>
                                         @endforeach
-                                    </ul>
-                                    <div class="tab-content" id="myTabContent">
+                                    </ul> --}}
+                                    {{-- <div class="tab-content" id="myTabContent">
                                         @foreach ($tabs as $tab)
                                             <div class="tab-pane fade show {{ $activeTab === $tab['title'] ? 'active' : '' }}"
                                                 id="{{ $tab['id'] }}" role="tabpanel"
-                                                aria-labelledby="{{ $tab['id'] }}-tab">
+                                                aria-labelledby="{{ $tab['id'] }}-tab"> --}}
                                                 {{-- @foreach ($tab['data'] as $user)
                                     <tr>
                                         <td>
@@ -98,10 +98,11 @@
                                     </tr>
                                 @endforeach --}}
                                                 <livewire:user-management.datatable.powergrid.users-data-table
-                                                    :userData="$tab['data']" :wire:key='$updateDataTableTracker' />
-                                            </div>
+                                                    {{-- :userData="$tab['data']"  --}}
+                                                    :wire:key='$updateDataTableTracker' />
+                                            {{-- </div>
                                         @endforeach
-                                    </div>
+                                    </div> --}}
 
 
 

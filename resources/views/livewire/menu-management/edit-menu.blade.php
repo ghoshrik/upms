@@ -30,9 +30,10 @@
                                 <x-select label="Parent" placeholder="Select Menu Parent"
                                     wire:model.defer="newMenuData.parent_id">
                                     @isset($dropDownData['menus'])
-                                    @foreach ($dropDownData['menus'] as $menu)
-                                    <x-select.option label="{{ $menu['title'] }}" value="{{ $menu['id'] }}" />
-                                    @endforeach
+                                        <x-select.option label="No Parent Menu" value="0" />
+                                        @foreach ($dropDownData['menus'] as $menu)
+                                            <x-select.option label="{{ $menu['title'] }}" value="{{ $menu['id'] }}" />
+                                        @endforeach
                                     @endisset
                                 </x-select>
                             </div>
@@ -45,24 +46,25 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <x-select label="Type" placeholder="Select Menu Type"
-                                x-on:select="$wire.getDropdownData($event.target)"
-                                    :options="[
-                                        ['name'=>'Role','value'=>'role'],
-                                        ['name'=>'Permission','value'=>'permission']
+                                    x-on:select="$wire.getDropdownData($event.target)" :options="[
+                                        ['name' => 'Role', 'value' => 'role'],
+                                        ['name' => 'Permission', 'value' => 'permission'],
                                     ]"
-                                    option-label="name"
-                                    option-value="value"
+                                    option-label="name" option-value="value"
                                     wire:model.defer="newMenuData.permission_or_role" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <x-select label="{{($newMenuData['permission_or_role']=='role')?'Roles':'Permissions'}}" placeholder="Select"
-                                    wire:model.defer="newMenuData.permissions_roles">
+                                <x-select
+                                    label="{{ (isset($newMenuData['permission_or_role']) && $newMenuData['permission_or_role'] == 'role') ? 'Roles' : 'Permissions' }}"
+                                    placeholder="Select" wire:model.defer="newMenuData.permissions_roles">
                                     @isset($dropDownData['permissionsRoles'])
-                                    @foreach ($dropDownData['permissionsRoles'] as $key => $permissionRole)
-                                    <x-select.option label="{{ ($newMenuData['permission_or_role']=='role')?$permissionRole['name']:$key }}" value="{{$key}}" />
-                                    @endforeach
+                                        @foreach ($dropDownData['permissionsRoles'] as $key => $permissionRole)
+                                            <x-select.option
+                                                label="{{ ($newMenuData['permission_or_role'] == 'role') ? $permissionRole['name'] : $key }}"
+                                                value="{{ $key }}" />
+                                        @endforeach
                                     @endisset
                                 </x-select>
                             </div>

@@ -8,12 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Department extends Model
 {
     use HasFactory;
+    // protected $connection = 'master';
     protected $table = "departments";
     protected $fillable = [
         'department_name','department_code'
     ];
     public function SORCategory()
     {
-        return $this->hasOne(SorCategoryType::class);
+        return $this->hasOne(DepartmentCategories::class);
     }
 }

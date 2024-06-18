@@ -5,11 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserType extends Model
+class Levels extends Model
 {
     use HasFactory;
-    protected $table = 'user_types';
-    protected $fillable = [
-        'type','parent_id'
-    ];
+    // protected $connection = 'master';
+    protected $table = "level_master";
 }

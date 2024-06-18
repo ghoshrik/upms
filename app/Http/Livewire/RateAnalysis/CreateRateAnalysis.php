@@ -10,7 +10,7 @@ use App\Models\EstimatePrepare;
 use App\Models\RatesAnalysis;
 use App\Models\RatesMaster;
 use App\Models\SOR;
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use App\Models\SorMaster;
 use App\Models\UnitMaster;
 use Illuminate\Support\Facades\Auth;
@@ -321,7 +321,7 @@ class CreateRateAnalysis extends Component
             $this->fatchDropdownData['departmentsCategory'] = $cacheHasDeptCat;
         } else {
             $this->fatchDropdownData['departmentsCategory'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
-                return SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->rateData['dept_id'])->get();
+                return DepartmentCategories::select('id', 'dept_category_name')->where('department_id', '=', $this->rateData['dept_id'])->get();
             });
         }
     }
@@ -334,7 +334,7 @@ class CreateRateAnalysis extends Component
             $this->dropdownData['sorDepartmentsCategory'] = $cacheHasDeptCat;
         } else {
             $this->dropdownData['sorDepartmentsCategory'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
-                return SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->selectSor['dept_id'])->get();
+                return DepartmentCategories::select('id', 'dept_category_name')->where('department_id', '=', $this->selectSor['dept_id'])->get();
             });
         }
         $this->selectSor['volume'] = '';

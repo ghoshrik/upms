@@ -29,9 +29,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Gate::before(function ($user, $ability) {
-            return $user->hasRole('Super Admin') ? true : null;
-        });
+        // Gate::before(function ($user, $ability) {
+        //     return $user->hasRole('Super Admin') ? true : null;
+        // });
         Schema::defaultStringLength(191);
         view()->composer('*', function ($menus) {
             if (Session::has('menus')) {

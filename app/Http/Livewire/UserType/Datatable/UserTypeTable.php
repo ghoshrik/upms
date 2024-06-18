@@ -22,6 +22,8 @@ class UserTypeTable extends DataTableComponent
                 ->sortable(),
             Column::make("Type", "type")
                 ->sortable(),
+                Column::make("Parent", "parent_id")
+                ->sortable(),
         ];
     }
 }

@@ -6,7 +6,7 @@ use App\Models\Department;
 use App\Models\EstimatePrepare;
 use App\Models\SOR;
 use App\Models\SORCategory;
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategories;
 use App\Models\SorMaster;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
@@ -68,7 +68,7 @@ class EditEstimate extends Component
     }
     public function getDeptCategory()
     {
-        $this->fatchDropdownData['departmentsCategory'] = SorCategoryType::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
+        $this->fatchDropdownData['departmentsCategory'] = DepartmentCategories::select('id', 'dept_category_name')->where('department_id', '=', $this->estimateData['dept_id'])->get();
     }
 
     public function getVersion()

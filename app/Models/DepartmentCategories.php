@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class DepartmentCategories extends Model
 {
     use HasFactory;
-    protected $table = "sor_category_types";
+    protected $table = "department_categories";
     protected $fillable = [
         'department_id','dept_category_name'
     ];
