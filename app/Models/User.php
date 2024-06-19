@@ -2,18 +2,13 @@
 
 namespace App\Models;
 
-use App\Models\Designation;
 use App\Models\Department;
-use Spatie\MediaLibrary\HasMedia;
-use App\Traits\HasPermissionsTrait;
-use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Notifications\Notifiable;
-use Spatie\MediaLibrary\InteractsWithMedia;
+use App\Models\Designation;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -37,7 +32,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'office_id',
         'user_type',
         'is_active',
-        'state_code'
+        'state_code',
     ];
 
     /**
@@ -49,7 +44,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
         'is_verified',
-        'is_admin'
+        'is_admin',
     ];
 
     /**
@@ -99,5 +94,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getAccessType()
     {
         return $this->hasMany(AccessMaster::class);
+    }
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
     }
 }

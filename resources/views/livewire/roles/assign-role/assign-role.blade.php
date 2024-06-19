@@ -64,8 +64,57 @@
                             {{-- <h2>Department & office wise Data Sorting is pending.</h2> --}}
                             <div class="card-body">
                                 {{-- TODO:: CHANGE --}}
-                                <livewire:roles.assign-role.datatable.assign-role-datatable
-                                    :wire:key="$updateDataTableTracker" />
+                                {{-- <livewire:roles.assign-role.datatable.assign-role-datatable
+                                    :wire:key="$updateDataTableTracker" /> --}}
+                                    <div class="card" wire:loading.delay.longest.class="loading">
+                                        <div class="card-body p-2">
+                                            <div class="table-responsive mt-4">
+                                                <table id="basic-table" class="table table-striped mb-0" role="grid">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">EMP NAME</th>
+                                                            <th scope="col">DEPARTMENT</th>
+                                                            <th scope="col">DESIGNATION</th>
+                                                            <th scope="col">OFFICE</th>
+                                                            <th scope="col">Role</th>
+                                                            <th scope="col">USER TYPE</th>
+                                                            <th scope="col">Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @isset($assignUserList)
+                                                            @foreach ($assignUserList as $key => $user)
+                                                                <tr>
+                                                                    <td>{{ $loop->iteration }}</td>
+                                                                    <td class="text-wrap" style="width: 30rem">{{ $user['emp_name'] }}</td>
+                                                                    <td class="text-wrap" style="width: 30rem">{{ ($user['department_id'] != 0 ) ? getDepartmentName($user['department_id']) : '' }}</td>
+                                                                    <td class="text-wrap" style="width: 30rem">
+                                                                        {{ ($user['designation_id'] != 0 ) ? getDesignationName($user['designation_id']) : '' }}
+                                                                    </td>
+                                                                    <td class="text-wrap" style="width: 30rem">
+                                                                        {{ ($user['office_id'] != 0 ) ? getOfficeName($user['office_id']) : '' }}
+                                                                    </td>
+                                                                    <td class="text-wrap" style="width: 30rem">
+                                                                        {{ $user->roles->isNotEmpty() ? $user->roles->first()->name : 'No role assigned' }}
+                                                                    </td>
+                                                                    <td class="text-wrap" style="width: 30rem">
+                                                                        {{ $user['user_type'] }}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{-- <button type="button" wire:click="assignRole({{ $user['id'] }})"
+                                                                            class="btn btn-soft-primary btn-sm">
+                                                                            Assign Role
+                                                                        </button> --}}
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        @endisset
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
 
                             </div>
                         </div>

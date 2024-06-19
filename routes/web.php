@@ -113,7 +113,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('department-category', DepartmentCategoryList::class)->name('department-category');
         });
         //Office Admin
-        Route::group(['middleware' => ['role:Office Admin']], function () {
+        Route::group(['middleware' => ['role:Super Admin|State Admin|Office Admin']], function () {
             Route::get('assign-role', AssignRole::class)->name('assign-role');
             Route::get('milestones', Milestones::class)->name('milestones');
             Route::get('vendors', VendorList::class)->name('vendors');

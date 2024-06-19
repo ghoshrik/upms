@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Roles\AssignRole;
 
+use App\Models\User;
 use Livewire\Component;
 
 class AssignRole extends Component
@@ -11,7 +12,12 @@ class AssignRole extends Component
     public $subTitel='List';
     protected $listeners = ['openEntryForm' => 'fromEntryControl'];
     public $openedFormType= false,$isFromOpen,$selectedIdForEdit,$errorMessage,$AccessManagerTable = [];
-
+    public $assignUserList = [];
+    public function mount()
+    {
+        $this->assignUserList = User::with('roles')->has('roles')->get();
+        // dd($this->assignUserList);
+    }
     public function fromEntryControl($data='')
     {
         // dd($data);
