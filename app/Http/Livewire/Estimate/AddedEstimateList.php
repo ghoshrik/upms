@@ -7,7 +7,6 @@ use App\Models\EstimateUserAssignRecord;
 use App\Models\SORMaster as ModelsSORMaster;
 use ChrisKonnertz\StringCalc\StringCalc;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use WireUi\Traits\Actions;
@@ -31,7 +30,7 @@ class AddedEstimateList extends Component
     }
 
     //calculate estimate list
-    public function insertAddEstimate($arrayIndex, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks)
+    public function insertAddEstimate($arrayIndex, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks, $height, $weight, $breath)
     {
         $this->addedEstimateData['arrayIndex'] = $arrayIndex;
         $this->addedEstimateData['dept_id'] = $dept_id;
@@ -46,6 +45,9 @@ class AddedEstimateList extends Component
         $this->addedEstimateData['operation'] = $operation;
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
+        $this->addedEstimateData['height'] = $height;
+        $this->addedEstimateData['weight'] = $weight;
+        $this->addedEstimateData['breath'] = $breath;
         $this->setEstimateDataToSession();
         $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount');
     }
@@ -59,6 +61,7 @@ class AddedEstimateList extends Component
             if ($this->expression) {
                 foreach (str_split($this->expression) as $key => $info) {
                     $count0 = count($this->allAddedEstimatesData);
+                    // dd($count0);
                     if (ctype_alpha($info)) {
                         $alphabet = strtoupper($info);
                         $alp_id = ord($alphabet) - 64;
@@ -78,7 +81,8 @@ class AddedEstimateList extends Component
                 }
             }
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddEstimate($tempIndex, '', '', '', '', '', '', '', '', $result, 'Exp Calculoation', '', $this->remarks);
+            // dd($result);
+            $this->insertAddEstimate($tempIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Exp Calculoation', '', $this->remarks, 0, 0, 0);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(
@@ -86,6 +90,14 @@ class AddedEstimateList extends Component
             );
         }
     }
+
+    public $height, $weight, $breath;
+    public function calc()
+    {
+        $this->insertAddEstimate(0, 0, 0, 0, '', '', '', 0, 0, 0, '', '', 0, $this->height, $this->weight, $this->breath);
+    }
+
+
 
     public function showTotalButton()
     {
@@ -100,12 +112,15 @@ class AddedEstimateList extends Component
     {
         if (count($this->level) >= 2) {
             $result = 0;
+            // dd($this->level);
             foreach ($this->level as $key => $array) {
                 $this->arrayStore[] = chr($array + 64);
+                // dd($this->arrayStore);
                 $result = $result + $this->allAddedEstimatesData[$array]['total_amount'];
+                // dd($this->allAddedEstimatesData[$array]['total_amount']);
             }
             $this->arrayIndex = implode('+', $this->arrayStore); //chr($this->indexCount + 64)
-            $this->insertAddEstimate($this->arrayIndex, '', '', '', '', '', '', '', '', $result, 'Total', '', '');
+            $this->insertAddEstimate($this->arrayIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Total', '', '', $this->height, $this->weight, $this->breath);
             $this->totalOnSelectedCount++;
         } else {
             $this->notification()->error(
@@ -166,8 +181,7 @@ class AddedEstimateList extends Component
         Session()->forget('addedEstimateData');
         Session()->put('addedEstimateData', $this->allAddedEstimatesData);
         $this->level = [];
-        if($this->totalOnSelectedCount == 1)
-        {
+        if ($this->totalOnSelectedCount == 1) {
             $this->reset('totalOnSelectedCount');
         }
         $this->notification()->error(
@@ -241,11 +255,12 @@ class AddedEstimateList extends Component
 
     public function store()
     {
+        // dd(Auth::user()->department_id);
         if ($this->totalOnSelectedCount == 1) {
             try {
                 if ($this->allAddedEstimatesData) {
                     $intId = random_int(100000, 999999);
-                    if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1])) {
+                    if (ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => 1, 'dept_id' => Auth::user()->department_id])) {
                         foreach ($this->allAddedEstimatesData as $key => $value) {
                             $insert = [
                                 'estimate_id' => $intId,
@@ -276,8 +291,9 @@ class AddedEstimateList extends Component
                         }
                         $data = [
                             'estimate_id' => $intId,
-                            'estimate_user_type' => 2,
-                            'estimate_user_id' => Auth::user()->id,
+                            'estimate_user_type' => 4,
+                            'status' => 1,
+                            'user_id' => Auth::user()->id,
                         ];
                         EstimateUserAssignRecord::create($data);
                         $this->notification()->success(
@@ -296,12 +312,11 @@ class AddedEstimateList extends Component
                 // session()->flash('serverError', $th->getMessage());
                 $this->emit('showError', $th->getMessage());
             }
-        }else{
+        } else {
             $this->notification()->error(
                 $title = 'Please Calculate total first !!'
             );
         }
-
     }
 
     public function render()
@@ -310,10 +325,10 @@ class AddedEstimateList extends Component
         return view('livewire.estimate.added-estimate-list');
     }
 
-    public function logView($data, $of)
-    {
-        Log::alert('-----------------[Start OF' . $of . ']');
-        Log::info(json_encode($data));
-        Log::alert('-----------------[END OF' . $of . ']');
-    }
+    // public function logView($data, $of)
+    // {
+    //     Log::alert('-----------------[Start OF' . $of . ']');
+    //     Log::info(json_encode($data));
+    //     Log::alert('-----------------[END OF' . $of . ']');
+    // }
 }

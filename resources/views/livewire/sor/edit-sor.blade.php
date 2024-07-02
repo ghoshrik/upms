@@ -2,10 +2,10 @@
     <div class="row">
         <div class="col-sm-12 col-lg-12">
             <div class="card">
-                <div wire:loading.delay.longest>
+                {{-- <div wire:loading.delay.longest>
                     <div class="spinner-border text-primary loader-position" role="status"></div>
-                </div>
-                <div wire:loading.delay.longest.class="loading" class="card-body">
+                </div> --}}
+                <div class="card-body">
                     <div class="row mutipal-add-row">
                         <div class="col-md-12 col-sm-6 col-lg-12">
                             <div class="row">
@@ -26,10 +26,40 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="form-group">
-                                        <x-input wire:key='unit' label="{{ trans('cruds.sor.fields.unit') }}"
-                                            placeholder="{{ trans('cruds.sor.fields.unit') }}"
-                                            wire:model.defer="editRow.unit" disabled />
+                                    <div class="row">
+                                        <div class="col md-6 col-lg-6">
+                                            <div class="form-group">
+                                                {{-- <x-select wire:key="unitmaster"
+                                                    label="{{ trans('cruds.sor.fields.unit') }}"
+                                                    placeholder="Select {{ trans('cruds.sor.fields.unit') }}"
+                                                    wire:model.defer="editRow.unit_id">
+                                                    @isset($fetchDropDownData['unitMaster'])
+                                                        @foreach ($fetchDropDownData['unitMaster'] as $units)
+                                                            <x-select.option label="{{ $units['unit_name'] }}"
+                                                                value="{{ $units['id'] }}"{{ $units['id'] == $editRow['unit_id'] ? 'selected' : '' }} />
+                                                        @endforeach
+                                                    @endisset
+                                                </x-select> --}}
+                                                <lable for="units">Unit </lable>
+                                                <select class="form-control" wire:model.defer="editRow.unit_id"
+                                                    disabled>
+                                                    @isset($fetchDropDownData['unitMaster'])
+                                                        @foreach ($fetchDropDownData['unitMaster'] as $units)
+                                                            <option value="{{ $units['id'] }}"
+                                                                {{ $units['id'] == $editRow['unit_id'] ? 'selected' : '' }}>
+                                                                {{ $units['unit_name'] }}</option>
+                                                        @endforeach
+                                                    @endisset
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col md-6 col-lg-6">
+                                            <div class="form-group">
+                                                <x-input wire:key='unit' label="{{ trans('cruds.sor.fields.qty') }}"
+                                                    placeholder="{{ trans('cruds.sor.fields.qty') }}"
+                                                    wire:model.defer="editRow.unit" disabled />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -53,7 +83,10 @@
                                         <x-datetime-picker without-time wire:key="effect_to"
                                             label="{{ trans('cruds.sor.fields.effect_to') }}"
                                             placeholder="{{ trans('cruds.sor.fields.effect_to') }}"
-                                            wire:model.defer="effect_to" :min="now()->addDays(1)->hours(0)->minutes(0)" />
+                                            wire:model.defer="effect_to" :min="now()
+                                                ->addDays(1)
+                                                ->hours(0)
+                                                ->minutes(0)" />
                                     </div>
                                 </div>
                                 <div class="col-md-6">

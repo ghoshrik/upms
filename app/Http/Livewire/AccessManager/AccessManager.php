@@ -2,18 +2,20 @@
 
 namespace App\Http\Livewire\AccessManager;
 
+use App\Models\AccessMaster;
 use Livewire\Component;
 
 class AccessManager extends Component
 {
-    public $formOpen=false,$editFormOpen=false,$updateDataTableTracker;
-    protected $listeners = ['openForm' => 'formOCControl'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel = "Access Managers";
+    public $formOpen = false, $editFormOpen = false, $updateDataTableTracker;
+    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert'];
+    public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel, $AccessManagerTable = [];
 
-    public function fromEntryControl($data='')
+
+    public function fromEntryControl($data = '')
     {
         // dd($data);
-        $this->openedFormType = is_array($data) ? $data['formType']:$data;
+        $this->openedFormType = is_array($data) ? $data['formType'] : $data;
         $this->isFromOpen = !$this->isFromOpen;
         switch ($this->openedFormType) {
             case 'create':
@@ -26,11 +28,14 @@ class AccessManager extends Component
                 $this->subTitel = 'List';
                 break;
         }
-        if(isset($data['id'])){
+        if (isset($data['id'])) {
             $this->selectedIdForEdit = $data['id'];
         }
     }
-
+    public function setErrorAlert($errorMessage)
+    {
+        $this->errorMessage = $errorMessage;
+    }
     // public function formOCControl($isEditFrom = false, $eidtId = null)
     // {
     //     if ($isEditFrom) {
@@ -48,9 +53,11 @@ class AccessManager extends Component
     // }
     public function render()
     {
-        $this->updateDataTableTracker = rand(1,1000);
-        $this->emit('changeTitel', 'Access Manager');
+
+        $this->AccessManagerTable = AccessMaster::OrderBy('id', 'desc')->get();
+        $this->updateDataTableTracker = rand(1, 1000);
+        $this->titel = trans('cruds.access-manager.title');
         $assets = ['chart', 'animation'];
-        return view('livewire.access-manager.access-manager',compact('assets'));
+        return view('livewire.access-manager.access-manager', compact('assets'));
     }
 }

@@ -18,6 +18,12 @@ class EstimatePrepare extends Model
         'row_index',
         'sor_item_number',
         'estimate_no',
+        'rate_id',
+        'volume_no',
+        'page_no',
+        'table_no',
+        'sor_id',
+        'item_index',
         'item_name',
         'other_name',
         'qty',
@@ -25,7 +31,10 @@ class EstimatePrepare extends Model
         'total_amount',
         'operation',
         'created_by',
-        'comments'
+        'comments',
+        'col_position',
+        'unit_id',
+        'qty_analysis_data'
     ];
 
     public function sorNumber()
@@ -38,6 +47,6 @@ class EstimatePrepare extends Model
     }
     public function assigningUserRemarks()
     {
-        return $this->belongsTo(EstimateUserAssignRecord::class,'created_by','estimate_user_id');
+        return $this->belongsTo(EstimateUserAssignRecord::class,'created_by','user_id');
     }
 }

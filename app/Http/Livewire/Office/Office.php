@@ -3,11 +3,12 @@
 namespace App\Http\Livewire\Office;
 
 use Livewire\Component;
+use Barryvdh\DomPDF\PDF;
 
 class Office extends Component
 {
     public $formOpen = false;
-    protected $listeners = ['openForm' => 'fromEntryControl'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
 
     public $addedOfficeUpdateTrack;
@@ -35,6 +36,18 @@ class Office extends Component
         if(isset($data['id'])){
             $this->selectedIdForEdit = $data['id'];
         }
+    }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
+    }
+    public function pdfView()
+    {
+        $office = Office::findOrFail(3);
+            dd($office);
+        $pdf = PDF::loadView('pdfView',['office'=>$office])->setPaper('a4', 'portrait');
+    // $fileName = $report->issue_number;
+    return $pdf->stream('abcd.pdf');
     }
     public function render()
     {

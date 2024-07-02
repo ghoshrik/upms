@@ -2,13 +2,14 @@
 
 namespace App\Http\Livewire\Aafs;
 
+use App\Models\AAFS;
 use Livewire\Component;
 
 class AafsProjects extends Component
 {
 
     public $updateDataTableTracker;
-    protected $listeners = ['openForm' => 'formOCControl'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
     public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
 
     public function fromEntryControl($data='')
@@ -31,10 +32,15 @@ class AafsProjects extends Component
             $this->selectedIdForEdit = $data['id'];
         }
     }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
+    }
     public function render()
     {
         $this->updateDataTableTracker = rand(1,1000);
         $this->titel = trans('cruds.aafs_project.title');
+        $this-> proj = AAFS::all();
         $assets = ['chart', 'animation'];
         return view('livewire.aafs.aafs-projects',compact('assets'));
     }

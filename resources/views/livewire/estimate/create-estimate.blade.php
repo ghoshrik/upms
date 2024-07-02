@@ -9,7 +9,7 @@
                     <div class="row">
                         <div class="row">
                             <div class="col col-md-8 col-lg-8 col-sm-12 col-xs-12 mb-2">
-                                <x-textarea wire:model="sorMasterDesc" rows="2"
+                                <x-textarea wire:model.defer="sorMasterDesc" rows="2"
                                     label="{{ trans('cruds.estimate.fields.description') }}"
                                     placeholder="Your project {{ trans('cruds.estimate.fields.description') }}" />
                             </div>
@@ -19,18 +19,32 @@
                                         label="{{ trans('cruds.estimate.fields.category') }}"
                                         placeholder="Select {{ trans('cruds.estimate.fields.category') }}"
                                         wire:model.defer="selectedCategoryId"
-                                        x-on:select="$wire.changeCategory($event.target)">
-                                        @foreach ($getCategory as $category)
+                                        x-on:select="$wire.changeCategory($event.target)" {{-- @foreach ($getCategory as $category)
                                             <x-select.option label="{{ $category['item_name'] }}"
                                                 value="{{ $category['id'] }}" />
-                                        @endforeach
-                                    </x-select>
+                                        @endforeach --}}
+                                        :options="[['name' => 'SOR', 'id' => 1], ['name' => 'Other', 'id' => 2]]" option-label="name" option-value="id" />
+
                                 </div>
                             </div>
                         </div>
                         @if (!empty($estimateData))
                             @if ($estimateData['item_name'] == 'SOR')
                                 <div class="row" style="transition: all 2s ease-out">
+                                    {{-- <div class="col">
+                                        <div class="form-group">
+                                            <x-select wire:key="dept"
+                                                label="{{ trans('cruds.estimate.fields.dept') }}"
+                                                placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
+                                                wire:model.defer="estimateData.dept_id"
+                                                x-on:select="$wire.getDeptCategory()">
+                                                @foreach ($fatchDropdownData['departments'] as $department)
+                                                    <x-select.option label="{{ $department['department_name'] }}"
+                                                        value="{{ $department['id'] }}" />
+                                                @endforeach
+                                            </x-select>
+                                        </div>
+                                    </div> --}}
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
@@ -94,20 +108,18 @@
                                                 <x-input wire:key="sor"
                                                     label="{{ trans('cruds.estimate.fields.sor') }}"
                                                     placeholder="{{ trans('cruds.estimate.fields.sor') }}"
-                                                    wire:model.defer="selectedSORKey"
-                                                    value="{{ $selectedSORKey }}"
-                                                    wire:keydown.escape="resetValus"
-                                                    wire:keydown.tab="autoSearch"
+                                                    wire:model.defer="selectedSORKey" value="{{ $selectedSORKey }}"
+                                                    wire:keydown.escape="resetValus" wire:keydown.tab="autoSearch"
                                                     class="dropbtn" />
 
 
-                                                    @isset($this->fatchDropdownData['items_number'])
+                                                @isset($this->fatchDropdownData['items_number'])
                                                     @if (count($this->fatchDropdownData['items_number']) > 0)
                                                         <div class="dropdown-content"
                                                             style="display:{{ $searchDtaCount ? $searchStyle : $searchStyle }}">
                                                             @foreach ($this->fatchDropdownData['items_number'] as $list)
                                                                 <a href="javascript:void(0);"
-                                                                wire:click="getItemDetails({{ $list['id'] }})">{{ $list['Item_details'] }}</a>
+                                                                    wire:click="getItemDetails({{ $list['id'] }})"><b>{{ $list['Item_details'] }}</b> <sub>{{$list['description']}}</sub></a>
                                                             @endforeach
                                                         </div>
                                                     @endif
@@ -118,42 +130,42 @@
                                 </div>
                                 {{-- @if (!empty($estimateData['item_number'])) --}}
                                 @if (!empty($searchResData))
-                                        @if (count($searchResData) > 0)
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <x-input wire:key="sor_desc"
-                                                    label="{{ trans('cruds.estimate.fields.description') }}"
-                                                    placeholder="{{ trans('cruds.estimate.fields.description') }}"
-                                                    disabled wire:model.defer="estimateData.description" />
+                                    @if (count($searchResData) > 0)
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <x-input wire:key="sor_desc"
+                                                        label="{{ trans('cruds.estimate.fields.description') }}"
+                                                        placeholder="{{ trans('cruds.estimate.fields.description') }}"
+                                                        disabled wire:model.defer="estimateData.description" />
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <x-input wire:key="sor_qty"
+                                                        label="{{ trans('cruds.estimate.fields.quantity') }}"
+                                                        placeholder="{{ trans('cruds.estimate.fields.quantity') }}"
+                                                        wire:model.defer="estimateData.qty"
+                                                        wire:keyup="calculateValue" />
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <x-input wire:key="sor_rate"
+                                                        label="{{ trans('cruds.estimate.fields.per_unit_cost') }}"
+                                                        placeholder="{{ trans('cruds.estimate.fields.per_unit_cost') }}"
+                                                        readonly wire:model.defer="estimateData.rate" />
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <x-input wire:key="sor_cost"
+                                                        label="{{ trans('cruds.estimate.fields.cost') }}"
+                                                        placeholder="{{ trans('cruds.estimate.fields.cost') }}"
+                                                        disabled wire:model.defer="estimateData.total_amount" />
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <x-input wire:key="sor_qty"
-                                                    label="{{ trans('cruds.estimate.fields.quantity') }}"
-                                                    placeholder="{{ trans('cruds.estimate.fields.quantity') }}"
-                                                    wire:model.defer="estimateData.qty" wire:keyup="calculateValue" />
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <x-input wire:key="sor_rate"
-                                                    label="{{ trans('cruds.estimate.fields.per_unit_cost') }}"
-                                                    placeholder="{{ trans('cruds.estimate.fields.per_unit_cost') }}"
-                                                    readonly wire:model.defer="estimateData.rate" />
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="form-group">
-                                                <x-input wire:key="sor_cost"
-                                                    label="{{ trans('cruds.estimate.fields.cost') }}"
-                                                    placeholder="{{ trans('cruds.estimate.fields.cost') }}" disabled
-                                                    wire:model.defer="estimateData.total_amount" />
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     @endif
                                 @endif
                             @endif

@@ -7,8 +7,8 @@ use Livewire\Component;
 class DepartmentCategoryList extends Component
 {
     public $formOpen=false,$updatedDataTableTracker;
-    protected $listeners = ['openForm' => 'formOCControl'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel = "Department Category";
+    protected $listeners = ['openEntryForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel,$updatedDatatableTracker;
 
     public function fromEntryControl($data='')
     {
@@ -29,11 +29,16 @@ class DepartmentCategoryList extends Component
         if(isset($data['id'])){
             $this->selectedIdForEdit = $data['id'];
         }
+        $this->updatedDatatableTracker = rand(1,1000);
+    }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
     }
     public function render()
     {
+        $this->titel = "Department Category";
         $assets = ['chart', 'animation'];
-        $this->emit('changeTitle', 'Designation');
         return view('livewire.department-category.department-category-list',compact('assets'));
     }
 }

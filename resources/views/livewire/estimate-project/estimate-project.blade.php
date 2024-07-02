@@ -1,13 +1,19 @@
 <div>
-    <div class="conatiner-fluid content-inner mt-3 py-0">
-        <div class="iq-navbar-header" style="height: 145px;">
+    <div class="conatiner-fluid content-inner py-0">
+        <div class="iq-navbar-header" style="height: 124px;">
+            @if ($errorMessage != null)
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span> {{ $errorMessage }}</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             <div class="container-fluid iq-container">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                     <div class="d-flex flex-column">
-                        <h1>{{ $titel }}</h1>
-                        <p class="mb-0">{{ $subTitel }}</p>
+                        <h3 class="text-dark">{{ $titel }}</h3>
+                        <p class="text-primary mb-0">{{ $subTitel }}</p>
                     </div>
-                    @canany(['create projectEstimate', 'edit projectEstimate'])
+                    @canany(['create estimate', 'edit estimate'])
                         <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
                             @if (!$isFromOpen)
                                 <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
@@ -28,20 +34,20 @@
                     @endcanany
                 </div>
             </div>
-            <div class="iq-header-img">
+            {{-- <div class="iq-header-img">
                 <img src="{{ asset('images/dashboard/top-header.png') }}" alt="header"
-                    class="theme-color-default-img img-fluid w-100 h-100 animated-scaleX">
+                    class="theme-color-default-img  w-100  animated-scaleX">
                 <img src="{{ asset('images/dashboard/top-header1.png') }}" alt="header"
-                    class="theme-color-purple-img img-fluid w-100 h-100 animated-scaleX">
+                    class="theme-color-purple-img  w-100  animated-scaleX">
                 <img src="{{ asset('images/dashboard/top-header2.png') }}" alt="header"
-                    class="theme-color-blue-img img-fluid w-100 h-100 animated-scaleX">
+                    class="theme-color-blue-img  w-100  animated-scaleX">
                 <img src="{{ asset('images/dashboard/top-header3.png') }}" alt="header"
-                    class="theme-color-green-img img-fluid w-100 h-100 animated-scaleX">
+                    class="theme-color-green-img  w-100  animated-scaleX">
                 <img src="{{ asset('images/dashboard/top-header4.png') }}" alt="header"
-                    class="theme-color-yellow-img img-fluid w-100 h-100 animated-scaleX">
+                    class="theme-color-yellow-img  w-100  animated-scaleX">
                 <img src="{{ asset('images/dashboard/top-header5.png') }}" alt="header"
-                    class="theme-color-pink-img img-fluid w-100 h-100 animated-scaleX">
-            </div>
+                    class="theme-color-pink-img  w-100  animated-scaleX">
+            </div> --}}
         </div>
         <div wire:loading.delay.long>
             <div class="spinner-border text-primary loader-position" role="status"></div>
@@ -53,7 +59,8 @@
                 </div>
             @elseif($isFromOpen && $openedFormType == 'edit')
                 <div x-transition.duration.900ms>
-                    <livewire:estimate-project.edit-estimate-project />
+                    <livewire:estimate-project.create-estimate-project />
+                    {{-- <livewire:estimate-project.edit-estimate-project /> --}}
                 </div>
             @else
                 <div x-transition.duration.500ms>
@@ -77,8 +84,8 @@
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                                 stroke-width="2" stroke-linecap="round"
                                                                 stroke-linejoin="round">
-                                                                <rect x="2" y="4" width="20"
-                                                                    height="5" rx="2"></rect>
+                                                                <rect x="2" y="4" width="20" height="5"
+                                                                    rx="2"></rect>
                                                                 <path d="M4 9v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9">
                                                                 </path>
                                                                 <path d="M10 13h4"></path>
@@ -102,7 +109,7 @@
                                                             class="circle-progress-01 circle-progress circle-progress-info text-center"
                                                             data-min-value="0"
                                                             data-max-value="{{ $counterData['totalDataCount'] }}"
-                                                            data-value="{{ $counterData['forwardedDataCount'] }}"
+                                                            data-value="{{ $counterData['fwdDataCount'] }}"
                                                             data-type="percent" wire:ignore>
                                                             <svg class="card-slie-arrow " width="24" height="24"
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -116,7 +123,7 @@
                                                             <p class="mb-2"> Total Forwarded</p>
                                                             <h4 class="counter" style="visibility: visible;"
                                                                 wire:key="$updateDataTableTracker">
-                                                                {{ $counterData['forwardedDataCount'] }}</h4>
+                                                                {{ $counterData['fwdDataCount'] }}</h4>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -133,8 +140,8 @@
                                                             data-max-value="{{ $counterData['totalDataCount'] }}"
                                                             data-value="{{ $counterData['revertedDataCount'] }}"
                                                             data-type="percent" wire:ignore>
-                                                            <svg class="card-slie-arrow " width="24"
-                                                                height="24" viewBox="0 0 24 24" fill="none"
+                                                            <svg class="card-slie-arrow " width="24" height="24"
+                                                                viewBox="0 0 24 24" fill="none"
                                                                 stroke="currentColor" stroke-width="2"
                                                                 stroke-linecap="round" stroke-linejoin="round">
                                                                 <polyline points="9 14 4 9 9 4"></polyline>
@@ -159,6 +166,8 @@
                             @if ($this->selectedTab == 1)
                                 <div class="card">
                                     <div class="card-body">
+                                        {{-- <livewire:estimate-project.data-table.estimate-project-table
+                                            :wire:key="$updateDataTableTracker" /> --}}
                                         <livewire:estimate-project.data-table.estimate-project-table
                                             :wire:key="$updateDataTableTracker" />
                                     </div>
@@ -167,14 +176,14 @@
                                 <div class="card">
                                     <div class="card-body">
                                         {{-- <livewire:estimate-project.data-table.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" /> --}}
-                                        <livewire:estimate-project.powergrid.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" />
+                                        {{-- <livewire:estimate-project.datatable.powergrid.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" /> --}}
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 3)
                                 <div class="card">
                                     <div class="card-body">
                                         {{-- <livewire:estimate-project.data-table.reverted-estimate-project-table :wire:key="$updateDataTableTracker" /> --}}
-                                        <livewire:estimate-project.powergrid.estimate-revert-table :wire:key="$updateDataTableTracker" />
+                                        {{-- <livewire:estimate-project.datatable.powergrid.estimate-revert-table :wire:key="$updateDataTableTracker" /> --}}
                                     </div>
                                 </div>
                             @else
@@ -216,8 +225,7 @@
         </div>
     </div>
 </div>
-<div>
-    <livewire:components.modal.estimate.estimate-view-modal />
-    <livewire:components.modal.estimate.estimate-forward-modal />
-    <livewire:components.modal.estimate.edit-estimate-modal />
-</div>
+<livewire:components.modal.estimate.estimate-view-modal />
+<livewire:components.modal.rate-analysis.rate-analysis-view-modal />
+<livewire:components.modal.estimate.estimate-forward-modal />
+<livewire:components.modal.estimate.edit-estimate-modal />

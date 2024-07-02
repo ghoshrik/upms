@@ -1,7 +1,7 @@
 <x-guest-layout>
    <section class="login-content">
-      <div class="row m-0 align-items-center bg-white vh-100">            
-         <div class="col-md-6 p-0">   
+      <div class="row m-0 align-items-center bg-white vh-100">
+         <div class="col-md-6 p-0">
                <div class="card card-transparent auth-card shadow-none d-flex justify-content-center mb-0">
                   <div class="card-body">
                      <a href="{{route('dashboard')}}" class="navbar-brand d-flex align-items-center mb-3">

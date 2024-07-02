@@ -14,6 +14,25 @@
                                     wire:model.defer="officeData.office_name" />
                             </div>
                         </div>
+                        <div class="col-md-6 col-sm-6 col-lg-6">
+                            <div class="form-group">
+                                <x-input label="{{ trans('cruds.office.fields.office_code') }}"
+                                    placeholder="{{ trans('cruds.office.fields.office_code') }}"
+                                    wire:model.defer="officeData.office_code" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-sm-6">
+                            <x-select label="Select Office {{ trans('cruds.office.fields.level') }}"
+                                placeholder="Select Office {{ trans('cruds.office.fields.level') }}" :options="[
+                                    ['name' => 'L1 Level', 'id' => 1],
+                                    ['name' => 'L2 Level', 'id' => 2],
+                                    ['name' => 'L3 Level', 'id' => 3],
+                                    ['name' => 'L4 Level', 'id' => 4],
+                                    ['name' => 'L5 Level', 'id' => 5],
+                                    ['name' => 'L6 Level', 'id' => 6],
+                                ]"
+                                option-label="name" option-value="id" wire:model.defer="selectedOption.level" />
+                        </div>
                         <div class="col-md-6 col-sm-3 col-lg-6">
                             <div class="form-group">
                                 <x-select wire:key="district"
@@ -103,16 +122,18 @@
 
                         <div class="col-md-12 col-sm-6 col-lg-12">
                             <x-textarea label="{{ trans('cruds.office.fields.office_address') }}"
-                                placeholder="{{ trans('cruds.office.fields.office_address') }}" wire:model="officeData.office_address" />
+                                placeholder="{{ trans('cruds.office.fields.office_address') }}"
+                                wire:model="officeData.office_address" />
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-6">
                                     {{-- <button type="button" wire:click='resetSession'
                                         class="btn btn-soft-danger rounded-pill float-left">Reset</button> --}}
-                                    </div>
+                                </div>
                                 <div class="col-6"><button type="submit" wire:click='store'
-                                        class="btn btn-success rounded-pill float-right">Save</button></div>
+                                        class="btn btn-success rounded-pill float-right">{{ trans('global.data_save_btn') }}</button>
+                                </div>
                             </div>
                         </div>
                     </div>

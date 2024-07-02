@@ -2,28 +2,43 @@
 
 namespace App\Http\Livewire\Components\Modal\Estimate;
 
-use App\Models\EstimatePrepare;
 use Livewire\Component;
+use App\Models\SORMaster;
+use App\Models\UnitMaster;
+use App\Models\EstimatePrepare;
+use Illuminate\Support\Facades\Cache;
+use App\Models\SpecificQuantityAnalysis;
 
 class EstimateViewModal extends Component
 {
     protected $listeners = ['openModal' => 'openViewModal'];
-    public $viewModal = false, $estimate_id, $viewEstimates = [];
+    public $viewModal = false, $estimate_id, $viewEstimates = [], $specificQtyAnalysisData = [], $estimateDescription;
 
     public function openViewModal($estimate_id)
     {
-        $estimate_id = is_array($estimate_id)? $estimate_id[0]:$estimate_id;
+        $estimate_id = is_array($estimate_id) ? $estimate_id[0] : $estimate_id;
         $this->reset();
         $this->viewModal = !$this->viewModal;
-        if($estimate_id)
-        {
+        if ($estimate_id) {
             $this->estimate_id = $estimate_id;
-            $this->viewEstimates = EstimatePrepare::where('estimate_id',$this->estimate_id)->get();
+            $this->viewEstimates = EstimatePrepare::where('estimate_id', $this->estimate_id)->orderBy('id')->get();
+            $this->estimateDescription = SORMaster::where('estimate_id', $this->estimate_id)->first();
+            $this->estimateDescription = $this->estimateDescription['sorMasterDesc'];
+            // $cacheKey = 'projectEstimate_' . $this->estimate_id;
+            // if(Cache::has($cacheKey)){
+            //     $this->viewEstimates = Cache::get($cacheKey);
+            // }else{
+            //     $this->viewEstimates = Cache::remember($cacheKey, now()->addMinutes(720), function () {
+            //         return EstimatePrepare::where('estimate_id',$this->estimate_id)->orderBy('id')->get();
+            //     });
+            // }
+            // $this->specificQtyAnalysisData = SpecificQuantityAnalysis::where('estimate_id',$this->estimate_id)->get();
         }
+        // dd($this->viewEstimates);
     }
     public function download($value)
     {
-        $allEstimateDatas = EstimatePrepare::where('estimate_id','=',$value)->get();
+        $allEstimateDatas = EstimatePrepare::where('estimate_id', '=', $value)->get();
         // dd( $allEstimateDatas);
         $exportDatas = $allEstimateDatas;
         // dd($exportDatas);

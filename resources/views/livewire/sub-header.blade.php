@@ -1,9 +1,9 @@
 <div class="iq-navbar-header" style="block-size: 215px;">
     @if ($errorMessage != null)
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <span> {{ $errorMessage }}</span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span> {{ $errorMessage }}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     @endif
 
     <div class="container-fluid iq-container">
@@ -11,23 +11,20 @@
             <div class="col-md-12">
                 <div class="d-flex justify-content-between align-items-center flex-wrap">
                     <div>
-                        <h1>{{$titel }}</h1>
+                        <h5>{{ $titel }}</h5>
                         <p>{{ $subTitel }}</p>
                     </div>
                     <div>
-                        <button wire:click="$emit('openForm')" class="btn btn-primary rounded-pill "
-                            x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
+                        <button wire:click="$emit('openForm')" class="btn btn-primary rounded-pill ">
                             <span class="btn-inner">
                                 <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
                             </span>
                         </button>
-                        <button wire:click="$emit('openForm')" class="btn btn-danger rounded-pill "
-                            x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
+                        <button wire:click="$emit('openForm')" class="btn btn-danger rounded-pill ">
                             <span class="btn-inner">
                                 <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
                             </span>
                         </button>
-
                     </div>
                 </div>
             </div>

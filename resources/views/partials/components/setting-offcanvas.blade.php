@@ -1,4 +1,4 @@
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" data-bs-scroll="true" data-bs-backdrop="true" aria-labelledby="offcanvasExampleLabel">
+{{-- <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" data-bs-scroll="true" data-bs-backdrop="true" aria-labelledby="offcanvasExampleLabel">
   <div class="offcanvas-header">
     <h3 class="offcanvas-title" id="offcanvasExampleLabel">Settings</h3>
     <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -183,4 +183,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> --}}

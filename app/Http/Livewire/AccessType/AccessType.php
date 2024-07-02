@@ -7,8 +7,8 @@ use Livewire\Component;
 class AccessType extends Component
 {
     public $formOpen = false;
-    protected $listeners = ['openForm' => 'formOCControl'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel = "Access Types";
+    protected $listeners = ['openEntryForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
     public function fromEntryControl($data='')
     {
         // dd($data);
@@ -29,6 +29,10 @@ class AccessType extends Component
             $this->selectedIdForEdit = $data['id'];
         }
     }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
+    }
     // public function formOCControl($isEditFrom = false, $eidtId = null)
     // {
     //     if ($isEditFrom) {
@@ -46,6 +50,7 @@ class AccessType extends Component
     public function render()
     {
         $assets = ['chart', 'animation'];
+        $this->titel = trans('cruds.access-type.title_singulars');
         return view('livewire.access-type.access-type',compact('assets'));
     }
 }

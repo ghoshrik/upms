@@ -11,6 +11,7 @@ use App\Models\SORCategory;
 use Illuminate\Support\Arr;
 use App\Models\SorCategoryType;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class CreateEstimate extends Component
 {
@@ -89,7 +90,8 @@ class CreateEstimate extends Component
         $this->estimateData['item_name'] = $value;
         if ($this->estimateData['item_name'] == 'SOR') {
             $this->fatchDropdownData['departments'] = Department::select('id', 'department_name')->get();
-            $this->estimateData['dept_id'] = '';
+            $this->estimateData['dept_id'] = Auth::user()->department_id;
+            $this->getDeptCategory();
             $this->estimateData['dept_category_id'] = '';
             $this->estimateData['version'] = '';
             $this->estimateData['item_number'] = '';
@@ -122,7 +124,7 @@ class CreateEstimate extends Component
             ->where('dept_category_id', $this->estimateData['dept_category_id'])->groupBy('version')
             ->get();
     }
-    public $searchDtaCount,$searchStyle,$searchResData;
+    public $searchDtaCount, $searchStyle, $searchResData;
     public function autoSearch()
     {
         // $keyword = $keyword['_x_bindings']['value'];
@@ -133,108 +135,102 @@ class CreateEstimate extends Component
         //     ->where('Item_details', 'like', '%' . $keyword . '%')->get();
 
         // dd("sdfsdf");
-        if($this->selectedSORKey)
-        {
-            $this->fatchDropdownData['items_number'] = SOR::select('Item_details','id')
-            ->where('department_id', $this->estimateData['dept_id'])
-            ->where('dept_category_id', $this->estimateData['dept_category_id'])
-            ->where('version', $this->estimateData['version'])
-            ->where('Item_details', 'like', $this->selectedSORKey.'%')->get();
+
+        if ($this->selectedSORKey) {
+            $this->fatchDropdownData['items_number'] = SOR::select('Item_details', 'id','description')
+                ->where('department_id', $this->estimateData['dept_id'])
+                ->where('dept_category_id', $this->estimateData['dept_category_id'])
+                ->where('version', $this->estimateData['version'])
+                ->where('Item_details', 'like', $this->selectedSORKey . '%')
+                ->where('is_approved', 1)
+                ->get();
 
 
             // dd($this->fatchDropdownData['items_number']);
-            if(count($this->fatchDropdownData['items_number'])>0)
-            {
-                $this->searchDtaCount = (count($this->fatchDropdownData['items_number'])>0);
-                $this->searchStyle= 'block';
-
-            }
-            else
-            {
+            if (count($this->fatchDropdownData['items_number']) > 0) {
+                $this->searchDtaCount = (count($this->fatchDropdownData['items_number']) > 0);
+                $this->searchStyle = 'block';
+            } else {
                 $this->estimateData['description'] = '';
                 $this->estimateData['qty'] = '';
-                $this->estimateData['rate'] ='';
-                $this->searchStyle= 'none';
+                $this->estimateData['rate'] = '';
+                $this->searchStyle = 'none';
                 $this->notification()->error(
-                    $title = 'Not data found !!'.$this->selectedSORKey
+                    $title = 'Not data found !!' . $this->selectedSORKey
                 );
-
             }
-        }
-        else{
+        } else {
             $this->estimateData['description'] = '';
-                $this->estimateData['qty'] = '';
-                $this->estimateData['rate'] ='';
-                $this->searchStyle= 'none';
+            $this->estimateData['qty'] = '';
+            $this->estimateData['rate'] = '';
+            $this->searchStyle = 'none';
             $this->notification()->error(
-                $title = 'Not found !!'.$this->selectedSORKey
+                $title = 'Not found !!' . $this->selectedSORKey
             );
         }
     }
 
 
 
-        // $this->searchDtaCount = count($this->searchResData)>0;
-        // $this->searchStyle = 'none';
-        // foreach($this->searchResData as $list)
-        // {
-        //     $this->estimateData['description'] = $list['description'];
-        //     $this->estimateData['qty'] = $list['unit'];
-        //     $this->estimateData['rate'] = $list['cost'];
-        //     $this->selectedSORKey = $list['Item_details'];
-        // }
-        // $this->calculateValue();
+    // $this->searchDtaCount = count($this->searchResData)>0;
+    // $this->searchStyle = 'none';
+    // foreach($this->searchResData as $list)
+    // {
+    //     $this->estimateData['description'] = $list['description'];
+    //     $this->estimateData['qty'] = $list['unit'];
+    //     $this->estimateData['rate'] = $list['cost'];
+    //     $this->selectedSORKey = $list['Item_details'];
+    // }
+    // $this->calculateValue();
 
 
-        // try
-        // {
-        //     if($this->selectedSORKey)
-        //     {
-        //         $this->searchResData = SOR::select('description','cost','unit')->where('Item_details',$this->selectedSORKey)->get();
-        //         if(count($this->searchResData)>0)
-        //         {
-        //             foreach($this->searchResData as $list)
-        //             {
-        //                 $this->estimateData['description'] = $list['description'];
-        //                 $this->estimateData['qty'] = $list['unit'];
-        //                 $this->estimateData['rate'] = $list['cost'];
-        //             }
-        //             $this->calculateValue();
-        //         }
-        //         else
-        //         {
-        //             // dd("Not found ".$this->selectedSORKey);
-        //             $this->notification()->error(
-        //                 $title = 'Not found !!'.$this->selectedSORKey
-        //             );
-        //             sleep(1);
-        //             $this->resetExcept($this->selectedSORKey);
+    // try
+    // {
+    //     if($this->selectedSORKey)
+    //     {
+    //         $this->searchResData = SOR::select('description','cost','unit')->where('Item_details',$this->selectedSORKey)->get();
+    //         if(count($this->searchResData)>0)
+    //         {
+    //             foreach($this->searchResData as $list)
+    //             {
+    //                 $this->estimateData['description'] = $list['description'];
+    //                 $this->estimateData['qty'] = $list['unit'];
+    //                 $this->estimateData['rate'] = $list['cost'];
+    //             }
+    //             $this->calculateValue();
+    //         }
+    //         else
+    //         {
+    //             // dd("Not found ".$this->selectedSORKey);
+    //             $this->notification()->error(
+    //                 $title = 'Not found !!'.$this->selectedSORKey
+    //             );
+    //             sleep(1);
+    //             $this->resetExcept($this->selectedSORKey);
 
-        //         }
-        //     }
-        //     else
-        //     {
-        //         dd("fill up Item Details number then press Tab on Keyboard either error");
-        //     }
-        // }
-        // catch (Throwable $th) {
-        //     // session()->flash('serverError', $th->getMessage());
-        //     $this->emit('showError', $th->getMessage());
-        // }
-        // dd($this->fatchDropdownData['items_number'][$this->selectedSORKey]['id']);
+    //         }
+    //     }
+    //     else
+    //     {
+    //         dd("fill up Item Details number then press Tab on Keyboard either error");
+    //     }
+    // }
+    // catch (Throwable $th) {
+    //     // session()->flash('serverError', $th->getMessage());
+    //     $this->emit('showError', $th->getMessage());
+    // }
+    // dd($this->fatchDropdownData['items_number'][$this->selectedSORKey]['id']);
 
-        // $this->estimateData['description'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['description'];
-        // $this->estimateData['qty'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['unit'];
-        // $this->estimateData['rate'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['cost'];
-        // $this->estimateData['item_number'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['id'];
-        // $this->calculateValue();
+    // $this->estimateData['description'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['description'];
+    // $this->estimateData['qty'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['unit'];
+    // $this->estimateData['rate'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['cost'];
+    // $this->estimateData['item_number'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['id'];
+    // $this->calculateValue();
 
     // }
-    public $resetExcept;
     public function resetValus($resetAll = false)
     {
-        if($resetAll)
-        {
+        if ($resetAll) {
             $this->selectedSORKey = "";
         }
         $this->resetExcept(['selectedSORKey']);
@@ -259,14 +255,12 @@ class CreateEstimate extends Component
         // $this->estimateData['item_number'] = $this->fatchDropdownData['items_number'][$this->selectedSORKey]['id'];
         // $this->calculateValue();
 
-        $this->searchResData = SOR::where('id',$id)->get();
+        $this->searchResData = SOR::where('id', $id)->get();
         // dd($this->searchResData);
-        $this->searchDtaCount = count($this->searchResData)>0;
+        $this->searchDtaCount = count($this->searchResData) > 0;
         $this->searchStyle = 'none';
-        if(count($this->searchResData)>0)
-        {
-            foreach($this->searchResData as $list)
-            {
+        if (count($this->searchResData) > 0) {
+            foreach ($this->searchResData as $list) {
                 $this->estimateData['description'] = $list['description'];
                 $this->estimateData['qty'] = $list['unit'];
                 $this->estimateData['rate'] = $list['cost'];
@@ -274,22 +268,20 @@ class CreateEstimate extends Component
                 $this->selectedSORKey = $list['Item_details'];
             }
             $this->calculateValue();
-        }else
-        {
+        } else {
             $this->estimateData['description'] = '';
             $this->estimateData['qty'] = '';
-            $this->estimateData['rate'] ='';
+            $this->estimateData['rate'] = '';
         }
-
     }
     public function addEstimate()
     {
-        $validatee = $this->validate();
+        $this->validate();
         $this->reset('addedEstimate');
         $this->showTableOne = !$this->showTableOne;
-        $this->addedEstimate['dept_id'] = $this->estimateData['dept_id'];
-        $this->addedEstimate['category_id'] = $this->estimateData['dept_category_id'];
-        $this->addedEstimate['sor_item_number'] = $this->estimateData['item_number'];
+        $this->addedEstimate['dept_id'] = ($this->estimateData['dept_id'] == '') ? 0 : $this->estimateData['dept_id'];
+        $this->addedEstimate['category_id'] = ($this->estimateData['dept_category_id'] == '') ? 0 : $this->estimateData['dept_category_id'];
+        $this->addedEstimate['sor_item_number'] = ($this->estimateData['item_number'] == '') ? 0 : $this->estimateData['item_number'];
         $this->addedEstimate['item_name'] = $this->estimateData['item_name'];
         $this->addedEstimate['other_name'] = $this->estimateData['other_name'];
         $this->addedEstimate['description'] = $this->estimateData['description'];
@@ -298,9 +290,11 @@ class CreateEstimate extends Component
         $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
         $this->addedEstimate['version'] = $this->estimateData['version'];
         $this->addedEstimateUpdateTrack = rand(1, 1000);
-        // dd($this->sorMasterDesc);
-        // dd($this->addedEstimate);
-        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc']);
+        $this->estimateData['item_number'] = '';
+        $this->estimateData['qty'] = '';
+        $this->estimateData['rate'] = '';
+        $this->estimateData['total_amount'] = '';
+        $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'selectedCategoryId', 'estimateData', 'fatchDropdownData']);
     }
 
     public function render()

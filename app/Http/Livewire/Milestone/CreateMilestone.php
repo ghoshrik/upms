@@ -2,12 +2,14 @@
 
 namespace App\Http\Livewire\Milestone;
 
-use App\Models\Milestone;
 use Livewire\Component;
+use App\Models\Milestone;
 use App\Models\SorMaster;
+use WireUi\Traits\Actions;
 
 class CreateMilestone extends Component
 {
+    use Actions;
     public $mileStoneData = [], $Index = 0,$treeView,$arrayData=[],$projectId,$projects_number=[],$description;
 
 
@@ -126,6 +128,11 @@ class CreateMilestone extends Component
                 ];
                 // dd($insert);
                 Milestone::create($insert);
+                $this->notification()->success(
+                    $description =  trans('cruds.milestone.create_msg')
+                );
+                $this->reset();
+                $this->emit('openEntryForm');
             }
         }
 

@@ -5,8 +5,8 @@
                 @isset($assigenUsersList)
                     @foreach ($assigenUsersList as $user)
                         <x-select.option
-                            label="{{ $user['emp_name'] . ' - ' . $user['access_name'] . ' [ ' . $user->getDesignationName->designation_name . ' ]' }}"
-                            value="{{ $user['user_id'] . '-' . $user['access_type_id'] . '-' . $estimate_id }}" />
+                            label="{{ $user['emp_name'] . ' - ' . $user['name'] . ' [ ' . $user->getDesignationName->designation_name . ' ]' }}"
+                            value="{{ $user['id'] . '-' . $user['role_id'] . '-' . $estimate_id }}" />
                         {{-- <x-select.option label="{{ $user['id']. '-' . $user['access_type_id'] . '-' . $estimate_id }}" value="{{ $user['id']. '-' . $user['access_type_id'] . '-' . $estimate_id }}" /> --}}
                     @endforeach
                 @endisset
@@ -21,10 +21,10 @@
     <x-slot name="footer">
         <div class="flex justify-between">
             <div class="flex float-left">
-                <x-button class="btn btn-soft-danger" flat label="Cancel" x-on:click="close" />
+                <x-button class="btn btn-soft-danger px-3 py-2.5 rounded" flat label="Cancel" x-on:click="close" />
             </div>
             <div class="flex float-right">
-                <button wire:click="forwardAssignUser()" class="btn btn-soft-success">
+                <button wire:click="forwardAssignUser()" class="btn btn-soft-success px-3 py-2.5 rounded">
                     <x-lucide-send class="w-4 h-4 text-gray-500" /> Forward
                 </button>
             </div>

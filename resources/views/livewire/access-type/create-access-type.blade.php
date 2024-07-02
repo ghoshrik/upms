@@ -5,11 +5,11 @@
                 <div wire:loading.delay.longest>
                     <div class="spinner-border text-primary loader-position" role="status"></div>
                 </div>
-                <div wire:loading.delay.longest.class="loading" class="card-body">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <x-input wire:model="newAccessTypeData.access_name" label="Name" placeholder="Enter Access Type Name" />
+                                <x-input wire:model.defer="newAccessTypeData.access_name" label="Name" placeholder="Enter Access Type Name" />
                             </div>
                         </div>
                         <div class="col-md-6">

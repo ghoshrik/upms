@@ -7,8 +7,8 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}" />
-        
+        <link rel="shortcut icon" href="{{ asset('images/logo/wb_logo.png') }}" />
+
         <!-- Fonts -->
         <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"> -->
 

@@ -1,44 +1,46 @@
 <div>
     @if ($allAddedEstimatesData != null)
         <div class="col-md-12 col-lg-12">
-            <div class="card overflow-hidden">
+            <div class="card position-sticky" style="top:90px;">
                 <div class="card-header d-flex justify-content-between flex-wrap">
                     <div class="header-title">
-                        <h4 class="card-title mb-2">Added Estimates List</h4>
+                        <h6 class="card-title mb-2">Added Estimates List</h6>
                     </div>
                 </div>
-                <div>
-                    <div class="row m-2">
-                        <div class="col col-md-6 col-lg-6 mb-2">
-                            <div class="row">
-                                <div class="input-group mb-3">
-                                    <input type="text" wire:model="expression" class="form-control"
-                                        placeholder="{{ trans('cruds.estimate.fields.operation') }}"
-                                        aria-label="{{ trans('cruds.estimate.fields.operation') }}"
-                                        aria-describedby="basic-addon1">
-                                    <input type="text" wire:model="remarks" class="form-control"
-                                        placeholder="{{ trans('cruds.estimate.fields.remarks') }}"
-                                        aria-label="{{ trans('cruds.estimate.fields.remarks') }}"
-                                        aria-describedby="basic-addon1">
-                                    <button type="button" wire:click="expCalc"
-                                        class="btn btn-soft-primary">Calculate</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col col-md-6 col-lg-6 mb-2">
-                            <div class="btn-group float-right" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-soft-primary" wire:click="totalOnSelected"
-                                    @if ($openTotalButton && $totalOnSelectedCount!=1) {{ '' }}@else {{ 'disabled' }} @endif>{{ trans('cruds.estimate.fields.total_on_selected') }}
-                                </button>
-                                <button type="button" class="btn btn-soft-info" wire:click="exportWord">
-                                    <span class="btn-inner">
-                                        <x-lucide-sheet class="w-4 h-4 text-gray-500" />
-                                    </span>
-                                    {{ trans('cruds.estimate.fields.export_word') }}</button>
+                <div class="row m-2">
+                    <div class="col col-md-6 col-lg-6 mb-2">
+                        <div class="row">
+                            <div class="input-group mb-3">
+                                <input type="text" wire:model="expression" class="form-control"
+                                    placeholder="{{ trans('cruds.estimate.fields.operation') }}"
+                                    aria-label="{{ trans('cruds.estimate.fields.operation') }}"
+                                    aria-describedby="basic-addon1">
+                                <input type="text" wire:model="remarks" class="form-control"
+                                    placeholder="{{ trans('cruds.estimate.fields.remarks') }}"
+                                    aria-label="{{ trans('cruds.estimate.fields.remarks') }}"
+                                    aria-describedby="basic-addon1">
+                                <button type="button" wire:click="expCalc"
+                                    class="btn btn-soft-primary">Calculate</button>
                             </div>
                         </div>
                     </div>
+                    <div class="col col-md-6 col-lg-6 mb-2">
+                        <div class="btn-group float-right" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-soft-primary" wire:click="totalOnSelected"
+                                @if ($openTotalButton && $totalOnSelectedCount != 1) {{ '' }}@else {{ 'disabled' }} @endif>{{ trans('cruds.estimate.fields.total_on_selected') }}
+                            </button>
+                            <button type="button" class="btn btn-soft-info" wire:click="exportWord">
+                                <span class="btn-inner">
+                                    <x-lucide-sheet class="w-4 h-4 text-gray-500" />
+                                </span>
+                                {{ trans('cruds.estimate.fields.export_word') }}</button>
+                        </div>
+                    </div>
                 </div>
+            </div>
+
+
+            <div class="card" style="position:static;">
                 <div class="card-body p-0">
                     <div class="table-responsive mt-4">
                         <table id="basic-table" class="table table-striped mb-0" role="grid">
@@ -69,15 +71,9 @@
                                             </div>
                                         </td>
                                         <td>
-                                            {{ $addedEstimate['sor_item_number'] ?  getSorItemNumber($addedEstimate['sor_item_number']) : '---'}}
-
-                                            {{-- @if ($addedEstimate['sor_item_number'])
-                                                {{ $addedEstimate['sor_item_number'] }}
-                                            @else
-                                                --
-                                            @endif --}}
+                                            {{ $addedEstimate['sor_item_number'] ? getSorItemNumber($addedEstimate['sor_item_number']) : '---' }}
                                         </td>
-                                        <td>
+                                        <td class="text-wrap" style="width: 40rem">
                                             @if ($addedEstimate['sor_item_number'])
                                                 {{ $addedEstimate['description'] }}
                                             @elseif ($addedEstimate['arrayIndex'])
@@ -94,17 +90,22 @@
 
                                         </td>
                                         <td>
-                                            {{ $addedEstimate['qty'] }}
+                                            @if ($addedEstimate['qty'])
+                                                {{ $addedEstimate['qty'] }}
+                                            @endif
                                         </td>
                                         <td>
                                             {{ $addedEstimate['rate'] }}
                                         </td>
                                         <td>
-                                            {{ $addedEstimate['total_amount'] }}
+                                            @if ($addedEstimate['total_amount'])
+                                                {{ $addedEstimate['total_amount'] }}
+                                            @endif
                                         </td>
                                         <td>
                                             @if ($arrayRow == $key)
-                                                <x-button wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
+                                                <x-button
+                                                    wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
                                                     type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete

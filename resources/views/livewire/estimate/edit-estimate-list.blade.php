@@ -12,11 +12,11 @@
                         <div class="col col-md-6 col-lg-6 mb-2">
                             <div class="row">
                                 <div class="input-group mb-3">
-                                    <input type="text" wire:model="expression" class="form-control"
+                                    <input type="text" wire:model.defer="expression" class="form-control"
                                         placeholder="{{ trans('cruds.estimate.fields.operation') }}"
                                         aria-label="{{ trans('cruds.estimate.fields.operation') }}"
                                         aria-describedby="basic-addon1">
-                                    <input type="text" wire:model="remarks" class="form-control"
+                                    <input type="text" wire:model.defer="remarks" class="form-control"
                                         placeholder="{{ trans('cruds.estimate.fields.remarks') }}"
                                         aria-label="{{ trans('cruds.estimate.fields.remarks') }}"
                                         aria-describedby="basic-addon1">
@@ -79,7 +79,7 @@
                                                 --
                                             @endif
                                         </td>
-                                        <td>
+                                        <td class="text-wrap" style="width: 40rem">
                                             @if ($addedEstimate['sor_item_number'])
                                                 {{ getSorItemNumberDesc($addedEstimate['sor_item_number']) }}
                                             @elseif ($addedEstimate['row_index'])
@@ -106,16 +106,17 @@
                                         </td>
                                         <td>
                                             @if ($addedEstimate['row_index'] == null)
-                                                <x-button wire:click="editEstimate({{ $addedEstimate['row_id'] }})"
-                                                    type="button" class="btn btn-soft-primary btn-sm">
+                                                {{-- <x-button wire:click="editEstimate({{ $addedEstimate['row_id'] }})"
+                                                    type="button" class="btn btn-soft-primary btn-sm px-3 py-2.5 m-1 rounded">
                                                     <span class="btn-inner">
                                                         <x-lucide-edit class="w-4 h-4 text-gray-500" /> {{ trans('global.edit_btn') }}
                                                     </span>
-                                                </x-button>
+                                                </x-button> --}}
+                                                <x-edit-button wire:click="editEstimate({{ $addedEstimate['row_id'] }})" id action/>
                                             @endif
                                             @if ($arrayRow == $addedEstimate['row_id'])
                                                 <x-button wire:click="confDeleteDialog({{ $addedEstimate['row_id'] }})"
-                                                    type="button" class="btn btn-soft-danger btn-sm">
+                                                    type="button" class="btn btn-soft-danger btn-sm px-3 py-2.5 m-1 rounded">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> {{ trans('global.delete_btn') }}
                                                     </span>

@@ -10,7 +10,7 @@ class EstimateUserAssignRecord extends Model
     use HasFactory;
     protected $table= "estimate_user_assign_records";
     protected $fillable = [
-       'estimate_id','estimate_user_type','estimate_user_id','comments'
+       'estimate_id','estimate_user_type','user_id','comments','status','assign_user_id','is_done'
     ];
     public function SOR()
     {

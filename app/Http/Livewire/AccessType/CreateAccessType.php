@@ -3,11 +3,14 @@
 namespace App\Http\Livewire\AccessType;
 
 use Livewire\Component;
-use Spatie\Permission\Models\Permission;
+use App\Models\AccessType;
+use WireUi\Traits\Actions;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class CreateAccessType extends Component
 {
+    use Actions;
     public $dropDownData = [], $newAccessTypeData = [];
     public function mount()
     {
@@ -23,10 +26,23 @@ class CreateAccessType extends Component
     }
     public function store()
     {
-        $role = Role::create(['name' => $this->newAccessTypeData['access_name']]);
-        $role->syncPermissions($this->newAccessTypeData['permissions']);
-        unset($this->newAccessTypeData['permissions']);
-        AccessType::create($this->newAccessTypeData);
+        try{
+            $role = Role::create(['name' => $this->newAccessTypeData['access_name']]);
+            $role->syncPermissions($this->newAccessTypeData['permissions']);
+            unset($this->newAccessTypeData['permissions']);
+            // AccessType::create($this->newAccessTypeData);
+            AccessType::create($this->newAccessTypeData);
+
+            $this->notification()->success(
+                $description =  trans('cruds.access-type.create_msg')
+            );
+            $this->reset();
+            $this->emit('openEntryForm');
+        }
+        catch (\Throwable $th) {
+            $this->emit('showError', $th->getMessage());
+        }
+
     }
     public function render()
     {

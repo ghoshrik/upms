@@ -1,13 +1,19 @@
 <div>
-    <div class="conatiner-fluid content-inner mt-3 py-0">
-        <div class="iq-navbar-header" style="height: 145px;">
+    <div class="conatiner-fluid content-inner py-0 mt-5">
+        <div class="iq-navbar-header" style="height: 100px;">
+            @if ($errorMessage != null)
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span> {{ $errorMessage }}</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             <div class="container-fluid iq-container">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                     <div class="d-flex flex-column">
-                        <h1>{{$titel}}</h1>
-                        <p class="mb-0">{{$subTitel}}</p>
+                       <h3 class="text-dark">{{$titel}}</h3>
+                    <p class="text-primary mb-0">{{$subTitel}}</p>
                     </div>
-                    @canany(['create'])
+                    {{-- @canany(['create menu','edit menu']) --}}
                     <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
                         @if (!$isFromOpen)
                         <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
@@ -25,22 +31,8 @@
                         </button>
                         @endif
                     </div>
-                    @endcanany
+                    {{-- @endcanany --}}
                 </div>
-            </div>
-            <div class="iq-header-img">
-                <img src="{{ asset('images/dashboard/top-header.png') }}" alt="header"
-                    class="theme-color-default-img img-fluid w-100 h-100 animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header1.png') }}" alt="header"
-                    class="theme-color-purple-img img-fluid w-100 h-100 animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header2.png') }}" alt="header"
-                    class="theme-color-blue-img img-fluid w-100 h-100 animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header3.png') }}" alt="header"
-                    class="theme-color-green-img img-fluid w-100 h-100 animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header4.png') }}" alt="header"
-                    class="theme-color-yellow-img img-fluid w-100 h-100 animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header5.png') }}" alt="header"
-                    class="theme-color-pink-img img-fluid w-100 h-100 animated-scaleX">
             </div>
         </div>
         @section('webtitle',trans('cruds.user-management.title'))
@@ -52,15 +44,13 @@
                 @if ($isFromOpen && $openedFormType == 'create')
                     <livewire:menu-management.create-menu>
                 @elseif($isFromOpen && $openedFormType == 'edit')
-
+                    <livewire:menu-management.edit-menu :id="$selectedIdForEdit"/>
                 @else
                 <div class="row">
                     <div class="col-md-12 col-lg-12 col-sm-3">
                         <div class="card">
                             <div class="card-body">
-                                {{-- TODO:: CHANGE --}}
-                                {{--
-                                <livewire:estimate.estimated-data-table /> --}}
+                                <livewire:menu-management.data-table.menu-table/>
                             </div>
                         </div>
                     </div>

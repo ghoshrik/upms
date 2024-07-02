@@ -3,7 +3,7 @@
         ->where([['estimate_recomender.estimate_id', '=', $value], ['sor_masters.status', '=', 4]])
         ->get();
     $checkForApprove = App\Models\Esrecommender::join('sor_masters', 'estimate_recomender.estimate_id', '=', 'sor_masters.estimate_id')
-        ->where([['estimate_recomender.estimate_id', '=', $value], ['sor_masters.status', '=', 8]])
+        ->where([['estimate_recomender.estimate_id', '=', $value], ['sor_masters.status', '=', 6]])
         ->get();
 @endphp
 <div x-data="{ open: false }">
@@ -12,9 +12,12 @@
         @isset($checkForApprove)
             @if (count($checkForApprove) == 0)
                 @include('components.data-table-components.buttons.approve')
-                @include('components.data-table-components.buttons.revert')
+                @if (count($checkForModify) == 0)
+                    @include('components.data-table-components.buttons.revert')
+                @endif
+
             @else
-                @include('components.data-table-components.buttons.forward')
+                @include('components.data-table-components.buttons.fwd')
             @endif
         @endisset
     </div>

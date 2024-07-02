@@ -39,7 +39,7 @@ class CommonFunction extends Controller
         foreach ($exportDatas as $key => $export) {
             $html .= "<tr><td style='text-align: center'>" . chr($export['row_id'] + 64) . "</td>&nbsp;";
             if ($export['sor_item_number']) {
-                $html .= "<td style='text-align: center'>" . getSorItemNumber($export['sor_item_number']) . ' ( ' . $export['version'] . ' )' . "</td>&nbsp;";
+                $html .= "<td style='text-align: center'>" . getSorItemNumber($export['sor_item_number']) . ' ( ' . getVersion($export['sor_item_number']) . ' )' . "</td>&nbsp;";
             } elseif ($export['estimate_no']) {
                 $html .= "<td style='text-align: center'>" . $export['estimate_no'] . "</td>&nbsp;";
             } else {
@@ -83,7 +83,7 @@ class CommonFunction extends Controller
                     foreach ($getEstimateDetails as $estimateDetails) {
                         $html .= "<tr><td style='text-align: center'>" . chr($estimateDetails['row_id'] + 64) . "</td>&nbsp;";
                         if ($estimateDetails['sor_item_number']) {
-                            $html .= "<td style='text-align: center'>" . getSorItemNumber($estimateDetails['sor_item_number']) . ' ( ' . $estimateDetails['version'] . ' )' . "</td>&nbsp;";
+                            $html .= "<td style='text-align: center'>" . getSorItemNumber($estimateDetails['sor_item_number']) . ' ( ' . getVersion($export['sor_item_number']) . ' )' . "</td>&nbsp;";
                         } else {
                             $html .= "<td style='text-align: center'>--</td>&nbsp;";
                         }
@@ -119,5 +119,14 @@ class CommonFunction extends Controller
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($pw, "Word2007");
         $objWriter->save($date . '.docx');
         return public_path().'\\'.$date . '.docx';
+    }
+
+    static function hasNestedArrays($array) {
+        foreach ($array as $element) {
+            if (is_array($element)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

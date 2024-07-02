@@ -7,9 +7,7 @@ use App\Models\AccessType;
 use App\Models\Designation;
 use App\Models\Office;
 use App\Models\User;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -17,6 +15,11 @@ class CreateAccess extends Component
 {
     use Actions;
     public $dropDownData = [], $newAccessData = [];
+    public $access_type_name = [], $userlist = [];
+    // protected $rules = [
+    //     ''
+    // ];
+
     public function mount()
     {
         $this->newAccessData = [
@@ -52,10 +55,14 @@ class CreateAccess extends Component
     public function getUsers()
     {
         $this->dropDownData['users'] = User::select('users.id', 'users.emp_name')->join('user_types', 'users.user_type', '=', 'user_types.id')
-            ->where([['parent_id', Auth::user()->user_type], ['department_id', Auth::user()->department_id], ['designation_id', $this->newAccessData['designation_id']], ['office_id', Auth::user()->office_id]])->get();
+            ->where([['is_active',1],['parent_id', Auth::user()->user_type], ['department_id', Auth::user()->department_id], ['designation_id', $this->newAccessData['designation_id']], ['office_id', Auth::user()->office_id]])
+            ->get();
     }
+
+
     public function store()
     {
+
         try {
             $this->newAccessData['department_id'] = Auth::user()->department_id;
             $this->newAccessData['office_id'] = Auth::user()->office_id;
@@ -68,23 +75,32 @@ class CreateAccess extends Component
             foreach ($this->newAccessData['user_id'] as $user_id) {
                 $newAccessData = $this->newAccessData;
                 $newAccessData['user_id'] = $user_id;
-                if (AccessMaster::create($newAccessData)) {
-                    $user = User::find($user_id);
-                    $user->assignRole($accessTypeName['access_name']);
-                }else{
+                // dd($newAccessData);
+                $isAlreadyAssign = AccessMaster::where([['user_id', $user_id], ['access_type_id', $this->newAccessData['access_type_id']]])->first();
+                if (!isset($isAlreadyAssign)) {
+                    if (AccessMaster::create($newAccessData)) {
+                        $user = User::find($user_id);
+                        $user->assignRole($accessTypeName['access_name']);
+                        $this->notification()->success(
+                            $title = 'Success',
+                            $description = 'New User created successfully!'
+                        );
+                    } else {
+                        $this->notification()->error(
+                            $title = 'Error !!!',
+                            $description = 'Something went wrong.'
+                        );
+                        // return;
+                    }
+                } else {
                     $this->notification()->error(
                         $title = 'Error !!!',
-                        $description = 'Something went wrong.'
+                        $description = 'User already assign.'
                     );
-                    return;
                 }
             }
-            $this->notification()->success(
-                $title = 'Success',
-                $description =  'New User created successfully!'
-            );
             $this->reset();
-            $this->emit('openForm');
+            $this->emit('openEntryForm');
             return;
         } catch (\Throwable $th) {
             dd($th->getMessage());

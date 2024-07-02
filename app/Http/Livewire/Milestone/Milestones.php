@@ -8,8 +8,9 @@ use Livewire\Component;
 class Milestones extends Component
 {
     public $formOpen = false,$viewMode = false,$updateDataTableTracker,$milestones,$createButtonOn;
-    protected $listeners = ['openForm' => 'formOCControl','mileStoneRow'=>'milestoneViewController'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel = "Milestones";
+    protected $listeners = ['openEntryForm' => 'fromEntryControl','mileStoneRow'=>'milestoneViewController','showError'=>'setErrorAlert'];
+
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
 
     public function milestoneViewController($value)
     {
@@ -45,10 +46,16 @@ class Milestones extends Component
         if(isset($data['id'])){
             $this->selectedIdForEdit = $data['id'];
         }
+        $this->updateDataTableTracker = rand(1,1000);
+    }
+    public function setErrorAlert($errorMessage)
+    {
+       $this->errorMessage = $errorMessage;
     }
     public function render()
     {
         $this->updateDataTableTracker = rand(1,1000);
+        $this->titel = "Milestones";
         $assets = ['chart', 'animation'];
         return view('livewire.milestone.milestones',compact('assets'));
     }

@@ -20,16 +20,44 @@ class AafsDataTable extends DataTableComponent
         return [
             Column::make("Id", "id")
                 ->sortable(),
-            Column::make("Project id", "project_id")
+            Column::make("Project No", "project_no")
                 ->sortable(),
-            Column::make("Go id", "Go_id")
+            Column::make("Department Name", "dept_id")
                 ->sortable(),
-            Column::make("Support data", "support_data")
+            Column::make("Status", "status_id")
                 ->sortable(),
-            Column::make("Status", "status")
+            Column::make("Project Cost", "project_cost")
                 ->sortable(),
-            Column::make("Go date", "go_date")
+            Column::make("Tender Cost", "tender_cost")
                 ->sortable(),
+            Column::make("AAFS ID", "aafs_mother_id")
+                ->sortable(),
+            Column::make("AAFS Sub ID", "aafs_sub_id")
+                ->sortable(),
+            Column::make("Project Type", "project_type")
+                ->sortable(),
+            Column::make("Completion Period", "completePeriod")
+                ->sortable(),
+            Column::make("Un No", "unNo")
+                ->sortable(),
+            Column::make("Go No", "goNo")
+                ->sortable(),
+            Column::make("Pre AAfs Expenditure", "preaafsExp")
+                ->sortable(),
+            Column::make("Post AAfs Expenditure", "postaafsExp")
+                ->sortable(),
+            Column::make("Fund Released", "Fundcty")
+                ->sortable(),
+            Column::make("Executing Authority", "exeAuthority")
+                ->sortable(),
+            // Column::make("Go id", "Go_id")
+            //     ->sortable(),
+            // Column::make("Support data", "support_data")
+            //     ->sortable(),
+            // Column::make("Status", "status")
+            //     ->sortable(),
+            // Column::make("Go date", "go_date")
+            //     ->sortable(),
             // Column::make("Created at", "created_at")
             //     ->sortable(),
             // Column::make("Updated at", "updated_at")
