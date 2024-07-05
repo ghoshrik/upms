@@ -181,7 +181,7 @@
                                                     </span>
                                                 </button>
                                             @endif
-                                            @if ($arrayRow - 1 == $key)
+                                            {{-- @if ($arrayRow - 1 == $key) --}}
                                             {{-- <x-button
                                                     wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
                                                     type="button" class="btn btn-soft-danger btn-sm">
@@ -197,7 +197,7 @@
                                                     <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                 </span>
                                             </button>
-                                            @endif
+                                            {{-- @endif --}}
                                         </td>
                                     </tr>
                                 @endforeach

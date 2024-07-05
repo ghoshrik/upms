@@ -270,7 +270,7 @@ class AddedEstimateProjectList extends Component
             $this->allAddedEstimatesData[$key]['qty'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['qty']);
             $this->allAddedEstimatesData[$key]['rate'] = number_format(round($this->allAddedEstimatesData[$key]['rate'], 2), 2);
             $this->allAddedEstimatesData[$key]['rate'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['rate']);
-            $this->allAddedEstimatesData[$key]['total_amount'] = (str_contains($this->allAddedEstimatesData[$key]['unit_id'], '%')) ? (($this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'])/100) : $this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'];
+            $this->allAddedEstimatesData[$key]['total_amount'] = (str_contains($this->allAddedEstimatesData[$key]['unit_id'], '%')) ? (($this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate']) / 100) : $this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'];
             $this->allAddedEstimatesData[$key]['total_amount'] = number_format(round($this->allAddedEstimatesData[$key]['total_amount']), 2);
             $this->allAddedEstimatesData[$key]['total_amount'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['total_amount']);
             // $this->allAddedEstimatesData[$key]['rate'] = $this->allAddedEstimatesData[$key]['rate'];
@@ -392,7 +392,6 @@ class AddedEstimateProjectList extends Component
 
     public function setEstimateDataToSession()
     {
-        // dd('hi');
         $this->reset('allAddedEstimatesData');
         if ($this->editEstimate_id != '') {
             if (Session()->has('editProjectEstimateData' . $this->editEstimate_id)) {
@@ -416,6 +415,7 @@ class AddedEstimateProjectList extends Component
                 }
             }
         }
+        //  dd($this->allAddedEstimatesData);
         // dd($this->totalOnSelectedCount);
         if ($this->addedEstimateData != null) {
             $index = count($this->allAddedEstimatesData) + 1;
@@ -557,24 +557,88 @@ class AddedEstimateProjectList extends Component
         if (isset($sessionData[$value])) {
             unset($sessionData[$value]);
         }
-        // $numericValue = preg_replace('/[^0-9]/', '', $value);
-        foreach ($this->allAddedEstimatesData as $key => $estData) {
-            if ($estData['id'] === $value || $estData['id'] == $value) {
-                if ($estData['p_id'] == 0) {
-                    $matchingData = array_filter($this->allAddedEstimatesData, function ($item) use ($estData) {
-                        return isset($item['p_id']) && $item['p_id'] == $estData['id'];
-                    });
+        if (is_string($value) && strpos($value, '.') !== false) {
+            $matchingArrays = [];
+            $updatedArrays = [];
+            $remainingArrays = [];
+            $valueBeforeDecimal = substr($value, 0, strpos($value, '.'));
+            foreach ($this->allAddedEstimatesData as $key => $item) {
+                if ($item['id'] != $value) {
+                    $remainingArrays[] = $item;
+                    unset($matchingArrays[$key]);
                 }
-                // dd($estData, $matchingData);
-                unset($this->allAddedEstimatesData[$key]);
             }
+            foreach ($remainingArrays as $item) {
+                if ($item['p_id'] == $valueBeforeDecimal) {
+                    $idParts = explode('.', $item['id']);
+                    if (count($idParts) > 1) {
+                        if (intval($idParts[1]) > 1) {
+                            $idParts[1] = intval($idParts[1]) - 1;
+                        }
+                        $item['id'] = $idParts[0] . '.' . $idParts[1];
+                    } else {
+                        if (intval($idParts[0]) > 1) {
+                            $item['id'] = intval($idParts[0]) - 1;
+                        } else {
+                            $item['id'] = $idParts[0];
+                        }
+                    }
+                    $updatedArrays[] = $item;
+                } else {
+                    $updatedArrays[] = $item;
+                }
+            }
+        } else {
+            $filteredData = [];
+            foreach ($this->allAddedEstimatesData as $estimate) {
+                if ($estimate['id'] != $value && $estimate['p_id'] != $value) {
+                    $filteredData[] = $estimate;
+                }
+            }
+            $adjustedData = [];
+            $idMap = [];
+            foreach ($filteredData as $estimate) {
+                $idParts = explode('.', $estimate['id']);
+                $mainId = $idParts[0];
+                if (is_numeric($mainId) && $mainId > 1) {
+                    if (!isset($idMap[$mainId])) {
+                        $idMap[$mainId] = count($idMap) + 1;
+                    }
+                    $newMainId = $idMap[$mainId];
+                    if (count($idParts) > 1) {
+                        $newId = $newMainId . '.' . $idParts[1];
+                    } else {
+                        $newId = (string) $newMainId;
+                    }
+                    $estimate['id'] = $newId;
+                }
+                $pIdParts = explode('.', $estimate['p_id']);
+                $pMainId = $pIdParts[0];
+                if (is_numeric($pMainId) && $pMainId > 0) {
+                    if (!isset($idMap[$pMainId])) {
+                        $idMap[$pMainId] = count($idMap) + 1;
+                    }
+                    $newPMainId = $idMap[$pMainId];
+                    if (count($pIdParts) > 1) {
+                        $newPId = $newPMainId . '.' . $pIdParts[1];
+                    } else {
+                        $newPId = (string) $newPMainId;
+                    }
+                    $estimate['p_id'] = $newPId;
+                }
+                $adjustedData[] = $estimate;
+            }
+        }
+        if (!empty($updatedArrays)) {
+            $this->allAddedEstimatesData = $updatedArrays;
+        } else {
+            $this->allAddedEstimatesData = $adjustedData;
         }
         if ($this->editEstimate_id == '') {
             Session()->forget('addedProjectEstimateV2Data');
             Session()->put('addedProjectEstimateV2Data', $this->allAddedEstimatesData);
             Session()->put('modalData', $sessionData);
         } else {
-            //Todo::change with editModalData
             Session()->forget('editProjectEstimateData' . $this->editEstimate_id);
             Session()->put('editProjectEstimateData' . $this->editEstimate_id, $this->allAddedEstimatesData);
             Session()->put('editModalData', $sessionData);
@@ -590,7 +654,6 @@ class AddedEstimateProjectList extends Component
         $this->autoCalculateTotal();
     }
 
-    // TODO::export word on project estimate
     public function exportWord()
     {
         $exportDatas = array_values($this->allAddedEstimatesData);
@@ -599,8 +662,10 @@ class AddedEstimateProjectList extends Component
         $pw = new \PhpOffice\PhpWord\PhpWord();
         $section = $pw->addSection(
             array(
-                'marginLeft' => 600, 'marginRight' => 200,
-                'marginTop' => 600, 'marginBottom' => 200,
+                'marginLeft' => 600,
+                'marginRight' => 200,
+                'marginTop' => 600,
+                'marginBottom' => 200,
             )
         );
         $html = "<h1 style='font-size:24px;font-weight:600;text-align: center;'>Project Estimate Preparation Details</h1>";
