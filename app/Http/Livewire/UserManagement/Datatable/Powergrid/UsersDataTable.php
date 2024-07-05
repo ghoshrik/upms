@@ -420,14 +420,14 @@ final class UsersDataTable extends PowerGridComponent
                     'users.user_type',
                     'users.office_id',
                     // 'user_types.id as userType_id',
-                    'user_types.parent_id',
+                    // 'user_types.parent_id',
                     'users.is_active',
                     // 'designations.id as designationId',
                     // 'designations.designation_name',
                     DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
                 )
                 // ->where('user_types.parent_id', $this->userData)
-                ->join('user_types', 'users.user_type', '=', 'user_types.id')
+                // ->join('user_types', 'users.user_type', '=', 'user_types.id')
                 // ->join('designations', 'users.designation_id', '=', 'designations.id')
             ;
         }
@@ -509,7 +509,7 @@ final class UsersDataTable extends PowerGridComponent
             ->addColumn('mobile')
             ->addColumn('ehrms_id')
             ->addColumn('emp_name')
-            ->addColumn('designation_name')
+            ->addColumn('getDesignationName.designation_name')
             ->addColumn('getDepartmentName.department_name')
             ->addColumn('getOfficeName.office_name')
 
@@ -638,7 +638,7 @@ final class UsersDataTable extends PowerGridComponent
                 ->searchable()
                 ->makeInputText(),
 
-            Column::make('DESIGNATION NAME', 'designation_name')
+            Column::make('DESIGNATION NAME', 'getDesignationName.designation_name')
                 ->sortable()
                 ->searchable()
                 ->makeInputText(),

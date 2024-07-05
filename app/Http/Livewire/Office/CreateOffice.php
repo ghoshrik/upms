@@ -2,18 +2,19 @@
 
 namespace App\Http\Livewire\Office;
 
-use App\Models\Department;
-use App\Models\District;
 use App\Models\GP;
+use App\Models\Levels;
 use App\Models\Office;
 use App\Models\Taluka;
+use Livewire\Component;
+use App\Models\District;
+use App\Models\Department;
 use App\Models\Urban_body;
-use App\Models\Urban_body_Name;
+use WireUi\Traits\Actions;
 use Illuminate\Support\Arr;
+use App\Models\Urban_body_Name;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Livewire\Component;
-use WireUi\Traits\Actions;
 
 class CreateOffice extends Component
 {
@@ -37,14 +38,19 @@ class CreateOffice extends Component
             'office_code' => '',
             'department_id' => (Auth::user()->department_id != 0) ? Auth::user()->department_id : '',
         ];
-        $this->fetchDropdownData['levels'] = [
-            ['name' => 'L1 Level', 'id' => 1],
-            ['name' => 'L2 Level', 'id' => 2],
-            ['name' => 'L3 Level', 'id' => 3],
-            ['name' => 'L4 Level', 'id' => 4],
-            ['name' => 'L5 Level', 'id' => 5],
-            ['name' => 'L6 Level', 'id' => 6],
-        ];
+        $userRole = Auth::user()->roles->first();
+        $childRoles = $userRole->childRoles;
+        foreach ($childRoles as $key => $data) {
+            if ($key != 0) {
+                // Compare current item with the previous item
+                if ($childRoles[$key - 1]->has_level_no != $data->has_level_no) {
+                    $this->fetchDropdownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
+                }
+            } else {
+                // Add the first item unconditionally (optional, depending on your needs)
+                $this->fetchDropdownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
+            }
+        }
         if (Auth::user()->user_type == 2) {
             $allDept = Cache::get('allDept');
             if ($allDept != '') {
@@ -54,10 +60,11 @@ class CreateOffice extends Component
                     return Department::select('id', 'department_name')->get();
                 });
             }
-            $this->fetchDropdownData['levels'] = [
-                ['name' => 'L1 Level', 'id' => 1]
-            ];
+            // $this->fetchDropdownData['levels'] = [
+            //     ['name' => 'L1 Level', 'id' => 1]
+            // ];
         }
+        $this->fetchDropdownData['district'] = District::all();
     }
 
     protected $rules = [
@@ -144,6 +151,7 @@ class CreateOffice extends Component
                 'urban_code' => ($this->selectedOption['urban_code'] == '') ? 0 : $this->selectedOption['urban_code'],
                 'ward_code' => ($this->selectedOption['ward_code'] == '') ? 0 : $this->selectedOption['ward_code'],
                 'level_no' => $this->selectedOption['level'],
+                'office_parent' => Auth::user()->office_id,
             ];
             // dd($insert);
             Office::create($insert);
@@ -160,7 +168,6 @@ class CreateOffice extends Component
     }
     public function render()
     {
-        $this->fetchDropdownData['district'] = District::all();
         return view('livewire.office.create-office');
     }
 }

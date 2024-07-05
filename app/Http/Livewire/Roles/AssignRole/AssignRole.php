@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Roles\AssignRole;
 
 use App\Models\User;
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
 class AssignRole extends Component
 {
@@ -15,7 +16,16 @@ class AssignRole extends Component
     public $assignUserList = [];
     public function mount()
     {
-        $this->assignUserList = User::with('roles')->has('roles')->get();
+        $userRole = Auth::user()->roles1->first();
+        // dd($userRole);
+        $childRoles = $userRole->childRoles;
+        // dd($childRoles);
+        foreach ($childRoles as $key => $role) {
+            $usersWithRole = User::whereHas('roles', function($query) use ($role) {
+                $query->where('id', $role->id);
+            })->with('roles')->get()->toArray();
+            $this->assignUserList = array_merge($this->assignUserList, $usersWithRole);
+        }
         // dd($this->assignUserList);
     }
     public function fromEntryControl($data='')

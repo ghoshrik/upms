@@ -183,7 +183,7 @@ class CreateUser extends Component
             unset($this->newUserData['confirm_password']);
             $userType = UserType::where('parent_id', Auth::user()->user_type)->first();
             if (isset($userType)) {
-                $this->newUserData['user_type'] = $userType['id'];
+                $this->newUserData['user_type'] = 0;
                 $this->newUserData['department_id'] = (Auth::user()->user_type == 2) ? $this->newUserData['department_id'] : Auth::user()->department_id;
                 $this->newUserData['designation_id'] = ($this->newUserData['designation_id'] == '') ? Auth::user()->designation_id : $this->newUserData['designation_id'];
                 $this->newUserData['office_id'] = ($this->newUserData['office_id'] == '') ? Auth::user()->office_id : $this->newUserData['office_id'];

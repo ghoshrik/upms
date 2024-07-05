@@ -59,13 +59,13 @@ class AuthController extends Controller
             ->orWhere('ehrms_id', $request->loginId)
             ->first();
         if ($user) {
-            session([
-                'user_data' => $user,
-                'curr_role' => $user->getRoleNames()[0],
-            ]);
             /* Super Admin*/
             if ($user->is_active == 1 && $user->is_admin == 1) {
                 if ($user && Hash::check($request->password, $user->password)) {
+                    session([
+                        'user_data' => $user,
+                        'curr_role' => $user->getRoleNames()[0],
+                    ]);
                     Auth::login($user);
                     // dd($request->session()->put('user', $user));
                     return redirect()->route('dashboard');
@@ -76,6 +76,10 @@ class AuthController extends Controller
                 }
             } elseif ($user->is_active == 1) {
                 if ($user && Hash::check($request->password, $user->password)) {
+                    session([
+                        'user_data' => $user,
+                        'curr_role' => $user->getRoleNames()[0],
+                    ]);
                     $resp = $this->generateOtp($user->id);
                     $phoneNumberMasked = preg_replace('/(\d{3})(\d{3})(\d{4})/', 'XXXXXX$3', $user->mobile); // Masked phone number
                     // dd($resp->otp);

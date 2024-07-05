@@ -96,7 +96,8 @@
                                                                         {{ ($user['office_id'] != 0 ) ? getOfficeName($user['office_id']) : '' }}
                                                                     </td>
                                                                     <td class="text-wrap" style="width: 30rem">
-                                                                        {{ $user->roles->isNotEmpty() ? $user->roles->first()->name : 'No role assigned' }}
+                                                                        {{-- {{ $user->roles->isNotEmpty() ? $user->roles->first()->name : 'No role assigned' }} --}}
+                                                                        {{ $user['roles'][0]['name'] }}
                                                                     </td>
                                                                     <td class="text-wrap" style="width: 30rem">
                                                                         {{ $user['user_type'] }}

@@ -21,21 +21,76 @@
                             </div>
                         @endisset
                         @isset($dropDownData['levels'])
-                            <div class="col-md-4 col-lg-4 col-sm-12">
+                            <div class="col-md-4 col-lg-4 col-sm-6" wire:key='level_'>
                                 <div class="form-group">
                                     <x-select label="Level" placeholder="Select Level"
                                         wire:model.defer="newAccessData.level_id">
                                         @foreach ($dropDownData['levels'] as $level)
-                                            <x-select.option label="{{ $state['level_name'] }}"
-                                                value="{{ $state['id'] }}" />
+                                            <x-select.option label="{{ $level['level_name'] }}"
+                                                value="{{ $level['id'] }}" />
+                                        @endforeach
+                                    </x-select>
+                                </div>
+                            </div>
+                        @endisset
+
+                        @isset($dropDownData['departments'])
+                            <div class="col-md-4 col-lg-4 col-sm-6" wire:key='department_'>
+                                <div class="form-group">
+                                    <x-select label="Department" placeholder="Select Department"
+                                        wire:model.defer="newAccessData.department_id"
+                                        x-on:select="$wire.getOfficeDesignation()">
+                                        @foreach ($dropDownData['departments'] as $department)
+                                            <x-select.option label="{{ $department['department_name'] }}"
+                                                value="{{ $department['id'] }}" />
+                                        @endforeach
+                                    </x-select>
+                                </div>
+                            </div>
+                        @endisset
+                        @isset($dropDownData['designations'])
+                            <div class="col-md-4 col-lg-4 col-sm-6" wire:key='desg_'>
+                                <div class="form-group">
+                                    <x-select label="Designation" placeholder="Select Designation"
+                                        wire:model.defer="newAccessData.desg_id" x-on:select="$wire.getUserList()">
+                                        @foreach ($dropDownData['designations'] as $designation)
+                                            <x-select.option label="{{ $designation['designation_name'] }}"
+                                                value="{{ $designation['id'] }}" />
+                                        @endforeach
+                                    </x-select>
+                                </div>
+                            </div>
+                        @endisset
+                        @isset($dropDownData['offices'])
+                            <div class="col-md-4 col-lg-4 col-sm-6" wire:key='office_'>
+                                <div class="form-group">
+                                    <x-select label="Office" placeholder="Select Office"
+                                        wire:model.defer="newAccessData.office_id" x-on:select="$wire.getUserList()">
+                                        @foreach ($dropDownData['offices'] as $office)
+                                            <x-select.option label="{{ $office['office_name'] }}"
+                                                value="{{ $office['id'] }}" />
+                                        @endforeach
+                                    </x-select>
+                                </div>
+                            </div>
+                        @endisset
+                        @isset($dropDownData['users'])
+                            <div class="col-md-4">
+                                <div class="form-group" wire:key='user_'>
+                                    <x-select label="User List" placeholder="Select User"
+                                        wire:model.defer="newAccessData.users_id">
+                                        @foreach ($dropDownData['users'] as $user)
+                                            <x-select.option label="{{ $user['emp_name'] }}"
+                                                value="{{ $user['id'] }}" />
                                         @endforeach
                                     </x-select>
                                 </div>
                             </div>
                         @endisset
                         <div class="col-md-4">
-                            <div class="form-group">
-                                <x-select label="User Type" placeholder="Select User Type" wire:model.defer="newAccessData.role_type" x-on:select="$wire.getUserList()">
+                            <div class="form-group" wire:key='userRole_'>
+                                <x-select label="User Role" placeholder="Select User Role"
+                                    wire:model.defer="newAccessData.role_type" >
                                     @isset($dropDownData['userTypes'])
                                         @foreach ($dropDownData['userTypes'] as $usertype)
                                             <x-select.option label="{{ $usertype['name'] }}"
@@ -45,35 +100,9 @@
                                 </x-select>
                             </div>
                         </div>
-                        @isset($this->dropDownData['designations'])
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <x-select label="Designation" placeholder="Select Designation" wire:model.defer="" x-on:select="">
-                                    @isset($dropDownData['userTypes'])
-                                        @foreach ($dropDownData['designations'] as $designation)
-                                            <x-select.option label="{{ $designation['designation_name'] }}"
-                                                value="{{ $designation['id'] }}" />
-                                        @endforeach
-                                    @endisset
-                                </x-select>
-                            </div>
-                        </div>
-                        @endisset
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <x-select label="User List" placeholder="Select User" wire:model.defer="newAccessData.users_id">
-                                    @isset($dropDownData['users'])
-                                        @foreach ($dropDownData['users'] as $user)
-                                            <x-select.option label="{{ $user['emp_name'] }}"
-                                                value="{{ $usertype['id'] }}" />
-                                        @endforeach
-                                    @endisset
-                                </x-select>
-                            </div>
-                        </div>
                         <div class="col col-md-2 col-lg-2 col-sm-12 col-xs-12 mb-2">
                             <div class="form-group pt-4">
-                                <button type="button" wire:click='getUsers' class="btn btn-soft-primary ">
+                                <button type="button" wire:click='store' class="btn btn-soft-primary ">
                                     Save
                                 </button>
                             </div>

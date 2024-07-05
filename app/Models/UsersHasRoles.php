@@ -11,7 +11,8 @@ class UsersHasRoles extends Model
     protected $table="users_has_roles";
     protected $fillable = [
         'user_id',
-        'role_id'
+        'role_id',
+        'office_id'
     ];
     public $incrementing = false;
 }

@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Designation;
 use App\Models\Levels;
 use Livewire\Component;
 use WireUi\Traits\Actions;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Designation as ModelsDesignation;
 
 class CreateDesignation extends Component
@@ -25,7 +26,19 @@ class CreateDesignation extends Component
         'level_no.required' => 'This field is required'
     ];
     public function mount(){
-        $this->dropdownData['levels'] = Levels::all();
+        $userRole = Auth::user()->roles->first();
+        $childRoles = $userRole->childRoles;
+        foreach ($childRoles as $key => $data) {
+            if ($key != 0) {
+                // Compare current item with the previous item
+                if ($childRoles[$key - 1]->has_level_no != $data->has_level_no) {
+                    $this->dropdownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
+                }
+            } else {
+                // Add the first item unconditionally (optional, depending on your needs)
+                $this->dropdownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
+            }
+        }
     }
     public function updated($param)
     {
