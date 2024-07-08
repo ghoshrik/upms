@@ -1643,7 +1643,7 @@ class CreateRateAnalysis extends Component
             $this->reset('addedRate');
             Session()->forget('editRateData' . $this->editRate_id);
             $this->part_no = strtoupper($this->part_no);
-            ($this->editRate_id != '') ? Session()->forget('RateAnalysisEditModal') : Session()->forget('RateAnalysisModal');
+
             $copyfetchRates = RatesAnalysis::where('rate_id', $this->rateData['rate_no'])->get();
             $this->emit('setFetchRateData', $copyfetchRates);
         } else {
@@ -1716,9 +1716,6 @@ class CreateRateAnalysis extends Component
                 $this->addedRate['col_position'] = isset($this->rateData['col_position']) ? $this->rateData['col_position'] : 0;
                 $this->addedRate['is_row'] = isset($this->rateData['is_row']) ? $this->rateData['is_row'] : null;
                 $this->addedRate['unit_id'] = is_numeric($this->rateData['unit_id']) ? getUnitName($this->rateData['unit_id']) : $this->rateData['unit_id'];
-                if ($this->addedRate['unit_id'][0] === '%') {
-                    $this->addedRate['total_amount'] = $this->addedRate['total_amount'] / 100;
-                }
                 $this->addedRateUpdateTrack = rand(1, 1000);
                 $this->rateData['item_number'] = '';
                 $this->rateData['other_name'] = '';

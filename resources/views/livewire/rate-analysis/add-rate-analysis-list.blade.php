@@ -215,43 +215,42 @@
                                             {{ $addedRate['total_amount'] }}
                                         </td>
                                         <td>
-                                            @if ($addedRate['operation'] == '' || $addedRate['rate_no'] != 0 || $addedRate['rate_no'] == '')
-                                                <button wire:click="editRow('{{ $addedRate['array_id'] }}')"
-                                                    type="button" class="btn-soft-warning btn-sm">
-                                                    <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
-                                                </button>
-                                            @endif
-                                            @if ($addedRate['rate_no'])
-                                                <x-button wire:click="viewRateModal({{ $addedRate['rate_no'] }})"
-                                                    type="button" class="btn btn-soft-primary btn-sm">
-                                                    <span class="btn-inner">
-                                                        <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
-                                                    </span>
-                                                </x-button>
-                                            @endif
+                                            <button wire:click="editRow('{{ $addedRate['array_id'] }}')" type="button"
+                                                class="btn-soft-warning btn-sm">
+                                                <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
+                                            </button>
+                                            <x-button wire:click="viewRateModal({{ $addedRate['rate_no'] }})"
+                                                type="button" class="btn btn-soft-primary btn-sm"
+                                                style="{{ $addedRate['rate_no'] == 0 ? 'display:none;' : '' }}">
+                                                <span class="btn-inner">
+                                                    <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
+                                                </span>
+                                            </x-button>
 
-                                            @if ($arrayRow == $key)
-                                                {{-- <x-button
+
+                                            {{-- @if ($arrayRow == $key) --}}
+
+                                            {{-- <x-button
                                                     wire:click="confDeleteDialog({{ $addedRate['array_id'] }})"
                                                     type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                     </span>
                                                 </x-button> --}}
-                                                <button
-                                                    onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
-                                                    wire:click="deleteRate('{{ $addedRate['array_id'] }}')"
-                                                    type="button" class="btn btn-danger btn-sm">
-                                                    <span class="btn-inner">
-                                                        <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
-                                                    </span>
-                                                </button>
-                                                {{-- <button onclick="showDeleteConfirmation({{ $addedRate['array_id'] }})" type="button" class="btn btn-soft-danger btn-sm">
+                                            <button
+                                                onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
+                                                wire:click="deleteRate('{{ $addedRate['array_id'] }}')" type="button"
+                                                class="btn btn-soft-danger btn-sm">
+                                                <span class="btn-inner">
+                                                    <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
+                                                </span>
+                                            </button>
+                                            {{-- <button onclick="showDeleteConfirmation({{ $addedRate['array_id'] }})" type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                     </span>
                                                 </button> --}}
-                                            @endif
+                                            {{-- @endif --}}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -594,17 +593,32 @@
 
 
     @if ($openQtyModal)
-        <div>
-            <livewire:components.modal.rate-analysis.unit-analysis-view-modal :sendArrayDesc="$sendArraysDesc" :arrayCount="$arrayCount"
-                :unit_id="$sendArrayKey" :featureType="'RateAnalysis'" :editRate_id="$editRate_id" :part_no="$part_no" />
-        </div>
+        <livewire:components.modal.rate-analysis.unit-analysis-view-modal :sendArrayDesc="$sendArraysDesc" :arrayCount="$arrayCount"
+            :unit_id="$sendArrayKey" :featureType="'RateAnalysis'" :editRate_id="$editRate_id" :part_no="$part_no" />
     @endif
     @if ($editRowModal)
-        <div>
-
-
-            <livewire:components.modal.item-modal.edit-row-wise :editRowId='$editRowId' :editRowData='$editRowData' :editRate_id="$editRate_id"
-                :featureType="'RateAnalysis'" />
-        </div>
+        <livewire:components.modal.item-modal.edit-row-wise :editRowId='$editRowId' :editRowData='$editRowData' :editRate_id="$editRate_id"
+            :featureType="'RateAnalysis'">
     @endif
 </div>
+
+{{-- <script>
+    function showDeleteConfirmation(arrayId) {
+        alert('hi');
+        // Swal.fire({
+        //     title: 'Are you sure?',
+        //     text: 'This action cannot be undone.',
+        //     icon: 'warning',
+        //     showCancelButton: true,
+        //     confirmButtonColor: '#dc3545',
+        //     cancelButtonColor: '#6c757d',
+        //     confirmButtonText: 'Delete',
+        //     cancelButtonText: 'Cancel'
+        // }).then((result) => {
+        //     if (result.isConfirmed) {
+        //         // Call the deleteRate() function with the provided arrayId
+        //         Livewire.emit('deleteEstimate', arrayId);
+        //     }
+        // });
+    }
+</script> --}}
