@@ -154,12 +154,11 @@
                                             {{ $addedEstimate['total_amount'] }}
                                         </td>
                                         <td>
-                                            @if ($addedEstimate['operation'] == '' || $addedEstimate['rate_no'] != 0 || $addedEstimate['rate_no'] == '')
-                                                <button wire:click="editRow('{{ $addedEstimate['array_id'] }}')"
-                                                    type="button" class="btn-soft-warning btn-sm">
-                                                    <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
-                                                </button>
-                                            @endif
+                                            <button wire:click="editRow('{{ $addedEstimate['array_id'] }}')"
+                                                type="button" class="btn-soft-warning btn-sm">
+                                                <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
+                                            </button>
+
 
                                             <!-- Confirm Modal -->
                                             {{-- <div class="modal fade" id="confirmModal" tabindex="-1"
@@ -184,39 +183,46 @@
                                                     </div>
                                                 </div>
                                             </div> --}}
-                                            @if ($addedEstimate['estimate_no'])
+                                            {{-- @if ($addedEstimate['estimate_no'])
                                                 <x-button wire:click="viewModal({{ $addedEstimate['estimate_no'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
                                                     </span>
                                                 </x-button>
-                                            @endif
-                                            @if ($addedEstimate['rate_no'])
-                                                <x-button wire:click="viewRateModal({{ $addedEstimate['rate_no'] }})"
-                                                    type="button" class="btn btn-soft-primary btn-sm">
-                                                    <span class="btn-inner">
-                                                        <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
-                                                    </span>
-                                                </x-button>
-                                            @endif
-                                            @if ($arrayRow == $key)
-                                                {{-- <x-button
+                                            @endif --}}
+                                            <x-button wire:click="viewModal({{ $addedEstimate['estimate_no'] }})"
+                                                type="button" class="btn btn-soft-primary btn-sm"
+                                                style="{{ $addedEstimate['estimate_no'] == 0 ? 'display:none;' : '' }}">
+                                                <span class="btn-inner">
+                                                    <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
+                                                </span>
+                                            </x-button>
+                                            <x-button wire:click="viewRateModal({{ $addedEstimate['rate_no'] }})"
+                                                type="button" class="btn btn-soft-primary btn-sm"
+                                                style="{{ $addedEstimate['rate_no'] == 0 ? 'display:none;' : '' }}">
+                                                <span class="btn-inner">
+                                                    <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
+                                                </span>
+                                            </x-button>
+
+                                            {{-- @if ($arrayRow == $key) --}}
+                                            {{-- <x-button
                                                     wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
                                                     type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                     </span>
                                                 </x-button> --}}
-                                                <button
-                                                    onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
-                                                    wire:click="deleteEstimate('{{ $addedEstimate['array_id'] }}')"
-                                                    type="button" class="btn btn-soft-danger btn-sm">
-                                                    <span class="btn-inner">
-                                                        <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
-                                                    </span>
-                                                </button>
-                                            @endif
+                                            <button
+                                                onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
+                                                wire:click="deleteEstimate('{{ $addedEstimate['array_id'] }}')"
+                                                type="button" class="btn btn-soft-danger btn-sm">
+                                                <span class="btn-inner">
+                                                    <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
+                                                </span>
+                                            </button>
+                                            {{-- @endif --}}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -230,7 +236,7 @@
                                 class="btn btn-soft-danger rounded-pill float-left">Reset</button></div>
                         <div class="col-6">
                             <button type="submit" wire:click='store'
-                                class="btn btn-warning rounded-pill float-right">Update</button>
+                                class="btn btn-success rounded-pill float-right">Save</button>
                             <button type="submit" wire:click='store("draft")'
                                 class="btn btn-soft-primary rounded-pill float-right mr-2">Draft</button>
                         </div>

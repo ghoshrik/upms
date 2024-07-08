@@ -27,11 +27,9 @@ class AddedEstimateProjectList extends Component
     }
     public function editRow($rowId)
     {
-        // dd($rowId);
         $this->editRowId = $rowId;
         $numericValue = preg_replace('/[^0-9]/', '', $rowId);
         $this->editRowData = $this->allAddedEstimatesData[$numericValue];
-        // dd($this->editRowData);
         $this->editRowModal = !$this->editRowModal;
     }
     public function closeEditModal()
@@ -59,7 +57,6 @@ class AddedEstimateProjectList extends Component
         if (Session()->has('editProjectEstimateData' . $this->editEstimate_id)) {
             $this->allAddedEstimatesData = Session()->get('editProjectEstimateData' . $this->editEstimate_id);
         } else {
-            // dd($fatchEstimateData);
             foreach ($fatchEstimateData as $estimateData) {
                 $count = count($this->allAddedEstimatesData) + 1;
                 $this->allAddedEstimatesData[$count]['estimate_no'] = $estimateData['estimate_no'];
@@ -148,7 +145,6 @@ class AddedEstimateProjectList extends Component
                 $title = 'Error Updating Row'
             );
         }
-        $this->updatedEstimateRecalculate();
         $this->editRowModal = !$this->editRowModal;
     }
     public function viewModal($estimate_id)
@@ -315,7 +311,7 @@ class AddedEstimateProjectList extends Component
             $this->allAddedEstimatesData[$key]['qty'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['qty']);
             $this->allAddedEstimatesData[$key]['rate'] = number_format(round($this->allAddedEstimatesData[$key]['rate'], 2), 2);
             $this->allAddedEstimatesData[$key]['rate'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['rate']);
-            $this->allAddedEstimatesData[$key]['total_amount'] = (str_contains($this->allAddedEstimatesData[$key]['unit_id'], '%')) ? (($this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate']) / 100) : $this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'];
+            $this->allAddedEstimatesData[$key]['total_amount'] = $this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'];
             $this->allAddedEstimatesData[$key]['total_amount'] = number_format(round($this->allAddedEstimatesData[$key]['total_amount'], 2), 2);
             $this->allAddedEstimatesData[$key]['total_amount'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['total_amount']);
         } else {
@@ -540,6 +536,9 @@ class AddedEstimateProjectList extends Component
         }
         $numericValue = preg_replace('/[^0-9]/', '', $value);
         unset($this->allAddedEstimatesData[$numericValue]);
+        $this->updateTotalAmounts();
+        $this->allAddedEstimatesData = $this->reindexArray($this->allAddedEstimatesData, $value);
+        $this->updateTotalAmounts();
         if ($this->editEstimate_id == '') {
             Session()->forget('addedProjectEstimateData');
             Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
@@ -558,6 +557,56 @@ class AddedEstimateProjectList extends Component
             $title = 'Row Deleted Successfully'
         );
     }
+
+    private function reindexArray($array, $deletedIndex)
+    {
+        $numericValue = preg_replace('/[^0-9]/', '', $deletedIndex);
+        $alphabetValue = preg_replace('/[^A-Z]/', '', $deletedIndex);
+        $reindexedArray = [];
+        $currentIndex = 1;
+
+        foreach ($array as $value) {
+            if (!empty($value['arrayIndex'])) {
+                $indexes = explode('+', $value['arrayIndex']);
+                $updatedIndexes = [];
+                foreach ($indexes as $index) {
+                    $numericPart = (int) preg_replace('/[^0-9]/', '', $index);
+                    if ($numericPart != $numericValue) {
+                        $updatedIndexes[] = $alphabetValue . ($numericPart > $numericValue ? $numericPart - 1 : $numericPart);
+                    }
+                }
+                $value['arrayIndex'] = implode('+', $updatedIndexes);
+            }
+            $value['array_id'] = $alphabetValue . $currentIndex;
+            $reindexedArray[$currentIndex] = $value;
+            $currentIndex++;
+        }
+
+        return $reindexedArray;
+    }
+
+    private function updateTotalAmounts()
+    {
+        $sumTotalAmount = 0;
+        $countEmptyIndexes = 0;
+        foreach ($this->allAddedEstimatesData as $value) {
+            if (empty($value['arrayIndex'])) {
+                $sumTotalAmount += floatval($value['total_amount']);
+                $countEmptyIndexes++;
+            }
+        }
+        $hasEmptyIndexes = $countEmptyIndexes > 0;
+        foreach ($this->allAddedEstimatesData as &$value) {
+            if (!empty($value['arrayIndex'])) {
+                if (!$hasEmptyIndexes) {
+                    $value['total_amount'] = 0;
+                } else {
+                    $value['total_amount'] = number_format($sumTotalAmount, 2);
+                }
+            }
+        }
+    }
+
     public function exportWord()
     {
         $exportDatas = array_values($this->allAddedEstimatesData);
@@ -721,8 +770,7 @@ class AddedEstimateProjectList extends Component
                             EstimateUserAssignRecord::create($data);
                         }
                         $this->notification()->success(
-
-                            $this->editEstimate_id ? $title = ($flag != 'draft') ? 'Project Estimate Updated Successfully!!' : 'Project Estimate Drafted Successfully!!' : $title = ($flag != 'draft') ? 'Project Estimate Created Successfully!!' : 'Project Estimate Drafted Successfully!!'
+                            $title = ($flag != 'draft') ? 'Project Estimate Created Successfully!!' : 'Project Estimate Drafted Successfully!!'
                         );
                         $this->resetSession();
                         $this->updateDataTableTracker = rand(1, 1000);
