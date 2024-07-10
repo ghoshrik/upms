@@ -48,6 +48,19 @@
                                 </div>
                             </div>
                         @endisset
+                        {{-- @isset($dropDownData['departmentCategory'])
+                        <div class="col-md-4 col-lg-4 col-sm-6" wire:key='departmentCategory_'>
+                            <div class="form-group">
+                                <x-select label="Department Category" placeholder="Select Department Category"
+                                wire:model.defer="newAccessData.dept_category_id">
+                                @foreach ($dropDownData['departmentCategory'] as $category)
+                                    <x-select.option label="{{ $category['dept_category_name'] }}"
+                                        value="{{ $category['id'] }}" />
+                                @endforeach
+                            </x-select>
+                            </div>
+                        </div>
+                        @endisset --}}
                         @isset($dropDownData['designations'])
                             <div class="col-md-4 col-lg-4 col-sm-6" wire:key='desg_'>
                                 <div class="form-group">
@@ -80,8 +93,10 @@
                                     <x-select label="User List" placeholder="Select User"
                                         wire:model.defer="newAccessData.users_id">
                                         @foreach ($dropDownData['users'] as $user)
-                                            <x-select.option label="{{ $user['emp_name'] }}"
-                                                value="{{ $user['id'] }}" />
+                                        <x-select.option
+                                        label="{{ $user['emp_name'] . ($user['dept_category_id'] != '' && $user['dept_category_id'] != 0 ? ' ('.$user->getDepartmentCategoryName?->dept_category_name.')' : '') }}"
+                                        value="{{ $user['id'] }}"
+                                    />
                                         @endforeach
                                     </x-select>
                                 </div>

@@ -17,11 +17,13 @@ class CreateUserType extends Component
     {
         $this->formData['user_type'] = '';
         $this->formData['user_type_id'] = '';
-        $authUserType = Auth::user()->user_type;
-        $parentTypeId = UserType::find($authUserType)->parent_id;
-        $this->dropdownData['user_types_list'] = UserType::where('id', '!=', $parentTypeId)
+        $authUserRole = Auth::user()->roles->first();
+        // $parentTypeId = Role::find($authUserRole->role_parent);
+        // dd($parentTypeId);
+        $this->dropdownData['user_types_list'] = Role::where('role_parent', $authUserRole->role_parent)
         // ->where('id', '!=', $authUserType)
             ->get();
+            // dd($this->dropdownData['user_types_list']);
     }
     public function store()
     {

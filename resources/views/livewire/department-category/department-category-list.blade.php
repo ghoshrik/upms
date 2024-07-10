@@ -10,7 +10,7 @@
             <div class="container-fluid iq-container">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                     <div class="d-flex flex-column">
-                        <h6 class="text-dark">{{ $titel }}</h6>
+                        <h1 class="text-dark">{{ $titel }}</h1>
                         <p class="text-primary mb-0">{{ $subTitel }}</p>
                     </div>
                     @canany(['create department-category', 'edit department-category'])

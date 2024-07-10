@@ -40,6 +40,6 @@ class DeptCategoryTable extends DataTableComponent
     public function builder(): Builder
     {
         return DepartmentCategories::query()
-            ->where('sor_category_types.department_id','=',Auth::user()->department_id);
+            ->where('department_categories.department_id','=',Auth::user()->department_id);
     }
 }

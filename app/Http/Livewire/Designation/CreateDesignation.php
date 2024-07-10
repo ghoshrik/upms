@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Designation;
 
+use App\Models\Role;
 use App\Models\Levels;
 use Livewire\Component;
 use WireUi\Traits\Actions;
@@ -27,7 +28,10 @@ class CreateDesignation extends Component
     ];
     public function mount(){
         $userRole = Auth::user()->roles->first();
-        $childRoles = $userRole->childRoles;
+        $childRoles = Role::where('role_parent',$userRole->id)->get();
+        // dd($childRoles);
+        // $childRoles = $userRole->parentRole;
+        // dd($childRoles);
         foreach ($childRoles as $key => $data) {
             if ($key != 0) {
                 // Compare current item with the previous item

@@ -2,18 +2,20 @@
 
 namespace App\Http\Livewire\Roles\AssignRole;
 
-use App\Models\Department;
-use App\Models\Designation;
+use App\Models\User;
 use App\Models\Levels;
 use App\Models\Office;
 use App\Models\States;
-use App\Models\User;
+use Livewire\Component;
 use App\Models\UserType;
+use App\Models\Department;
+use WireUi\Traits\Actions;
+use App\Models\Designation;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+use App\Models\DepartmentCategories;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Livewire\Component;
-use Spatie\Permission\Models\Role;
-use WireUi\Traits\Actions;
 
 class Create extends Component
 {
@@ -30,6 +32,7 @@ class Create extends Component
             'office_id' => '',
             'desg_id' => '',
             'department_id' => '',
+            'dept_category_id'=>'',
             //     'roles_id' => [],
         ];
         // $this->getDropdownData('userTypes');
@@ -52,6 +55,7 @@ class Create extends Component
                     $this->dropDownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
                 }
             }
+            // dd($this->dropDownData['levels']);
             if (count($this->dropDownData['levels']) != 0) {
                 $this->getDropdownData('departments');
             }
@@ -62,6 +66,9 @@ class Create extends Component
                 // $this->newAccessData['level_id'] = $this->dropDownData['userTypes'][0]['has_level_no'];
                 // $this->getDropdownData('designations');
             }
+        } else {
+            $userRole = Auth::user()->roles->toArray();
+            $this->dropDownData['userTypes'] = Role::where('role_parent', Auth::user()->roles->first()->id)->get();
         }
         // dd($this->dropDownData);
     }
@@ -77,6 +84,9 @@ class Create extends Component
                     break;
                 case 'departments':
                     $this->dropDownData['departments'] = Department::get();
+                    break;
+                case 'departmentCategory':
+                    $this->dropDownData['departmentCategory'] = DepartmentCategories::where('department_id',$this->newAccessData['department_id'])->get();
                     break;
                 case 'OFC':
                     // $this->dropDownData['offices'] = Office::where('id', Auth::user()->office_id)->get();
@@ -114,6 +124,7 @@ class Create extends Component
             $this->newAccessData['desg_id'] = '';
             $this->getDropdownData('OFC');
             $this->getDropdownData('designations');
+            $this->getDropdownData('departmentCategory');
             // dd($this->dropDownData['offices']);
         }
     }
@@ -149,9 +160,9 @@ class Create extends Component
     {
         $role = $this->newAccessData['role_type'];
         $userId = $this->newAccessData['users_id'];
-        dd($this->newAccessData);
+        // dd($this->newAccessData);
         $query = User::where('id', $this->newAccessData['users_id']);
-        dd($this->newAccessData['users_id']);
+        // dd($this->newAccessData['users_id']);
         if ($query->exists()) {
             $this->notification()->error(
                 $title = 'Error',
@@ -192,22 +203,31 @@ class Create extends Component
             //     ]);
             // }
             $userDetails = User::where('id', $userId)->first();
+            if (!$userDetails) {
+                throw new Exception("User not found");
+            }
+
+            User::where('id', $userId)->update(['is_active' => 1]);
+
             if ($userDetails->syncRoles($selectedRoles)) {
+                DB::commit();
+
                 $this->notification()->success(
                     $title = 'Success',
-                    $description = $userDetails->emp_name . ' roles updated successfully.'
+                    $description = $userDetails->emp_name . ' roles updated and User is Activated successfully.'
                 );
             } else {
-                $this->notification()->error(
-                    $title = 'Error !!!',
-                    $description = '',
-                );
-                return;
+                throw new Exception("Failed to sync roles");
             }
             Cache::forget('user_has_roles');
             $this->emit('openEntryForm');
             $this->reset();
         } catch (\Throwable $th) {
+            DB::rollBack();
+            $this->notification()->error(
+                $title = 'Error !!!',
+                $description = $e->getMessage(),
+            );
             $this->emit('showError', $th->getMessage());
         }
     }

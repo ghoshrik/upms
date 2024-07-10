@@ -20,7 +20,7 @@
                                     wire:model.defer="formData.user_type_id">
                                     @isset($dropdownData['user_types_list'])
                                         @foreach ($dropdownData['user_types_list'] as $user_type)
-                                            <x-select.option label="{{ $user_type['type'] }}"
+                                            <x-select.option label="{{ $user_type['name'] }}"
                                                 value="{{ $user_type['id'] }}" />
                                         @endforeach
                                     @endisset

@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Office;
 
 use App\Models\GP;
+use App\Models\Role;
 use App\Models\Levels;
 use App\Models\Office;
 use App\Models\Taluka;
@@ -39,7 +40,8 @@ class CreateOffice extends Component
             'department_id' => (Auth::user()->department_id != 0) ? Auth::user()->department_id : '',
         ];
         $userRole = Auth::user()->roles->first();
-        $childRoles = $userRole->childRoles;
+        // $childRoles = $userRole->childRoles;
+        $childRoles = Role::where('role_parent',$userRole->id)->get();
         foreach ($childRoles as $key => $data) {
             if ($key != 0) {
                 // Compare current item with the previous item
@@ -152,6 +154,7 @@ class CreateOffice extends Component
                 'ward_code' => ($this->selectedOption['ward_code'] == '') ? 0 : $this->selectedOption['ward_code'],
                 'level_no' => $this->selectedOption['level'],
                 'office_parent' => Auth::user()->office_id,
+                'created_by'=>Auth::user()->id
             ];
             // dd($insert);
             Office::create($insert);

@@ -324,6 +324,7 @@ final class UsersDataTable extends PowerGridComponent
         if (Auth::user()->department_id && (Auth::user()->user_type != 'State Admin' || Auth::user()->user_type != 'Super Admin')) {
             /*if (Auth::user()->office_id) {
              */
+            // dd('if');
             return User::query()
             /*->join('user_types', function ($user_types) {
             $user_types->on('users.user_type', '=', 'user_types.id');
@@ -340,16 +341,20 @@ final class UsersDataTable extends PowerGridComponent
                     'users.department_id',
                     'users.user_type',
                     'users.office_id',
-                    'user_types.id as userType_id',
-                    'user_types.parent_id',
+                    // 'user_types.id as userType_id',
+                    // 'user_types.parent_id',
                     'users.is_active',
-                    'designations.id as designationId',
-                    'designations.designation_name',
+                    // 'designations.id as designationId',
+                    // 'designations.designation_name',
+                    'offices.id as officeId',
+                    'offices.office_parent',
                     DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
                 )
-                ->join('user_types', 'users.user_type', '=', 'user_types.id')
-                ->join('designations', 'users.designation_id', '=', 'designations.id')
-                ->where('user_types.parent_id', '=', $this->userData)
+                // ->join('user_types', 'users.user_type', '=', 'user_types.id')
+                // ->join('designations', 'users.designation_id', '=', 'designations.id')
+                ->join('offices','users.office_id','=','offices.id')
+                // ->where('user_types.parent_id', '=', $this->userData)
+                ->where('offices.office_parent',Auth::user()->office_id)
                 ->where('users.department_id', Auth::user()->department_id);
             /*    ->where('users.office_id', Auth::user()->office_id);
         /*} else {
@@ -382,6 +387,7 @@ final class UsersDataTable extends PowerGridComponent
         ->where('users.department_id', Auth::user()->department_id);
         }*/
         } elseif(Auth::user()->department_id && (Auth::user()->user_type == 'State Admin' || Auth::user()->user_type == 'Super Admin')){
+            // dd('elseif2');
             return User::query()
             ->select(
                 'users.id',
@@ -406,6 +412,7 @@ final class UsersDataTable extends PowerGridComponent
             ->join('designations', 'users.designation_id', '=', 'designations.id')
             ->where('user_types.parent_id', '=', $this->userData);
         } else {
+            // dd('else');
             return User::query()
                 ->select(
                     'users.id',

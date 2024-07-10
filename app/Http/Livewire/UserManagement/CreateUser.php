@@ -2,17 +2,18 @@
 
 namespace App\Http\Livewire\UserManagement;
 
-use App\Models\Department;
-use App\Models\Designation;
+use App\Models\User;
 use App\Models\Office;
 use App\Models\States;
-use App\Models\User;
+use Livewire\Component;
 use App\Models\UserType;
+use App\Models\Department;
+use WireUi\Traits\Actions;
+use App\Models\Designation;
 use Illuminate\Support\Arr;
+use App\Models\DepartmentCategories;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Livewire\Component;
-use WireUi\Traits\Actions;
 
 class CreateUser extends Component
 {
@@ -83,7 +84,7 @@ class CreateUser extends Component
         $this->newUserData = [
             'emp_name' => '',
             'ehrms_id' => '',
-            'department_id' => '',
+            'department_id' => (Auth::user()->department_id != '' && Auth::user()->department_id != 0) ? Auth::user()->department_id : '',
             'designation_id' => '',
             'office_id' => '',
             'username' => '',
@@ -92,23 +93,51 @@ class CreateUser extends Component
             'mobile' => '',
             'email' => '',
             'state_code' => '',
+            'dept_category_id'=>(Auth::user()->dept_category_id != '' && Auth::user()->dept_category_id != 0) ? Auth::user()->dept_category_id : ''
             // 'is_active' => 1,
         ];
+
         if (Auth::user()->user_type == 1) {
             $this->dropDownData['states'] = States::all();
         }
-        if (Auth::user()->user_type == 2) {
-            $this->getDropdownData('DEPT');
-            $this->getDropdownData('DES');
-            $this->getDropdownData('LEVEL');
-            $this->dropDownData['offices'] = [];
+        /*if (Auth::user()->user_type == 2) {
+        $this->getDropdownData('DEPT');
+        $this->getDropdownData('DES');
+        $this->getDropdownData('LEVEL');
+        $this->dropDownData['offices'] = [];
         }
         if (Auth::user()->user_type == 3) {
-            $this->getDropdownData('LEVEL');
-            $this->getDropdownData('DES');
+        $this->getDropdownData('LEVEL');
+        $this->getDropdownData('DES');
         }
         if (Auth::user()->user_type == 4) {
-            $this->getDropdownData('DES');
+        $this->getDropdownData('DES');
+        }
+         */
+
+        // dd(Auth::user()->roles);
+        $userRoles = Auth::user()->roles;
+        if ($userRoles != '') {
+            foreach ($userRoles as $role) {
+                if (session('curr_role') === $role->name) {
+                    if ($role->has_level_no == '') {
+                        $this->getDropdownData('DEPT');
+                        $this->getDropdownData('DES');
+                        $this->getDropdownData('LEVEL');
+                        $this->dropDownData['offices'] = [];
+                    }
+                    if ($role->has_level_no == 1 || $role->has_level_no == 2 || $role->has_level_no == 3 || $role->has_level_no == 4 || $role->has_level_no == 5) {
+                        // $this->getDropdownData('DEPT');
+                        $this->getDropdownData('DES');
+                        $this->getDropdownData('LEVEL');
+                        $this->dropDownData['offices'] = [];
+                    }
+                }
+            }
+        }
+        if($this->newUserData['department_id'] !='' && $this->newUserData['department_id']!=0)
+        {
+            $this->getDropdownData('DEPTCATEGORY');
         }
     }
     public function getDropdownData($lookingFor)
@@ -138,7 +167,12 @@ class CreateUser extends Component
                         ['name' => 'L1 Level', 'id' => 1],
                     ];
                 }
-            } else {
+            }
+            elseif($lookingFor === 'DEPTCATEGORY')
+            {
+                $this->dropDownData['departmentCategory'] = DepartmentCategories::where('department_id',Auth::user()->department_id)->get();
+            }
+            else {
                 // $this->allUserTypes = UserType::where('parent_id', Auth::user()->user_type)->get();
             }
         } catch (\Throwable $th) {
@@ -192,6 +226,7 @@ class CreateUser extends Component
                 // $this->newUserData['password'] = Hash::make($this->newUserData['password']);
                 $this->newUserData['password'] = Hash::make('password');
                 $this->newUserData['state_code'] = Auth::user()->state_code;
+
                 $newUserDetails = User::create($this->newUserData);
                 // $newUserDetails = true;
                 if ($newUserDetails) {
