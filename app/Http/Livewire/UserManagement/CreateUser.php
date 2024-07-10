@@ -135,7 +135,7 @@ class CreateUser extends Component
                 }
             }
         }
-        if($this->newUserData['department_id'] !='' && $this->newUserData['department_id']!=0)
+        if($this->newUserData['department_id'] !='' && $this->newUserData['department_id']!=0 && $this->newUserData['dept_category_id'] == '' || $this->newUserData['dept_category_id'] == 0)
         {
             $this->getDropdownData('DEPTCATEGORY');
         }
@@ -192,6 +192,7 @@ class CreateUser extends Component
                     $this->dropDownData['offices'] = Office::where([
                         ['department_id', $this->newUserData['department_id']],
                         ['level_no', $this->selectLevel],
+                        ['created_by',Auth::user()->id]
                     ])->get();
                 }
             } else {
@@ -218,15 +219,16 @@ class CreateUser extends Component
             $userType = UserType::where('parent_id', Auth::user()->user_type)->first();
             if (isset($userType)) {
                 $this->newUserData['user_type'] = 0;
-                $this->newUserData['department_id'] = (Auth::user()->user_type == 2) ? $this->newUserData['department_id'] : Auth::user()->department_id;
-                $this->newUserData['designation_id'] = ($this->newUserData['designation_id'] == '') ? Auth::user()->designation_id : $this->newUserData['designation_id'];
-                $this->newUserData['office_id'] = ($this->newUserData['office_id'] == '') ? Auth::user()->office_id : $this->newUserData['office_id'];
+                $this->newUserData['department_id'] = $this->newUserData['department_id'];
+                $this->newUserData['dept_category_id'] = $this->newUserData['dept_category_id'];
+                $this->newUserData['designation_id'] = $this->newUserData['designation_id'];
+                $this->newUserData['office_id'] = $this->newUserData['office_id'];
                 $this->newUserData['email'] = $this->newUserData['email'];
                 $this->newUserData['mobile'] = $this->newUserData['mobile'];
                 // $this->newUserData['password'] = Hash::make($this->newUserData['password']);
                 $this->newUserData['password'] = Hash::make('password');
                 $this->newUserData['state_code'] = Auth::user()->state_code;
-
+                $this->newUserData['created_by'] = Auth::user()->id;
                 $newUserDetails = User::create($this->newUserData);
                 // $newUserDetails = true;
                 if ($newUserDetails) {

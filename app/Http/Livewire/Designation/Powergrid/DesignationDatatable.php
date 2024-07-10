@@ -2,12 +2,14 @@
 
 namespace App\Http\Livewire\Designation\Powergrid;
 
+use App\Models\Role;
 use App\Models\Designation;
 use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
+use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
 
 final class DesignationDatatable extends PowerGridComponent
@@ -106,13 +108,25 @@ final class DesignationDatatable extends PowerGridComponent
      */
     public function datasource(): Builder
     {
-        return Designation::query()
+        $userRole = Auth::user()->roles->first();
+        $childRoles = Role::where('role_parent',$userRole->id)->get();
+
+        foreach ($childRoles as $key => $data) {
+            $levelNo = $data->has_level_no;
+        }
+        // return dd($childRoles);
+
+        $query = Designation::query()
             ->select(
-                'id',
-                'designation_name',
-                'level_no',
+                'designations.id',
+                'designations.designation_name',
+                'designations.level_no',
                 DB::raw('ROW_NUMBER() OVER (ORDER BY designations.id) as serial_no')
-            );
+            )
+            ->where('designations.level_no',$levelNo)
+            ->join('level_master', 'level_master.id', '=', 'designations.level_no');
+
+        return $query;
     }
 
     /*
@@ -149,7 +163,7 @@ final class DesignationDatatable extends PowerGridComponent
         return PowerGrid::eloquent()
             ->addColumn('serial_no')
             ->addColumn('designation_name')
-            ->addColumn('level_no')
+            ->addColumn('levels.level_name')
             /** Example of custom column using a closure **/
             ->addColumn('designation_name_lower', function (Designation $model) {
                 return strtolower(e($model->designation_name));

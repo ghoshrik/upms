@@ -30,10 +30,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'emp_name',
         'designation_id',
         'department_id',
+        'dept_category_id',
         'office_id',
         'user_type',
         'is_active',
         'state_code',
+        'created_by'
     ];
 
     /**
@@ -46,7 +48,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
         'is_verified',
         'is_admin',
-        'created_by'
     ];
 
     /**

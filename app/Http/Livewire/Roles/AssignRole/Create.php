@@ -90,7 +90,7 @@ class Create extends Component
                     break;
                 case 'OFC':
                     // $this->dropDownData['offices'] = Office::where('id', Auth::user()->office_id)->get();
-                    $this->dropDownData['offices'] = Office::where('level_no', $this->newAccessData['level_id'])->where('department_id', $this->newAccessData['department_id'])->get();
+                    $this->dropDownData['offices'] = Office::where('level_no', $this->newAccessData['level_id'])->where('department_id', $this->newAccessData['department_id'])->where('created_by',Auth::user()->id)->get();
                     // dd($this->dropDownData['offices']);
                     break;
                 case 'roles':

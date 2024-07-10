@@ -325,7 +325,7 @@ final class UsersDataTable extends PowerGridComponent
             /*if (Auth::user()->office_id) {
              */
             // dd('if');
-            return User::query()
+            $query = User::query()
             /*->join('user_types', function ($user_types) {
             $user_types->on('users.user_type', '=', 'user_types.id');
             })->join('designations', 'users.designation_id', '=', 'designations.id')*/
@@ -339,6 +339,7 @@ final class UsersDataTable extends PowerGridComponent
                     'users.mobile',
                     'users.designation_id',
                     'users.department_id',
+                    'users.dept_category_id',
                     'users.user_type',
                     'users.office_id',
                     // 'user_types.id as userType_id',
@@ -356,7 +357,17 @@ final class UsersDataTable extends PowerGridComponent
                 // ->where('user_types.parent_id', '=', $this->userData)
                 ->where('offices.office_parent',Auth::user()->office_id)
                 ->where('users.department_id', Auth::user()->department_id);
+
+                if(Auth::user()->dept_category_id != '' || Auth::user()->dept_category_id !=0){
+                    return $query->where('users.dept_category_id',Auth::user()->dept_category_id);
+                }else{
+                    return $query;
+                }
+
+
+
             /*    ->where('users.office_id', Auth::user()->office_id);
+
         /*} else {
         // dd(User::query()->with('designation')->first());
         return User::query()
@@ -413,7 +424,7 @@ final class UsersDataTable extends PowerGridComponent
             ->where('user_types.parent_id', '=', $this->userData);
         } else {
             // dd('else');
-            return User::query()
+            $query = User::query()
                 ->select(
                     'users.id',
                     'users.name',
@@ -429,6 +440,7 @@ final class UsersDataTable extends PowerGridComponent
                     // 'user_types.id as userType_id',
                     // 'user_types.parent_id',
                     'users.is_active',
+                    'users.created_by',
                     // 'designations.id as designationId',
                     // 'designations.designation_name',
                     DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
@@ -436,7 +448,9 @@ final class UsersDataTable extends PowerGridComponent
                 // ->where('user_types.parent_id', $this->userData)
                 // ->join('user_types', 'users.user_type', '=', 'user_types.id')
                 // ->join('designations', 'users.designation_id', '=', 'designations.id')
+                ->where('users.created_by',Auth::user()->id)
             ;
+            return $query;
         }
     }
 

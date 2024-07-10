@@ -21,4 +21,8 @@ class Designation extends Model
     {
         $this->hasMany(User::class,'designation_id');
     }
+    public  function levels()
+    {
+        return $this->belongsTo(Levels::class,'level_no');
+    }
 }

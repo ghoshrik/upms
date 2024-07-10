@@ -99,12 +99,12 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
             Route::get('mis-report', MisReport::class)->name('mis-report');
         });
-        Route::group(['middleware' => ['role:Super Admin|State Admin|Department Admin|Office Admin|Nodal Officer|Super User|Head of Directorate|Circle Office']], function () {
+        Route::group(['middleware' => ['role:Super Admin|State Admin|Department Admin|Office Admin|Nodal Officer|Super User|Head of Directorate|Circle Office|Division Office|Sub-Division Office']], function () {
             Route::get('user-management', UserManagement::class)->name('user-management');
         });
 
         //Department Admin
-        Route::group(['middleware' => ['role:Department Admin|State Admin|Nodal Officer|Super User|Head of Directorate|Circle Office']], function () {
+        Route::group(['middleware' => ['role:Department Admin|State Admin|Nodal Officer|Super User|Head of Directorate|Circle Office|Division Office|Sub-Division Office']], function () {
             Route::get('designation', Designation::class)->name('designation');
             Route::get('office', Office::class)->name('office');
             Route::get('assign-office-admin', AssignOfficeAdmin::class)->name('assign-office-admin');
@@ -118,7 +118,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
 
         //Office Admin
-        Route::group(['middleware' => ['role:Super Admin|State Admin|Office Admin|Nodal Officer|Super User|Head of Directorate|Circle Office']], function () {
+        Route::group(['middleware' => ['role:Super Admin|State Admin|Office Admin|Nodal Officer|Super User|Head of Directorate|Circle Office|Division Office|Division Office|Sub-Division Office']], function () {
             Route::get('assign-role', AssignRole::class)->name('assign-role');
             Route::get('milestones', Milestones::class)->name('milestones');
             Route::get('vendors', VendorList::class)->name('vendors');
@@ -139,7 +139,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('estimate-forwarder', EstimateForwarder::class)->name('estimate-forwarder');
         });
 
-        Route::group(['middleware' => ['role:Project Estimate (EP)']], function () {
+        Route::group(['middleware' => ['role:Estimate Preparer']], function () {
             Route::get('estimate-project', EstimateProject::class)->name('estimate-project');
             //qty analysis api routes
             Route::post('/store-dynamic-unit-modal-data', [ApiController::class, 'unitQtyAdded'])->name('store-dynamic-unit-modal-data');

@@ -3,19 +3,25 @@
 namespace App\Http\Livewire\Office\DataTable;
 
 use App\Models\Office;
-use Barryvdh\DomPDF\PDF;
-use WireUi\Traits\Actions;
-use Illuminate\Support\Carbon;
-// use PowerComponents\LivewirePowerGrid\Traits\Exportable;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use RalphJSmit\Livewire\Urls\Facades\Url;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Database\Eloquent\Builder;
-use PhpOffice\PhpWord\Writer\RTF\Style\Font;
-use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
-use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
-use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
+// use PowerComponents\LivewirePowerGrid\Traits\Exportable;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+use PowerComponents\LivewirePowerGrid\Button;
+
+use PowerComponents\LivewirePowerGrid\Column;
+
+use PowerComponents\LivewirePowerGrid\Exportable;
+
+use PowerComponents\LivewirePowerGrid\Footer;
+use PowerComponents\LivewirePowerGrid\Header;
+
+use PowerComponents\LivewirePowerGrid\PowerGrid;
+use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
+use PowerComponents\LivewirePowerGrid\Rules\Rule;
+use PowerComponents\LivewirePowerGrid\Rules\RuleActions;use PowerComponents\LivewirePowerGrid\Traits\ActionButton;use RalphJSmit\Livewire\Urls\Facades\Url;use WireUi\Traits\Actions;
 
 final class OfficeTable extends PowerGridComponent
 {
@@ -27,7 +33,7 @@ final class OfficeTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Setup Table's general featuress
     |
-    */
+     */
     protected function getListeners()
     {
         return array_merge(
@@ -68,8 +74,6 @@ final class OfficeTable extends PowerGridComponent
         ];
     }
 
-
-
     // public $dataView = [];
     public function bulkActionEvent()
     {
@@ -78,7 +82,7 @@ final class OfficeTable extends PowerGridComponent
             trans('cruds.office.fields.office_code') => '10%',
             trans('cruds.office.fields.office_address') => '44%',
             trans('cruds.office.fields.office_district') => '14%',
-            trans('cruds.office.fields.level') => '7%'
+            trans('cruds.office.fields.level') => '7%',
         ];
         // for ($i = 0; $i < count($ModelList); $i++) {
         //     $key = key($ModelList);
@@ -97,13 +101,10 @@ final class OfficeTable extends PowerGridComponent
                     '3' => $offices->office_code,
                     '4' => $offices->office_address,
                     '5' => $offices->getDistrictName->district_name,
-                    'level' => $offices->level_no
+                    'level' => $offices->level_no,
                 ];
                 $i++;
             }
-
-
-
 
             // dd($office);
 
@@ -135,7 +136,7 @@ final class OfficeTable extends PowerGridComponent
                 '3' => $office->office_code,
                 '4' => $office->office_address,
                 '5' => $office->getDistrictName->district_name,
-                'level' => $office->level_no
+                'level' => $office->level_no,
             ];
             $i++;
         }
@@ -143,58 +144,54 @@ final class OfficeTable extends PowerGridComponent
         return generatePDF($ModelList, $dataView, trans('cruds.office.title_singular'));
         $this->resetExcept('checkboxValues', 'dataView');
 
-
         /*
-        if (count($this->checkboxValues) == 0) {
-            // $this->dispatchBrowserEvent('showAlert', ['message' => 'You must select at least one item!']);
-            // $this->dialog()->error(
-            //     $description = 'You must select at least one item!'
-            // );
-            $offices = Office::where('department_id', Auth::user()->department_id)->get();
-            $pdf = app('dompdf.wrapper');
-            $pdf = $pdf->loadView('pdfView', ['offices' => $offices, 'title' => 'Office List']);
-            $pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
-            $pdf->setPaper('A4', 'landscape');
-            $filename = date('Y-M-d') . rand(1, 2000) . '.pdf';
-            $file = $pdf->stream();
-            file_put_contents($filename, $file);
-            return response()->download($filename)->deleteFileAfterSend(true);
-        }
-
-        $ids = implode(',', $this->checkboxValues);
-        $offices = Office::whereIn('id', explode(",", $ids))->get();
-        // $i = 1;
-        // foreach ($offices as $office) {
-        //     $insert = [
-
-        //         'id' => $i,
-        //         'office_name' => $office->office_name,
-        //         'office_code' => $office->office_code,
-        //         'office_address' => $office->office_address,
-        //         'office_district' => $office->getDistrictName->district_name,
-        //         'office_code' => $office->level_no
-        //     ];
-        //     $i++;
-        //     dd($insert);
-        // }
-
-
-
-        $pdf = app('dompdf.wrapper');
-        $pdf->loadView('pdfView', ['offices' => $offices, 'title' => 'Office List','pdf'=>$pdf]);
-        $pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isPhpEnabled' => true]);
-        $pdf->setPaper('A4', 'landscape');
-        $filename =  'Office.pdf';
-        $file = $pdf->stream();
-        $canvas = $pdf->get_canvas();
-        // $font = Font_Metrics::get_font("helvetica", "bold");
-        // $canvas->page_text(512, 10, "Página: {PAGE_NUM} de {PAGE_COUNT}",$font, 8, array(0,0,0));
-        file_put_contents($filename, $file);
-        return response()->download($filename)->deleteFileAfterSend(true);
-        $this->reset('checkboxValues');
-        */
+    if (count($this->checkboxValues) == 0) {
+    // $this->dispatchBrowserEvent('showAlert', ['message' => 'You must select at least one item!']);
+    // $this->dialog()->error(
+    //     $description = 'You must select at least one item!'
+    // );
+    $offices = Office::where('department_id', Auth::user()->department_id)->get();
+    $pdf = app('dompdf.wrapper');
+    $pdf = $pdf->loadView('pdfView', ['offices' => $offices, 'title' => 'Office List']);
+    $pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+    $pdf->setPaper('A4', 'landscape');
+    $filename = date('Y-M-d') . rand(1, 2000) . '.pdf';
+    $file = $pdf->stream();
+    file_put_contents($filename, $file);
+    return response()->download($filename)->deleteFileAfterSend(true);
     }
 
+    $ids = implode(',', $this->checkboxValues);
+    $offices = Office::whereIn('id', explode(",", $ids))->get();
+    // $i = 1;
+    // foreach ($offices as $office) {
+    //     $insert = [
+
+    //         'id' => $i,
+    //         'office_name' => $office->office_name,
+    //         'office_code' => $office->office_code,
+    //         'office_address' => $office->office_address,
+    //         'office_district' => $office->getDistrictName->district_name,
+    //         'office_code' => $office->level_no
+    //     ];
+    //     $i++;
+    //     dd($insert);
+    // }
+
+    $pdf = app('dompdf.wrapper');
+    $pdf->loadView('pdfView', ['offices' => $offices, 'title' => 'Office List','pdf'=>$pdf]);
+    $pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isPhpEnabled' => true]);
+    $pdf->setPaper('A4', 'landscape');
+    $filename =  'Office.pdf';
+    $file = $pdf->stream();
+    $canvas = $pdf->get_canvas();
+    // $font = Font_Metrics::get_font("helvetica", "bold");
+    // $canvas->page_text(512, 10, "Página: {PAGE_NUM} de {PAGE_COUNT}",$font, 8, array(0,0,0));
+    file_put_contents($filename, $file);
+    return response()->download($filename)->deleteFileAfterSend(true);
+    $this->reset('checkboxValues');
+     */
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -202,7 +199,7 @@ final class OfficeTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Provides data to your Table using a Model or Collection
     |
-    */
+     */
 
     /**
      * PowerGrid datasource.
@@ -225,14 +222,19 @@ final class OfficeTable extends PowerGridComponent
                 'office_address',
                 'level_no',
                 'office_code',
+                'created_by',
                 DB::raw('ROW_NUMBER() OVER (ORDER BY offices.id) as serial_no')
-            );
-            if(Auth::user()->user_type === 2){
-                $query->where('offices.level_no',1);
-            }else{
-                $query->where('offices.department_id', Auth::user()->department_id);
-            }
+            )->where('offices.created_by', Auth::user()->id);
+        // if(Auth::user()->user_type === 2){
+        //     $query->where('offices.level_no',1);
+        // }else{
+        // $query->where('offices.department_id', Auth::user()->department_id);
+        // }
+        if (Auth::user()->department_id != 0) {
+            return $query->where('offices.department_id', Auth::user()->department_id);
+        } else {
             return $query;
+        }
     }
 
     /*
@@ -241,7 +243,7 @@ final class OfficeTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Configure here relationships to be used by the Search and Table Filters.
     |
-    */
+     */
 
     /**
      * Relationship search.
@@ -263,23 +265,23 @@ final class OfficeTable extends PowerGridComponent
     | ❗ IMPORTANT: When using closures, you must escape any value coming from
     |    the database using the `e()` Laravel Helper function.
     |
-    */
+     */
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
             ->addColumn('serial_no')
             ->addColumn('office_name')
 
-            /** Example of custom column using a closure **/
+        /** Example of custom column using a closure **/
             ->addColumn('office_name_lower', function (Office $model) {
                 return strtolower(e($model->office_name));
             })
             ->addColumn('getDepartmentName.department_name')
             ->addColumn('getDistrictName.district_name')
-            // ->addColumn('in_area')
-            // ->addColumn('gp_code')
-            // ->addColumn('urban_code')
-            // ->addColumn('ward_code')
+        // ->addColumn('in_area')
+        // ->addColumn('gp_code')
+        // ->addColumn('urban_code')
+        // ->addColumn('ward_code')
             ->addColumn('office_address')
             ->addColumn('level_no', function (Office $model) {
                 switch ($model->level_no) {
@@ -307,7 +309,6 @@ final class OfficeTable extends PowerGridComponent
         // ->addColumn('updated_at_formatted', fn (Office $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
     }
 
-
     /*
     |--------------------------------------------------------------------------
     |  Include Columns
@@ -315,7 +316,7 @@ final class OfficeTable extends PowerGridComponent
     | Include the columns added columns, making them visible on the Table.
     | Each column can be configured with properties, filters, actions...
     |
-    */
+     */
 
     /**
      * PowerGrid Columns.
@@ -384,7 +385,7 @@ final class OfficeTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Enable the method below only if the Routes below are defined in your app.
     |
-    */
+     */
 
     /**
      * PowerGrid Office Action Buttons.
@@ -395,18 +396,18 @@ final class OfficeTable extends PowerGridComponent
     /*
     public function actions(): array
     {
-       return [
-           Button::make('edit', 'Edit')
-               ->class('bg-indigo-500 cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm')
-               ->route('office.edit', ['office' => 'id']),
+    return [
+    Button::make('edit', 'Edit')
+    ->class('bg-indigo-500 cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm')
+    ->route('office.edit', ['office' => 'id']),
 
-           Button::make('destroy', 'Delete')
-               ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
-               ->route('office.destroy', ['office' => 'id'])
-               ->method('delete')
-        ];
+    Button::make('destroy', 'Delete')
+    ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
+    ->route('office.destroy', ['office' => 'id'])
+    ->method('delete')
+    ];
     }
-    */
+     */
 
     /*
     |--------------------------------------------------------------------------
@@ -414,7 +415,7 @@ final class OfficeTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Enable the method below to configure Rules for your Table and Action Buttons.
     |
-    */
+     */
 
     /**
      * PowerGrid Office Action Rules.
@@ -423,15 +424,15 @@ final class OfficeTable extends PowerGridComponent
      */
 
     /*
-    public function actionRules(): array
-    {
-       return [
+public function actionRules(): array
+{
+return [
 
-           //Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($office) => $office->id === 1)
-                ->hide(),
-        ];
-    }
-    */
+//Hide button edit for ID 1
+Rule::button('edit')
+->when(fn($office) => $office->id === 1)
+->hide(),
+];
+}
+ */
 }
