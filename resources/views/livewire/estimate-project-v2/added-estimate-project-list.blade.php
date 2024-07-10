@@ -61,20 +61,15 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                  {{-- @dd($allAddedEstimatesData);    --}}
                                 @foreach ($allAddedEstimatesData as $key => $addedEstimate)
                                     <tr>
-                                        {{-- <td>
-                                            <x-checkbox wire:key="{{ $key . 'checkbox' }}" id="checkbox"
-                                                wire:model.defer="level" value="{{ $addedEstimate['array_id'] }}"
-                                                wire:click="showTotalButton" />
-                                        </td> --}}
-                                        {{-- <td>
-                                            <div wire:key="{{ $key . 'iNo' }}" class="d-flex align-items-center">
-                                                {{ chr($key + 64) }}
-                                                {{ $addedEstimate['array_id'] }}
-                                            </div>
-                                        </td> --}}
-                                        <td>{{ $addedEstimate['id'] }}</td>
+                                       
+                                        <td>
+                                           
+                                                {{ $addedEstimate['id'] }}
+                                           
+                                        </td>
                                         <td>
                                             {{-- {{ $addedEstimate['sor_item_number'] ?  $addedEstimate['sor_item_number'] : '---'}} --}}
 
@@ -90,7 +85,7 @@
                                         </td>
                                         <td class="text-wrap">
                                             @if ($addedEstimate['sor_item_number'])
-                                                @if ($addedEstimate['sor_item_number'] && $addedEstimate['item_name'] && ($addedEstimate['p_id'] == 0))
+                                                @if ($addedEstimate['sor_item_number'] && $addedEstimate['item_name'] && $addedEstimate['p_id'] == 0)
                                                     <strong>{{ getDepartmentName($addedEstimate['dept_id']) . ' / ' . getDepartmentCategoryName($addedEstimate['category_id']) . ' / ' . getSorTableName($addedEstimate['sor_id']) . ' / Page No: ' . getSorPageNo($addedEstimate['sor_id']) . (getSorCorrigenda($addedEstimate['sor_id']) != null ? ' - ' . getSorCorrigenda($addedEstimate['sor_id']) : '') }}</strong>
                                                     <br />
                                                 @endif
@@ -123,7 +118,8 @@
                                         <td>
                                             @if ($addedEstimate['qty'] != 0)
                                                 {{ $addedEstimate['qty'] }}
-                                                @if (isset($addedEstimate['qtyUpdate']) && $addedEstimate['qtyUpdate'] == true)
+                                                @if (isset($addedEstimate['qtyUpdate']) && $addedEstimate['qtyUpdate'] === true)
+                                                
                                                     <x-button wire:click="openQtyModal({{ $key }})"
                                                         type="button" class="btn btn-soft-primary btn-sm">
                                                         <span class="btn-inner">
@@ -149,14 +145,21 @@
                                             @if ($addedEstimate['rate'] != 0)
                                                 {{ $addedEstimate['rate'] }}
                                             @endif
-                                            @if ($addedEstimate['rate_det'] != '')
-                                                {{'( '. $addedEstimate['rate_det'] .' )'}}
+                                            @if (array_key_exists('rate_det', $addedEstimate) && $addedEstimate['rate_det'] != '')
+                                                {{ '( ' . $addedEstimate['rate_det'] . ' )' }}
                                             @endif
+
                                         </td>
                                         <td>
                                             {{ $addedEstimate['total_amount'] }}
                                         </td>
                                         <td>
+                                            @if ($addedEstimate['operation'] == '' || $addedEstimate['rate_no'] != 0 || $addedEstimate['rate_no'] == '')
+                                            <button wire:click="editRow('{{ $addedEstimate['array_id'] }}')"
+                                                type="button" class="btn-soft-warning btn-sm">
+                                                <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
+                                            </button>
+                                        @endif
                                             @if ($addedEstimate['estimate_no'])
                                                 <x-button wire:click="viewModal({{ $addedEstimate['estimate_no'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
@@ -230,9 +233,30 @@
             </div>
         </div>
         @if ($openQtyModal)
-            <livewire:components.modal.rate-analysis.unit-analysis-view-modal :unit_id="$sendArrayKey" :sendArrayDesc="$sendArrayDesc"
-                :arrayCount="$arrayCount" :editEstimate_id="$editEstimate_id" :part_no="$part_no" />
+
+        
+        @if (isset($identifier))
+        <livewire:components.modal.rate-analysis.unit-analysis-view-modal
+            :unit_id="$sendArrayKey"
+            :sendArrayDesc="$sendArrayDesc"
+            :arrayCount="$arrayCount"
+            :editEstimate_id="$editEstimate_id"
+            :part_no="$part_no"
+            :identifier="$identifier"
+        />
+    @else
+        <livewire:components.modal.rate-analysis.unit-analysis-view-modal
+            :unit_id="$sendArrayKey"
+            :sendArrayDesc="$sendArrayDesc"
+            :arrayCount="$arrayCount"
+            :editEstimate_id="$editEstimate_id"
+            :part_no="$part_no"
+        />
+    @endif
         @endif
+        @if ($editRowModal)
+        <livewire:components.modal.item-modal.edit-row-wise :editRowId='$editRowId' :editRowData='$editRowData' :editEstimate_id='$editEstimate_id' />
+    @endif
         @if ($openSubItemModal)
             <livewire:components.modal.item-modal.add-sub-item-modal :rowParentId="$rowParentId">
         @endif

@@ -16,12 +16,16 @@ class UnitAnalysisViewModal extends Component
     public $editRate_id;
     public $unitMaster = [];
     public $rateAnalysisArray = [];
-    public $dropdownData = [], $array_id, $updateKey, $arrayCount,$editEstimate_id;
+    public $dropdownData = [], $array_id, $updateKey, $arrayCount,$editEstimate_id,$identifier;
     public function mount()
     {
-        //dd($this->part_no);
+    //  if(isset($this->identifier)){
+
+    //  }else{
+
+    //  }
         $updateRateAnalysisId = (!empty($this->editRate_id)) ? $this->editRate_id : ((!empty($this->editEstimate_id)) ? $this->editEstimate_id : null);
-        //dd( $updateRateAnalysisId);
+        dd($updateRateAnalysisId);
         $modalName = ($this->featureType == "RateAnalysis" && $updateRateAnalysisId === null) ? "RateAnalysisModal" : 
         (($this->featureType == "RateAnalysis" && $updateRateAnalysisId !== null) ? "RateAnalysisEditModal" :
         (($this->featureType === null && $updateRateAnalysisId === null) ? "modalData" :

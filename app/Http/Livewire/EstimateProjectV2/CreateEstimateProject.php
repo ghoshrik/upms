@@ -13,6 +13,7 @@ use App\Models\EstimatePrepare;
 use App\Models\SorCategoryType;
 use App\Models\DynamicSorHeader;
 use App\Models\EstimateMasterV2;
+use App\Models\EstimatePrepareV2;
 use App\Models\QultiyEvaluation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -121,22 +122,24 @@ class CreateEstimateProject extends Component
 
     public function editEstimate($estimate_id)
     {
-        $fatchEstimateMaster = SORMaster::where([['estimate_id', $estimate_id]])->first();
+      
+        $fatchEstimateMaster = EstimateMasterV2::where([['estimate_id', $estimate_id]])->first();
+        //dd($fatchEstimateMaster);
         // $fatchEstimateMaster = SORMaster::where([['estimate_id', $estimate_id], ['created_by', Auth::user()->id]])->first();
         if ($fatchEstimateMaster != '') {
-            $this->sorMasterDesc = $fatchEstimateMaster['sorMasterDesc'];
+            $this->sorMasterDesc = $fatchEstimateMaster['estimate_master_desc'];
             $this->part_no = $fatchEstimateMaster['part_no'];
             $this->editEstimate_id = $estimate_id;
-            Session()->forget('editProjectEstimateData' . $this->editEstimate_id);
+            Session()->forget('editProjectEstimateV2Data' . $this->editEstimate_id);
             Session()->forget('editProjectEstimateDesc' . $this->editEstimate_id);
             Session()->forget('editProjectEstimatePartNo' . $this->editEstimate_id);
-            Session()->forget('editModalData');
-            // if (Session()->has('editProjectEstimateData' . $estimate_id)) {
-            //     $fatchEstimateData = Session()->get('editProjectEstimateData' . $estimate_id);
+            Session()->forget('editModalDataV2');
+            // if (Session()->has('editProjectEstimateV2Data' . $estimate_id)) {
+            //     $fatchEstimateData = Session()->get('editProjectEstimateV2Data' . $estimate_id);
             // } else {
-            $fatchEstimateData = EstimatePrepare::where('estimate_id', $estimate_id)->where('created_by', Auth::user()->id)->orderBy('id', 'asc')->get();
+            $fatchEstimateData = EstimatePrepareV2::where('estimate_id', $estimate_id)->where('created_by', Auth::user()->id)->orderBy('id', 'asc')->get();
             // }
-            // dd($fatchEstimateData);
+             //dd($fatchEstimateData);
             $this->emit('setFatchEstimateData', $fatchEstimateData);
         }
     }
@@ -795,6 +798,7 @@ class CreateEstimateProject extends Component
 
     public function addEstimate($data='',$parentId='')
     {
+      //  dd("here addestimate");
         if(!empty($data)){
             $this->estimateData = $data;
             // dd($parentId);

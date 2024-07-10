@@ -27,11 +27,9 @@ class AddedEstimateProjectList extends Component
     }
     public function editRow($rowId)
     {
-        // dd($rowId);
         $this->editRowId = $rowId;
         $numericValue = preg_replace('/[^0-9]/', '', $rowId);
         $this->editRowData = $this->allAddedEstimatesData[$numericValue];
-        // dd($this->editRowData);
         $this->editRowModal = !$this->editRowModal;
     }
     public function closeEditModal()
@@ -106,7 +104,7 @@ class AddedEstimateProjectList extends Component
     }
     public function updateSetFetchData($fetchUpdateRateData, $update_id)
     {
-        // dd($fetchUpdateRateData);
+        // dd($fetchUpdateRateData, $update_id,$this->allAddedEstimatesData);
         foreach ($this->allAddedEstimatesData as $key => $estimate) {
             if ($estimate['array_id'] == $update_id) {
                 $this->allAddedEstimatesData[$key]['estimate_no'] = $fetchUpdateRateData['estimate_no'];

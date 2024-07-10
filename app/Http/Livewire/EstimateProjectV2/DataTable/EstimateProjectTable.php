@@ -172,12 +172,11 @@ final class EstimateProjectTable extends PowerGridComponent
                ->route('estimate-prepare.destroy', ['estimate-prepare' => 'id'])
                ->method('delete')
                */
-        Button::add('View')
-            ->bladeComponent('view', ['id' => 'estimate_id']),
+         Button::add('View')->bladeComponent('view', ['id' => 'estimate_id']),
         // Button::add('Forward')
         //     ->bladeComponent('forward-button', ['id' => 'estimate_id']),
-        // Button::add('Edit')
-        // ->bladeComponent('edit-button', ['id' => 'estimate_id','action'=>'edit']),
+         Button::add('Edit')
+         ->bladeComponent('edit-button', ['id' => 'estimate_id','action'=>'edit']),
         ];
 
 

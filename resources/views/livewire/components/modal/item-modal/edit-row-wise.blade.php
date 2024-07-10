@@ -123,7 +123,7 @@
                                 <div x-show="!showSearch" class="col">
                                     <div class="form-group">
                                         <x-select wire:key="dept" label="Page No" placeholder="Select Page No"
-                                            wire:model.defer="dataArray.id" x-on:select="$wire.getDynamicSor()">
+                                            wire:model.defer="dataArray.sor_id" x-on:select="$wire.getDynamicSor()">
                                             @foreach ($fatchDropdownData['page_no'] as $page)
                                                 <x-select.option
                                                     label="{{ $page['page_no'] . ($page['corrigenda_name'] != null ? ' - ' . $page['corrigenda_name'] : '') }}"

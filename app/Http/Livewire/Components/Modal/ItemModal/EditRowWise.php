@@ -8,12 +8,11 @@ use App\Models\UnitMaster;
 use App\Models\RatesMaster;
 use App\Models\RatesAnalysis;
 use App\Models\EstimatePrepare;
+use App\Models\EstimatePrepareV2;
 use App\Models\SorCategoryType;
 use App\Models\DynamicSorHeader;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-
-// use App\Http\Livewire\Estimate\EstimatePrepare;
 
 class EditRowWise extends Component
 {
@@ -50,36 +49,60 @@ class EditRowWise extends Component
         $this->modalName = ($this->featureType == "RateAnalysis" && $updateRateAnalysisId === null) ? "RateAnalysisModal" : (($this->featureType == "RateAnalysis" && $updateRateAnalysisId !== null) ? "RateAnalysisEditModal" : (($this->featureType === null && $updateRateAnalysisId === null) ? "modalData" : (($this->featureType === null && $updateRateAnalysisId !== null) ? "editModalData" : "modalData")));
         $this->storedSessionData = Session()->get($this->modalName);
         if (!empty($this->editRowData)) {
-            // dd($this->editRowData);
-
-            if (isset($this->editRowData['estimate_no'])) {
-                $this->dataArray['estimate_no'] = $this->editRowData['estimate_no'];
+            //dd($this->editRowData);
+            if (isset($this->editRowData['is_v2_data'])) {
+                $this->model = $this->editRowData['is_v2_data'] ? EstimatePrepareV2::class : EstimatePrepare::class;
+            } else {
+                $this->model = EstimatePrepare::class;
             }
-            $this->dataArray['description'] = !empty($this->editRowData['other_name']) ? $this->editRowData['other_name'] : $this->editRowData['description'];
+            $this->tableName = isset($this->editRowData['is_v2_data']) && $this->editRowData['is_v2_data'] ? 'estimate_prepares_v2' : 'estimate_prepares';
             $this->dataArray['item_name'] = !empty($this->editRowData['item_name']) ? $this->editRowData['item_name'] : null;
-            $this->dataArray['array_id'] = $this->editRowData['array_id'];
-            $this->dataArray['sor_item_number'] = $this->editRowData['sor_item_number'] ?? null;
-            $this->dataArray['dept_id'] = $this->editRowData['dept_id'] ?? null;
-            $this->dataArray['rate_no'] = $this->editRowData['rate_no'] ?? null;
-            $this->dataArray['operation'] = $this->editRowData['operation'] ?? null;
             $this->dataArray['existingQty'] = $this->editRowData['qty'] ?? null;
-            $this->dataArray['rate'] = $this->editRowData['rate'] ?? null;
-            $this->dataArray['total_amount'] = $this->editRowData['total_amount'] ?? null;
-            $this->dataArray['volume'] = $this->editRowData['volume_no'] ?? null;
-            $this->dataArray['table_no'] = $this->editRowData['table_no'] ?? null;
-            $this->dataArray['page_no'] = $this->editRowData['page_no'] ?? null;
-            $this->dataArray['id'] = $this->editRowData['sor_id'] ?? null;
-            $this->dataArray['item_index'] = $this->editRowData['item_index'] ?? null;
-            $this->dataArray['other_name'] = $this->editRowData['other_name'] ?? null;
-            $this->dataArray['col_position'] = $this->editRowData['col_position'] ?? null;
-            $this->dataArray['is_row'] = $this->editRowData['is_row'] ?? null;
-            $this->dataArray['arrayIndex'] = $this->editRowData['arrayIndex'] ?? null;
-            $this->dataArray['qtyUpdate'] = false;
-            $this->dataArray['remarks'] = $this->editRowData['remarks'] ?? null;
-            $this->dataArray['dept_category_id'] = $this->editRowData['category_id'] ?? null;
-            $this->dataArray['rate_analysis_data'] = $this->editRowData['rate_analysis_data'] ?? null;
+            if(isset($this->editRowData['qtyUpdate'])){
+                $this->dataArray['qtyUpdate'] = $this->editRowData['qtyUpdate'];
+            }else{
+                $this->dataArray['qtyUpdate'] = false;
+            }
+           
+        //     if (isset($this->editRowData['estimate_no'])) {
+        //         $this->dataArray['estimate_no'] = $this->editRowData['estimate_no'];
+        //     }
+        //     $this->dataArray['description'] = !empty($this->editRowData['other_name']) ? $this->editRowData['other_name'] : $this->editRowData['description'];
+        
+        //     $this->dataArray['array_id'] = $this->editRowData['array_id'];
+        //     $this->dataArray['sor_item_number'] = $this->editRowData['sor_item_number'] ?? null;
+        //     $this->dataArray['dept_id'] = $this->editRowData['dept_id'] ?? null;
+        //     $this->dataArray['rate_no'] = $this->editRowData['rate_no'] ?? null;
+        //     $this->dataArray['operation'] = $this->editRowData['operation'] ?? null;
+     
+        //     $this->dataArray['rate'] = $this->editRowData['rate'] ?? null;
+        //     $this->dataArray['total_amount'] = $this->editRowData['total_amount'] ?? null;
+        //     $this->dataArray['volume'] = $this->editRowData['volume_no'] ?? null;
+        //     $this->dataArray['table_no'] = $this->editRowData['table_no'] ?? null;
+             $this->dataArray['page_no'] = $this->editRowData['page_no'] ?? null;
+        //     $this->dataArray['sor_id'] = $this->editRowData['sor_id'] ?? null;
+        //     $this->dataArray['item_index'] = $this->editRowData['item_index'] ?? null;
+        //     $this->dataArray['other_name'] = $this->editRowData['other_name'] ?? null;
+        //     $this->dataArray['col_position'] = $this->editRowData['col_position'] ?? null;
+        //     $this->dataArray['is_row'] = $this->editRowData['is_row'] ?? null;
+        //     $this->dataArray['arrayIndex'] = $this->editRowData['arrayIndex'] ?? null;
+         
+            // if(isset($this->editRowData['qtyUpdate'])){
+            //     $this->dataArray['qtyUpdate'] = $this->editRowData['qtyUpdate'];
+            // }
+        //     $this->dataArray['remarks'] = $this->editRowData['remarks'] ?? null;
+        //     $this->dataArray['dept_category_id'] = $this->editRowData['category_id'] ?? null;
+        //     if(isset($this->editRowData['rate_analysis_data'])){
+        //         $this->dataArray['rate_analysis_data'] = $this->editRowData['rate_analysis_data'];
+        //     }
+        //     if(isset($this->editRowData['qty_analysis_data'])){
+        //         $this->dataArray['qty_analysis_data'] = $this->editRowData['qty_analysis_data'];
+        //     }
+
             if ($this->dataArray['item_name'] == 'Rate') {
-                // dd($this->editRowData['operation']);
+                if(isset($this->editRowData['qtyUpdate'])){
+                    $this->dataArray['qtyUpdate'] = $this->editRowData['qtyUpdate'];
+                }
                 $this->getDeptRates();
                 $this->dataArray['rate_no'] = $this->editRowData['rate_no'];
                 $this->getRateDetailsTypes();
@@ -98,6 +121,10 @@ class EditRowWise extends Component
                 }
                 $this->calculateValue();
             } elseif ($this->dataArray['item_name'] == 'SOR') {
+                if(isset($this->editRowData['qtyUpdate'])){
+                    $this->dataArray['qtyUpdate'] = $this->editRowData['qtyUpdate'];
+                }
+                $this->dataArray['page_no'] = $this->editRowData['page_no'];
                 $this->dataArray['dept_id'] = $this->editRowData['dept_id'];
                 $this->dataArray['rate_type'] = $this->editRowData['operation'];
                 $this->dataArray['rate_no'] = $this->editRowData['rate_no'];
@@ -108,7 +135,7 @@ class EditRowWise extends Component
                 $this->getTableNo();
                 $this->dataArray['table_no'] = $this->editRowData['table_no'];
                 $this->getPageNo();
-                $this->dataArray['id'] = $this->editRowData['sor_id'];
+                $this->dataArray['sor_id'] = $this->editRowData['sor_id'];
                 $this->dataArray['description'] = !empty($this->editRowData['other_name']) ? $this->editRowData['other_name'] : $this->editRowData['description'];
                 $this->dataArray['unit_id'] = $this->editRowData['unit_id'];
                 $this->dataArray['qty'] = $this->editRowData['qty'];
@@ -118,7 +145,12 @@ class EditRowWise extends Component
                 $this->dataArray['rate'] = $this->editRowData['rate'];
                 $this->dataArray['total_amount'] = $this->editRowData['total_amount'];
                 $this->calculateValue();
+
+              //  dd( $this->dataArray);
             } elseif ($this->dataArray['item_name'] == 'Other') {
+                if(isset($this->editRowData['qtyUpdate'])){
+                    $this->dataArray['qtyUpdate'] = $this->editRowData['qtyUpdate'];
+                }
                 if ($this->storedSessionData && isset($this->storedSessionData[$this->editRowId])) {
                     $this->OpenConfirmModal();
                 }
@@ -128,6 +160,9 @@ class EditRowWise extends Component
                 $this->dataArray['total_amount'] = $this->editRowData['total_amount'];
                 $this->dataArray['unit_id'] = $this->editRowData['unit_id'];
             } elseif ($this->dataArray['item_name'] == 'Estimate') {
+                if(isset($this->editRowData['qtyUpdate'])){
+                    $this->dataArray['qtyUpdate'] = $this->editRowData['qtyUpdate'];
+                }
                 if (!empty($this->editRowData['operation'])) {
                     $this->dataArray['rate_type'] = $this->editRowData['operation'];
                 }
@@ -158,10 +193,6 @@ class EditRowWise extends Component
             $this->calculateValue();
         }
     }
-
-
-
-
     public function calculateValue()
     {
         if ($this->dataArray['qty'] != '' && $this->dataArray['rate'] != '') {
@@ -202,17 +233,15 @@ class EditRowWise extends Component
     {
         $this->dataArray['total_amount'] = '';
         $this->dataArray['description'] = '';
-        //$this->dataArray['qty'] = '';
         $this->dataArray['rate'] = '';
-        $this->dataArray['id'] = '';
-        $this->fatchDropdownData['estimatesList'] = EstimatePrepare::join('sor_masters', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
+        $this->dataArray['sor_id'] = '';
+        $this->fatchDropdownData['estimatesList'] =  $this->model::join('sor_masters', "{$this->tableName}.estimate_id", '=', 'sor_masters.estimate_id')
             ->select('estimate_prepares.estimate_id', 'sor_masters.sorMasterDesc')
             ->distinct()
             ->get()
             ->toArray();
-        // dd($this->fatchDropdownData['estimatesList']);
         if (!empty($this->dataArray['estimate_no'])) {
-            $this->fatchDropdownData['estimateDetails'] = EstimatePrepare::join('sor_masters', 'estimate_prepares.estimate_id', 'sor_masters.estimate_id')
+            $this->fatchDropdownData['estimateDetails'] = $this->model::join('sor_masters', "{$this->tableName}.estimate_id", 'sor_masters.estimate_id')
                 ->where('estimate_prepares.estimate_id', $this->dataArray['estimate_no'])
                 ->where('estimate_prepares.operation', 'Total')
                 ->first();
@@ -226,18 +255,13 @@ class EditRowWise extends Component
             }
         }
     }
-
     public function getDeptCategory()
     {
-
         $this->dataArray['dept_category_id'] = '';
         $this->dataArray['volume'] = '';
         $this->dataArray['table_no'] = '';
         $this->dataArray['page_no'] = '';
-        $this->dataArray['id'] = '';
-        // $this->fatchDropdownData['volumes'] = [];
-        // $this->fatchDropdownData['table_no'] = [];
-        // $this->fatchDropdownData['page_no'] = [];
+        $this->dataArray['sor_id'] = '';
         $this->fatchDropdownData['departmentsCategory'] = [];
         $cacheKey = 'dept_cat' . '_' . $this->dataArray['dept_id'];
         $cacheHasDeptCat = Cache::get($cacheKey);
@@ -273,7 +297,7 @@ class EditRowWise extends Component
             $this->dataArray['volume'] = '';
             $this->dataArray['table_no'] = '';
             $this->dataArray['page_no'] = '';
-            $this->dataArray['id'] = '';
+            $this->dataArray['sor_id'] = '';
             $this->dataArray['description'] = '';
             $this->dataArray['unit_id'] = '';
             $this->dataArray['qty'] = '';
@@ -314,18 +338,18 @@ class EditRowWise extends Component
             $this->dataArray['qty'] = '';
             $this->dataArray['rate'] = '';
             $this->dataArray['total_amount'] = '';
-            $cacheKey = 'getSor_' . (($id != '') ? $id : $this->dataArray['id']);
+            $cacheKey = 'getSor_' . (($id != '') ? $id : $this->dataArray['sor_id']);
             //dd($cacheKey);
             $getCacheData = Cache::get($cacheKey);
             if ($getCacheData != '') {
                 $this->getSor = $getCacheData;
             } else {
                 $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () use ($id) {
-                    return DynamicSorHeader::where('id', ($id != '') ? $id : $this->dataArray['id'])->first();
+                    return DynamicSorHeader::where('id', ($id != '') ? $id : $this->dataArray['sor_id'])->first();
                 });
             }
             //dd( $this->getSor);
-            $this->dataArray['id'] = $this->getSor['id'];
+            $this->dataArray['sor_id'] = $this->getSor['id'];
             $this->dataArray['page_no'] = $this->getSor['page_no'];
             $this->dataArray['qty'] = $this->editRowData['qty'];
             if ($this->searchKeyWord != '') {
@@ -380,13 +404,15 @@ class EditRowWise extends Component
     }
     public function getPageNo()
     {
+
+      
         $this->fatchDropdownData['page_no'] = [];
-        $this->dataArray['id'] = '';
+        $this->dataArray['sor_id'] = '';
         $this->dataArray['qty'] = '';
         $this->dataArray['rate'] = '';
         $this->dataArray['total_amount'] = '';
         $this->dataArray['unit_id'] = '';
-        $this->dataArray['page_no'] = '';
+       // $this->dataArray['page_no'] = '';
         $this->viewModal = false;
         $cacheKey = 'page_no_' . $this->dataArray['dept_id'] . '_' . $this->dataArray['dept_category_id'] . '_' . $this->dataArray['volume'] . '_' . $this->dataArray['table_no'];
         $getCacheData = Cache::get($cacheKey);
@@ -398,9 +424,8 @@ class EditRowWise extends Component
                     ->select('id', 'page_no', 'corrigenda_name')->orderBy('page_no', 'asc')->orderBy('corrigenda_name', 'asc')->get();
             });
         }
+       // dd( $this->fatchDropdownData['page_no']);
     }
-
-
     public function getRowValues($data)
     {
         $this->reset('counterForItemNo');
@@ -561,14 +586,10 @@ class EditRowWise extends Component
     {
 
         $this->dataArray['total_amount'] = '';
-        //$this->dataArray['description'] = '';
-        //$this->dataArray['qty'] = '';
         $this->dataArray['rate'] = '';
         $this->fatchDropdownData['rateDetails'] = RatesAnalysis::where([['rate_no', 0], ['rate_id', $this->dataArray['rate_no']], ['operation', $this->dataArray['rate_type']], ['dept_id', $this->dataArray['dept_id']]])->select('description', 'rate_id', 'qty', 'total_amount')->first();
-        // dd($this->fatchDropdownData['rateDetails']);
         $this->dataArray['total_amount'] = round($this->fatchDropdownData['rateDetails']['total_amount'], 2);
         $this->dataArray['description'] = $this->fatchDropdownData['rateDetails']['description'];
-        // $this->dataArray['qty'] = ($this->fatchDropdownData['rateDetails']['qty'] != 0) ? $this->fatchDropdownData['rateDetails']['qty'] : 1;
         if ($this->storedSessionData && isset($this->storedSessionData[$this->editRowId])) {
             $this->OpenConfirmModal();
         }
@@ -649,11 +670,13 @@ class EditRowWise extends Component
     }
 
     public function UpdateModalData()
-    {
+    {  
         $update_id = $this->editRowData['array_id'];
-        // dd($this->dataArray);
+        if(empty($this->dataArray['page_no']) || $this->dataArray['page_no'] == ""){
+            $this->dataArray['page_no'] = $this->editRowData['page_no'];
+        }
+          
         if ($this->dataArray['qtyUpdate'] == false) {
-            // dd($this->storedSessionData[$this->editRowId]);
             if ($this->modalName == "RateAnalysisEditModal") {
                 unset($this->storedSessionData[$this->editRowId]);
             } elseif ($this->modalName == "editModalData") {
@@ -666,7 +689,6 @@ class EditRowWise extends Component
             Session()->put($this->modalName, $this->storedSessionData);
         }
 
-        // dd($this->dataArray, $update_id);
         $this->emit('updateSetFetchData', $this->dataArray, $update_id);
     }
     public function render()
