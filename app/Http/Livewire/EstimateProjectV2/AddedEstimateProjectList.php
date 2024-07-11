@@ -107,7 +107,7 @@ class AddedEstimateProjectList extends Component
 
     public function updateSetFetchData($fetchUpdateRateData, $update_id)
     {
-        dd($fetchUpdateRateData,$update_id);
+       // dd($fetchUpdateRateData,$update_id);
         foreach ($this->allAddedEstimatesData as $key => $estimate) {
             if ($estimate['array_id'] == $update_id) {
                  
