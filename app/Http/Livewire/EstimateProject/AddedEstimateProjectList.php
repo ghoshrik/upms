@@ -111,7 +111,7 @@ class AddedEstimateProjectList extends Component
                 $this->allAddedEstimatesData[$key]['rate_no'] = $fetchUpdateRateData['rate_no'];
                 $this->allAddedEstimatesData[$key]['dept_id'] = $fetchUpdateRateData['dept_id'];
                 $this->allAddedEstimatesData[$key]['category_id'] = $fetchUpdateRateData['dept_category_id'];
-                $this->allAddedEstimatesData[$key]['sor_item_number'] = $fetchUpdateRateData['sor_item_number'];
+                $this->allAddedEstimatesData[$key]['sor_item_number'] = $fetchUpdateRateData['item_number'];
                 $this->allAddedEstimatesData[$key]['volume_no'] = $fetchUpdateRateData['volume'];
                 $this->allAddedEstimatesData[$key]['table_no'] = $fetchUpdateRateData['table_no'];
                 $this->allAddedEstimatesData[$key]['page_no'] = !empty($fetchUpdateRateData['page_no']) ? $fetchUpdateRateData['page_no'] : 0;

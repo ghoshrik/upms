@@ -132,7 +132,7 @@ class AddRateAnalysisList extends Component
                 $this->allAddedRateData[$key]['rate_no'] = $fetchUpdateRateData['rate_no'];
                 $this->allAddedRateData[$key]['dept_id'] = $fetchUpdateRateData['dept_id'];
                 $this->allAddedRateData[$key]['category_id'] = $fetchUpdateRateData['dept_category_id'];
-                $this->allAddedRateData[$key]['sor_item_number'] = $fetchUpdateRateData['sor_item_number'];
+                $this->allAddedRateData[$key]['sor_item_number'] = $fetchUpdateRateData['item_number'];
                 $this->allAddedRateData[$key]['volume_no'] = $fetchUpdateRateData['volume'];
                 $this->allAddedRateData[$key]['table_no'] = $fetchUpdateRateData['table_no'];
                 $this->allAddedRateData[$key]['page_no'] = $fetchUpdateRateData['page_no'];

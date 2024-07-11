@@ -107,7 +107,7 @@ class AddedEstimateProjectList extends Component
 
     public function updateSetFetchData($fetchUpdateRateData, $update_id)
     {
-       // dd($fetchUpdateRateData,$update_id);
+        dd($fetchUpdateRateData,$update_id);
         foreach ($this->allAddedEstimatesData as $key => $estimate) {
             if ($estimate['array_id'] == $update_id) {
                  
@@ -123,8 +123,8 @@ class AddedEstimateProjectList extends Component
                 if (!empty($fetchUpdateRateData['dept_category_id'])) {
                     $this->allAddedEstimatesData[$key]['category_id'] = $fetchUpdateRateData['dept_category_id'];
                 }
-                if (!empty($fetchUpdateRateData['sor_item_number'])) {
-                    $this->allAddedEstimatesData[$key]['sor_item_number'] = $fetchUpdateRateData['sor_item_number'];
+                if (!empty($fetchUpdateRateData['item_number'])) {
+                    $this->allAddedEstimatesData[$key]['sor_item_number'] = $fetchUpdateRateData['item_number'];
                 }
                 if (!empty($fetchUpdateRateData['volume'])) {
                     $this->allAddedEstimatesData[$key]['volume_no'] = $fetchUpdateRateData['volume'];
