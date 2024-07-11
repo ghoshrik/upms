@@ -8,7 +8,7 @@
                 <div wire:loading.delay.longest.class="loading" class="card-body">
                     <div class="row">
                         @isset($fetchDropdownData['departments'])
-                            <div class="col-md-12 col-sm-6 col-lg-12">
+                            <div class="col-md-6 col-sm-6 col-lg-6">
                                 <div class="form-group">
                                     <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
                                         placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
@@ -21,7 +21,7 @@
                                 </div>
                             </div>
                         @endisset
-                        <div class="col-md-12 col-sm-6 col-lg-12">
+                        <div class="col-sm-6 {{(isset($fetchDropdownData['departments'])) ? 'col-md-6 col-lg-6': 'col-md-12 col-lg-12' }}">
                             <div class="form-group">
                                 <x-input label="{{ trans('cruds.office.fields.office_name') }}"
                                     placeholder="{{ trans('cruds.office.fields.office_name') }}"

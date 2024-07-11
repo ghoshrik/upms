@@ -321,7 +321,7 @@ final class UsersDataTable extends PowerGridComponent
         }
          */
 
-        if (Auth::user()->department_id && (Auth::user()->user_type != 'State Admin' || Auth::user()->user_type != 'Super Admin')) {
+        if (Auth::user()->department_id) {
             /*if (Auth::user()->office_id) {
              */
             // dd('if');
@@ -357,8 +357,7 @@ final class UsersDataTable extends PowerGridComponent
                 // ->where('user_types.parent_id', '=', $this->userData)
                 ->where('offices.office_parent',Auth::user()->office_id)
                 ->where('users.department_id', Auth::user()->department_id);
-
-                if(Auth::user()->dept_category_id != '' || Auth::user()->dept_category_id !=0){
+                if(Auth::user()->dept_category_id !=0){
                     return $query->where('users.dept_category_id',Auth::user()->dept_category_id);
                 }else{
                     return $query;
@@ -397,7 +396,7 @@ final class UsersDataTable extends PowerGridComponent
         ->where('user_types.parent_id', '=', $this->userData)
         ->where('users.department_id', Auth::user()->department_id);
         }*/
-        } elseif(Auth::user()->department_id && (Auth::user()->user_type == 'State Admin' || Auth::user()->user_type == 'Super Admin')){
+        } elseif(Auth::user()->department_id){
             // dd('elseif2');
             return User::query()
             ->select(

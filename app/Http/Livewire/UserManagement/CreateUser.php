@@ -2,18 +2,18 @@
 
 namespace App\Http\Livewire\UserManagement;
 
-use App\Models\User;
+use App\Models\Department;
+use App\Models\DepartmentCategories;
+use App\Models\Designation;
 use App\Models\Office;
 use App\Models\States;
-use Livewire\Component;
+use App\Models\User;
 use App\Models\UserType;
-use App\Models\Department;
-use WireUi\Traits\Actions;
-use App\Models\Designation;
 use Illuminate\Support\Arr;
-use App\Models\DepartmentCategories;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class CreateUser extends Component
 {
@@ -93,7 +93,7 @@ class CreateUser extends Component
             'mobile' => '',
             'email' => '',
             'state_code' => '',
-            'dept_category_id'=>(Auth::user()->dept_category_id != '' && Auth::user()->dept_category_id != 0) ? Auth::user()->dept_category_id : ''
+            'dept_category_id' => (Auth::user()->dept_category_id != '' && Auth::user()->dept_category_id != 0) ? Auth::user()->dept_category_id : '',
             // 'is_active' => 1,
         ];
 
@@ -135,8 +135,7 @@ class CreateUser extends Component
                 }
             }
         }
-        if($this->newUserData['department_id'] !='' && $this->newUserData['department_id']!=0 && $this->newUserData['dept_category_id'] == '' || $this->newUserData['dept_category_id'] == 0)
-        {
+        if ($this->newUserData['department_id'] != '' && $this->newUserData['department_id'] != 0 && $this->newUserData['dept_category_id'] == '' || $this->newUserData['dept_category_id'] == 0) {
             $this->getDropdownData('DEPTCATEGORY');
         }
     }
@@ -167,12 +166,9 @@ class CreateUser extends Component
                         ['name' => 'L1 Level', 'id' => 1],
                     ];
                 }
-            }
-            elseif($lookingFor === 'DEPTCATEGORY')
-            {
-                $this->dropDownData['departmentCategory'] = DepartmentCategories::where('department_id',Auth::user()->department_id)->get();
-            }
-            else {
+            } elseif ($lookingFor === 'DEPTCATEGORY') {
+                $this->dropDownData['departmentCategory'] = DepartmentCategories::where('department_id', Auth::user()->department_id)->get();
+            } else {
                 // $this->allUserTypes = UserType::where('parent_id', Auth::user()->user_type)->get();
             }
         } catch (\Throwable $th) {
@@ -192,7 +188,7 @@ class CreateUser extends Component
                     $this->dropDownData['offices'] = Office::where([
                         ['department_id', $this->newUserData['department_id']],
                         ['level_no', $this->selectLevel],
-                        ['created_by',Auth::user()->id]
+                        ['created_by', Auth::user()->id],
                     ])->get();
                 }
             } else {
@@ -216,19 +212,19 @@ class CreateUser extends Component
         // dd($this->newUserData);
         try {
             unset($this->newUserData['confirm_password']);
-            $userType = UserType::where('parent_id', Auth::user()->user_type)->first();
-            if (isset($userType)) {
+            // $userType = UserType::where('parent_id', Auth::user()->user_type)->first();
+            // if (isset($userType) || true) {
                 $this->newUserData['user_type'] = 0;
-                $this->newUserData['department_id'] = $this->newUserData['department_id'];
-                $this->newUserData['dept_category_id'] = $this->newUserData['dept_category_id'];
-                $this->newUserData['designation_id'] = $this->newUserData['designation_id'];
-                $this->newUserData['office_id'] = $this->newUserData['office_id'];
+                $this->newUserData['department_id'] = (int)$this->newUserData['department_id'];
+                $this->newUserData['dept_category_id'] = (int)$this->newUserData['dept_category_id'];
+                $this->newUserData['designation_id'] = (int)$this->newUserData['designation_id'];
+                $this->newUserData['office_id'] = (int)$this->newUserData['office_id'];
                 $this->newUserData['email'] = $this->newUserData['email'];
                 $this->newUserData['mobile'] = $this->newUserData['mobile'];
                 // $this->newUserData['password'] = Hash::make($this->newUserData['password']);
                 $this->newUserData['password'] = Hash::make('password');
                 $this->newUserData['state_code'] = Auth::user()->state_code;
-                $this->newUserData['created_by'] = Auth::user()->id;
+                $this->newUserData['created_by'] = (int)Auth::user()->id;
                 $newUserDetails = User::create($this->newUserData);
                 // $newUserDetails = true;
                 if ($newUserDetails) {
@@ -248,11 +244,13 @@ class CreateUser extends Component
                     $this->emit('openEntryForm');
                     return;
                 }
-            }
-            $this->notification()->error(
-                $title = 'Error !!!',
-                $description = 'Something went wrong.'
-            );
+            // } else {
+            //     $this->notification()->error(
+            //         $title = 'Error !!!',
+            //         $description = 'Something went wrong.'
+            //     );
+            // }
+
         } catch (\Throwable $th) {
             // dd($th->getMessage());
             $this->emit('showError', $th->getMessage());

@@ -53,7 +53,7 @@ class CreateOffice extends Component
                 $this->fetchDropdownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
             }
         }
-        if (Auth::user()->user_type == 2) {
+        if ($userRole->id == 2) {
             $allDept = Cache::get('allDept');
             if ($allDept != '') {
                 $this->fetchDropdownData['departments'] = $allDept;

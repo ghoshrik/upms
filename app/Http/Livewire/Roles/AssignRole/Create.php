@@ -2,37 +2,42 @@
 
 namespace App\Http\Livewire\Roles\AssignRole;
 
-use App\Models\User;
+use App\Models\Department;
+use App\Models\DepartmentCategories;
+use App\Models\Designation;
 use App\Models\Levels;
 use App\Models\Office;
 use App\Models\States;
-use Livewire\Component;
+use App\Models\User;
 use App\Models\UserType;
-use App\Models\Department;
-use WireUi\Traits\Actions;
-use App\Models\Designation;
-use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
-use App\Models\DepartmentCategories;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Livewire\Component;
+use Spatie\Permission\Models\Role;
+use WireUi\Traits\Actions;
 
 class Create extends Component
 {
     use Actions;
-    public $dropDownData = [], $newAccessData = [], $access_type_name = [], $userlist = [], $openAssignModal;
+    public $dropDownData = [], $newAccessData = [], $access_type_name = [], $userlist = [], $openAssignModal, $selectedIdForEdit,$editUser,$editUserRole;
 
     public function mount()
     {
+        if ($this->selectedIdForEdit != '') {
+            //     dd($this->selectedIdForEdit);
+            $this->editUser = User::find($this->selectedIdForEdit);
+            $this->editUserRole= $this->editUser->roles->first();
+        }
 
-        // dd($users);
+        // dd($userDet);
         $this->newAccessData = [
-            'role_type' => '',
-            'users_id' => '',
-            'office_id' => '',
-            'desg_id' => '',
-            'department_id' => '',
-            'dept_category_id'=>'',
+            'role_type' => [],
+            'users_id' => ($this->selectedIdForEdit != '') ? $this->editUser->id : '',
+            'office_id' => ($this->selectedIdForEdit != '') ? $this->editUser->office_id : '',
+            'desg_id' => ($this->selectedIdForEdit != '') ? $this->editUser->designation_id : '',
+            'department_id' => ($this->selectedIdForEdit != '') ? $this->editUser->department_id : '',
+            'dept_category_id' => '',
             //     'roles_id' => [],
         ];
         // $this->getDropdownData('userTypes');
@@ -55,9 +60,20 @@ class Create extends Component
                     $this->dropDownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
                 }
             }
+            $this->newAccessData['level_id'] = ($this->selectedIdForEdit != '') ? $this->editUserRole->has_level_no : '';
             // dd($this->dropDownData['levels']);
             if (count($this->dropDownData['levels']) != 0) {
                 $this->getDropdownData('departments');
+                if ($this->newAccessData['department_id'] != '') {
+                    $this->getOfficeDesignation();
+                }
+                if ($this->newAccessData['desg_id'] != '' || $this->newAccessData['office_id']!='') {
+                    $this->getUserList();
+                    if($this->newAccessData['users_id'] != ''){
+                        $this->getUserRoles();
+                    }
+                }
+
             }
         }
         if (Auth::user()->roles->first()->has_level_no == '') {
@@ -86,11 +102,11 @@ class Create extends Component
                     $this->dropDownData['departments'] = Department::get();
                     break;
                 case 'departmentCategory':
-                    $this->dropDownData['departmentCategory'] = DepartmentCategories::where('department_id',$this->newAccessData['department_id'])->get();
+                    $this->dropDownData['departmentCategory'] = DepartmentCategories::where('department_id', $this->newAccessData['department_id'])->get();
                     break;
                 case 'OFC':
                     // $this->dropDownData['offices'] = Office::where('id', Auth::user()->office_id)->get();
-                    $this->dropDownData['offices'] = Office::where('level_no', $this->newAccessData['level_id'])->where('department_id', $this->newAccessData['department_id'])->where('created_by',Auth::user()->id)->get();
+                    $this->dropDownData['offices'] = Office::where('level_no', $this->newAccessData['level_id'])->where('department_id', $this->newAccessData['department_id'])->where('created_by', Auth::user()->id)->get();
                     // dd($this->dropDownData['offices']);
                     break;
                 case 'roles':
@@ -108,26 +124,54 @@ class Create extends Component
     public function getOfficeDesignation()
     {
         if (count($this->dropDownData['levels']) != 0 && $this->newAccessData['level_id'] == '') {
-            $this->newAccessData['department_id'] = '';
-            $this->newAccessData['office_id'] = '';
-            $this->newAccessData['desg_id'] = '';
-            $this->newAccessData['users_id'] = '';
-            $this->newAccessData['role_type'] = '';
+            $this->newAccessData['department_id'] = ($this->selectedIdForEdit != '') ? $this->editUser->department_id : '';
+            $this->newAccessData['office_id'] = ($this->selectedIdForEdit != '') ? $this->editUser->office_id : '';
+            $this->newAccessData['desg_id'] = ($this->selectedIdForEdit != '') ? $this->editUser->designation_id : '';
+            $this->newAccessData['users_id'] = ($this->selectedIdForEdit != '') ? $this->editUser->id : '';
+            $this->newAccessData['role_type'] = [];
             $this->notification()->error(
                 $title = 'Error',
                 $description = 'Please Select Level.'
             );
         } else {
             $this->dropDownData['offices'] = [];
-            $this->newAccessData['office_id'] = '';
+            $this->newAccessData['office_id'] = ($this->selectedIdForEdit != '') ? $this->editUser->office_id : '';
             $this->dropDownData['designations'] = [];
-            $this->newAccessData['desg_id'] = '';
+            $this->newAccessData['desg_id'] = ($this->selectedIdForEdit != '') ? $this->editUser->designation_id : '';
             $this->getDropdownData('OFC');
             $this->getDropdownData('designations');
             $this->getDropdownData('departmentCategory');
             // dd($this->dropDownData['offices']);
         }
     }
+
+    public function getUserRoles()
+    {
+        // getRoleNames
+
+        $user = User::find($this->newAccessData['users_id']);
+
+        if (!$user) {
+            $this->notification()->error(
+                $title = 'Error',
+                $description = 'User Not have Any Roles'
+            );
+        }
+
+        $roles = $user->roles()->get();
+        if (empty($roles)) {
+            $this->notification()->success(
+                $title = 'success',
+                $description = 'User Have Some Roles'
+            );
+            foreach ($roles as $role) {
+                $this->newAccessData['role_type'][] = $role['id'];
+            }
+        }
+        // dd($this->newAccessData['role_type']);
+        // dd($this->newAccessData['users_id']);
+    }
+
     public function getUserList()
     {
         // Start with a base query
@@ -168,8 +212,8 @@ class Create extends Component
                 $title = 'Error',
                 $description = 'User already assigned. Change the role or User.'
             );
-            $this->newAccessData['users_id'] = '';
-            $this->newAccessData['role_type'] = '';
+            $this->newAccessData['users_id'] = ($this->selectedIdForEdit != '') ? $this->editUser->id : '';
+            $this->newAccessData['role_type'] = [];
         }
     }
     public function getUsers()
@@ -191,7 +235,7 @@ class Create extends Component
         // dd($this->newAccessData);
         try {
             $userId = $this->newAccessData['users_id'];
-            $selectedRoles = [$this->newAccessData['role_type']];
+            $selectedRoles = $this->newAccessData['role_type'];
             $office_id = $this->newAccessData['office_id'];
 
             // If the user is not assigned to any of the selected roles, proceed with the assignment
@@ -202,6 +246,7 @@ class Create extends Component
             //         'office_id' => $office_id,
             //     ]);
             // }
+            // DB::transaction();
             $userDetails = User::where('id', $userId)->first();
             if (!$userDetails) {
                 throw new Exception("User not found");
@@ -220,6 +265,7 @@ class Create extends Component
                 throw new Exception("Failed to sync roles");
             }
             Cache::forget('user_has_roles');
+            $this->emit('reset');
             $this->emit('openEntryForm');
             $this->reset();
         } catch (\Throwable $th) {

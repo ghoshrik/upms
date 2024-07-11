@@ -58,13 +58,15 @@
                 @if ($isFromOpen && $openedFormType == 'create')
                     <livewire:roles.assign-role.create />
                 @elseif($isFromOpen && $openedFormType == 'edit')
+                    <livewire:roles.assign-role.create :selectedIdForEdit="$selectedIdForEdit" />
                 @else
-                    <div class="col-md-12 col-lg-12 col-sm-3">
-                        <div class="card">
-                            {{-- <h2>Department & office wise Data Sorting is pending.</h2> --}}
-                            <div class="card-body">
-                                {{-- TODO:: CHANGE --}}
-                                {{-- <livewire:roles.assign-role.datatable.assign-role-datatable
+                    <div>
+                        <div class="col-md-12 col-lg-12 col-sm-3">
+                            <div class="card">
+                                {{-- <h2>Department & office wise Data Sorting is pending.</h2> --}}
+                                <div class="card-body">
+                                    {{-- TODO:: CHANGE --}}
+                                    {{-- <livewire:roles.assign-role.datatable.assign-role-datatable
                                     :wire:key="$updateDataTableTracker" /> --}}
                                     <div class="card" wire:loading.delay.longest.class="loading">
                                         <div class="card-body p-2">
@@ -78,7 +80,7 @@
                                                             <th scope="col">DESIGNATION</th>
                                                             <th scope="col">OFFICE</th>
                                                             <th scope="col">Role</th>
-                                                            <th scope="col">USER TYPE</th>
+                                                            {{-- <th scope="col">USER TYPE</th> --}}
                                                             <th scope="col">Actions</th>
                                                         </tr>
                                                     </thead>
@@ -87,26 +89,39 @@
                                                             @foreach ($assignUserList as $key => $user)
                                                                 <tr>
                                                                     <td>{{ $loop->iteration }}</td>
-                                                                    <td class="text-wrap" style="width: 30rem">{{ $user['emp_name'] }}</td>
-                                                                    <td class="text-wrap" style="width: 30rem">{{ ($user['department_id'] != 0 ) ? getDepartmentName($user['department_id']) : '' }}</td>
                                                                     <td class="text-wrap" style="width: 30rem">
-                                                                        {{ ($user['designation_id'] != 0 ) ? getDesignationName($user['designation_id']) : '' }}
+                                                                        {{ $user['emp_name'] }}</td>
+                                                                    <td class="text-wrap" style="width: 30rem">
+                                                                        {{ $user['department_id'] != 0 ? getDepartmentName($user['department_id']) : '' }}
                                                                     </td>
                                                                     <td class="text-wrap" style="width: 30rem">
-                                                                        {{ ($user['office_id'] != 0 ) ? getOfficeName($user['office_id']) : '' }}
+                                                                        {{ $user['designation_id'] != 0 ? getDesignationName($user['designation_id']) : '' }}
+                                                                    </td>
+                                                                    <td class="text-wrap" style="width: 30rem">
+                                                                        {{ $user['office_id'] != 0 ? getOfficeName($user['office_id']) : '' }}
                                                                     </td>
                                                                     <td class="text-wrap" style="width: 30rem">
                                                                         {{-- {{ $user->roles->isNotEmpty() ? $user->roles->first()->name : 'No role assigned' }} --}}
-                                                                        {{ $user['roles'][0]['name'] }}
+                                                                        {{-- {{ $user['roles'][0]['name'] }} --}}
+                                                                        @foreach ($user['roles'] as $role)
+                                                                            <span
+                                                                                class="badge rounded-pill bg-secondary">{{ $role['name'] }}</span>
+                                                                        @endforeach
                                                                     </td>
-                                                                    <td class="text-wrap" style="width: 30rem">
-                                                                        {{ $user['user_type'] }}
-                                                                    </td>
+                                                                    {{-- <td class="text-wrap" style="width: 30rem">
+                                                                    {{ $user['user_type'] }}
+                                                                </td> --}}
                                                                     <td>
-                                                                        {{-- <button type="button" wire:click="assignRole({{ $user['id'] }})"
-                                                                            class="btn btn-soft-primary btn-sm">
-                                                                            Assign Role
-                                                                        </button> --}}
+                                                                        <button type="button"
+                                                                            wire:click="roleChangeConf({{ $user['id'] }})"
+                                                                            class="btn btn-soft-secondary btn-sm ">
+                                                                            Role Change
+                                                                        </button>
+                                                                        <button type="button"
+                                                                            wire:click="roleRevokeConf({{ $user['id'] }})"
+                                                                            class="btn btn-soft-warning btn-sm">
+                                                                            Role Revoke
+                                                                        </button>
                                                                     </td>
                                                                 </tr>
                                                             @endforeach
@@ -117,6 +132,7 @@
                                         </div>
                                     </div>
 
+                                </div>
                             </div>
                         </div>
                     </div>

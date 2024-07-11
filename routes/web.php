@@ -68,8 +68,8 @@ require __DIR__ . '/auth.php';
 //     }
 //     $user = Auth::user()->id;
 //     $user = User::find($user)->first();
-//     $user = User::where('id',3)->first();
-//     $user->assignRole("Super User");
+    // $user = User::where('id',2)->first();
+    // $user->assignRole("State Admin");
 // });
 
 // Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');

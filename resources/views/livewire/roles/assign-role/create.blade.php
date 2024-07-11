@@ -24,7 +24,7 @@
                             <div class="col-md-4 col-lg-4 col-sm-6" wire:key='level_'>
                                 <div class="form-group">
                                     <x-select label="Level" placeholder="Select Level"
-                                        wire:model.defer="newAccessData.level_id">
+                                        wire:model.defer="newAccessData.level_id" :disabled="$selectedIdForEdit">
                                         @foreach ($dropDownData['levels'] as $level)
                                             <x-select.option label="{{ $level['level_name'] }}"
                                                 value="{{ $level['id'] }}" />
@@ -39,7 +39,7 @@
                                 <div class="form-group">
                                     <x-select label="Department" placeholder="Select Department"
                                         wire:model.defer="newAccessData.department_id"
-                                        x-on:select="$wire.getOfficeDesignation()">
+                                        x-on:select="$wire.getOfficeDesignation()" :disabled="$selectedIdForEdit">
                                         @foreach ($dropDownData['departments'] as $department)
                                             <x-select.option label="{{ $department['department_name'] }}"
                                                 value="{{ $department['id'] }}" />
@@ -65,7 +65,8 @@
                             <div class="col-md-4 col-lg-4 col-sm-6" wire:key='desg_'>
                                 <div class="form-group">
                                     <x-select label="Designation" placeholder="Select Designation"
-                                        wire:model.defer="newAccessData.desg_id" x-on:select="$wire.getUserList()">
+                                        wire:model.defer="newAccessData.desg_id" x-on:select="$wire.getUserList()"
+                                        :disabled="$selectedIdForEdit">
                                         @foreach ($dropDownData['designations'] as $designation)
                                             <x-select.option label="{{ $designation['designation_name'] }}"
                                                 value="{{ $designation['id'] }}" />
@@ -78,7 +79,8 @@
                             <div class="col-md-4 col-lg-4 col-sm-6" wire:key='office_'>
                                 <div class="form-group">
                                     <x-select label="Office" placeholder="Select Office"
-                                        wire:model.defer="newAccessData.office_id" x-on:select="$wire.getUserList()">
+                                        wire:model.defer="newAccessData.office_id" x-on:select="$wire.getUserList()"
+                                        :disabled="$selectedIdForEdit">
                                         @foreach ($dropDownData['offices'] as $office)
                                             <x-select.option label="{{ $office['office_name'] }}"
                                                 value="{{ $office['id'] }}" />
@@ -91,12 +93,12 @@
                             <div class="col-md-4">
                                 <div class="form-group" wire:key='user_'>
                                     <x-select label="User List" placeholder="Select User"
-                                        wire:model.defer="newAccessData.users_id">
+                                        wire:model.defer="newAccessData.users_id" x-on:select="$wire.getUserRoles()"
+                                        :disabled="$selectedIdForEdit">
                                         @foreach ($dropDownData['users'] as $user)
                                         <x-select.option
-                                        label="{{ $user['emp_name'] . ($user['dept_category_id'] != '' && $user['dept_category_id'] != 0 ? ' ('.$user->getDepartmentCategoryName?->dept_category_name.')' : '') }}"
-                                        value="{{ $user['id'] }}"
-                                    />
+                                        label="{{ $user['emp_name'] . ($user['dept_category_id'] !== null && $user['dept_category_id'] != 0 ? ' (' . getDepartmentCategoryName($user['dept_category_id']) . ')' : '') }}"
+                                        value="{{ $user['id'] }}" />
                                         @endforeach
                                     </x-select>
                                 </div>
@@ -105,7 +107,7 @@
                         <div class="col-md-4">
                             <div class="form-group" wire:key='userRole_'>
                                 <x-select label="User Role" placeholder="Select User Role"
-                                    wire:model.defer="newAccessData.role_type" >
+                                    wire:model.defer="newAccessData.role_type" multiselect>
                                     @isset($dropDownData['userTypes'])
                                         @foreach ($dropDownData['userTypes'] as $usertype)
                                             <x-select.option label="{{ $usertype['name'] }}"
@@ -117,8 +119,9 @@
                         </div>
                         <div class="col col-md-2 col-lg-2 col-sm-12 col-xs-12 mb-2">
                             <div class="form-group pt-4">
-                                <button type="button" wire:click='store' class="btn btn-soft-primary ">
-                                    Save
+                                <button type="button" wire:click='store'
+                                    class="btn {{ $selectedIdForEdit ? 'btn-soft-warning' : 'btn-soft-primary' }}  ">
+                                    {{ $selectedIdForEdit ? 'Update' : 'Save' }}
                                 </button>
                             </div>
                         </div>
