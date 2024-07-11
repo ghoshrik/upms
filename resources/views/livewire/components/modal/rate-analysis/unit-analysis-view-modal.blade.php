@@ -385,7 +385,6 @@
                                             Select Previous Data
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end" style="width:67%">
-                                            <!-- Adjust the width as needed -->
                                             @isset($dropdownData)
                                                 @foreach ($dropdownData as $listData)
                                                     <li><a class="prev-data" href="#">{{ $listData }}</a></li>
@@ -787,6 +786,11 @@
     var dataValue = null;
     var selectedOption = '';
     $(document).ready(function() {
+        @if (isset($identifier))
+            var pEV2 = {!! json_encode($identifier) !!};
+        @else
+            var pEV2 = null;
+        @endif
         var unitId = @json($unit_id);
         var featureType = @json($featureType);
         var editEstimate_Id = @json($editEstimate_id);
@@ -1126,6 +1130,8 @@
             inputValues["editEstimate_id"] = editEstimate_Id;
             inputValues["editRate_id"] = editRate_id;
             inputValues["featureType"] = featureType;
+            inputValues["pEV2"] = pEV2;
+
             var ruledata = {
                 input_values: inputValues
             };
@@ -1456,6 +1462,7 @@
             inputValues["editEstimate_id"] = editEstimate_Id;
             inputValues["editRate_id"] = editRate_id;
             inputValues["featureType"] = featureType;
+            inputValues["pEV2"] = pEV2;
             var ruledata = {
                 input_values: inputValues
             };
@@ -1608,7 +1615,8 @@
                     ruleId: currentId,
                     editEstimate_id: editEstimate_Id,
                     editRate_id: editRate_id,
-                    featureType: featureType
+                    featureType: featureType,
+                    pEV2: pEV2,
 
 
                 }),
@@ -1982,6 +1990,7 @@
                 row['featureType'] = featureType;
                 row['editEstimate_id'] = editEstimate_Id;
                 row['editRate_id'] = editRate_id;
+                row['pEV2'] = pEV2;
                 rowData.push(row);
             });
 
@@ -2148,7 +2157,9 @@
                     parent_id: unitId,
                     editEstimate_id: editEstimate_Id,
                     editRate_id: editRate_id,
-                    featureType: featureType
+                    featureType: featureType,
+                    pEV2: pEV2,
+
                 }),
                 success: function(response) {
                     var tableBody1 = $("#dataTable tbody");
@@ -2360,7 +2371,9 @@
                     parent_id: unitId,
                     editEstimate_id: editEstimate_Id,
                     editRate_id: editRate_id,
-                    featureType: featureType
+                    featureType: featureType,
+                    pEV2: pEV2,
+
                 }),
                 success: function(response) {
                     var tableBody1 = $("#dataTable tbody");
@@ -2526,30 +2539,32 @@
 
         $('.dropdown').on('click', '.prev-data', function(event) {
 
+           // alert(pEV2);
+
             event.preventDefault();
             var selected_parent_id = $(this).text();
-
-            console.log(featureType, editEstimate_Id, editRate_id);
-
             var modalData;
 
             if (featureType !== '' && featureType !== null) {
-                if (editRate_id != null && editRate_id !== '') {
-                    modalData = {!! json_encode(session('RateAnalysisEditModal')) !!};
-                } else {
-                    modalData = {!! json_encode(session('RateAnalysisModal')) !!};
-                }
+                modalData = (editRate_id != null && editRate_id !== '') ?
+                    {!! json_encode(session('RateAnalysisEditModal')) !!} :
+                    {!! json_encode(session('RateAnalysisModal')) !!};
             } else {
                 if (editRate_id == null || editRate_id === '') {
-                    if (editEstimate_Id == null || editEstimate_Id === '') {
-                        modalData = {!! json_encode(session('modalData')) !!};
+                    if (pEV2 != null) {
+                        modalData = (editEstimate_Id == null || editEstimate_Id === '') ?
+                            {!! json_encode(session('modalDataV2')) !!} :
+                            {!! json_encode(session('editModalDataV2')) !!};
                     } else {
-                        modalData = {!! json_encode(session('editModalData')) !!};
+                        modalData = (editEstimate_Id == null || editEstimate_Id === '') ?
+                            {!! json_encode(session('modalData')) !!} :
+                            {!! json_encode(session('editModalData')) !!};
                     }
                 } else {
                     modalData = {!! json_encode(session('RateAnalysisEditModal')) !!};
                 }
             }
+
             var selected_parent_id_Data = modalData[selected_parent_id];
             $.ajax({
                 url: '/unit-modal-prev-data',
@@ -2565,6 +2580,7 @@
                     editRate_id: editRate_id,
                     featureType: featureType,
                     part_no: part_no,
+                    pEV2: pEV2,
                 }),
                 success: function(response) {
                     var rateAnalysisArray2 = response.rateAnalysisArray[unitId]['metadata'];
@@ -2660,7 +2676,7 @@
                     }, 2000);
                     $('.rowCheckbox').prop('checked',
                         false);
-                        checkRowCountAndConfirm();
+                    checkRowCountAndConfirm();
                 },
                 error: function(xhr, status, error) {
                     console.error('Error occurred:', xhr.responseText);
@@ -2764,7 +2780,7 @@
                 inputValues["key"] = "total";
                 inputValues["expcalculate"] = "Sumtotal";
                 inputValues["featureType"] = featureType;
-
+                inputValues["pEV2"] = pEV2;
                 var ruledata = {
                     input_values: inputValues
                 };
@@ -2965,6 +2981,7 @@
                 inputValues["key"] = "total";
                 inputValues["remarks"] = remarks;
                 inputValues["featureType"] = featureType;
+                inputValues["pEV2"] = pEV2;
                 var ruledata = {
                     input_values: inputValues
                 };
@@ -3147,6 +3164,8 @@
             inputValues["editEstimate_id"] = editEstimate_Id;
             inputValues["editRate_id"] = editRate_id;
             inputValues["featureType"] = featureType;
+            inputValues["pEV2"] = pEV2;
+
             var ruledata = {
                 input_values: inputValues
             };
@@ -3341,7 +3360,7 @@
             inputValues["height"] = height;
             inputValues["editEstimate_id"] = editEstimate_Id;
             inputValues["editRate_id"] = editRate_id;
-
+            inputValues["pEV2"] = pEV2;
             inputValues["featureType"] = featureType;
             var ruledata = {
                 input_values: inputValues
@@ -3521,7 +3540,8 @@
                     ruleId: currentId,
                     editEstimate_id: editEstimate_Id,
                     editRate_id: editRate_id,
-                    featureType: featureType
+                    featureType: featureType,
+                    pEV2: pEV2,
 
                 }),
                 success: function(response) {
@@ -3554,7 +3574,8 @@
                     ruleId: currentId,
                     editEstimate_id: editEstimate_Id,
                     editRate_id: editRate_id,
-                    featureType: featureType
+                    featureType: featureType,
+                    pEV2: pEV2,
 
                 }),
                 success: function(response) {
@@ -3588,7 +3609,8 @@
                     ruleId: currentId,
                     editEstimate_id: editEstimate_Id,
                     editRate_id: editRate_id,
-                    featureType: featureType
+                    featureType: featureType,
+                    pEV2: pEV2,
 
                 }),
                 success: function(response) {
@@ -3758,6 +3780,7 @@
                 inputValues["editEstimate_id"] = editEstimate_Id;
                 inputValues["editRate_id"] = editRate_id;
                 inputValues["featureType"] = featureType;
+                inputValues["pEV2"] = pEV2;
                 var ruledata = {
                     input_values: inputValues
                 };
@@ -3941,7 +3964,8 @@
                     ruleId: currentId,
                     editEstimate_id: editEstimate_Id,
                     editRate_id: editRate_id,
-                    featureType: featureType
+                    featureType: featureType,
+                    pEV2: pEV2,
 
                 }),
                 success: function(response) {

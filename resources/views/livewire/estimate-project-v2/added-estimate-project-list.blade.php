@@ -234,7 +234,7 @@
         </div>
         @if ($openQtyModal)
 
-        
+         {{-- @dd($arrayCount);  --}}
         @if (isset($identifier))
         <livewire:components.modal.rate-analysis.unit-analysis-view-modal
             :unit_id="$sendArrayKey"
@@ -242,7 +242,7 @@
             :arrayCount="$arrayCount"
             :editEstimate_id="$editEstimate_id"
             :part_no="$part_no"
-            :identifier="$identifier"
+            :identifier='$identifier'
         />
     @else
         <livewire:components.modal.rate-analysis.unit-analysis-view-modal
@@ -254,8 +254,9 @@
         />
     @endif
         @endif
+        
         @if ($editRowModal)
-        <livewire:components.modal.item-modal.edit-row-wise :editRowId='$editRowId' :editRowData='$editRowData' :editEstimate_id='$editEstimate_id' />
+        <livewire:components.modal.item-modal.edit-row-wise :editRowId='$editRowId' :editRowData='$editRowData' :editEstimate_id='$editEstimate_id' :identifier='$identifier'/>
     @endif
         @if ($openSubItemModal)
             <livewire:components.modal.item-modal.add-sub-item-modal :rowParentId="$rowParentId">

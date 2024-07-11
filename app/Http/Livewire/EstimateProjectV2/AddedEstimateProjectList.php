@@ -16,9 +16,9 @@ class AddedEstimateProjectList extends Component
     use Actions;
     protected $listeners = ['closeUnitModal', 'setFatchEstimateData', 'submitGrandTotal', 'closeAndReset', 'closeSubItemModal', 'updateSetFetchData', 'closeEditModal'];
     public $addedEstimateData = [];
-    public $editRowId;
-    public $editRowData=[];
-    
+    public $editRowId,$identifier = "V2";
+    public $editRowData = [];
+
     public $allAddedEstimatesData = [];
     public $part_no;
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
@@ -49,11 +49,11 @@ class AddedEstimateProjectList extends Component
 
     public function setFatchEstimateData($fatchEstimateData)
     {
-         //dd($fatchEstimateData);
+        //dd($fatchEstimateData);
         $this->reset('allAddedEstimatesData', 'getQtySessionData');
         if (Session()->has('editProjectEstimateV2Data' . $this->editEstimate_id)) {
             $this->allAddedEstimatesData = Session()->get('editProjectEstimateV2Data' . $this->editEstimate_id);
-           // dd($this->allAddedEstimatesData);
+            // dd($this->allAddedEstimatesData);
         } else {
             foreach ($fatchEstimateData as $estimateData) {
                 $count = count($this->allAddedEstimatesData) + 1;
@@ -96,7 +96,7 @@ class AddedEstimateProjectList extends Component
                     }
                 }
             }
-           //dd($this->allAddedEstimatesData);
+            //dd($this->allAddedEstimatesData);
             Session()->put('editProjectEstimateV2Data' . $this->editEstimate_id, $this->allAddedEstimatesData);
             Session()->put('editProjectEstimateDesc' . $this->editEstimate_id, $this->sorMasterDesc);
             Session()->put('editProjectEstimatePartNo' . $this->editEstimate_id, $this->part_no);
@@ -107,11 +107,11 @@ class AddedEstimateProjectList extends Component
 
     public function updateSetFetchData($fetchUpdateRateData, $update_id)
     {
-// dd($fetchUpdateRateData,$update_id);
+       // dd($fetchUpdateRateData,$update_id);
         foreach ($this->allAddedEstimatesData as $key => $estimate) {
             if ($estimate['array_id'] == $update_id) {
-           // dd($estimate['array_id'],$update_id);
-            if (!empty($fetchUpdateRateData['estimate_no'])) {
+                 
+                if (!empty($fetchUpdateRateData['estimate_no'])) {
                     $this->allAddedEstimatesData[$key]['estimate_no'] = $fetchUpdateRateData['estimate_no'];
                 }
                 if (!empty($fetchUpdateRateData['rate_no'])) {
@@ -174,12 +174,12 @@ class AddedEstimateProjectList extends Component
                 if (!empty($fetchUpdateRateData['unit_id'])) {
                     $this->allAddedEstimatesData[$key]['unit_id'] = $fetchUpdateRateData['unit_id'];
                 }
-                if (isset($fetchUpdateRateData['qtyUpdate']) && !empty($fetchUpdateRateData['qtyUpdate'])) {
+                if (isset($fetchUpdateRateData['qtyUpdate'])) {
                     $this->allAddedEstimatesData[$key]['qtyUpdate'] = $fetchUpdateRateData['qtyUpdate'];
                 }
             }
         }
-
+//dd($this->allAddedEstimatesData);
         if ($this->editEstimate_id != '') {
             Session()->put('editProjectEstimateV2Data' . $this->editEstimate_id, $this->allAddedEstimatesData);
         } else {
@@ -205,7 +205,7 @@ class AddedEstimateProjectList extends Component
 
     public function editRow($rowId)
     {
-        //dd($this->allAddedEstimatesData);
+
         $this->editRowId = $rowId;
         $matchedRow = null;
         foreach ($this->allAddedEstimatesData as $estimate) {
@@ -234,7 +234,7 @@ class AddedEstimateProjectList extends Component
 
     public function openQtyModal($key)
     {
-        $this->identifier = "V2";
+        
         $this->openQtyModal = !$this->openQtyModal;
         $this->sendArrayKey = $this->allAddedEstimatesData[$key]['array_id'];
         foreach ($this->allAddedEstimatesData as $index => $estimateData) {
@@ -255,13 +255,15 @@ class AddedEstimateProjectList extends Component
 
     public function submitGrandTotal($grandtotal, $key)
     {
+        //dd($this->allAddedEstimatesData, $this->sendArrayKey);
         if (!empty($grandtotal) || !empty($key)) {
             foreach ($this->allAddedEstimatesData as $index => $estimateData) {
                 if ($estimateData['array_id'] === $this->sendArrayKey) {
                     //dd("submit grnad total");
                     $this->allAddedEstimatesData[$index]['qty'] = ($grandtotal == 0) ? 1 : $grandtotal;
+                    $qtySessionData = ($this->editEstimate_id == '') ? session('modalDataV2') : session('editModalDataV2');
                     if ($grandtotal == 0) {
-                        $qtySessionData = ($this->editEstimate_id == '') ? session('modalDataV2') : session('editModalDataV2');
+
                         unset($qtySessionData[$key]);
                         if ($this->editEstimate_id == '') {
                             Session()->forget('modalDataV2');
@@ -272,6 +274,13 @@ class AddedEstimateProjectList extends Component
                         }
                         $this->allAddedEstimatesData[$index]['qtyUpdate'] = false;
                     } else {
+                        if ($this->editEstimate_id == '') {
+                           // Session()->forget('modalDataV2');
+                            Session()->put('modalDataV2', $qtySessionData);
+                        } else {
+                          //  Session()->forget('editModalDataV2');
+                            Session()->put('editModalDataV2', $qtySessionData);
+                        }
                         $this->allAddedEstimatesData[$index]['qtyUpdate'] = true;
                     }
                     $this->calculateValue($index);
@@ -890,18 +899,12 @@ class AddedEstimateProjectList extends Component
 
     public function store($flag = '')
     {
-        //dd($this->allAddedEstimatesData);
-        $this->getQtySessionData = ($this->editEstimate_id == '') ? Session()->get('modalData') : Session()->get('editModalData');
-        //$this->getQtySessionData = ($this->editEstimate_id == '') ? Session()->get('modalDataV2') : Session()->get('editModalDataV2');
-        //dd($this->getQtySessionData);
+        $this->getQtySessionData = ($this->editEstimate_id == '') ? Session()->get('modalDataV2') : Session()->get('editModalDataV2');
         if ($this->autoTotalValue != 0 || $flag == 'draft') {
             try {
                 if ($this->allAddedEstimatesData) {
                     $intId = ($this->editEstimate_id == '') ? random_int(100000, 999999) : $this->editEstimate_id;
                     if (($this->editEstimate_id != '') ? EstimateMasterV2::where('estimate_id', $intId)->update(['estimate_master_desc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'created_by' => Auth::user()->id, 'total_amount' => $this->autoTotalValue]) : EstimateMasterV2::create(['estimate_id' => $intId, 'estimate_master_desc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'dept_id' => Auth::user()->department_id, 'part_no' => $this->part_no, 'created_by' => Auth::user()->id, 'total_amount' => $this->autoTotalValue])) {
-                        // if (true) {
-                        // $insert = [];
-                        // $existingEstimates = EstimatePrepare::where('estimate_id', $intId)->get();
                         if ($this->editEstimate_id != '') {
                             EstimatePrepareV2::where('estimate_id', $intId)->delete();
                         }
@@ -934,7 +937,7 @@ class AddedEstimateProjectList extends Component
                                 'col_position' => $value['col_position'],
                                 'unit_id' => ($value['unit_id'] != '') ? $value['unit_id'] : 0,
                                 'qty_analysis_data' => (isset($this->getQtySessionData[$value['array_id']])) ? json_encode($this->getQtySessionData[$value['array_id']]) : null,
-                              
+
                             ];
                             if (isset($value['qtyUpdate'])) {
                                 $insert['qtyUpdate'] = $value['qtyUpdate'];

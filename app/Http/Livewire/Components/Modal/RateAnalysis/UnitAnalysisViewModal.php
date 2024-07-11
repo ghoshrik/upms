@@ -16,37 +16,41 @@ class UnitAnalysisViewModal extends Component
     public $editRate_id;
     public $unitMaster = [];
     public $rateAnalysisArray = [];
-    public $dropdownData = [], $array_id, $updateKey, $arrayCount,$editEstimate_id,$identifier;
+    public $dropdownData = [], $array_id, $updateKey, $arrayCount, $editEstimate_id, $identifier;
     public function mount()
     {
-    //  if(isset($this->identifier)){
 
-    //  }else{
-
-    //  }
         $updateRateAnalysisId = (!empty($this->editRate_id)) ? $this->editRate_id : ((!empty($this->editEstimate_id)) ? $this->editEstimate_id : null);
-        dd($updateRateAnalysisId);
-        $modalName = ($this->featureType == "RateAnalysis" && $updateRateAnalysisId === null) ? "RateAnalysisModal" : 
-        (($this->featureType == "RateAnalysis" && $updateRateAnalysisId !== null) ? "RateAnalysisEditModal" :
-        (($this->featureType === null && $updateRateAnalysisId === null) ? "modalData" :
-        (($this->featureType === null && $updateRateAnalysisId !== null) ? "editModalData" : "modalData")));
-
-        //dd($modalName);
+        //dd( $updateRateAnalysisId);
+        if (isset($this->identifier)) {
+            if (!empty($updateRateAnalysisId)) {
+                $modalName = "editModalDataV2";
+            } else {
+                $modalName = "modalDataV2";
+            }
+        } else {
+            $modalName = ($this->featureType == "RateAnalysis" && $updateRateAnalysisId === null) ? "RateAnalysisModal" :
+                (($this->featureType == "RateAnalysis" && $updateRateAnalysisId !== null) ? "RateAnalysisEditModal" :
+                    (($this->featureType === null && $updateRateAnalysisId === null) ? "modalData" :
+                        (($this->featureType === null && $updateRateAnalysisId !== null) ? "editModalData" : "modalData")));
+        }
+//dd($modalName);
+   
         $sessionData = Session()->get($modalName);
-         //dd($sessionData);
-       $this->rateAnalysisArray =  $sessionData;
-      
+       // dd($sessionData);
+        $this->rateAnalysisArray = $sessionData;
+
         $this->unitMaster = UnitMaster::all();
         if (isset($this->rateAnalysisArray) && is_array($this->rateAnalysisArray)) {
-        if (count($this->rateAnalysisArray) > 0) {
-            foreach ($this->rateAnalysisArray as $key => $data) {
-                if ($key === $this->unit_id) {
-                    continue;
+            if (count($this->rateAnalysisArray) > 0) {
+                foreach ($this->rateAnalysisArray as $key => $data) {
+                    if ($key === $this->unit_id) {
+                        continue;
+                    }
+                    $this->dropdownData[] = $key;
                 }
-                $this->dropdownData[] = $key;
             }
         }
-    }
     }
 
     public function render()
