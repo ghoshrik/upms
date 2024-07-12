@@ -440,7 +440,7 @@
                                     <th class="whitespace-nowrap" style="text-align:center;">Total</th>
                                     <th class="whitespace-nowrap" style="text-align:center;">UNIT NAME</th>
                                     <th class="whitespace-nowrap" style="text-align:center;">Action</th>
-                                    <th class="whitespace-nowrap" style="text-align:center;"></th>
+                                   
                                 </tr>
                             </thead>
                             <tbody class="metatable" id="metatable_id" style="overflow-y:auto;background-color: #fcfcfd;">
