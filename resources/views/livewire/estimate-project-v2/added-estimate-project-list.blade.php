@@ -52,12 +52,12 @@
                                     {{-- <th>{{ trans('cruds.estimate.fields.id_helper') }}</th> --}}
                                     <th>Sl No</th>
                                     <th>{{ trans('cruds.estimate.fields.item_number') }}</th>
-                                    <th>{{ trans('cruds.estimate.fields.description') }}</th>
+                                    <th style="text-align: center;">{{ trans('cruds.estimate.fields.description') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.quantity') }}</th>
                                     <th>Unit Name</th>
                                     <th>{{ trans('cruds.estimate.fields.per_unit_cost') }}</th>
                                     <th>{{ trans('cruds.estimate.fields.cost') }}</th>
-                                    <th>{{ trans('cruds.estimate.fields.action') }}</th>
+                                    <th style="text-align: center;">{{ trans('cruds.estimate.fields.action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -212,6 +212,7 @@
                                     <td></td>
                                     <td><strong>Total</strong></td>
                                     <td><strong>{{ $autoTotalValue }}</strong></td>
+                                    <td></td>
                                 </tr>
                             </tbody>
                         </table>
