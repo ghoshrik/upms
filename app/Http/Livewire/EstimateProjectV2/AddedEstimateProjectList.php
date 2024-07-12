@@ -22,7 +22,7 @@ class AddedEstimateProjectList extends Component
     public $allAddedEstimatesData = [];
     public $part_no;
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
-    public $openQtyModal = false, $sendArrayKey = '', $sendArrayDesc = '', $getQtySessionData = [], $editEstimate_id;
+    public $openQtyModal = false, $sendArrayKey = '', $sendArrayDesc = '',$sendRowNo='', $getQtySessionData = [], $editEstimate_id;
     public $arrayCount = 0, $selectCheckBoxs = false, $editRowModal = false;
     public function mount()
     {
@@ -239,13 +239,16 @@ class AddedEstimateProjectList extends Component
         $this->sendArrayKey = $this->allAddedEstimatesData[$key]['array_id'];
         foreach ($this->allAddedEstimatesData as $index => $estimateData) {
             if ($estimateData['array_id'] === $this->sendArrayKey) {
-                //dd($this->allAddedEstimatesData);
+               
                 if (!empty($this->allAddedEstimatesData[$key]['description'])) {
                     $this->sendArrayDesc = $this->allAddedEstimatesData[$key]['description'];
                 } elseif (!empty($this->allAddedEstimatesData[$key]['other_name'])) {
                     $this->sendArrayDesc = $this->allAddedEstimatesData[$key]['other_name'];
                 } elseif (!empty($this->allAddedEstimatesData[$key]['estimate_no'])) {
                     $this->sendArrayDesc = getEstimateDescription($this->allAddedEstimatesData[$key]['estimate_no']);
+                }
+                if (!empty($this->allAddedEstimatesData[$key]['id'])) {
+                    $this->sendRowNo = $this->allAddedEstimatesData[$key]['id'];
                 }
 
             }

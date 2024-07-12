@@ -16,7 +16,7 @@ class UnitAnalysisViewModal extends Component
     public $editRate_id;
     public $unitMaster = [];
     public $rateAnalysisArray = [];
-    public $dropdownData = [], $array_id, $updateKey, $arrayCount, $editEstimate_id, $identifier;
+    public $dropdownData = [], $array_id, $updateKey, $arrayCount, $editEstimate_id, $identifier,$sendRowNo;
     public function mount()
     {
 

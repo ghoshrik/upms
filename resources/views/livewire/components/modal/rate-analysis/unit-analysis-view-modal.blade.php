@@ -335,9 +335,15 @@
     button.btn.btn-soft-primary.add-btn-length {
         width: 100%;
     }
+
     button#totalOnSelected {
-    box-shadow: 1px 1px 3px;
-}
+        box-shadow: 1px 1px 3px;
+    }
+
+    .hidden-cell {
+        display: none;
+    }
+ 
 </style>
 <div class="modal" id="myInput" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
     data-bs-backdrop="static">
@@ -352,7 +358,7 @@
             <div class="modal-header rate-analysis">
                 <p class="desp">
                     <span id="dots">
-                        <?php echo $first_part; ?> ...
+                        <?php echo "<strong>SLNO:-</strong>"."<strong>".$sendRowNo."</strong>"."<strong> Description: </strong>".$first_part; ?> ...
                     </span>
                     <span id="more" style="display:none;">
                         <?php echo $first_part . ' ' . $other_part; ?>
@@ -412,7 +418,7 @@
                                     class="btn btn-soft-primary operationcalculate">Calculate</button>
                             </div>
                         </div>
-                        <div class="col-md-2" >
+                        <div class="col-md-2">
                             <div class="input-group ">
                                 <button type="button" class="btn btn-soft-primary" id="totalOnSelected" disabled>
                                     {{ trans('cruds.estimate.fields.total_on_selected') }}
@@ -440,10 +446,12 @@
                                     <th class="whitespace-nowrap" style="text-align:center;">Total</th>
                                     <th class="whitespace-nowrap" style="text-align:center;">UNIT NAME</th>
                                     <th class="whitespace-nowrap" style="text-align:center;">Action</th>
-                                   
+
+
                                 </tr>
                             </thead>
-                            <tbody class="metatable" id="metatable_id" style="overflow-y:auto;background-color: #fcfcfd;">
+                            <tbody class="metatable" id="metatable_id"
+                                style="overflow-y:auto;background-color: #fcfcfd;">
                                 @if (isset($rateAnalysisArray[$unit_id]) && isset($rateAnalysisArray[$unit_id]['metadata']))
                                     <?php $lastTotalRow = ''; ?>
                                     <?php foreach ($rateAnalysisArray[$unit_id]['metadata'] as $metadata): ?>
@@ -499,7 +507,10 @@
                                                 data-id="{{ $metadata['currentId'] }}">Delete</a>
                                             <?php endif; ?>
                                         </td>
-                                        <td><input type="hidden" id="metagrandval"
+                                        {{-- <td><input type="hidden" id="metagrandval"
+                                                value="{{ isset($metadata['grandTotal']) ? $metadata['grandTotal'] : '0' }}">
+                                        </td> --}}
+                                        <td class="hidden-cell"><input type="hidden" id="metagrandval"
                                                 value="{{ isset($metadata['grandTotal']) ? $metadata['grandTotal'] : '0' }}">
                                         </td>
                                     </tr>
@@ -772,9 +783,9 @@
                 </div>
             </div>
             <div class="modal-footer rate-analysis" style="display: flex; justify-content: space-between;">
-                <button type="button" id="close-unit-modalBtn" class="btn btn-soft-danger rounded-pill "
+                <button type="button" id="close-unit-modalBtn" class="btn btn-soft-danger"
                     data-dismiss="modal">Close</button>
-                <button id="finalSubmitBtn" type="button" class="btn btn-success rounded-pill "
+                <button id="finalSubmitBtn" type="button" class="btn btn-success "
                     disabled>Submit</button>
             </div>
         </div>
@@ -1835,8 +1846,8 @@
             var tableRows = $("#dataTable tbody tr");
             tableRows.find(".delete-row-btn").show();
             // tableRows.last().find(".delete-row-btn").show();
-           // tableRows.find(".addbtn").show();
-             tableRows.last().find(".addbtn").show();
+            // tableRows.find(".addbtn").show();
+            tableRows.last().find(".addbtn").show();
             if (tableRows.length === 1) {
                 tableRows.find(".delete-row-btn").hide();
             }
@@ -2300,8 +2311,8 @@
             var tableRows = $("#dataTable tbody tr");
             tableRows.find(".delete-row-btn").show();
             //tableRows.last().find(".delete-row-btn").show();
-           // tableRows.find(".addbtn").show();
-             tableRows.last().find(".addbtn").show();
+            // tableRows.find(".addbtn").show();
+            tableRows.last().find(".addbtn").show();
             if (tableRows.length === 1) {
                 tableRows.find(".delete-row-btn").hide();
             }
@@ -2542,7 +2553,7 @@
 
         $('.dropdown').on('click', '.prev-data', function(event) {
 
-           // alert(pEV2);
+            // alert(pEV2);
 
             event.preventDefault();
             var selected_parent_id = $(this).text();
