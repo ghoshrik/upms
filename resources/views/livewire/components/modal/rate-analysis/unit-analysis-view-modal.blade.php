@@ -146,7 +146,7 @@
 
     .col-md-3.optionDropdown {
         flex: 0 0 auto;
-        width: 16%;
+        width: 14%;
     }
 
     .card.input-fields {
@@ -335,6 +335,9 @@
     button.btn.btn-soft-primary.add-btn-length {
         width: 100%;
     }
+    button#totalOnSelected {
+    box-shadow: 1px 1px 3px;
+}
 </style>
 <div class="modal" id="myInput" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
     data-bs-backdrop="static">
@@ -396,7 +399,7 @@
                             @endif
                         </div>
                         <div class="col-md-4 cal-exp">
-                            <div class="input-group mb-3">
+                            <div class="input-group box-border">
                                 <input type="text" id="expression" class="form-control"
                                     placeholder="{{ trans('cruds.estimate.fields.operation') }}"
                                     aria-label="{{ trans('cruds.estimate.fields.operation') }}"
@@ -409,8 +412,8 @@
                                     class="btn btn-soft-primary operationcalculate">Calculate</button>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <div class="input-group mb-3">
+                        <div class="col-md-2" >
+                            <div class="input-group ">
                                 <button type="button" class="btn btn-soft-primary" id="totalOnSelected" disabled>
                                     {{ trans('cruds.estimate.fields.total_on_selected') }}
                                 </button>
@@ -440,7 +443,7 @@
                                     <th class="whitespace-nowrap" style="text-align:center;"></th>
                                 </tr>
                             </thead>
-                            <tbody class="metatable" id="metatable_id" style="overflow-y:auto;">
+                            <tbody class="metatable" id="metatable_id" style="overflow-y:auto;background-color: #fcfcfd;">
                                 @if (isset($rateAnalysisArray[$unit_id]) && isset($rateAnalysisArray[$unit_id]['metadata']))
                                     <?php $lastTotalRow = ''; ?>
                                     <?php foreach ($rateAnalysisArray[$unit_id]['metadata'] as $metadata): ?>
@@ -1736,19 +1739,19 @@
             var newRow = $('<tr>' +
                 '<td>' + ($("#dataTable tbody tr").length + 1) + '</td>' +
                 '<td><input type="text" class="form-control m-input member" name="member" placeholder="Member" /></td>' +
-                '<td><input type="number" class="form-control m-input number" name="number" placeholder="Number" /></td>' +
+                '<td><input type="text" class="form-control m-input number" name="number" placeholder="Number" /></td>' +
                 '<td><div class="input-group">' +
-                '<input type="number" class="form-control m-input length" name="length" placeholder="Length" />' +
+                '<input type="text" class="form-control m-input length" name="length" placeholder="Length" />' +
                 '<button type="button" class="btn btn-soft-danger remove-field-btn length">X</button>' +
                 '<button type="button" class="btn btn-soft-primary add-btn-length"> + add length</button>' +
                 '</div></td>' +
                 '<td><div class="input-group">' +
-                '<input type="number" class="form-control m-input breadth" name="breadth" placeholder="Breadth" />' +
+                '<input type="text" class="form-control m-input breadth" name="breadth" placeholder="Breadth" />' +
                 '<button type="button" class="btn btn-soft-danger remove-field-btn breadth">X</button>' +
                 '<button type="button" class="btn btn-soft-primary add-btn-breadth">+ add breadth</button>' +
                 '</div></td>' +
                 '<td><div class="input-group">' +
-                '<input type="number" class="form-control m-input height" name="height" placeholder="Height" />' +
+                '<input type="text" class="form-control m-input height" name="height" placeholder="Height" />' +
                 '<button type="button" class="btn btn-soft-danger remove-field-btn height">X</button>' +
                 '<button type="button" class="btn btn-soft-primary add-btn-height">+ add height</button>' +
                 '</div></td>' +
@@ -1832,8 +1835,8 @@
             var tableRows = $("#dataTable tbody tr");
             tableRows.find(".delete-row-btn").show();
             // tableRows.last().find(".delete-row-btn").show();
-            tableRows.find(".addbtn").show();
-            // tableRows.last().find(".addbtn").show();
+           // tableRows.find(".addbtn").show();
+             tableRows.last().find(".addbtn").show();
             if (tableRows.length === 1) {
                 tableRows.find(".delete-row-btn").hide();
             }
@@ -2297,8 +2300,8 @@
             var tableRows = $("#dataTable tbody tr");
             tableRows.find(".delete-row-btn").show();
             //tableRows.last().find(".delete-row-btn").show();
-            tableRows.find(".addbtn").show();
-            // tableRows.last().find(".addbtn").show();
+           // tableRows.find(".addbtn").show();
+             tableRows.last().find(".addbtn").show();
             if (tableRows.length === 1) {
                 tableRows.find(".delete-row-btn").hide();
             }
@@ -2398,7 +2401,7 @@
                             '" placeholder="Number" required/></td>' +
                             '<td>' +
                             '<div class="input-group">' +
-                            '<input type="number" class="form-control m-input length" name="length" value="' +
+                            '<input type="text" class="form-control m-input length" name="length" value="' +
                             (rowData && rowData.length ? rowData.length : '') +
                             '" placeholder="Length" required/>' +
                             '<div class="input-group-append">' +
@@ -2409,7 +2412,7 @@
                             '</td>' +
                             '<td>' +
                             '<div class="input-group">' +
-                            '<input type="number" class="form-control m-input breadth" name="breadth" value="' +
+                            '<input type="text" class="form-control m-input breadth" name="breadth" value="' +
                             (rowData && rowData.breadth ? rowData.breadth : '') +
                             '" placeholder="Breadth" required/>' +
                             '<div class="input-group-append">' +
@@ -2420,7 +2423,7 @@
                             '</td>' +
                             '<td>' +
                             '<div class="input-group">' +
-                            '<input type="number" class="form-control m-input height" name="height" value="' +
+                            '<input type="text" class="form-control m-input height" name="height" value="' +
                             (rowData && rowData.height ? rowData.height : '') +
                             '" placeholder="Height" required/>' +
                             '<div class="input-group-append">' +
@@ -2929,6 +2932,7 @@
             var grandTotalValue = $('#grandTotalInput').val();
             $('.rowCheckbox').prop('checked', false);
             if (parseFloat(grandTotalValue) !== 0) {
+                alert("Total already done!");
                 if (!this.acceptenceCriteria()) {
                     return;
                 }
