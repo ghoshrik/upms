@@ -159,7 +159,7 @@ class Create extends Component
         }
 
         $roles = $user->roles()->get();
-        if (empty($roles)) {
+        if (!empty($roles)) {
             $this->notification()->success(
                 $title = 'success',
                 $description = 'User Have Some Roles'
