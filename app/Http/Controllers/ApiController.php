@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DynamicSorHeader;
-use App\Models\SorDocument;
-use App\Models\SorPrevRecors;
 use Carbon\Carbon;
+use App\Models\SorDocument;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\SorPrevRecors;
+use App\Models\DynamicSorHeader;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use ChrisKonnertz\StringCalc\StringCalc;
 
 class ApiController extends Controller
 {
