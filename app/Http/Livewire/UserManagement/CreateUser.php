@@ -2,18 +2,20 @@
 
 namespace App\Http\Livewire\UserManagement;
 
-use App\Models\Department;
-use App\Models\DepartmentCategories;
-use App\Models\Designation;
+use App\Models\Role;
+use App\Models\User;
+use App\Models\Levels;
 use App\Models\Office;
 use App\Models\States;
-use App\Models\User;
+use Livewire\Component;
 use App\Models\UserType;
+use App\Models\Department;
+use WireUi\Traits\Actions;
+use App\Models\Designation;
 use Illuminate\Support\Arr;
+use App\Models\DepartmentCategories;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Livewire\Component;
-use WireUi\Traits\Actions;
 
 class CreateUser extends Component
 {
@@ -153,18 +155,19 @@ class CreateUser extends Component
                     $this->dropDownData['designations'] = Designation::all();
                 }
             } elseif ($lookingFor === 'LEVEL') {
-                $this->dropDownData['levels'] = [
-                    ['name' => 'L1 Level', 'id' => 1],
-                    ['name' => 'L2 Level', 'id' => 2],
-                    ['name' => 'L3 Level', 'id' => 3],
-                    ['name' => 'L4 Level', 'id' => 4],
-                    ['name' => 'L5 Level', 'id' => 5],
-                    ['name' => 'L6 Level', 'id' => 6],
-                ];
-                if (Auth::user()->user_type == 2) {
-                    $this->dropDownData['levels'] = [
-                        ['name' => 'L1 Level', 'id' => 1],
-                    ];
+                $userRole = Auth::user()->roles->first();
+                // $childRoles = $userRole->parentRole;
+                $childRoles = Role::where('role_parent', $userRole->id)->get();
+                foreach ($childRoles as $key => $data) {
+                    if ($key != 0) {
+                        // Compare current item with the previous item
+                        if ($childRoles[$key - 1]->has_level_no != $data->has_level_no) {
+                            $this->dropDownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
+                        }
+                    } else {
+                        // Add the first item unconditionally (optional, depending on your needs)
+                        $this->dropDownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
+                    }
                 }
             } elseif ($lookingFor === 'DEPTCATEGORY') {
                 $this->dropDownData['departmentCategory'] = DepartmentCategories::where('department_id', Auth::user()->department_id)->get();

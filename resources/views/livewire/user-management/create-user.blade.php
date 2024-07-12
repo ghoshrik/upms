@@ -41,7 +41,7 @@
                                         placeholder="Select Office {{ trans('cruds.office.fields.level') }}"
                                         wire:model.defer="selectLevel" x-on:select="$wire.fetchLevelWiseOffice()">
                                         @foreach ($dropDownData['levels'] as $level)
-                                            <x-select.option label="{{ $level['name'] }}" value="{{ $level['id'] }}" />
+                                            <x-select.option label="{{ $level['level_name'] }}" value="{{ $level['id'] }}" />
                                         @endforeach
                                     </x-select>
                                 </div>
