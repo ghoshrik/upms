@@ -75,18 +75,18 @@ final class RecomenderDraftTable extends PowerGridComponent
                 'estimate_user_assign_records.assign_user_id',
                 'estimate_user_assign_records.estimate_user_type',
                 'estimate_user_assign_records.comments',
-                'sor_masters.estimate_id as sor_masters_estimate_id',
-                'sor_masters.sorMasterDesc',
-                'sor_masters.status', DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no')
+                'estimate_masters.estimate_id as sor_masters_estimate_id',
+                'estimate_masters.sorMasterDesc',
+                'estimate_masters.status', DB::raw('ROW_NUMBER() OVER (ORDER BY estimate_masters.id) as serial_no')
             )
             ->join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'estimate_prepares.estimate_id')
-            ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
+            ->join('estimate_masters', 'estimate_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
             ->where('estimate_user_assign_records.assign_user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 3)
-            ->where('sor_masters.is_verified', '=', 0)
-            ->where('sor_masters.status', '!=', 9)
-            ->where('sor_masters.status', '!=', 11)
-            ->where('sor_masters.status', '!=', 3)
+            ->where('estimate_masters.is_verified', '=', 0)
+            ->where('estimate_masters.status', '!=', 9)
+            ->where('estimate_masters.status', '!=', 11)
+            ->where('estimate_masters.status', '!=', 3)
             ->where('operation', 'Total');
     }
 

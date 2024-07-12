@@ -89,18 +89,18 @@ class RecomenderDraftTable extends DataTableComponent
         return EstimatePrepare::query()
         // $a= EstimatePrepare::query()
             ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
-            ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
+            ->join('estimate_masters','estimate_masters.estimate_id','=','estimate_prepares.estimate_id')
             ->where('operation', 'Total')
             ->where(function($query){
                 $query->where('estimate_user_assign_records.user_id',Auth::user()->id)
                 ->orWhere('estimate_user_assign_records.assign_user_id',Auth::user()->id);
             })
             // ->where('estimate_user_assign_records.estimate_user_type','=',3)
-            ->where('sor_masters.is_verified','=',0)
+            ->where('estimate_masters.is_verified','=',0)
             ->where(function($query){
-                $query->where('sor_masters.status',2)
-                ->orWhere('sor_masters.status',4)
-                ->orWhere('sor_masters.status',6);
+                $query->where('estimate_masters.status',2)
+                ->orWhere('estimate_masters.status',4)
+                ->orWhere('estimate_masters.status',6);
             })
             ->where('estimate_user_assign_records.is_done',0);
             // dd($a->get());

@@ -74,15 +74,15 @@ final class EstimateRevertTable extends PowerGridComponent
                 'estimate_user_assign_records.assign_user_id',
                 'estimate_user_assign_records.estimate_user_type',
                 'estimate_user_assign_records.comments',
-                'sor_masters.estimate_id as sor_masters_estimate_id',
-                'sor_masters.sorMasterDesc',
-                'sor_masters.status', DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no')
+                'estimate_masters.estimate_id as sor_masters_estimate_id',
+                'estimate_masters.sorMasterDesc',
+                'estimate_masters.status', DB::raw('ROW_NUMBER() OVER (ORDER BY estimate_masters.id) as serial_no')
             )
             ->join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'estimate_prepares.estimate_id')
-            ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
+            ->join('estimate_masters', 'estimate_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
             ->where('estimate_user_assign_records.is_done', '=', 0)
-        // ->where('sor_masters.status','!=',1)
-            ->where('sor_masters.status', '=', 3)
+        // ->where('estimate_masters.status','!=',1)
+            ->where('estimate_masters.status', '=', 3)
             ->where('operation', 'Total')
             ->where('estimate_user_assign_records.assign_user_id', Auth::user()->id);
     }

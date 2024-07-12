@@ -13,7 +13,7 @@ class CreateSorMastersTable extends Migration
      */
     public function up()
     {
-        Schema::create('sor_masters', function (Blueprint $table) {
+        Schema::create('estimate_masters', function (Blueprint $table) {
             $table->bigIncrements('id')->autoIncrement();
             $table->bigInteger('estimate_id');
             $table->longText('sorMasterDesc');
@@ -30,6 +30,6 @@ class CreateSorMastersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sor_masters');
+        Schema::dropIfExists('estimate_masters');
     }
 }

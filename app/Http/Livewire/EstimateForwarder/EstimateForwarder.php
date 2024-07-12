@@ -44,12 +44,12 @@ class EstimateForwarder extends Component
         ->where('assign_user_id',Auth::user()->id)
         ->where('is_done',0)
         ->count();
-        $this->counterData['verifiedDataCount'] =  SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
+        $this->counterData['verifiedDataCount'] =  SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'estimate_masters.estimate_id')
             ->where('estimate_user_assign_records.user_id', '=', Auth::user()->id)
             ->where('estimate_user_assign_records.estimate_user_type', '=', 9)
-            ->where('sor_masters.is_verified', '=', 1)
+            ->where('estimate_masters.is_verified', '=', 1)
             ->count();
-        // $this->counterData['revertedDataCount'] = SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'sor_masters.estimate_id')
+        // $this->counterData['revertedDataCount'] = SorMaster::join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'estimate_masters.estimate_id')
         //     ->where('estimate_user_assign_records.user_id', '=', Auth::user()->id)
         //     ->where('estimate_user_assign_records.estimate_user_type', '=', 1)
         //     ->where('status', '=', 3)

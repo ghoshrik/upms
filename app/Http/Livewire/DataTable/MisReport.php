@@ -59,9 +59,9 @@ final class MisReport extends PowerGridComponent
         ];
         if (count($this->checkboxValues) == 0) {
 
-            $reports = SorMaster::select('departments.department_name', 'departments.department_code', 'estimate_statuses.status', 'sor_masters.estimate_id', 'sor_masters.sorMasterDesc')
-                ->join('estimate_statuses', 'sor_masters.status', '=', 'estimate_statuses.id')
-                ->join('departments', 'sor_masters.dept_id', '=', 'departments.id')
+            $reports = SorMaster::select('departments.department_name', 'departments.department_code', 'estimate_statuses.status', 'estimate_masters.estimate_id', 'estimate_masters.sorMasterDesc')
+                ->join('estimate_statuses', 'estimate_masters.status', '=', 'estimate_statuses.id')
+                ->join('departments', 'estimate_masters.dept_id', '=', 'departments.id')
                 ->get();
 
             $i = 1;
@@ -80,10 +80,10 @@ final class MisReport extends PowerGridComponent
             return generatePDF($ModelList, $dataView, "Mis Report");
         } else {
             $ids = implode(',', $this->checkboxValues);
-            $reports = SorMaster::whereIn('sor_masters.id', explode(",", $ids))
-                ->select('departments.department_name', 'departments.department_code', 'estimate_statuses.status', 'sor_masters.estimate_id', 'sor_masters.sorMasterDesc')
-                ->join('estimate_statuses', 'sor_masters.status', '=', 'estimate_statuses.id')
-                ->join('departments', 'sor_masters.dept_id', '=', 'departments.id')
+            $reports = SorMaster::whereIn('estimate_masters.id', explode(",", $ids))
+                ->select('departments.department_name', 'departments.department_code', 'estimate_statuses.status', 'estimate_masters.estimate_id', 'estimate_masters.sorMasterDesc')
+                ->join('estimate_statuses', 'estimate_masters.status', '=', 'estimate_statuses.id')
+                ->join('departments', 'estimate_masters.dept_id', '=', 'departments.id')
                 ->get();
             $i = 1;
             foreach ($reports as $key => $report) {
@@ -116,20 +116,20 @@ final class MisReport extends PowerGridComponent
     {
         $res = SorMaster::query()
             ->select(
-                'sor_masters.id',
+                'estimate_masters.id',
                 'departments.department_name as dept_name',
                 'departments.department_code as dept_code',
                 'estimate_statuses.status as estCurrStatus',
-                'sor_masters.estimate_id',
-                'sor_masters.sorMasterDesc',
+                'estimate_masters.estimate_id',
+                'estimate_masters.sorMasterDesc',
                 'estimate_prepares.total_amount as total_amount',
                 DB::raw(
-                    'ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no'
+                    'ROW_NUMBER() OVER (ORDER BY estimate_masters.id) as serial_no'
                 )
             )
-            ->join('estimate_statuses', 'sor_masters.status', '=', 'estimate_statuses.id')
-            ->join('departments', 'sor_masters.dept_id', '=', 'departments.id')
-            ->join('estimate_prepares','estimate_prepares.estimate_id','=','sor_masters.estimate_id')
+            ->join('estimate_statuses', 'estimate_masters.status', '=', 'estimate_statuses.id')
+            ->join('departments', 'estimate_masters.dept_id', '=', 'departments.id')
+            ->join('estimate_prepares','estimate_prepares.estimate_id','=','estimate_masters.estimate_id')
             ->where('estimate_prepares.operation','=','Total');
         return $res;
     }

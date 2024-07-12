@@ -23,13 +23,13 @@ class AssignRole extends Component
         $childRoles = $userRole->childRoles;
         // dd($childRoles);
         foreach ($childRoles as $key => $role) {
-            $usersWithRole = User::whereHas('roles', function ($query) use ($role) {
+            $usersWithRole = User::where('created_by',Auth::user()->id)->whereHas('roles', function ($query) use ($role) {
                 $query->where('id', $role->id);
             })
+            // ->where('created_by',Auth::user()->id)
                 ->with('roles')
                 ->get()
                 ->toArray();
-
             foreach ($usersWithRole as $user) {
                 $userExists = false;
                 foreach ($this->assignUserList as $assignedUsers) {

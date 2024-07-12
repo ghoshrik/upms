@@ -224,13 +224,13 @@ class CreateQuantityEvaluation extends Component
         $this->estimateData['description'] = '';
         $this->estimateData['total_amount'] = '';
         // $this->fatchDropdownData['estimatesList'] = EstimatePrepare::select('estimate_id')->where('dept_id',$this->estimateData['dept_id'])->groupBy('estimate_id')->get();
-        // $this->fatchDropdownData['estimatesList'] = EstimatePrepare::join('sor_masters','estimate_prepares.estimate_id','sor_masters.estimate_id')
+        // $this->fatchDropdownData['estimatesList'] = EstimatePrepare::join('estimate_masters','estimate_prepares.estimate_id','estimate_masters.estimate_id')
         //                                             ->where('estimate_prepares.dept_id',$this->estimateData['dept_id'])
-        //                                             ->where('sor_masters.is_verified','=',1)
+        //                                             ->where('estimate_masters.is_verified','=',1)
         //                                             ->get();
-        // $this->fatchDropdownData['estimatesList'] = Esrecommender::join('sor_masters', 'estimate_recomender.estimate_id', 'sor_masters.estimate_id')
+        // $this->fatchDropdownData['estimatesList'] = Esrecommender::join('estimate_masters', 'estimate_recomender.estimate_id', 'estimate_masters.estimate_id')
         //     ->where('estimate_recomender.dept_id', $this->estimateData['dept_id'])
-        //     ->where('sor_masters.is_verified', '=', 1)
+        //     ->where('estimate_masters.is_verified', '=', 1)
         //     ->get();
         $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',1],['is_verified',1]])->get();
         // $this->fatchDropdownData['estimatesList'] = RatesAnalysis::select('description', 'rate_id', 'total_amount')->where([['operation', 'Total'], ['dept_id', Auth::user()->department_id], ['category_id', $this->estimateData['dept_category_id']]])->get();
@@ -242,13 +242,13 @@ class CreateQuantityEvaluation extends Component
         // $this->estimateData['description'] = '';
         // $this->estimateData['total_amount'] = '';
         // $this->fatchDropdownData['estimatesList'] = EstimatePrepare::select('estimate_id')->where('dept_id',$this->estimateData['dept_id'])->groupBy('estimate_id')->get();
-        // $this->fatchDropdownData['estimatesList'] = EstimatePrepare::join('sor_masters','estimate_prepares.estimate_id','sor_masters.estimate_id')
+        // $this->fatchDropdownData['estimatesList'] = EstimatePrepare::join('estimate_masters','estimate_prepares.estimate_id','estimate_masters.estimate_id')
         //                                             ->where('estimate_prepares.dept_id',$this->estimateData['dept_id'])
-        //                                             ->where('sor_masters.is_verified','=',1)
+        //                                             ->where('estimate_masters.is_verified','=',1)
         //                                             ->get();
-        // $this->fatchDropdownData['estimatesList'] = Esrecommender::join('sor_masters', 'estimate_recomender.estimate_id', 'sor_masters.estimate_id')
+        // $this->fatchDropdownData['estimatesList'] = Esrecommender::join('estimate_masters', 'estimate_recomender.estimate_id', 'estimate_masters.estimate_id')
         //     ->where('estimate_recomender.dept_id', $this->estimateData['dept_id'])
-        //     ->where('sor_masters.is_verified', '=', 1)
+        //     ->where('estimate_masters.is_verified', '=', 1)
         //     ->get();
         // $this->fatchDropdownData['ratesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',1],['is_verified',1]])->get();
         $this->fatchDropdownData['ratesList'] = RatesAnalysis::select('description', 'rate_id')->where([['operation', 'Total'], ['dept_id', $this->selectedDept]])->get();
@@ -277,9 +277,9 @@ class CreateQuantityEvaluation extends Component
         $this->estimateData['description'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
-        $this->fatchDropdownData['estimateDetails'] = EstimatePrepare::join('sor_masters', 'estimate_prepares.estimate_id', 'sor_masters.estimate_id')
+        $this->fatchDropdownData['estimateDetails'] = EstimatePrepare::join('estimate_masters', 'estimate_prepares.estimate_id', 'estimate_masters.estimate_id')
             ->where('estimate_prepares.estimate_id', $this->estimateData['estimate_no'])
-            ->where('estimate_prepares.operation', 'Total')->where([['sor_masters.is_verified', 1],['sor_masters.status', 1]])->first();
+            ->where('estimate_prepares.operation', 'Total')->where([['estimate_masters.is_verified', 1],['estimate_masters.status', 1]])->first();
         $this->estimateData['total_amount'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
         $this->estimateData['description'] = $this->fatchDropdownData['estimateDetails']['sorMasterDesc'];
         $this->estimateData['qty'] = 1;

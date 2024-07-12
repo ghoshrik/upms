@@ -58,10 +58,10 @@ class ForwardedDataTable extends DataTableComponent
     {
         $a = EstimatePrepare::query()->select('estimate_prepares.estimate_id')
         ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
-        ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
+        ->join('estimate_masters','estimate_masters.estimate_id','=','estimate_prepares.estimate_id')
         ->where('estimate_user_assign_records.estimate_user_type','=',4)
-        ->where('sor_masters.status','!=',1)
-        ->where('sor_masters.status','!=',3)
+        ->where('estimate_masters.status','!=',1)
+        ->where('estimate_masters.status','!=',3)
         ->where('operation', 'Total')
         ->where('created_by',Auth::user()->id);
         // ->groupBy('estimate_id.estimate_id');

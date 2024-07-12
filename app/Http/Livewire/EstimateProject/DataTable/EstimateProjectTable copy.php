@@ -63,11 +63,11 @@ class EstimateProjectTable extends DataTableComponent
     {
         return EstimatePrepare::query()
         ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
-        ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
+        ->join('estimate_masters','estimate_masters.estimate_id','=','estimate_prepares.estimate_id')
         ->where('estimate_user_assign_records.estimate_user_type','=',5)
         ->where(function ($query) {
-            $query->where('sor_masters.status', '=', 1)
-                  ->orWhere('sor_masters.status', '=', 10);
+            $query->where('estimate_masters.status', '=', 1)
+                  ->orWhere('estimate_masters.status', '=', 10);
         })
         ->where('operation', 'Total')
         ->where('created_by',Auth::user()->id);

@@ -7,9 +7,9 @@
     //  print_r('<pre>');
     //  print_r($getRemarks);
     //  print_r('</pre>');
-    //  $get= App\Models\SorMaster::join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','sor_masters.estimate_id')
+    //  $get= App\Models\SorMaster::join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_masters.estimate_id')
     //     ->where('estimate_user_assign_records.estimate_user_type','=',3)
-    //     ->where('sor_masters.status',2)
+    //     ->where('estimate_masters.status',2)
     // //     ->where('estimate_user_assign_records.user_id',Auth::user()->id)->get();
     // print_r('<pre>');
     //  print_r($getRemarks);

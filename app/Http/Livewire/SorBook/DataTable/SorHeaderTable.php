@@ -60,7 +60,7 @@ final class SorHeaderTable extends PowerGridComponent
     {
         $query = DynamicSorHeader::query()
             ->where('department_id', Auth::user()->department_id)
-            ->where('volume_no', $this->selectVolume)
+            // ->where('volume_no', $this->selectVolume)
             ->where('created_by', Auth::user()->id);
         return $query;
     }

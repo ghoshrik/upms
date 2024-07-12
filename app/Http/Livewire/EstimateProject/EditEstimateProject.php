@@ -246,9 +246,9 @@ class EditEstimateProject extends Component
         $this->estimateData['estimate_no'] = '';
         $this->estimateData['description'] = '';
         $this->estimateData['total_amount'] = '';
-        // $this->fatchDropdownData['estimatesList'] = Esrecommender::join('sor_masters', 'estimate_recomender.estimate_id', 'sor_masters.estimate_id')
+        // $this->fatchDropdownData['estimatesList'] = Esrecommender::join('estimate_masters', 'estimate_recomender.estimate_id', 'estimate_masters.estimate_id')
         //     ->where('estimate_recomender.dept_id', $this->estimateData['dept_id'])
-        //     ->where('sor_masters.is_verified', '=', 1)
+        //     ->where('estimate_masters.is_verified', '=', 1)
         //     ->get();
         $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',8],['is_verified',1]])->get();
     }
@@ -259,9 +259,9 @@ class EditEstimateProject extends Component
         $this->estimateData['description'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
-        $this->fatchDropdownData['estimateDetails'] = Esrecommender::join('sor_masters', 'estimate_recomender.estimate_id', 'sor_masters.estimate_id')
+        $this->fatchDropdownData['estimateDetails'] = Esrecommender::join('estimate_masters', 'estimate_recomender.estimate_id', 'estimate_masters.estimate_id')
         ->where('estimate_recomender.estimate_id', $this->estimateData['estimate_no'])
-        ->where('estimate_recomender.operation', 'Total')->where('sor_masters.is_verified', '=', 1)->first();
+        ->where('estimate_recomender.operation', 'Total')->where('estimate_masters.is_verified', '=', 1)->first();
         $this->estimateData['total_amount'] = $this->fatchDropdownData['estimateDetails']['total_amount'];
         $this->estimateData['description'] = $this->fatchDropdownData['estimateDetails']['sorMasterDesc'];
         $this->estimateData['qty'] = 1;

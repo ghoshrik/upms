@@ -90,8 +90,8 @@ class CreateTender extends Component
     }
     public function render()
     {
-        $this->fetchData['project_number'] = SorMaster::select('sor_masters.*', 'estimate_prepares.total_amount as total_project_cost')
-            ->join('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
+        $this->fetchData['project_number'] = SorMaster::select('estimate_masters.*', 'estimate_prepares.total_amount as total_project_cost')
+            ->join('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'estimate_masters.estimate_id')
             ->where('estimate_prepares.operation', '=', 'Total')
             ->where('is_verified', '=', 1)->get();
         return view('livewire.tender.create-tender');

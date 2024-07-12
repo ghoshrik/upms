@@ -54,10 +54,10 @@ class RevertedEstimateProjectTable extends DataTableComponent
     {
         return EstimatePrepare::query()
         ->join('estimate_user_assign_records','estimate_user_assign_records.estimate_id','=','estimate_prepares.estimate_id')
-        ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
+        ->join('estimate_masters','estimate_masters.estimate_id','=','estimate_prepares.estimate_id')
         ->where('estimate_user_assign_records.is_done', '=', 0)
-        // ->where('sor_masters.status','!=',1)
-            ->where('sor_masters.status', '=', 3)
+        // ->where('estimate_masters.status','!=',1)
+            ->where('estimate_masters.status', '=', 3)
             ->where('operation', 'Total')
             ->where('estimate_user_assign_records.assign_user_id', Auth::user()->id);
         // ->groupBy('estimate_id.estimate_id');
