@@ -176,8 +176,8 @@
                                 <div class="card">
                                     <div class="card-body">
                                         {{-- <livewire:estimate-project.data-table.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" /> --}}
-                                        {{-- <livewire:estimate-project.datatable.powergrid.forwarded-estimate-project-table
-                                            :wire:key="$updateDataTableTracker" /> --}}
+                                        <livewire:estimate-project.datatable.powergrid.forwarded-estimate-project-table
+                                            :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 3)
@@ -229,5 +229,5 @@
 </div>
 <livewire:components.modal.estimate.estimate-view-modal />
 <livewire:components.modal.rate-analysis.rate-analysis-view-modal />
-{{-- <livewire:components.modal.estimate.estimate-forward-modal /> --}}
+<livewire:components.modal.estimate.estimate-forward-modal />
 <livewire:components.modal.estimate.edit-estimate-modal />

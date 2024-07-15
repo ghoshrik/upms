@@ -2,13 +2,15 @@
 
 namespace App\Http\Livewire\Components\Modal\Estimate;
 
-use App\Models\EstimateUserAssignRecord;
-use App\Models\SorMaster;
 use App\Models\User;
-use App\Models\UsersHasRoles;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Office;
 use Livewire\Component;
+use App\Models\SorMaster;
 use WireUi\Traits\Actions;
+use App\Models\UsersHasRoles;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Auth;
+use App\Models\EstimateUserAssignRecord;
 
 class EstimateForwardModal extends Component
 {
@@ -34,13 +36,15 @@ class EstimateForwardModal extends Component
     public function forwardAssignUser()
     {
         $forwardUserDetails = explode('-', $this->assignUserDetails);
+        // dd($forwardUserDetails);
         $data = [
             'estimate_id' => (int) $forwardUserDetails[2],
-            'estimate_user_type' => (int) $forwardUserDetails[1],
+            // 'estimate_user_type' => (int) $forwardUserDetails[1],
             'user_id' => Auth::user()->id,
             'assign_user_id' => (int) $forwardUserDetails[0],
             'comments' => $this->userAssignRemarks,
         ];
+        dd($data);
         if ($this->forwardRequestFrom == 'EP' || $this->forwardRequestFrom == 'PE') {
             SorMaster::where('estimate_id', $forwardUserDetails[2])->update(['status' => 2]);
             $data['status'] = 2;
@@ -90,7 +94,7 @@ class EstimateForwardModal extends Component
                 $roles_id =  $role->id ;
             }
         }
-        $userAccess_id = UsersHasRoles::select(
+        /*$userAccess_id = UsersHasRoles::select(
             "users_has_roles.user_id",
             "roles_order.id as roles_order_id",
             "users_has_roles.role_id as users_has_role_id",
@@ -108,8 +112,21 @@ class EstimateForwardModal extends Component
             ->where('users.department_id', Auth::user()->department_id)
             ->where('users.is_active', 1)
             ->select("users.emp_name", "users.designation_id", "users.id", "roles.name", "users_has_roles.role_id")
-            ->get();
+            ->get();*/
         // Log::info(json_encode($this->assigenUsersList));
+
+        $roleParent = Auth::user()->roles1->first();
+        // $roleParent->role_parent;
+        $roleLevelNo = Role::select('name','has_level_no')->where('id',$roleParent->role_parent)->first();
+        $this->assigenUsersList = Office::select('users.designation_id','users.emp_name','users.id','users.name')->join('users','users.office_id','=','offices.id')
+                        ->where('offices.level_no',$roleLevelNo->has_level_no)
+                        ->where('users.id',Auth::user()->created_by)
+                        ->get();
+        // dd($this->assigenUsersList);
+
+        // dd($roleLevelNo->has_level_no);
+
+
         return view('livewire.components.modal.estimate.estimate-forward-modal');
     }
 }

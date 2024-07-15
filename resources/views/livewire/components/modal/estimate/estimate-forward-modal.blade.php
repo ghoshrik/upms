@@ -4,8 +4,9 @@
             <x-select wire:key="user" label="Select User" placeholder="Select User" wire:model.defer="assignUserDetails">
                 @isset($assigenUsersList)
                     @foreach ($assigenUsersList as $user)
+                        {{-- @dd($user->designation_id) --}}
                         <x-select.option
-                            label="{{ $user['emp_name'] . ' - ' . $user['name'] . ' [ ' . $user->getDesignationName->designation_name . ' ]' }}"
+                            label="{{ $user['emp_name'] . ' [ ' . getDesignationName($user->designation_id) . ' ]' }}"
                             value="{{ $user['id'] . '-' . $user['role_id'] . '-' . $estimate_id }}" />
                         {{-- <x-select.option label="{{ $user['id']. '-' . $user['access_type_id'] . '-' . $estimate_id }}" value="{{ $user['id']. '-' . $user['access_type_id'] . '-' . $estimate_id }}" /> --}}
                     @endforeach
