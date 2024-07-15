@@ -171,7 +171,7 @@ class CreateRateAnalysis extends Component
             $this->rateData['table_no'] = '';
             $this->rateData['page_no'] = '';
             $this->rateData['id'] = '';
-            $this->rateData['dept_category_id'] = '';
+            $this->rateData['dept_category_id'] = Auth::user()->dept_category_id ?? '';
             $this->rateData['version'] = '';
             $this->rateData['volume'] = '';
             $this->rateData['item_number'] = '';
@@ -498,7 +498,6 @@ class CreateRateAnalysis extends Component
                 });
             }
         }
-
     }
     public function getPageNo()
     {
@@ -700,7 +699,6 @@ class CreateRateAnalysis extends Component
                 }
             }
         }
-
     }
     public function getSorVersion()
     {
@@ -1280,7 +1278,7 @@ class CreateRateAnalysis extends Component
         foreach ($this->getCompositeDatas as $key => $compositeData) {
             // dd($compositeData,$data);
             $getRateDetails[] = RatesAnalysis::where([['sor_id', $compositeData['sor_itemno_child_id']], ['item_index', $compositeData['sor_itemno_child']], ['operation', 'With Stacking']])
-            // ->whereIn('operation', ['With Stacking', 'Without Stacking'])
+                // ->whereIn('operation', ['With Stacking', 'Without Stacking'])
                 ->get();
 
             // if (!empty($getRateDetails)) {
@@ -1361,7 +1359,7 @@ class CreateRateAnalysis extends Component
     {
         if ($this->selectedSORKey) {
             $this->fatchDropdownData['items_number'] = SOR::select('s_o_r_s.Item_details', 's_o_r_s.id')
-            // ->join('carriagesors','carriagesors.sor_parent_id','=','s_o_r_s.id')
+                // ->join('carriagesors','carriagesors.sor_parent_id','=','s_o_r_s.id')
                 ->where('s_o_r_s.department_id', $this->rateData['dept_id'])
                 ->where('s_o_r_s.dept_category_id', $this->rateData['dept_category_id'])
                 ->where('s_o_r_s.version', $this->rateData['version'])
@@ -1412,10 +1410,10 @@ class CreateRateAnalysis extends Component
             $query->where('start_distance', '>=', 0)
                 ->where('upto_distance', '<', $this->rateData['distance']);
         })
-        // ->orWhere(function($query){
-        //     $query->where('start_distance', '>=', 0)
-        //     ->where('upto_distance', '<=', $this->rateData['distance']);
-        // })
+            // ->orWhere(function($query){
+            //     $query->where('start_distance', '>=', 0)
+            //     ->where('upto_distance', '<=', $this->rateData['distance']);
+            // })
             ->where('dept_id', Auth::user()->department_id)
             ->where('dept_category_id', $this->rateData['dept_category_id'])
             ->where('sor_parent_id', $this->rateData['itemNo'])
