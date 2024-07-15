@@ -64,9 +64,9 @@ final class ForwardedEstimateProjectTable extends PowerGridComponent
                     ->where('estimate_user_assign_records.created_at', '=', DB::raw("(SELECT max(created_at) FROM estimate_user_assign_records WHERE estimate_prepares.estimate_id = estimate_user_assign_records.estimate_id AND estimate_user_assign_records.status = 2)"));
             })
             ->join('estimate_masters', 'estimate_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
-            ->where('operation', '=', 'Total')
-            ->where('estimate_no','!=',NULL)
-            ->where('created_by', '=', Auth::user()->id);
+            ->where('estimate_prepares.operation', '=', 'Total')
+            ->where('estimate_prepares.estimate_no','!=',NULL)
+            ->where('estimate_prepares.created_by', '=', Auth::user()->id);
     }
 
     /*
