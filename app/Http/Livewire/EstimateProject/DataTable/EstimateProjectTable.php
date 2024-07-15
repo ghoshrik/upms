@@ -175,8 +175,8 @@ final class EstimateProjectTable extends PowerGridComponent
                */
         Button::add('View')
             ->bladeComponent('view', ['id' => 'estimate_id']),
-        // Button::add('Forward')
-        //     ->bladeComponent('forward-button', ['id' => 'estimate_id']),
+        Button::add('Forward')
+            ->bladeComponent('forward-button', ['id' => 'estimate_id']),
         Button::add('Edit')
         ->bladeComponent('edit-button', ['id' => 'estimate_id','action'=>'edit']),
         ];
