@@ -6,17 +6,15 @@
                     @foreach ($assigenUsersList as $user)
                         {{-- @dd($user->designation_id) --}}
                         <x-select.option
-                            label="{{ $user['emp_name'] . ' [ ' . getDesignationName($user->designation_id) . ' ]' }}"
-                            value="{{ $user['id'] . '-' . $user['role_id'] . '-' . $estimate_id }}" />
+                            label="{{ $user['emp_name'] . ' [ ' . getDesignationName($user->designation_id) . ' ' . $user['level_name'] . ' ]' }}"
+                            value="{{ $user['id'] . '-' . $user['role_id'] . '-' . $user['level_no'] . '-' . $estimate_id }}" />
                         {{-- <x-select.option label="{{ $user['id']. '-' . $user['access_type_id'] . '-' . $estimate_id }}" value="{{ $user['id']. '-' . $user['access_type_id'] . '-' . $estimate_id }}" /> --}}
                     @endforeach
                 @endisset
             </x-select>
         </div>
         <div class="col-span-1 sm:col-span-2">
-
             <x-textarea wire:model="userAssignRemarks" label="Remarks" placeholder="Your Remarks" />
-
         </div>
     </div>
     <x-slot name="footer">

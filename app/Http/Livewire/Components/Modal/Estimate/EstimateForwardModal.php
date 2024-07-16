@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Components\Modal\Estimate;
 
 use App\Models\User;
+use App\Models\Levels;
 use App\Models\Office;
 use Livewire\Component;
 use App\Models\SorMaster;
@@ -38,20 +39,21 @@ class EstimateForwardModal extends Component
         $forwardUserDetails = explode('-', $this->assignUserDetails);
         // dd($forwardUserDetails);
         $data = [
-            'estimate_id' => (int) $forwardUserDetails[2],
+            'estimate_id' => (int) $forwardUserDetails[3],
             // 'estimate_user_type' => (int) $forwardUserDetails[1],
             'user_id' => Auth::user()->id,
             'assign_user_id' => (int) $forwardUserDetails[0],
+            'level_no' => $forwardUserDetails[2],
             'comments' => $this->userAssignRemarks,
         ];
-        dd($data);
-        if ($this->forwardRequestFrom == 'EP' || $this->forwardRequestFrom == 'PE') {
+        // dd($data, Levels::with('roleLevels')->findOrFail());
+        /*if ($this->forwardRequestFrom == 'EP' || $this->forwardRequestFrom == 'PE') {
             SorMaster::where('estimate_id', $forwardUserDetails[2])->update(['status' => 2]);
             $data['status'] = 2;
             $assignDetails = EstimateUserAssignRecord::create($data);
             if ($assignDetails) {
                 $returnId = $assignDetails->id;
-                EstimateUserAssignRecord::where([['estimate_id',$forwardUserDetails[2]],['id','!=',$returnId],['is_done',0]])->groupBy('estimate_id')->update(['is_done'=>1]);
+                EstimateUserAssignRecord::where([['estimate_id', $forwardUserDetails[2]], ['id', '!=', $returnId], ['is_done', 0]])->groupBy('estimate_id')->update(['is_done' => 1]);
                 $this->notification()->success(
                     $title = 'Success',
                     $description = 'Successfully Assign!!'
@@ -63,7 +65,7 @@ class EstimateForwardModal extends Component
             $assignDetails = EstimateUserAssignRecord::create($data);
             if ($assignDetails) {
                 $returnId = $assignDetails->id;
-                EstimateUserAssignRecord::where([['estimate_id',$forwardUserDetails[2]],['id','!=',$returnId],['is_done',0]])->groupBy('estimate_id')->update(['is_done'=>1]);
+                EstimateUserAssignRecord::where([['estimate_id', $forwardUserDetails[2]], ['id', '!=', $returnId], ['is_done', 0]])->groupBy('estimate_id')->update(['is_done' => 1]);
                 $this->notification()->success(
                     $title = 'Success',
                     $description = 'Successfully Assign!!'
@@ -74,7 +76,22 @@ class EstimateForwardModal extends Component
                 $title = 'Error',
                 $description = 'Please Check & try again'
             );
+        }*/
+        // dd($data);
+        SorMaster::where('estimate_id', $forwardUserDetails[2])->update(['status' => 2]);
+        $data['status'] = 2;
+        $assignDetails = EstimateUserAssignRecord::create($data);
+
+        if ($assignDetails) {
+            $returnId = $assignDetails->id;
+            EstimateUserAssignRecord::where([['estimate_id', $forwardUserDetails[3]], ['id', '!=', $returnId], ['is_done', 0]])->groupBy('estimate_id')->update(['is_done' => 1]);
+            $this->notification()->success(
+                $title = 'Success',
+                $description = 'Successfully Assign!!'
+            );
         }
+
+
         $this->reset();
         $this->updateDataTableTracker = rand(1, 1000);
         $this->emit('refreshData', $this->updateDataTableTracker);
@@ -83,7 +100,7 @@ class EstimateForwardModal extends Component
     public function render()
     {
         $this->updateDataTableTracker = rand(1, 1000);
-        // TODO:: 1) REMOVE THIS SQL FROM RENDER 2) AFTER GEETING THE USER DATA, IF WE TYPE THE REMARKS THE USER DATA CHANGING TO ADMIN [NEED TO BE FIXED]
+        // /TODO:: 1) REMOVE THIS SQL FROM RENDER 2) AFTER GEETING THE USER DATA, IF WE TYPE THE REMARKS THE USER DATA CHANGING TO ADMIN [NEED TO BE FIXED]
         // $userAccess_id = AccessMaster::select('access_parent_id')->join('access_types', 'access_masters.access_type_id', '=', 'access_types.id')->where('user_id', Auth::user()->id)->first();
         $roles = UsersHasRoles::join('roles', 'roles.id', '=', 'users_has_roles.role_id')
             ->where('users_has_roles.user_id', Auth::user()->id)
@@ -91,7 +108,7 @@ class EstimateForwardModal extends Component
             ->get();
         foreach ($roles as $role) {
             if (Auth::user()->getRoleNames()[0] == $role->role_name) {
-                $roles_id =  $role->id ;
+                $roles_id =  $role->id;
             }
         }
         /*$userAccess_id = UsersHasRoles::select(
@@ -116,12 +133,15 @@ class EstimateForwardModal extends Component
         // Log::info(json_encode($this->assigenUsersList));
 
         $roleParent = Auth::user()->roles1->first();
+        // dd($roleParent);
         // $roleParent->role_parent;
-        $roleLevelNo = Role::select('name','has_level_no')->where('id',$roleParent->role_parent)->first();
-        $this->assigenUsersList = Office::select('users.designation_id','users.emp_name','users.id','users.name')->join('users','users.office_id','=','offices.id')
-                        ->where('offices.level_no',$roleLevelNo->has_level_no)
-                        ->where('users.id',Auth::user()->created_by)
-                        ->get();
+        $roleLevelNo = Role::select('name', 'has_level_no')->where('id', $roleParent->role_parent)->first();
+        $this->assigenUsersList = Office::select('users.designation_id', 'users.emp_name', 'users.id', 'users.name', 'offices.level_no')->join('users', 'users.office_id', '=', 'offices.id')
+            ->where('offices.level_no', $roleLevelNo->has_level_no)
+            // ->where('Level_master','level_parent')
+            ->where('users.department_id', Auth::user()->department_id)
+            ->where('users.id', Auth::user()->created_by)
+            ->get();
         // dd($this->assigenUsersList);
 
         // dd($roleLevelNo->has_level_no);

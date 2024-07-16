@@ -10,6 +10,7 @@
     <title>@yield('webtitle', env('APP_NAME'))</title>
     @livewireStyles
     <wireui:scripts />
+    <script src="{{ asset('js/custom.js') }}" defer></script>
     <script src="{{ asset('js/alpineJs/alpinejs.cdn.min.js') }}" defer></script>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @include('partials.dashboard._head')

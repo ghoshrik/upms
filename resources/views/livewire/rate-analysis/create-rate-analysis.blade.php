@@ -142,7 +142,8 @@
                         @if (!empty($rateData))
                             {{-- SOR Field Start --}}
                             @if ($selectedCategoryId == 1)
-                                <div class="row" wire:key='SOR' style="transition: all 2s ease-out" x-data="{ showSearch: false }">
+                                <div class="row" wire:key='SOR' style="transition: all 2s ease-out"
+                                    x-data="{ showSearch: false }">
                                     <div class="col">
                                         <div class="form-group">
                                             <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
@@ -163,12 +164,12 @@
                                                 placeholder="Select Department {{ trans('cruds.estimate.fields.category') }}"
                                                 wire:model.defer="rateData.dept_category_id"
                                                 x-on:select="$wire.getVolumn()">
-                                                @isset($fatchDropdownData['departmentsCategory'])
-                                                    @foreach ($fatchDropdownData['departmentsCategory'] as $deptCategory)
-                                                        <x-select.option label="{{ $deptCategory['dept_category_name'] }}"
-                                                            value="{{ $deptCategory['id'] }}" />
-                                                    @endforeach
-                                                @endisset
+                                                {{-- @isset($fatchDropdownData['departmentsCategory']) --}}
+                                                @foreach ($fatchDropdownData['departmentsCategory'] as $deptCategory)
+                                                    <x-select.option label="{{ $deptCategory['dept_category_name'] }}"
+                                                        value="{{ $deptCategory['id'] }}" />
+                                                @endforeach
+                                                {{-- @endisset --}}
                                             </x-select>
                                         </div>
                                     </div>
@@ -184,10 +185,13 @@
                                     </div>
                                     <div x-show="showSearch" class="col">
                                         <div class="form-group search-sor" style="position: relative;">
-                                            <x-input wire:key="search" class="dropbtn" wire:model.defer="searchKeyWord"
-                                                wire:keydown.tab="textSearchSOR" label="Search SOR" placeholder="Write Here and Tab" />
-                                            <button type="button" class="clear-btn" wire:click="clearSearch" style="position: absolute; top: 68%; right: 8px; transform: translateY(-50%); cursor: pointer; background: none; border: none;">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                                            <x-input wire:key="search" class="dropbtn"
+                                                wire:model.defer="searchKeyWord" wire:keydown.tab="textSearchSOR"
+                                                label="Search SOR" placeholder="Write Here and Tab" />
+                                            <button type="button" class="clear-btn" wire:click="clearSearch"
+                                                style="position: absolute; top: 68%; right: 8px; transform: translateY(-50%); cursor: pointer; background: none; border: none;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                    viewBox="0 0 24 24" width="16" height="16">
                                                     <path
                                                         d="M17.29 6.71a1 1 0 0 0-1.42 0L12 10.59 7.71 6.29a1 1 0 1 0-1.42 1.42L10.59 12 6.29 16.29a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0L12 13.41l4.29 4.3a1 1 0 0 0 1.42-1.42L13.41 12l4.3-4.29a1 1 0 0 0 0-1.42z">
                                                     </path>
@@ -195,12 +199,14 @@
                                             </button>
                                             @isset($this->fatchDropdownData['searchDetails'])
                                                 @if (count($this->fatchDropdownData['searchDetails']) > 0)
-                                                    <div class="dropdown-content" style="display:{{ $searchDtaCount ? $searchStyle : $searchStyle }}; position: absolute; top: 100%; left: 0; right: 0; z-index: 100; background-color: white; border: 1px solid #ccc; max-height: 200px; overflow-x: auto;">
+                                                    <div class="dropdown-content"
+                                                        style="display:{{ $searchDtaCount ? $searchStyle : $searchStyle }}; position: absolute; top: 100%; left: 0; right: 0; z-index: 100; background-color: white; border: 1px solid #ccc; max-height: 200px; overflow-x: auto;">
                                                         <ul style="list-style-type: none; padding: 0; margin: 0;">
                                                             @foreach ($this->fatchDropdownData['searchDetails'] as $list)
                                                                 <li style="padding: 3px; border-bottom: 0.5px solid;">
-                                                                    <a href="javascript:void(0);" wire:click="getDynamicSor({{$list['id']}})">
-                                                                        {{$list['table_no']}}<br/>{!! $list['highlighted_row_data'] !!}
+                                                                    <a href="javascript:void(0);"
+                                                                        wire:click="getDynamicSor({{ $list['id'] }})">
+                                                                        {{ $list['table_no'] }}<br />{!! $list['highlighted_row_data'] !!}
                                                                     </a>
                                                                 </li>
                                                             @endforeach
@@ -212,7 +218,10 @@
                                     </div>
                                     <div class="col-md-2" x-show="showSearch" style="margin-top: 26px">
                                         <div class="form-group float-right">
-                                            <button type="button" @click="showSearch = !showSearch; $wire.clearSearch()" class="btn btn-soft-danger rounded-pill"><x-lucide-x class="w-4 h-4 text-gray-500" />Close Search</button>
+                                            <button type="button"
+                                                @click="showSearch = !showSearch; $wire.clearSearch()"
+                                                class="btn btn-soft-danger rounded-pill"><x-lucide-x
+                                                    class="w-4 h-4 text-gray-500" />Close Search</button>
                                         </div>
                                     </div>
                                     <div x-show="!showSearch" class="col">
@@ -1038,6 +1047,9 @@
                             }
                             var getRowData = [{
                                 id: getData['id'],
+                                // desc: getHierarchyDetails(rowData, cell.getRow()
+                                //     .getIndex()) ? getHierarchyDetails(rowData, cell.getRow()
+                                //     .getIndex()) : '',
                                 desc: (getData['desc_of_item']) ? getData['desc_of_item'] : '',
                                 unit: (getData['unit']) ? getData['unit'] : '',
                                 rowValue: cell.getValue(),
