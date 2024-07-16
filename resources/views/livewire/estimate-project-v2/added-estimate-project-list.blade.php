@@ -52,7 +52,8 @@
                                     {{-- <th>{{ trans('cruds.estimate.fields.id_helper') }}</th> --}}
                                     <th>Sl No</th>
                                     <th>{{ trans('cruds.estimate.fields.item_number') }}</th>
-                                    <th style="text-align: center;">{{ trans('cruds.estimate.fields.description') }}</th>
+                                    <th style="text-align: center;">{{ trans('cruds.estimate.fields.description') }}
+                                    </th>
                                     <th>{{ trans('cruds.estimate.fields.quantity') }}</th>
                                     <th>Unit Name</th>
                                     <th>{{ trans('cruds.estimate.fields.per_unit_cost') }}</th>
@@ -61,14 +62,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                  {{-- @dd($allAddedEstimatesData);    --}}
+                                {{-- @dd($allAddedEstimatesData);    --}}
                                 @foreach ($allAddedEstimatesData as $key => $addedEstimate)
                                     <tr>
-                                       
+
                                         <td>
-                                           
-                                                {{ $addedEstimate['id'] }}
-                                           
+
+                                            {{ $addedEstimate['id'] }}
+
                                         </td>
                                         <td>
                                             {{-- {{ $addedEstimate['sor_item_number'] ?  $addedEstimate['sor_item_number'] : '---'}} --}}
@@ -119,7 +120,6 @@
                                             @if ($addedEstimate['qty'] != 0)
                                                 {{ $addedEstimate['qty'] }}
                                                 @if (isset($addedEstimate['qtyUpdate']) && $addedEstimate['qtyUpdate'] === true)
-                                                
                                                     <x-button wire:click="openQtyModal({{ $key }})"
                                                         type="button" class="btn btn-soft-primary btn-sm">
                                                         <span class="btn-inner">
@@ -155,11 +155,11 @@
                                         </td>
                                         <td>
                                             @if ($addedEstimate['operation'] == '' || $addedEstimate['rate_no'] != 0 || $addedEstimate['rate_no'] == '')
-                                            <button wire:click="editRow('{{ $addedEstimate['array_id'] }}')"
-                                                type="button" class="btn-soft-warning btn-sm">
-                                                <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
-                                            </button>
-                                        @endif
+                                                <button wire:click="editRow('{{ $addedEstimate['array_id'] }}')"
+                                                    type="button" class="btn-soft-warning btn-sm">
+                                                    <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
+                                                </button>
+                                            @endif
                                             @if ($addedEstimate['estimate_no'])
                                                 <x-button wire:click="viewModal({{ $addedEstimate['estimate_no'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
@@ -235,34 +235,20 @@
         </div>
         @if ($openQtyModal)
 
-          {{-- @dd($sendRowNo);   --}}
-        @if (isset($identifier))
-
-        
-        <livewire:components.modal.rate-analysis.unit-analysis-view-modal
-            :unit_id="$sendArrayKey"
-            :sendArrayDesc="$sendArrayDesc"
-            :arrayCount="$arrayCount"
-            :editEstimate_id="$editEstimate_id"
-            :part_no="$part_no"
-            :identifier='$identifier'
-            :sendRowNo='$sendRowNo'
-        />
-    @else
-        <livewire:components.modal.rate-analysis.unit-analysis-view-modal
-            :unit_id="$sendArrayKey"
-            :sendArrayDesc="$sendArrayDesc"
-            :arrayCount="$arrayCount"
-            :editEstimate_id="$editEstimate_id"
-            :part_no="$part_no"
-            :sendRowNo='$sendRowNo'
-        />
-    @endif
+            {{-- @dd($sendRowNo);   --}}
+            @if (isset($identifier))
+                <livewire:components.modal.rate-analysis.unit-analysis-view-modal :unit_id="$sendArrayKey" :sendArrayDesc="$sendArrayDesc"
+                    :arrayCount="$arrayCount" :editEstimate_id="$editEstimate_id" :part_no="$part_no" :identifier='$identifier' :sendRowNo='$sendRowNo' />
+            @else
+                <livewire:components.modal.rate-analysis.unit-analysis-view-modal :unit_id="$sendArrayKey" :sendArrayDesc="$sendArrayDesc"
+                    :arrayCount="$arrayCount" :editEstimate_id="$editEstimate_id" :part_no="$part_no" :sendRowNo='$sendRowNo' />
+            @endif
         @endif
-        
+
         @if ($editRowModal)
-        <livewire:components.modal.item-modal.edit-row-wise :editRowId='$editRowId' :editRowData='$editRowData' :editEstimate_id='$editEstimate_id' :identifier='$identifier'/>
-    @endif
+            <livewire:components.modal.item-modal.edit-row-wise :editRowId='$editRowId' :editRowData='$editRowData' :editEstimate_id='$editEstimate_id'
+                :identifier='$identifier' />
+        @endif
         @if ($openSubItemModal)
             <livewire:components.modal.item-modal.add-sub-item-modal :rowParentId="$rowParentId">
         @endif

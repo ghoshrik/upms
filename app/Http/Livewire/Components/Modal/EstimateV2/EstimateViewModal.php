@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Components\Modal\EstimateV2;
 
 use Livewire\Component;
 use App\Models\UnitMaster;
+use App\Models\EstimatePrepare;
 use App\Models\EstimateMasterV2;
 use App\Models\EstimatePrepareV2;
 use Illuminate\Support\Facades\Cache;
@@ -12,18 +13,17 @@ use App\Models\SpecificQuantityAnalysis;
 class EstimateViewModal extends Component
 {
     protected $listeners = ['openModal' => 'openViewModal'];
-    public $viewModal = false, $estimate_id, $viewEstimates = [],$specificQtyAnalysisData=[],$estimateData;
+    public $viewModal = false, $estimate_id, $viewEstimates = [], $specificQtyAnalysisData = [], $estimateData;
 
     public function openViewModal($estimate_id)
     {
-        $estimate_id = is_array($estimate_id)? $estimate_id[0]:$estimate_id;
+        $estimate_id = is_array($estimate_id) ? $estimate_id[0] : $estimate_id;
         $this->reset();
         $this->viewModal = !$this->viewModal;
-        if($estimate_id)
-        {
+        if ($estimate_id) {
             $this->estimate_id = $estimate_id;
-            $this->viewEstimates = EstimatePrepareV2::where('estimate_id',$this->estimate_id)->orderBy('id')->get();
-            $this->estimateData = EstimateMasterV2::where('estimate_id',$this->estimate_id)->first();
+            $this->viewEstimates = EstimatePrepareV2::where('estimate_id', $this->estimate_id)->orderBy('id')->get();
+            $this->estimateData = EstimateMasterV2::where('estimate_id', $this->estimate_id)->first();
             // $cacheKey = 'projectEstimate_' . $this->estimate_id;
             // if(Cache::has($cacheKey)){
             //     $this->viewEstimates = Cache::get($cacheKey);
@@ -38,7 +38,7 @@ class EstimateViewModal extends Component
     }
     public function download($value)
     {
-        $allEstimateDatas = EstimatePrepare::where('estimate_id','=',$value)->get();
+        $allEstimateDatas = EstimatePrepare::where('estimate_id', '=', $value)->get();
         // dd( $allEstimateDatas);
         $exportDatas = $allEstimateDatas;
         // dd($exportDatas);

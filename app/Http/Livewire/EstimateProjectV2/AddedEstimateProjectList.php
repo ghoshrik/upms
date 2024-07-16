@@ -239,7 +239,6 @@ class AddedEstimateProjectList extends Component
         $this->sendArrayKey = $this->allAddedEstimatesData[$key]['array_id'];
         foreach ($this->allAddedEstimatesData as $index => $estimateData) {
             if ($estimateData['array_id'] === $this->sendArrayKey) {
-               
                 if (!empty($this->allAddedEstimatesData[$key]['description'])) {
                     $this->sendArrayDesc = $this->allAddedEstimatesData[$key]['description'];
                 } elseif (!empty($this->allAddedEstimatesData[$key]['other_name'])) {
@@ -258,7 +257,6 @@ class AddedEstimateProjectList extends Component
 
     public function submitGrandTotal($grandtotal, $key)
     {
-        //dd($this->allAddedEstimatesData, $this->sendArrayKey);
         if (!empty($grandtotal) || !empty($key)) {
             foreach ($this->allAddedEstimatesData as $index => $estimateData) {
                 if ($estimateData['array_id'] === $this->sendArrayKey) {

@@ -6,9 +6,10 @@
             <div class="p-0 text-center" id="printContent">
                 <x-lucide-clipboard-list class="w-10 h-12 mx-auto text-success print-icon" />
                 <div class="mt-5 text-3xl">Details of Estimate No : {{ $estimate_id }}</div>
-                <div class="mt-2 text-slate-500">{{ ($estimateData != '') ? $estimateData->estimate_master_desc : '' }} </div>
+                <div class="mt-2 text-slate-500">{{ $estimateData != '' ? $estimateData->estimate_master_desc : '' }}
+                </div>
                 <div>
-                    <table class="table mt-2 table-report" >
+                    <table class="table mt-2 table-report">
                         <thead>
                             <tr>
                                 <th class="whitespace-nowrap" style="padding-right:4rem;">#</th>
@@ -53,16 +54,15 @@
                                     <td class="text-wrap" style="width: 40rem;text-align:justify;">
                                         @if ($view['sor_item_number'])
                                             {{-- {{ getSorItemNumberDesc($view['sor_item_number']) }} --}}
-                                            @if ($view['sor_item_number'] && ($view['p_id'] == 0))
+                                            @if ($view['sor_item_number'] && $view['p_id'] == 0)
                                                 <strong>{{ getDepartmentName($view['dept_id']) . ' / ' . getDepartmentCategoryName($view['category_id']) . ' / ' . getSorTableName($view['sor_id']) . ' / Page No: ' . getSorPageNo($view['sor_id']) . (getSorCorrigenda($view['sor_id']) != null ? ' - ' . getSorCorrigenda($view['sor_id']) : '') }}</strong>
                                                 <br />
                                             @endif
-                                            @if($view['p_id'] == 0)
+                                            @if ($view['p_id'] == 0)
                                                 {{ getTableDesc($view['sor_id'], $view['item_index']) }}
                                             @else
                                                 {{ $view['description'] }}
                                             @endif
-                                            
                                         @elseif ($view['rate_id'])
                                             @php
                                                 $getRateDet = getRateDescription($view['rate_id'], $view['rate']);
@@ -145,16 +145,17 @@
                                                                 <td style="text-align:center;"><?php echo !empty($metadata['unit']) ? $metadata['unit'] : null; ?></td>
                                                                 <td style="text-align:center;">
                                                                     @if (!isset($metadata['key']))
-                                                                        <button class="collapse-button btn btn-soft-primary btn-sm rounded"
-                                                                                type="button"
-                                                                                aria-expanded="false"
-                                                                                aria-controls="collapseExample1_{{ $metadata['currentId'] }}_{{ $view['row_id'] }}"
-                                                                                onclick="toggleCollapse1('{{ $metadata['currentId'] }}_{{ $view['row_id'] }}')">
-                                                                            <x-lucide-eye class="w-4 h-4 text-white-500" />
+                                                                        <button
+                                                                            class="collapse-button btn btn-soft-primary btn-sm rounded"
+                                                                            type="button" aria-expanded="false"
+                                                                            aria-controls="collapseExample1_{{ $metadata['currentId'] }}_{{ $view['row_id'] }}"
+                                                                            onclick="toggleCollapse1('{{ $metadata['currentId'] }}_{{ $view['row_id'] }}')">
+                                                                            <x-lucide-eye
+                                                                                class="w-4 h-4 text-white-500" />
                                                                         </button>
                                                                     @endif
                                                                 </td>
-                                                                
+
                                                             </tr>
                                                             <tr class="collapse"
                                                                 id="collapseExample1_{{ $metadata['currentId'] }}_{{ $view['row_id'] }}">
@@ -232,30 +233,31 @@
                                                                     $metadataArrayruleDetails = $metadataArrayDetailss['input_values'];
                                                                     $keysToExclude = ['currentId', 'editEstimate_id', 'btntype', 'exp', 'key','parent_id'];
                                                                     ?>
-                                                                   <table class="table table-bordered">
-                                                                    <thead>
-                                                                        <tr class="thead">
-                                                                            <th>Sl.no</th>
-                                                                            <?php foreach ($columnHeadings as $headkey => $heading): ?>
-                                                                                <?php if (!in_array($headkey, $keysToExclude) && isset($metadataArrayruleDetails[$headkey])): ?>
+                                                                        <table class="table table-bordered">
+                                                                            <thead>
+                                                                                <tr class="thead">
+                                                                                    <th>Sl.no</th>
+                                                                                    <?php foreach ($columnHeadings as $headkey => $heading): ?>
+                                                                                    <?php if (!in_array($headkey, $keysToExclude) && isset($metadataArrayruleDetails[$headkey])): ?>
                                                                                     <th><?php echo $heading; ?></th>
-                                                                                <?php endif; ?>
-                                                                            <?php endforeach; ?>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td style="text-align:center;">1</td> <!-- Serial Number -->
-                                                                            <?php foreach ($columnHeadings as $headkey => $heading): ?>
-                                                                                <?php if (!in_array($headkey, $keysToExclude) && isset($metadataArrayruleDetails[$headkey])): ?>
+                                                                                    <?php endif; ?>
+                                                                                    <?php endforeach; ?>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td style="text-align:center;">1
+                                                                                    </td> <!-- Serial Number -->
+                                                                                    <?php foreach ($columnHeadings as $headkey => $heading): ?>
+                                                                                    <?php if (!in_array($headkey, $keysToExclude) && isset($metadataArrayruleDetails[$headkey])): ?>
                                                                                     <td style="text-align:center;">
                                                                                         <?php echo $metadataArrayruleDetails[$headkey]; ?>
                                                                                     </td>
-                                                                                <?php endif; ?>
-                                                                            <?php endforeach; ?>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
+                                                                                    <?php endif; ?>
+                                                                                    <?php endforeach; ?>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
                                                                         <?php }
                                                                         ?>
                                                                     </div>
@@ -276,17 +278,17 @@
                                     </tr>
                                 @endif
                             @endforeach
-                            @if($estimateData != '')
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>Total</td>
-                                <td>{{$estimateData->total_amount}}</td>
-                            </tr>
+                            @if ($estimateData != '')
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Total</td>
+                                    <td>{{ $estimateData->total_amount }}</td>
+                                </tr>
                             @endif
                         </tbody>
                     </table>
@@ -330,7 +332,6 @@
     }
 
     function toggleCollapse1(currentId) {
-        //alert(currentId);
         var collapseExample = document.getElementById('collapseExample1_' + currentId);
         var ariaExpanded = collapseExample.getAttribute('aria-expanded');
 
@@ -341,7 +342,8 @@
             collapseExample.classList.add('show');
             collapseExample.setAttribute('aria-expanded', 'true');
 
-        }
+        } 
+       
     }
 
     function printContent() {
