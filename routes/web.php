@@ -169,6 +169,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::post('/calculate-rule-area-perimeter', [ApiController::class, 'unitQtyAdded'])->name('calculate-rule-area-perimeter');
             Route::post('/calculate-rule-surface-area', [ApiController::class, 'unitQtyAdded'])->name('calculate-rule-surface-area');
             Route::post('/calculate-rule-area-perimeter-circle', [ApiController::class, 'unitQtyAdded'])->name('calculate-rule-area-perimeter-circle');
+            Route::post('/calculate-rule-area-volume-cone', [ApiController::class, 'unitQtyAdded'])->name('calculate-rule-area-volume-cone');
+            
 
 
             Route::get('abstracts', AbstructCostsLists::class)->name('abstracts');

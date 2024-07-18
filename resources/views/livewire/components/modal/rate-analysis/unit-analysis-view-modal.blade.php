@@ -343,7 +343,6 @@
     .hidden-cell {
         display: none;
     }
- 
 </style>
 <div class="modal" id="myInput" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
     data-bs-backdrop="static">
@@ -358,7 +357,7 @@
             <div class="modal-header rate-analysis">
                 <p class="desp">
                     <span id="dots">
-                        <?php echo "<strong>SLNO:-</strong>"."<strong>".$sendRowNo."</strong>"."<strong> Description: </strong>".$first_part; ?> ...
+                        <?php echo '<strong>SLNO:-</strong>' . '<strong>' . $sendRowNo . '</strong>' . '<strong> Description: </strong>' . $first_part; ?> ...
                     </span>
                     <span id="more" style="display:none;">
                         <?php echo $first_part . ' ' . $other_part; ?>
@@ -491,7 +490,9 @@
                                                         $editButtonClass = 'apcbtn';
                                                     } elseif ($metadata['btntype'] === 6) {
                                                         $editButtonClass = 'vcbtn';
-                                                    }
+                                                    } elseif ($metadata['btntype'] === 7) {
+                                                        $editButtonClass = 'vScbtn';
+                                                    } 
                                                 }
                                             @endphp
                                             @if (!isset($metadata['key']))
@@ -650,7 +651,7 @@
                                 </div>
                                 <div id="rowMessage" class="alert alert-info" style="display: none;"></div>
                                 <form id="surfaceArea-volume-rectangle" class="row g-3 align-items-center">
-                                    <input type="hidden" class="form-control btn-type" id="btn-type2">
+                                    <input type="hidden" class="form-control btn-type" id="btn-type3">
                                     <div class="col-md-6">
                                         <label for="length">Enter Length</label>
                                         <input type="number" class="form-control salength" name="salength"
@@ -780,13 +781,70 @@
                             </div>
                         </div>
                     </div>
+
+                    <div id="Area-volume-cone" style="display:none; margin-top: 1%;">
+                        <div class="card input-fields overflow-auto">
+                            <div class="card-body overflow-auto" style="background-color: #f4f8fb;">
+                                <div id="simpson" class="row formulae">
+                                    <span class="formula"></span>
+                                </div>
+                                <div id="rowMessage" class="alert alert-info" style="display: none;"></div>
+                                <div class="col-md-3">
+                                    <div class="dropdown">
+                                        <button
+                                            class="btn relative rounded-md  dropdown-toggle box-border circle-dropdown"
+                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Select
+                                            type
+                                        </button>
+                                        <div id="dropdownMessage" class="text-danger" style="display:none;"></div>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="selectOptionn" href="#"
+                                                    data-value="volume-of-cone">Volume of cone</a></li>
+                                            <li><a class="selectOptionn" href="#"
+                                                    data-value="surfacearea-of-cone">Surface Area of cone</a></li>
+                                            <li><a class="selectOptionn" href="#"
+                                                    data-value="volume-of-frustrum-cone">Volume of frustrum of cone</a>
+                                            </li>
+                                            <li><a class="selectOptionn" href="#"
+                                                    data-value="Sa-of-frustrum-cone">Surface Area of frustrum of
+                                                    cone</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <form id="area-perimeter-cone" class="row g-3 align-items-center"
+                                    style="margin-top:2px;">
+                                    <div class="col-md-6">
+                                        <label for="radius">Radius </label>
+                                        <input type="number" class="form-control" id="coneradius"
+                                            placeholder="Enter radius" required style="width:26%;">
+                                        <input type="hidden" class="form-control" id="btntype">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="height">Height </label>
+                                        <input type="number" class="form-control" id="height"
+                                            placeholder="Enter height" required style="width:26%;">
+                                    </div>
+                                    <div class="col-md-6" id="s-radius">
+                                        <label for="sradius">Small radius </label>
+                                        <input type="number" class="form-control" id="sradius"
+                                            placeholder="Enter Small radius" required style="width:26%;">
+                                    </div>
+                                    <div id="radiusMessage" class="text-danger" style="display:none;margin-top: 0;">
+                                        Required field</div>
+                                </form>
+
+                                <button id="saveBtnncone" type="submit" class="btn btn-soft-primary"
+                                    style="float: inline-end;margin-top: 50px;">Save</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer rate-analysis" style="display: flex; justify-content: space-between;">
                 <button type="button" id="close-unit-modalBtn" class="btn btn-soft-danger"
                     data-dismiss="modal">Close</button>
-                <button id="finalSubmitBtn" type="button" class="btn btn-success "
-                    disabled>Submit</button>
+                <button id="finalSubmitBtn" type="button" class="btn btn-success " disabled>Submit</button>
             </div>
         </div>
     </div>
@@ -932,14 +990,15 @@
 
 
         var rules = ["Simpson-rule", "Area and Perimeter of rectangle", "Surface Area & volume of rectangle",
-            "Area and Perimeter of circle", "Volume of Cylinder",
+            "Area and Perimeter of circle", "Volume of Cylinder", "Surface Area and Volume of cone"
         ];
         var ruleDataValues = {
             "Simpson-rule": "1",
             "Area and Perimeter of rectangle": "3",
             "Surface Area & volume of rectangle": "4",
             "Area and Perimeter of circle": "5",
-            "Volume of Cylinder": "6"
+            "Volume of Cylinder": "6",
+            "Surface Area and Volume of cone": "7"
         };
 
         function populateRulesDropdown() {
@@ -1085,6 +1144,19 @@
                 $('#additionalFields').hide();
                 $('#myForm').hide();
                 $('#surfaceArea-volume-rectangle').trigger('reset');
+            } else if (dataValue === 7) {
+                $('.formula').html(`Formula : Volume of Cone = πd2 * h / 4 (π ≈ 3.14)`);
+                $('#area-perimeter-cone').hide();
+
+                $('#Area-volume-cone').show();
+                $('#Volume-of-cylinder').hide();
+                $('#Volume-of-cylinder').trigger('reset');
+                $('#Area-perimeter-circle').hide();
+                $('#surfaceArea-volume-rectangle').hide();
+                $('#Area-perimeter-rectangle').hide();
+                $('#additionalFields').hide();
+                $('#myForm').hide();
+                $('#surfaceArea-volume-rectangle').trigger('reset');
             } else {
                 $('#Volume-of-cylinder').hide();
                 $('#Area-perimeter-circle').hide();
@@ -1214,6 +1286,8 @@
                             editButtonClass = 'apcbtn';
                         } else if (metadata.btntype === 6) {
                             editButtonClass = 'vcbtn';
+                        } else if (metadata.btntype === 7) {
+                            editButtonClass = 'vScbtn';
                         }
                         var editButton = $('<a>').attr({
                             'type': 'button',
@@ -1534,6 +1608,8 @@
                             editButtonClass = 'apcbtn';
                         } else if (metadata.btntype === 6) {
                             editButtonClass = 'vcbtn';
+                        } else if (metadata.btntype === 7) {
+                            editButtonClass = 'vScbtn';
                         }
                         var editButton = $('<a>').attr({
                             'type': 'button',
@@ -2059,6 +2135,8 @@
                             editButtonClass = 'apcbtn';
                         } else if (metadata.btntype === 6) {
                             editButtonClass = 'vcbtn';
+                        } else if (metadata.btntype === 7) {
+                            editButtonClass = 'vScbtn';
                         }
                         var editButton = $('<a>').attr({
                             'type': 'button',
@@ -2221,6 +2299,8 @@
                             editButtonClass = 'apcbtn';
                         } else if (metadata.btntype === 6) {
                             editButtonClass = 'vcbtn';
+                        } else if (metadata.btntype === 7) {
+                            editButtonClass = 'vScbtn';
                         }
                         var editButton = $('<a>').attr({
                             'type': 'button',
@@ -2634,6 +2714,8 @@
                             editButtonClass = 'apcbtn';
                         } else if (metadata.btntype === 6) {
                             editButtonClass = 'vcbtn';
+                        } else if (metadata.btntype === 7) {
+                            editButtonClass = 'vScbtn';
                         }
                         var editButton = $('<a>').attr({
                             'type': 'button',
@@ -2855,6 +2937,8 @@
                                 editButtonClass = 'apcbtn';
                             } else if (metadata.btntype === 6) {
                                 editButtonClass = 'vcbtn';
+                            } else if (metadata.btntype === 7) {
+                                editButtonClass = 'vScbtn';
                             }
                             var editButton = $('<a>').attr({
                                 'type': 'button',
@@ -3059,6 +3143,8 @@
                                 editButtonClass = 'apcbtn';
                             } else if (metadata.btntype === 6) {
                                 editButtonClass = 'vcbtn';
+                            } else if (metadata.btntype === 7) {
+                                editButtonClass = 'vScbtn';
                             }
                             var editButton = $('<a>').attr({
                                 'type': 'button',
@@ -3247,6 +3333,8 @@
                             editButtonClass = 'apcbtn';
                         } else if (metadata.btntype === 6) {
                             editButtonClass = 'vcbtn';
+                        } else if (metadata.btntype === 7) {
+                            editButtonClass = 'vScbtn';
                         }
                         var editButton = $('<a>').attr({
                             'type': 'button',
@@ -3358,10 +3446,6 @@
                 return;
             }
 
-
-
-
-            // currentId = this.getAttribute("data-id")
             var volume_of_cylinder = parseFloat((Math.PI * Math.pow(diameter, 2) * height / 4).toFixed(
                 2));
             var inputValues = {};
@@ -3443,6 +3527,8 @@
                             editButtonClass = 'apcbtn';
                         } else if (metadata.btntype === 6) {
                             editButtonClass = 'vcbtn';
+                        } else if (metadata.btntype === 7) {
+                            editButtonClass = 'vScbtn';
                         }
                         var editButton = $('<a>').attr({
                             'type': 'button',
@@ -3570,6 +3656,56 @@
                 }
             });
         });
+
+        $(document).on("click", ".vScbtn", function() {
+            var currentId = this.getAttribute("data-id");
+        
+            $('#Area-volume-cone').show();
+            $('#Volume-of-cylinder').hide();
+            $('#surfaceArea-volume-rectangle').hide();
+            $('#Area-perimeter-rectangle').hide();
+            $('#additionalFields').hide();
+            $('#myForm').hide();
+            $('#Area-perimeter-circle').hide();
+
+            $.ajax({
+                url: '/get-modal-rule-data',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    unitId: unitId,
+                    ruleId: currentId,
+                    editEstimate_id: editEstimate_Id,
+                    editRate_id: editRate_id,
+                    featureType: featureType,
+                    pEV2: pEV2,
+                }),
+                success: function(response) {
+                    console.log(response.rateAnalysisArray.input_values);
+                    $('#coneradius').val(response.rateAnalysisArray.input_values.radius);
+                    $('#height').val(response.rateAnalysisArray.input_values.height);
+                    $('#sradius').val(response.rateAnalysisArray.input_values.smallRadius);
+                    $('#btn-type3').val(response.rateAnalysisArray.input_values.currentId);
+
+                    
+
+                    // Set the selected option in the dropdown
+                    $('.dropdown-menu').find('a[data-value="' + response.rateAnalysisArray
+                        .input_values.selectedcone + '"]').addClass('active');
+                    var selectedOptionText = $('.dropdown-menu').find('a[data-value="' +
+                        response.rateAnalysisArray.input_values.selectedcone +
+                        '"]').text();
+                    $('.circle-dropdown').html(selectedOptionText);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+        });
+
         $(document).on("click", ".sabtn", function() {
             currentId = this.getAttribute("data-id");
             $('#surfaceArea-volume-rectangle').show();
@@ -3659,6 +3795,7 @@
         });
         $('.selectOptionn').click(function() {
             var selectedShape = $(this).attr('data-value');
+
             $('.circle-dropdown').text($(this).text());
             var pi = "π";
             if (selectedShape === 'circle') {
@@ -3700,6 +3837,24 @@
                 $('input[name="calcOptionn"]').prop('checked', false)
                 $('.perimeterRadiocircle').hide();
                 $('.areaRadiocircle').hide();
+            } else if (selectedShape === 'volume-of-cone') {
+                $('.formula').html(`Formula : Volume of Cone = (1/3) π r<sup>2</sup> h (π ≈ 3.14)`);
+                $('#area-perimeter-cone').show();
+                $('#s-radius').hide();
+            } else if (selectedShape === 'surfacearea-of-cone') {
+                $('#area-perimeter-cone').show();
+                $('.formula').html(`Formula: Surface Area of Cone = πr(r + l) (π ≈ 3.14)`);
+
+                $('#s-radius').show();
+            } else if (selectedShape === 'volume-of-frustrum-cone') {
+                $('#area-perimeter-cone').show();
+                $('.formula').html(`Formula: Volume of Frustum of Cone = (1/3) π h (R<sup>2</sup> + r<sup>2</sup> + Rr) (π ≈ 3.14)`);
+                $('#s-radius').show();
+            } else if (selectedShape === 'Sa-of-frustrum-cone') {
+                $('#area-perimeter-cone').show();
+                $('.formula').html(`Formula: Surface Area of Frustum of Cone = π (R + r) l + π R<sup>2</sup> + π r<sup>2</sup> (π ≈ 3.14)`);
+
+                $('#s-radius').show();
             } else {
                 $('.formula').html('');
             }
@@ -3859,6 +4014,8 @@
                                 editButtonClass = 'apcbtn';
                             } else if (metadata.btntype === 6) {
                                 editButtonClass = 'vcbtn';
+                            } else if (metadata.btntype === 7) {
+                                editButtonClass = 'vScbtn';
                             }
                             var editButton = $('<a>').attr({
                                 'type': 'button',
@@ -3960,6 +4117,227 @@
                 });
             }
         });
+
+        // *****************************************************************************************************************************************************
+        $('#saveBtnncone').on('click', function() {
+            var totalOverallTotal = 0;
+            currentId = parseFloat($('#btn-type3').val());
+            var selectedcone = $('.dropdown-menu').find('a.selectOptionn.active').attr(
+                'data-value');
+            var type = selectedcone;
+            var radiusValue = $('#coneradius').val();
+            var heightValue = $('#height').val();
+            var sradiusValue = $('#sradius').val();
+            var radius = radiusValue ? parseFloat(radiusValue) : null;
+            var height = heightValue ? parseFloat(heightValue) : null;
+            var smallRadius = sradiusValue ? parseFloat(sradiusValue) : null;
+            if (isNaN(radius) || isNaN(height) || isNaN(smallRadius)) {
+                console.error('One or more required fields are empty or invalid.');
+                $('#radiusMessage').show();
+                return;
+            }
+            if (selectedcone === 'volume-of-cone') {
+                totalOverallTotal = (1 / 3) * Math.PI * Math.pow(radius, 2) * height;
+            } else if (selectedcone === 'surfacearea-of-cone') {
+                totalOverallTotal = Math.PI * radius * (radius + Math.sqrt(Math.pow(radius, 2) + Math
+                    .pow(
+                        height, 2)));
+            } else if (selectedcone === 'volume-of-frustrum-cone') {
+                totalOverallTotal = (1 / 3) * Math.PI * height * (Math.pow(radius, 2) + radius *
+                    smallRadius +
+                    Math.pow(smallRadius, 2));
+            } else if (selectedcone === 'Sa-of-frustrum-cone') {
+                totalOverallTotal = Math.PI * (radius + smallRadius) * Math.sqrt(Math.pow(height, 2) +
+                    Math.pow(radius - smallRadius, 2));
+            } else {
+                console.log('Invalid selection');
+            }
+            totalOverallTotal = totalOverallTotal.toFixed(2);
+            var inputValues = {};
+            inputValues["parent_id"] = unitId;
+            inputValues["currentId"] = currentId;
+            inputValues["type"] = type;
+            inputValues["selectedcone"] = selectedcone;
+            inputValues["btntype"] = 7;
+            inputValues["unit"] = "Cum";
+            inputValues["overallTotal"] = totalOverallTotal !== '' ? totalOverallTotal : 0;
+            inputValues["radius"] = radius !== '' ? radius : null;
+            inputValues["height"] = height !== '' ? height : null;
+            inputValues["smallRadius"] = smallRadius !== '' ? smallRadius : null;;
+            inputValues["editEstimate_id"] = editEstimate_Id;
+            inputValues["editRate_id"] = editRate_id;
+            inputValues["featureType"] = featureType;
+            inputValues["pEV2"] = pEV2;
+
+            // console.log(inputValues);
+            var ruledata = {
+                input_values: inputValues
+            };
+            $.ajax({
+                url: '/calculate-rule-area-volume-cone',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    data: ruledata
+                }),
+                success: function(response) {
+                    console.log(response);
+                    var tableBody1 = $("#dataTable tbody");
+                    tableBody1.empty();
+                    var rateAnalysisArray1 = response.rateAnalysisArray[
+                        unitId]['metadata'];
+                    if ($.isEmptyObject(rateAnalysisArray1)) {
+                        $("#close-unit-modalBtn").html("Close");
+                    }
+                    var tableBody = $("#dataTable1 tbody");
+                    tableBody.empty();
+                    var sno = 0;
+                    $.each(rateAnalysisArray1, function(index, metadata) {
+                        var newRow = $("<tr>");
+                        newRow.append(
+                            '<td style="text-align:center;"><input type="checkbox"class="rowCheckbox form-checkbox rounded transition ease-in-out duration-100 border-secondary-300 text-primary-600 focus:ring-primary-600 focus:border-primary-400 dark:border-secondary-500 dark:checked:border-secondary-600 dark:focus:ring-secondary-600 dark:focus:border-secondary-500 dark:bg-secondary-600 dark:text-secondary-600 dark:focus:ring-offset-secondary-800" /></td>'
+                        );
+                        newRow.append(
+                            '<td style="text-align:center;">' + part_no +
+                            (
+                                sno +
+                                1) +
+                            '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;">' +
+                            metadata.type + (metadata.remarks ?
+                                ' (' +
+                                metadata.remarks + ')' : '') +
+                            '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;">' +
+                            metadata
+                            .overallTotal + '</td>');
+                        newRow.append(
+                            '<td style="text-align:center;">' +
+                            metadata
+                            .unit +
+                            '</td>');
+                        var editButtonClass = '';
+                        if (metadata.btntype === 1) {
+                            editButtonClass = 'editBtnrule';
+                        } else if (metadata.btntype === 2) {
+                            editButtonClass = 'editBtn';
+                        } else if (metadata.btntype === 3) {
+                            editButtonClass = 'defaultbtn';
+                        } else if (metadata.btntype === 4) {
+                            editButtonClass = 'sabtn';
+                        } else if (metadata.btntype === 5) {
+                            editButtonClass = 'apcbtn';
+                        } else if (metadata.btntype === 6) {
+                            editButtonClass = 'vcbtn';
+                        } else if (metadata.btntype === 7) {
+                            editButtonClass = 'vScbtn';
+                        }
+                        var editButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-secondary btn-sm mr-2 fetchdetails ' +
+                                editButtonClass,
+                            'data-id': metadata.currentId
+                        }).text('edit');
+                        var deleteButton = $('<a>').attr({
+                            'type': 'button',
+                            'class': 'btn btn-soft-danger btn-sm delBtn',
+                            'data-id': metadata.currentId
+                        }).text('Delete');
+                        var grandTotalValue = metadata.grandTotal;
+                        var hiddenInput = $('<input>').attr({
+                            'type': 'hidden',
+                            'id': 'metagrandval',
+                            'value': grandTotalValue
+                        });
+                        var buttonCell = $('<td>').css('text-align', 'center')
+                            .append(editButton).append(' ').append(
+                                deleteButton);
+                        if (metadata.hasOwnProperty('key')) {
+                            editButton.remove();
+                            tableBody.find('.delBtn').remove();
+                            buttonCell.append(deleteButton);
+                        }
+                        if (metadata.hasOwnProperty('expcalculate')) {
+                            $("#finalSubmitBtn").prop("disabled", false);
+                            $("#close-unit-modalBtn").html("Reset & close");
+                        } else {
+                            $("#finalSubmitBtn").prop("disabled", true);
+                            $("#close-unit-modalBtn").html("Reset & close");
+                        }
+                        newRow.append(hiddenInput).append(buttonCell);
+                        tableBody.append(newRow);
+                        sno++;
+                        $('#grandTotalInput').val(metadata.grandTotal !==
+                            undefined && metadata.grandTotal !== null ?
+                            metadata.grandTotal : 0);
+                    });
+                    addNewRow();
+                    updateTotalSum();
+                    if (tableBody.find('tr').length > 0) {
+                        $('#mySelect').hide();
+                        $('#metagrandtotal').show();
+                    } else {
+                        $('#mySelect').show();
+                        $('#metagrandtotal').hide();
+                    }
+                    $('#successAlert').text('Row  added successfully');
+                    $('#successAlert').addClass('alert-success')
+                        .removeClass(
+                            'alert-danger')
+                        .show();
+                    // $("#finalSubmitBtn").prop("disabled", false);
+                    setTimeout(function() {
+                        $('#successAlert').hide();
+                    }, 2000);
+                    $('#metagrandtotal').show();
+                    $("#close-unit-modalBtn").html("Reset & close");
+                    // $("#finalSubmitBtn").prop("disabled", false);
+                    $('.rowCheckbox').prop('checked', false);
+                    $('#additionalFields').hide();
+                    $('#myForm').hide();
+                    $("#calexp").prop("disabled", false);
+                    var form = document.getElementById(
+                        "area-perimeter-circle");
+                    form.reset();
+                    $('.dropdown-menu').find('.selected').removeClass('selected');
+                    $('.dropdown-menu').find('.active').removeClass('active');
+                    $('.dropdown-menu').find('.show').removeClass('show');
+                    $('.dropdown-menu').find('.dropdown-toggle').attr('aria-expanded',
+                        'false');
+                    $('.circle-dropdown').text('Select Shape');
+                    $('input[name="calcOptionn"]').prop('checked', false);
+                    $('#btntype').val('');
+                    $('.optionDropdown button.dropdown-toggle').prop('disabled', false);
+                    $('#Area-perimeter-rectangle').hide();
+                    $('#Area-perimeter-circle').hide();
+                    $('#surfaceArea-volume-rectangle').hide();
+                    $('#additionalFields').hide();
+                    $('#myForm').hide();
+                    var form = document.getElementById("area-perimeter-cone");
+                    form.reset();
+                    currentId = null;
+                    checkRowCountAndConfirm();
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage =
+                        "An error occurred while calculating: ";
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMessage += xhr.responseJSON.error;
+                    } else {
+                        errorMessage += xhr.statusText;
+                    }
+                    alert(errorMessage);
+                    console.error('Error occurred:', xhr.responseText);
+                }
+            });
+
+        });
+
         $(document).on("click", ".apcbtn", function() {
             currentId = this.getAttribute("data-id");
             $('#Area-perimeter-circle').show();
