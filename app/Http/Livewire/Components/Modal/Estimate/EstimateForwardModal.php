@@ -2,6 +2,9 @@
 
 namespace App\Http\Livewire\Components\Modal\Estimate;
 
+use App\Models\EstimateAcceptanceLimitMaster;
+use App\Models\EstimatePrepare;
+use App\Models\EstimateStatus;
 use App\Models\User;
 use App\Models\Levels;
 use App\Models\Office;
@@ -17,8 +20,13 @@ class EstimateForwardModal extends Component
 {
     use Actions;
     protected $listeners = ['openForwardModal' => 'forwardModalOpen'];
-    public $forwardModal = false, $estimate_id, $assigenUsersList = [], $assignUserDetails, $userAssignRemarks, $updateDataTableTracker;
+    public $forwardModal = false, $estimate_id, $assigenUsersList = [], $assignUserDetails, $userAssignRemarks, $updateDataTableTracker, $assignOfficeUserList = [], $selectedOffice;
     public $forwardRequestFrom;
+
+    public $estimateTotal = [];
+
+
+
     public function forwardModalOpen($forwardEstimateDeatils)
     {
         // dd($forwardEstimateDeatils);
@@ -32,6 +40,52 @@ class EstimateForwardModal extends Component
         //     ->join('access_types', 'access_masters.access_type_id', '=', 'access_types.id')
         //     ->where('access_types.id', $userAccess_id->access_parent_id)
         //     ->get();
+
+        $roleParent = Auth::user()->roles1->first();
+        $roleLevelNo = Role::select('name', 'has_level_no')->where('id', $roleParent->role_parent)->first();
+        $this->assigenUsersList = Office::select('users.designation_id', 'users.emp_name', 'users.id', 'users.name', 'offices.level_no')
+            ->join('users', 'users.office_id', '=', 'offices.id')
+            ->where('offices.level_no', $roleLevelNo->has_level_no)
+            ->where('users.department_id', Auth::user()->department_id)
+            ->where('users.id', Auth::user()->created_by)
+            ->get();
+        // dd($this->assigenUsersList);
+
+        //estimate total Amount
+        $this->estimateTotal['amount'] = EstimatePrepare::select('total_amount')
+            ->join('estimate_masters', 'estimate_prepares.estimate_id', '=', 'estimate_masters.estimate_id')
+            ->where('estimate_masters.estimate_id', $this->estimate_id)
+            ->where('estimate_masters.dept_id', Auth::user()->department_id)
+            ->where('estimate_prepares.operation', 'Total')
+            ->first();
+
+        // dd($this->estimateTotal['amount']['total_amount']);
+        $estimateLimits = EstimateAcceptanceLimitMaster::where('department_id', Auth::user()->department_id)->get();
+        $level = 'error'; // Default to 'error' if no matching limit is found
+
+        foreach ($estimateLimits as $value) {
+            if ($this->estimateTotal['amount']['total_amount'] > $value['min_amount'] && $this->estimateTotal['amount']['total_amount'] <= $value['max_amount']) {
+                $level = $value['level_id'];
+                break; // Exit the loop once a matching limit is found
+            }
+        }
+
+        // dd($this->estimateTotal);
+        // dd($level);
+        $levelsALL = Levels::where('id', $level)->get();
+        // dd($levelsALL);
+
+        // Office::join('users','users.office_id')
+        //         ->where('department_id',Auth::user()->department_id)
+        //         ->where('level_no',$level)
+        //         ->get();
+        $this->assignOfficeUserList['officeParent'] = Office::where('id', Auth::user()->office_id)
+            ->first(); // 7
+
+        $test = Office::where('id', $this->assignOfficeUserList['officeParent']['office_parent'])
+            ->first(); // 6
+        $this->assignOfficeUserList['officeList'] = Office::where('department_id', Auth::user()->department_id)->where('level_no', $level)->get();
+        // dd($this->assignOfficeUserList['officeList']);
     }
 
     public function forwardAssignUser()
@@ -46,7 +100,7 @@ class EstimateForwardModal extends Component
             'level_no' => $forwardUserDetails[2],
             'comments' => $this->userAssignRemarks,
         ];
-        // dd($data, Levels::with('roleLevels')->findOrFail());
+        dd($data);
         /*if ($this->forwardRequestFrom == 'EP' || $this->forwardRequestFrom == 'PE') {
             SorMaster::where('estimate_id', $forwardUserDetails[2])->update(['status' => 2]);
             $data['status'] = 2;
@@ -97,6 +151,20 @@ class EstimateForwardModal extends Component
         $this->emit('refreshData', $this->updateDataTableTracker);
         // $this->updateDataTableTracker = rand(1,1000);
     }
+
+    public function OfficeUserList()
+    {
+
+        $this->assigenUsersList = User::where('office_id', $this->selectedOffice)->where('department_id', Auth::user()->department_id)->get();
+        // foreach($estimateLimits)
+        // $estimateLimits = EstimateAcceptanceLimitMaster::select('min_amount', 'max_amount')
+        //     ->where('department_id', Auth::user()->department_id)->get();
+
+        // dd($users, $estimateLimits);
+    }
+
+
+
     public function render()
     {
         $this->updateDataTableTracker = rand(1, 1000);
@@ -132,20 +200,16 @@ class EstimateForwardModal extends Component
             ->get();*/
         // Log::info(json_encode($this->assigenUsersList));
 
-        $roleParent = Auth::user()->roles1->first();
-        // dd($roleParent);
-        // $roleParent->role_parent;
-        $roleLevelNo = Role::select('name', 'has_level_no')->where('id', $roleParent->role_parent)->first();
-        $this->assigenUsersList = Office::select('users.designation_id', 'users.emp_name', 'users.id', 'users.name', 'offices.level_no')->join('users', 'users.office_id', '=', 'offices.id')
-            ->where('offices.level_no', $roleLevelNo->has_level_no)
-            // ->where('Level_master','level_parent')
-            ->where('users.department_id', Auth::user()->department_id)
-            ->where('users.id', Auth::user()->created_by)
-            ->get();
-        // dd($this->assigenUsersList);
 
-        // dd($roleLevelNo->has_level_no);
+        // dd($test, $test2);
 
+        // dd($this->estimate_id);
+
+
+
+        // $office = Office::find($this->assignOfficeUserList['officeParent']['office_parent']);
+        // $parentOffice = $office->officeChildren;
+        // dd($parentOffice);
 
         return view('livewire.components.modal.estimate.estimate-forward-modal');
     }

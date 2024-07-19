@@ -1,7 +1,20 @@
 <x-modal.card title="Forward Estimate No : {{ $estimate_id }} " blur wire:model="forwardModal">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="col-span-1 sm:col-span-2">
-            <x-select wire:key="user" label="Select User" placeholder="Select User" wire:model.defer="assignUserDetails">
+            <x-select wire:key="office" label="Select Office" placeholder="Select Office" wire:model.defer="selectedOffice"
+                x-on:select="$wire.OfficeUserList()">
+                @isset($assignOfficeUserList['officeList'])
+                    {{-- @dd($assignOfficeUserList['officeList']) --}}
+                    @foreach ($assignOfficeUserList['officeList'] as $office)
+                        <x-select.option label='{{ $office['office_name'] }}' value="{{ $office['id'] }}" />
+                    @endforeach
+                @endisset
+            </x-select>
+        </div>
+
+        <div class="col-span-1 sm:col-span-2">
+            <x-select wire:key="user" label="Select User" placeholder="Select User"
+                wire:model.defer="assignUserDetails">
                 @isset($assigenUsersList)
                     @foreach ($assigenUsersList as $user)
                         {{-- @dd($user->designation_id) --}}
