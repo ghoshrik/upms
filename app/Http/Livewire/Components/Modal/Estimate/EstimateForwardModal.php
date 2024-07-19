@@ -25,8 +25,6 @@ class EstimateForwardModal extends Component
 
     public $estimateTotal = [];
 
-
-
     public function forwardModalOpen($forwardEstimateDeatils)
     {
         // dd($forwardEstimateDeatils);
@@ -43,12 +41,12 @@ class EstimateForwardModal extends Component
 
         $roleParent = Auth::user()->roles1->first();
         $roleLevelNo = Role::select('name', 'has_level_no')->where('id', $roleParent->role_parent)->first();
-        $this->assigenUsersList = Office::select('users.designation_id', 'users.emp_name', 'users.id', 'users.name', 'offices.level_no')
-            ->join('users', 'users.office_id', '=', 'offices.id')
-            ->where('offices.level_no', $roleLevelNo->has_level_no)
-            ->where('users.department_id', Auth::user()->department_id)
-            ->where('users.id', Auth::user()->created_by)
-            ->get();
+        // $this->assigenUsersList = Office::select('users.designation_id', 'users.emp_name', 'users.id', 'users.name', 'offices.level_no','offices.id as officeId')
+        //     ->join('users', 'users.office_id', '=', 'offices.id')
+        //     ->where('offices.level_no', $roleLevelNo->has_level_no)
+        //     ->where('users.department_id', Auth::user()->department_id)
+        //     ->where('users.id', Auth::user()->created_by)
+        //     ->get();
         // dd($this->assigenUsersList);
 
         //estimate total Amount
@@ -85,9 +83,20 @@ class EstimateForwardModal extends Component
         $test = Office::where('id', $this->assignOfficeUserList['officeParent']['office_parent'])
             ->first(); // 6
         $this->assignOfficeUserList['officeList'] = Office::where('department_id', Auth::user()->department_id)->where('level_no', $level)->get();
+        // $this->selectedOffice = $this->assigenUsersList[0]['officeId'];
         // dd($this->assignOfficeUserList['officeList']);
     }
+    public function OfficeUserList()
+    {
+        $this->assigenUsersList = User::select('users.designation_id', 'users.emp_name', 'users.id', 'users.name', 'offices.level_no')
+        ->join('offices','users.office_id','=','offices.id')
+        ->where('users.office_id', $this->selectedOffice)->where('users.department_id', Auth::user()->department_id)->get();
+        // foreach($estimateLimits)
+        // $estimateLimits = EstimateAcceptanceLimitMaster::select('min_amount', 'max_amount')
+        //     ->where('department_id', Auth::user()->department_id)->get();
 
+        // dd($this->assigenUsersList);
+    }
     public function forwardAssignUser()
     {
         $forwardUserDetails = explode('-', $this->assignUserDetails);
@@ -100,7 +109,7 @@ class EstimateForwardModal extends Component
             'level_no' => $forwardUserDetails[2],
             'comments' => $this->userAssignRemarks,
         ];
-        dd($data);
+        // dd($data);
         /*if ($this->forwardRequestFrom == 'EP' || $this->forwardRequestFrom == 'PE') {
             SorMaster::where('estimate_id', $forwardUserDetails[2])->update(['status' => 2]);
             $data['status'] = 2;
@@ -131,8 +140,8 @@ class EstimateForwardModal extends Component
                 $description = 'Please Check & try again'
             );
         }*/
-        // dd($data);
-        SorMaster::where('estimate_id', $forwardUserDetails[2])->update(['status' => 2]);
+        dd($forwardUserDetails);
+        SorMaster::where('estimate_id', $forwardUserDetails[3])->update(['status' => 2]);
         $data['status'] = 2;
         $assignDetails = EstimateUserAssignRecord::create($data);
 
@@ -151,19 +160,6 @@ class EstimateForwardModal extends Component
         $this->emit('refreshData', $this->updateDataTableTracker);
         // $this->updateDataTableTracker = rand(1,1000);
     }
-
-    public function OfficeUserList()
-    {
-
-        $this->assigenUsersList = User::where('office_id', $this->selectedOffice)->where('department_id', Auth::user()->department_id)->get();
-        // foreach($estimateLimits)
-        // $estimateLimits = EstimateAcceptanceLimitMaster::select('min_amount', 'max_amount')
-        //     ->where('department_id', Auth::user()->department_id)->get();
-
-        // dd($users, $estimateLimits);
-    }
-
-
 
     public function render()
     {

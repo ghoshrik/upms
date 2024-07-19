@@ -12,7 +12,10 @@ class Role extends Model
     protected $table = "roles";
     protected $fillable = ['name','guard_name','has_level_no','role_parent'];
     // protected $fillable = ["user_id","user_type","office_id","dist_id","In_rural","user_type","office_id","dept_id","rural_block_code","gp_code","urban_code","ward_code"];
-
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class);
+    }
     public function getDepartmentName()
     {
         return $this->belongsTo(Department::class, 'dept_id');

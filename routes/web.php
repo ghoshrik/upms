@@ -118,7 +118,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
 
         //Office Admin
-        Route::group(['middleware' => ['role:Super Admin|State Admin|Office Admin|Nodal Officer|Super User|Head of Directorate|Circle Office|Division Office|Division Office|Sub-Division Office']], function () {
+        Route::group(['middleware' => ['role:Super Admin|State Admin|Office Admin|Nodal Officer|Super User|Head of Directorate|Circle Office|Division Office|Sub-Division Office']], function () {
             Route::get('assign-role', AssignRole::class)->name('assign-role');
             Route::get('milestones', Milestones::class)->name('milestones');
             Route::get('vendors', VendorList::class)->name('vendors');
@@ -128,7 +128,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         });
 
         // Office User
-        Route::group(['middleware' => ['role:Estimate Recommender (ER)']], function () {
+        Route::group(['middleware' => ['role:Estimate Recommender (ER)|Sub-Division Office']], function () {
             Route::get('estimate-recommender', EstimateRecomender::class)->name('estimate-recommender');
         });
 
@@ -139,7 +139,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('estimate-forwarder', EstimateForwarder::class)->name('estimate-forwarder');
         });
 
-        Route::group(['middleware' => ['role:Estimate Preparer']], function () {
+        Route::group(['middleware' => ['role:Estimate Preparer|Sub-Division Office']], function () {
             Route::get('estimate-project', EstimateProject::class)->name('estimate-project');
             //qty analysis api routes
             Route::post('/store-dynamic-unit-modal-data', [ApiController::class, 'unitQtyAdded'])->name('store-dynamic-unit-modal-data');

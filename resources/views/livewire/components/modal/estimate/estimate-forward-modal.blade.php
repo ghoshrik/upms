@@ -1,6 +1,6 @@
 <x-modal.card title="Forward Estimate No : {{ $estimate_id }} " blur wire:model="forwardModal">
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="col-span-1 sm:col-span-2">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" >
+        <div class="col-span-1 sm:col-span-2" wire:key='office'>
             <x-select wire:key="office" label="Select Office" placeholder="Select Office" wire:model.defer="selectedOffice"
                 x-on:select="$wire.OfficeUserList()">
                 @isset($assignOfficeUserList['officeList'])
@@ -12,7 +12,7 @@
             </x-select>
         </div>
 
-        <div class="col-span-1 sm:col-span-2">
+        <div class="col-span-1 sm:col-span-2" wire:key='user'>
             <x-select wire:key="user" label="Select User" placeholder="Select User"
                 wire:model.defer="assignUserDetails">
                 @isset($assigenUsersList)
