@@ -29,6 +29,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {{-- @dd($viewEstimates); --}}
                             @foreach ($viewEstimates as $key => $view)
                                 <tr>
                                     {{-- <td>{{ chr($view['row_id'] + 64) }}</td> --}}
@@ -47,7 +48,28 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if ($view['item_name'] != '')
+                                        @if (is_numeric($view['item_name']))
+                                            @switch($view['item_name'])
+                                                @case(1)
+                                                    SOR
+                                                @break
+
+                                                @case(2)
+                                                    Others
+                                                @break
+
+                                                @case(3)
+                                                    Rate
+                                                @break
+
+                                                @case(4)
+                                                    Estimate
+                                                @break
+
+                                                @default
+                                                    {{ $view['item_name'] }}
+                                            @endswitch
+                                        @else
                                             {{ $view['item_name'] }}
                                         @endif
                                     </td>
@@ -105,6 +127,9 @@
                                         @if ($view['rate'] == 0)
                                         @else
                                             {{ round($view['rate'], 10, 2) }}
+                                        @endif
+                                        @if ($view['rate_det'] != '')
+                                            {{ '( ' . $view['rate_det'] . ' )' }}
                                         @endif
                                     </td>
                                     <td style="text-align:center;">{{ round($view['total_amount'], 10, 2) }}</td>
@@ -342,8 +367,8 @@
             collapseExample.classList.add('show');
             collapseExample.setAttribute('aria-expanded', 'true');
 
-        } 
-       
+        }
+
     }
 
     function printContent() {

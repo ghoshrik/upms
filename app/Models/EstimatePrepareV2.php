@@ -32,6 +32,7 @@ class EstimatePrepareV2 extends Model
         'other_name',
         'qty',
         'rate',
+        'rate_det',
         'total_amount',
         'operation',
         'created_by',

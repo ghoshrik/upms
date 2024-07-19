@@ -23,7 +23,7 @@ class AddedEstimateProjectList extends Component
     public $part_no;
     public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
     public $openQtyModal = false, $sendArrayKey = '', $sendArrayDesc = '',$sendRowNo='', $getQtySessionData = [], $editEstimate_id;
-    public $arrayCount = 0, $selectCheckBoxs = false, $editRowModal = false;
+    public $arrayCount = 0, $selectCheckBoxs = false, $editRowModal = false ,$department_id;
     public function mount()
     {
          $this->department_id =Auth::user()->department_id;
@@ -50,11 +50,11 @@ class AddedEstimateProjectList extends Component
 
     public function setFatchEstimateData($fatchEstimateData)
     {
-        //dd($fatchEstimateData);
+        // dd($fatchEstimateData);
         $this->reset('allAddedEstimatesData', 'getQtySessionData');
         if (Session()->has('editProjectEstimateV2Data' . $this->editEstimate_id)) {
             $this->allAddedEstimatesData = Session()->get('editProjectEstimateV2Data' . $this->editEstimate_id);
-            // dd($this->allAddedEstimatesData);
+             //dd($this->allAddedEstimatesData);
         } else {
             foreach ($fatchEstimateData as $estimateData) {
                 $count = count($this->allAddedEstimatesData) + 1;
@@ -558,7 +558,7 @@ class AddedEstimateProjectList extends Component
             }
         }
         //  dd($this->allAddedEstimatesData);
-        // dd($this->totalOnSelectedCount);
+        // dd($this->addedEstimateData);
         if ($this->addedEstimateData != null) {
             $index = count($this->allAddedEstimatesData) + 1;
             // dd($index);
@@ -603,6 +603,9 @@ class AddedEstimateProjectList extends Component
             }
             if (!array_key_exists("unit_id", $this->addedEstimateData)) {
                 $this->addedEstimateData['unit_id'] = '';
+            }
+            if (!array_key_exists("rate_det", $this->addedEstimateData)) {
+                $this->addedEstimateData['rate_det'] = '';
             }
             foreach ($this->addedEstimateData as $key => $estimate) {
                 if ($key == "p_id") {
@@ -909,6 +912,7 @@ class AddedEstimateProjectList extends Component
 
     public function store($flag = '')
     {
+        //dd($this->allAddedEstimatesData);
         $this->getQtySessionData = ($this->editEstimate_id == '') ? Session()->get('modalDataV2') : Session()->get('editModalDataV2');
         if ($this->autoTotalValue != 0 || $flag == 'draft') {
             try {
@@ -935,6 +939,7 @@ class AddedEstimateProjectList extends Component
                                 'other_name' => $value['other_name'],
                                 'qty' => $value['qty'],
                                 'rate' => $value['rate'],
+                                'rate_det' => $value['rate_det'],
                                 'total_amount' => $value['total_amount'],
                                 'operation' => $value['operation'],
                                 'created_by' => Auth::user()->id,
