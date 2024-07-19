@@ -10,7 +10,7 @@ class Office extends Model
     use HasFactory;
     protected $table = "offices";
     protected $fillable = [
-        'office_name', 'department_id', 'dist_code', 'in_area', 'rural_block_code', 'gp_code', 'urban_code', 'ward_code', 'office_address', 'level_no', 'office_code','office_parent','created_by'
+        'office_name', 'department_id', 'dist_code', 'in_area', 'rural_block_code', 'gp_code', 'urban_code', 'ward_code', 'office_address', 'level_no', 'office_code', 'office_parent', 'created_by'
     ];
     public function getDepartmentName()
     {
@@ -39,4 +39,16 @@ class Office extends Model
     //     return response()->download($filename)->deleteFileAfterSend(true);
     //     // $this->reset('Items');
     // }
+
+    // Define the parent relationship
+    public function officeParent()
+    {
+        return $this->belongsTo(Office::class, 'office_parent');
+    }
+
+    // Define the children relationship
+    public function officeChildren()
+    {
+        return $this->hasMany(Office::class, 'office_parent');
+    }
 }
