@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Session;
 class CreateEstimateProject extends Component
 {
     use Actions;
-    protected $listeners = ['getRowValue', 'closeModal', 'editEstimate','addEstimate'];
+    protected $listeners = ['getRowValue', 'closeModal', 'editEstimate', 'addEstimate'];
     public $estimateData = [], $getCategory = [], $fatchDropdownData = [], $sorMasterDesc;
     public $kword = null, $selectedSORKey, $selectedCategoryId, $showTableOne = false, $addedEstimateUpdateTrack, $part_no = '';
     public $addedEstimate = [];
@@ -122,7 +122,7 @@ class CreateEstimateProject extends Component
 
     public function editEstimate($estimate_id)
     {
-      
+
         $fatchEstimateMaster = EstimateMasterV2::where([['estimate_id', $estimate_id]])->first();
         //dd($fatchEstimateMaster);
         // $fatchEstimateMaster = SORMaster::where([['estimate_id', $estimate_id], ['created_by', Auth::user()->id]])->first();
@@ -139,7 +139,7 @@ class CreateEstimateProject extends Component
             // } else {
             $fatchEstimateData = EstimatePrepareV2::where('estimate_id', $estimate_id)->where('created_by', Auth::user()->id)->orderBy('id', 'asc')->get();
             // }
-             //dd($fatchEstimateData);
+            //dd($fatchEstimateData);
             $this->emit('setFatchEstimateData', $fatchEstimateData);
         }
     }
@@ -512,7 +512,7 @@ class CreateEstimateProject extends Component
         if ($getCacheData != '') {
             $this->getSor = $getCacheData;
         } else {
-            $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () use ($id){
+            $this->getSor = Cache::remember($cacheKey, now()->addMinutes(720), function () use ($id) {
                 return DynamicSorHeader::where('id', ($id != '') ? $id : $this->estimateData['id'])->first();
             });
         }
@@ -535,23 +535,23 @@ class CreateEstimateProject extends Component
         if ($this->estimateData['qty'] != '' && $this->estimateData['rate'] != '') {
             if ($this->estimateData['item_name'] == 'SOR') {
                 if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
-                    $this->estimateData['qty'] = number_format(round($this->estimateData['qty'], 3),3);
-                    $this->estimateData['qty'] = str_replace(',', '',$this->estimateData['qty']);
-                    $this->estimateData['rate'] = number_format(round($this->estimateData['rate'], 2),2);
-                    $this->estimateData['rate'] = str_replace(',', '',$this->estimateData['rate']);
+                    $this->estimateData['qty'] = number_format(round($this->estimateData['qty'], 3), 3);
+                    $this->estimateData['qty'] = str_replace(',', '', $this->estimateData['qty']);
+                    $this->estimateData['rate'] = number_format(round($this->estimateData['rate'], 2), 2);
+                    $this->estimateData['rate'] = str_replace(',', '', $this->estimateData['rate']);
                     $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
-                    $this->estimateData['total_amount'] = number_format(round($this->estimateData['total_amount'], 2),2);
-                    $this->estimateData['total_amount'] = str_replace(',', '',$this->estimateData['total_amount']);
+                    $this->estimateData['total_amount'] = number_format(round($this->estimateData['total_amount'], 2), 2);
+                    $this->estimateData['total_amount'] = str_replace(',', '', $this->estimateData['total_amount']);
                 }
             } else {
                 if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
-                    $this->estimateData['qty'] = number_format(round($this->estimateData['qty'], 3),3);
-                    $this->estimateData['qty'] = str_replace(',', '',$this->estimateData['qty']);
-                    $this->estimateData['rate'] = number_format(round($this->estimateData['rate'], 2),2);
-                    $this->estimateData['rate'] = str_replace(',', '',$this->estimateData['rate']);
+                    $this->estimateData['qty'] = number_format(round($this->estimateData['qty'], 3), 3);
+                    $this->estimateData['qty'] = str_replace(',', '', $this->estimateData['qty']);
+                    $this->estimateData['rate'] = number_format(round($this->estimateData['rate'], 2), 2);
+                    $this->estimateData['rate'] = str_replace(',', '', $this->estimateData['rate']);
                     $this->estimateData['total_amount'] = floatval($this->estimateData['qty']) * floatval($this->estimateData['rate']);
-                    $this->estimateData['total_amount'] = number_format(round($this->estimateData['total_amount'], 2),2);
-                    $this->estimateData['total_amount'] = str_replace(',', '',$this->estimateData['total_amount']);
+                    $this->estimateData['total_amount'] = number_format(round($this->estimateData['total_amount'], 2), 2);
+                    $this->estimateData['total_amount'] = str_replace(',', '', $this->estimateData['total_amount']);
                 }
             }
         }
@@ -796,12 +796,12 @@ class CreateEstimateProject extends Component
         }
     }
 
-    public function addEstimate($data='',$parentId='')
+    public function addEstimate($data = '', $parentId = '')
     {
-      //  dd("here addestimate");
-        if(!empty($data)){
+        // dd("here addestimate");
+        if (!empty($data)) {
             $this->estimateData = $data;
-            // dd($parentId);
+            // dd( $this->estimateData);
         }
         $this->validate();
         $this->part_no = strtoupper($this->part_no);
@@ -816,15 +816,21 @@ class CreateEstimateProject extends Component
         $this->addedEstimate['other_name'] = $this->estimateData['other_name'];
         $this->addedEstimate['description'] = $this->estimateData['description'];
         $this->addedEstimate['unit_id'] = is_numeric($this->estimateData['unit_id']) ? getUnitName($this->estimateData['unit_id']) : $this->estimateData['unit_id'];
-        $this->addedEstimate['qty'] = ($this->estimateData['qty'] == '') ? 0 : (($parentId == '') ? $this->estimateData['qty'] : 1);
-        if(isset($this->estimateData['rate_det']) && $this->estimateData['rate_det'] != ''){
+
+        if (Auth::user()->department_id == 26) {
+            $this->addedEstimate['qty'] = $this->estimateData['qty'];
+        } else {
+            $this->addedEstimate['qty'] = ($this->estimateData['qty'] == '') ? 0 : (($parentId == '') ? $this->estimateData['qty'] : 1);
+        }
+
+        if (isset($this->estimateData['rate_det']) && $this->estimateData['rate_det'] != '') {
             $this->addedEstimate['rate'] = $this->estimateData['total_amount'];
-        }else{
+        } else {
             $this->addedEstimate['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
         }
         if ($this->addedEstimate['unit_id'][0] === '%') {
             $this->addedEstimate['total_amount'] = round($this->estimateData['total_amount'] / 100);
-        }else{
+        } else {
             $this->addedEstimate['total_amount'] = round($this->estimateData['total_amount']);
         }
         $this->addedEstimate['version'] = $this->estimateData['version'];
@@ -855,9 +861,9 @@ class CreateEstimateProject extends Component
             $this->fatchDropdownData['rateDetailsTypes'] = [];
         }
         // dd($this->addedEstimate);
-        if($parentId != ''){
+        if ($parentId != '') {
             $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'fatchDropdownData', 'part_no', 'editEstimate_id']);
-        }else{
+        } else {
             $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'estimateData', 'fatchDropdownData', 'selectedCategoryId', 'part_no', 'editEstimate_id']);
         }
 

@@ -119,20 +119,23 @@
                                         <td>
                                             @if ($addedEstimate['qty'] != 0)
                                                 {{ $addedEstimate['qty'] }}
-                                                @if (isset($addedEstimate['qtyUpdate']) && $addedEstimate['qtyUpdate'] === true)
-                                                    <x-button wire:click="openQtyModal({{ $key }})"
-                                                        type="button" class="btn btn-soft-primary btn-sm">
-                                                        <span class="btn-inner">
-                                                            <x-lucide-eye class="w-4 h-4 text-white-500" />
-                                                        </span>
-                                                    </x-button>
-                                                @else
-                                                    <x-button wire:click="openQtyModal({{ $key }})"
-                                                        type="button" class="btn btn-soft-primary btn-sm">
-                                                        <span class="btn-inner">
-                                                            <x-lucide-plus class="w-4 h-4 text-white-500" />
-                                                        </span>
-                                                    </x-button>
+
+                                                @if ($department_id != 26)
+                                                    @if (isset($addedEstimate['qtyUpdate']) && $addedEstimate['qtyUpdate'] === true)
+                                                        <x-button wire:click="openQtyModal({{ $key }})"
+                                                            type="button" class="btn btn-soft-primary btn-sm">
+                                                            <span class="btn-inner">
+                                                                <x-lucide-eye class="w-4 h-4 text-white-500" />
+                                                            </span>
+                                                        </x-button>
+                                                    @else
+                                                        <x-button wire:click="openQtyModal({{ $key }})"
+                                                            type="button" class="btn btn-soft-primary btn-sm">
+                                                            <span class="btn-inner">
+                                                                <x-lucide-plus class="w-4 h-4 text-white-500" />
+                                                            </span>
+                                                        </x-button>
+                                                    @endif
                                                 @endif
                                             @endif
                                         </td>

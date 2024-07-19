@@ -26,6 +26,7 @@ class AddedEstimateProjectList extends Component
     public $arrayCount = 0, $selectCheckBoxs = false, $editRowModal = false;
     public function mount()
     {
+         $this->department_id =Auth::user()->department_id;
         // if ($this->editEstimate_id == '') {
         $this->setEstimateDataToSession();
         // }
@@ -104,7 +105,7 @@ class AddedEstimateProjectList extends Component
             $this->autoCalculateTotal();
         }
     }
-
+   
     public function updateSetFetchData($fetchUpdateRateData, $update_id)
     {
        // dd($fetchUpdateRateData,$update_id);
@@ -208,14 +209,22 @@ class AddedEstimateProjectList extends Component
 
         $this->editRowId = $rowId;
         $matchedRow = null;
+        if ($this->editEstimate_id != '') {
+            $this->allAddedEstimatesData =  Session()->get('editProjectEstimateV2Data' . $this->editEstimate_id);
+        } else {
+            $this->allAddedEstimatesData = Session()->get('addedProjectEstimateV2Data', $this->allAddedEstimatesData);
+        }
+
+      //  dd( $this->allAddedEstimatesData);
         foreach ($this->allAddedEstimatesData as $estimate) {
-            if (isset($estimate['array_id']) && $estimate['array_id'] == $rowId) {
+            if (isset($estimate['array_id']) && $estimate['array_id'] ==  $this->editRowId) {
                 $matchedRow = $estimate;
                 $matchedRow['is_v2_data'] = true;
                 break;
             }
         }
         $this->editRowData = $matchedRow;
+
         $this->editRowModal = !$this->editRowModal;
     }
     public function closeEditModal()

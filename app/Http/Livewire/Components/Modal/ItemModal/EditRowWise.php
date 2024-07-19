@@ -50,8 +50,12 @@ class EditRowWise extends Component
         } else {
             $this->modalName = ($this->featureType == "RateAnalysis" && $updateRateAnalysisId === null) ? "RateAnalysisModal" : (($this->featureType == "RateAnalysis" && $updateRateAnalysisId !== null) ? "RateAnalysisEditModal" : (($this->featureType === null && $updateRateAnalysisId === null) ? "modalData" : (($this->featureType === null && $updateRateAnalysisId !== null) ? "editModalData" : "modalData")));
         }
+
+
         $this->storedSessionData = Session()->get($this->modalName);
+       // dd($this->editRowData);
         if (!empty($this->editRowData)) {
+
             if (isset($this->editRowData['is_v2_data'])) {
                 $this->model = $this->editRowData['is_v2_data'] ? EstimatePrepareV2::class : EstimatePrepare::class;
             } else {
@@ -59,6 +63,7 @@ class EditRowWise extends Component
             }
             $this->tableName = isset($this->editRowData['is_v2_data']) && $this->editRowData['is_v2_data'] ? 'estimate_prepares_v2' : 'estimate_prepares';
             $this->dataArray['item_name'] = !empty($this->editRowData['item_name']) ? $this->editRowData['item_name'] : null;
+            //dd($this->dataArray['item_name']);
             $this->dataArray['existingQty'] = $this->editRowData['qty'] ?? null;
             if (isset($this->editRowData['qtyUpdate'])) {
                 $this->dataArray['qtyUpdate'] = $this->editRowData['qtyUpdate'];
@@ -66,7 +71,7 @@ class EditRowWise extends Component
                 $this->dataArray['qtyUpdate'] = false;
             }
             $this->dataArray['page_no'] = $this->editRowData['page_no'] ?? null;
-            if ($this->dataArray['item_name'] == 'Rate') {
+            if ($this->dataArray['item_name'] == 'Rate' || $this->dataArray['item_name'] == '4') {
                 if (isset($this->editRowData['qtyUpdate'])) {
                     $this->dataArray['qtyUpdate'] = $this->editRowData['qtyUpdate'];
                 }
@@ -87,7 +92,8 @@ class EditRowWise extends Component
                     $this->dataArray['rate_type'] = $this->editRowData['rate_type'];
                 }
                 $this->calculateValue();
-            } elseif ($this->dataArray['item_name'] == 'SOR') {
+            } elseif ($this->dataArray['item_name'] == 'SOR' || $this->dataArray['item_name'] == '1') {
+                
                 if (isset($this->editRowData['qtyUpdate'])) {
                     $this->dataArray['qtyUpdate'] = $this->editRowData['qtyUpdate'];
                 }
@@ -112,7 +118,8 @@ class EditRowWise extends Component
                 $this->dataArray['rate'] = $this->editRowData['rate'];
                 $this->dataArray['total_amount'] = $this->editRowData['total_amount'];
                 $this->calculateValue();
-            } elseif ($this->dataArray['item_name'] == 'Other') {
+
+            } elseif ($this->dataArray['item_name'] == 'Other' || $this->dataArray['item_name'] == '2') {
                 if (isset($this->editRowData['qtyUpdate'])) {
                     $this->dataArray['qtyUpdate'] = $this->editRowData['qtyUpdate'];
                 }
@@ -124,7 +131,7 @@ class EditRowWise extends Component
                 $this->dataArray['rate'] = $this->editRowData['rate'];
                 $this->dataArray['total_amount'] = $this->editRowData['total_amount'];
                 $this->dataArray['unit_id'] = $this->editRowData['unit_id'];
-            } elseif ($this->dataArray['item_name'] == 'Estimate') {
+            } elseif ($this->dataArray['item_name'] == 'Estimate' || $this->dataArray['item_name'] == '3' ) {
                 if (isset($this->editRowData['qtyUpdate'])) {
                     $this->dataArray['qtyUpdate'] = $this->editRowData['qtyUpdate'];
                 }
@@ -139,6 +146,7 @@ class EditRowWise extends Component
                 $this->dataArray['estimate_no'] = $this->editRowData['estimate_no'];
                 $this->getEstimateDetails();
             }
+            //dd($this->dataArray);
         }
     }
     public function OpenConfirmModal()

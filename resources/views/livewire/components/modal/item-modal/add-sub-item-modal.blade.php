@@ -185,6 +185,17 @@
                                     @endif
                                 </div>
                             </div>
+                            @if ($department_id == 26)
+                            <div class="col">
+                                <div class="form-group">
+                                    <x-input wire:key="sor_qty" label="{{ trans('cruds.estimate.fields.quantity') }}"
+                                        placeholder="{{ trans('cruds.estimate.fields.quantity') }}"
+                                        wire:model.defer="subItemData.qty"    wire:input="checkQty($event.target.value, {{ $rowParentId }})" wire:blur="calculateValue"
+                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '');" />
+                                </div>
+                            </div>
+                                    
+                            @else
                             <div class="col">
                                 <div class="form-group">
                                     <x-input wire:key="sor_qty" label="{{ trans('cruds.estimate.fields.quantity') }}"
@@ -192,7 +203,10 @@
                                         wire:model.defer="subItemData.qty" wire:blur="calculateValue"
                                         oninput="this.value = this.value.replace(/[^0-9.]/g, '');" />
                                 </div>
-                            </div>
+                            </div>    
+                            @endif
+                        
+                           
                             <div class="col">
                                 <div class="form-group">
                                     <x-input wire:key="sor_rate"

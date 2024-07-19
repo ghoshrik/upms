@@ -11,8 +11,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    {{-- @dd($dataArray); --}}
                     @if (!empty($dataArray))
-                        @if ($dataArray['item_name'] == 'SOR')
+                        @if ($dataArray['item_name'] == 'SOR' || $dataArray['item_name'] == '1' )
                             <div class="row" wire:key='SOR' style="transition: all 2s ease-out"
                                 x-data="{ showSearch: false }">
                                 <div class="col">
@@ -188,7 +189,7 @@
                                 </div>
                             </div>
                         @endif
-                        @if ($dataArray['item_name'] == 'Other')
+                        @if ($dataArray['item_name'] == 'Other' || $dataArray['item_name'] == '2')
                             <div class="row" wire:key='others'>
                                 <div class="col">
                                     <div class="form-group">
@@ -240,7 +241,7 @@
                         {{-- Others Field end --}}
 
                         {{-- Rate Field Start --}}
-                        @if ($dataArray['item_name'] == 'Rate')
+                        @if ($dataArray['item_name'] == 'Rate' || $dataArray['item_name'] == '4')
                             <div class="row" wire:key='Rate'>
                                 <div class="col">
                                     <div class="form-group" wire:key="rateDeptGroup">
@@ -334,7 +335,7 @@
                         {{-- Rate Field End --}}
 
                         {{-- Composite SOR Field Start --}}
-                        @if ($dataArray['item_name'] == 'Composite SOR')
+                        @if ($dataArray['item_name'] == 'Composite SOR' || $dataArray['item_name'] == '0')
                             <div class="row" wire:key='C-SOR' style="transition: all 2s ease-out">
                                 <div class="col">
                                     <div class="form-group">
@@ -423,7 +424,7 @@
                         {{-- Composite SOR Field End --}}
 
                         {{-- Carriages Field Start --}}
-                        @if ($dataArray['item_name'] == 'Carriages')
+                        @if ($dataArray['item_name'] == 'Carriages' || $dataArray['item_name'] == '0')
                             <div class="row" wire:key='Carriages' style="transition: all 2s ease-out">
 
                                 <div class="col-md-2 col-lg-2 col-sm-3">
@@ -517,7 +518,7 @@
                                 </div>
                             </div>
                         @endif
-                        @if ($dataArray['item_name'] == 'Copy Rate')
+                        @if ($dataArray['item_name'] == 'Copy Rate' || $dataArray['item_name'] == '0')
                             <div class="row" wire:key='copy_rate'>
                                 <div class="col">
                                     <div class="form-group" wire:key="copyrateDeptGroup">
@@ -553,7 +554,7 @@
                                 </div>
                             </div>
                         @endif
-                        @if ($dataArray['item_name'] == 'Estimate')
+                        @if ($dataArray['item_name'] == 'Estimate' || $dataArray['item_name'] == '3')
                             <div class="row" wire:key='{{ $dataArray['item_name'] }}'>
                                 <div class="col">
                                     <div class="form-group">
