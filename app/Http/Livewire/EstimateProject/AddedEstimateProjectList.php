@@ -2,18 +2,19 @@
 
 namespace App\Http\Livewire\EstimateProject;
 
-use App\Models\EstimatePrepare;
-use App\Models\EstimateUserAssignRecord;
-use App\Models\SORMaster as ModelsSORMaster;
-use ChrisKonnertz\StringCalc\StringCalc;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use WireUi\Traits\Actions;
+use App\Models\EstimateLog;
+use App\Models\EstimatePrepare;
+use Illuminate\Support\Facades\Auth;
+use App\Models\EstimateUserAssignRecord;
+use ChrisKonnertz\StringCalc\StringCalc;
+use App\Models\SORMaster as ModelsSORMaster;
 
 class AddedEstimateProjectList extends Component
 {
     use Actions;
-    protected $listeners = ['closeUnitModal', 'setFatchEstimateData', 'submitGrandTotal','closeAndReset'];
+    protected $listeners = ['closeUnitModal', 'setFatchEstimateData', 'submitGrandTotal', 'closeAndReset'];
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $part_no;
@@ -103,8 +104,9 @@ class AddedEstimateProjectList extends Component
         $this->emit('openModal', $estimate_id);
     }
 
-    public function viewRateModal($rate_no){
-        $this->emit('openRateAnalysisModal',$rate_no);
+    public function viewRateModal($rate_no)
+    {
+        $this->emit('openRateAnalysisModal', $rate_no);
     }
 
     public function openQtyModal($key)
@@ -119,7 +121,7 @@ class AddedEstimateProjectList extends Component
                     $this->sendArrayDesc = $this->allAddedEstimatesData[$key]['description'];
                 } elseif (!empty($this->allAddedEstimatesData[$key]['other_name'])) {
                     $this->sendArrayDesc = $this->allAddedEstimatesData[$key]['other_name'];
-                }elseif(!empty($this->allAddedEstimatesData[$key]['estimate_no'])){
+                } elseif (!empty($this->allAddedEstimatesData[$key]['estimate_no'])) {
                     $this->sendArrayDesc = getEstimateDescription($this->allAddedEstimatesData[$key]['estimate_no']);
                 }
 
@@ -168,7 +170,7 @@ class AddedEstimateProjectList extends Component
     public function closeAndReset($grandtotal, $key)
     {
         if (!empty($grandtotal) || !empty($key)) {
-            $grandtotal =0;
+            $grandtotal = 0;
             foreach ($this->allAddedEstimatesData as $index => $estimateData) {
                 if ($estimateData['array_id'] === $this->sendArrayKey) {
                     $this->allAddedEstimatesData[$index]['qty'] = ($grandtotal == 0) ? 1 : $grandtotal;
@@ -267,7 +269,7 @@ class AddedEstimateProjectList extends Component
             $this->allAddedEstimatesData[$key]['qty'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['qty']);
             $this->allAddedEstimatesData[$key]['rate'] = number_format(round($this->allAddedEstimatesData[$key]['rate'], 2), 2);
             $this->allAddedEstimatesData[$key]['rate'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['rate']);
-            $this->allAddedEstimatesData[$key]['total_amount'] = (str_contains($this->allAddedEstimatesData[$key]['unit_id'], '%')) ? (($this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'])/100) : $this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'];
+            $this->allAddedEstimatesData[$key]['total_amount'] = (str_contains($this->allAddedEstimatesData[$key]['unit_id'], '%')) ? (($this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate']) / 100) : $this->allAddedEstimatesData[$key]['qty'] * $this->allAddedEstimatesData[$key]['rate'];
             $this->allAddedEstimatesData[$key]['total_amount'] = number_format(round($this->allAddedEstimatesData[$key]['total_amount'], 2), 2);
             $this->allAddedEstimatesData[$key]['total_amount'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['total_amount']);
             // $this->allAddedEstimatesData[$key]['rate'] = $this->allAddedEstimatesData[$key]['rate'];
@@ -644,9 +646,15 @@ class AddedEstimateProjectList extends Component
                     $intId = ($this->editEstimate_id == '') ? random_int(100000, 999999) : $this->editEstimate_id;
                     if (($this->editEstimate_id != '') ? ModelsSORMaster::where('estimate_id', $intId)->update(['sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'created_by' => Auth::user()->id]) : ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'dept_id' => Auth::user()->department_id, 'part_no' => $this->part_no, 'created_by' => Auth::user()->id])) {
                         // if (true) {
-                        // $insert = [];
-                        // $existingEstimates = EstimatePrepare::where('estimate_id', $intId)->get();
                         if ($this->editEstimate_id != '') {
+                            $existingEstimates = EstimatePrepare::where('estimate_id', $intId)->get();
+                            $existingEstimatesJson = $existingEstimates->toJson();
+                            EstimateLog::create([
+                                'estimate_id' => $intId,
+                                'old_data' => json_encode($existingEstimatesJson),
+                                'created_by' => $existingEstimates[0]['created_by'],
+                                'updated_by' => Auth::user()->id,
+                            ]);
                             EstimatePrepare::where('estimate_id', $intId)->delete();
                         }
                         foreach ($this->allAddedEstimatesData as $key => $value) {
@@ -732,13 +740,13 @@ class AddedEstimateProjectList extends Component
 
                         $data = [
                             'estimate_id' => $intId,
-                            'estimate_user_type' => 5,
-                            'status' => 1,
+                            'estimate_user_type' => '',
+                            'status' => ($flag == 'draft') ? 12 : 1,
                             'user_id' => Auth::user()->id,
                         ];
-                        $getData = EstimateUserAssignRecord::where([['estimate_id', $intId],['is_done',0]])->get();
+                        $getData = EstimateUserAssignRecord::where([['estimate_id', $intId], ['is_done', 0]])->get();
                         if (count($getData) == 1) {
-                            EstimateUserAssignRecord::where([['estimate_id', $intId],['is_done',0]])->update(['status' => ($flag == 'draft') ? 12 : 1]);
+                            EstimateUserAssignRecord::where([['estimate_id', $intId], ['is_done', 0]])->update(['status' => ($flag == 'draft') ? 12 : 1]);
                         } else {
                             EstimateUserAssignRecord::create($data);
                         }
