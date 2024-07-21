@@ -27,7 +27,7 @@
             </x-select>
         </div>
         <div class="col-span-1 sm:col-span-2">
-            <x-textarea wire:model="userAssignRemarks" label="Remarks" placeholder="Your Remarks" />
+            <x-textarea wire:model.defer="userAssignRemarks" label="Remarks" placeholder="Your Remarks" />
         </div>
     </div>
     <x-slot name="footer">

@@ -34,7 +34,7 @@ class RecomenderDraftTable extends DataTableComponent
                 ->format(fn ($row) => round($row, 10, 2))
                 ->sortable(),
             Column::make("Recomender Cost", "estimate_id")
-                ->format(fn($value, $row, Column $column) => view('livewire.components.data-table-view.estimate-recomender.recomender-cost')->withValue($value))
+                // ->format(fn($value, $row, Column $column) => view('livewire.components.data-table-view.estimate-recomender.recomender-cost')->withValue($value))
                 ->sortable(),
             Column::make("Status","SOR.getEstimateStatus.status")
                 ->sortable()
@@ -42,8 +42,8 @@ class RecomenderDraftTable extends DataTableComponent
                 ->html(),
             Column::make("Remarks","comments"),
             Column::make("Actions", "estimate_id")
-            ->format(
-                fn($value, $row, Column $column) => view('livewire.action-components.estimate-recomender.draft-table-buttons')->withValue($value))
+            // ->format(
+            //     fn($value, $row, Column $column) => view('livewire.action-components.estimate-recomender.draft-table-buttons')->withValue($value))
         ];
     }
     public $buttonGroupOpen = false;

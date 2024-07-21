@@ -2,14 +2,23 @@
 
 namespace App\Http\Livewire\EstimateProject\DataTable;
 
-use Illuminate\Support\Carbon;
 use App\Models\EstimatePrepare;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
-use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
-use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
-use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+use PowerComponents\LivewirePowerGrid\Button;
+
+use PowerComponents\LivewirePowerGrid\Column;
+use PowerComponents\LivewirePowerGrid\Exportable;
+
+use PowerComponents\LivewirePowerGrid\Footer;
+use PowerComponents\LivewirePowerGrid\Header;
+use PowerComponents\LivewirePowerGrid\PowerGrid;
+use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
+use PowerComponents\LivewirePowerGrid\Rules\Rule;
+use PowerComponents\LivewirePowerGrid\Rules\RuleActions;use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 
 final class EstimateProjectTable extends PowerGridComponent
 {
@@ -21,7 +30,7 @@ final class EstimateProjectTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Setup Table's general features
     |
-    */
+     */
     public function setUp(): array
     {
         $this->showCheckBox();
@@ -43,11 +52,11 @@ final class EstimateProjectTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Provides data to your Table using a Model or Collection
     |
-    */
+     */
 
     public function datasource(): Builder
     {
-        return EstimatePrepare::query()
+        $query = EstimatePrepare::query()
             ->select(
                 'estimate_masters.id',
                 'estimate_masters.estimate_id',
@@ -58,12 +67,31 @@ final class EstimateProjectTable extends PowerGridComponent
             ->join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'estimate_prepares.estimate_id')
             ->join('estimate_masters', 'estimate_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
             ->join('estimate_statuses', 'estimate_statuses.id', '=', 'estimate_masters.status')
-            ->where('estimate_user_assign_records.estimate_user_type', '=', 5)
-            ->whereIn('estimate_masters.status', [1, 10, 12])
-            ->where('estimate_prepares.created_by', Auth::user()->id)
-            ->groupBy('estimate_masters.estimate_id','estimate_masters.id','estimate_statuses.status');
+            ->groupBy('estimate_masters.estimate_id', 'estimate_masters.id', 'estimate_statuses.status');
+        if (Auth::user()->can('create estimate')) {
+            // dd('if');
+            $query
+            // ->where('estimate_user_assign_records.estimate_user_type', '=', 5)
+                ->whereIn('estimate_masters.status', [1, 10, 12])
+                ->where('estimate_prepares.created_by', Auth::user()->id);
+        } elseif (Auth::user()->can('modify estimate')) {
+            // dd('elseif');
+            $query->where(function ($query) {
+                $query->where('estimate_user_assign_records.user_id', Auth::user()->id)
+                    ->orWhere('estimate_user_assign_records.assign_user_id', Auth::user()->id);
+            })
+                ->where('estimate_masters.is_verified', '=', 0)
+                ->where(function ($query) {
+                    $query->where('estimate_masters.status', 2)
+                        ->orWhere('estimate_masters.status', 4)
+                        ->orWhere('estimate_masters.status', 6);
+                })
+                ->where('estimate_user_assign_records.is_done', 0);
+        }else{
+            dd('else');
+        }
+        return $query;
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -71,7 +99,7 @@ final class EstimateProjectTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Configure here relationships to be used by the Search and Table Filters.
     |
-    */
+     */
 
     /**
      * Relationship search.
@@ -93,18 +121,18 @@ final class EstimateProjectTable extends PowerGridComponent
     | ❗ IMPORTANT: When using closures, you must escape any value coming from
     |    the database using the `e()` Laravel Helper function.
     |
-    */
+     */
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
             ->addColumn('id')
             ->addColumn('estimate_masters.estimate_id')
             ->addColumn('SOR.sorMasterDesc')
-            // ->addColumn('total_amount', function ($row) {
-            //     return round($row->total_amount, 2);
-            // })
-            ->addColumn('SOR.getEstimateStatus.status',function ($row){
-                return '<span class="badge badge-pill bg-success">'.$row->status.'</span>';
+        // ->addColumn('total_amount', function ($row) {
+        //     return round($row->total_amount, 2);
+        // })
+            ->addColumn('SOR.getEstimateStatus.status', function ($row) {
+                return '<span class="badge badge-pill bg-success">' . $row->status . '</span>';
             });
     }
 
@@ -115,9 +143,9 @@ final class EstimateProjectTable extends PowerGridComponent
     | Include the columns added columns, making them visible on the Table.
     | Each column can be configured with properties, filters, actions...
     |
-    */
+     */
 
-     /**
+    /**
      * PowerGrid Columns.
      *
      * @return array<int, Column>
@@ -137,12 +165,12 @@ final class EstimateProjectTable extends PowerGridComponent
             //     ->sortable(),
 
             Column::make('Status', 'SOR.getEstimateStatus.status')
-            ->sortable(),
+                ->sortable(),
 
             // Column::make("Actions", "estimate_id"),
 
         ]
-;
+        ;
     }
 
     /*
@@ -151,39 +179,36 @@ final class EstimateProjectTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Enable the method below only if the Routes below are defined in your app.
     |
-    */
+     */
 
-     /**
+    /**
      * PowerGrid EstimatePrepare Action Buttons.
      *
      * @return array<int, Button>
      */
 
-
     public function actions(): array
     {
-       return [
+        return [
 
-        //    Button::make('edit', 'Edit')
-        //        ->class('bg-indigo-500 cursor-pointer text-dark px-3 py-2.5 m-1 rounded text-sm'),
+            //    Button::make('edit', 'Edit')
+            //        ->class('bg-indigo-500 cursor-pointer text-dark px-3 py-2.5 m-1 rounded text-sm'),
             //    ->route('estimate-prepare.edit', ['estimate-prepare' => 'id']),
 /*
-           Button::make('destroy', 'Delete')
-               ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
-               ->route('estimate-prepare.destroy', ['estimate-prepare' => 'id'])
-               ->method('delete')
-               */
-        Button::add('View')
-            ->bladeComponent('view', ['id' => 'estimate_id']),
-        Button::add('Forward')
-            ->bladeComponent('forward-button', ['id' => 'estimate_id']),
-        Button::add('Edit')
-        ->bladeComponent('edit-button', ['id' => 'estimate_id','action'=>'edit']),
+Button::make('destroy', 'Delete')
+->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
+->route('estimate-prepare.destroy', ['estimate-prepare' => 'id'])
+->method('delete')
+ */
+            Button::add('View')
+                ->bladeComponent('view', ['id' => 'estimate_id']),
+            Button::add('Forward')
+                ->bladeComponent('forward-button', ['id' => 'estimate_id']),
+            Button::add('Edit')
+                ->bladeComponent('edit-button', ['id' => 'estimate_id', 'action' => 'edit']),
         ];
 
-
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -191,9 +216,9 @@ final class EstimateProjectTable extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Enable the method below to configure Rules for your Table and Action Buttons.
     |
-    */
+     */
 
-     /**
+    /**
      * PowerGrid EstimatePrepare Action Rules.
      *
      * @return array<int, RuleActions>
@@ -202,16 +227,16 @@ final class EstimateProjectTable extends PowerGridComponent
     /*
     public function actionRules(): array
     {
-       return [
+    return [
 
-           //Hide button edit for ID 1
-            /*Rule::button('edit')
-                ->when(fn($estimate-prepare) => $estimate-prepare->id === 1)
-                ->hide(),
-            Rule::button('View')
-            ->when()
-            ->bladeComponent('components.data-table-components.buttons.view',['estimate_id'=>'estimate_id']),
-        ];
+    //Hide button edit for ID 1
+    /*Rule::button('edit')
+    ->when(fn($estimate-prepare) => $estimate-prepare->id === 1)
+    ->hide(),
+    Rule::button('View')
+    ->when()
+    ->bladeComponent('components.data-table-components.buttons.view',['estimate_id'=>'estimate_id']),
+    ];
     }*/
     public function view($estimate_id)
     {
@@ -219,10 +244,10 @@ final class EstimateProjectTable extends PowerGridComponent
     }
     public function forward($estimate_id)
     {
-        $this->emit('openForwardModal',['estimate_id'=>$estimate_id,'forward_from'=>'EP']);
+        $this->emit('openForwardModal', ['estimate_id' => $estimate_id, 'forward_from' => 'EP']);
     }
     public function edit($id)
     {
-        $this->emit('openForm', ['formType'=>'edit', 'id'=>$id]);
+        $this->emit('openForm', ['formType' => 'edit', 'id' => $id]);
     }
 }
