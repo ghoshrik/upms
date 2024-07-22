@@ -139,7 +139,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('estimate-forwarder', EstimateForwarder::class)->name('estimate-forwarder');
         });
 
-        Route::group(['middleware' => ['role:Estimate Preparer|Sub-Division Office']], function () {
+        Route::group(['middleware' => ['role:Estimate Preparer|Sub-Division Office|Division Office|Circle Office|Head of Directorate']], function () {
             Route::get('estimate-project', EstimateProject::class)->name('estimate-project');
             //qty analysis api routes
             Route::post('/store-dynamic-unit-modal-data', [ApiController::class, 'unitQtyAdded'])->name('store-dynamic-unit-modal-data');

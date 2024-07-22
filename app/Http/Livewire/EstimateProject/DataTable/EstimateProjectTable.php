@@ -6,12 +6,9 @@ use App\Models\EstimatePrepare;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
 use PowerComponents\LivewirePowerGrid\Button;
-
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Exportable;
-
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
@@ -68,27 +65,24 @@ final class EstimateProjectTable extends PowerGridComponent
             ->join('estimate_masters', 'estimate_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
             ->join('estimate_statuses', 'estimate_statuses.id', '=', 'estimate_masters.status')
             ->groupBy('estimate_masters.estimate_id', 'estimate_masters.id', 'estimate_statuses.status');
+        // ->where('estimate_user_assign_records.estimate_user_type', '=', 5)
         if (Auth::user()->can('create estimate')) {
-            // dd('if');
-            $query
-            // ->where('estimate_user_assign_records.estimate_user_type', '=', 5)
-                ->whereIn('estimate_masters.status', [1, 10, 12])
+            $query->whereIn('estimate_masters.status', [1, 10, 12])
                 ->where('estimate_prepares.created_by', Auth::user()->id);
         } elseif (Auth::user()->can('modify estimate')) {
-            // dd('elseif');
             $query->where(function ($query) {
                 $query->where('estimate_user_assign_records.user_id', Auth::user()->id)
                     ->orWhere('estimate_user_assign_records.assign_user_id', Auth::user()->id);
-            })
-                ->where('estimate_masters.is_verified', '=', 0)
+            })->where('estimate_masters.is_verified', '=', 0)
                 ->where(function ($query) {
                     $query->where('estimate_masters.status', 2)
                         ->orWhere('estimate_masters.status', 4)
                         ->orWhere('estimate_masters.status', 6);
                 })
                 ->where('estimate_user_assign_records.is_done', 0);
-        }else{
-            dd('else');
+        } else {
+            $query->where('estimate_user_assign_records.user_id', Auth::user()->id)
+                ->orWhere('estimate_user_assign_records.assign_user_id', Auth::user()->id);
         }
         return $query;
     }
@@ -189,24 +183,38 @@ final class EstimateProjectTable extends PowerGridComponent
 
     public function actions(): array
     {
-        return [
 
-            //    Button::make('edit', 'Edit')
-            //        ->class('bg-indigo-500 cursor-pointer text-dark px-3 py-2.5 m-1 rounded text-sm'),
-            //    ->route('estimate-prepare.edit', ['estimate-prepare' => 'id']),
+        //    Button::make('edit', 'Edit')
+        //        ->class('bg-indigo-500 cursor-pointer text-dark px-3 py-2.5 m-1 rounded text-sm'),
+        //    ->route('estimate-prepare.edit', ['estimate-prepare' => 'id']),
 /*
 Button::make('destroy', 'Delete')
 ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
 ->route('estimate-prepare.destroy', ['estimate-prepare' => 'id'])
 ->method('delete')
  */
-            Button::add('View')
-                ->bladeComponent('view', ['id' => 'estimate_id']),
-            Button::add('Forward')
-                ->bladeComponent('forward-button', ['id' => 'estimate_id']),
-            Button::add('Edit')
-                ->bladeComponent('edit-button', ['id' => 'estimate_id', 'action' => 'edit']),
-        ];
+        $buttonData = [];
+        if (Auth::user()->can('create estimate')) {
+            $buttonData = [
+                Button::add('View')
+                    ->bladeComponent('view', ['id' => 'estimate_id']),
+                Button::add('Forward')
+                    ->bladeComponent('forward-button', ['id' => 'estimate_id']),
+                Button::add('Edit')
+                    ->bladeComponent('edit-button', ['id' => 'estimate_id', 'action' => 'edit']),
+            ];
+        } else {
+            $buttonData = [];
+        }
+        return $buttonData;
+        // return [
+        // Button::add('View')
+        //     ->bladeComponent('view', ['id' => 'estimate_id']),
+        // Button::add('Forward')
+        //     ->bladeComponent('forward-button', ['id' => 'estimate_id']),
+        // Button::add('Edit')
+        //     ->bladeComponent('edit-button', ['id' => 'estimate_id', 'action' => 'edit']),
+        // ];
 
     }
 

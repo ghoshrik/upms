@@ -133,7 +133,9 @@ class CreateEstimateProject extends Component
             // if (Session()->has('editProjectEstimateData' . $estimate_id)) {
             //     $fatchEstimateData = Session()->get('editProjectEstimateData' . $estimate_id);
             // } else {
-            $fatchEstimateData = EstimatePrepare::where('estimate_id', $estimate_id)->where('created_by', Auth::user()->id)->orderBy('id', 'asc')->get();
+            $fatchEstimateData = EstimatePrepare::where('estimate_id', $estimate_id)
+            // ->where('created_by', Auth::user()->id)
+            ->orderBy('id', 'asc')->get();
             // }
             // dd($fatchEstimateData);
             $this->emit('setFatchEstimateData', $fatchEstimateData);
