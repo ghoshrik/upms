@@ -87,10 +87,7 @@ class AddSubItemModal extends Component
      
         $remainingQty = $parentQty - $childSum;
         if ($newqty > $remainingQty) {
-            $this->notification()->error(
-                $title = 'Error !!!',
-               $description = "Subrow quantity exceeds remaining allowable quantity = {$remainingQty}"
-            );
+            session()->flash('error', "Subrow allowable quantity : {$remainingQty}");
             $this->subItemData['qty']="";
         }else{
             $this->subItemData['qty'] = $newqty;
@@ -656,10 +653,12 @@ class AddSubItemModal extends Component
             if($this->subItemData['qty'] != ''){
                 $this->emit('addEstimate', $this->subItemData, $this->rowParentId);
                }else{
-                $this->notification()->error(
-                    $title = 'Error !!!',
-                    $description = 'Qty required!.'
-                );
+                // $this->notification()->error(
+                //     $title = 'Error !!!',
+                //     $description = 'Qty required!.'
+                // );
+                session()->flash('error', "Quantity Cannot be Empty!");
+                
                }
         }else{
             $this->emit('addEstimate', $this->subItemData, $this->rowParentId);

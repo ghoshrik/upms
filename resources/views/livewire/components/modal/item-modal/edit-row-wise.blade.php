@@ -1,4 +1,5 @@
 <div>
+ 
     <div class="modal" id="{{ $editRowId }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-xl" role="document">
@@ -6,13 +7,21 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">
                         Edit Row {{ $editRowId }}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    {{-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
-                    </button>
+                    </button> --}}
+                    @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                    </div>
+                @endif
                 </div>
+              
                 <div class="modal-body">
                     {{-- @dd($dataArray); --}}
                     @if (!empty($dataArray))
+
+                        {{-- @dd($dataArray); --}}
                         @if ($dataArray['item_name'] == 'SOR' || $dataArray['item_name'] == '1' )
                             <div class="row" wire:key='SOR' style="transition: all 2s ease-out"
                                 x-data="{ showSearch: false }">
@@ -162,6 +171,36 @@
                                         @endif
                                     </div>
                                 </div>
+                                @if ($department_id == 26)
+                           
+                                <div class="col">
+                                    @if($rowSubrow_PId != '0' || $rowSubrow_PId != 0 )
+                                    <div class="form-group">
+                                    <x-input 
+                                        wire:key="sor_qty"
+                                        label="{{ trans('cruds.estimate.fields.quantity') }}"
+                                        placeholder="{{ trans('cruds.estimate.fields.quantity') }}"
+                                        wire:model.defer="dataArray.qty"
+                                        wire:input="checkQty($event.target.value, {{ $rowSubrow_ID }})"
+                                        wire:blur="calculateValue"
+                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '');" 
+                                    />
+                                    
+                                    </div>
+                                @else
+                                <div class="form-group">
+                                    <x-input 
+                                        wire:key="sor_qty"
+                                        label="{{ trans('cruds.estimate.fields.quantity') }}"
+                                        placeholder="{{ trans('cruds.estimate.fields.quantity') }}"
+                                        wire:model.defer="dataArray.qty"
+                                        wire:blur="calculateValue"
+                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '');" 
+                                    />
+                                </div>
+                                @endif
+                                </div>
+                                @else
                                 <div class="col">
                                     <div class="form-group">
                                         <x-input wire:key="sor_qty"
@@ -171,6 +210,7 @@
                                             oninput="this.value = this.value.replace(/[^0-9.]/g, '');" />
                                     </div>
                                 </div>
+                                @endif
                                 <div class="col">
                                     <div class="form-group">
                                         <x-input wire:key="sor_rate"
@@ -687,6 +727,7 @@
             $tableNo = isset($dataArray['table_no']) ? $dataArray['table_no'] : $selectSor['table_no'];
             $pageNo = isset($dataArray['page_no']) ? $dataArray['page_no'] : $selectSor['page_no'];
         @endphp
+      
         <script>
             var editRowDataItemName = @json($editRowData['item_name']);
             document.getElementById("closeBtn").addEventListener("click", function() {

@@ -5,21 +5,24 @@ namespace App\Http\Livewire\Components\Modal\ItemModal;
 use Livewire\Component;
 use App\Models\Department;
 use App\Models\UnitMaster;
+use WireUi\Traits\Actions;
 use App\Models\RatesMaster;
 use App\Models\RatesAnalysis;
 use App\Models\EstimatePrepare;
-use App\Models\EstimatePrepareV2;
 use App\Models\SorCategoryType;
 use App\Models\DynamicSorHeader;
+use App\Models\EstimatePrepareV2;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+//use WireUi\Traits\Actions;
 
 class EditRowWise extends Component
 {
+    use Actions;
     public $editRowId, $editRowData, $fatchDropdownData = [], $dataArray = [], $selectSor = [];
     public $getCompositeDatas = [], $fetchChildSor = false, $isParent = false, $counterForItemNo = 0, $viewModal = false, $qtyCnfModal = false;
     public $searchKeyWord = '';
-    public $qtyval, $editEstimate_id, $editRate_id, $featureType, $storedSessionData, $modalName, $searchStyle, $identifier;
+    public $qtyval, $editEstimate_id, $editRate_id, $featureType, $storedSessionData, $modalName, $searchStyle, $identifier,$department_id,$rowSubrow_ID,$rowSubrow_PId;
     protected $listeners = [
         'getRowValues',
         'actionconfirm' => 'confirmAction'
@@ -28,6 +31,8 @@ class EditRowWise extends Component
 
     public function mount()
     {
+       
+        $this->department_id= Auth::user()->department_id;
         $allDept = Cache::get('allDept');
         if ($allDept != '') {
             $this->fatchDropdownData['departments'] = $allDept;
@@ -53,9 +58,10 @@ class EditRowWise extends Component
 
 
         $this->storedSessionData = Session()->get($this->modalName);
-       // dd($this->editRowData);
+      
         if (!empty($this->editRowData)) {
-
+             $this->rowSubrow_ID=$this->editRowData['id'];
+             $this->rowSubrow_PId=$this->editRowData['p_id'];
             if (isset($this->editRowData['is_v2_data'])) {
                 $this->model = $this->editRowData['is_v2_data'] ? EstimatePrepareV2::class : EstimatePrepare::class;
             } else {
@@ -149,6 +155,53 @@ class EditRowWise extends Component
             //dd($this->dataArray);
         }
     }
+
+    
+    public function checkQty($newqty, $parentRowId)
+    {
+       //dd($newqty, $parentRowId);
+    if (!empty($newqty)) {
+       
+        if ($this->editEstimate_id != '') {
+            $this->allData =  Session()->get('editProjectEstimateV2Data' . $this->editEstimate_id);
+        } else {
+            $this->allData = Session()->get('addedProjectEstimateV2Data');
+        }
+
+
+       //dd( $this->allData);
+        $parentQty = null;
+        $childSum = 0;
+        foreach ($this->allData as $item) {
+            if ($item['p_id'] == 0) {
+                $parentQty = $item['qty'];
+                break; 
+            }
+        }
+        if ($parentQty === null) {
+            $this->addError('qty', 'Error: Parent row not found.');
+            return false; 
+        }
+        foreach ($this->allData as $item) {
+            if ($item['p_id'] != 0 && $item['id'] == $parentRowId) {
+                $childSum += $item['qty'];
+            }
+        }
+     
+        //dd( $childSum);
+        $remainingQty = $parentQty - $childSum;
+        if ($newqty > $remainingQty) {
+            // $this->notification()->error(
+            //     $title = 'Error !!!',
+            //    $description = "Subrow quantity should be less than = {$remainingQty}!"
+            // );
+            session()->flash('error', "Subrow allowable quantity : {$remainingQty}");
+            $this->dataArray['qty']="";
+        }else{
+            $this->dataArray['qty'] = $newqty;
+        }
+    }
+}
     public function OpenConfirmModal()
     {
         $this->qtyCnfModal = !$this->qtyCnfModal;
