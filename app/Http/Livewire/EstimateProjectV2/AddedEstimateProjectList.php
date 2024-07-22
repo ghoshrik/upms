@@ -215,7 +215,7 @@ class AddedEstimateProjectList extends Component
             $this->allAddedEstimatesData = Session()->get('addedProjectEstimateV2Data', $this->allAddedEstimatesData);
         }
 
-      //  dd( $this->allAddedEstimatesData);
+       // dd( $this->allAddedEstimatesData);
         foreach ($this->allAddedEstimatesData as $estimate) {
             if (isset($estimate['array_id']) && $estimate['array_id'] ==  $this->editRowId) {
                 $matchedRow = $estimate;
@@ -680,7 +680,7 @@ class AddedEstimateProjectList extends Component
     public $openSubItemModal = false, $rowParentId;
     public function addSubItem($p_id)
     {
-        //dd($p_id);
+       // dd($p_id);
         $this->rowParentId = $p_id;
         $this->openSubItemModal = !$this->openSubItemModal;
     }

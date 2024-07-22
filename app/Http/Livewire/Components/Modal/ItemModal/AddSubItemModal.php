@@ -16,12 +16,19 @@ class AddSubItemModal extends Component
 {
     use Actions;
     protected $listeners = ['closeDynamicModal', 'getRowValueSub'];
-    public $rowParentId, $selectedCategoryId, $fatchDropdownData = [], $subItemData = [], $viewModal = false, $modalName, $searchKeyWord = '', $counterForItemNo = 0, $depDwnRowId, $allData,$value=0;
+    public $rowParentId, $selectedCategoryId, $fatchDropdownData = [], $subItemData = [], $viewModal = false, $modalName, $searchKeyWord = '', $counterForItemNo = 0, $depDwnRowId, $allData,$value=0,$editEstimate_id;
     public function mount()
     {
+        //dd($this->editEstimate_id);
          $this->department_id= Auth::user()->department_id;
-       
-        $this->allData = Session()->get('addedProjectEstimateV2Data');
+
+         if ($this->editEstimate_id != '') {
+            $this->allData =  Session()->get('editProjectEstimateV2Data' . $this->editEstimate_id);
+        } else {
+            $this->allData = Session()->get('addedProjectEstimateV2Data');
+        }
+        
+       // dd($this->allData);
         $id = $this->rowParentId;
         $filteredData = array_filter($this->allData, function ($item) use ($id) {
             return $item['id'] == $id || $item['p_id'] == $id;
@@ -45,13 +52,21 @@ class AddSubItemModal extends Component
         }
     }
 
+
+
+
     
     public function checkQty($newqty, $parentRowId)
     {
-//dd($newqty, $parentRowId);
+        //dd($newqty, $parentRowId);
 
     if (!empty($newqty)) {
-        $this->allData = Session()->get('addedProjectEstimateV2Data');
+       
+        if ($this->editEstimate_id != '') {
+            $this->allData =  Session()->get('editProjectEstimateV2Data' . $this->editEstimate_id);
+        } else {
+            $this->allData = Session()->get('addedProjectEstimateV2Data');
+        }
         $parentQty = null;
         $childSum = 0;
         foreach ($this->allData as $item) {
@@ -69,11 +84,12 @@ class AddSubItemModal extends Component
                 $childSum += $item['qty'];
             }
         }
+     
         $remainingQty = $parentQty - $childSum;
         if ($newqty > $remainingQty) {
             $this->notification()->error(
                 $title = 'Error !!!',
-                $description = 'Error: New quantity exceeds remaining allowable quantity!.'
+               $description = "Subrow quantity exceeds remaining allowable quantity = {$remainingQty}"
             );
             $this->subItemData['qty']="";
         }else{
@@ -510,6 +526,12 @@ class AddSubItemModal extends Component
         // $this->viewModal = !$this->viewModal;
         $this->subItemData['description'] = $descriptions . " " . $data[0]['desc'];
         $this->subItemData['qty'] = 1;
+        if($this->department_id == 26){
+        $this->checkQty(1,$this->rowParentId);
+        }else{
+            $this->subItemData['qty'] = 1;
+        }
+       
         $this->subItemData['rate'] = $data[0]['rowValue'];
         $this->subItemData['item_number'] = $itemNo;
         $this->subItemData['col_position'] = $data[0]['colPosition'];

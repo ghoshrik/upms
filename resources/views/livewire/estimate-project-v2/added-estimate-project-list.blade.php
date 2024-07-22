@@ -2,6 +2,7 @@
     <div wire:loading.delay.longest>
         <div class="spinner-border text-primary loader-position" role="status"></div>
     </div>
+   
     @if ($allAddedEstimatesData != null)
         <div wire:loading.delay.longest.class="loading" class="col-md-12 col-lg-12">
             <div class="card overflow-hidden">
@@ -62,7 +63,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- @dd($allAddedEstimatesData);    --}}
+                                 {{-- @dd($allAddedEstimatesData);     --}}
                                 @foreach ($allAddedEstimatesData as $key => $addedEstimate)
                                     <tr>
 
@@ -163,7 +164,7 @@
                                                     <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
                                                 </button>
                                             @endif
-                                            @if ($addedEstimate['estimate_no'])
+                                            @if ($addedEstimate['estimate_no'] > 0)
                                                 <x-button wire:click="viewModal({{ $addedEstimate['estimate_no'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
                                                     <span class="btn-inner">
@@ -171,7 +172,7 @@
                                                     </span>
                                                 </x-button>
                                             @endif
-                                            @if ($addedEstimate['rate_no'])
+                                            @if ($addedEstimate['rate_no'] > 0)
                                                 <x-button wire:click="viewRateModal({{ $addedEstimate['rate_no'] }})"
                                                     type="button" class="btn btn-soft-primary btn-sm">
                                                     <span class="btn-inner">
@@ -179,7 +180,7 @@
                                                     </span>
                                                 </x-button>
                                             @endif
-                                            @if ($addedEstimate['p_id'] === 0)
+                                            @if ($addedEstimate['p_id'] === '0' || $addedEstimate['p_id'] === 0)
                                                 <button wire:click="addSubItem('{{ $addedEstimate['id'] }}')"
                                                     type="button" class="btn btn-soft-primary btn-sm">
                                                     <span class="btn-inner">
@@ -253,7 +254,7 @@
                 :identifier='$identifier' />
         @endif
         @if ($openSubItemModal)
-            <livewire:components.modal.item-modal.add-sub-item-modal :rowParentId="$rowParentId">
+            <livewire:components.modal.item-modal.add-sub-item-modal :rowParentId="$rowParentId" :editEstimate_id="$editEstimate_id">
         @endif
     @endif
 </div>
