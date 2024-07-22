@@ -82,7 +82,7 @@ class EstimateForwardModal extends Component
 
         $test = Office::where('id', $this->assignOfficeUserList['officeParent']['office_parent'])
             ->first(); // 6
-        $this->assignOfficeUserList['officeList'] = Office::where('department_id', Auth::user()->department_id)->where('level_no', $level)->get();
+        $this->assignOfficeUserList['officeList'] = Office::where('department_id', Auth::user()->department_id)->where('level_no', ($roleLevelNo->has_level_no != $level) ? $level-1 : $level)->get();
         // $this->selectedOffice = $this->assigenUsersList[0]['officeId'];
         // dd($this->assignOfficeUserList['officeList']);
     }
@@ -140,7 +140,7 @@ class EstimateForwardModal extends Component
                 $description = 'Please Check & try again'
             );
         }*/
-        dd($forwardUserDetails);
+        // dd($forwardUserDetails);
         SorMaster::where('estimate_id', $forwardUserDetails[3])->update(['status' => 2]);
         $data['status'] = 2;
         $assignDetails = EstimateUserAssignRecord::create($data);
