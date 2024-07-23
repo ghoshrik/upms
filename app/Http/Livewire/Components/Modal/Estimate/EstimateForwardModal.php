@@ -90,7 +90,10 @@ class EstimateForwardModal extends Component
     {
         $this->assigenUsersList = User::select('users.designation_id', 'users.emp_name', 'users.id', 'users.name', 'offices.level_no')
         ->join('offices','users.office_id','=','offices.id')
-        ->where('users.office_id', $this->selectedOffice)->where('users.department_id', Auth::user()->department_id)->get();
+        ->where('users.office_id', $this->selectedOffice)
+        ->where('users.department_id', Auth::user()->department_id)
+        ->where('users.is_active',1)
+        ->get();
         // foreach($estimateLimits)
         // $estimateLimits = EstimateAcceptanceLimitMaster::select('min_amount', 'max_amount')
         //     ->where('department_id', Auth::user()->department_id)->get();
@@ -141,8 +144,8 @@ class EstimateForwardModal extends Component
             );
         }*/
         // dd($forwardUserDetails);
-        SorMaster::where('estimate_id', $forwardUserDetails[3])->update(['status' => 2]);
-        $data['status'] = 2;
+        SorMaster::where('estimate_id', $forwardUserDetails[3])->update(['status' => 3]);
+        $data['status'] = 3;
         $assignDetails = EstimateUserAssignRecord::create($data);
 
         if ($assignDetails) {

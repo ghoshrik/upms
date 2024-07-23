@@ -53,20 +53,22 @@ final class ForwardedEstimateProjectTable extends PowerGridComponent
     */
     public function datasource(): Builder
     {
-        return EstimatePrepare::query()
+        $query = EstimatePrepare::query()
         ->select('estimate_prepares.id', 'estimate_prepares.estimate_id', 'estimate_prepares.operation', 'estimate_prepares.total_amount', 'estimate_prepares.created_by',
                 'estimate_user_assign_records.estimate_id as user_assign_records_estimate_id', 'estimate_user_assign_records.estimate_user_type',
                 'estimate_user_assign_records.user_id', 'estimate_user_assign_records.estimate_user_type', 'estimate_user_assign_records.comments',
                 'estimate_masters.estimate_id as sor_masters_estimate_id', 'estimate_masters.sorMasterDesc', 'estimate_masters.status' ,DB::raw('ROW_NUMBER() OVER (ORDER BY estimate_masters.id) as serial_no'))
             ->join('estimate_user_assign_records', function ($join) {
                 $join->on('estimate_user_assign_records.estimate_id', '=', 'estimate_prepares.estimate_id')
-                    ->where('estimate_user_assign_records.status', '=', 2)
-                    ->where('estimate_user_assign_records.created_at', '=', DB::raw("(SELECT max(created_at) FROM estimate_user_assign_records WHERE estimate_prepares.estimate_id = estimate_user_assign_records.estimate_id AND estimate_user_assign_records.status = 2)"));
+                    ->whereIn('estimate_user_assign_records.status', [3, 4,8])
+                    ->where('estimate_user_assign_records.created_at', '=', DB::raw("(SELECT max(created_at) FROM estimate_user_assign_records WHERE estimate_prepares.estimate_id = estimate_user_assign_records.estimate_id)"));
             })
             ->join('estimate_masters', 'estimate_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
             ->where('estimate_prepares.operation', '=', 'Total')
             ->where('estimate_prepares.estimate_no','!=',NULL)
-            ->where('estimate_prepares.created_by', '=', Auth::user()->id);
+            ->where('estimate_masters.created_by', '=', Auth::user()->id);
+        // dd($query->toSql());
+        return $query;
     }
 
     /*

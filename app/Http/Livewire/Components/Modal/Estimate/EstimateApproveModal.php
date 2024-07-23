@@ -14,7 +14,7 @@ class EstimateApproveModal extends Component
 {
     use Actions;
     protected $listeners = ['openApproveModal' => 'openApproveModal'];
-    public $openApproveModal = false, $estimate_id, $viewEstimates = [], $updateDataTableTracker;
+    public $openApproveModal = false, $estimate_id, $viewEstimates, $updateDataTableTracker;
 
     public function openApproveModal($estimate_id)
     {
@@ -23,19 +23,32 @@ class EstimateApproveModal extends Component
         $this->openApproveModal = !$this->openApproveModal;
         if ($estimate_id) {
             $this->estimate_id = $estimate_id;
+            $this->viewEstimates = EstimatePrepare::join('estimate_masters', 'estimate_prepares.estimate_id', '=', 'estimate_masters.estimate_id')
+                ->select('estimate_masters.sorMasterDesc','estimate_prepares.total_amount','estimate_prepares.estimate_id')
+                ->where('estimate_masters.estimate_id', $this->estimate_id)
+                ->where('estimate_masters.dept_id', Auth::user()->department_id)
+                ->where('estimate_prepares.operation', 'Total')
+                ->first();
+            $estimateDTls = $this->viewEstimates;
+            // dd($this->viewEstimates);
             $checkForModify = SorMaster::where([['estimate_id', $this->estimate_id]])->first();
-            if ($checkForModify['status'] == 4) {
-                $this->viewEstimates = Esrecommender::where('estimate_id', $this->estimate_id)->get();
-            }
-            if ($checkForModify['status'] == 2) {
-                $this->viewEstimates = EstimatePrepare::where('estimate_id', $this->estimate_id)->get();
-            }
+            // if ($checkForModify['status'] == 4) {
+            //     $this->viewEstimates = Esrecommender::where('estimate_id', $this->estimate_id)->get();
+            // }
+            // if ($checkForModify['status'] == 2) {
+            //     $this->viewEstimates = EstimatePrepare::where('estimate_id', $this->estimate_id)->get();
+            // }
         }
     }
     public function approveEstimate($value)
     {
         try {
             // $checkForApprove = Esrecommender::where('estimate_id', $value)->first();
+
+            dd(SorMaster::where('estimate_id', $value)->first());
+
+
+
             $checkForApprove = SorMaster::where([['estimate_id', $value], ['status', 4]])->first();
             if ($checkForApprove != null) {
                 if (SorMaster::where('estimate_id', $value)->update(['status' => 6])) {

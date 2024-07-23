@@ -57,7 +57,7 @@
                 <div x-transition.duration.900ms>
                     <livewire:estimate-project.create-estimate-project />
                 </div>
-            @elseif($isFromOpen && $openedFormType == 'edit')
+            @elseif($isFromOpen && ($openedFormType == 'edit' || $openedFormType == 'modify'))
                 <div x-transition.duration.900ms>
                     <livewire:estimate-project.create-estimate-project />
                     {{-- <livewire:estimate-project.edit-estimate-project /> --}}
@@ -231,4 +231,5 @@
 <livewire:components.modal.estimate.estimate-view-modal />
 <livewire:components.modal.rate-analysis.rate-analysis-view-modal />
 <livewire:components.modal.estimate.estimate-forward-modal />
+<livewire:components.modal.estimate.estimate-approve-modal />
 <livewire:components.modal.estimate.edit-estimate-modal />

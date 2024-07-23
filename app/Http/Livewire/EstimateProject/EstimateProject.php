@@ -47,24 +47,23 @@ class EstimateProject extends Component
             ->count();
         $this->counterData['draftDataCount'] = EstimateUserAssignRecord::where(function ($query) {
             $query->where('status', 1)
-                ->orWhere('status', 10)
-                ->orWhere('status', 12);
+                ->orWhere('status', 2);
         })
             ->where('user_id', Auth::user()->id)
             ->where('is_done', 0)
             ->count();
         $this->counterData['fwdDataCount'] = EstimateUserAssignRecord::query()
             ->selectRaw('count(status)')
-            ->where('status', 2)
+            ->where('status', 3)
             ->where('user_id', Auth::user()->id)
             ->where('created_at', function ($query) {
                 $query->selectRaw('MAX(created_at)')
                     ->from('estimate_user_assign_records as t2')
                     ->whereColumn('estimate_user_assign_records.estimate_id', 't2.estimate_id')
-                    ->where('t2.status', 2);
+                    ->where('t2.status', 3);
             })
             ->count();
-        $this->counterData['revertedDataCount'] = EstimateUserAssignRecord::where('status', 3)
+        $this->counterData['revertedDataCount'] = EstimateUserAssignRecord::where('status', 6)
             ->where('assign_user_id', Auth::user()->id)
             ->where('is_done', 0)
             ->count();
@@ -79,6 +78,9 @@ class EstimateProject extends Component
                 break;
             case 'edit':
                 $this->subTitel = 'Edit';
+                break;
+            case 'modify':
+                $this->subTitel = 'Modify';
                 break;
             default:
                 $this->subTitel = 'List';

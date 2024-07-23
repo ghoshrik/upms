@@ -2,14 +2,14 @@
 
 namespace App\Http\Livewire\EstimateProject;
 
-use Livewire\Component;
-use WireUi\Traits\Actions;
 use App\Models\EstimateLog;
 use App\Models\EstimatePrepare;
-use Illuminate\Support\Facades\Auth;
 use App\Models\EstimateUserAssignRecord;
-use ChrisKonnertz\StringCalc\StringCalc;
 use App\Models\SORMaster as ModelsSORMaster;
+use ChrisKonnertz\StringCalc\StringCalc;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class AddedEstimateProjectList extends Component
 {
@@ -644,7 +644,19 @@ class AddedEstimateProjectList extends Component
             try {
                 if ($this->allAddedEstimatesData) {
                     $intId = ($this->editEstimate_id == '') ? random_int(100000, 999999) : $this->editEstimate_id;
-                    if (($this->editEstimate_id != '') ? ModelsSORMaster::where('estimate_id', $intId)->update(['sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'created_by' => Auth::user()->id]) : ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'dept_id' => Auth::user()->department_id, 'part_no' => $this->part_no, 'created_by' => Auth::user()->id])) {
+                    $estimate_created_by = ModelsSORMaster::where('estimate_id', $intId)->select('created_by')->first();
+                    $status = '';
+                    if ($estimate_created_by != '') {
+                        if ($estimate_created_by['created_by'] == Auth::user()->id) {
+                            $status = ($flag == 'draft') ? 2 : 1;
+                        } else {
+                            $status = ($flag == 'draft') ? 8 : 4;
+                        }
+                    }else{
+                        $status = ($flag == 'draft') ? 2 : 1;
+                    }
+                    // dd($status);
+                    if (($this->editEstimate_id != '') ? ModelsSORMaster::where('estimate_id', $intId)->update(['sorMasterDesc' => $this->sorMasterDesc, 'status' => $status, 'updated_by' => Auth::user()->id]) : ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 2 : 1, 'dept_id' => Auth::user()->department_id, 'part_no' => $this->part_no, 'created_by' => Auth::user()->id])) {
                         // if (true) {
                         if ($this->editEstimate_id != '') {
                             $existingEstimates = EstimatePrepare::where('estimate_id', $intId)->get();
@@ -740,13 +752,13 @@ class AddedEstimateProjectList extends Component
 
                         $data = [
                             'estimate_id' => $intId,
-                            'estimate_user_type' => 5,
-                            'status' => 1,
+                            'estimate_user_type' => 0,
+                            'status' => $status,
                             'user_id' => Auth::user()->id,
                         ];
                         $getData = EstimateUserAssignRecord::where([['estimate_id', $intId], ['is_done', 0]])->get();
                         if (count($getData) == 1) {
-                            EstimateUserAssignRecord::where([['estimate_id', $intId], ['is_done', 0]])->update(['status' => ($flag == 'draft') ? 12 : 1]);
+                            EstimateUserAssignRecord::where([['estimate_id', $intId], ['is_done', 0]])->update(['status' => $status]);
                         } else {
                             EstimateUserAssignRecord::create($data);
                         }
