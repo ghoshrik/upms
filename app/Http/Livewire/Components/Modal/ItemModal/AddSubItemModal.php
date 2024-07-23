@@ -56,12 +56,9 @@ class AddSubItemModal extends Component
 
 
     
-    public function checkQty($newqty, $parentRowId)
+    public function checkQty($newqty, $rowId)
     {
-        //dd($newqty, $parentRowId);
-
     if (!empty($newqty)) {
-       
         if ($this->editEstimate_id != '') {
             $this->allData =  Session()->get('editProjectEstimateV2Data' . $this->editEstimate_id);
         } else {
@@ -75,18 +72,16 @@ class AddSubItemModal extends Component
                 break; 
             }
         }
-        if ($parentQty === null) {
-            $this->addError('qty', 'Error: Parent row not found.');
-            return false; 
-        }
+      
         foreach ($this->allData as $item) {
-            if ($item['p_id'] != 0 && $item['p_id'] == $parentRowId) {
+            if ($item['p_id'] != 0 && $item['p_id'] == $rowId) {
                 $childSum += $item['qty'];
             }
         }
      
         $remainingQty = $parentQty - $childSum;
-        if ($newqty > $remainingQty) {
+        $epsilon = 0.00001;
+        if ($newqty > $remainingQty + $epsilon) {
             session()->flash('error', "Subrow allowable quantity : {$remainingQty}");
             $this->subItemData['qty']="";
         }else{

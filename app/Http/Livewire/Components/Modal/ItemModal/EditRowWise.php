@@ -157,51 +157,58 @@ class EditRowWise extends Component
     }
 
     
-    public function checkQty($newqty, $parentRowId)
+    public function checkQty($newqty, $rowId)
     {
-       //dd($newqty, $parentRowId);
-    if (!empty($newqty)) {
-       
-        if ($this->editEstimate_id != '') {
-            $this->allData =  Session()->get('editProjectEstimateV2Data' . $this->editEstimate_id);
-        } else {
-            $this->allData = Session()->get('addedProjectEstimateV2Data');
-        }
-
-
-       //dd( $this->allData);
-        $parentQty = null;
-        $childSum = 0;
-        foreach ($this->allData as $item) {
-            if ($item['p_id'] == 0) {
-                $parentQty = $item['qty'];
-                break; 
+        if (!empty($newqty)) {
+            if ($this->editEstimate_id != '') {
+                $this->allData = Session()->get('editProjectEstimateV2Data' . $this->editEstimate_id);
+            } else {
+                $this->allData = Session()->get('addedProjectEstimateV2Data');
             }
-        }
-        if ($parentQty === null) {
-            $this->addError('qty', 'Error: Parent row not found.');
-            return false; 
-        }
-        foreach ($this->allData as $item) {
-            if ($item['p_id'] != 0 && $item['id'] == $parentRowId) {
-                $childSum += $item['qty'];
+            
+            $parentQty = null;
+            $childSum = 0;
+    
+            // Find the parent quantity
+            foreach ($this->allData as $item) {
+                if ($item['p_id'] == 0) {
+                    $parentQty = $item['qty'];
+                    break; 
+                }
             }
-        }
-     
-        //dd( $childSum);
-        $remainingQty = $parentQty - $childSum;
-        if ($newqty > $remainingQty) {
-            // $this->notification()->error(
-            //     $title = 'Error !!!',
-            //    $description = "Subrow quantity should be less than = {$remainingQty}!"
-            // );
-            session()->flash('error', "Subrow allowable quantity : {$remainingQty}");
-            $this->dataArray['qty']="";
-        }else{
-            $this->dataArray['qty'] = $newqty;
+    
+            // Calculate the sum of all child quantities excluding the row being updated
+            foreach ($this->allData as $item) {
+                if ($item['p_id'] != 0 && $item['id'] != $rowId) {
+                    $childSum += $item['qty'];
+                }
+            }
+    
+            // Calculate the remaining quantity
+            $remainingQty = $parentQty - $childSum;
+            
+            // Define a small epsilon value for floating-point comparison
+            $epsilon = 0.00001;
+    
+            // Debug statements
+            // dd([
+            //     'parentQty' => $parentQty,
+            //     'childSum' => $childSum,
+            //     'remainingQty' => $remainingQty,
+            //     'newqty' => $newqty,
+            //     'comparison_result' => $newqty > $remainingQty + $epsilon
+            // ]);
+    
+            // Check if the new quantity exceeds the remaining quantity
+            if ($newqty > $remainingQty + $epsilon) {
+                session()->flash('error', "Subrow allowable quantity: {$remainingQty}");
+                $this->dataArray['qty'] = "";
+            } else {
+                $this->dataArray['qty'] = $newqty;
+            }
         }
     }
-}
+    
     public function OpenConfirmModal()
     {
         $this->qtyCnfModal = !$this->qtyCnfModal;
