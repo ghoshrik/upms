@@ -49,6 +49,8 @@ class EstimateForwardModal extends Component
         //     ->get();
         // dd($this->assigenUsersList);
 
+        // dd($roleParent,$roleLevelNo);
+
         //estimate total Amount
         $this->estimateTotal['amount'] = EstimatePrepare::select('total_amount')
             ->join('estimate_masters', 'estimate_prepares.estimate_id', '=', 'estimate_masters.estimate_id')
@@ -60,16 +62,23 @@ class EstimateForwardModal extends Component
         // dd($this->estimateTotal['amount']['total_amount']);
         $estimateLimits = EstimateAcceptanceLimitMaster::where('department_id', Auth::user()->department_id)->get();
         $level = 'error'; // Default to 'error' if no matching limit is found
-
+        // dd($estimateLimits);
         foreach ($estimateLimits as $value) {
-            if ($this->estimateTotal['amount']['total_amount'] > $value['min_amount'] && $this->estimateTotal['amount']['total_amount'] <= $value['max_amount']) {
-                $level = $value['level_id'];
-                break; // Exit the loop once a matching limit is found
+            if ($this->estimateTotal['amount']['total_amount'] > $value['min_amount']) {
+                if($value['max_amount'] == ''){
+                    $level = $value['level_id'];
+                    break; // Exit the loop once a matching limit is found
+                }elseif($this->estimateTotal['amount']['total_amount'] <= $value['max_amount']){
+                    $level = $value['level_id'];
+                    break; // Exit the loop once a matching limit is found
+                }else{
+
+                }
             }
         }
 
         // dd($this->estimateTotal);
-        // dd($level);
+        // dd($level,$roleLevelNo);
         $levelsALL = Levels::where('id', $level)->get();
         // dd($levelsALL);
 
@@ -82,7 +91,7 @@ class EstimateForwardModal extends Component
 
         $test = Office::where('id', $this->assignOfficeUserList['officeParent']['office_parent'])
             ->first(); // 6
-        $this->assignOfficeUserList['officeList'] = Office::where('department_id', Auth::user()->department_id)->where('level_no', ($roleLevelNo->has_level_no != $level) ? $level-1 : $level)->get();
+        $this->assignOfficeUserList['officeList'] = Office::where('department_id', Auth::user()->department_id)->where('level_no', ($roleLevelNo->has_level_no != $level) ? $roleLevelNo->has_level_no : $level)->get();
         // $this->selectedOffice = $this->assigenUsersList[0]['officeId'];
         // dd($this->assignOfficeUserList['officeList']);
     }

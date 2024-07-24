@@ -20,31 +20,31 @@
                         </thead>
                         <tbody>
                             {{-- @foreach ($viewEstimates as $view) --}}
-                            @if($viewEstimates !='')
-                            <tr>
-                                <td>1.</td>
-                                <td class="text-wrap">
-                                    {{ $viewEstimates['estimate_id'] }}
-                                </td>
-                                <td class="text-wrap">
-                                    {{ $viewEstimates['sorMasterDesc'] }}
-                                </td>
-                                <td style="text-align:end;">
-                                    {{-- @if ($view['qty'] == 0)
+                            @if ($viewEstimates != '')
+                                <tr>
+                                    <td>1.</td>
+                                    <td class="text-wrap">
+                                        {{ $viewEstimates['estimate_id'] }}
+                                    </td>
+                                    <td class="text-wrap">
+                                        {{ $viewEstimates['sorMasterDesc'] }}
+                                    </td>
+                                    <td style="text-align:end;">
+                                        {{-- @if ($view['qty'] == 0)
                                         @else
                                             {{ $view['qty'] }}
                                         @endif --}}
-                                        {{ number_format($viewEstimates['total_amount'],2) }}
-                                </td>
-                                {{-- <td style="text-align:center;">
+                                        {{ number_format($viewEstimates['total_amount'], 2) }}
+                                    </td>
+                                    {{-- <td style="text-align:center;">
                                         @if ($view['rate'] == 0)
                                         @else
                                             {{ round($view['rate'], 10, 2) }}
                                         @endif
                                     </td>
                                     <td style="text-align:center;">{{ round($view['total_amount'], 10, 2) }}</td> --}}
-                            </tr>
-                            {{-- @endforeach --}}
+                                </tr>
+                                {{-- @endforeach --}}
                             @endif
                         </tbody>
                     </table>
@@ -64,8 +64,7 @@
                         </button>
                     </div>
                 </div>
-</div>
-</x-slot>
-</x-card>
-</x-modal>
+            </x-slot>
+        </x-card>
+    </x-modal>
 </div>

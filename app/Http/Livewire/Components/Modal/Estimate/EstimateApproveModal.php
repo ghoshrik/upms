@@ -45,11 +45,25 @@ class EstimateApproveModal extends Component
         try {
             // $checkForApprove = Esrecommender::where('estimate_id', $value)->first();
 
-            dd(SorMaster::where('estimate_id', $value)->first());
+            $estimate = SorMaster::where('estimate_id', $value)->first();
+            if($estimate->estimate_id === $value)
+            {
+                SorMaster::where('estimate_id',$value)->update(['is_verified'=>1,'status'=>7]);
+                EstimateUserAssignRecord::where('estimate_id',$value)->update(['status'=>7,'is_done'=>1]);
+                $this->notification()->success(
+                    $title = 'Estimate Approved Successfully!!'
+                );
+            }
+            else
+            {
+                $this->notification()->success(
+                    $title = 'Estimate Have No Exists'
+                );
+            }
 
 
 
-            $checkForApprove = SorMaster::where([['estimate_id', $value], ['status', 4]])->first();
+            /*$checkForApprove = SorMaster::where([['estimate_id', $value], ['status', 4]])->first();
             if ($checkForApprove != null) {
                 if (SorMaster::where('estimate_id', $value)->update(['status' => 6])) {
                     $data = [
@@ -108,7 +122,9 @@ class EstimateApproveModal extends Component
                         }
                     }
                 }
-            }
+            }*/
+
+
             $this->reset();
             $this->updateDataTableTracker = rand(1, 1000);
             $this->emit('refreshData', $this->updateDataTableTracker);

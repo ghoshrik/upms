@@ -40,6 +40,12 @@ class EstimateProject extends Component
         $this->selectedTab = 3;
         $this->dataCounter();
     }
+    public function approvedData()
+    {
+        $this->selectedTab = '';
+        $this->selectedTab = 4;
+        $this->dataCounter();
+    }
     public function dataCounter()
     {
         $this->counterData['totalDataCount'] = EstimateUserAssignRecord::where('status', 1)
