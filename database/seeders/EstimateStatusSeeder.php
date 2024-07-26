@@ -15,7 +15,7 @@ class EstimateStatusSeeder extends Seeder
      */
     public function run()
     {
-        $status = [
+        /*$status = [
             [
                 'status'=>'New',
                 'slug'=>'new',
@@ -71,9 +71,58 @@ class EstimateStatusSeeder extends Seeder
                 'updated_at'=>Carbon::now(),
             ],
 
+        ];*/
+        $status = [
+            [
+                'status' => 'New',
+                'slug' => 'new',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'status' => 'Draft',
+                'slug' => 'draft',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'status' => 'Checking',
+                'slug' => 'fwd-to-checker',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'status' => 'Modified',
+                'slug' => 'modify-by-checker',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'status' => 'Verified',
+                'slug' => 'verify-by-checker',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'status' => 'Reverted',
+                'slug' => 'revert',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'status' => 'Approved',
+                'slug' => 'approved',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'status' => 'Drafted by Checker',
+                'slug' => 'draft-by-checker',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
         ];
-        foreach($status as $list)
-        {
+        foreach ($status as $list) {
             EstimateStatus::create($list);
         }
     }
