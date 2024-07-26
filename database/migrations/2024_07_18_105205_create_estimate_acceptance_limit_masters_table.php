@@ -13,12 +13,15 @@ class CreateEstimateAcceptanceLimitMastersTable extends Migration
      */
     public function up()
     {
-        Schema::create('estimate_acceptance_limit_masters', function (Blueprint $table) {
+        Schema::create('master.estimate_acceptance_limit_masters', function (Blueprint $table) {
             $table->bigIncrements('id')->autoIncrement();
-            $table->foreignId('department_id');
-            $table->foreignId('level_id');
-            $table->float('min_amount');
-            $table->float('max_amount');
+            $table->unsignedBigInteger('department_id');
+            $table->integer('approving_level');
+            $table->string('checking_levels');
+            $table->decimal('min_amount', 15, 2);
+            $table->decimal('max_amount', 15, 2)->nullable();
+
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -30,6 +33,6 @@ class CreateEstimateAcceptanceLimitMastersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('estimate_acceptance_limit_masters');
+        Schema::dropIfExists('master.estimate_acceptance_limit_masters');
     }
 }
