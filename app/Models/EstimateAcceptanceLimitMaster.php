@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class EstimateAcceptanceLimitMaster extends Model
 {
     use HasFactory;
-    protected $table = "estimate_acceptance_limit_masters";
-    protected $fillable = ["department_id", "level_id", "min_amount", "max_amount"];
+    protected $table = "master.estimate_acceptance_limit_masters";
+    protected $fillable = ["department_id", "approving_level", "checking_levels", "min_amount", "max_amount"];
 }
