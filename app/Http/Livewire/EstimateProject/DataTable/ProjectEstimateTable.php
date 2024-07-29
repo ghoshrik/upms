@@ -95,6 +95,10 @@ class ProjectEstimateTable extends DataTableComponent
     {
         $this->emit('openForwardModal', ['estimate_id' => $estimate_id, 'forward_from' => 'EP']);
     }
+    public function revert($estimate_id)
+    {
+        $this->emit('openRevertModal',['estimate_id'=>$estimate_id,'revart_from'=>'ER']);
+    }
     public function approveEstimate($estimate_id)
     {
         $this->emit('openApproveModal', $estimate_id);

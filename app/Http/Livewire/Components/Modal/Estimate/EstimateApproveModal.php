@@ -45,14 +45,28 @@ class EstimateApproveModal extends Component
         try {
             // $checkForApprove = Esrecommender::where('estimate_id', $value)->first();
 
-            $estimate = SorMaster::where('estimate_id', $value)->first();
+            $estimate = SorMaster::where('estimate_id', $value)->where('is_verified',0)->first();
+            // dd($estimate);
             if($estimate->estimate_id === $value)
             {
                 SorMaster::where('estimate_id',$value)->update(['is_verified'=>1,'status'=>7]);
-                EstimateUserAssignRecord::where('estimate_id',$value)->update(['status'=>7,'is_done'=>1]);
-                $this->notification()->success(
-                    $title = 'Estimate Approved Successfully!!'
-                );
+                $data = [
+                    'estimate_id' => $value,
+                    'user_id' => Auth::user()->id, // approver id
+                ];
+                $data['status'] = 7;
+                $assignDetails = EstimateUserAssignRecord::create($data);
+                if ($assignDetails) {
+                    $returnId = $assignDetails->id;
+                    // dd($returnId);
+                    EstimateUserAssignRecord::where([['estimate_id', $value], ['id', '!=', $returnId], ['is_done', 0]])->groupBy('estimate_id')->update(['is_done' => 1]);
+                    $this->notification()->success(
+                        $title = 'Approved Estimate Successfully !!'
+                    );
+                }
+                // $this->notification()->success(
+                //     $title = 'Estimate Approved Successfully!!'
+                // );
             }
             else
             {

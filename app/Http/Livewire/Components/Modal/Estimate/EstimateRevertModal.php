@@ -31,7 +31,7 @@ class EstimateRevertModal extends Component
         if ($this->revartRequestFrom == 'ER') {
             $getStatus = SorMaster::select('status')->where('estimate_id',$value)->first();
             // $getUserDetails = EstimateUserAssignRecord::select('user_id', 'estimate_user_type')->where([['estimate_id', '=', $value], ['assign_user_id', '=', Auth::user()->id], ['status', '=', $getStatus->status], ['is_done', 0]])->first();
-            $getUserDetails = EstimateUserAssignRecord::select('user_id', 'estimate_user_type')->where([['estimate_id', '=', $value], ['assign_user_id', '=', 0], ['status', '=', 1]])->first();
+            $getUserDetails = EstimateUserAssignRecord::select('user_id', 'estimate_user_type')->where([['estimate_id', '=', $value], ['assign_user_id', '=', Auth::user()->id],['is_done',0]])->first();
             // dd($getUserDetails);
             $data = [
                 'estimate_id' => $value,
@@ -39,18 +39,19 @@ class EstimateRevertModal extends Component
                 'assign_user_id' => (int) $getUserDetails->user_id,
                 'comments' => $this->userAssignRemarks,
             ];
-            $data['status'] = 3;
+            $data['status'] = 6;
             if ($assignDetails = EstimateUserAssignRecord::create($data)) {
                 if ($assignDetails) {
                     $returnId = $assignDetails->id;
                     EstimateUserAssignRecord::where([['estimate_id', $value], ['id', '!=', $returnId], ['is_done', 0]])->groupBy('estimate_id')->update(['is_done' => 1]);
                     $this->notification()->success(
-                        $title = 'Estimate Reverted'
+                        $title = 'Estimate Reverted Successfully'
                     );
                 }
-                SorMaster::where('estimate_id', $value)->update(['status' => 3]);
+                SorMaster::where('estimate_id', $value)->update(['status' => 6]);
             }
-        } elseif ($this->revartRequestFrom == 'EF') {
+        }
+        /*elseif ($this->revartRequestFrom == 'EF') {
             $getUserDetails = EstimateUserAssignRecord::select('user_id', 'estimate_user_type')->where([['estimate_id', '=', $value], ['assign_user_id', '=', Auth::user()->id], ['status', '=', 9], ['is_done', 0]])->first();
             $data = [
                 'estimate_id' => $value,
@@ -73,7 +74,7 @@ class EstimateRevertModal extends Component
                     $title = 'Opps! somethig waint wrong.'
                 );
             }
-        } else {
+        }*/ else {
             $this->notification()->success(
                 $title = 'Please Check & try again'
             );

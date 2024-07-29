@@ -159,7 +159,7 @@
                                             </li>
                                         </div>
                                         <div class="col-md-3 col-lg-3 col-sm-12">
-                                            <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab == 3 ? 'active' : '' }}"
+                                            <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab == 4 ? 'active' : '' }}"
                                                 wire:click="approvedData()">
                                                 <div class="card-body">
                                                     <div class="progress-widget">
@@ -222,30 +222,13 @@
                                     <div class="card-body">
                                         {{-- <livewire:estimate-project.data-table.reverted-estimate-project-table
                                             :wire:key="$updateDataTableTracker" /> --}}
-                                        {{-- <livewire:estimate-project.datatable.powergrid.estimate-revert-table :wire:key="$updateDataTableTracker" /> --}}
+                                        <livewire:estimate-project.datatable.powergrid.estimate-revert-table :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @elseif($this->selectedTab == 4)
                                 <div class="card">
                                     <div class="card-body">
-                                        <div class="table-left-bordered table-responsive mt-4">
-                                            <table class="table mb-0" role="grid">
-                                                <thead>
-                                                    <tr class="bg-white">
-                                                        <th scope="col">#</th>
-                                                        <th scope="col">ESTIMATE NO</th>
-                                                        <th scope="col">DESCRIPTION</th>
-                                                        <th scope="col">TOTAL AMOUNT</th>
-                                                        <th scope="col">STATUS</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {{-- <tr>
-                                                        <td class="text-wrap"></td>
-                                                    </tr> --}}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                            <livewire:estimate-project.data-table.approved-estimate-data-table :wire:key="$updateDataTableTracker"/>
                                     </div>
                                 </div>
                             @else
@@ -292,3 +275,4 @@
 <livewire:components.modal.estimate.estimate-forward-modal />
 <livewire:components.modal.estimate.estimate-approve-modal />
 <livewire:components.modal.estimate.edit-estimate-modal />
+<livewire:components.modal.estimate.estimate-revert-modal />
