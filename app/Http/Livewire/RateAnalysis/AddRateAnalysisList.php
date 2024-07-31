@@ -32,9 +32,11 @@ class AddRateAnalysisList extends Component
     {
         $this->setRateDataToSession();
     }
+
+
     public function setFetchRateData($fetchRateData)
     {
-        // dd($this->allAddedRateData);
+
         $this->reset('allAddedRateData');
         if (Session()->has('editRateData' . $this->editRate_id)) {
             $this->allAddedRateData = Session()->get('editRateData' . $this->editRate_id);
@@ -124,9 +126,8 @@ class AddRateAnalysisList extends Component
     public function updateSetFetchData($fetchUpdateRateData, $update_id)
     {
 
-        // dd($fetchUpdateRateData);
-        $numericValue = preg_replace('/[^0-9]/', '', $update_id);
-        // dd($fetchUpdateRateData, $numericValue, $this->allAddedRateData);
+       // dd( $fetchUpdateRateData);
+        // $numericValue = preg_replace('/[^0-9]/', '', $update_id);
         foreach ($this->allAddedRateData as $key => $rate) {
             if ($rate['array_id'] == $update_id) {
                 $this->allAddedRateData[$key]['rate_no'] = $fetchUpdateRateData['rate_no'];
@@ -147,12 +148,8 @@ class AddRateAnalysisList extends Component
                 $this->allAddedRateData[$key]['operation'] = $fetchUpdateRateData['operation'];
                 $this->allAddedRateData[$key]['col_position'] = $fetchUpdateRateData['col_position'];
                 $this->allAddedRateData[$key]['is_row'] = $fetchUpdateRateData['is_row'];
-                $this->allAddedRateData[$key]['operation'] = $fetchUpdateRateData['operation'];
+                $this->allAddedRateData[$key]['rate_type'] = $fetchUpdateRateData['rate_type'];
                 $this->allAddedRateData[$key]['unit_id'] = $fetchUpdateRateData['unit_id'];
-                // dd($this->allAddedRateData[$key]['unit_id'][0]);
-                if ($this->allAddedRateData[$key]['unit_id'][0] === '%') {
-                    $this->allAddedRateData[$key]['total_amount'] = $this->allAddedRateData[$key]['total_amount'] / 100;
-                }
                 $this->allAddedRateData[$key]['qtyUpdate'] = $fetchUpdateRateData['qtyUpdate'];
                 $this->allAddedRateData[$key]['rate_analysis_data'] = $fetchUpdateRateData['rate_analysis_data'];
             }
@@ -171,7 +168,6 @@ class AddRateAnalysisList extends Component
                 $title = 'Error Updating Row'
             );
         }
-        $this->updatedRateRecalculate();
         $this->editRowModal = !$this->editRowModal;
     }
 
@@ -250,7 +246,6 @@ class AddRateAnalysisList extends Component
                             }
                         }
                     }
-                    // dd($value['arrayIndex']);
                     $result = $stringCalc->calculate($value['arrayIndex']);
                     $this->allAddedRateData[$key]['total_amount'] = $result;
                     if ($this->editRate_id == '') {
@@ -365,25 +360,18 @@ class AddRateAnalysisList extends Component
             $pattern = '/([-+*\/%])|([a-zA-Z0-9]+)/';
             preg_match_all($pattern, strtoupper($this->expression), $matches);
             $this->expression = strtoupper($this->expression);
-
-            foreach ($matches[0] as $info) {
-                foreach ($this->allAddedRateData as $data) {
+            foreach (array_merge($matches[0]) as $key => $info) {
+                foreach ($this->allAddedRateData as $k => $data) {
                     if ($data['array_id'] == $info) {
-                        if (isset($data['total_amount'])) {
-                            $this->expression = preg_replace('/\b' . preg_quote($info, '/') . '\b/', $data['total_amount'], $this->expression);
-                        } else {
-                            throw new \Exception("Undefined total_amount for array_id {$info}");
-                        }
+                        $this->expression = str_replace($info, $this->allAddedRateData[$k]['total_amount'], $this->expression, $key);
                     }
                 }
-
                 if (htmlspecialchars($info) == "%") {
-                    $this->expression = preg_replace('/\b' . preg_quote($info, '/') . '\b/', "/100*", $this->expression);
+                    $this->expression = str_replace($info, "/100*", $this->expression, $key);
                 }
             }
-            //dd($this->expression);
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddRate($tempIndex, Session::get('user_data.department_id'), 0, 0, '', '', '', 0, 0, number_format(round($result, 2), 2, '.', ''), 'Exp Calculation', '', $this->remarks);
+            $this->insertAddRate($tempIndex, Session::get('user_data.department_id'), 0, 0, '', '', '', 0, 0, number_format(round($result, 2), 2, '.', ''), 'Exp Calculoation', '', $this->remarks);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(
@@ -435,7 +423,7 @@ class AddRateAnalysisList extends Component
             if (!isset($this->selectSor['item_number'])) {
                 $this->selectSor['item_number'] = 0;
             }
-            $this->insertAddRate($this->arrayIndex, Session::get('user_data.department_id'), 0, $this->selectSor['selectedSOR'], '', '', $this->rateMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, number_format($result, 2, '.', ''), $flag, '', '');
+            $this->insertAddRate($this->arrayIndex, Session::get('user_data.department_id'), 0, $this->selectSor['selectedSOR'], '', '', $this->rateMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, number_format(round($result), 2, '.', ''), $flag, '', '');
             $this->totalOnSelectedCount++;
         } else {
             $this->notification()->error(
@@ -450,9 +438,6 @@ class AddRateAnalysisList extends Component
             $this->allAddedRateData[$key]['qty'] = number_format(round($this->allAddedRateData[$key]['qty'], 3), 3, '.', '');
             $this->allAddedRateData[$key]['rate'] = number_format(round($this->allAddedRateData[$key]['rate'], 2), 2, '.', '');
             $this->allAddedRateData[$key]['total_amount'] = $this->allAddedRateData[$key]['qty'] * $this->allAddedRateData[$key]['rate'];
-            if ($this->allAddedRateData[$key]['unit_id'][0] === '%') {
-                $this->allAddedRateData[$key]['total_amount'] = $this->allAddedRateData[$key]['total_amount'] / 100;
-            }
             $this->allAddedRateData[$key]['total_amount'] = number_format(round($this->allAddedRateData[$key]['total_amount'], 2), 2, '.', '');
             $this->allAddedRateData[$key]['rate'] = $this->allAddedRateData[$key]['rate'];
         } else {
@@ -602,7 +587,13 @@ class AddRateAnalysisList extends Component
     public function deleteRate($value)
     {
         $numericValue = preg_replace('/[^0-9]/', '', $value);
+        //dd( $this->allAddedRateData);
+
         unset($this->allAddedRateData[$numericValue]);
+        $this->updateTotalAmounts();
+        $this->allAddedRateData = $this->reindexArray($this->allAddedRateData, $value);
+        $this->updateTotalAmounts();
+
         if ($this->editRate_id != '') {
             Session()->forget('editRateData' . $this->editRate_id);
             Session()->put('editRateData' . $this->editRate_id, $this->allAddedRateData);
@@ -618,6 +609,54 @@ class AddRateAnalysisList extends Component
             $title = 'Row Deleted Successfully'
         );
     }
+
+    private function reindexArray($array, $deletedIndex)
+    {
+        $numericValue = preg_replace('/[^0-9]/', '', $deletedIndex);
+        $alphabetValue = preg_replace('/[^A-Z]/', '', $deletedIndex);
+        $reindexedArray = [];
+        $currentIndex = 1;
+        foreach ($array as $value) {
+            if (!empty($value['arrayIndex'])) {
+                $indexes = explode('+', $value['arrayIndex']);
+                $updatedIndexes = [];
+                foreach ($indexes as $index) {
+                    $numericPart = (int) preg_replace('/[^0-9]/', '', $index);
+                    if ($numericPart != $numericValue) {
+                        $updatedIndexes[] = $alphabetValue . ($numericPart > $numericValue ? $numericPart - 1 : $numericPart);
+                    }
+                }
+                $value['arrayIndex'] = implode('+', $updatedIndexes);
+            }
+            $value['array_id'] = $alphabetValue . $currentIndex;
+            $reindexedArray[$currentIndex] = $value;
+            $currentIndex++;
+        }
+
+        return $reindexedArray;
+    }
+    private function updateTotalAmounts()
+    {
+        $sumTotalAmount = 0;
+        $countEmptyIndexes = 0;
+        foreach ($this->allAddedRateData as $value) {
+            if (empty($value['arrayIndex'])) {
+                $sumTotalAmount += floatval($value['total_amount']);
+                $countEmptyIndexes++;
+            }
+        }
+        $hasEmptyIndexes = $countEmptyIndexes > 0;
+        foreach ($this->allAddedRateData as &$value) {
+            if (!empty($value['arrayIndex'])) {
+                if (!$hasEmptyIndexes) {
+                    $value['total_amount'] = 0;
+                } else {
+                    $value['total_amount'] = number_format($sumTotalAmount, 2);
+                }
+            }
+        }
+    }
+
 
     public function exportWord()
     {
@@ -828,12 +867,8 @@ class AddRateAnalysisList extends Component
     }
     public function editRow($rowId)
     {
-        // dd($rowId);
-        // $this->emit('RateAnalysisEditRow', $rowId, $this->allAddedRateData);
-        // $this->editRowModal = !$this->editRowModal;
         $this->editRowId = $rowId;
         $numericValue = preg_replace('/[^0-9]/', '', $rowId);
-        // dd($numericValue);
         $this->editRowData = $this->allAddedRateData[$numericValue];
         $this->editRowModal = !$this->editRowModal;
     }

@@ -914,9 +914,6 @@
                                     </div>
                                 </div>
                             @endif
-                            {{-- Carriages Field End --}}
-
-                            {{-- Copy Rate --}}
                             @if ($selectedCategoryId == 6)
                                 <div class="row" wire:key='copy_rate'>
                                     <div class="col">
@@ -954,8 +951,7 @@
                                     </div>
                                 </div>
                             @endif
-                            {{-- Copy Rate --}}
-
+                            {{-- Carriages Field End --}}
                         @endif
                         <div class="row">
                             <div class="col">
@@ -966,335 +962,337 @@
                                         <x-lucide-list-plus class="w-4 h-4 text-gray-500" />
                                         {{ trans('global.add_btn') }}
                                     </button>
+
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            {{-- @if ($showTableOne && $addedRate != null)
+        </div>
+
+        {{-- @if ($showTableOne && $addedRate != null)
         <livewire:estimate.added-estimate-list :addedRateData="$addedRate" :key="1" />
         @endif
         @if (!$showTableOne && $addedRate != null)
         <livewire:estimate.added-estimate-list :addedRateData="$addedRate" :key="2" />
         @endif --}}
-            @if ($addedRate != null || Session::has('addedRateAnalysisData') || $editRate_id != ''|| $selectedCategoryId == 6)
-                <div x-transition.duration.500ms>
-                    {{-- <livewire:estimate-project.added-estimate-project-list :addedRateData="$addedRate" :rateMasterDesc="$rateMasterDesc"
-                    :wire:key="$addedRateUpdateTrack" /> --}}
-                    <livewire:rate-analysis.add-rate-analysis-list :addedRateData="$addedRate" :rateMasterDesc="$rateMasterDesc" :selectSor="$selectSor"
-                        :totalDistance="$distance" :part_no="$part_no" :wire:key="$addedRateUpdateTrack" :editRate_id="$editRate_id">
-                </div>
-            @endif
-        </div>
-        @if ($viewModal)
-            <div>
-                <div class="modal" id="{{ $modalName }}" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-fullscreen" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">
-                                    @isset($getSor->table_no)
-                                        {{ $getSor->table_no . ' - ' . $getSor->title }}
-                                    @endisset
-                                </h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div id="tabulator_table"></div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button"id="closeBtn" class="btn btn-secondary"
-                                    data-dismiss="modal">Close</button>
-                            </div>
+        @if ($addedRate != null || Session::has('addedRateAnalysisData') || $editRate_id != '' || $selectedCategoryId == 6)
+            <div x-transition.duration.500ms>
+                <livewire:rate-analysis.add-rate-analysis-list :addedRateData="$addedRate" :rateMasterDesc="$rateMasterDesc" :selectSor="$selectSor"
+                    :totalDistance="$distance" :part_no="$part_no" :wire:key="$addedRateUpdateTrack" :editRate_id="$editRate_id">
+            </div>
+        @endif
+    </div>
+    @if ($viewModal)
+        <div>
+            <div class="modal" id="{{ $modalName }}" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-fullscreen" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">
+                                @isset($getSor->table_no)
+                                    {{ $getSor->table_no . ' - ' . $getSor->title }}
+                                @endisset
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="tabulator_table"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button"id="closeBtn" class="btn btn-secondary"
+                                data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
             </div>
-            @php
-                $tableNo = isset($rateData['table_no']) ? $rateData['table_no'] : $selectSor['table_no'];
-                $pageNo = isset($rateData['page_no']) ? $rateData['page_no'] : $selectSor['page_no'];
-            @endphp
-            <script>
-                document.getElementById("closeBtn").addEventListener("click", function() {
-                    closeModal();
-                });
+        </div>
+        @php
+            $tableNo = isset($rateData['table_no']) ? $rateData['table_no'] : $selectSor['table_no'];
+            $pageNo = isset($rateData['page_no']) ? $rateData['page_no'] : $selectSor['page_no'];
+        @endphp
+        <script>
+            document.getElementById("closeBtn").addEventListener("click", function() {
+                closeModal();
+            });
 
-                function closeModal() {
-                    $('#' + @json($modalName)).modal('hide');
-                    window.Livewire.emit('closeModal');
-                }
-                $(document).ready(function() {
-                    var clickableCellValues = [];
-                    $("#" + @json($modalName)).modal({
-                        backdrop: "static",
-                        keyboard: false
-                    });
-                    var headerData = @json(json_decode($getSor['header_data']));
-                    var rowData = @json(json_decode($getSor['row_data']));
-                    headerData.forEach(function(column) {
-                        var fun;
-                        delete column.editor;
-                        if (@json($selectedCategoryId) == 4 && column.field == 'desc_of_item' &&
-                            @json($fetchChildSor) == false) {
-                            // console.log('hi');
-                            column.isClick = function(e, cell) {};
-                        }
-                        if (column.field === 'desc_of_item') {
-                            column.frozen = true;
-                        }
-                        if (column.field === 'item_no') {
-                            column.frozen = true;
-                        }
-                        if (column.field === 'unit') {
-                            column.frozen = true;
-                        }
-                        if (column.isClick) {
-                            column.isClick = eval('(' + column.isClick + ')');
-                            fun = column.isClick;
-                        }
-                        if (column.cellClick) {
-                            column.cellClick = eval('(' + column.isClick + ')');
-                            fun = column.cellClick;
-                        }
-                        if (typeof fun === "function") {
-                            column.cellClick = function(e, cell) {
-                                // Overwritten cellClick function
-                                var getData = cell.getRow().getData();
-                                var colId = cell.getField();
-                                var allColumn = cell.getTable().columnManager.getColumns();
-                                var colIdx = -1;
-                                var colName;
-                                for (var i = 0; i < allColumn.length; i++) {
-                                    if (allColumn[i]['columns'] && allColumn[i]['columns'].length > 0) {
-                                        var allGroupCol = allColumn[i]['columns'];
-                                        for (var j = 0; j < allGroupCol.length; j++) {
-                                            if (allGroupCol[j].getField() === colId) {
-                                                colIdx = i + j;
-                                                colName = allGroupCol[j].getField();
-                                                colName = colName.replace(/_/g, ' ');
-                                                break;
-                                            }
-                                        }
-                                    } else {
-                                        if (allColumn[i].getField() === colId) {
-                                            colIdx = i;
-                                            colName = column.title;
+            function closeModal() {
+                $('#' + @json($modalName)).modal('hide');
+                window.Livewire.emit('closeModal');
+            }
+            $(document).ready(function() {
+                var clickableCellValues = [];
+                $("#" + @json($modalName)).modal({
+                    backdrop: "static",
+                    keyboard: false
+                });
+                var headerData = @json(json_decode($getSor['header_data']));
+                var rowData = @json(json_decode($getSor['row_data']));
+                headerData.forEach(function(column) {
+                    var fun;
+                    delete column.editor;
+                    if (@json($selectedCategoryId) == 4 && column.field == 'desc_of_item' &&
+                        @json($fetchChildSor) == false) {
+                        // console.log('hi');
+                        column.isClick = function(e, cell) {};
+                    }
+                    if (column.field === 'desc_of_item') {
+                        column.frozen = true;
+                    }
+                    if (column.field === 'item_no') {
+                        column.frozen = true;
+                    }
+                    if (column.field === 'unit') {
+                        column.frozen = true;
+                    }
+                    if (column.isClick) {
+                        column.isClick = eval('(' + column.isClick + ')');
+                        fun = column.isClick;
+                    }
+                    if (column.cellClick) {
+                        column.cellClick = eval('(' + column.isClick + ')');
+                        fun = column.cellClick;
+                    }
+                    if (typeof fun === "function") {
+                        column.cellClick = function(e, cell) {
+                            // Overwritten cellClick function
+                            var getData = cell.getRow().getData();
+                            var colId = cell.getField();
+                            var allColumn = cell.getTable().columnManager.getColumns();
+                            var colIdx = -1;
+                            var colName;
+                            for (var i = 0; i < allColumn.length; i++) {
+                                if (allColumn[i]['columns'] && allColumn[i]['columns'].length > 0) {
+                                    var allGroupCol = allColumn[i]['columns'];
+                                    for (var j = 0; j < allGroupCol.length; j++) {
+                                        if (allGroupCol[j].getField() === colId) {
+                                            colIdx = i + j;
+                                            colName = allGroupCol[j].getField();
+                                            colName = colName.replace(/_/g, ' ');
                                             break;
                                         }
                                     }
-                                }
-                                var getRowData = [{
-                                    id: getData['id'],
-                                    desc: (getData['desc_of_item']) ? getData['desc_of_item'] : '',
-                                    unit: (getData['unit']) ? getData['unit'] : '',
-                                    rowValue: cell.getValue(),
-                                    itemNo: cell.getRow().getIndex(),
-                                    colPosition: colIdx
-                                }];
-                                var cnf = confirm("Are you sure to select " + colName +
-                                    " Value = " + cell.getValue() + " ?");
-                                if (cnf) {
-                                    if (@json($isParent)) {
-                                        window.Livewire.emit('getRowValue', getRowData);
-                                    } else {
-                                        if (@json($selectedCategoryId) == 4) {
-                                            var cSor_data = [{
-                                                parentId: @json($getSor['id']),
-                                                item_index: getData['id'],
-                                                colPosition: colIdx
-                                            }];
-                                            if (@json($fetchChildSor == true)) {
-                                                // console.log('hi');
-                                                window.Livewire.emit('getCompositePlaceWise', cSor_data)
-                                            } else {
-                                                // console.log('hlw');
-                                                window.Livewire.emit('getComposite', cSor_data);
-                                            }
-                                        } else if (@json($selectedCategoryId) == 5) {
-                                            window.Livewire.emit('getRowValue', getData);
-                                        } else {
-                                            window.Livewire.emit('getRowValue', getRowData);
-                                        }
+                                } else {
+                                    if (allColumn[i].getField() === colId) {
+                                        colIdx = i;
+                                        colName = column.title;
+                                        break;
                                     }
+                                }
+                            }
+                            var getRowData = [{
+                                id: getData['id'],
+                                desc: (getData['desc_of_item']) ? getData['desc_of_item'] : '',
+                                unit: (getData['unit']) ? getData['unit'] : '',
+                                rowValue: cell.getValue(),
+                                itemNo: cell.getRow().getIndex(),
+                                colPosition: colIdx
+                            }];
+                            var cnf = confirm("Are you sure to select " + colName +
+                                " Value = " + cell.getValue() + " ?");
+                            if (cnf) {
+                                if (@json($isParent)) {
+                                    window.Livewire.emit('getRowValue', getRowData);
+                                } else {
+                                    if (@json($selectedCategoryId) == 4) {
+                                        var cSor_data = [{
+                                            parentId: @json($getSor['id']),
+                                            item_index: getData['id'],
+                                            colPosition: colIdx
+                                        }];
+                                        if (@json($fetchChildSor == true)) {
+                                            // console.log('hi');
+                                            window.Livewire.emit('getCompositePlaceWise', cSor_data)
+                                        } else {
+                                            // console.log('hlw');
+                                            window.Livewire.emit('getComposite', cSor_data);
+                                        }
+                                    } else if (@json($selectedCategoryId) == 5) {
+                                        window.Livewire.emit('getRowValue', getData);
+                                    } else {
+                                        window.Livewire.emit('getRowValue', getRowData);
+                                    }
+                                }
 
 
-                                    // window.Livewire.emit('getRowValue', getData);
-                                    // window.Livewire.emit('getRowValue', clickableCellValues);
-                                    // var modalToggle = document.getElementById(@json($modalName));
-                                    $('#' + @json($modalName)).modal('hide');
-                                    // Add your custom code or logic here
-                                }
-                            };
-                        }
-                        if (column.columns) {
-                            column.columns.forEach(function(subColumn) {
-                                var subFun;
-                                delete subColumn.editor;
-                                subColumn.formatter = "textarea";
-                                subColumn.variableHeight = true;
-                                if (@json($selectedCategoryId) == 4 && column.field == 'desc_of_item') {
-                                    // console.log('hi');
-                                    column.isClick = function(e, cell) {};
-                                }
-                                if (subColumn.isClick) {
-                                    subFun = subColumn.isClick = eval('(' + subColumn.isClick + ')');
-                                }
-                                if (subColumn.cellClick) {
-                                    subFun = subColumn.cellClick = eval('(' + subColumn.cellClick + ')');
-                                }
-                                if (typeof subFun === "function") {
-                                    subColumn.cellClick = function(e, cell) {
-                                        var subrowIndex = cell.getRow().getIndex();
-                                        var getData = cell.getRow().getData();
-                                        var colId = cell.getField();
-                                        var allColumn = cell.getTable().columnManager.getColumns();
-                                        var colIdx = -1;
-                                        var colName;
-                                        var colTitle = column.title;
-                                        for (var i = 0; i < allColumn.length; i++) {
-                                            if (allColumn[i]['columns'] && allColumn[i]['columns']
-                                                .length > 0) {
-                                                var allGroupCol = allColumn[i]['columns'];
-                                                for (var j = 0; j < allGroupCol.length; j++) {
-                                                    if (allGroupCol[j].getField() === colId) {
-                                                        colIdx = i + j;
-                                                        colName = allGroupCol[j].getField();
-                                                        colName = colName.replace(/_/g, ' ');
-                                                        break;
-                                                    }
-                                                }
-                                            } else {
-                                                if (allColumn[i].getField() === colId) {
-                                                    colIdx = i;
-                                                    colName = column.title;
+                                // window.Livewire.emit('getRowValue', getData);
+                                // window.Livewire.emit('getRowValue', clickableCellValues);
+                                // var modalToggle = document.getElementById(@json($modalName));
+                                $('#' + @json($modalName)).modal('hide');
+                                // Add your custom code or logic here
+                            }
+                        };
+                    }
+                    if (column.columns) {
+                        column.columns.forEach(function(subColumn) {
+                            var subFun;
+                            delete subColumn.editor;
+                            subColumn.formatter = "textarea";
+                            subColumn.variableHeight = true;
+                            if (@json($selectedCategoryId) == 4 && column.field == 'desc_of_item') {
+                                // console.log('hi');
+                                column.isClick = function(e, cell) {};
+                            }
+                            if (subColumn.isClick) {
+                                subFun = subColumn.isClick = eval('(' + subColumn.isClick + ')');
+                            }
+                            if (subColumn.cellClick) {
+                                subFun = subColumn.cellClick = eval('(' + subColumn.cellClick + ')');
+                            }
+                            if (typeof subFun === "function") {
+                                subColumn.cellClick = function(e, cell) {
+                                    var subrowIndex = cell.getRow().getIndex();
+                                    var getData = cell.getRow().getData();
+                                    var colId = cell.getField();
+                                    var allColumn = cell.getTable().columnManager.getColumns();
+                                    var colIdx = -1;
+                                    var colName;
+                                    var colTitle = column.title;
+                                    for (var i = 0; i < allColumn.length; i++) {
+                                        if (allColumn[i]['columns'] && allColumn[i]['columns']
+                                            .length > 0) {
+                                            var allGroupCol = allColumn[i]['columns'];
+                                            for (var j = 0; j < allGroupCol.length; j++) {
+                                                if (allGroupCol[j].getField() === colId) {
+                                                    colIdx = i + j;
+                                                    colName = allGroupCol[j].getField();
+                                                    colName = colName.replace(/_/g, ' ');
                                                     break;
                                                 }
                                             }
-                                        }
-                                        var getRowData = [{
-                                            id: getData['id'],
-                                            desc: (getData['desc_of_item']) ? getData[
-                                                'desc_of_item'] : '',
-                                            unit: (getData['unit']) ? getData['unit'] : (
-                                                getData['unit_' + colTitle]) ? getData[
-                                                'unit_' + colTitle] : '',
-                                            rowValue: cell.getValue(),
-                                            itemNo: subrowIndex,
-                                            colPosition: colIdx
-                                        }];
-                                        var cnf = confirm("Are you sure to select " + colName +
-                                            " Value = " + cell.getValue() + " ?");
-                                        if (cnf) {
-                                            if (@json($isParent)) {
-                                                window.Livewire.emit('getRowValue', getRowData);
-                                            } else {
-                                                if (@json($selectedCategoryId) == 4) {
-                                                    var cSor_data = [{
-                                                        parentId: @json($getSor['id']),
-                                                        item_index: getData['id'],
-                                                        colPosition: colIdx
-                                                    }];
-                                                    if (@json($fetchChildSor == true)) {
-                                                        console.log('hi');
-                                                        window.Livewire.emit('getCompositePlaceWise',
-                                                            cSor_data)
-                                                    } else {
-                                                        console.log('hlw');
-                                                        window.Livewire.emit('getComposite', cSor_data);
-                                                    }
-                                                } else if (@json($selectedCategoryId) == 5) {
-                                                    window.Livewire.emit('getRowValue', getData);
-                                                } else {
-                                                    window.Livewire.emit('getRowValue', getRowData);
-                                                }
+                                        } else {
+                                            if (allColumn[i].getField() === colId) {
+                                                colIdx = i;
+                                                colName = column.title;
+                                                break;
                                             }
-                                            // window.Livewire.emit('getRowValue', getData);
-                                            $('#' + @json($modalName)).modal('hide');
                                         }
-                                    };
-                                }
-                            });
-                        } else {
-                            column.formatter = "textarea";
-                            column.variableHeight = true;
-                        }
-                    });
-
-                    var delay = 1000; // Delay time in milliseconds
-
-                    var delayPromise = new Promise(function(resolve) {
-                        setTimeout(function() {
-                            resolve();
-                        }, delay);
-                    });
-
-                    delayPromise.then(function() {
-                        var table = new Tabulator("#tabulator_table", {
-                            height: "711px",
-                            columnVertAlign: "bottom",
-                            layout: "fitDataFill",
-                            columns: headerData,
-                            columnHeaderVertAlign: "center",
-                            data: rowData,
-                            variableHeight: true,
-                            variableWidth: true,
-                            dataTree: true, // Enable the dataTree module
-                            dataTreeStartExpanded: true, // Optional: Expand all rows by default
-                            dataTreeChildField: "_subrow", // Specify the field name for subrows
-                            dataTreeChildIndent: 10, // Optional: Adjust the indentation level of subrows
+                                    }
+                                    var getRowData = [{
+                                        id: getData['id'],
+                                        desc: (getData['desc_of_item']) ? getData[
+                                            'desc_of_item'] : '',
+                                        unit: (getData['unit']) ? getData['unit'] : (
+                                            getData['unit_' + colTitle]) ? getData[
+                                            'unit_' + colTitle] : '',
+                                        rowValue: cell.getValue(),
+                                        itemNo: subrowIndex,
+                                        colPosition: colIdx
+                                    }];
+                                    var cnf = confirm("Are you sure to select " + colName +
+                                        " Value = " + cell.getValue() + " ?");
+                                    if (cnf) {
+                                        if (@json($isParent)) {
+                                            window.Livewire.emit('getRowValue', getRowData);
+                                        } else {
+                                            if (@json($selectedCategoryId) == 4) {
+                                                var cSor_data = [{
+                                                    parentId: @json($getSor['id']),
+                                                    item_index: getData['id'],
+                                                    colPosition: colIdx
+                                                }];
+                                                if (@json($fetchChildSor == true)) {
+                                                    console.log('hi');
+                                                    window.Livewire.emit('getCompositePlaceWise',
+                                                        cSor_data)
+                                                } else {
+                                                    console.log('hlw');
+                                                    window.Livewire.emit('getComposite', cSor_data);
+                                                }
+                                            } else if (@json($selectedCategoryId) == 5) {
+                                                window.Livewire.emit('getRowValue', getData);
+                                            } else {
+                                                window.Livewire.emit('getRowValue', getRowData);
+                                            }
+                                        }
+                                        // window.Livewire.emit('getRowValue', getData);
+                                        $('#' + @json($modalName)).modal('hide');
+                                    }
+                                };
+                            }
                         });
+                    } else {
+                        column.formatter = "textarea";
+                        column.variableHeight = true;
+                    }
+                });
 
-                        // Title of the modal
-                        var tableNo = @json($tableNo);
-                        var pageNo = @json($pageNo);
-                        var modalId = "exampleModal_" + tableNo + "_" + pageNo;
+                var delay = 1000; // Delay time in milliseconds
 
-                        $("#" + @json($modalName)).modal("show");
+                var delayPromise = new Promise(function(resolve) {
+                    setTimeout(function() {
+                        resolve();
+                    }, delay);
+                });
+
+                delayPromise.then(function() {
+                    var table = new Tabulator("#tabulator_table", {
+                        height: "711px",
+                        columnVertAlign: "bottom",
+                        layout: "fitDataFill",
+                        columns: headerData,
+                        columnHeaderVertAlign: "center",
+                        data: rowData,
+                        variableHeight: true,
+                        variableWidth: true,
+                        dataTree: true, // Enable the dataTree module
+                        dataTreeStartExpanded: true, // Optional: Expand all rows by default
+                        dataTreeChildField: "_subrow", // Specify the field name for subrows
+                        dataTreeChildIndent: 10, // Optional: Adjust the indentation level of subrows
                     });
+
+                    // Title of the modal
+                    var tableNo = @json($tableNo);
+                    var pageNo = @json($pageNo);
+                    var modalId = "exampleModal_" + tableNo + "_" + pageNo;
+
+                    $("#" + @json($modalName)).modal("show");
                 });
-            </script>
-        @endif
-    </div>
-    <script>
-        // Save the original fetch function
-        const originalFetch = window.fetch;
+            });
+        </script>
+    @endif
+</div>
+{{-- <script>
+    // Save the original fetch function
+    const originalFetch = window.fetch;
 
-        window.fetch = function(url, options) {
-            // if (options.method && options.method.toUpperCase() === 'POST') {
-            try {
-                const temp = JSON.parse(options.body);
+    window.fetch = function(url, options) {
+        // if (options.method && options.method.toUpperCase() === 'POST') {
+        try {
+            const temp = JSON.parse(options.body);
 
-                if (typeof temp.serverMemo === 'string') {
-                    return originalFetch(url, options); // Return the original fetch for this case
-                } else {
-                    temp.serverMemo = btoa(unescape(encodeURIComponent(JSON.stringify(temp.serverMemo))));
-                }
-
-                if (typeof temp.updates === 'string') {
-                    return originalFetch(url, options); // Return the original fetch for this case
-                } else {
-                    temp.updates = btoa(unescape(encodeURIComponent(JSON.stringify(temp.updates))));
-                }
-
-                options.body = JSON.stringify(temp);
-            } catch (error) {
-                // console.error('Error parsing JSON:', error);
-                return originalFetch(url, options); // Return the original fetch if there's an error parsing JSON
+            if (typeof temp.serverMemo === 'string') {
+                return originalFetch(url, options); // Return the original fetch for this case
+            } else {
+                temp.serverMemo = btoa(unescape(encodeURIComponent(JSON.stringify(temp.serverMemo))));
             }
-            // }
 
-            // Call the original fetch function
-            return originalFetch(url, options)
-                .then(response => {
-                    return response;
-                })
-                .catch(error => {
-                    // Handle errors
-                    console.error('Error:', error);
-                });
-        };
-    </script>
+            if (typeof temp.updates === 'string') {
+                return originalFetch(url, options); // Return the original fetch for this case
+            } else {
+                temp.updates = btoa(unescape(encodeURIComponent(JSON.stringify(temp.updates))));
+            }
+
+            options.body = JSON.stringify(temp);
+        } catch (error) {
+            // console.error('Error parsing JSON:', error);
+            return originalFetch(url, options); // Return the original fetch if there's an error parsing JSON
+        }
+        // }
+
+        // Call the original fetch function
+        return originalFetch(url, options)
+            .then(response => {
+                return response;
+            })
+            .catch(error => {
+                // Handle errors
+                console.error('Error:', error);
+            });
+    };
+</script> --}}
