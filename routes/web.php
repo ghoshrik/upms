@@ -2,57 +2,58 @@
 
 // Controllers
 
+use App\Models\User;
+use FontLib\Table\Type\name;
+use App\Models\UsersHasRoles;
+use App\Http\Livewire\Sor\Sor;
+use App\Http\Livewire\Aoc\Aocs;
+use App\Http\Livewire\Roles\Roles;
+use Spatie\Permission\Models\Role;
+use App\Http\Livewire\Office\Office;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Livewire\Tender\Tenders;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
-use App\Http\Controllers\Auth\AuthController;
+use App\Http\Livewire\Report\MisReport;
+// use App\Http\Livewire\TestALL\TestSearch;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\HomeController;
 use App\Http\Livewire\Aafs\AafsProjects;
-use App\Http\Livewire\AccessManager\AccessManager;
-use App\Http\Livewire\AccessType\AccessType;
-use App\Http\Livewire\Aoc\Aocs;
-use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
-use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
-use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
-use App\Http\Livewire\Carriagecost\CarriageCosts;
-use App\Http\Livewire\Carriages\Carriagesors;
-use App\Http\Livewire\Compositsor\ComposerSors;
-// use App\Http\Livewire\TestALL\TestSearch;
-use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
-use App\Http\Livewire\Department\Department;
-use App\Http\Livewire\Designation\Designation;
-use App\Http\Livewire\DocumentSor\DocumentSors;
-use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
-use App\Http\Livewire\EstimateProject\EstimateProject;
-use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
-use App\Http\Livewire\Estimate\EstimatePrepare;
-// use App\Http\Livewire\Permission\Permissions;
-use App\Http\Livewire\ExcelImport\Imports;
-use App\Http\Livewire\MenuManagement\MenuManagement;
-use App\Http\Livewire\Milestone\Milestones;
-use App\Http\Livewire\Office\Office;
-use App\Http\Livewire\Permission\Permission;
-use App\Http\Livewire\QuantityEvaluation\QuantityEvaluation;
-use App\Http\Livewire\RateAnalysis\RateAnalysis;
-use App\Http\Livewire\Report\MisReport;
-use App\Http\Livewire\Roles\AssignRole\AssignRole;
-use App\Http\Livewire\Roles\Roles;
-use App\Http\Livewire\Setting\SettingLists;
-use App\Http\Livewire\Sorapprove\SorApprovers;
-use App\Http\Livewire\SorBook\DynamicSor;
-use App\Http\Livewire\Sor\Sor;
-use App\Http\Livewire\Tender\Tenders;
-use App\Http\Livewire\Unitsmaster\UnitsMaster;
-use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\UserType\UserType;
+use App\Http\Livewire\SorBook\DynamicSor;
+use App\Http\Livewire\ExcelImport\Imports;
+use App\Http\Livewire\Milestone\Milestones;
+use App\Http\Livewire\Setting\SettingLists;
+// use App\Http\Livewire\Permission\Permissions;
+use App\Http\Livewire\AccessType\AccessType;
+use App\Http\Livewire\Department\Department;
+use App\Http\Livewire\Permission\Permission;
 use App\Http\Livewire\VendorRegs\VendorList;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Livewire\Carriages\Carriagesors;
+use App\Http\Livewire\Designation\Designation;
+use App\Http\Livewire\Sorapprove\SorApprovers;
+use App\Http\Livewire\Unitsmaster\UnitsMaster;
 use App\Http\Livewire\ViewSorBook\ViewSorBook;
+use App\Http\Livewire\Compositsor\ComposerSors;
+use App\Http\Livewire\DocumentSor\DocumentSors;
+use App\Http\Livewire\Estimate\EstimatePrepare;
+use App\Http\Livewire\RateAnalysis\RateAnalysis;
+use App\Http\Livewire\Carriagecost\CarriageCosts;
+use App\Http\Livewire\AccessManager\AccessManager;
+use App\Http\Livewire\Roles\AssignRole\AssignRole;
+use App\Http\Livewire\MenuManagement\MenuManagement;
+use App\Http\Livewire\UserManagement\UserManagement;
+use App\Http\Livewire\EstimateProject\EstimateProject;
 // Packages
-use App\Models\User;
-use App\Models\UsersHasRoles;
-use FontLib\Table\Type\name;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use Spatie\Permission\Models\Role;
+use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
+use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
+use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
+use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
+use App\Http\Livewire\QuantityEvaluation\QuantityEvaluation;
+use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
+use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
+use App\Http\Livewire\EstimateSanctionLimit\EstimateSanctionMaster;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,7 +114,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('department-category', DepartmentCategoryList::class)->name('department-category');
         });
 
-
+        Route::group(['middleware' => ['role:Super User']],function(){
+            Route::get('estimate-limit-sanction',EstimateSanctionMaster::class)->name('estimate-limit-sanction');
+        });
 
 
 
