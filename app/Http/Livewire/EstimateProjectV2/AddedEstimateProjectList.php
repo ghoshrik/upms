@@ -105,13 +105,13 @@ class AddedEstimateProjectList extends Component
             $this->autoCalculateTotal();
         }
     }
-   
+
     public function updateSetFetchData($fetchUpdateRateData, $update_id)
     {
        // dd($fetchUpdateRateData,$update_id);
         foreach ($this->allAddedEstimatesData as $key => $estimate) {
             if ($estimate['array_id'] == $update_id) {
-                 
+
                 if (!empty($fetchUpdateRateData['estimate_no'])) {
                     $this->allAddedEstimatesData[$key]['estimate_no'] = $fetchUpdateRateData['estimate_no'];
                 }
@@ -174,6 +174,9 @@ class AddedEstimateProjectList extends Component
                 }
                 if (!empty($fetchUpdateRateData['unit_id'])) {
                     $this->allAddedEstimatesData[$key]['unit_id'] = $fetchUpdateRateData['unit_id'];
+                }
+                if(isset($this->allAddedEstimatesData[$key]['unit_id'][0]) && $this->allAddedEstimatesData[$key]['unit_id'][0] === '%' ){
+                    $this->allAddedEstimatesData[$key]['total_amount'] = $this->allAddedEstimatesData[$key]['total_amount'] / 100;
                 }
                 if (isset($fetchUpdateRateData['qtyUpdate'])) {
                     $this->allAddedEstimatesData[$key]['qtyUpdate'] = $fetchUpdateRateData['qtyUpdate'];
@@ -243,7 +246,7 @@ class AddedEstimateProjectList extends Component
 
     public function openQtyModal($key)
     {
-        
+
         $this->openQtyModal = !$this->openQtyModal;
         $this->sendArrayKey = $this->allAddedEstimatesData[$key]['array_id'];
         foreach ($this->allAddedEstimatesData as $index => $estimateData) {

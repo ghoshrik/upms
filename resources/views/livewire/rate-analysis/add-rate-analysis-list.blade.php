@@ -194,6 +194,7 @@
                                                         wire:model="allAddedRateData.{{ $key }}.rate"
                                                         wire:blur="calculateValue({{ $key }})" />
                                                 @else
+                                                    {{ $addedRate['rate'] }}
                                                 @endif
                                                 {{-- @endisset --}}
                                             @else

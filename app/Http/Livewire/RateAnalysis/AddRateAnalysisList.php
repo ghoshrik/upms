@@ -125,8 +125,6 @@ class AddRateAnalysisList extends Component
 
     public function updateSetFetchData($fetchUpdateRateData, $update_id)
     {
-
-       // dd( $fetchUpdateRateData);
         // $numericValue = preg_replace('/[^0-9]/', '', $update_id);
         foreach ($this->allAddedRateData as $key => $rate) {
             if ($rate['array_id'] == $update_id) {
@@ -137,7 +135,7 @@ class AddRateAnalysisList extends Component
                 $this->allAddedRateData[$key]['volume_no'] = $fetchUpdateRateData['volume'];
                 $this->allAddedRateData[$key]['table_no'] = $fetchUpdateRateData['table_no'];
                 $this->allAddedRateData[$key]['page_no'] = $fetchUpdateRateData['page_no'];
-                $this->allAddedRateData[$key]['sor_id'] = $fetchUpdateRateData['id'];
+                $this->allAddedRateData[$key]['sor_id'] = $fetchUpdateRateData['sor_id'];
                 $this->allAddedRateData[$key]['item_index'] = $fetchUpdateRateData['item_index'];
                 $this->allAddedRateData[$key]['item_name'] = $fetchUpdateRateData['item_name'];
                 $this->allAddedRateData[$key]['other_name'] = $fetchUpdateRateData['other_name'];
@@ -154,7 +152,9 @@ class AddRateAnalysisList extends Component
                     $this->allAddedRateData[$key]['total_amount'] = $this->allAddedRateData[$key]['total_amount'] / 100;
                 }
                 $this->allAddedRateData[$key]['qtyUpdate'] = $fetchUpdateRateData['qtyUpdate'];
-                $this->allAddedRateData[$key]['rate_analysis_data'] = $fetchUpdateRateData['rate_analysis_data'];
+                if($fetchUpdateRateData['qtyUpdate']){
+                    $this->allAddedRateData[$key]['rate_analysis_data'] = $fetchUpdateRateData['rate_analysis_data'];
+                }
             }
         }
         if ($this->editRate_id != '') {

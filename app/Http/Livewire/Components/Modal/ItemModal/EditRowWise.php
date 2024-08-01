@@ -31,7 +31,8 @@ class EditRowWise extends Component
 
     public function mount()
     {
-       
+        $this->dataArray = $this->editRowData;
+        // dd($this->dataArray);
         $this->department_id= Auth::user()->department_id;
         $allDept = Cache::get('allDept');
         if ($allDept != '') {
@@ -58,11 +59,11 @@ class EditRowWise extends Component
 
 
         $this->storedSessionData = Session()->get($this->modalName);
-      
+
         if (!empty($this->editRowData)) {
-             $this->rowSubrow_ID=$this->editRowData['id'];
-             $this->rowSubrow_PId=$this->editRowData['p_id'];
             if (isset($this->editRowData['is_v2_data'])) {
+                $this->rowSubrow_ID=$this->editRowData['id'];
+                $this->rowSubrow_PId=$this->editRowData['p_id'];
                 $this->model = $this->editRowData['is_v2_data'] ? EstimatePrepareV2::class : EstimatePrepare::class;
             } else {
                 $this->model = EstimatePrepare::class;
@@ -99,7 +100,7 @@ class EditRowWise extends Component
                 }
                 $this->calculateValue();
             } elseif ($this->dataArray['item_name'] == 'SOR' || $this->dataArray['item_name'] == '1') {
-                
+
                 if (isset($this->editRowData['qtyUpdate'])) {
                     $this->dataArray['qtyUpdate'] = $this->editRowData['qtyUpdate'];
                 }
@@ -156,7 +157,7 @@ class EditRowWise extends Component
         }
     }
 
-    
+
     public function checkQty($newqty, $rowId)
     {
         if (!empty($newqty)) {
@@ -165,31 +166,31 @@ class EditRowWise extends Component
             } else {
                 $this->allData = Session()->get('addedProjectEstimateV2Data');
             }
-            
+
             $parentQty = null;
             $childSum = 0;
-    
+
             // Find the parent quantity
             foreach ($this->allData as $item) {
                 if ($item['p_id'] == 0) {
                     $parentQty = $item['qty'];
-                    break; 
+                    break;
                 }
             }
-    
+
             // Calculate the sum of all child quantities excluding the row being updated
             foreach ($this->allData as $item) {
                 if ($item['p_id'] != 0 && $item['id'] != $rowId) {
                     $childSum += $item['qty'];
                 }
             }
-    
+
             // Calculate the remaining quantity
             $remainingQty = $parentQty - $childSum;
-            
+
             // Define a small epsilon value for floating-point comparison
             $epsilon = 0.00001;
-    
+
             // Debug statements
             // dd([
             //     'parentQty' => $parentQty,
@@ -198,7 +199,7 @@ class EditRowWise extends Component
             //     'newqty' => $newqty,
             //     'comparison_result' => $newqty > $remainingQty + $epsilon
             // ]);
-    
+
             // Check if the new quantity exceeds the remaining quantity
             if ($newqty > $remainingQty + $epsilon) {
                 session()->flash('error', "Subrow allowable quantity: {$remainingQty}");
@@ -208,7 +209,7 @@ class EditRowWise extends Component
             }
         }
     }
-    
+
     public function OpenConfirmModal()
     {
         $this->qtyCnfModal = !$this->qtyCnfModal;
