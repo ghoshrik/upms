@@ -127,6 +127,9 @@ class AddedEstimateProjectList extends Component
                 $this->allAddedEstimatesData[$key]['is_row'] = $fetchUpdateRateData['is_row'];
                 $this->allAddedEstimatesData[$key]['rate_type'] = $fetchUpdateRateData['rate_type'];
                 $this->allAddedEstimatesData[$key]['unit_id'] = $fetchUpdateRateData['unit_id'];
+                if(isset($this->allAddedEstimatesData[$key]['unit_id'][0]) && $this->allAddedEstimatesData[$key]['unit_id'][0] === '%'){
+                    $this->allAddedEstimatesData[$key]['total_amount'] = $this->allAddedEstimatesData[$key]['total_amount'] / 100;
+                }
                 $this->allAddedEstimatesData[$key]['qtyUpdate'] = $fetchUpdateRateData['qtyUpdate'];
                 $this->allAddedEstimatesData[$key]['rate_analysis_data'] = $fetchUpdateRateData['rate_analysis_data'];
             }

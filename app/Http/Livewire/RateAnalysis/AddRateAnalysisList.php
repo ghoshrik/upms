@@ -150,6 +150,9 @@ class AddRateAnalysisList extends Component
                 $this->allAddedRateData[$key]['is_row'] = $fetchUpdateRateData['is_row'];
                 $this->allAddedRateData[$key]['rate_type'] = $fetchUpdateRateData['rate_type'];
                 $this->allAddedRateData[$key]['unit_id'] = $fetchUpdateRateData['unit_id'];
+                if(isset($this->allAddedRateData[$key]['unit_id'][0]) && $this->allAddedRateData[$key]['unit_id'][0] === '%'){
+                    $this->allAddedRateData[$key]['total_amount'] = $this->allAddedRateData[$key]['total_amount'] / 100;
+                }
                 $this->allAddedRateData[$key]['qtyUpdate'] = $fetchUpdateRateData['qtyUpdate'];
                 $this->allAddedRateData[$key]['rate_analysis_data'] = $fetchUpdateRateData['rate_analysis_data'];
             }

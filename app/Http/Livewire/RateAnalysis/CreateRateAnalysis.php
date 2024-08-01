@@ -1716,6 +1716,9 @@ class CreateRateAnalysis extends Component
                 $this->addedRate['col_position'] = isset($this->rateData['col_position']) ? $this->rateData['col_position'] : 0;
                 $this->addedRate['is_row'] = isset($this->rateData['is_row']) ? $this->rateData['is_row'] : null;
                 $this->addedRate['unit_id'] = is_numeric($this->rateData['unit_id']) ? getUnitName($this->rateData['unit_id']) : $this->rateData['unit_id'];
+                if(isset($this->addedRate['unit_id'][0]) && $this->addedRate['unit_id'][0] === '%'){
+                    $this->addedRate['total_amount'] = $this->addedRate['total_amount'] / 100;
+                }
                 $this->addedRateUpdateTrack = rand(1, 1000);
                 $this->rateData['item_number'] = '';
                 $this->rateData['other_name'] = '';
