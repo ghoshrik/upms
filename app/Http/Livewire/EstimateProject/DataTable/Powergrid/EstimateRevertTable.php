@@ -2,20 +2,21 @@
 
 namespace App\Http\Livewire\EstimateProject\Datatable\Powergrid;
 
-use App\Models\EstimatePrepare;
 use App\Models\EstimateStatus;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
+use App\Models\EstimatePrepare;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridComponent;
-use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
+use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Rules\Rule;
+use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
+use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Rules\RuleActions;use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 
 final class EstimateRevertTable extends PowerGridComponent
@@ -188,22 +189,28 @@ final class EstimateRevertTable extends PowerGridComponent
 
     public function actions(): array
     {
+        $hasPermission = auth()->user()->can('revert estimate');
         return [
             Button::add('view')
-                ->caption('View')
-                ->class('btn btn-soft-primary btn-sm')
-                ->emit('openModal', ['estimate_id']),
+            ->bladeComponent('view', ['id' => 'estimate_id']),
             Button::add('edit')
-                ->caption('Modify')
-                ->class('btn btn-warning btn-sm')
-                ->emit('openForm', ['formType' => 'edit', 'id' => 'estimate_id']),
-            Button::add('revert')
-                ->caption('Revert')
-                ->class('btn btn-soft-info btn-sm')
-                ->emit('openRevertModal',['estimate_id'=>'estimate_id','revart_from'=>'ER']),
+            ->bladeComponent('data-table-components.buttons.modify', ['value' => 'estimate_id', 'action' => 'edit']),
+            ($hasPermission) ? Button::add('revert')
+                ->bladeComponent('data-table-components.buttons.revert', ['value' => 'estimate_id', 'action'=>'revert']) : null,
         ];
     }
-
+    public function view($estimate_id)
+    {
+        $this->emit('openModal', $estimate_id);
+    }
+    public function modify($id)
+    {
+        $this->emit('openForm', ['formType' => 'modify', 'id' => $id]);
+    }
+    public function revert($estimate_id)
+    {
+        $this->emit('openRevertModal',['estimate_id'=>$estimate_id,'revart_from'=>'ER']);
+    }
     /*
     |--------------------------------------------------------------------------
     | Actions Rules

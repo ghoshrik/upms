@@ -48,16 +48,32 @@ class EstimateProject extends Component
     }
     public function dataCounter()
     {
-        $this->counterData['totalDataCount'] = EstimateUserAssignRecord::where('status', 1)
+        // $this->counterData['totalDataCount'] = EstimateUserAssignRecord::whereIn('status', [1, 2, 6])
+        //     ->where('user_id', Auth::user()->id)
+        //     ->count();
+        if (Auth::user()->hasPermissionTo('create estimate')) {
+            $this->counterData['totalDataCount'] = EstimateUserAssignRecord::whereIn('status', [1, 2, 6])
             ->where('user_id', Auth::user()->id)
             ->count();
-        $this->counterData['draftDataCount'] = EstimateUserAssignRecord::where(function ($query) {
-            $query->where('status', 1)
-                ->orWhere('status', 2);
-        })
-            ->where('user_id', Auth::user()->id)
-            ->where('is_done', 0)
+            $this->counterData['draftDataCount'] = EstimateUserAssignRecord::where(function ($query) {
+                $query->where('status', 1)
+                    ->orWhere('status', 2);
+            })
+                ->where('user_id', Auth::user()->id)
+                ->where('is_done', 0)
+                ->count();
+        }else{
+            $this->counterData['totalDataCount'] = EstimateUserAssignRecord::whereIn('status', [3,4])
+            ->where('assign_user_id', Auth::user()->id)
             ->count();
+            $this->counterData['draftDataCount'] = EstimateUserAssignRecord::where(function ($query) {
+                $query->where('status', 3)
+                    ->orWhere('status', 4);
+            })
+                ->where('assign_user_id', Auth::user()->id)
+                ->where('is_done', 0)
+                ->count();
+        }
         $this->counterData['fwdDataCount'] = EstimateUserAssignRecord::query()
             ->selectRaw('count(status)')
             ->where('status', 3)
