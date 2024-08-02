@@ -663,9 +663,9 @@ class AddedEstimateProjectList extends Component
                             $existingEstimatesJson = $existingEstimates->toJson();
                             EstimateLog::create([
                                 'estimate_id' => $intId,
-                                'old_data' => $existingEstimatesJson,
-                                'created_by' => Auth::id(),
-                                'updated_by' => Auth::id(),
+                                'old_data' => json_encode($existingEstimatesJson),
+                                'created_by' => $existingEstimates[0]['created_by'],
+                                'updated_by' => Auth::user()->id,
                             ]);
                             EstimatePrepare::where('estimate_id', $intId)->delete();
                         }
