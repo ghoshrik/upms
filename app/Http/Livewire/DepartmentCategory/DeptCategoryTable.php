@@ -26,6 +26,10 @@ class DeptCategoryTable extends DataTableComponent
                 ->sortable(),
             Column::make("Dept category name", "dept_category_name")
                 ->sortable(),
+            Column::make("Volume No", "volume_no")
+                ->sortable(),
+            Column::make("Total SOR Page", "target_page")
+                ->sortable(),
             // Column::make("Actions", "id")->view('components.data-table-components.buttons.edit'),
             // Column::make("Created at", "created_at")
             //     ->sortable(),
@@ -35,11 +39,11 @@ class DeptCategoryTable extends DataTableComponent
     }
     public function edit($Id)
     {
-        return $this->emit('openForm',true,$Id);
+        return $this->emit('openForm', true, $Id);
     }
     public function builder(): Builder
     {
         return SorCategoryType::query()
-            ->where('sor_category_types.department_id','=',Auth::user()->department_id);
+            ->where('sor_category_types.department_id', '=', Auth::user()->department_id);
     }
 }
