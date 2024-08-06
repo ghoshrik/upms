@@ -10,7 +10,7 @@ class SorCategoryType extends Model
     use HasFactory;
     protected $table = "sor_category_types";
     protected $fillable = [
-        'department_id', 'dept_category_name', 'volume_no', 'target_page'
+        'department_id', 'dept_category_name', 'target_pages'
     ];
     public function department()
     {

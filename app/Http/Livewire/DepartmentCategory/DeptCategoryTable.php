@@ -26,11 +26,10 @@ class DeptCategoryTable extends DataTableComponent
                 ->sortable(),
             Column::make("Dept category name", "dept_category_name")
                 ->sortable(),
-            Column::make("Volume No", "volume_no")
+
+            Column::make("Total SOR Pages", "target_pages")
                 ->sortable(),
-            Column::make("Total SOR Page", "target_page")
-                ->sortable(),
-            // Column::make("Actions", "id")->view('components.data-table-components.buttons.edit'),
+            Column::make("Actions", "id")->view('components.data-table-components.buttons.edit'),
             // Column::make("Created at", "created_at")
             //     ->sortable(),
             // Column::make("Updated at", "updated_at")
@@ -39,7 +38,8 @@ class DeptCategoryTable extends DataTableComponent
     }
     public function edit($Id)
     {
-        return $this->emit('openForm', true, $Id);
+        // return $this->emit('openEntryForm', $Id);
+        return $this->emit('openEntryForm', ['formType'=>'edit', 'id'=>$Id]);
     }
     public function builder(): Builder
     {
