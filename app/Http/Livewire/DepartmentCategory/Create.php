@@ -11,16 +11,16 @@ use Illuminate\Support\Facades\Auth;
 class Create extends Component
 {
     use Actions;
-    public $dept_category_name, $volumeNo = [], $totalSorPage,$selectedIdForEdit,$editListData=[];
+    public $dept_category_name, $volumeNo = [], $totalSorPage, $selectedIdForEdit, $editListData = [], $volumeId;
     protected $rules = [
         'dept_category_name' => 'required|string|max:255',
-        'totalSorPage'=>'integer|required'
+        'totalSorPage' => 'integer|required'
     ];
     protected $messages = [
         'dept_category_name.required' => 'This field is required',
         'dept_category_name.string' => 'This field is must be string',
-        'totalSorPage.required'=>'This field is required',
-        'totalSorPage.integer'=>'Data Mismatch'
+        'totalSorPage.required' => 'This field is required',
+        'totalSorPage.integer' => 'Data Mismatch'
     ];
     public function updated($param)
     {
@@ -28,13 +28,13 @@ class Create extends Component
     }
     public function mount()
     {
-        // $this->volumeNo = VolumeMaster::select('id', 'volume_name')->get();
-        if(!empty($this->selectedIdForEdit))
-        {
+        $this->volumeNo = VolumeMaster::select('id', 'volume_name')->get();
+        if (!empty($this->selectedIdForEdit)) {
 
-            $this->editListData = SorCategoryType::where('id',$this->selectedIdForEdit)->first();
+            $this->editListData = SorCategoryType::where('id', $this->selectedIdForEdit)->first();
             $this->dept_category_name = $this->editListData->dept_category_name;
             $this->totalSorPage = $this->editListData->target_pages;
+            $this->volumeId = $this->editListData->volume_id;
         }
         // dd($this->selectedIdForEdit,$this->editListData->dept_category_name);
     }
@@ -42,19 +42,16 @@ class Create extends Component
     {
         $validateData = $this->validate();
         try {
-            if($this->selectedIdForEdit)
-            {
+            if ($this->selectedIdForEdit) {
                 $category = SorCategoryType::findOrFail($this->selectedIdForEdit);
                 $category->update([
                     'dept_category_name' => $this->dept_category_name,
-                    'target_pages'=>$this->totalSorPage
+                    'target_pages' => $this->totalSorPage
                 ]);
-            $this->notification()->success(
-                $title = 'Department category updated'
-            );
-            }
-            else
-            {
+                $this->notification()->success(
+                    $title = 'Department category updated'
+                );
+            } else {
 
                 SorCategoryType::create([
                     'department_id' => Auth::user()->department_id,

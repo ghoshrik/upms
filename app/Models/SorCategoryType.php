@@ -10,7 +10,7 @@ class SorCategoryType extends Model
     use HasFactory;
     protected $table = "sor_category_types";
     protected $fillable = [
-        'department_id', 'dept_category_name', 'target_pages'
+        'department_id', 'dept_category_name', 'target_pages', 'volume_id'
     ];
     public function department()
     {
@@ -18,6 +18,6 @@ class SorCategoryType extends Model
     }
     public function volumes()
     {
-        return $this->hasMany(VolumeMaster::class, 'volume_no');
+        return $this->hasMany(VolumeMaster::class, 'volume_id');
     }
 }

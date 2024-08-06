@@ -22,7 +22,16 @@ class SorApprovers extends Component
     public function mount()
     {
         //$this->SorLists = SOR::where('department_id', '=', Auth::user()->department_id)->get();
-        $this->SorLists['sorCount'] = DynamicSorHeader::PendingSor();
+        $this->SorLists['sorApproverPendingCount'] = DynamicSorHeader::PendingSor();
+        $this->SorLists['sorApprovedCount'] = DynamicSorHeader::ApproveSor();
+        $this->SorLists['SORCounts'] = DynamicSorHeader::SorReportsDeptCategory()->get();
+
+        // $this->SorLists['sorTargetPage'] = DynamicSorHeader::DeptTargetPages();
+
+        // $user = Auth::user();
+
+        // $categoryCounts = DynamicSorHeader::CategoryCounts($user);
+        // dd($categoryCounts);
     }
 
     public function setErrorAlert($errorMessage)

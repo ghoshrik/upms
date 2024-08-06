@@ -14,7 +14,7 @@
                                     wire:model.defer="dept_category_name" />
                             </div>
                         </div>
-                        {{-- <div class="col-md-3 col-sm-6 col-lg-3">
+                        <div class="col-md-3 col-sm-6 col-lg-3">
                             <div class="form-group">
                                 <x-select wire:key="volumeNo" label="Volume No" placeholder="Select Volume No"
                                     wire:model.defer="volumeId">
@@ -24,17 +24,19 @@
                                     @endforeach
                                 </x-select>
                             </div>
-                        </div> --}}
+                        </div>
                         <div class="col-md-3 col-sm-6 col-lg-3">
                             <div class="form-group">
                                 <x-input label="Total SOR Page" placeholder="Total SOR Page"
-                                    wire:model.defer="totalSorPage" oninput="this.value = this.value.replace(/[^0-9]/g, '')"/>
+                                    wire:model.defer="totalSorPage"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
                             </div>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12"><button type="submit" wire:click='store'
-                                        class="btn {{$selectedIdForEdit ? 'btn-warning':'btn-success'}} btn-sm rounded-pill float-right"> {{$selectedIdForEdit ? 'Update':trans('global.data_save_btn')}}</button>
+                                        class="btn {{ $selectedIdForEdit ? 'btn-warning' : 'btn-success' }} btn-sm rounded-pill float-right">
+                                        {{ $selectedIdForEdit ? 'Update' : trans('global.data_save_btn') }}</button>
                                 </div>
                             </div>
                         </div>

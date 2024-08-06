@@ -123,9 +123,11 @@
                 .counter .counter-content {
                     background-color: #fff;
                     height: 100%;
-                    padding: 23px 15px;
+                    padding: 3px 15px;
                     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.25);
                     position: relative;
+                    border-left: 1px dotted #000000;
+                    border-top: 1px dotted #000000;
                 }
 
                 .counter .counter-content:before,
@@ -213,11 +215,133 @@
                         margin-bottom: 40px;
                     }
                 }
+
+                .card {
+                    border-left: 2px solid #007BFF;
+                    position: relative;
+                }
+
+                .ribbon {
+                    position: relative;
+                    padding: 0 0.5em;
+                    font-size: 1.295em;
+                    margin: 0 0 0 -0.625em;
+                    line-height: 1.875em;
+                    /* color: #e6e2c8; */
+                    border-radius: 0 0.156em 0.156em 0;
+                    background: rgb(123, 159, 199);
+                    box-shadow: -1px 2px 3px rgba(0, 0, 0, 0.5);
+                }
+
+                .ribbon:before,
+                .ribbon:after {
+                    position: absolute;
+                    content: '';
+                    display: block;
+                }
+
+                .ribbon:before {
+                    width: 0.469em;
+                    height: 100%;
+                    padding: 0 0 0.438em;
+                    top: 0;
+                    left: -0.469em;
+                    background: inherit;
+                    border-radius: 0.313em 0 0 0.313em;
+                }
+
+                .ribbon:after {
+                    width: 0.313em;
+                    height: 0.313em;
+                    background: rgba(0, 0, 0, 0.35);
+                    bottom: -0.313em;
+                    left: -0.313em;
+                    border-radius: 0.313em 0 0 0.313em;
+                    box-shadow: inset -1px 2px 2px rgba(0, 0, 0, 0.3);
+                }
+
+                * {
+                    color: #000000;
+                }
+
+                .card .card__container {
+                    padding: 1.5rem;
+                    width: 100%;
+                    height: 100%;
+                    background: white;
+                    border-radius: 1rem;
+                    position: relative;
+                }
+
+                .card::before {
+                    position: absolute;
+                    top: 2rem;
+                    right: -0.5rem;
+                    content: "";
+                    background: #283593;
+                    height: 28px;
+                    width: 28px;
+                    transform: rotate(45deg);
+                }
+
+                .card::after {
+                    position: absolute;
+                    content: attr(data-label);
+                    top: 11px;
+                    right: -14px;
+                    padding: 0.5rem;
+                    /* width: 10rem; */
+                    background: #3A57E8;
+                    color: white;
+                    text-align: center;
+                    font-family: "Roboto", sans-serif;
+                    box-shadow: 4px 4px 15px rgba(26, 35, 126, 0.2);
+                }
             </style>
         </div>
         <div class="row">
-            <h3>Schedule Of Rates</h3>
             @foreach ($deptSorCategory as $category)
+                <div class="col-md-3 col-sm-6">
+                    <div class="card" data-label="{{ $category->dept_category_name }}">
+                        <div class="card__container">
+                            <div class="card-body">
+                                <strong> Schedule of Rate </strong>Target Pages :
+                                {{ $category->target_pages }} </br>Total Pages Entired :
+                                {{ $category->category_count }} </br>
+
+                                <strong> Corrigenda & Addendam </strong>Pages Entired :
+                                {{ $category->corrigenda_count }} </br>
+
+                                <strong> Total Approved :</strong>
+                                {{ $category->pending_approval_count }} </br>
+
+                                <strong> Total Verified :</strong>
+                                {{ $category->verified_count }} </br>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- <div class="counter">
+                        <div class="counter-content">
+                            <span class="counter-value"> <strong> Schedule of Rate </strong>Target Pages :
+                                {{ $category->target_pages }} ,Complete
+                                {{ $category->category_count }} </br>
+
+                                <strong> Corrigenda & Addendam </strong>Complete
+                                {{ $category->corrigenda_count }} </br>
+
+                                <strong> Total Approved </strong>
+                                {{ $category->pending_approval_count }} </br>
+
+                                <strong> Total Verified </strong>
+                                {{ $category->verified_count }} </br>
+                            </span>
+                        </div>
+                    </div> --}}
+                </div>
+            @endforeach
+
+
+            {{-- @foreach ($deptSorCategory as $category)
                 <div class="col-md-3 col-sm-6">
                     <div class="counter">
                         <div class="counter-content">
@@ -225,14 +349,23 @@
                                 <i class="fa fa-globe"></i>
                             </div>
                             <h3>{{ $category->dept_category_name }}</h3>
+                            <h3>Schedule Of Rates :</h3>
+                            <span class="counter-value"> Target Pages {{ $category->target_pages }} ,Complete
+                                {{ $category->category_count }}
+                            </span>
+                            <h3>Corrigenda & Addenda</h3>
+                            <span class="counter-value"> {{ $category->target_pages }}
+                                {{ $category->category_count }}
+                            </span>
                             <h3>Schedule Of Rates</h3>
-                            <span class="counter-value"> {{$category->target_pages}} Pages of {{ $category->category_count }} </span>
+                            <h3>Schedule Of Rates</h3>
+                            <h3>Schedule Of Rates</h3>
                         </div>
                     </div>
                 </div>
             @endforeach
-            <h3>Corrigenda & Addenda</h3>
-            @foreach ($deptSorCorrigendaCategory as $corrigenda)
+            <h3>Corrigenda & Addenda</h3> --}}
+            {{-- @foreach ($deptSorCorrigendaCategory as $corrigenda)
                 <div class="col-md-3 col-sm-6">
                     <div class="counter">
                         <div class="counter-content">
@@ -241,11 +374,11 @@
                             </div>
                             <h3>{{ $corrigenda->dept_category_name }}</h3>
                             <h3>Corrigenda & Addenda</h3>
-                            <span class="counter-value"> {{$corrigenda->category_count}} Pages </span>
+                            <span class="counter-value"> {{ $corrigenda->category_count }} Pages </span>
                         </div>
                     </div>
                 </div>
-            @endforeach
+            @endforeach --}}
         </div>
     </div>
 </x-app-layout>
