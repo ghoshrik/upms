@@ -119,7 +119,7 @@
                             }
                         </style>
                         <div class="row">
-                            @foreach ($SorLists['SORTotalCounts'] as $category)
+                            @foreach ($SorLists['SORCounts'] as $category)
                                 <div class="col-md-3 col-sm-6">
                                     <div class="card ribcard" data-label="{{ $category->dept_category_name }}">
                                         <div class="card__container">
