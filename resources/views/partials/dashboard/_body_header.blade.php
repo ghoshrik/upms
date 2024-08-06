@@ -242,7 +242,7 @@
                         </div>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        {!! getAllAssigenRoles() !!}
+                        {{-- {!! getAllAssigenRoles() !!} --}}
                         <li>
                             <hr class="dropdown-divider">
                         </li>

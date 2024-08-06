@@ -6,6 +6,8 @@ use App\Models\Category;
 use App\Models\MileStone;
 use App\Models\testCategory;
 use Illuminate\Http\Request;
+use App\Models\DynamicSorHeader;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -17,8 +19,40 @@ class HomeController extends Controller
     {
         // $this->emit('changeTitleSubTitle');
 
+        $sorCategories = DB::table('sor_category_types')
+            ->select('sor_category_types.*', DB::raw('COUNT(dynamic_table_header.id) as dynamicsor_count'))
+            ->leftJoin('dynamic_table_header', 'sor_category_types.id', '=', 'dynamic_table_header.dept_category_id')
+            ->groupBy('sor_category_types.id')
+            ->get();
+        //dd($sorCategories);
+
+
+
+        $deptSorCategory = DynamicSorHeader::join('sor_category_types', 'dynamic_table_header.dept_category_id', '=', 'sor_category_types.id')
+            ->select('dynamic_table_header.department_id', 'sor_category_types.dept_category_name','sor_category_types.target_pages', DB::raw('COUNT(dynamic_table_header.dept_category_id) as category_count'))
+            ->where('dynamic_table_header.department_id',Auth::user()->department_id)
+            ->whereNull('dynamic_table_header.effective_to')
+            ->groupBy('dynamic_table_header.department_id', 'sor_category_types.dept_category_name','sor_category_types.target_pages')
+            ->get();
+        // dd($deptSorCategory);
+        $deptSorCorrigendaCategory= DynamicSorHeader::join('sor_category_types', 'dynamic_table_header.dept_category_id', '=', 'sor_category_types.id')
+            ->select('dynamic_table_header.department_id', 'sor_category_types.dept_category_name', DB::raw('COUNT(dynamic_table_header.dept_category_id) as category_count'))
+            ->where('dynamic_table_header.department_id',Auth::user()->department_id)
+            ->whereNotNull('dynamic_table_header.effective_to')
+            ->groupBy('dynamic_table_header.department_id', 'sor_category_types.dept_category_name')
+            ->get();
+
+        $deptSorOperatorApprovedCategoryWise= DynamicSorHeader::join('sor_category_types', 'dynamic_table_header.dept_category_id', '=', 'sor_category_types.id')
+            ->select('dynamic_table_header.department_id', 'sor_category_types.dept_category_name', DB::raw('COUNT(dynamic_table_header.dept_category_id) as category_count'))
+            ->where('dynamic_table_header.department_id',Auth::user()->department_id)
+            ->whereNotNull('dynamic_table_header.effective_to')
+            ->where('is_approve','=','-11')
+            ->where('is_verified','=','-9')
+            ->groupBy('dynamic_table_header.department_id', 'sor_category_types.dept_category_name')
+            ->toSql();
+            dd($deptSorOperatorApprovedCategoryWise);
         $assets = ['chart', 'animation'];
-        return view('dashboards.dashboard', compact('assets'));
+        return view('dashboards.dashboard', compact('assets','deptSorCategory','deptSorCorrigendaCategory'));
     }
 
     // public function testMileStone()

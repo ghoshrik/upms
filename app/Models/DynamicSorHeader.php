@@ -41,7 +41,8 @@ class DynamicSorHeader extends Model
 	public function scopePendingSor($query)
 	{
 		return $query->where('is_approve', '=', '-11')
-			->where('is_verified', '=', '-9')->count();
+			->where('is_verified', '=', '-9')
+            ->count();
 	}
 	//Product::make()->getFillable();
 	public function scopeDynamicSorDataList($query, $id)
