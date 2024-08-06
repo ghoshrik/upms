@@ -70,6 +70,47 @@ class DynamicSorHeader extends Model
             ->groupBy('dynamic_table_header.department_id', 'sor_category_types.dept_category_name', 'sor_category_types.target_pages');
     }
 
+    public function scopeDepartmentWiseSorReports($query)
+    {
+        return $query->select(
+            'departments.department_name',
+            'sor_category_types.dept_category_name',
+            'sor_category_types.target_pages',
+            'dynamic_table_header.volume_no',
+            DB::raw('COUNT(CASE
+                WHEN dynamic_table_header.deleted_at IS NULL
+                AND dynamic_table_header.effective_to IS NULL
+                THEN 1
+            END) AS total_pages'),
+            DB::raw('COUNT(CASE
+                WHEN dynamic_table_header.deleted_at IS NULL
+                AND dynamic_table_header.effective_to IS NOT NULL
+                THEN 1
+            END) AS total_corrigandam_pages'),
+            DB::raw('COUNT(CASE
+                WHEN dynamic_table_header.deleted_at IS NULL
+                AND dynamic_table_header.is_approve = \' -11 \'
+                AND dynamic_table_header.is_verified = \' -09 \'
+                THEN 1
+            END) AS total_verified'),
+            DB::raw('COUNT(CASE
+                WHEN dynamic_table_header.deleted_at IS NULL
+                AND dynamic_table_header.is_approve = \' -11 \'
+                OR dynamic_table_header.is_verified = \' -9 \'
+                THEN 1
+            END) AS total_approved')
+        )
+            ->leftJoin('sor_category_types', 'dynamic_table_header.dept_category_id', '=', 'sor_category_types.id')
+            ->leftJoin('departments', 'departments.id', '=', 'sor_category_types.department_id')
+            ->groupBy(
+                'departments.department_name',
+                'sor_category_types.dept_category_name',
+                'sor_category_types.target_pages',
+                'dynamic_table_header.volume_no',
+                'dynamic_table_header.department_id'
+            )
+            ->orderBy('dynamic_table_header.department_id');
+    }
     //Product::make()->getFillable();
     public function scopeDynamicSorDataList($query, $id)
     {

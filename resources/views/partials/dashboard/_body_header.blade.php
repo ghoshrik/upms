@@ -233,7 +233,6 @@
                             @isset($curr_role)
                                 <p class="mb-0 caption-sub-title text-capitalize"><span
                                         class="badge rounded-pill bg-primary">
-                                        {{ Auth::user()->getRoleNames()[0] }}
                                         {{ $curr_role }}
                                     </span>
                                 </p>
