@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\SorCategoryType;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -76,7 +77,7 @@ class DynamicSorHeader extends Model
             'departments.department_name',
             'sor_category_types.dept_category_name',
             'sor_category_types.target_pages',
-            'dynamic_table_header.volume_no',
+            'master.volume_masters.volume_name',
             DB::raw('COUNT(CASE
                 WHEN dynamic_table_header.deleted_at IS NULL
                 AND dynamic_table_header.effective_to IS NULL
@@ -89,25 +90,25 @@ class DynamicSorHeader extends Model
             END) AS total_corrigandam_pages'),
             DB::raw('COUNT(CASE
                 WHEN dynamic_table_header.deleted_at IS NULL
-                AND dynamic_table_header.is_approve = \' -11 \'
-                AND dynamic_table_header.is_verified = \' -09 \'
+                AND dynamic_table_header.is_approve = \'-11\'
                 THEN 1
-            END) AS total_verified'),
+            END) AS total_approved'),
             DB::raw('COUNT(CASE
                 WHEN dynamic_table_header.deleted_at IS NULL
-                AND dynamic_table_header.is_approve = \' -11 \'
-                OR dynamic_table_header.is_verified = \' -9 \'
+                AND dynamic_table_header.is_verified = \'-09\'
                 THEN 1
-            END) AS total_approved')
+            END) AS total_verified')
         )
             ->leftJoin('sor_category_types', 'dynamic_table_header.dept_category_id', '=', 'sor_category_types.id')
             ->leftJoin('departments', 'departments.id', '=', 'sor_category_types.department_id')
+            ->leftJoin(DB::raw('master.volume_masters'), DB::raw('CAST(dynamic_table_header.volume_no AS bigint)'), '=', 'master.volume_masters.id')
             ->groupBy(
                 'departments.department_name',
                 'sor_category_types.dept_category_name',
                 'sor_category_types.target_pages',
                 'dynamic_table_header.volume_no',
-                'dynamic_table_header.department_id'
+                'dynamic_table_header.department_id',
+                'master.volume_masters.volume_name'
             )
             ->orderBy('dynamic_table_header.department_id');
     }
