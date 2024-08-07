@@ -41,8 +41,49 @@
             </div>
         </div>
         <div wire:loading.delay.long.class="loading">
+            <style>
+                ul>li>button {
+                    border-radius: 22px;
+                }
 
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                .nav-tabs .nav-link {
+                    border-radius: 22px;
+                }
+
+                .nav {
+                    background: none !important;
+                }
+
+                .table>th,
+                .table>td {
+                    border: 1px solid #000;
+                    padding: 8px;
+                }
+
+                .table>thead>tr {
+                    border-bottom: 1px solid black;
+                }
+
+                .table>thead>tr>th:nth-last-child(-n+4) {
+                    border-bottom: 4px solid black;
+                    /* or any other border style you prefer */
+                }
+
+
+                .table>thead>tr:first-child {
+                    background-color: #f9f9f9;
+                    border: 1px solid #000;
+                }
+
+                .table>thead>tr:nth-child(2) {
+                    background-color: #f9f9f9;
+                }
+
+                .table>th {
+                    text-align: center;
+                }
+            </style>
+            <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane"
                         type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">SOR
@@ -61,9 +102,8 @@
                         <div class="card-body">
                             <div class="table-left-bordered table-responsive mt-4">
                                 <table class="table mb-0" role="grid">
-                                    <thead>
+                                    <thead class="thead">
                                         <tr class="bg-white">
-                                            <th scope="col">#</th>
                                             <th scope="col">Departments</th>
                                             <th scope="col">Department Category</th>
                                             <th scope="col">Volume No</th>
@@ -75,33 +115,26 @@
                                             <th scope="col"></th>
                                             <th scope="col"></th>
                                             <th scope="col"></th>
-                                            <th scope="col"></th>
                                             <th scope="col">Enter Page</th>
-                                            <th scope="col">Corrigendam Pages</th>
-                                            <th scope="col">Verified</th>
+                                            <th scope="col">Corrigenda & Addenda</th>
                                             <th scope="col">Approved</th>
+                                            <th scope="col">Verified</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($sorMasters as $master)
                                             <tr>
-                                                <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $master->department_name }}</td>
                                                 <td>{{ $master->dept_category_name }}</td>
                                                 <td>
-                                                    @if ($master->volume_no == 1)
-                                                        Volume I
-                                                    @elseif($master->volume_no == 2)
-                                                        Volume II
-                                                    @else
-                                                        Volume III
-                                                    @endif
+                                                    {{ $master->volume_name }}
                                                 </td>
                                                 <td>{{ $master->target_pages }}</td>
-                                                <td>{{ $master->total_pages }}</td>
-                                                <td>{{ $master->total_corrigandam_pages }}</td>
-                                                <td>{{ $master->total_verified }}</td>
-                                                <td>{{ $master->total_approved }}</td>
+                                                <td style="text-align: center">{{ $master->total_pages }}</td>
+                                                <td style="text-align: center">{{ $master->total_corrigandam_pages }}
+                                                </td>
+                                                <td style="text-align: center">{{ $master->total_approved }}</td>
+                                                <td style="text-align: center">{{ $master->total_verified }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
