@@ -16,10 +16,9 @@ class CreateEstimateAcceptanceLimitMastersTable extends Migration
         Schema::create('master.estimate_acceptance_limit_masters', function (Blueprint $table) {
             $table->bigIncrements('id')->autoIncrement();
             $table->unsignedBigInteger('department_id');
-            $table->integer('approving_level');
-            $table->string('checking_levels');
-            $table->decimal('min_amount', 15, 2);
-            $table->decimal('max_amount', 15, 2)->nullable();
+            $table->integer('role_id');
+            $table->numeric('min_amount', 15, 0);
+            $table->numeric('max_amount', 15, 0)->nullable();
 
             $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
             $table->timestamps();

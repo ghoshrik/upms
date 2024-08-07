@@ -8,12 +8,12 @@
                 <div wire:loading.delay.longest.class="loading" class="card-body">
                     @foreach ($Inputs as $key => $input)
                         <div class="row mb-2" wire:key='{{ $key }}'>
-                            <div class="col" wire:key="level_No_{{ $key }}">
-                                <x-select label="Level No" placeholder="Select Level No"
-                                    wire:model.defer="Inputs.{{ $key }}.level" x-on:select="$wire.getCheckLevel({{$key}})">
+                            <div class="col" wire:key="role_id_{{ $key }}">
+                                <x-select label="Roles" placeholder="Select Role"
+                                    wire:model.defer="Inputs.{{ $key }}.level" x-on:select="$wire.getCheckRole({{$key}})">
                                     @foreach ($levels as $level)
-                                        <x-select.option label="{{ $level['level_name'] }}"
-                                            value="{{ $level['id'] }}" />
+                                        <x-select.option label="{{ $level['name'] }}"
+                                            value="{{ $level['has_level_no'] }}" />
                                     @endforeach
                                 </x-select>
                             </div>

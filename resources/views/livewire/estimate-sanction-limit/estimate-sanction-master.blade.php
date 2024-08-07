@@ -46,6 +46,11 @@
                 <div class="row">
                     <div class="col-md-12 col-lg-12 col-sm-3">
                         <div class="card">
+                            <div class="mb-2 rounded" style="background: #7f8fdc">
+                                <div class="text-capitalize" style="overflow:hidden; padding-left:2%">
+                                    <h4 class="text-white">{{ Auth::user()->getDepartmentName->department_name }}</h4>
+                                </div>
+                            </div>
                             <div class="card-body">
                                 <livewire:estimate-sanction-limit.data-table.estimate-sanction-master-table :wire:key="$updateDataTableTracker"/>
                             </div>

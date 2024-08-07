@@ -2,11 +2,13 @@
 
 namespace App\Http\Livewire\EstimateSanctionLimit;
 
-use App\Models\EstimateAcceptanceLimitMaster;
+use App\Models\Role;
 use App\Models\Levels;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use WireUi\Traits\Actions;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Models\EstimateAcceptanceLimitMaster;
 
 class EstimateSanctionMasterCreate extends Component
 {
@@ -14,8 +16,9 @@ class EstimateSanctionMasterCreate extends Component
     public $levels = [], $Inputs = [];
     public function mount()
     {
-
-        $this->levels = Levels::where('id', '!=', 6)->get();
+        // TODO: Replace level with role_id every where on database also
+        // $this->levels = Levels::where('id', '!=', 6)->get();
+        $this->levels = Role::whereNotNull('has_level_no')->whereNotIn('has_level_no', [6, 0])->orderBy('has_level_no')->get();
         $this->Inputs[] = [
             'level' => '',
             'min_amount' => '',
@@ -35,14 +38,14 @@ class EstimateSanctionMasterCreate extends Component
         }
         // dd($this->Inputs);
     }
-    public function getCheckLevel($value)
+    public function getCheckRole($value)
     {
         if (count($this->Inputs) > 1) {
             foreach ($this->Inputs as $key => $input) {
                 if ($key != $value) {
                     if ($input['level'] == $this->Inputs[$value]['level']) {
                         $this->notification()->error(
-                            $title = "Level Already Selected"
+                            $title = "Role Already Selected"
                         );
                         $this->Inputs[$value]['level'] = '';
                     }
@@ -57,22 +60,30 @@ class EstimateSanctionMasterCreate extends Component
     }
     public function store()
     {
-        // dd($this->Inputs);
-        foreach ($this->Inputs as $key => $input) {
-            EstimateAcceptanceLimitMaster::create(
-                [
+        DB::beginTransaction();
+
+        try {
+            foreach ($this->Inputs as $input) {
+                EstimateAcceptanceLimitMaster::create([
                     'department_id' => Auth::user()->department_id,
                     'level_id' => $input['level'],
                     'min_amount' => $input['min_amount'],
-                    'max_amount' => $input['max_amount'],
-                ]
+                    'max_amount' => ($input['max_amount'] != '') ? $input['max_amount'] : null,
+                ]);
+            }
+
+            DB::commit();
+
+            $this->notification()->success(
+                $title = "Created Successfully"
             );
+            $this->reset();
+            $this->emit('openEntryForm');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->emit('showError',$e->getMessage());
         }
-        $this->notification()->success(
-            $title = "created successfully"
-        );
-        $this->reset();
-        $this->emit('openEntryForm');
     }
     public function render()
     {

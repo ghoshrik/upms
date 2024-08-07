@@ -18,4 +18,7 @@ class EstimateAcceptanceLimitMaster extends Model
     public function getLevelName(){
         return $this->belongsTo(Levels::class,'level_id');
     }
+    public function getLevelWiseRoleName(){
+        return $this->belongsTo(Role::class,'level_id','has_level_no');
+    }
 }

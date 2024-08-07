@@ -105,8 +105,9 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
     {
         return PowerGrid::eloquent()
             ->addColumn('id')
-            ->addColumn('getDepartmentName.department_name')
-            ->addColumn('getLevelName.level_name')
+            // ->addColumn('getDepartmentName.department_name')
+            ->addColumn('getLevelWiseRoleName.name')
+            // ->addColumn('getLevelName.level_name')
             ->addColumn('min_amount')
             ->addColumn('max_amount');
     }
@@ -128,14 +129,13 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('ID', 'id')
-                ->makeInputRange(),
+            Column::make('ID', 'id'),
+                // ->makeInputRange(),
 
-            Column::make('DEPARTMENT ID', 'getDepartmentName.department_name')
-                ->makeInputRange(),
-
-            Column::make('LEVEL ID', 'getLevelName.level_name')
-                ->makeInputRange(),
+            // Column::make('DEPARTMENT ID', 'getDepartmentName.department_name')
+            //     ->makeInputRange(),
+            Column::make('ROLE NAME', 'getLevelWiseRoleName.name'),
+            // Column::make('LEVEL', 'getLevelName.level_name'),
 
             Column::make('MIN AMOUNT', 'min_amount')
                 ->sortable()
