@@ -125,7 +125,7 @@ class CreateUser extends Component
                 if (session('curr_role') === $role->name) {
                     if ($role->has_level_no == '') {
                         $this->getDropdownData('DEPT');
-                        $this->getDropdownData('DES');
+                        // $this->getDropdownData('DES');
                         $this->getDropdownData('LEVEL');
                         // $this->dropDownData['offices'] = [];
                     }elseif ($role->has_level_no == 1 || $role->has_level_no == 2 || $role->has_level_no == 3 || $role->has_level_no == 4 || $role->has_level_no == 5) {
@@ -157,9 +157,9 @@ class CreateUser extends Component
                     $this->dropDownData['designations'] = Designation::all();
                 }
             } elseif ($lookingFor === 'LEVEL') {
-                $userRole = Auth::user()->roles->first();
+                // $userRole = Auth::user()->roles->first();
                 // $childRoles = $userRole->parentRole;
-                $childRoles = Role::where('role_parent', $userRole->id)->first();
+                // $childRoles = Role::where('role_parent', $userRole->id)->first();
                 // foreach ($childRoles as $key => $data) {
                 //     if ($key != 0) {
                 //         // Compare current item with the previous item
@@ -171,7 +171,7 @@ class CreateUser extends Component
                 //         $this->dropDownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
                 //     }
                 // }
-                $this->selectLevel = $childRoles['has_level_no'];
+                // $this->selectLevel = $childRoles['has_level_no'];
                 $this->fetchLevelWiseOffice();
             } elseif ($lookingFor === 'DEPTCATEGORY') {
                 $this->dropDownData['departmentCategory'] = DepartmentCategories::where('department_id', Auth::user()->department_id)->get();
@@ -188,6 +188,9 @@ class CreateUser extends Component
         if (Auth::user()->getRoleNames()->isNotEmpty() && (Auth::user()->getRoleNames()[0] != 'Super Admin' || Auth::user()->getRoleNames()[0] == 'State Admin')) {
             // Check if the department ID is set
             if (!empty($this->newUserData['department_id'])) {
+                $userRole = Auth::user()->roles->first();
+                $childRoles = Role::where('role_parent', $userRole->id)->first();
+                $this->selectLevel = $childRoles['has_level_no'];
                 // Check if the level is set
                 if (!empty($this->selectLevel)) {
                     // $this->dropDownData['designations'] = Designation::where('level_no', $this->selectLevel)->get();

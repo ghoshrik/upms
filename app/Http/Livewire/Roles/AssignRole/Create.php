@@ -28,18 +28,28 @@ class Create extends Component
             //     dd($this->selectedIdForEdit);
             $this->editUser = User::find($this->selectedIdForEdit);
             $this->editUserRole= $this->editUser->roles->first();
+            $this->newAccessData = [
+                'role_type' => [],
+                'users_id' => ($this->selectedIdForEdit != '') ? $this->editUser->id : '',
+                'office_id' => ($this->selectedIdForEdit != '') ? $this->editUser->office_id : '',
+                'desg_id' => ($this->selectedIdForEdit != '') ? $this->editUser->designation_id : '',
+                'department_id' => ($this->selectedIdForEdit != '') ? $this->editUser->department_id : '',
+                'dept_category_id' => '',
+                //     'roles_id' => [],
+            ];
+        }else{
+            $this->newAccessData = [
+                'role_type' => [],
+                'users_id' => '',
+                'office_id' => '',
+                'desg_id' => '',
+                'department_id' => (Auth::user()->department_id != '' && Auth::user()->department_id != 0) ? Auth::user()->department_id : '',
+                'dept_category_id' => '',
+                //     'roles_id' => [],
+            ];
         }
 
         // dd($userDet);
-        $this->newAccessData = [
-            'role_type' => [],
-            'users_id' => ($this->selectedIdForEdit != '') ? $this->editUser->id : '',
-            'office_id' => ($this->selectedIdForEdit != '') ? $this->editUser->office_id : '',
-            'desg_id' => ($this->selectedIdForEdit != '') ? $this->editUser->designation_id : '',
-            'department_id' => ($this->selectedIdForEdit != '') ? $this->editUser->department_id : '',
-            'dept_category_id' => '',
-            //     'roles_id' => [],
-        ];
         // $this->getDropdownData('userTypes');
         if (Auth::user()->roles->first()->name == 'Super Admin') {
             $this->dropDownData['states'] = States::all();
@@ -63,9 +73,10 @@ class Create extends Component
             $this->newAccessData['level_id'] = ($this->selectedIdForEdit != '') ? $this->editUserRole->has_level_no : $childRoles->first()->has_level_no;
             // dd($this->dropDownData['levels']);
             // if (count($this->dropDownData['levels']) != 0) {
-                $this->getDropdownData('departments');
-                if ($this->newAccessData['department_id'] != '') {
+                if ($this->newAccessData['department_id'] != '' && $this->newAccessData['department_id'] != 0) {
                     $this->getOfficeDesignation();
+                }else{
+                    $this->getDropdownData('departments');
                 }
                 if ($this->newAccessData['desg_id'] != '' || $this->newAccessData['office_id']!='') {
                     $this->getUserList();
@@ -107,6 +118,7 @@ class Create extends Component
                     break;
                 case 'OFC':
                     // $this->dropDownData['offices'] = Office::where('id', Auth::user()->office_id)->get();
+                    // dd($this->newAccessData);
                     $this->dropDownData['offices'] = Office::where('level_no', $this->newAccessData['level_id'])->where('department_id', $this->newAccessData['department_id'])->where('created_by', Auth::user()->id)->get();
                     // dd($this->dropDownData['offices']);
                     break;
@@ -173,7 +185,11 @@ class Create extends Component
         // dd($this->newAccessData['role_type']);
         // dd($this->newAccessData['users_id']);
     }
-
+    public function resetNextfields(){
+        $this->newAccessData['office_id'] = '';
+        $this->newAccessData['users_id'] = '';
+        $this->newAccessData['role_type'] = [];
+    }
     public function getUserList()
     {
         // Start with a base query

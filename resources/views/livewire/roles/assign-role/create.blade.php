@@ -65,7 +65,7 @@
                             <div class="col-md-4 col-lg-4 col-sm-6" wire:key='desg_'>
                                 <div class="form-group">
                                     <x-select label="Designation" placeholder="Select Designation"
-                                        wire:model.defer="newAccessData.desg_id" x-on:select="$wire.getUserList()"
+                                        wire:model.defer="newAccessData.desg_id" x-on:select="$wire.resetNextfields()"
                                         :disabled="$selectedIdForEdit">
                                         @foreach ($dropDownData['designations'] as $designation)
                                             <x-select.option label="{{ $designation['designation_name'] }}"
@@ -117,10 +117,12 @@
                                 </x-select>
                             </div>
                         </div>
-                        <div class="col col-md-2 col-lg-2 col-sm-12 col-xs-12 mb-2">
-                            <div class="form-group pt-4">
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group float-end">
                                 <button type="button" wire:click='store'
-                                    class="btn {{ $selectedIdForEdit ? 'btn-soft-warning' : 'btn-soft-primary' }}  ">
+                                    class="btn {{ $selectedIdForEdit ? 'btn-soft-warning' : 'btn-soft-success' }}  ">
                                     {{ $selectedIdForEdit ? 'Update' : 'Save' }}
                                 </button>
                             </div>
