@@ -41,18 +41,19 @@ class CreateOffice extends Component
         ];
         $userRole = Auth::user()->roles->first();
         // $childRoles = $userRole->childRoles;
-        $childRoles = Role::where('role_parent',$userRole->id)->get();
-        foreach ($childRoles as $key => $data) {
-            if ($key != 0) {
-                // Compare current item with the previous item
-                if ($childRoles[$key - 1]->has_level_no != $data->has_level_no) {
-                    $this->fetchDropdownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
-                }
-            } else {
-                // Add the first item unconditionally (optional, depending on your needs)
-                $this->fetchDropdownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
-            }
-        }
+        $childRoles = Role::where('role_parent',$userRole->id)->first();
+        // foreach ($childRoles as $key => $data) {
+        //     if ($key != 0) {
+        //         // Compare current item with the previous item
+        //         if ($childRoles[$key - 1]->has_level_no != $data->has_level_no) {
+        //             $this->fetchDropdownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
+        //         }
+        //     } else {
+        //         // Add the first item unconditionally (optional, depending on your needs)
+        //         $this->fetchDropdownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
+        //     }
+        // }
+        $this->selectedOption['level'] = $childRoles['has_level_no'];
         if ($userRole->id == 2) {
             $allDept = Cache::get('allDept');
             if ($allDept != '') {

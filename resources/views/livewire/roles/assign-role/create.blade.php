@@ -20,7 +20,7 @@
                                 </div>
                             </div>
                         @endisset
-                        @isset($dropDownData['levels'])
+                        {{-- @isset($dropDownData['levels'])
                             <div class="col-md-4 col-lg-4 col-sm-6" wire:key='level_'>
                                 <div class="form-group">
                                     <x-select label="Level" placeholder="Select Level"
@@ -32,7 +32,7 @@
                                     </x-select>
                                 </div>
                             </div>
-                        @endisset
+                        @endisset --}}
 
                         @isset($dropDownData['departments'])
                             <div class="col-md-4 col-lg-4 col-sm-6" wire:key='department_'>

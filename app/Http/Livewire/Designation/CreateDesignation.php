@@ -16,7 +16,7 @@ class CreateDesignation extends Component
     public $designation_name, $dropdownData=[],$level_no ,$updatedDataTableTracker;
     protected $rules = [
         'designation_name' => 'required|string|unique:designations,designation_name|max:255',
-        'level_no' => 'required'
+        // 'level_no' => 'required'
     ];
     protected $messages =
     [
@@ -24,7 +24,7 @@ class CreateDesignation extends Component
         'designation_name.string' => 'This field must be string',
         'designation_name.unique' => 'This designation name already exists',
         'designation_name.max' => 'Not allow',
-        'level_no.required' => 'This field is required'
+        // 'level_no.required' => 'This field is required'
     ];
     public function mount(){
         $userRole = Auth::user()->roles->first();

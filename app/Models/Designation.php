@@ -10,7 +10,8 @@ class Designation extends Model
     use HasFactory;
     protected $table = 'designations';
     protected $fillable = [
-        'designation_name','level_no'
+        'designation_name',
+        // 'level_no'
     ];
     // public function fetchDesignationName()
     // {
@@ -21,8 +22,8 @@ class Designation extends Model
     {
         $this->hasMany(User::class,'designation_id');
     }
-    public  function levels()
-    {
-        return $this->belongsTo(Levels::class,'level_no');
-    }
+    // public function levels()
+    // {
+    //     return $this->belongsTo(Levels::class,'level_no');
+    // }
 }

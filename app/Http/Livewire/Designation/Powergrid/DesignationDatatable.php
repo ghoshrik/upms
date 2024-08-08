@@ -108,23 +108,23 @@ final class DesignationDatatable extends PowerGridComponent
      */
     public function datasource(): Builder
     {
-        $userRole = Auth::user()->roles->first();
-        $childRoles = Role::where('role_parent',$userRole->id)->get();
+        // $userRole = Auth::user()->roles->first();
+        // $childRoles = Role::where('role_parent',$userRole->id)->get();
 
-        foreach ($childRoles as $key => $data) {
-            $levelNo = $data->has_level_no;
-        }
+        // foreach ($childRoles as $key => $data) {
+        //     $levelNo = $data->has_level_no;
+        // }
         // return dd($childRoles);
 
         $query = Designation::query()
             ->select(
                 'designations.id',
                 'designations.designation_name',
-                'designations.level_no',
+                // 'designations.level_no',
                 DB::raw('ROW_NUMBER() OVER (ORDER BY designations.id) as serial_no')
-            )
-            ->where('designations.level_no',$levelNo)
-            ->join('level_master', 'level_master.id', '=', 'designations.level_no');
+            );
+            // ->where('designations.level_no',$levelNo)
+            // ->join('level_master', 'level_master.id', '=', 'designations.level_no');
 
         return $query;
     }
@@ -163,7 +163,7 @@ final class DesignationDatatable extends PowerGridComponent
         return PowerGrid::eloquent()
             ->addColumn('serial_no')
             ->addColumn('designation_name')
-            ->addColumn('levels.level_name')
+            // ->addColumn('levels.level_name')
             /** Example of custom column using a closure **/
             ->addColumn('designation_name_lower', function (Designation $model) {
                 return strtolower(e($model->designation_name));
@@ -197,10 +197,10 @@ final class DesignationDatatable extends PowerGridComponent
                 ->sortable()
                 ->searchable()
                 ->makeInputText(),
-            Column::make('LEVEL NO', 'level_no')
-                ->sortable()
-                ->searchable()
-                ->makeInputText(),
+            // Column::make('LEVEL NO', 'level_no')
+            //     ->sortable()
+            //     ->searchable()
+            //     ->makeInputText(),
             // Column::make('CREATED AT', 'created_at_formatted', 'created_at')
             //     ->searchable()
             //     ->sortable()

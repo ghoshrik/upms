@@ -21,7 +21,8 @@
                                 </div>
                             </div>
                         @endisset
-                        <div class="col-sm-6 {{(isset($fetchDropdownData['departments'])) ? 'col-md-6 col-lg-6': 'col-md-12 col-lg-12' }}">
+                        <div class="col-md-6 col-sm-6 col-lg-6">
+                            {{-- <div class="col-sm-6 {{(isset($fetchDropdownData['departments'])) ? 'col-md-6 col-lg-6': 'col-md-12 col-lg-12' }}"> --}}
                             <div class="form-group">
                                 <x-input label="{{ trans('cruds.office.fields.office_name') }}"
                                     placeholder="{{ trans('cruds.office.fields.office_name') }}"
@@ -35,15 +36,15 @@
                                     wire:model.defer="officeData.office_code" />
                             </div>
                         </div>
-                        <div class="col-md-6 col-lg-6 col-sm-6">
-                            <x-select label="Select Office {{ trans('cruds.office.fields.level') }}"
-                                placeholder="Select Office {{ trans('cruds.office.fields.level') }}"
+                        {{-- <div class="col-md-6 col-lg-6 col-sm-6">
+                            <x-select label="Select {{ trans('cruds.office.fields.level') }}"
+                                placeholder="Select {{ trans('cruds.office.fields.level') }}"
                                 wire:model.defer="selectedOption.level">
                                 @foreach ($fetchDropdownData['levels'] as $level)
                                     <x-select.option label="{{ $level['level_name'] }}" value="{{ $level['id'] }}" />
                                 @endforeach
                             </x-select>
-                        </div>
+                        </div> --}}
                         <div class="col-md-6 col-sm-3 col-lg-6">
                             <div class="form-group">
                                 <x-select wire:key="district"
@@ -134,7 +135,7 @@
                         <div class="col-md-12 col-sm-6 col-lg-12">
                             <x-textarea label="{{ trans('cruds.office.fields.office_address') }}"
                                 placeholder="{{ trans('cruds.office.fields.office_address') }}"
-                                wire:model="officeData.office_address" />
+                                wire:model.defer="officeData.office_address" />
                         </div>
                         <div class="card-body">
                             <div class="row">

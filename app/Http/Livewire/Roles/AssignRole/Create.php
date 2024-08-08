@@ -49,20 +49,20 @@ class Create extends Component
             $this->dropDownData['levels'] = [];
             $userRole = Auth::user()->roles1->first();
             $childRoles = $userRole->childRoles;
-            foreach ($childRoles as $key => $data) {
-                if ($key != 0) {
-                    // Compare current item with the previous item
-                    if ($childRoles[$key - 1]->has_level_no != $data->has_level_no) {
-                        $this->dropDownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
-                    }
-                } else {
-                    // Add the first item unconditionally (optional, depending on your needs)
-                    $this->dropDownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
-                }
-            }
-            $this->newAccessData['level_id'] = ($this->selectedIdForEdit != '') ? $this->editUserRole->has_level_no : '';
+            // foreach ($childRoles as $key => $data) {
+            //     if ($key != 0) {
+            //         // Compare current item with the previous item
+            //         if ($childRoles[$key - 1]->has_level_no != $data->has_level_no) {
+            //             $this->dropDownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
+            //         }
+            //     } else {
+            //         // Add the first item unconditionally (optional, depending on your needs)
+            //         $this->dropDownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
+            //     }
+            // }
+            $this->newAccessData['level_id'] = ($this->selectedIdForEdit != '') ? $this->editUserRole->has_level_no : $childRoles->first()->has_level_no;
             // dd($this->dropDownData['levels']);
-            if (count($this->dropDownData['levels']) != 0) {
+            // if (count($this->dropDownData['levels']) != 0) {
                 $this->getDropdownData('departments');
                 if ($this->newAccessData['department_id'] != '') {
                     $this->getOfficeDesignation();
@@ -74,7 +74,7 @@ class Create extends Component
                     }
                 }
 
-            }
+            // }
         }
         if (Auth::user()->roles->first()->has_level_no == '') {
             $this->dropDownData['userTypes'] = Role::where('role_parent', Auth::user()->roles->first()->id)->get();
@@ -83,7 +83,7 @@ class Create extends Component
                 // $this->getDropdownData('designations');
             }
         } else {
-            $userRole = Auth::user()->roles->toArray();
+            // $this->newAccessData['level_id'] = Auth::user()->roles->first()->has_level_no;
             $this->dropDownData['userTypes'] = Role::where('role_parent', Auth::user()->roles->first()->id)->get();
         }
         // dd($this->dropDownData);
@@ -96,7 +96,8 @@ class Create extends Component
                     $this->dropDownData['userTypes'] = UserType::where('parent_id', Auth::user()->user_type)->get();
                     break;
                 case 'designations':
-                    $this->dropDownData['designations'] = Designation::where('level_no', $this->newAccessData['level_id'])->get();
+                    // $this->dropDownData['designations'] = Designation::where('level_no', $this->newAccessData['level_id'])->get();
+                    $this->dropDownData['designations'] = Designation::get();
                     break;
                 case 'departments':
                     $this->dropDownData['departments'] = Department::get();

@@ -120,19 +120,21 @@ class CreateUser extends Component
         // dd(Auth::user()->roles);
         $userRoles = Auth::user()->roles;
         if ($userRoles != '') {
+            $this->dropDownData['offices'] = [];
             foreach ($userRoles as $role) {
                 if (session('curr_role') === $role->name) {
                     if ($role->has_level_no == '') {
                         $this->getDropdownData('DEPT');
                         $this->getDropdownData('DES');
                         $this->getDropdownData('LEVEL');
-                        $this->dropDownData['offices'] = [];
-                    }
-                    if ($role->has_level_no == 1 || $role->has_level_no == 2 || $role->has_level_no == 3 || $role->has_level_no == 4 || $role->has_level_no == 5) {
+                        // $this->dropDownData['offices'] = [];
+                    }elseif ($role->has_level_no == 1 || $role->has_level_no == 2 || $role->has_level_no == 3 || $role->has_level_no == 4 || $role->has_level_no == 5) {
                         // $this->getDropdownData('DEPT');
                         $this->getDropdownData('DES');
                         $this->getDropdownData('LEVEL');
-                        $this->dropDownData['offices'] = [];
+                        // $this->dropDownData['offices'] = [];
+                    }else{
+
                     }
                 }
             }
@@ -157,18 +159,20 @@ class CreateUser extends Component
             } elseif ($lookingFor === 'LEVEL') {
                 $userRole = Auth::user()->roles->first();
                 // $childRoles = $userRole->parentRole;
-                $childRoles = Role::where('role_parent', $userRole->id)->get();
-                foreach ($childRoles as $key => $data) {
-                    if ($key != 0) {
-                        // Compare current item with the previous item
-                        if ($childRoles[$key - 1]->has_level_no != $data->has_level_no) {
-                            $this->dropDownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
-                        }
-                    } else {
-                        // Add the first item unconditionally (optional, depending on your needs)
-                        $this->dropDownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
-                    }
-                }
+                $childRoles = Role::where('role_parent', $userRole->id)->first();
+                // foreach ($childRoles as $key => $data) {
+                //     if ($key != 0) {
+                //         // Compare current item with the previous item
+                //         if ($childRoles[$key - 1]->has_level_no != $data->has_level_no) {
+                //             $this->dropDownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
+                //         }
+                //     } else {
+                //         // Add the first item unconditionally (optional, depending on your needs)
+                //         $this->dropDownData['levels'][] = Levels::where('id', $data->has_level_no)->first();
+                //     }
+                // }
+                $this->selectLevel = $childRoles['has_level_no'];
+                $this->fetchLevelWiseOffice();
             } elseif ($lookingFor === 'DEPTCATEGORY') {
                 $this->dropDownData['departmentCategory'] = DepartmentCategories::where('department_id', Auth::user()->department_id)->get();
             } else {
@@ -186,7 +190,8 @@ class CreateUser extends Component
             if (!empty($this->newUserData['department_id'])) {
                 // Check if the level is set
                 if (!empty($this->selectLevel)) {
-                    $this->dropDownData['designations'] = Designation::where('level_no', $this->selectLevel)->get();
+                    // $this->dropDownData['designations'] = Designation::where('level_no', $this->selectLevel)->get();
+                    $this->dropDownData['designations'] = Designation::get();
                     // Fetch the offices based on the department ID and level
                     $this->dropDownData['offices'] = Office::where([
                         ['department_id', $this->newUserData['department_id']],
