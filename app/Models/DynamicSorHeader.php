@@ -81,6 +81,7 @@ class DynamicSorHeader extends Model
             DB::raw('COUNT(CASE
                 WHEN dynamic_table_header.deleted_at IS NULL
                 AND dynamic_table_header.effective_to IS NULL
+                OR dynamic_table_header.effective_to IS NOT NULL
                 THEN 1
             END) AS total_pages'),
             DB::raw('COUNT(CASE
