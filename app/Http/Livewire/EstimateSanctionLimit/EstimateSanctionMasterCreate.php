@@ -66,7 +66,7 @@ class EstimateSanctionMasterCreate extends Component
                 EstimateAcceptanceLimitMaster::create(
                     [
                         'department_id' => Auth::user()->department_id,
-                        'role_id' => $input['role_id'],
+                        // 'role_id' => $input['role_id'],
                         'min_amount' => $input['min_amount'],
                         'max_amount' => ($input['max_amount'] != "") ? $input['max_amount'] : null,
                     ]

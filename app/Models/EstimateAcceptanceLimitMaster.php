@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class EstimateAcceptanceLimitMaster extends Model
 {
     use HasFactory;
     protected $table = "estimate_acceptance_limit_masters";
-    protected $fillable = ["department_id","role_id", "min_amount", "max_amount"];
+    protected $fillable = ["department_id", "min_amount", "max_amount"];
 
     public function getDepartmentName()
     {
@@ -18,7 +19,17 @@ class EstimateAcceptanceLimitMaster extends Model
     // public function getLevelName(){
     //     return $this->belongsTo(Levels::class,'level_id');
     // }
-    public function getRolesName(){
-        return $this->belongsTo(Role::class,'role_id');
+    // public function getRolesName(){
+    //     return $this->belongsTo(Role::class,'role_id');
+    // }
+
+    /**
+     * The roles that belong to the EstimateAcceptanceLimitMaster
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function rolePermissions(): HasMany
+    {
+        return $this->hasMany(Role::class, 'sanctions_roles_permissions', 'id', 'sanction_id');
     }
 }

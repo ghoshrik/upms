@@ -17,7 +17,7 @@
                                     @endforeach
                                 </x-select>
                             </div> --}}
-                            <div class="col" wire:key="Role_No_{{ $key }}">
+                            {{-- <div class="col" wire:key="Role_No_{{ $key }}">
                                 <x-select label="Roles" placeholder="Select Roles"
                                     wire:model.defer="Inputs.{{ $key }}.role_id" x-on:select="$wire.getCheckLevel({{$key}})">
                                     @foreach ($roles as $role)
@@ -25,7 +25,7 @@
                                             value="{{ $role['id'] }}" />
                                     @endforeach
                                 </x-select>
-                            </div>
+                            </div> --}}
                             <div class="col" wire:key="min_amount_{{ $key }}">
                                 <x-input label="Minimum Amount" placeholder="Min Amount"
                                     wire:model.defer="Inputs.{{ $key }}.min_amount"
