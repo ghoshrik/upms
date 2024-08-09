@@ -7,6 +7,7 @@ use Livewire\Component;
 use WireUi\Traits\Actions;
 use Livewire\WithFileUploads;
 use App\Models\DynamicSorHeader;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -32,6 +33,10 @@ class SorApprovers extends Component
 
         // $categoryCounts = DynamicSorHeader::CategoryCounts($user);
         // dd($categoryCounts);
+
+
+        $this->SorLists['countsWithTable'] = DynamicSorHeader::getApprovedCounts(Auth::user()->department_id);
+        // dd($this->SorLists['countsWithTable']);
     }
 
     public function setErrorAlert($errorMessage)

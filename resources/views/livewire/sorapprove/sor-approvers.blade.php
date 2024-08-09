@@ -117,6 +117,10 @@
                                 font-family: "Roboto", sans-serif;
                                 box-shadow: 4px 4px 15px rgba(26, 35, 126, 0.2);
                             }
+
+                            .tab-content>.active {
+                                color: #000000;
+                            }
                         </style>
                         <div class="row">
                             @foreach ($SorLists['SORCounts'] as $category)
@@ -170,9 +174,54 @@
                                     </span>
                                 </button> --}}
                             </div>
+
                             <div class="card-body">
-                                <livewire:sorapprove.data-table.sor-approver-table
-                                    :wire:key='$updateDataTableTracker' />
+
+                                <ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
+                                    @foreach ($SorLists['countsWithTable'] as $sors)
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link {{ $loop->first ? 'active' : '' }}"
+                                                id="tab-{{ $sors->id }}" data-bs-toggle="tab"
+                                                href="#tabs-{{ $sors->id }}" role="tab"
+                                                aria-controls="tabs-{{ $sors->id }}"
+                                                aria-selected="true">{{ $sors->dept_category_name }}
+                                                {{-- ({{ is_array(json_decode($sors->header_ids)) ? count(json_decode($sors->header_ids)) : 0 }}) --}}
+                                                {{-- @dd(count($sors->header_ids)) --}}
+                                                @php
+                                                    // Convert the string to an array and count elements
+                                                    $headerIds = trim($sors->header_ids, '{}');
+                                                    $headerIdsArray = array_filter(
+                                                        array_map('trim', explode(',', $headerIds)),
+                                                    );
+                                                @endphp
+                                                ({{ count($headerIdsArray) }})
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                                <div class="tab-content" id="ex1-content">
+                                    @foreach ($SorLists['countsWithTable'] as $sors)
+                                        <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
+                                            id="tabs-{{ $sors->id }}" role="tabpanel"
+                                            aria-labelledby="tab-{{ $sors->id }}">
+
+                                            @php
+                                                // Convert the string to an array
+                                                $headerIds = trim($sors->header_ids, '{}');
+                                                $headerIdsArray = array_filter(
+                                                    array_map('trim', explode(',', $headerIds)),
+                                                );
+                                            @endphp
+
+
+                                            <livewire:sorapprove.data-table.sor-approver-table
+                                                :wire:key='$updateDataTableTracker' :sorData="$headerIdsArray" />
+
+                                        </div>
+                                    @endforeach
+
+                                </div>
+
                             </div>
                         </div>
                 @endif

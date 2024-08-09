@@ -62,6 +62,7 @@ class DynamicSorHeader extends Model
                 'dynamic_table_header.department_id',
                 'sor_category_types.dept_category_name',
                 'sor_category_types.target_pages',
+
                 DB::raw('COUNT(CASE WHEN dynamic_table_header.effective_to IS NULL THEN 1 END) as category_count'),
                 DB::raw('COUNT(CASE WHEN dynamic_table_header.effective_to IS NOT NULL THEN 1 END) as corrigenda_count'),
                 DB::raw("COUNT(CASE WHEN dynamic_table_header.is_approve = '-11' AND dynamic_table_header.is_verified = '-9' THEN 1 END) as pending_approval_count"),
@@ -71,6 +72,32 @@ class DynamicSorHeader extends Model
             ->groupBy('dynamic_table_header.department_id', 'sor_category_types.dept_category_name', 'sor_category_types.target_pages');
     }
 
+    public static function getApprovedCounts($department_id)
+    {
+        return DB::select(DB::raw('
+            SELECT
+                departments.department_name,
+                sor_category_types.dept_category_name,
+                array_agg(dynamic_table_header.id) AS header_ids,
+                sor_category_types.id
+            FROM
+                dynamic_table_header
+            LEFT JOIN
+                sor_category_types ON dynamic_table_header.dept_category_id = sor_category_types.id
+            LEFT JOIN
+                departments ON departments.id = sor_category_types.department_id
+            WHERE
+                dynamic_table_header.is_approve = ?
+                AND dynamic_table_header.department_id=?
+                AND dynamic_table_header.deleted_at IS NULL
+            GROUP BY
+                departments.department_name,
+                sor_category_types.dept_category_name,
+                sor_category_types.id
+            ORDER BY
+                sor_category_types.dept_category_name ASC
+        '), ['-11', $department_id]);
+    }
     public function scopeDepartmentWiseSorReports($query)
     {
         return $query->select(
