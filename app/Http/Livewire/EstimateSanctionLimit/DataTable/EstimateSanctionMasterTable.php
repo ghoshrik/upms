@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\EstimateSanctionLimit\DataTable;
 
-use App\Models\EstimateAcceptanceLimitMaster;
+use App\Models\SanctionLimitMaster;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use PowerComponents\LivewirePowerGrid\Button;
@@ -53,11 +53,11 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
     /**
      * PowerGrid datasource.
      *
-     * @return Builder<\App\Models\EstimateAcceptanceLimitMaster>
+     * @return Builder<\App\Models\SanctionLimitMaster>
      */
     public function datasource(): Builder
     {
-        return EstimateAcceptanceLimitMaster::query()
+        return SanctionLimitMaster::query()
         // ->select(
         //     'estimate_acceptance_limit_masters.id',
         //     'estimate_acceptance_limit_masters.department_id',
@@ -125,8 +125,8 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('ID', 'id')
-                ->makeInputRange(),
+            Column::make('ID', 'id'),
+                // ->makeInputRange(),
 
             // Column::make('DEPARTMENT ID', 'getDepartmentName.department_name')
             //     ->makeInputRange(),
@@ -154,7 +154,7 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
      */
 
     /**
-     * PowerGrid EstimateAcceptanceLimitMaster Action Buttons.
+     * PowerGrid SanctionLimitMaster Action Buttons.
      *
      * @return array<int, Button>
      */
@@ -163,7 +163,7 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
     {
         return [
             Button::add('Add Roles')
-                ->bladeComponent('add', ['id' => 'id']),
+                ->bladeComponent('action-components.estimate-sanction.add-role-permission-btn', ['id' => 'id']),
         ];
     }
     public function add($id)
@@ -179,7 +179,7 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
      */
 
     /**
-     * PowerGrid EstimateAcceptanceLimitMaster Action Rules.
+     * PowerGrid SanctionLimitMaster Action Rules.
      *
      * @return array<int, RuleActions>
      */

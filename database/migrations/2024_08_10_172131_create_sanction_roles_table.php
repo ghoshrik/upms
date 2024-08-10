@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSanctionsRolesPermissionsTable extends Migration
+class CreateSanctionRolesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,14 @@ class CreateSanctionsRolesPermissionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sanctions_roles_permissions', function (Blueprint $table) {
-            $table->foreignId('sanction_id')->index()->references('id')->on('estimate_acceptance_limit_masters');
+        Schema::create('sanction_roles', function (Blueprint $table) {
+            $table->bigIncrements('id')->autoIncrement();
+            $table->foreignId('sanction_limit_master_id')->index()->references('id')->on('sanction_limit_masters');
             $table->tinyInteger('sequence_no')->default(0);
             $table->foreignId('role_id')->index()->references('id')->on('roles');
             $table->foreignId('permission_id')->index()->references('id')->on('permissions');
 
-            $table->unique(['sanction_id', 'role_id', 'permission_id'], 'sanction_role_permission_unique');
+            $table->unique(['sanction_limit_master_id', 'role_id'], 'sanction_roles_unique');
         });
     }
 
@@ -30,6 +31,6 @@ class CreateSanctionsRolesPermissionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sanctions_roles_permissions');
+        Schema::dropIfExists('sanction_roles');
     }
 }

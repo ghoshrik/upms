@@ -7,7 +7,7 @@ use Livewire\Component;
 use WireUi\Traits\Actions;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Models\EstimateAcceptanceLimitMaster;
+use App\Models\SanctionLimitMaster;
 
 class EstimateSanctionMasterCreate extends Component
 {
@@ -63,7 +63,7 @@ class EstimateSanctionMasterCreate extends Component
         DB::beginTransaction();
         try {
             foreach ($this->Inputs as $key => $input) {
-                EstimateAcceptanceLimitMaster::create(
+                SanctionLimitMaster::create(
                     [
                         'department_id' => Auth::user()->department_id,
                         // 'role_id' => $input['role_id'],
