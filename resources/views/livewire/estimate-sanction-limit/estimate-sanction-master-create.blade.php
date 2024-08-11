@@ -36,22 +36,22 @@
                                     wire:model.defer="Inputs.{{ $key }}.max_amount"
                                     wire:key='max_amount_{{ $key }}' />
                             </div>
-                            @if (count($Inputs) > 1)
+                            {{-- @if (count($Inputs) > 1)
                                 <div class="col-lg-1 col-md-1 col-sm-6" wire:key="delbutton_{{ $key }}">
                                     <button type="button" class="btn btn-soft-danger rounded-pill mt-4"
                                         wire:click='deleteMore({{ $key }})'><span class="btn-inner">
                                             <x-lucide-trash-2 class="w-4 h-4 text-gray-500" />
                                         </span></button>
                                 </div>
-                            @endif
+                            @endif --}}
                         </div>
                     @endforeach
-                    <div class="col-lg-2 col-md-2 col-sm-6" wire:key="button">
+                    {{-- <div class="col-lg-2 col-md-2 col-sm-6" wire:key="button">
                         @if (count($Inputs) != count($levels))
                             <button type="button" class="btn btn-soft-primary rounded-pill mt-4"
                                 wire:click='addMore'><span class="btn-inner"><x-lucide-plus class="w-4 h-4 text-gray-500" /></span></button>
                         @endif
-                    </div>
+                    </div> --}}
                     <div class="row">
                         <div class="col mt-3">
                             <div class="form-group float-right">
