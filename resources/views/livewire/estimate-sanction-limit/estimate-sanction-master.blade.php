@@ -82,7 +82,7 @@
                 <div class="row">
                     {{-- Role Select Combo --}}
                     <div class="col-12 mt-2" wire:key="Role_No_">
-                        <x-select label="Roles" placeholder="Select Roles" wire:model="role_id" x-on:select="">
+                        <x-select label="Roles" placeholder="Select Roles" wire:model.defer="role_id" x-on:select="">
                             @foreach ($roles as $role)
                                 <x-select.option label="{{ $role['name'] }}" value="{{ $role['id'] }}" />
                             @endforeach
@@ -90,7 +90,7 @@
                     </div>
                     {{-- Permission Select Combo --}}
                     <div class="col-12 mt-2" wire:key="Permission_No_">
-                        <x-select label="Permissions" placeholder="Select Permission" wire:model="permission_name"
+                        <x-select label="Permissions" placeholder="Select Permission" wire:model.defer="permission_name"
                             x-on:select="">
                             @foreach ($permissions as $key => $value)
                                 <x-select.option label="{{ $value }}" value="{{ $key }}" />

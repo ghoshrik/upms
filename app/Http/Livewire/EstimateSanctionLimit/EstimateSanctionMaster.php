@@ -3,13 +3,12 @@
 namespace App\Http\Livewire\EstimateSanctionLimit;
 
 use App\Models\Role;
-use Livewire\Component;
-use WireUi\Traits\Actions;
+use App\Models\SanctionLimitMaster;
 use App\Models\SanctionRole;
 use Illuminate\Support\Facades\DB;
-use App\Models\SanctionLimitMaster;
-use Illuminate\Notifications\Action;
+use Livewire\Component;
 use Spatie\Permission\Models\Permission;
+use WireUi\Traits\Actions;
 
 class EstimateSanctionMaster extends Component
 {
@@ -34,10 +33,10 @@ class EstimateSanctionMaster extends Component
         'role_id.required' => 'This Field is Required.',
         'permission_name.required' => 'This Field is Required.',
     ];
-    public function updated($param)
-    {
-        $this->validateOnly($param);
-    }
+    // public function updated($param)
+    // {
+    //     $this->validateOnly($param);
+    // }
     public function mount()
     {
         $this->updateDataTableTracker = rand(1, 1000);
@@ -85,7 +84,7 @@ class EstimateSanctionMaster extends Component
         //         return (array) $item;
         //     })
         //     ->toArray();
-        $this->sanction_roles = $this->sanctionLimit->roles()->with(['role','permission'])->get();
+        $this->sanction_roles = $this->sanctionLimit->roles()->with(['role', 'permission'])->get();
         // dd($this->sanction_roles);
         $this->openAddRolesForm = !$this->openAddRolesForm;
         $this->reset(['role_id', 'permission_name']);
@@ -95,14 +94,37 @@ class EstimateSanctionMaster extends Component
     {
         // Need to apply Validation
         $this->validate();
-        DB::table('sanction_roles')->insert([
-            'sanction_limit_master_id' => $this->sanctionLimit->id,
-            'sequence_no' => count($this->sanction_roles) + 1,
-            'role_id' => $this->role_id,
-            'permission_id' => Permission::whereName($this->permission_name)->first()->id,
-        ]);
-        $this->reset(['role_id', 'permission_name']);
-        $this->refreshSanctionRolePermissions();
+        DB::beginTransaction();
+        try {
+            $sanctionRole = SanctionRole::create([
+                'sanction_limit_master_id' => $this->sanctionLimit->id,
+                'sequence_no' => count($this->sanction_roles) + 1,
+                'role_id' => $this->role_id,
+                'permission_id' => Permission::whereName($this->permission_name)->first()->id,
+            ]);
+            DB::commit();
+            $this->notification()->success(
+                $title = "Created successfully"
+            );
+            $this->reset(['role_id', 'permission_name']);
+            // $this->sanction_roles = $this->sanction_roles->merge($sanctionRole);
+            $this->refreshSanctionRolePermissions();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->notification()->error(
+                $title = "Failed to create records",
+                $description = 'Sanction limit role.'
+            );
+            $this->emit('showError','Failed to create sanction limit role.');
+        }
+        // DB::table('sanction_roles')->insert([
+        //     'sanction_limit_master_id' => $this->sanctionLimit->id,
+        //     'sequence_no' => count($this->sanction_roles) + 1,
+        //     'role_id' => $this->role_id,
+        //     'permission_id' => Permission::whereName($this->permission_name)->first()->id,
+        // ]);
+        // $this->reset(['role_id', 'permission_name']);
+        // $this->refreshSanctionRolePermissions();
     }
 
     public function refreshSanctionRolePermissions()
@@ -120,7 +142,7 @@ class EstimateSanctionMaster extends Component
         //         return (array) $item;
         //     })
         //     ->toArray();
-        $this->sanction_roles = $this->sanctionLimit->roles()->with(['role','permission'])->get();
+        $this->sanction_roles = $this->sanctionLimit->roles()->with(['role', 'permission'])->get();
     }
     public function confDeleteDialogRolePermission($value): void
     {
@@ -156,6 +178,8 @@ class EstimateSanctionMaster extends Component
         $this->updateDataTableTracker = rand(1, 1000);
         $this->title = 'Estimate Sanction Limit Master';
         $assets = ['chart', 'animation'];
-        return view('livewire.estimate-sanction-limit.estimate-sanction-master');
+        return view('livewire.estimate-sanction-limit.estimate-sanction-master',[
+            'sanction_roles' => $this->sanction_roles
+        ]);
     }
 }

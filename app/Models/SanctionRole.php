@@ -14,6 +14,7 @@ class SanctionRole extends Model
     use HasFactory;
     protected $table = "sanction_roles";
     protected $fillable = ['sanction_limit_master_id','sequence_no','role_id','permission_id'];
+    public $timestamps = false;
     public function sanctionLimitMaster() : BelongsTo
     {
         return $this->belongsTo(SanctionLimitMaster::class);
