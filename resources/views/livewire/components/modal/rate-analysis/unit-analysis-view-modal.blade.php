@@ -492,7 +492,7 @@
                                                         $editButtonClass = 'vcbtn';
                                                     } elseif ($metadata['btntype'] === 7) {
                                                         $editButtonClass = 'vScbtn';
-                                                    } 
+                                                    }
                                                 }
                                             @endphp
                                             @if (!isset($metadata['key']))
@@ -2822,7 +2822,12 @@
             // }
         });
         $('#totalOnSelected').on('click', function() {
+
+
+
             var grandTotalValue = $('#grandTotalInput').val();
+
+           // alert(grandTotalValue);
             if (parseFloat(grandTotalValue) !== 0) {
                 alert("Total already done!");
                 if (!this.acceptenceCriteria()) {
@@ -2891,11 +2896,16 @@
                         data: ruledata
                     }),
                     success: function(response) {
+
+
                         var tableBody1 = $("#dataTable tbody");
                         tableBody1.empty();
                         var rateAnalysisArray1 = response.rateAnalysisArray[unitId][
                             'metadata'
                         ];
+
+
+                        console.log(rateAnalysisArray1);
                         if ($.isEmptyObject(rateAnalysisArray1)) {
                             $("#close-unit-modalBtn").html("Close");
                         }
@@ -2957,6 +2967,7 @@
                                 'id': 'metagrandval',
                                 'value': grandTotalValue
                             });
+                            $('#grandTotalInput').val(metadata.grandTotal);
                             var buttonCell = $('<td>').css('text-align', 'center')
                                 .append(editButton).append(' ').append(
                                     deleteButton);
@@ -2975,7 +2986,7 @@
                             newRow.append(hiddenInput).append(buttonCell);
                             tableBody.append(newRow);
                             sno++;
-                            //$('#grandTotalInput').val(metadata.overallTotal);
+
                         });
 
                         if (tableBody.find('tr').length > 0) {
@@ -3659,7 +3670,7 @@
 
         $(document).on("click", ".vScbtn", function() {
             var currentId = this.getAttribute("data-id");
-        
+
             $('#Area-volume-cone').show();
             $('#Volume-of-cylinder').hide();
             $('#surfaceArea-volume-rectangle').hide();
@@ -3690,7 +3701,7 @@
                     $('#sradius').val(response.rateAnalysisArray.input_values.smallRadius);
                     $('#btn-type3').val(response.rateAnalysisArray.input_values.currentId);
 
-                    
+
 
                     // Set the selected option in the dropdown
                     $('.dropdown-menu').find('a[data-value="' + response.rateAnalysisArray
