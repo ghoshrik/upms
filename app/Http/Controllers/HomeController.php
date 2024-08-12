@@ -6,6 +6,8 @@ use App\Models\Category;
 use App\Models\MileStone;
 use App\Models\testCategory;
 use Illuminate\Http\Request;
+use App\Models\DynamicSorHeader;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -17,8 +19,41 @@ class HomeController extends Controller
     {
         // $this->emit('changeTitleSubTitle');
 
+        $sorCategories = DB::table('sor_category_types')
+            ->select('sor_category_types.*', DB::raw('COUNT(dynamic_table_header.id) as dynamicsor_count'))
+            ->leftJoin('dynamic_table_header', 'sor_category_types.id', '=', 'dynamic_table_header.dept_category_id')
+            ->groupBy('sor_category_types.id')
+            ->get();
+        //dd($sorCategories);
+
+
+
+        // $deptSorCategory = DynamicSorHeader::join('sor_category_types', 'dynamic_table_header.dept_category_id', '=', 'sor_category_types.id')
+        //     ->select('dynamic_table_header.department_id', 'sor_category_types.dept_category_name', 'sor_category_types.target_pages', DB::raw('COUNT(dynamic_table_header.dept_category_id) as category_count', 'COUNT(dynamic_table_header.dept_category_id) as corrigenda_count'))
+        //     ->where('dynamic_table_header.department_id', Auth::user()->department_id)
+        //     ->whereNull('dynamic_table_header.effective_to')
+        //     ->groupBy('dynamic_table_header.department_id', 'sor_category_types.dept_category_name', 'sor_category_types.target_pages')
+        //     ->get();
+
+        $deptSorCategory = DynamicSorHeader::join('sor_category_types', 'dynamic_table_header.dept_category_id', '=', 'sor_category_types.id')
+            ->select(
+                'dynamic_table_header.department_id',
+                'sor_category_types.dept_category_name',
+                'sor_category_types.target_pages',
+                DB::raw('COUNT((CASE WHEN dynamic_table_header.effective_to IS NULL THEN 1 END)) as category_count'),
+                DB::raw('COUNT(CASE WHEN dynamic_table_header.effective_to IS NOT NULL THEN 1 END) as corrigenda_count'),
+                DB::raw("COUNT(CASE WHEN dynamic_table_header.is_approve = '-11' AND dynamic_table_header.is_verified = '-9' THEN 1 END) as pending_approval_count"),
+                DB::raw("COUNT(CASE WHEN dynamic_table_header.is_approve = '-11' AND dynamic_table_header.is_verified = '-09' THEN 1 END) as verified_count")
+            )
+            ->where('dynamic_table_header.department_id', Auth::user()->department_id)
+            ->groupBy('dynamic_table_header.department_id', 'sor_category_types.dept_category_name', 'sor_category_types.target_pages')
+            ->get();
+
+        // dd($deptSorCategory);
+
+
         $assets = ['chart', 'animation'];
-        return view('dashboards.dashboard', compact('assets'));
+        return view('dashboards.dashboard', compact('assets', 'deptSorCategory'));
     }
 
     // public function testMileStone()

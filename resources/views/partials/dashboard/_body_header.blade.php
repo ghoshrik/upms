@@ -233,7 +233,6 @@
                             @isset($curr_role)
                                 <p class="mb-0 caption-sub-title text-capitalize"><span
                                         class="badge rounded-pill bg-primary">
-                                        {{-- {{ Auth::user()->getRoleNames()[0] }} --}}
                                         {{ $curr_role }}
                                     </span>
                                 </p>
@@ -242,7 +241,7 @@
                         </div>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        {!! getAllAssigenRoles() !!}
+                        {{-- {!! getAllAssigenRoles() !!} --}}
                         <li>
                             <hr class="dropdown-divider">
                         </li>

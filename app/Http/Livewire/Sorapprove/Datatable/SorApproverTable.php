@@ -37,11 +37,16 @@ final class SorApproverTable extends PowerGridComponent
         ];
     }
 
+    public array $sorData = [];
     public function datasource(): Builder
     {
-        return DynamicSorHeader::query()
-            ->where('department_id', Auth::user()->department_id)
-            ->where('is_approve', '=', '-11');
+        $query = DynamicSorHeader::query()
+            // ->where('department_id', Auth::user()->department_id)
+            // ->where('is_approve', '=', '-11')
+            // ->where('id', $this->sorData);
+            ->whereIn('id', $this->sorData);
+        // dd($query);
+        return $query;
     }
 
     /*

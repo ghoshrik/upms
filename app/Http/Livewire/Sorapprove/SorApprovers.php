@@ -7,6 +7,7 @@ use Livewire\Component;
 use WireUi\Traits\Actions;
 use Livewire\WithFileUploads;
 use App\Models\DynamicSorHeader;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -22,7 +23,20 @@ class SorApprovers extends Component
     public function mount()
     {
         //$this->SorLists = SOR::where('department_id', '=', Auth::user()->department_id)->get();
-        $this->SorLists['sorCount'] = DynamicSorHeader::PendingSor();
+        $this->SorLists['sorApproverPendingCount'] = DynamicSorHeader::PendingSor();
+        $this->SorLists['sorApprovedCount'] = DynamicSorHeader::ApproveSor();
+        $this->SorLists['SORCounts'] = DynamicSorHeader::SorReportsDeptCategory()->get();
+
+        // $this->SorLists['sorTargetPage'] = DynamicSorHeader::DeptTargetPages();
+
+        // $user = Auth::user();
+
+        // $categoryCounts = DynamicSorHeader::CategoryCounts($user);
+        // dd($categoryCounts);
+
+
+        $this->SorLists['countsWithTable'] = DynamicSorHeader::getApprovedCounts(Auth::user()->department_id);
+        // dd($this->SorLists['countsWithTable']);
     }
 
     public function setErrorAlert($errorMessage)

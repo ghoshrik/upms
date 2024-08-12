@@ -10,7 +10,7 @@
             <div class="container-fluid iq-container">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                     <div class="d-flex flex-column">
-                        <h6 class="text-dark">{{ $titel }}</h6>
+                        <h2 class="text-dark">{{ $titel }}</h2>
                         <p class="text-primary mb-0">{{ $subTitel }}</p>
                     </div>
                     @canany(['create department-category', 'edit department-category'])
@@ -58,6 +58,7 @@
                 @if ($isFromOpen && $openedFormType == 'create')
                     <livewire:department-category.create />
                 @elseif($isFromOpen && $openedFormType == 'edit')
+                    <livewire:department-category.create :selectedIdForEdit="$selectedIdForEdit"/>
                 @else
                     <div class="col-md-12 col-lg-12 col-sm-3">
                         <div class="card">
