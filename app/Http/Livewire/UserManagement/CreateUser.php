@@ -3,14 +3,15 @@
 namespace App\Http\Livewire\UserManagement;
 
 use App\Models\User;
+use App\Models\Group;
 use App\Models\Office;
 use Livewire\Component;
 use App\Models\UserType;
 use App\Models\Department;
 use WireUi\Traits\Actions;
 use App\Models\Designation;
-use App\Models\UsersHasRoles;
 use Illuminate\Support\Arr;
+use App\Models\UsersHasRoles;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -91,11 +92,14 @@ class CreateUser extends Component
             'confirm_password' => '',
             'mobile' => '',
             'email' => '',
+            'group_id' => '',
+            'office_id' => '',
             // 'is_active' => 1,
         ];
         if (Auth::user()->user_type == 2) {
-            $this->getDropdownData('DEPT');
+            // $this->getDropdownData('DEPT');
             $this->getDropdownData('DES');
+            $this->getDropdownData('Groups');
         }
         if (Auth::user()->user_type == 3) {
             $this->getDropdownData('LEVEL');
@@ -120,11 +124,20 @@ class CreateUser extends Component
                 }
             } elseif ($lookingFor === 'LEVEL') {
                 $this->dropDownData['level'] = true;
+            }elseif($lookingFor === 'Groups'){
+                $this->dropDownData['groups'] = Group::all();
+                $this->dropDownData['offices'] = [];
             } else {
                 // $this->allUserTypes = UserType::where('parent_id', Auth::user()->user_type)->get();
             }
         } catch (\Throwable $th) {
             session()->flash('serverError', $th->getMessage());
+        }
+    }
+    public function getGroupOffices(){
+        if($this->newUserData['group_id'] != ''){
+            $group = Group::where('id',$this->newUserData['group_id'])->first();
+            $this->dropDownData['offices'] = $group->offices;
         }
     }
     public function fetchLevelWiseOffice()

@@ -111,7 +111,7 @@ final class OfficeTable extends PowerGridComponent
             // $tableBody .= '<table class="table table-bordered" style="table-layout: fixed;width: 100%;">
             // <thead>
             //     <tr>
-            //         <th class="per2 text-center" width="3%">#</th>
+            //         <th class="text-center per2" width="3%">#</th>
             //     </tr>
             // </thead><tbody>';
             // foreach($office as $key=>$offices)
@@ -223,11 +223,12 @@ final class OfficeTable extends PowerGridComponent
                 'urban_code',
                 'ward_code',
                 'office_address',
-                'level_no',
+                // 'level_no',
                 'office_code',
+                'group_id',
                 DB::raw('ROW_NUMBER() OVER (ORDER BY offices.id) as serial_no')
-            )
-            ->where('offices.department_id', Auth::user()->department_id);;
+            )->where('group_id','!=',null);
+            // ->where('offices.department_id', Auth::user()->department_id);
     }
 
     /*
@@ -277,31 +278,32 @@ final class OfficeTable extends PowerGridComponent
             // ->addColumn('gp_code')
             // ->addColumn('urban_code')
             // ->addColumn('ward_code')
-            ->addColumn('office_address',function(Office $office){
-		return "<span class='text-wrap'>".$office->office_address."</span>";
-	    })
-            ->addColumn('level_no', function (Office $model) {
-                switch ($model->level_no) {
-                    case 1:
-                        return '<span class="badge rounded-pill bg-primary text-dark">Level 1 Office </span>';
-                        break;
-                    case 2:
-                        return '<span class="badge rounded-pill bg-secondary">Level 2 Office </span>';
-                        break;
-                    case 3:
-                        return '<span class="badge rounded-pill bg-success">Level 3 Office </span>';
-                        break;
-                    case 4:
-                        return '<span class="badge rounded-pill bg-info">Level 4 Office </span>';
-                        break;
-                    case 5:
-                        return '<span class="badge rounded-pill bg-warning">Level 5 Office </span>';
-                        break;
-                    default:
-                        return '<span class="badge rounded-pill bg-dark">Level 6 Office</span>';
-                }
-            })
-            ->addColumn('office_code');
+        //     ->addColumn('office_address',function(Office $office){
+		// return "<span class='text-wrap'>".$office->office_address."</span>";
+	    // })
+        //     ->addColumn('level_no', function (Office $model) {
+        //         switch ($model->level_no) {
+        //             case 1:
+        //                 return '<span class="badge rounded-pill bg-primary text-dark">Level 1 Office </span>';
+        //                 break;
+        //             case 2:
+        //                 return '<span class="badge rounded-pill bg-secondary">Level 2 Office </span>';
+        //                 break;
+        //             case 3:
+        //                 return '<span class="badge rounded-pill bg-success">Level 3 Office </span>';
+        //                 break;
+        //             case 4:
+        //                 return '<span class="badge rounded-pill bg-info">Level 4 Office </span>';
+        //                 break;
+        //             case 5:
+        //                 return '<span class="badge rounded-pill bg-warning">Level 5 Office </span>';
+        //                 break;
+        //             default:
+        //                 return '<span class="badge rounded-pill bg-dark">Level 6 Office</span>';
+        //         }
+        //     })
+            ->addColumn('office_code')
+            ->addColumn('group.group_name');
         // ->addColumn('created_at_formatted', fn (Office $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'))
         // ->addColumn('updated_at_formatted', fn (Office $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
     }
@@ -356,14 +358,17 @@ final class OfficeTable extends PowerGridComponent
                 ->searchable()
                 ->makeInputText(),
 
-            Column::make('LEVEL NO', 'level_no')
-                ->searchable(),
+            // Column::make('LEVEL NO', 'level_no')
+            //     ->searchable(),
 
             Column::make('OFFICE CODE', 'office_code')
                 ->sortable()
                 ->searchable()
                 ->makeInputText(),
-
+            Column::make('GROUP NAME', 'group.group_name')
+                ->sortable()
+                ->searchable()
+                ->makeInputText(),
             // Column::make('CREATED AT', 'created_at_formatted', 'created_at')
             //     ->searchable()
             //     ->sortable()

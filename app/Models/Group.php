@@ -25,4 +25,8 @@ class Group extends Model
     {
         return $this->belongsTo(DepartmentCategory::class,'dept_category_id');
     }
+    public function offices() : HasMany
+    {
+        return $this->hasMany(Office::class);
+    }
 }

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Office extends Model
 {
@@ -23,6 +24,10 @@ class Office extends Model
     public function getUrban()
     {
         return $this->belongsTo(Urban_body::class, 'urban_code', 'urban_body_code');
+    }
+    public function group() : BelongsTo
+    {
+        return $this->belongsTo(Group::class,'group_id');
     }
     // public function generatePDF($data,$title)
     // {

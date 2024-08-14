@@ -116,10 +116,12 @@ class CreateOffice extends Component
     {
         $this->validate();
         try {
+            $group = Group::where('id',$this->selectedOption['group_id'])->first();
             $insert = array_merge($this->selectedOption, $this->officeData);
             $insert = [
                 'in_area'=>$this->selectedOption['In_area'],
-                'department_id'=>$this->officeData['department_id'],
+                // 'department_id'=>$this->officeData['department_id'],
+                'department_id'=>$group->getDeptName->id,
                 'office_name'=>$this->officeData['office_name'],
                 'office_code'=>$this->officeData['office_code'],
                 'office_address'=>$this->officeData['office_address'],
@@ -128,7 +130,7 @@ class CreateOffice extends Component
                 'gp_code'=>($this->selectedOption['gp_code']=='') ? 0 :$this->selectedOption['dist_code'],
                 'urban_code'=>($this->selectedOption['urban_code']=='') ? 0 :$this->selectedOption['urban_code'],
                 'ward_code'=>($this->selectedOption['ward_code']=='') ? 0 :$this->selectedOption['ward_code'],
-                'level_no'=>$this->selectedOption['level'],
+                // 'level_no'=>$this->selectedOption['level'],
                 'group_id'=>$this->selectedOption['group_id']
             ];
             // dd($insert);
