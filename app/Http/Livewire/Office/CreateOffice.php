@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Office;
 
 use App\Models\GP;
 use App\Models\Role;
+use App\Models\Group;
 use App\Models\Office;
 use App\Models\Taluka;
 use Livewire\Component;
@@ -28,7 +29,8 @@ class CreateOffice extends Component
             'gp_code' => '',
             'urban_code' => '',
             'ward_code' => '',
-            'level'=>''
+            'level'=>'',
+            'group_id' => ''
         ];
         $this->officeData = [
             'office_address' => '',
@@ -44,7 +46,8 @@ class CreateOffice extends Component
         'officeData.office_code'=>'required|string|unique:offices,office_code',
         'selectedOption.dist_code'=>'required|integer',
         'selectedOption.In_area'=>'required|integer',
-        'selectedOption.level'=>'required|integer',
+        // 'selectedOption.level'=>'required|integer',
+        'selectedOption.group_id'=>'required|integer',
     ];
     protected $messages = [
         'officeData.office_address.required'=>'This field is required',
@@ -63,8 +66,10 @@ class CreateOffice extends Component
         'selectedOption.rural_block_code.integer'=>'Invalid format',
         'selectedOption.urban_code.required'=>'This field is required',
         'selectedOption.ward_code.integer'=>'Invalid format',
-        'selectedOption.level.integer'=>'Invalid format',
-        'selectedOption.level.required'=>'This field is required'
+        // 'selectedOption.level.integer'=>'Invalid format',
+        // 'selectedOption.level.required'=>'This field is required'
+        'selectedOption.group_id.integer'=>'Invalid format',
+        'selectedOption.group_id.required'=>'This field is required'
     ];
     public function updated($param)
     {
@@ -123,7 +128,8 @@ class CreateOffice extends Component
                 'gp_code'=>($this->selectedOption['gp_code']=='') ? 0 :$this->selectedOption['dist_code'],
                 'urban_code'=>($this->selectedOption['urban_code']=='') ? 0 :$this->selectedOption['urban_code'],
                 'ward_code'=>($this->selectedOption['ward_code']=='') ? 0 :$this->selectedOption['ward_code'],
-                'level_no'=>$this->selectedOption['level']
+                'level_no'=>$this->selectedOption['level'],
+                'group_id'=>$this->selectedOption['group_id']
             ];
             // dd($insert);
             Office::create($insert);
@@ -141,6 +147,7 @@ class CreateOffice extends Component
     public function render()
     {
         $this->fetchDropdownData['district'] = District::all();
+        $this->fetchDropdownData['groups'] = Group::all();
         return view('livewire.office.create-office');
     }
 }

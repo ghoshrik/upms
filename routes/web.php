@@ -9,22 +9,23 @@ use App\Http\Livewire\Sor\Sor;
 use App\Http\Livewire\Aoc\Aocs;
 use App\Http\Livewire\Roles\Roles;
 use Spatie\Permission\Models\Role;
+use App\Http\Livewire\Groups\Group;
 use App\Http\Livewire\Office\Office;
-use Illuminate\Support\Facades\Auth;
 //use App\Http\Livewire\Carriagecost\CarriageCosts;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Livewire\Tender\Tenders;
-use Illuminate\Support\Facades\Route;
 // use App\Http\Livewire\TestALL\TestSearch;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
 use App\Http\Livewire\Report\MisReport;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\HomeController;
 use App\Http\Livewire\Aafs\AafsProjects;
-use App\Http\Livewire\UserType\UserType;
 //use App\Http\Livewire\ExcelImport\Imports;
+use App\Http\Livewire\UserType\UserType;
 use App\Http\Livewire\SorBook\DynamicSor;
-use App\Http\Livewire\Milestone\Milestones;
 // use App\Http\Livewire\Permission\Permissions;
+use App\Http\Livewire\Milestone\Milestones;
 use App\Http\Livewire\Setting\SettingLists;
 use App\Http\Livewire\AccessType\AccessType;
 use App\Http\Livewire\Department\Department;
@@ -46,10 +47,10 @@ use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\EstimateProject\EstimateProject;
 use App\Http\Livewire\AbstructCosts\AbstructCostsLists;
-use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
 
 
 // Packages
+use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
 use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
 use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
 use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
@@ -112,6 +113,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         });*/
 
         //state Admin
+        Route::get('groups',Group::class)->name('groups');
         Route::group(['middleware' => ['role:State Admin']], function () {
             Route::get('department', Department::class)->name("department");
             Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
@@ -119,13 +121,14 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         });
         Route::group(['middleware' => ['role:State Admin|Department Admin|Office Admin']], function () {
             Route::get('user-management', UserManagement::class)->name('user-management');
+            Route::get('office', Office::class)->name('office');
         });
 
         //Department Admin
         Route::group(['middleware' => ['role:Department Admin']], function () {
             Route::get('designation', Designation::class)->name('designation');
             Route::get('estimate-limit-sanction',EstimateSanctionMaster::class)->name('estimate-limit-sanction');
-            Route::get('office', Office::class)->name('office');
+            // Route::get('office', Office::class)->name('office');
             Route::get('assign-office-admin', AssignOfficeAdmin::class)->name('assign-office-admin');
             Route::get('sor-verifier', SorApprovers::class)->name('sor-verifier');
             Route::get('unit-master', UnitsMaster::class)->name('unit-master');

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class VolumeMaster extends Model
 {
@@ -15,5 +16,10 @@ class VolumeMaster extends Model
     public function categories()
     {
         return $this->belongsTo(SorCategoryType::class, 'id');
+    }
+
+    public function departmentCategories() : HasMany
+    {
+        return $this->hasMany(DepartmentCategory::class);
     }
 }

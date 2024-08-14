@@ -21,7 +21,7 @@
                                     wire:model.defer="officeData.office_code" />
                             </div>
                         </div>
-                        <div class="col-md-6 col-lg-6 col-sm-6">
+                        {{-- <div class="col-md-6 col-lg-6 col-sm-6">
                             <x-select label="Select Office {{ trans('cruds.office.fields.level') }}"
                                 placeholder="Select Office {{ trans('cruds.office.fields.level') }}" :options="[
                                     ['name' => 'L1 Level', 'id' => 1],
@@ -32,6 +32,19 @@
                                     ['name' => 'L6 Level', 'id' => 6],
                                 ]"
                                 option-label="name" option-value="id" wire:model.defer="selectedOption.level" />
+                        </div> --}}
+                        <div class="col-md-6 col-lg-6 col-sm-6">
+                            <div class="form-group">
+                                <x-select wire:key="group" label="Groups" placeholder="Select Group"
+                                    wire:model.defer="selectedOption.group_id">
+                                    @isset($fetchDropdownData['groups'])
+                                        @foreach ($fetchDropdownData['groups'] as $group)
+                                            <x-select.option label="{{ $group['group_name'] }}"
+                                                value="{{ $group['id'] }}" />
+                                        @endforeach
+                                    @endisset
+                                </x-select>
+                            </div>
                         </div>
                         <div class="col-md-6 col-sm-3 col-lg-6">
                             <div class="form-group">
@@ -129,10 +142,10 @@
                             <div class="row">
                                 <div class="col-6">
                                     {{-- <button type="button" wire:click='resetSession'
-                                        class="btn btn-soft-danger rounded-pill float-left">Reset</button> --}}
+                                        class="float-left btn btn-soft-danger rounded-pill">Reset</button> --}}
                                 </div>
                                 <div class="col-6"><button type="submit" wire:click='store'
-                                        class="btn btn-success rounded-pill float-right">{{ trans('global.data_save_btn') }}</button>
+                                        class="float-right btn btn-success rounded-pill">{{ trans('global.data_save_btn') }}</button>
                                 </div>
                             </div>
                         </div>
