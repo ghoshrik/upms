@@ -46,10 +46,11 @@
                         <div class="col">
                             <div class="float-right form-group">
                                 <button type="button" wire:click='storeGroup'
-                                    class="{{ trans('global.add_btn_color') }}">
-                                    <x-lucide-list-plus class="w-4 h-4 text-gray-500" />
-                                    {{ trans('global.add_btn') }}
-                                </button>
+                                class="{{ trans('global.add_btn_color') }}">
+                                <x-lucide-list-plus class="w-4 h-4 text-gray-500" />
+                                {{ $selectedIdForEdit ? trans('global.update_btn') : trans('global.add_btn') }}
+                            </button>
+
                             </div>
                         </div>
                     </div>
