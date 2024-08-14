@@ -94,6 +94,7 @@ final class SorApproverTable extends PowerGridComponent
             ->addColumn('title')
             ->addColumn('table_no')
             ->addColumn('page_no')
+            ->addColumn('corrigenda_name')
             ->addColumn('is_approve', function (DynamicSorHeader $dynamicHeader) {
                 if ($dynamicHeader->is_approve === '-11' && $dynamicHeader->is_verified === '-09') {
                     return "<label class='badge badge-pill bg-success cursor-pointer'>Verified</label>";
@@ -133,6 +134,8 @@ final class SorApproverTable extends PowerGridComponent
 
             Column::make('PAGE NO', 'page_no')
                 ->sortable()
+                ->searchable(),
+            Column::make('CORRIGENDA NAME', 'corrigenda_name')
                 ->searchable(),
             Column::make('Status', 'is_approve')
                 ->sortable(),
