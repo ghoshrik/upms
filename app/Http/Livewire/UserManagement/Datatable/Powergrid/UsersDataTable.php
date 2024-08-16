@@ -381,7 +381,7 @@ final class UsersDataTable extends PowerGridComponent
         ->where('user_types.parent_id', '=', $this->userData)
         ->where('users.department_id', Auth::user()->department_id);
         }*/
-        } elseif(Auth::user()->department_id && (Auth::user()->user_type == 'State Admin' || Auth::user()->user_type == 'Super Admin')){
+        } elseif(Auth::user()->department_id && (Auth::user()->hasRole('State Admin') || Auth::user()->hasRole('Super Admin'))){
             return User::query()
             ->select(
                 'users.id',
@@ -419,15 +419,22 @@ final class UsersDataTable extends PowerGridComponent
                     'users.department_id',
                     'users.user_type',
                     'users.office_id',
-                    'user_types.id as userType_id',
-                    'user_types.parent_id',
+                    // 'user_types.id as userType_id',
+                    // 'user_types.parent_id',
                     'users.is_active',
+                    'model_has_roles.role_id',
+                    'model_has_roles.model_id',
+                    'roles.id as roleId',
+                    'roles.name',
                     'designations.id as designationId',
                     'designations.designation_name',
                     DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
                 )
-                ->where('user_types.parent_id', $this->userData)
-                ->join('user_types', 'users.user_type', '=', 'user_types.id')
+                // ->where('user_types.parent_id', $this->userData)
+                ->where('model_has_roles.role_id', $this->userData)
+                // ->join('user_types', 'users.user_type', '=', 'user_types.id')
+                ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
                 ->join('designations', 'users.designation_id', '=', 'designations.id')
             ;
         }
@@ -447,7 +454,7 @@ final class UsersDataTable extends PowerGridComponent
                 'DESIGNATION NAME' => $user->designation_name,
                 'DEPARTMENT NAME' => $user->getDepartmentName->department_name,
                 'OFFICE NAME' => $user->getOfficeName->office_name,
-                'USER TYPE' => $user->getUserType->type,
+                'ROLE' => $name,
                 'STATUS' => $user->is_active ? 'active' : 'Inactive', // Remove HTML tags
             ];
         })->toArray();
@@ -513,13 +520,13 @@ final class UsersDataTable extends PowerGridComponent
             ->addColumn('getDepartmentName.department_name')
             ->addColumn('getOfficeName.office_name')
 
-            ->addColumn('getUserType.type')
+            ->addColumn('name')
             ->addColumn('is_active', function (User $user) {
 
                 if ($user->is_active == 0) {
-                    return '<label wire:click="toggleSelectedActive(' . $user->id . ')" class="badge badge-pill bg-danger cursor-pointer">Inactive</label>';
+                    return '<label wire:click="toggleSelectedActive(' . $user->id . ')" class="cursor-pointer badge badge-pill bg-danger">Inactive</label>';
                 } else {
-                    return '<label wire:click="toggleSelectedInactive(' . $user->id . ')" class="badge badge-pill bg-success cursor-pointer">Active</label>';
+                    return '<label wire:click="toggleSelectedInactive(' . $user->id . ')" class="cursor-pointer badge badge-pill bg-success">Active</label>';
                 }
             });
         // ->addColumn('created_at_formatted', fn (User $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'))
@@ -653,7 +660,7 @@ final class UsersDataTable extends PowerGridComponent
             // ->when(fn ($dish) => $dish->in_stock == false)
             // ->hide(),
 
-            Column::make('USER TYPE', 'getUserType.type')
+            Column::make('ROLE NAME', 'name')
                 ->searchable(),
 
             Column::make('STATUS', 'is_active')

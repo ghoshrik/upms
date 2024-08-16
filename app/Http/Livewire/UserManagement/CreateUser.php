@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\UserManagement;
 
+use App\Models\Role;
 use App\Models\User;
 use App\Models\Group;
 use App\Models\Office;
@@ -94,11 +95,18 @@ class CreateUser extends Component
             'email' => '',
             'group_id' => '',
             'office_id' => '',
+            'role_id' => ''
             // 'is_active' => 1,
         ];
-        if (Auth::user()->user_type == 2) {
-            // $this->getDropdownData('DEPT');
+        // dd(Auth::user()->hasRole('State Admin'));
+        if (Auth::user()->hasRole('State Admin')) {
+            $this->getDropdownData('DEPT');
             $this->getDropdownData('DES');
+            $this->getDropdownData('Roles');
+            // $this->getDropdownData('Groups');
+        }elseif(Auth::user()->hasRole('Department Admin')){
+            $this->getDropdownData('DES');
+            $this->getDropdownData('Roles');
             $this->getDropdownData('Groups');
         }
         if (Auth::user()->user_type == 3) {
@@ -126,7 +134,15 @@ class CreateUser extends Component
                 $this->dropDownData['level'] = true;
             }elseif($lookingFor === 'Groups'){
                 $this->dropDownData['groups'] = Group::all();
-                $this->dropDownData['offices'] = [];
+                // $this->dropDownData['offices'] = [];
+            }elseif($lookingFor === 'Roles'){
+                if(Auth::user()->hasRole('State Admin')){
+                    $this->dropDownData['roles'] = Role::where('id',6)->get();
+                }elseif(Auth::user()->hasRole('Department Admin')){
+                    $this->dropDownData['roles'] = Role::where('name','Office Admin')->get();
+                }else{
+
+                }
             } else {
                 // $this->allUserTypes = UserType::where('parent_id', Auth::user()->user_type)->get();
             }
@@ -159,11 +175,11 @@ class CreateUser extends Component
         try {
 
             unset($this->newUserData['confirm_password']);
-            $userType = UserType::where('parent_id', Auth::user()->user_type)->first();
-            if (isset($userType)) {
-                $this->newUserData['user_type'] = $userType['id'];
-                $this->newUserData['department_id'] = (Auth::user()->user_type == 2) ? $this->newUserData['department_id'] : Auth::user()->department_id;
-                $this->newUserData['designation_id'] = ($this->newUserData['designation_id'] == '') ? Auth::user()->designation_id : $this->newUserData['designation_id'];
+            // $userType = UserType::where('parent_id', Auth::user()->user_type)->first();
+            if ($this->newUserData['role_id'] != '') {
+                // $this->newUserData['user_type'] = $userType['id'];
+                $this->newUserData['department_id'] = (Auth::user()->department_id != '' && Auth::user()->department_id != 0) ? Auth::user()->department_id : $this->newUserData['department_id'];
+                $this->newUserData['designation_id'] = $this->newUserData['designation_id'];
                 $this->newUserData['office_id'] = ($this->newUserData['office_id'] == '') ? Auth::user()->office_id : $this->newUserData['office_id'];
                 $this->newUserData['email'] = $this->newUserData['email'];
                 $this->newUserData['mobile'] = $this->newUserData['mobile'];
@@ -172,18 +188,25 @@ class CreateUser extends Component
                 $newUserDetails = User::create($this->newUserData);
                 // $newUserDetails = true;
                 if ($newUserDetails) {
-                    if (Auth::user()->user_type != 4) {
-                        $assignRoleDetails = $newUserDetails->syncRoles([$userType->type]);
-                        UsersHasRoles::create([
-                            'user_id' => $assignRoleDetails->id,
-                            'role_id' => $assignRoleDetails->roles[0]->id
-                        ]);
-                        // dd($newUserDetails,Auth::user()->user_type,$userType->type);
-                    }
                     $this->notification()->success(
                         $title = 'Success',
                         $description =  trans('cruds.user-management.create_msg')
                     );
+                    $role_name = Role::where('id',$this->newUserData['role_id'])->first();
+                    // if (Auth::user()->user_type != 4) {
+                        $assignRoleDetails = $newUserDetails->syncRoles([$role_name->name]);
+                        if($assignRoleDetails){
+                            $this->notification()->success(
+                                $title = 'Success',
+                                $description =  $role_name->name .' Role Assigned'
+                            );
+                        }
+                        // UsersHasRoles::create([
+                        //     'user_id' => $assignRoleDetails->id,
+                        //     'role_id' => $assignRoleDetails->roles[0]->id
+                        // ]);
+                        // dd($newUserDetails,Auth::user()->user_type,$userType->type);
+                    // }
                     $this->reset();
                     $this->emit('openEntryForm');
                     return;
@@ -194,7 +217,7 @@ class CreateUser extends Component
                 $description = 'Something went wrong.'
             );
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+            // dd($th->getMessage());
             $this->emit('showError', $th->getMessage());
         }
     }

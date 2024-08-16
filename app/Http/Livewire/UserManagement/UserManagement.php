@@ -3,8 +3,8 @@
 namespace App\Http\Livewire\UserManagement;
 
 use App\Models\User;
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
 class UserManagement extends Component
 {
@@ -13,7 +13,6 @@ class UserManagement extends Component
     protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'refreshCSRFToken' => '$refresh'];
     public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel;
     public $activeTab, $tabs = [];
-
 
     public function mount()
     {
@@ -30,65 +29,70 @@ class UserManagement extends Component
         // }
         // $i++;
         /*$this->tabs = [
-            [
+        [
 
-                    'title' => 'Departments Users',
-                    'id' => 'department',
-                    'data' => 3,
+        'title' => 'Departments Users',
+        'id' => 'department',
+        'data' => 3,
 
-            ],
+        ],
 
-            [
-                'title' => 'Office Admin Users',
-                'id' => 'office-admin',
-                'data' => 4,
-            ],
-            [
-                'title' => 'Office Users',
-                'id' => 'office-user',
-                'data' => 6,
-            ]
+        [
+        'title' => 'Office Admin Users',
+        'id' => 'office-admin',
+        'data' => 4,
+        ],
+        [
+        'title' => 'Office Users',
+        'id' => 'office-user',
+        'data' => 6,
+        ]
         ];*/
-        if(Auth::user()->user_type==1)
-        {
+        if (Auth::user()->user_type == 1) {
             $this->tabs[] =
                 [
 
-                    'title' => 'State Users',
-                    'id' => 'state',
-                    'data' => 1,
+                'title' => 'State Users',
+                'id' => 'state',
+                'data' => 1,
 
-                ];
+            ];
         }
-        if(Auth::user()->user_type==2 || Auth::user()->user_type==1)
-        {
-            $this->tabs[] =
+        if (Auth::user()->user_type == 2 || Auth::user()->user_type == 1) {
+            $this->tabs = [
                 [
+
+                    'title' => 'Departments Admin',
+                    'id' => 'department-admin',
+                    'data' => 6,
+
+                ], [
 
                     'title' => 'Departments Users',
                     'id' => 'department',
                     'data' => 2,
 
-                ];
+                ],
+            ];
         }
         // else if(Auth::user()->user_type==3)
         // {
 
-            $this->tabs[]=
+        $this->tabs[] =
             [
-                'title' => 'Office Admin Users',
-                'id' => 'office-admin',
-                'data' => 3,
-            ];
+            'title' => 'Office Admin Users',
+            'id' => 'office-admin',
+            'data' => 3,
+        ];
         // }
         // else{
 
-            $this->tabs[]=
+        $this->tabs[] =
             [
-                'title' => 'Office Users',
-                'id' => 'office-user',
-                'data' => 4,
-            ];
+            'title' => 'Office Users',
+            'id' => 'office-user',
+            'data' => 4,
+        ];
 
         // }*/
 
