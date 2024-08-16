@@ -45,6 +45,17 @@ class Group extends Component
     {
         $this->errorMessage = $errorMessage;
     }
+    public function deleteRow($id)
+    {
+        $group = ModelGroup::find($id);
+
+        if ($group) {
+            $group->delete();
+            $this->notification()->success("Deleted successfully!");
+        }
+    }
+
+
     public function render()
     {
         $this->updateDataTableTracker = rand(1, 1000);
