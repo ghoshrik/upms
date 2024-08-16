@@ -5,12 +5,15 @@ namespace App\Http\Livewire\Report;
 use Livewire\Component;
 use App\Models\SorMaster;
 use App\Models\DynamicSorHeader;
+use Illuminate\Support\Facades\DB;
+use App\Models\SanctionLimitMaster;
+use App\Models\Department;
 
 class MisReport extends Component
 {
     public $titel, $errorMessage, $subTitel = "List";
     protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert'];
-    public $projectDtls = [], $sorMasters = [];
+    public $projectDtls = [], $sorMasters = [] ,$departments=[] ,$SanctionLimitMasterdetails=[];
 
 
     public function setErrorAlert($errorMessage)
@@ -25,16 +28,30 @@ class MisReport extends Component
             ->join('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
             ->orWhere('estimate_prepares.operation', '=', 'Total')
             ->get();
-        // dd($this->projectDtls);
-
-
         $this->sorMasters = DynamicSorHeader::DepartmentWiseSorReports()->get();
-        // dd($this->sorMasters);
+
+
+
+        $this->departments = SanctionLimitMaster::select('department_id', 'departments.department_name', DB::raw('count(*) as sanction_limit_count'))
+        ->join('departments', 'sanction_limit_masters.department_id', '=', 'departments.id')
+        ->groupBy('department_id', 'departments.department_name')
+        ->get();
+
+
+        // $this->SanctionLimitMasterdetails = SanctionLimitMaster::select('*')
+        // ->join('departments', 'sanction_limit_masters.department_id', '=', 'departments.id')
+        // ->where('sanction_limit_masters.department_id', $this->departments['department_id'])
+        // ->get();
+
+        //  dd( $this->departments);
     }
     public function render()
     {
+        
         $assets = ['chart', 'animation'];
         $this->titel = 'Mis Reports';
+       
+
         return view('livewire.report.mis-report', compact('assets'));
     }
 }

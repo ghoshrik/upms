@@ -94,6 +94,11 @@
                         type="button" role="tab" aria-controls="profile-tab-pane"
                         aria-selected="false">Estimates</button>
                 </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#sanction-tab-pane"
+                        type="button" role="tab" aria-controls="sanction-tab-pane"
+                        aria-selected="false">Sanction Limit</button>
+                </li>
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab"
@@ -189,6 +194,66 @@
                         </x-slot>
                     </x-cards>
                 </div>
+                <div class="tab-pane fade" id="sanction-tab-pane" role="tabpanel" aria-labelledby="sanction-tab" tabindex="0">
+                    <x-cards title="">
+                        <x-slot name="table">
+                            <div class="table-responsive mt-4">
+                                <table id="basic-table" class="table table-striped mb-0" role="grid">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">SlNo</th>
+                                            <th scope="col">Department Name</th>
+                                            <th scope="col">Sanction Limits</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($departments as $department)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $department->department_name }}</td>
+                                            <td>{{ $department->sanction_limit_count }}</td> <!-- Sanction limit count here -->
+                                            <td>
+                                                <!-- Button to toggle accordion -->
+                                                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $loop->iteration }}" aria-expanded="false" aria-controls="collapse{{ $loop->iteration }}">
+                                                    View
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <!-- Accordion collapse -->
+                                        <tr>
+                                            <td colspan="4">
+                                                <div class="collapse" id="collapse{{ $loop->iteration }}">
+                                                    <div class="card card-body">
+                                                        <div class="table-responsive mt-4">
+                                                            <table class="table table-striped mb-0" role="grid">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th scope="col">ID</th>
+                                                                        <th scope="col">Min Amount</th>
+                                                                        <th scope="col">Max Amount</th>
+                                                                        <th scope="col">Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                   
+                                                                  
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div> 
+                        </x-slot>
+                    </x-cards>
+                </div>
+                
+                
             </div>
         </div>
     </div>

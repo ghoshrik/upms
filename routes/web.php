@@ -44,12 +44,13 @@ use App\Http\Livewire\RateAnalysis\RateAnalysis;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\MenuManagement\MenuManagement;
+use App\Http\Livewire\MisReport\Users\UserMisReport;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\EstimateProject\EstimateProject;
-use App\Http\Livewire\AbstructCosts\AbstructCostsLists;
 
 
 // Packages
+use App\Http\Livewire\AbstructCosts\AbstructCostsLists;
 use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
 use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
 use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
@@ -80,6 +81,10 @@ require __DIR__ . '/auth.php';
 
 // Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
 // Route::get('otp-send/{id}', [HomeController::class, 'otpView'])->name('auth.otp');
+
+
+
+Route::get('usermisreport',UserMisReport::class)->name('usermisreport');
 
 Route::get('/', [AuthController::class, 'showLoginPage'])->name('auth.signin');
 Route::post('userlogin', [AuthController::class, 'Userlogin'])->name('auth.login');
