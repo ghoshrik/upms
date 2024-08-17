@@ -30,7 +30,7 @@ class CreateOffice extends Component
             'urban_code' => '',
             'ward_code' => '',
             'level'=>'',
-            'group_id' => ''
+            'group_id' => Auth::user()->group_id,
         ];
         $this->officeData = [
             'office_address' => '',

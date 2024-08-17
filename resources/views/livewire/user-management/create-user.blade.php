@@ -81,10 +81,13 @@
                             </div> --}}
                         @endisset
                         @isset($dropDownData['groups'])
+                        @php
+                            $onSelect = (!Auth::user()->hasRole('Department Admin')) ?  '$wire.getGroupOffices()' : ''; 
+                        @endphp
                             <div class="col-md-4 col-lg-4 col-sm-4">
                                 <div class="form-group">
                                     <x-select label="Groups" placeholder="Select Group"
-                                        wire:model.defer="newUserData.group_id" x-on:select="$wire.getGroupOffices()">
+                                        wire:model.defer="newUserData.group_id" x-on:select="{{ $onSelect }}">
                                         @foreach ($dropDownData['groups'] as $group)
                                             <x-select.option label="{{ $group['group_name'] }}"
                                                 value="{{ $group['id'] }}" />

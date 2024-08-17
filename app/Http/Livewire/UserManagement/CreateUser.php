@@ -2,19 +2,18 @@
 
 namespace App\Http\Livewire\UserManagement;
 
-use App\Models\Role;
-use App\Models\User;
+use App\Models\Department;
+use App\Models\Designation;
 use App\Models\Group;
 use App\Models\Office;
-use Livewire\Component;
-use App\Models\UserType;
-use App\Models\Department;
-use WireUi\Traits\Actions;
-use App\Models\Designation;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Support\Arr;
-use App\Models\UsersHasRoles;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class CreateUser extends Component
 {
@@ -66,15 +65,15 @@ class CreateUser extends Component
             ]]);
         }
 
-        if (Auth::user()->user_type == 3) {
-            $this->rules = Arr::collapse([$this->rules, [
-                'newUserData.office_id' => 'required|integer',
-                'selectLevel' => 'required',
-            ]]);
-            // dd("asdsad");
-        }
+        // if (Auth::user()->user_type == 3) {
+        //     $this->rules = Arr::collapse([$this->rules, [
+        //         'newUserData.office_id' => 'required|integer',
+        //         'selectLevel' => 'required',
+        //     ]]);
+        //     // dd("asdsad");
+        // }
         if (Auth::user()->user_type == 4) {
-            $this->rules =  Arr::collapse([$this->rules, [
+            $this->rules = Arr::collapse([$this->rules, [
                 'newUserData.designation_id' => 'required|integer',
             ]]);
         }
@@ -94,8 +93,7 @@ class CreateUser extends Component
             'mobile' => '',
             'email' => '',
             'group_id' => '',
-            'office_id' => '',
-            'role_id' => ''
+            'role_id' => '',
             // 'is_active' => 1,
         ];
         // dd(Auth::user()->hasRole('State Admin'));
@@ -104,18 +102,27 @@ class CreateUser extends Component
             $this->getDropdownData('DES');
             $this->getDropdownData('Roles');
             // $this->getDropdownData('Groups');
-        }elseif(Auth::user()->hasRole('Department Admin')){
+        } elseif (Auth::user()->hasRole('Department Admin')) {
             $this->getDropdownData('DES');
             $this->getDropdownData('Roles');
             $this->getDropdownData('Groups');
-        }
-        if (Auth::user()->user_type == 3) {
-            $this->getDropdownData('LEVEL');
+        } elseif (Auth::user()->hasRole('Group Admin')) {
             $this->getDropdownData('DES');
-        }
-        if (Auth::user()->user_type == 4) {
+            $this->getDropdownData('Roles');
+            $this->getDropdownData('OFC');
+        }elseif (Auth::user()->hasRole('Office Admin')) {
             $this->getDropdownData('DES');
+            $this->getDropdownData('Roles');
+            $this->getDropdownData('OFC');
         }
+        // if (Auth::user()->user_type == 3) {
+        //     $this->getDropdownData('LEVEL');
+        //     $this->getDropdownData('DES');
+        // }
+        // if (Auth::user()->user_type == 4) {
+        //     $this->getDropdownData('DES');
+        // }
+        // dd($this->dropDownData,Auth::user()->user_type);
     }
     public function getDropdownData($lookingFor)
     {
@@ -132,16 +139,28 @@ class CreateUser extends Component
                 }
             } elseif ($lookingFor === 'LEVEL') {
                 $this->dropDownData['level'] = true;
-            }elseif($lookingFor === 'Groups'){
-                $this->dropDownData['groups'] = Group::all();
-                // $this->dropDownData['offices'] = [];
-            }elseif($lookingFor === 'Roles'){
-                if(Auth::user()->hasRole('State Admin')){
-                    $this->dropDownData['roles'] = Role::where('id',6)->get();
-                }elseif(Auth::user()->hasRole('Department Admin')){
-                    $this->dropDownData['roles'] = Role::where('name','Office Admin')->get();
-                }else{
-
+            } elseif ($lookingFor === 'Groups') {
+                $department = Department::find(Auth::user()->department_id);
+                $this->dropDownData['groups'] = $department->groups;
+                if (!Auth::user()->hasRole('Department Admin')) {
+                    $this->dropDownData['offices'] = [];
+                }
+            } elseif ($lookingFor === 'Roles') {
+                if (Auth::user()->hasRole('State Admin')) {
+                    $this->dropDownData['roles'] = Role::where('id', 6)->get();
+                } elseif (Auth::user()->hasRole('Department Admin')) {
+                    $this->dropDownData['roles'] = Role::where('name', 'Group Admin')->get();
+                } elseif(Auth::user()->hasRole('Group Admin')) {
+                    $this->dropDownData['roles'] = Role::whereIn('name',['Office Admin'])->get();
+                } elseif(Auth::user()->hasRole('Office Admin')) {
+                    $this->dropDownData['roles'] = Role::whereIn('name',['Chief Engineer','Superintending Engineer','Executive Engineer','Assistant Engineer','Junior Engineer'])->get();
+                }
+            }elseif($lookingFor === 'OFC'){
+                $group = Group::where('id',Auth::user()->group_id)->first();
+                $this->newUserData['group_id'] = $group->id;
+                $this->dropDownData['offices'] = $group->offices;
+                if(Auth::user()->hasRole('Office Admin')){
+                    $this->newUserData['office_id'] = Auth::user()->resources->first()->resource_id;
                 }
             } else {
                 // $this->allUserTypes = UserType::where('parent_id', Auth::user()->user_type)->get();
@@ -150,9 +169,10 @@ class CreateUser extends Component
             session()->flash('serverError', $th->getMessage());
         }
     }
-    public function getGroupOffices(){
-        if($this->newUserData['group_id'] != ''){
-            $group = Group::where('id',$this->newUserData['group_id'])->first();
+    public function getGroupOffices()
+    {
+        if ($this->newUserData['group_id'] != '') {
+            $group = Group::where('id', $this->newUserData['group_id'])->first();
             $this->dropDownData['offices'] = $group->offices;
         }
     }
@@ -169,55 +189,62 @@ class CreateUser extends Component
     public function store()
     {
 
-        // dd();
-        $this->validate();
         // dd($this->newUserData);
+        $this->validate();
+        DB::beginTransaction();
         try {
-
             unset($this->newUserData['confirm_password']);
             // $userType = UserType::where('parent_id', Auth::user()->user_type)->first();
             if ($this->newUserData['role_id'] != '') {
                 // $this->newUserData['user_type'] = $userType['id'];
                 $this->newUserData['department_id'] = (Auth::user()->department_id != '' && Auth::user()->department_id != 0) ? Auth::user()->department_id : $this->newUserData['department_id'];
                 $this->newUserData['designation_id'] = $this->newUserData['designation_id'];
-                $this->newUserData['office_id'] = ($this->newUserData['office_id'] == '') ? Auth::user()->office_id : $this->newUserData['office_id'];
+                // $this->newUserData['office_id'] = ($this->newUserData['office_id'] == '') ? Auth::user()->office_id : $this->newUserData['office_id'];
+                $this->newUserData['office_id'] = ($this->newUserData['office_id'] == '') ? 0 : $this->newUserData['office_id'];
+                $this->newUserData['group_id'] = ($this->newUserData['group_id'] == '') ? 0 : $this->newUserData['group_id'];
                 $this->newUserData['email'] = $this->newUserData['email'];
                 $this->newUserData['mobile'] = $this->newUserData['mobile'];
-                // $this->newUserData['password'] = Hash::make($this->newUserData['password']);
                 $this->newUserData['password'] = Hash::make($this->newUserData['password']);
                 $newUserDetails = User::create($this->newUserData);
-                // $newUserDetails = true;
                 if ($newUserDetails) {
                     $this->notification()->success(
                         $title = 'Success',
-                        $description =  trans('cruds.user-management.create_msg')
+                        $description = trans('cruds.user-management.create_msg')
                     );
-                    $role_name = Role::where('id',$this->newUserData['role_id'])->first();
+                    if($this->newUserData['office_id'] != '' && $this->newUserData['office_id'] != 0){
+                        $newUserDetails->resources()->create([
+                            'resource_id' => $this->newUserData['office_id'],
+                            'resource_type' => 'App\Models\Office',
+                        ]);
+                    }
+                    $role_name = Role::where('id', $this->newUserData['role_id'])->first();
                     // if (Auth::user()->user_type != 4) {
-                        $assignRoleDetails = $newUserDetails->syncRoles([$role_name->name]);
-                        if($assignRoleDetails){
-                            $this->notification()->success(
-                                $title = 'Success',
-                                $description =  $role_name->name .' Role Assigned'
-                            );
-                        }
-                        // UsersHasRoles::create([
-                        //     'user_id' => $assignRoleDetails->id,
-                        //     'role_id' => $assignRoleDetails->roles[0]->id
-                        // ]);
-                        // dd($newUserDetails,Auth::user()->user_type,$userType->type);
+                    $assignRoleDetails = $newUserDetails->syncRoles([$role_name->name]);
+                    if ($assignRoleDetails) {
+                        $this->notification()->success(
+                            $title = 'Success',
+                            $description = $role_name->name . ' Role Assigned'
+                        );
+                    }
+                    // UsersHasRoles::create([
+                    //     'user_id' => $assignRoleDetails->id,
+                    //     'role_id' => $assignRoleDetails->roles[0]->id
+                    // ]);
+                    // dd($newUserDetails,Auth::user()->user_type,$userType->type);
                     // }
+                    DB::commit();
                     $this->reset();
                     $this->emit('openEntryForm');
                     return;
                 }
             }
+        } catch (\Throwable $th) {
+            // dd($th->getMessage());
+            DB::rollBack();
             $this->notification()->error(
                 $title = 'Error !!!',
                 $description = 'Something went wrong.'
             );
-        } catch (\Throwable $th) {
-            // dd($th->getMessage());
             $this->emit('showError', $th->getMessage());
         }
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\UserManagement;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -58,41 +59,62 @@ class UserManagement extends Component
 
             ];
         }
-        if (Auth::user()->user_type == 2 || Auth::user()->user_type == 1) {
+        if (Auth::user()->hasRole('State Admin')) {
             $this->tabs = [
                 [
-
-                    'title' => 'Departments Admin',
+                    'title' => 'Department Admin Users',
                     'id' => 'department-admin',
-                    'data' => 6,
+                    'data' => Role::where('name', 'Department Admin')->first()->id,
 
-                ], [
+                ], 
+                // [
+                //     'title' => 'Departments Users',
+                //     'id' => 'department',
+                //     'data' => 2,
 
-                    'title' => 'Departments Users',
-                    'id' => 'department',
-                    'data' => 2,
-
-                ],
+                // ],
             ];
+        } elseif (Auth::user()->hasRole('Department Admin')) {
+            $this->tabs[] = [
+                'title' => 'Group Admin Users',
+                'id' => 'group-admin',
+                'data' => Role::where('name', 'Group Admin')->first()->id,
+            ];
+        } elseif (Auth::user()->hasRole('Group Admin')) {
+            $this->tabs[] = [
+                'title' => 'Office Admin Users',
+                'id' => 'office-admin',
+                'data' => Role::where('name', 'Office Admin')->first()->id,
+            ];
+        } elseif (Auth::user()->hasRole('Office Admin')) {
+            $roles = Role::whereIn('name', ['Chief Engineer', 'Superintending Engineer', 'Executive Engineer', 'Assistant Engineer', 'Junior Engineer'])->select('id', 'name')->get();
+            foreach ($roles as $key => $role) {
+                $this->tabs[] = [
+                    'title' => $role['name'].' Users',
+                    'id' => 'office-user'.$key,
+                    // 'data' => array_values($roles),
+                    'data' => $role['id'],
+                ];
+            }
         }
         // else if(Auth::user()->user_type==3)
         // {
 
-        $this->tabs[] =
-            [
-            'title' => 'Office Admin Users',
-            'id' => 'office-admin',
-            'data' => 3,
-        ];
+        // $this->tabs[] =
+        //     [
+        //     'title' => 'Office Admin Users',
+        //     'id' => 'office-admin',
+        //     'data' => 3,
+        // ];
         // }
         // else{
 
-        $this->tabs[] =
-            [
-            'title' => 'Office Users',
-            'id' => 'office-user',
-            'data' => 4,
-        ];
+        // $this->tabs[] =
+        //     [
+        //     'title' => 'Office Users',
+        //     'id' => 'office-user',
+        //     'data' => 4,
+        // ];
 
         // }*/
 

@@ -227,7 +227,7 @@ final class OfficeTable extends PowerGridComponent
                 'office_code',
                 'group_id',
                 DB::raw('ROW_NUMBER() OVER (ORDER BY offices.id) as serial_no')
-            )->where('group_id','!=',null);
+            )->where('group_id',Auth::user()->group_id);
             // ->where('offices.department_id', Auth::user()->department_id);
     }
 

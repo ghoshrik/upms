@@ -77,11 +77,11 @@ require __DIR__ . '/auth.php';
 //     $user = User::where('id',$user)->first();
 //     $user->syncRoles("Department Admin");
 // });
-// Route::get('remove-role',function(){
-//     $user = User::where('id',593)->first();
-//     $user->removeRole('State Admin');
-//     $user->syncRoles("State Admin");
-// });
+Route::get('remove-role',function(){
+    $user = User::where('id',11746)->first();
+    $user->removeRole('Department Admin');
+    $user->syncRoles("Department Admin");
+});
 // Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
 // Route::get('otp-send/{id}', [HomeController::class, 'otpView'])->name('auth.otp');
 
@@ -123,7 +123,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
             Route::get('mis-report', MisReport::class)->name('mis-report');
         });
-        Route::group(['middleware' => ['role:State Admin|Department Admin|Office Admin']], function () {
+        Route::group(['middleware' => ['role:State Admin|Department Admin|Office Admin|Group Admin']], function () {
             Route::get('user-management', UserManagement::class)->name('user-management');
             Route::get('office', Office::class)->name('office');
         });

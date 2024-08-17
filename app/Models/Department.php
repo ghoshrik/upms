@@ -21,4 +21,8 @@ class Department extends Model
     {
         return $this->hasMany(DepartmentCategory::class);
     }
+    public function groups() : HasMany
+    {
+        return $this->hasMany(Group::class);
+    }
 }

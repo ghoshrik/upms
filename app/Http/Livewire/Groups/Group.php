@@ -2,9 +2,10 @@
 
 namespace App\Http\Livewire\Groups;
 
-use App\Models\Group as ModelGroup;
 use Livewire\Component;
 use WireUi\Traits\Actions;
+use App\Models\Group as ModelGroup;
+use Illuminate\Support\Facades\Auth;
 
 class Group extends Component
 {
@@ -60,7 +61,7 @@ class Group extends Component
     {
         $this->updateDataTableTracker = rand(1, 1000);
         $this->title = 'Department Groups';
-        $this->groupLists = ModelGroup::all();
+        $this->groupLists = ModelGroup::where('department_id',Auth::user()->department_id)->get();
         $assets = ['chart', 'animation'];
         return view('livewire.groups.group', ['groupLists' => $this->groupLists]);
     }
