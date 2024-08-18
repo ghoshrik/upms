@@ -23,9 +23,8 @@ class SorApprovers extends Component
     public function mount()
     {
         //$this->SorLists = SOR::where('department_id', '=', Auth::user()->department_id)->get();
-        $this->SorLists['sorApproverPendingCount'] = DynamicSorHeader::PendingSor();
-        $this->SorLists['sorApprovedCount'] = DynamicSorHeader::ApproveSor();
-        $this->SorLists['SORCounts'] = DynamicSorHeader::SorReportsDeptCategory()->get();
+        // $this->SorLists['sorApproverPendingCount'] = DynamicSorHeader::PendingSor();
+        // $this->SorLists['sorApprovedCount'] = DynamicSorHeader::ApproveSor();
 
         // $this->SorLists['sorTargetPage'] = DynamicSorHeader::DeptTargetPages();
 
@@ -35,7 +34,7 @@ class SorApprovers extends Component
         // dd($categoryCounts);
 
 
-        $this->SorLists['countsWithTable'] = DynamicSorHeader::getApprovedCounts(Auth::user()->department_id);
+        
         // dd($this->SorLists['countsWithTable']);
     }
 
@@ -47,8 +46,7 @@ class SorApprovers extends Component
     public function fromEntryControl($data = '')
     {
         $this->openedFormType = is_array($data) ? $data['formType'] : $data;
-        // $this->isFromOpen = !$this->isFromOpen;
-        // $this->isFromOpen = true;
+
         switch ($this->openedFormType) {
             case 'create':
                 $this->subTitel = 'Create';
@@ -62,9 +60,11 @@ class SorApprovers extends Component
                 $this->isFromOpen = false;
                 break;
         }
+
         if (isset($data['id'])) {
             $this->selectedIdForEdit = $data['id'];
         }
+
         $this->updateDataTableTracker = rand(1, 1000);
     }
     public function render()
@@ -73,6 +73,11 @@ class SorApprovers extends Component
         $this->updateDataTableTracker = rand(1, 1000);
         $this->titel = trans('cruds.sor-approver.title_singular');
         $assets = ['chart', 'animation'];
+        $this->SorLists['sorApproverPendingCount'] = DynamicSorHeader::PendingSor();
+        $this->SorLists['sorApprovedCount'] = DynamicSorHeader::ApproveSor();
+        $this->SorLists['sorCount'] = DynamicSorHeader::PendingSor();
+        $this->SorLists['SORCounts'] = DynamicSorHeader::SorReportsDeptCategory()->get();
+        $this->SorLists['countsWithTable'] = DynamicSorHeader::getApprovedCounts(Auth::user()->department_id);
         return view('livewire.sorapprove.sor-approvers', compact('assets'));
     }
 }

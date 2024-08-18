@@ -2,7 +2,7 @@
     <div class="card">
         <div class="card-body">
             <div class="row">
-                <div class="col-md-6 col-lg-6 col-sm-6 mb-2">
+                <div class="col mb-2">
                     {{-- <x-input label="Table No*" placeholder="Table No" name="table_no" wire:model.defer="table_no" readonly /> --}}
                     <label for="Table/Chapter No" class="">Table/Chapter No</label>
                     @if ($fetchData['approver'] == '555' || $fetchData['approver'] == '99')
@@ -11,7 +11,7 @@
                     <input type="text" class="form-control" placeholder="Table/Chapter No" id="tbl_cptr_no"
                         wire:model.defer="table_no" disabled />
                 </div>
-                <div class="col-md-6 col-lg-6 col-sm-6 mb-2">
+                <div class="col mb-2">
                     {{-- <x-input label="Table Title" placeholder="Table Title" wire:model.defer="tbl_title" readonly /> --}}
                     <label for="Table/Chapter Title" class="">Table/Chapter Title</label>
                     @if ($fetchData['approver'] == '555' || $fetchData['approver'] == '99')
@@ -20,9 +20,19 @@
                     <input type="text" class="form-control" placeholder="Table/Chapter Title"
                         wire:model.defer="tbl_title" id="tbl_cpter_title" disabled />
                 </div>
+                @if (!empty($corrigenda_name))
+                    <div class="col mb-2">
+                        <label for="Corrigenda Name" class="">Corrigenda Name</label>
+                        @if ($fetchData['approver'] == '555' || $fetchData['approver'] == '99')
+                            <span id="tblTitleedit" class="editbtnlink">Edit</span>
+                        @endif
+                        <input type="text" class="form-control" placeholder="Corrigenda Name"
+                            wire:model.defer="corrigenda_name" id="tbl_corrigenda_name" disabled />
+                    </div>
+                @endif
                 {{-- Only water resource department (subtitle) --}}
                 @if (Auth::user()->department_id === 57)
-                    <div class="col-md-4 col-lg-12 col-sm-3 mb-2">
+                    <div class="col mb-2">
                         <div class="form-group">
                             <label for="Table/Chapter No">Sub Title </label>
                             <span id="subTitleedit" class="editbtnlink">Edit</span>
@@ -30,6 +40,8 @@
                         </div>
                     </div>
                 @endif
+            </div>
+            <div class="row">
                 {{-- Only water resource department (subtitle) --}}
                 <div class="col-md-3 col-lg-3 col-sm-3 mb-2 mt-2">
                     <x-select label="Select Department Category" placeholder="Select Category"
