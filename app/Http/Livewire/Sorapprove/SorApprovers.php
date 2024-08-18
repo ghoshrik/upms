@@ -23,8 +23,8 @@ class SorApprovers extends Component
     public function mount()
     {
         //$this->SorLists = SOR::where('department_id', '=', Auth::user()->department_id)->get();
-        $this->SorLists['sorApproverPendingCount'] = DynamicSorHeader::PendingSor();
-        $this->SorLists['sorApprovedCount'] = DynamicSorHeader::ApproveSor();
+        // $this->SorLists['sorApproverPendingCount'] = DynamicSorHeader::PendingSor();
+        // $this->SorLists['sorApprovedCount'] = DynamicSorHeader::ApproveSor();
 
         // $this->SorLists['sorTargetPage'] = DynamicSorHeader::DeptTargetPages();
 
@@ -73,6 +73,9 @@ class SorApprovers extends Component
         $this->updateDataTableTracker = rand(1, 1000);
         $this->titel = trans('cruds.sor-approver.title_singular');
         $assets = ['chart', 'animation'];
+        $this->SorLists['sorApproverPendingCount'] = DynamicSorHeader::PendingSor();
+        $this->SorLists['sorApprovedCount'] = DynamicSorHeader::ApproveSor();
+        $this->SorLists['sorCount'] = DynamicSorHeader::PendingSor();
         $this->SorLists['SORCounts'] = DynamicSorHeader::SorReportsDeptCategory()->get();
         $this->SorLists['countsWithTable'] = DynamicSorHeader::getApprovedCounts(Auth::user()->department_id);
         return view('livewire.sorapprove.sor-approvers', compact('assets'));
