@@ -62,11 +62,10 @@ class UserManagement extends Component
         if (Auth::user()->hasRole('State Admin')) {
             $this->tabs = [
                 [
-                    'title' => 'Department Admin Users',
+                    'title' => 'Department Admin\'s',
                     'id' => 'department-admin',
                     'data' => Role::where('name', 'Department Admin')->first()->id,
-
-                ], 
+                ],
                 // [
                 //     'title' => 'Departments Users',
                 //     'id' => 'department',
@@ -75,14 +74,18 @@ class UserManagement extends Component
                 // ],
             ];
         } elseif (Auth::user()->hasRole('Department Admin')) {
-            $this->tabs[] = [
-                'title' => 'Group Admin Users',
-                'id' => 'group-admin',
-                'data' => Role::where('name', 'Group Admin')->first()->id,
-            ];
+            $roles = Role::whereIn('name', ['Group Admin', 'SOR Preparer'])->orderBy('name')->select('id', 'name')->get();
+            foreach ($roles as $key => $role) {
+                $this->tabs[] = [
+                    'title' => $role['name'] . '\'s',
+                    'id' => 'office-user' . $key,
+                    // 'data' => array_values($roles),
+                    'data' => $role['id'],
+                ];
+            }
         } elseif (Auth::user()->hasRole('Group Admin')) {
             $this->tabs[] = [
-                'title' => 'Office Admin Users',
+                'title' => 'Office Admin\'s',
                 'id' => 'office-admin',
                 'data' => Role::where('name', 'Office Admin')->first()->id,
             ];
@@ -90,8 +93,8 @@ class UserManagement extends Component
             $roles = Role::whereIn('name', ['Chief Engineer', 'Superintending Engineer', 'Executive Engineer', 'Assistant Engineer', 'Junior Engineer'])->select('id', 'name')->get();
             foreach ($roles as $key => $role) {
                 $this->tabs[] = [
-                    'title' => $role['name'].' Users',
-                    'id' => 'office-user'.$key,
+                    'title' => $role['name'] . '\'s',
+                    'id' => 'office-user' . $key,
                     // 'data' => array_values($roles),
                     'data' => $role['id'],
                 ];

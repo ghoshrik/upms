@@ -39,6 +39,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'office_id',
         'user_type',
         'is_active',
+        'dept_category_id',
         'group_id'
     ];
 

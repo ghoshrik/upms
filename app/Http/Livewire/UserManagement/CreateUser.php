@@ -25,9 +25,9 @@ class CreateUser extends Component
         // 'newUserData.emp_id'=>'required|numeric'
         'newUserData.username' => 'required|unique:users,username',
         'newUserData.emp_name' => 'required|string',
-
+        'newUserData.designation_id' => 'required|integer',
         'newUserData.mobile' => 'required|numeric|min:10|unique:users,mobile',
-
+        'newUserData.role_id' => 'required|integer'
     ];
     protected $messages = [
         'newUserData.email.required' => 'Email Field is required',
@@ -55,11 +55,13 @@ class CreateUser extends Component
         'selectLevel.required' => 'The Office level must be required',
         'newUserData.designation_id.required' => 'The designation must be required',
         'newUserData.designation_id.integer' => 'data mismatch',
+        'newUserData.role_id.required' => 'Please Select Role.',
+        'newUserData.role_id.integer' => 'Please Select Role.',
     ];
 
     public function booted()
     {
-        if (Auth::user()->user_type == 2) {
+        if (Auth::user()->hasRole('State Admin')) {
             $this->rules = Arr::collapse([$this->rules, [
                 'newUserData.department_id' => 'required|integer',
             ]]);
@@ -72,11 +74,11 @@ class CreateUser extends Component
         //     ]]);
         //     // dd("asdsad");
         // }
-        if (Auth::user()->user_type == 4) {
-            $this->rules = Arr::collapse([$this->rules, [
-                'newUserData.designation_id' => 'required|integer',
-            ]]);
-        }
+        // if (Auth::user()->user_type == 4) {
+        //     $this->rules = Arr::collapse([$this->rules, [
+        //         'newUserData.designation_id' => 'required|integer',
+        //     ]]);
+        // }
     }
 
     public function mount()
@@ -94,6 +96,7 @@ class CreateUser extends Component
             'email' => '',
             'group_id' => '',
             'role_id' => '',
+            'dept_category_id'=> '',
             // 'is_active' => 1,
         ];
         // dd(Auth::user()->hasRole('State Admin'));
@@ -149,7 +152,8 @@ class CreateUser extends Component
                 if (Auth::user()->hasRole('State Admin')) {
                     $this->dropDownData['roles'] = Role::where('id', 6)->get();
                 } elseif (Auth::user()->hasRole('Department Admin')) {
-                    $this->dropDownData['roles'] = Role::where('name', 'Group Admin')->get();
+                    // $this->dropDownData['roles'] = Role::where('name', 'Group Admin')->get();
+                    $this->dropDownData['roles'] = Role::whereIn('name', ['Group Admin','SOR Preparer'])->orderBy('name')->get();
                 } elseif(Auth::user()->hasRole('Group Admin')) {
                     $this->dropDownData['roles'] = Role::whereIn('name',['Office Admin'])->get();
                 } elseif(Auth::user()->hasRole('Office Admin')) {
@@ -188,7 +192,6 @@ class CreateUser extends Component
     }
     public function store()
     {
-
         // dd($this->newUserData);
         $this->validate();
         DB::beginTransaction();
@@ -202,6 +205,7 @@ class CreateUser extends Component
                 // $this->newUserData['office_id'] = ($this->newUserData['office_id'] == '') ? Auth::user()->office_id : $this->newUserData['office_id'];
                 $this->newUserData['office_id'] = ($this->newUserData['office_id'] == '') ? 0 : $this->newUserData['office_id'];
                 $this->newUserData['group_id'] = ($this->newUserData['group_id'] == '') ? 0 : $this->newUserData['group_id'];
+                $this->newUserData['dept_category_id'] = ($this->newUserData['dept_category_id'] != 0) ? Group::where('id',Auth::user()->group_id)->first()->id : $this->newUserData['dept_category_id'];
                 $this->newUserData['email'] = $this->newUserData['email'];
                 $this->newUserData['mobile'] = $this->newUserData['mobile'];
                 $this->newUserData['password'] = Hash::make($this->newUserData['password']);

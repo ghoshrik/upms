@@ -478,7 +478,8 @@ final class UsersDataTable extends PowerGridComponent
             return $query->where('model_has_roles.role_id', $this->userData);
         } elseif (Auth::user()->hasRole('Department Admin')) {
             return $query->where('model_has_roles.role_id', $this->userData)
-                         ->where('users.department_id', Auth::user()->department_id);
+                         ->where('users.department_id', Auth::user()->department_id)
+                         ->where([['users.group_id','!=',null],['users.group_id','!=',0]]);
         } elseif(Auth::user()->hasRole('Group Admin')){
             return $query->where('model_has_roles.role_id', $this->userData)
                          ->where('users.department_id',Auth::user()->department_id)

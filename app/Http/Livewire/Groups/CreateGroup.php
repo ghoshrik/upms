@@ -8,6 +8,7 @@ use App\Models\Department;
 use WireUi\Traits\Actions;
 use App\Models\DepartmentCategory;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 class CreateGroup extends Component
@@ -43,10 +44,18 @@ class CreateGroup extends Component
                 $this->getDeptCategory();
             }
         }
-    
-        $this->fetchDropdownData['departments'] = Cache::remember('allDept', now()->addMinutes(720), function () {
-            return Department::select('id', 'department_name')->get();
-        });
+        $allDept = Cache::get('allDept');
+        if ($allDept != '') {
+            $this->fetchDropdownData['departments'] = $allDept;
+        } else {
+            $this->fetchDropdownData['departments'] = Cache::remember('allDept', now()->addMinutes(720), function () {
+                return Department::select('id', 'department_name')->get();
+            });
+        }
+        if(Auth::user()->department_id != '' && Auth::user()->department_id != 0){
+            $this->department_id = Auth::user()->department_id;
+            $this->getDeptCategory();
+        }
     }
     
 
@@ -57,14 +66,11 @@ class CreateGroup extends Component
             $categories = DepartmentCategory::select('id', 'dept_category_name')
                 ->where('department_id', '=', $this->department_id)
                 ->get();
-    
-            
             if ($categories->isEmpty()) {
                 logger('No categories found for department ID: ' . $this->department_id);
             } else {
                 logger('Categories found: ' . $categories->count());
             }
-    
             return $categories;
         });
     }

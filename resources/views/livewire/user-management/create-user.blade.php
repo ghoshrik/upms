@@ -9,7 +9,7 @@
                     <div class="row">
                         <div class="col-md-4 col-lg-4 col-sm-3">
                             <div class="form-group">
-                                <x-input wire:model.lazy="newUserData.ehrms_id"
+                                <x-input wire:model.defer="newUserData.ehrms_id"
                                     label="{{ trans('cruds.user-management.fields.ehrms_id') }}"
                                     placeholder="{{ trans('cruds.user-management.fields.ehrms_id') }}" />
                             </div>
@@ -30,14 +30,14 @@
                         </div>
                         <div class="col-md-4 col-lg-4 col-sm-4">
                             <div class="form-group">
-                                <x-input wire:model.lazy="newUserData.email"
+                                <x-input wire:model.defer="newUserData.email"
                                     label="{{ trans('cruds.user-management.fields.email_id') }}"
                                     placeholder="Enter Employee {{ trans('cruds.user-management.fields.email_id') }} " />
                             </div>
                         </div>
                         <div class="col-md-4 col-lg-4 col-sm-4">
                             <div class="form-group">
-                                <x-input wire:model.lazy="newUserData.mobile"
+                                <x-input wire:model.defer="newUserData.mobile"
                                     label="{{ trans('cruds.user-management.fields.mobile') }}"
                                     placeholder="Enter Employee {{ trans('cruds.user-management.fields.mobile') }}" />
                             </div>
@@ -97,10 +97,13 @@
                             </div>
                         @endisset
                         @isset($dropDownData['offices'])
+                        @php
+                            $officeDisable = ($newUserData['office_id'] != '' && $newUserData['office_id'] != 0) ? true : false;
+                        @endphp
                             <div class="col-md-4 col-lg-4 col-sm-4">
                                 <div class="form-group">
                                     <x-select label="{{ trans('cruds.user-management.fields.office_name') }}"
-                                        placeholder="Select Office" wire:model.defer="newUserData.office_id">
+                                        placeholder="Select Office" wire:model.defer="newUserData.office_id" :disabled="$officeDisable">
                                         @foreach ($dropDownData['offices'] as $office)
                                             <x-select.option label="{{ $office['office_name'] }}"
                                                 value="{{ $office['id'] }}" />
@@ -138,7 +141,7 @@
                         @endisset
                         <div class="col-md-4 col-lg-4 col-sm-4">
                             <div class="form-group">
-                                <x-input wire:model.lazy="newUserData.password" type="password" label="Password"
+                                <x-input wire:model.defer="newUserData.password" type="password" label="Password"
                                     placeholder="Enter Password" />
                             </div>
                         </div>

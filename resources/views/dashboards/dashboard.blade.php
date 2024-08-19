@@ -1,5 +1,5 @@
 <x-app-layout :assets="$assets ?? []">
-    <div class="conatiner-fluid content-inner py-0 mt-5">
+    <div class="conatiner-fluid content-inner py-0 ">
         <div class="iq-navbar-header" style="height: 124px;">
             <div class="container-fluid iq-container">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
@@ -22,15 +22,15 @@
                 }
 
                 /* .icon {
-                                                                                                                                                                                                                                                                                width: 50px;
-                                                                                                                                                                                                                                                                                height: 50px;
-                                                                                                                                                                                                                                                                                background-color: #eee;
-                                                                                                                                                                                                                                                                                border-radius: 15px;
-                                                                                                                                                                                                                                                                                display: flex;
-                                                                                                                                                                                                                                                                                align-items: center;
-                                                                                                                                                                                                                                                                                justify-content: center;
-                                                                                                                                                                                                                                                                                font-size: 39px
-                                                                                                                                                                                                                                                                            } */
+                    width: 50px;
+                    height: 50px;
+                    background-color: #eee;
+                    border-radius: 15px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 39px
+                } */
 
                 .badge span {
                     background-color: #fffbec;
@@ -298,29 +298,30 @@
                     box-shadow: 4px 4px 15px rgba(26, 35, 126, 0.2);
                 }
             </style>
-        </div>
-        <div class="row">
-            @foreach ($deptSorCategory as $category)
-                <div class="col-md-3 col-sm-6">
-                    <div class="card" data-label="{{ $category->dept_category_name }}">
-                        <div class="card__container">
-                            <div class="card-body">
-                                <strong> Schedule of Rate </strong>Target Pages :
-                                {{ $category->target_pages }} </br>Total Pages Entired :
-                                {{ $category->category_count }} </br>
 
-                                <strong> Corrigenda & Addendam </strong>Pages Entired :
-                                {{ $category->corrigenda_count }} </br>
+            @if (Auth::user()->hasRole('Department Admin'))
+                <div class="row">
+                    @foreach ($deptSorCategory as $category)
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card" data-label="{{ $category->dept_category_name }}">
+                                <div class="card__container">
+                                    <div class="card-body">
+                                        <strong> Schedule of Rate </strong>Target Pages :
+                                        {{ $category->target_pages }} </br>Total Pages Entired :
+                                        {{ $category->category_count }} </br>
 
-                                <strong> Total Approved :</strong>
-                                {{ $category->pending_approval_count }} </br>
+                                        <strong> Corrigenda & Addendam </strong>Pages Entired :
+                                        {{ $category->corrigenda_count }} </br>
 
-                                <strong> Total Verified :</strong>
-                                {{ $category->verified_count }} </br>
+                                        <strong> Total Approved :</strong>
+                                        {{ $category->pending_approval_count }} </br>
+
+                                        <strong> Total Verified :</strong>
+                                        {{ $category->verified_count }} </br>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    {{-- <div class="counter">
+                            {{-- <div class="counter">
                         <div class="counter-content">
                             <span class="counter-value"> <strong> Schedule of Rate </strong>Target Pages :
                                 {{ $category->target_pages }} ,Complete
@@ -337,11 +338,11 @@
                             </span>
                         </div>
                     </div> --}}
-                </div>
-            @endforeach
+                        </div>
+                    @endforeach
 
 
-            {{-- @foreach ($deptSorCategory as $category)
+                    {{-- @foreach ($deptSorCategory as $category)
                 <div class="col-md-3 col-sm-6">
                     <div class="counter">
                         <div class="counter-content">
@@ -365,7 +366,7 @@
                 </div>
             @endforeach
             <h3>Corrigenda & Addenda</h3> --}}
-            {{-- @foreach ($deptSorCorrigendaCategory as $corrigenda)
+                    {{-- @foreach ($deptSorCorrigendaCategory as $corrigenda)
                 <div class="col-md-3 col-sm-6">
                     <div class="counter">
                         <div class="counter-content">
@@ -379,6 +380,8 @@
                     </div>
                 </div>
             @endforeach --}}
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>
