@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Designation;
 use App\Models\Department;
+use App\Models\Designation;
 use Spatie\MediaLibrary\HasMedia;
 use App\Traits\HasPermissionsTrait;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -98,5 +99,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getAccessType()
     {
         return $this->hasMany(AccessMaster::class);
+    }
+    public function resources(): HasMany
+    {
+        return $this->hasMany(UserResource::class);
     }
 }
