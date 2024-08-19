@@ -1,10 +1,13 @@
+
+
+
 <div>
     {{-- If you look to others for fulfillment, you will never truly be fulfilled. --}}
     @section('webtitle')
         {{ __('Mis Reports') }}
     @endsection
 
-    <div class="conatiner-fluid content-inner py-0">
+    <div class="py-0 conatiner-fluid content-inner">
         <div class="iq-navbar-header" style="height: 124px;">
             @if ($errorMessage != null)
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -13,13 +16,13 @@
                 </div>
             @endif
             <div class="container-fluid iq-container">
-                <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
+                <div class="flex-wrap gap-3 mb-4 d-flex justify-content-between align-items-center">
                     <div class="d-flex flex-column">
                         <h3 class="text-dark">{{ $titel }}</h3>
-                        <p class="text-primary mb-0">{{ $subTitel }}</p>
+                        <p class="mb-0 text-primary">{{ $subTitel }}</p>
                     </div>
                     {{-- @canany(['create mis-report'])
-                        <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
+                        <div class="flex-wrap gap-3 rounded d-flex justify-content-between align-items-center">
                             @if (!$isFromOpen)
                                 <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
                                     x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
@@ -54,20 +57,20 @@
                     background: none !important;
                 }
 
-                .table>th,
+                .table>
                 .table>td {
                     border: 1px solid #000;
                     padding: 8px;
                 }
 
-                .table>thead>tr {
+                /* .table>thead>tr {
                     border-bottom: 1px solid black;
-                }
+                } */
 
-                .table>thead>tr>th:nth-last-child(-n+4) {
+                /* .table>thead>tr>th:nth-last-child(-n+4) {
                     border-bottom: 4px solid black;
                     /* or any other border style you prefer */
-                }
+                } */
 
 
                 .table>thead>tr:first-child {
@@ -112,7 +115,7 @@
                     role="tabpanel" aria-labelledby="home-tab" tabindex="0">
                     <div class="card">
                         <div class="card-body">
-                            <div class="table-left-bordered table-responsive mt-4">
+                            <div class="mt-4 table-left-bordered table-responsive">
                                 <table class="table mb-0" role="grid">
                                     <thead class="thead">
                                         <tr class="bg-white">
@@ -159,8 +162,8 @@
                     id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
                     <x-cards title="">
                         <x-slot name="table">
-                            {{-- <div class="table-responsive mt-4">
-                                <table id="basic-table" class="table table-striped mb-0" role="grid">
+                            {{-- <div class="mt-4 table-responsive">
+                                <table id="basic-table" class="table mb-0 table-striped" role="grid">
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
@@ -205,8 +208,8 @@
                     id="sanction-tab-pane" role="tabpanel" aria-labelledby="sanction-tab" tabindex="0">
                     <x-cards title="">
                         <x-slot name="table">
-                            <div class="table-responsive mt-4">
-                                <table id="basic-table" class="table table-striped mb-0" role="grid">
+                            <div class="mt-4 table-responsive">
+                                <table id="basic-table" class="table mb-0 table-striped" role="grid">
                                     <thead>
                                         <tr>
                                             <th scope="col">SlNo</th>
@@ -238,8 +241,8 @@
                                                 <td colspan="4">
                                                     <div class="collapse" id="collapse{{ $loop->iteration }}">
                                                         <div class="card card-body">
-                                                            <div class="table-responsive mt-4">
-                                                                <table class="table table-striped mb-0"
+                                                            <div class="mt-4 table-responsive">
+                                                                <table class="table mb-0 table-striped"
                                                                     role="grid">
                                                                     <thead>
                                                                         <tr>
@@ -299,49 +302,52 @@
             </div>
             <div class="offcanvas-body">
                 <div class="row">
-                    <div class="col-12 text-2xl font-semibold mb-5">
+                    <div class="mb-2 text-2xl font-semibold col-12">
                         Department : {{ $sanctionLimitRowDetails->department_name }}
                     </div>
-                    <div class="col-12 text-2xl font-semibold mb-5">
+                    <div class="mb-2 text-2xl font-semibold col-12">
                         Minimum Value : {{ $sanctionLimitRowDetails->min_amount }}
                     </div>
-                    <div class="col-12 text-2xl font-semibold mb-5">
+                    <div class="mb-4 text-2xl font-semibold col-12">
                         Maximum Value : {{ $sanctionLimitRowDetails->max_amount }}
                     </div>
                 </div>
-                <div class="table-responsive mt-2">
-                    <table id="basic-table" class="table table-striped mb-0" role="grid">
+                <div class="mt-2 table-responsive">
+                    <table id="basic-table" class="table mb-0 table-striped table-bordered" role="grid">
                         <thead>
                             <tr>
-                                <th>Sequense</th>
+                                <th>SLno</th>
+                                <th>Sequence</th>
                                 <th class="text-center">Role</th>
                                 <th>Permission</th>
-                                <th>Action</th>
+                                {{-- <th>Action</th> --}}
                             </tr>
                         </thead>
-                         <tbody>
-                            @forelse ($sanction_roles as $item)
+                        <tbody>
+                            @forelse ($sanction_roles as $index => $item)
                                 <tr>
+                                    <td>{{ $index + 1 }}</td>
                                     <td>{{ $item['sequence_no'] }}</td>
-                                    <td>{{ $item->role->name }}</td>
-                                     <td>{{ $permissions->get($item->permission->name) }}</td>
-                                    <td><button wire:click="confDeleteDialogRolePermission({{ $item['id'] }})"
-                                        type="button" class="btn btn-soft-danger btn-sm">
-                                        <span class="btn-inner">
-                                            <x-lucide-trash-2 class="w-4 h-4 text-gray-500" />
-                                        </span>
-                                    </button></td>
+                                    <td class="text-center">{{ $item->role->name }}</td>
+                                    <td>{{ $permissions->get($item->permission->name) }}</td>
+                                    {{-- <td>
+                                        <button wire:click="confDeleteDialogRolePermission({{ $item['id'] }})"
+                                            type="button" class="btn btn-soft-danger btn-sm">
+                                            <span class="btn-inner">
+                                                <x-lucide-trash-2 class="w-4 h-4 text-gray-500" />
+                                            </span>
+                                        </button>
+                                    </td> --}}
                                 </tr>
                             @empty
                                 <tr>
-                                    <th colspan="4">
-                                        No Roles Attchaed to this Sanction
-                                    </th>
+                                    <td colspan="4" class="text-center">No Roles Attached to this Sanction</td>
                                 </tr>
                             @endforelse
-
                         </tbody>
                     </table>
+
+
                 </div>
             </div>
         </div>
