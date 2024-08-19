@@ -9,9 +9,13 @@
                     <div class="row">
                         <div class="col">
                             <div class="form-group">
+                                @php
+                                    $departmentCondition = (Auth::user()->department_id != '' && Auth::user()->department_id != 0) ? '' : '$wire.getDeptCategory()';
+                                    $deptDisable = ($departmentCondition == '') ? true : false;
+                                @endphp
                                 <x-select wire:key="dept" label="{{ trans('cruds.estimate.fields.dept') }}"
                                     placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
-                                    wire:model.defer="department_id" x-on:select="$wire.getDeptCategory()">
+                                    wire:model.defer="department_id" x-on:select="{{ $departmentCondition }}" :disabled="$deptDisable">
                                     @isset($fetchDropdownData['departments'])
                                         @foreach ($fetchDropdownData['departments'] as $department)
                                             <x-select.option label="{{ $department['department_name'] }}"

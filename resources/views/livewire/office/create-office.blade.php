@@ -7,7 +7,7 @@
                 </div>
                 <div wire:loading.delay.longest.class="loading" class="card-body">
                     <div class="row">
-                        <div class="col-md-12 col-sm-6 col-lg-12">
+                        <div class="col-md-6 col-sm-6 col-lg-6">
                             <div class="form-group">
                                 <x-input label="{{ trans('cruds.office.fields.office_name') }}"
                                     placeholder="{{ trans('cruds.office.fields.office_name') }}"
@@ -33,7 +33,7 @@
                                 ]"
                                 option-label="name" option-value="id" wire:model.defer="selectedOption.level" />
                         </div> --}}
-                        <div class="col-md-6 col-lg-6 col-sm-6">
+                        {{-- <div class="col-md-6 col-lg-6 col-sm-6">
                             <div class="form-group">
                                 <x-select wire:key="group" label="Groups" placeholder="Select Group"
                                     wire:model.defer="selectedOption.group_id">
@@ -45,7 +45,7 @@
                                     @endisset
                                 </x-select>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-md-6 col-sm-3 col-lg-6">
                             <div class="form-group">
                                 <x-select wire:key="district"

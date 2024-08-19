@@ -29,4 +29,8 @@ class Group extends Model
     {
         return $this->hasMany(Office::class);
     }
+    public function department() : BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
 }

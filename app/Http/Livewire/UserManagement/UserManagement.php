@@ -2,9 +2,10 @@
 
 namespace App\Http\Livewire\UserManagement;
 
+use App\Models\Role;
 use App\Models\User;
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
 class UserManagement extends Component
 {
@@ -13,7 +14,6 @@ class UserManagement extends Component
     protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'refreshCSRFToken' => '$refresh'];
     public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel;
     public $activeTab, $tabs = [];
-
 
     public function mount()
     {
@@ -30,65 +30,94 @@ class UserManagement extends Component
         // }
         // $i++;
         /*$this->tabs = [
-            [
+        [
 
-                    'title' => 'Departments Users',
-                    'id' => 'department',
-                    'data' => 3,
+        'title' => 'Departments Users',
+        'id' => 'department',
+        'data' => 3,
 
-            ],
+        ],
 
-            [
-                'title' => 'Office Admin Users',
-                'id' => 'office-admin',
-                'data' => 4,
-            ],
-            [
-                'title' => 'Office Users',
-                'id' => 'office-user',
-                'data' => 6,
-            ]
+        [
+        'title' => 'Office Admin Users',
+        'id' => 'office-admin',
+        'data' => 4,
+        ],
+        [
+        'title' => 'Office Users',
+        'id' => 'office-user',
+        'data' => 6,
+        ]
         ];*/
-        if(Auth::user()->user_type==1)
-        {
+        if (Auth::user()->user_type == 1) {
             $this->tabs[] =
                 [
 
-                    'title' => 'State Users',
-                    'id' => 'state',
-                    'data' => 1,
+                'title' => 'State Users',
+                'id' => 'state',
+                'data' => 1,
 
-                ];
+            ];
         }
-        if(Auth::user()->user_type==2 || Auth::user()->user_type==1)
-        {
-            $this->tabs[] =
+        if (Auth::user()->hasRole('State Admin')) {
+            $this->tabs = [
                 [
+                    'title' => 'Department Admin\'s',
+                    'id' => 'department-admin',
+                    'data' => Role::where('name', 'Department Admin')->first()->id,
+                ],
+                // [
+                //     'title' => 'Departments Users',
+                //     'id' => 'department',
+                //     'data' => 2,
 
-                    'title' => 'Departments Users',
-                    'id' => 'department',
-                    'data' => 2,
-
+                // ],
+            ];
+        } elseif (Auth::user()->hasRole('Department Admin')) {
+            $roles = Role::whereIn('name', ['Group Admin', 'SOR Preparer'])->orderBy('name')->select('id', 'name')->get();
+            foreach ($roles as $key => $role) {
+                $this->tabs[] = [
+                    'title' => $role['name'] . '\'s',
+                    'id' => 'office-user' . $key,
+                    // 'data' => array_values($roles),
+                    'data' => $role['id'],
                 ];
+            }
+        } elseif (Auth::user()->hasRole('Group Admin')) {
+            $this->tabs[] = [
+                'title' => 'Office Admin\'s',
+                'id' => 'office-admin',
+                'data' => Role::where('name', 'Office Admin')->first()->id,
+            ];
+        } elseif (Auth::user()->hasRole('Office Admin')) {
+            $roles = Role::whereIn('name', ['Chief Engineer', 'Superintending Engineer', 'Executive Engineer', 'Assistant Engineer', 'Junior Engineer'])->select('id', 'name')->get();
+            foreach ($roles as $key => $role) {
+                $this->tabs[] = [
+                    'title' => $role['name'] . '\'s',
+                    'id' => 'office-user' . $key,
+                    // 'data' => array_values($roles),
+                    'data' => $role['id'],
+                ];
+            }
         }
         // else if(Auth::user()->user_type==3)
         // {
 
-            $this->tabs[]=
-            [
-                'title' => 'Office Admin Users',
-                'id' => 'office-admin',
-                'data' => 3,
-            ];
+        // $this->tabs[] =
+        //     [
+        //     'title' => 'Office Admin Users',
+        //     'id' => 'office-admin',
+        //     'data' => 3,
+        // ];
         // }
         // else{
 
-            $this->tabs[]=
-            [
-                'title' => 'Office Users',
-                'id' => 'office-user',
-                'data' => 4,
-            ];
+        // $this->tabs[] =
+        //     [
+        //     'title' => 'Office Users',
+        //     'id' => 'office-user',
+        //     'data' => 4,
+        // ];
 
         // }*/
 
