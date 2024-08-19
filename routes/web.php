@@ -123,7 +123,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         /*Route::group(['middleware' => ['role:Super Admin|SOR Preparer']], function () {
         Route::get('dynamic-sor', DynamicSor::class)->name('dynamic-sor');
         });*/
-
+        Route::group(['middleware' => ['role:State Admin|Department Admin|Group Admin|Office Admin']], function () {
+            Route::get('user-management', UserManagement::class)->name('user-management');
+        });
         //state Admin
         Route::group(['middleware' => ['role:State Admin']], function () {
             Route::get('department', Department::class)->name("department");
@@ -131,13 +133,13 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('unit-master', UnitsMaster::class)->name('unit-master');
             Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
             Route::get('mis-report', MisReport::class)->name('mis-report');
-            Route::get('user-management', UserManagement::class)->name('user-management');
+            // Route::get('user-management', UserManagement::class)->name('user-management');
         });
 
         //Department Admin
         Route::group(['middleware' => ['role:Department Admin']], function () {
             Route::get('groups', Group::class)->name('groups');
-            Route::get('user-management', UserManagement::class)->name('user-management');
+            // Route::get('user-management', UserManagement::class)->name('user-management');
             Route::get('estimate-limit-sanction', EstimateSanctionMaster::class)->name('estimate-limit-sanction');
             // Route::get('office', Office::class)->name('office');
             Route::get('assign-office-admin', AssignOfficeAdmin::class)->name('assign-office-admin');
@@ -149,13 +151,13 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         //group Admin
         Route::group(['middleware' => ['role:Group Admin']], function () {
-            Route::get('user-management', UserManagement::class)->name('user-management');
+            // Route::get('user-management', UserManagement::class)->name('user-management');
             Route::get('office', Office::class)->name('office');
         });
 
         //Office Admin
         Route::group(['middleware' => ['role:Office Admin']], function () {
-            Route::get('user-management', UserManagement::class)->name('user-management');
+            // Route::get('user-management', UserManagement::class)->name('user-management');
             Route::get('assign-role', AssignRole::class)->name('assign-role');
             Route::get('milestones', Milestones::class)->name('milestones');
             Route::get('vendors', VendorList::class)->name('vendors');
@@ -225,12 +227,11 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('quantity-evaluation', QuantityEvaluation::class)->name('quantity-evaluation');
         //Route::get('carriage-cost',CarriageCosts::class)->name('carriage-cost');
         // Route::get('aafs-project',ProjectList::class)->name('aafs-project');
-        Route::get('roles', Roles::class)->name('roles');
-        Route::get('permissions', Permission::class)->name('permissions');
+        // Route::get('roles', Roles::class)->name('roles');
+        // Route::get('permissions', Permission::class)->name('permissions');
         //Route::get('import',Imports::class)->name('import');
         Route::get('roles', Roles::class)->name('roles');
         Route::get('permissions', Permission::class)->name('permissions');
-
         // Route::get('vendors',VendorList::class)->name('vendors');
 
         // Route::get('aafs-project', AafsProjects::class)->name('aafs-project');
