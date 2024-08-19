@@ -88,7 +88,7 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link {{ $activeTab === 'home-tab' ? 'active' : '' }}" id="home-tab"
                         data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab"
-                        aria-controls="home-tab-pane" aria-selected="true">SOR Master</button>
+                        aria-controls="home-tab-pane" aria-selected="true">Schedule of Rates</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link {{ $activeTab === 'profile-tab' ? 'active' : '' }}" id="profile-tab"
@@ -99,6 +99,11 @@
                     <button class="nav-link {{ $activeTab === 'sanction-tab' ? 'active' : '' }}" id="sanction-tab"
                         data-bs-toggle="tab" data-bs-target="#sanction-tab-pane" type="button" role="tab"
                         aria-controls="sanction-tab-pane" aria-selected="false">Sanction Limit</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {{ $activeTab === 'user-mis-tab' ? 'active' : '' }}" id="user-mis-tab"
+                        data-bs-toggle="tab" data-bs-target="#user-mis-tab-pane" type="button" role="tab"
+                        aria-controls="user-mis-tab-pane" aria-selected="false">Users</button>
                 </li>
             </ul>
 
@@ -275,6 +280,10 @@
                             </div>
                         </x-slot>
                     </x-cards>
+                </div>
+                <div class="tab-pane fade {{ $activeTab === 'user-mis-tab' ? 'show active' : '' }}"
+                    id="user-mis-tab-pane" role="tabpanel" aria-labelledby="user-mis-tab" tabindex="0">
+                    <livewire:mis-report.users.user-mis-report />
                 </div>
             </div>
         </div>

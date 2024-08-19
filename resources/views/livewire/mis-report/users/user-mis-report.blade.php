@@ -1,13 +1,13 @@
 <div>
-    <div class="py-0 mt-3 container-fluid content-inner">
-        <div style="height: 65px;">
+    {{-- <div class="py-0 mt-3 container-fluid content-inner"> --}}
+        {{-- <div style="height: 65px;">
             <div class="container-fluid iq-container">
                 <div class="d-flex flex-column">
                     <h3 class="text-dark  mt-3">MIS REPORT FOR USERS</h3>
                 </div>
             </div>
         </div>
-        @section('webtitle', trans('cruds.office.title'))
+        @section('webtitle', trans('cruds.office.title')) --}}
         <div wire:loading.delay.long>
             <div class="spinner-border text-primary loader-position" role="status"></div>
         </div>
@@ -95,7 +95,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    {{-- </div> --}}
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
