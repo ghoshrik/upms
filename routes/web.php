@@ -93,6 +93,10 @@ require __DIR__ . '/auth.php';
 // Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
 // Route::get('otp-send/{id}', [HomeController::class, 'otpView'])->name('auth.otp');
 
+
+
+Route::get('usermisreport',UserMisReport::class)->name('usermisreport');
+
 Route::get('/', [AuthController::class, 'showLoginPage'])->name('auth.signin');
 Route::post('userlogin', [AuthController::class, 'Userlogin'])->name('auth.login');
 Route::get('verify/{user_id}', [AuthController::class, 'verifyOTP'])->name('auth.verify');
