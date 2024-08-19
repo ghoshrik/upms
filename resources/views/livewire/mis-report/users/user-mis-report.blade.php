@@ -1,13 +1,41 @@
+<style>
+    .no-padding-container {
+    padding: 0 !important;
+}
+
+.no-padding-table {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.no-padding-card {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.no-padding-table-nested {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.table-responsive {
+    margin-top: 0 !important; /* Ensures the margin between card and nested table is minimal */
+}
+
+</style>
+
+
+
 <div>
-    {{-- <div class="py-0 mt-3 container-fluid content-inner"> --}}
-        {{-- <div style="height: 65px;">
+    <div class="py-0 mt-3 container-fluid content-inner">
+        <div style="height: 65px;">
             <div class="container-fluid iq-container">
                 <div class="d-flex flex-column">
-                    <h3 class="text-dark  mt-3">MIS REPORT FOR USERS</h3>
+                    <h3 class="mt-3 text-dark">MIS REPORT FOR USERS</h3>
                 </div>
             </div>
         </div>
-        @section('webtitle', trans('cruds.office.title')) --}}
+        @section('webtitle', trans('cruds.office.title'))
         <div wire:loading.delay.long>
             <div class="spinner-border text-primary loader-position" role="status"></div>
         </div>
@@ -17,8 +45,8 @@
                     <div class="col-md-12 col-lg-12 col-sm-3">
                         <div class="card">
                             <div class="card-body">
-                                <div class="container my-5">
-                                    <table class="table text-center table-bordered">
+                                <div class="container my-2 no-padding-container">
+                                    <table class="table text-center table-bordered no-padding-table">
                                         <thead class="thead-dark">
                                             <tr>
                                                 <th>SlNo</th>
@@ -50,9 +78,9 @@
                                             <tr>
                                                 <td colspan="6">
                                                     <div class="collapse" id="collapse{{ $index }}">
-                                                        <div class="card card-body">
+                                                        <div class="card card-body no-padding-card">
                                                             <div class="mt-4 table-responsive">
-                                                                <table class="table mb-0 table-striped table-bordered"
+                                                                <table class="table mb-0 table-striped table-bordered no-padding-table-nested"
                                                                     role="grid">
                                                                     <thead>
                                                                         <tr>
@@ -89,13 +117,14 @@
                                         </tbody>
                                     </table>
                                 </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    {{-- </div> --}}
+    </div>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
