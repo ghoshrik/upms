@@ -2,16 +2,18 @@
 
 namespace App\Http\Livewire\Report;
 
+use App\Models\Role;
+use App\Models\User;
+use App\Models\Office;
 use Livewire\Component;
 use App\Models\SorMaster;
+use App\Models\Department;
+use WireUi\Traits\Actions;
+use App\Models\SanctionRole;
 use App\Models\DynamicSorHeader;
 use Illuminate\Support\Facades\DB;
 use App\Models\SanctionLimitMaster;
-use App\Models\Department;
-use App\Models\SanctionRole;
-use App\Models\Role;
 use Spatie\Permission\Models\Permission;
-use WireUi\Traits\Actions;
 
 class MisReport extends Component
 {
@@ -27,6 +29,7 @@ class MisReport extends Component
     public $permission_name;
     public $permissions = [];
 
+    public $departmentSummaryArray, $groupDetailArray;
     public function setErrorAlert($errorMessage)
     {
         $this->errorMessage = $errorMessage;
@@ -40,8 +43,58 @@ class MisReport extends Component
             'verify estimate' => 'Checker',
             'approve estimate' => 'Approver',
         ]);
+        $departmentSummary = Department::leftJoin('groups', 'departments.id', '=', 'groups.department_id')
+            ->leftJoin('offices', 'groups.id', '=', 'offices.group_id')
+            ->select(
+                'departments.id as department_id',
+                'departments.department_name',
+                'groups.id as group_id',
+                'groups.group_name'
+            )
+            ->selectRaw('COUNT(DISTINCT groups.id) as group_count')
+            ->selectRaw('COUNT(DISTINCT offices.id) as office_count')
+            ->groupBy(
+                'departments.id',
+                'departments.department_name',
+                'groups.id',
+                'groups.group_name'
+            )
+            ->havingRaw('COUNT(groups.id) > 0')
+            ->get();
+        $this->departmentSummaryArray = [];
+        $this->groupDetailArray = [];
+        foreach ($departmentSummary as $summary) {
+            $departmentId = $summary->department_id;
+            $groupId = $summary->group_id;
+            $officeCount = Office::where('department_id', $departmentId)
+                ->where('group_id', $groupId)
+                ->count();
+            $officeIds = Office::where('department_id', $departmentId)
+                ->where('group_id', $groupId)
+                ->pluck('id');
+            $userCount = User::where('department_id', $departmentId)
+                ->whereIn('office_id', $officeIds)
+                ->count();
+            if (!isset($this->departmentSummaryArray[$departmentId])) {
+                $this->departmentSummaryArray[$departmentId] = [
+                    'department_name' => $summary->department_name,
+                    'group_count' => 0,
+                    'office_count' => 0,
+                    'user_count' => 0,
+                ];
+            }
+            $this->departmentSummaryArray[$departmentId]['group_count'] += 1;
+            $this->departmentSummaryArray[$departmentId]['office_count'] += $officeCount;
+            $this->departmentSummaryArray[$departmentId]['user_count'] += $userCount;
+            $this->groupDetailArray[] = [
+                'department_name' => $summary->department_name,
+                'group_name' => $summary->group_name,
+                'total_office_count' => $officeCount,
+                'total_user_count' => $userCount,
+            ];
+        }
+        $this->departmentSummaryArray = array_values($this->departmentSummaryArray);
     }
-
 
     public function handleClick($id)
     {

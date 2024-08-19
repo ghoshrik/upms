@@ -16,7 +16,7 @@ class EstimateSanctionMasterCreate extends Component
     public function mount()
     {
         // $this->levels = Levels::where('id', '!=', 6)->get();
-        $this->roles = Role::where('has_level_no','!=',null)->where('has_level_no','!=',6)->orderBy('has_level_no')->get();
+        $this->roles = Role::whereIn('name',['Chief Engineer','Superintending Engineer','Executive Engineer','Assistant Engineer','Junior Engineer'])->get();
         $this->Inputs[] = [
             // 'level' => '',
             'role_id' => '',

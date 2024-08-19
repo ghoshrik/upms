@@ -3,18 +3,15 @@
 namespace App\Http\Livewire\DataTable;
 
 use App\Models\SorMaster;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\Exportable;
-use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 
 final class MisReport extends PowerGridComponent
@@ -27,7 +24,7 @@ final class MisReport extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Provides data to your Table using a Model or Collection
     |
-    */
+     */
 
     protected function getListeners()
     {
@@ -102,17 +99,7 @@ final class MisReport extends PowerGridComponent
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-    public function datasource(): ?Builder
+    public function datasource(): Builder
     {
         $res = SorMaster::query()
             ->select(
@@ -129,8 +116,10 @@ final class MisReport extends PowerGridComponent
             )
             ->join('estimate_statuses', 'sor_masters.status', '=', 'estimate_statuses.id')
             ->join('departments', 'sor_masters.dept_id', '=', 'departments.id')
-            ->join('estimate_prepares','estimate_prepares.estimate_id','=','sor_masters.estimate_id')
-            ->where('estimate_prepares.operation','=','Total');
+            ->join('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
+            ->where('estimate_prepares.operation', '=', 'Total')
+            ->where('sor_masters.status', 1)
+            ->orderBy('departments.department_name');
         return $res;
     }
 
@@ -140,7 +129,7 @@ final class MisReport extends PowerGridComponent
     |--------------------------------------------------------------------------
     | Configure here relationships to be used by the Search and Table Filters.
     |
-    */
+     */
     public function setUp(): array
     {
         $this->showCheckBox();
@@ -163,15 +152,15 @@ final class MisReport extends PowerGridComponent
     | Make Datasource fields available to be used as columns.
     | You can pass a closure to transform/modify the data.
     |
-    */
+     */
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
             ->addColumn('serial_no')
             ->addColumn('dept_name')
-            ->addColumn('dept_code')
+        // ->addColumn('dept_code')
             ->addColumn('estimate_id')
-            ->addColumn('estCurrStatus')
+        // ->addColumn('estCurrStatus')
             ->addColumn('sorMasterDesc')
             ->addColumn('total_amount');
     }
@@ -184,7 +173,7 @@ final class MisReport extends PowerGridComponent
     | Each column can be configured with properties, filters, actions...
     |
 
-    */
+     */
     /**
      * PowerGrid Columns.
      *
@@ -198,20 +187,21 @@ final class MisReport extends PowerGridComponent
                 ->sortable(),
 
             Column::make('Department Name', 'dept_name')
-                ->searchable()
-                ->makeInputText('departments.department_name')
-                ->sortable(),
-            Column::make('Department Code', 'dept_code')
-                ->searchable()
-                ->makeInputText('departments.department_code')
-                ->sortable(),
+                ->searchable(),
+            // ->makeInputText('departments.department_name'),
+            // Column::make('Department Code', 'dept_code')
+            //     ->searchable()
+            //     ->makeInputText('departments.department_code')
+            //     ->sortable(),
 
             Column::make('Estimate No.', 'estimate_id'),
-            Column::make('Status', 'estCurrStatus')
-                ->sortable(),
+            // Column::make('Status', 'estCurrStatus')
+            //     ->sortable(),
 
-            Column::make('Estimate Desc.', 'sorMasterDesc'),
-            Column::make('Total Amount.', 'total_amount')
+            Column::make('Description', 'sorMasterDesc')
+                ->headerAttribute('style', 'white-space: normal; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;')
+                ->bodyAttribute('style', 'white-space: normal; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;'),
+            Column::make('Total Amount.', 'total_amount'),
         ];
     }
 }
