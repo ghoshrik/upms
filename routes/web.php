@@ -25,6 +25,7 @@ use App\Http\Livewire\Aafs\AafsProjects;
 use App\Http\Livewire\UserType\UserType;
 use App\Http\Livewire\SorBook\DynamicSor;
 // use App\Http\Livewire\Permission\Permissions;
+use App\Http\Livewire\DeptGroups\DeptGroup;
 use App\Http\Livewire\Milestone\Milestones;
 use App\Http\Livewire\Setting\SettingLists;
 use App\Http\Livewire\AccessType\AccessType;
@@ -46,9 +47,9 @@ use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\MisReport\Users\UserMisReport;
 use App\Http\Livewire\UserManagement\UserManagement;
-use App\Http\Livewire\EstimateProject\EstimateProject;
 
 // Packages
+use App\Http\Livewire\EstimateProject\EstimateProject;
 use App\Http\Livewire\AbstructCosts\AbstructCostsLists;
 use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
 use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
@@ -141,6 +142,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         //Department Admin
         Route::group(['middleware' => ['role:Department Admin']], function () {
             Route::get('groups', Group::class)->name('groups');
+            Route::get('dept-groups',DeptGroup::class)->name('dept-groups');
             // Route::get('user-management', UserManagement::class)->name('user-management');
             Route::get('estimate-limit-sanction', EstimateSanctionMaster::class)->name('estimate-limit-sanction');
             // Route::get('office', Office::class)->name('office');

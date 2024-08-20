@@ -1,22 +1,19 @@
 <?php
 
-namespace App\Http\Livewire\Groups;
+namespace App\Http\Livewire\DeptGroups;
 
 use Livewire\Component;
 use WireUi\Traits\Actions;
 use App\Models\Group as ModelGroup;
 use Illuminate\Support\Facades\Auth;
 
-class Group extends Component
+class DeptGroup extends Component
 {
     use Actions;
     protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert'];
 
     public $openedFormType = false, $isFromOpen, $subTitle = "List", $selectedIdForEdit, $errorMessage, $title, $groupLists = [];
     public $updateDataTableTracker;
-    public function mount(){
-        $this->groupLists = ModelGroup::where('department_id',Auth::user()->department_id)->get();
-    }
     public function fromEntryControl($data = '')
     {
         $this->openedFormType = is_array($data) ? $data['formType'] : $data;
@@ -51,14 +48,12 @@ class Group extends Component
             $this->notification()->success("Deleted successfully!");
         }
     }
-
-
     public function render()
     {
         $this->updateDataTableTracker = rand(1, 1000);
         $this->title = 'Department Groups';
         $this->groupLists = ModelGroup::where('department_id',Auth::user()->department_id)->get();
         $assets = ['chart', 'animation'];
-        return view('livewire.groups.group', ['groupLists' => $this->groupLists]);
+        return view('livewire.dept-groups.dept-group',['groupLists' => $this->groupLists]);
     }
 }

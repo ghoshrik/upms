@@ -205,7 +205,7 @@ class CreateUser extends Component
                 // $this->newUserData['office_id'] = ($this->newUserData['office_id'] == '') ? Auth::user()->office_id : $this->newUserData['office_id'];
                 $this->newUserData['office_id'] = ($this->newUserData['office_id'] == '') ? 0 : $this->newUserData['office_id'];
                 $this->newUserData['group_id'] = ($this->newUserData['group_id'] == '') ? 0 : $this->newUserData['group_id'];
-                $this->newUserData['dept_category_id'] = ($this->newUserData['dept_category_id'] != 0) ? Group::where('id',Auth::user()->group_id)->first()->id : $this->newUserData['dept_category_id'];
+                $this->newUserData['dept_category_id'] = ($this->newUserData['group_id'] != 0 && $this->newUserData['group_id'] != '') ? Group::where('id',$this->newUserData['group_id'])->first()->id : 0;
                 $this->newUserData['email'] = $this->newUserData['email'];
                 $this->newUserData['mobile'] = $this->newUserData['mobile'];
                 $this->newUserData['password'] = Hash::make($this->newUserData['password']);
