@@ -142,7 +142,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         //Department Admin
         Route::group(['middleware' => ['role:Department Admin']], function () {
             Route::get('groups', Group::class)->name('groups');
-            Route::get('dept-groups',DeptGroup::class)->name('dept-groups');
+            Route::get('dept-groups', DeptGroup::class)->name('dept-groups');
             // Route::get('user-management', UserManagement::class)->name('user-management');
             Route::get('estimate-limit-sanction', EstimateSanctionMaster::class)->name('estimate-limit-sanction');
             // Route::get('office', Office::class)->name('office');
@@ -150,7 +150,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('sor-verifier', SorApprovers::class)->name('sor-verifier');
             Route::get('department-category', DepartmentCategoryList::class)->name('department-category');
             Route::post('sor-dept-verify', [ApiController::class, 'sorVerify'])->name('sor-dept-verify');
-            Route::post('sor_dept_revert', [ApiController::class, 'sorRevert'])->name('sor_dept_revert');
+            Route::post('sor-dept-revert', [ApiController::class, 'sorRevert'])->name('sor-dept-revert');
         });
 
         //group Admin

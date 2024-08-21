@@ -134,8 +134,8 @@
             <button id="VerifiedData" type="button"
                 class="btn btn-soft-success rounded btn-sm extUpdTable float-end ml-2 mr-1">Approve &
                 Verify</button>
-            <button id="RevertData" type="button" class="btn btn-soft-secondary rounded btn-sm float-end ml-2 mr-1"
-                disabled>Revert</button>
+            <button id="RevertData" type="button"
+                class="btn btn-soft-secondary rounded btn-sm float-end ml-2 mr-1">Revert</button>
         @endif
 
         <button id="pdfDownload" class="btn btn-secondary rounded btn-sm">
@@ -1225,7 +1225,7 @@
     if (SORApprove === "-11" && userType === 3 && SORVerifier === "-9") {
         const btnVerify = document.getElementById("VerifiedData");
         const revertData = document.getElementById("RevertData");
-
+        const token = document.head.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
         btnVerify.addEventListener('click', function() {
             btnVerify.style.disabled = true;
@@ -1244,9 +1244,7 @@
             console.log(resJson);
             if (result1.isValid && result2.isValid) {
                 // Both strings have valid JSON structure, now compare the parsed objects
-
                 const isEqual = compareJSON(result1.parsedJSON, result2.parsedJSON);
-
                 if (isEqual) {
                     jsonUpdateData = @json($row_data);
                     sorupdJson = 1;
@@ -1267,42 +1265,102 @@
             modalAction.textContent = 'Verify';
             // console.log("Verify");
         });
+
+
+        /*Revert data*/
+
         revertData.addEventListener('click', function() {
             revertData.style.disabled = true;
             $('#deleteModal').modal('show');
             const modelcontent = modal.querySelector('.modal-body');
             //console.log(modelcontent);
             const modeltitle = modal.querySelector('.modal-title');
-            modeltitle.remove();
+
+            modeltitle.remove() ?? '';
             let svgTag = modal.querySelector('#sucSvg');
             //console.log(svgTag);
             svgTag.remove();
-            let textArea = document.createElement("textarea");
-            let label = document.createElement("label");
-            textArea.style.borderColor = "grey";
-            textArea.id = "myTextarea";
-            textArea.classList.add("form-control");
-            textArea.rows = "4";
-            textArea.cols = "50";
-            textArea.placeholder = "short Description of Revert .... ";
-            textArea.style.color = "gray";
-            label.innerHTML = "Description :";
-            label.style.cssFloat = "left";
-            label.setAttribute("for", "myTextarea");
-            modelcontent.appendChild(textArea);
-            textArea.parentNode.insertBefore(label, textArea);
+            // let textArea = document.createElement("textarea");
+            // let label = document.createElement("label");
+            // textArea.style.borderColor = "grey";
+            // textArea.id = "myTextarea";
+            // textArea.classList.add("form-control");
+            // textArea.rows = "4";
+            // textArea.cols = "50";
+            // textArea.placeholder = "short Description of Revert .... ";
+            // textArea.style.color = "gray";
+            // label.innerHTML = "Description :";
+            // label.style.cssFloat = "left";
+            // label.setAttribute("for", "myTextarea");
+            // modelcontent.appendChild(textArea);
+            // textArea.parentNode.insertBefore(label, textArea);
+
+
+            let message = document.createElement("p");
+            message.innerHTML = '<strong>Do you really want to Revert these records ?</strong>';
+            modelcontent.appendChild(message);
+
             const modalAction = modal.querySelector('#btnModalAction');
             modalAction.classList.remove('btn-danger');
             modalAction.classList.add('btn-success', 'btn-sm', 'rounded');
             modalAction.textContent = 'Send';
             modalAction.id = "btnSendAction";
-            cancelverifymodel();
-            RevertSOR();
+            cancelRevertmodel();
+            // RevertSOR();
+            const revertSendBtn = document.getElementById('btnSendAction');
 
+            revertSendBtn.addEventListener('click', async function() {
+                revertSendBtn.disabled = true;
+                modal.querySelector('#model-cancel').disabled = true;
+                const apiUrl = "{{ route('sor-dept-revert') }}";
+                const params = {
+                    id: @json($selectedId),
+                    SelectedStatus: SORApprove
+                };
+                console.log(params);
+                const requestOptions = {
+                    method: 'POST',
+                    headers: {
+                        // Accept: 'application.json;',
+                        'Content-Type': 'application/json;charset=UTF-8',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify(params)
+                };
+                await fetch(apiUrl, requestOptions)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data.message);
+                        if (data.status === true) {
+                            $('#deleteModal').modal('hide');
+                            window.$wireui.notify({
+                                description: data.message,
+                                icon: 'success'
+                            });
+                            // setTimeout(function() {
+                            window.location.reload(true);
+                            // }, 120000);
+                        } else {
+                            window.$wireui.notify({
+                                description: data.message,
+                                icon: 'error'
+                            });
+                            // window.location.href = "{{ route('sor-dept-verify') }}";
+                            // setTimeout(function() {
+                            window.location.reload(true);
+                            // }, 120000);
+                        }
+                    })
+            });
         });
 
 
-        const token = document.head.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
         //sor Verifier
         async function SORverifier(jsonUpdateData, sorupdJson) {
             const btnApprove = modal.querySelector('#btnModalAction');
@@ -1369,7 +1427,16 @@
             const cancel = modal.querySelector('#model-cancel');
 
             cancel.addEventListener('click', function() {
+                cancel.style.display = "inline-block";
+                $('#deleteModal').modal('hide');
+            });
+        }
 
+        function cancelRevertmodel() {
+            const cancel = modal.querySelector('#model-cancel');
+            cancel.addEventListener('click', function() {
+                const modelcontent = modal.querySelector('.modal-body');
+                console.log(modelcontent);
                 cancel.style.display = "inline-block";
                 $('#deleteModal').modal('hide');
             });
@@ -1483,7 +1550,7 @@
                         .getFontSize() /
                         doc.internal.scaleFactor;
                     var centertextX = (pageSize.width - textWidth) / 2;
-                    // const 
+                    // const
                     doc.text(table_no, centertextX, 7);
 
                     var tableNoWidth = doc.getStringUnitWidth(title) * doc.internal
