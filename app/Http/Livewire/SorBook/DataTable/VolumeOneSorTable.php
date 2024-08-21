@@ -206,6 +206,10 @@ final class VolumeOneSorTable extends PowerGridComponent
      * @return array<int, Button>
      */
     public $canPermission;
+    public function shouldShowButton($model): bool
+    {
+        return $model->is_approve !== '-11';
+    }
     public function actions(): array
     {
         return [
@@ -213,7 +217,8 @@ final class VolumeOneSorTable extends PowerGridComponent
                 ->bladeComponent('view', ['id' => 'id']),
             Button::add('delete')
                 ->bladeComponent('delete-button', ['id' => 'id', 'message' => 'Delete', 'position' => 'top'])
-                ->can($this->canPermission)
+            // ->when(fn($dynamicSorHeader) => $this->shouldShowButton($dynamicSorHeader))
+
         ];
     }
     public function view($id)
@@ -240,16 +245,16 @@ final class VolumeOneSorTable extends PowerGridComponent
      * @return array<int, RuleActions>
      */
 
-    /*
+
     public function actionRules(): array
     {
-       return [
+        return [
 
-           //Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($dynamic-sor-header) => $dynamic-sor-header->id === 1)
+            //Hide button edit for ID 1
+            Rule::button('delete')
+                ->when(fn($dynamicSorHeader) => $dynamicSorHeader->is_approve === '-11')
+                ->bladeComponent('delete-button', ['id' => 'id', 'message' => 'Delete', 'position' => 'top'])
                 ->hide(),
         ];
     }
-    */
 }
