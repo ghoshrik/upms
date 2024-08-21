@@ -14,13 +14,13 @@
                                     placeholder="{{ trans('cruds.user-management.fields.ehrms_id') }}" />
                             </div>
                         </div>
-                        <div class="col-md-4 col-lg-4 col-sm-4">
+                        {{-- <div class="col-md-4 col-lg-4 col-sm-4">
                             <div class="form-group">
                                 <x-input wire:model.defer="newUserData.username"
                                     label="{{ trans('cruds.user-management.fields.username') }}"
                                     placeholder="{{ trans('cruds.user-management.fields.username') }}" />
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-md-4 col-lg-4 col-sm-4">
                             <div class="form-group">
                                 <x-input wire:model.defer="newUserData.emp_name"
@@ -82,7 +82,7 @@
                         @endisset
                         @isset($dropDownData['groups'])
                         @php
-                            $onSelect = (!Auth::user()->hasRole('Department Admin')) ?  '$wire.getGroupOffices()' : ''; 
+                            $onSelect = (!Auth::user()->hasRole('Department Admin')) ?  '$wire.getGroupOffices()' : '';
                         @endphp
                             <div class="col-md-4 col-lg-4 col-sm-4">
                                 <div class="form-group">
@@ -143,6 +143,12 @@
                             <div class="form-group">
                                 <x-input wire:model.defer="newUserData.password" type="password" label="Password"
                                     placeholder="Enter Password" />
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4 col-sm-4">
+                            <div class="form-group">
+                                <x-input wire:model.lazy="newUserData.confirm_password" type="password"
+                                    label="Confirm Password" placeholder="Enter Confirm Password" />
                             </div>
                         </div>
                     </div>

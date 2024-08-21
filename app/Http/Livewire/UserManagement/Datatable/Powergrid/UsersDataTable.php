@@ -451,7 +451,7 @@ final class UsersDataTable extends PowerGridComponent
                 'users.id',
                 'users.name',
                 'users.email',
-                'users.username',
+                // 'users.username',
                 'users.ehrms_id',
                 'users.emp_name',
                 'users.mobile',
@@ -500,7 +500,7 @@ final class UsersDataTable extends PowerGridComponent
             return [
                 'serial_no' => $user->id,
                 'Name' => $user->name,
-                'LOGIN ID' => $user->username,
+                // 'LOGIN ID' => $user->username,
                 'EMAIL' => $user->email,
                 'MOBILE' => $user->mobile,
                 'EHRMS ID' => $user->ehrms_id,
@@ -565,7 +565,7 @@ final class UsersDataTable extends PowerGridComponent
                 return strtolower(e($model->name));
             })
 
-            ->addColumn('username')
+            // ->addColumn('username')
             ->addColumn('email')
             ->addColumn('mobile')
             ->addColumn('ehrms_id')
@@ -674,10 +674,10 @@ final class UsersDataTable extends PowerGridComponent
             //     ->searchable()
             //     ->makeInputText(),
 
-            Column::make('LOGIN ID', 'username')
-                ->sortable()
-                ->searchable()
-                ->makeInputText(),
+            // Column::make('LOGIN ID', 'username')
+            //     ->sortable()
+            //     ->searchable()
+            //     ->makeInputText(),
 
             Column::make('EMAIL', 'email')
                 ->sortable()

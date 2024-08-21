@@ -48,15 +48,15 @@ class AuthController extends Controller
     public function Userlogin(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'loginId' => 'required',
+            'email_id' => 'required',
             'password' => 'required|min:6',
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $user = User::where('username', $request->loginId)
-            ->orWhere('ehrms_id', $request->loginId)
+        $user = User::where('email', $request->email_id)
+            // ->orWhere('ehrms_id', $request->email_id)
             ->first();
         if ($user) {
             session([
@@ -71,7 +71,7 @@ class AuthController extends Controller
                     return redirect()->route('dashboard');
                 } else {
                     throw ValidationException::withMessages([
-                        'loginId' => __('auth.failed'),
+                        'email_id' => __('auth.failed'),
                     ]);
                 }
             } elseif ($user->is_active == 1) {
@@ -84,7 +84,7 @@ class AuthController extends Controller
                     // dd($resp);
                 } else {
                     throw ValidationException::withMessages([
-                        'loginId' => __('auth.failed'),
+                        'email_id' => __('auth.failed'),
                     ]);
                 }
             } else {
