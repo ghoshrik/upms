@@ -244,6 +244,9 @@
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         {!! getAllAssigenRoles() !!}
                         <li>
+                            <a href="{{ route('auth.profile') }}" class="dropdown-item">{{ __('Profile') }}</a>
+                        </li>
+                        <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li>

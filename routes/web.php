@@ -33,6 +33,7 @@ use App\Http\Livewire\Department\Department;
 use App\Http\Livewire\Permission\Permission;
 use App\Http\Livewire\VendorRegs\VendorList;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\AuthProfileController;
 use App\Http\Controllers\CommonApiController;
 use App\Http\Livewire\Designation\Designation;
 use App\Http\Livewire\Sorapprove\SorApprovers;
@@ -62,6 +63,7 @@ use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
 use App\Http\Livewire\EstimateSanctionLimit\EstimateSanctionMaster;
 use App\Http\Livewire\NonScheduleApprove\NonScheduleApprovers;
 use App\Http\Livewire\EstimateProjectV2\EstimateProject as EstimateProjectV2;
+use App\Http\Livewire\Profile\AuthPassword;
 
 /*
 |--------------------------------------------------------------------------
@@ -105,6 +107,7 @@ Route::get('resend-otp/{user_id}', [AuthController::class, 'resendOTP'])->name('
 
 Route::group(['middleware' => 'prevent-back-history'], function () {
     Route::group(['middleware' => 'auth', 'check.otp'], function () {
+        Route::get('profile', AuthPassword::class)->name('auth.profile');
         Route::post('logout', [AuthController::class, 'destroy'])->name('auth.destroy');
         // Permission Module
         // Route::get('/role-permission',[RolePermission::class, 'index'])->name('role.permission.list');

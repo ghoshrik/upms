@@ -43,7 +43,7 @@
                                         <h4 class="me-2 h4">{{ Auth::user()->emp_name ?? '' }}</h4>
                                         <span> -
                                             <sub>
-                                                <strong>{{ Auth::user()->getDesignationName?->designation_name??'' }}</strong>
+                                                <strong>{{ Auth::user()->getDesignationName?->designation_name ?? '' }}</strong>
                                             </sub>
                                             <sub>
                                                 {{-- {{ Auth::user()->getDeptCategory?->category_name }} --}}
@@ -82,15 +82,18 @@
                                             type="password"placeholder="Enter Perission Name" /> --}}
                                         <div class="form-group">
                                             <x-input wire:model.defer="formData.cur_password" type="password"
-                                                label="Current Password" placeholder="Enter Current Password" style="color:#000000;" />
+                                                label="Current Password" placeholder="Enter Current Password"
+                                                style="color:#000000;" />
                                         </div>
                                         <div class="form-group">
                                             <x-input wire:model.defer="formData.pwd" type="password"
-                                                style="color:#000000;" label=" New Password" placeholder="Enter New Password" />
+                                                style="color:#000000;" label=" New Password"
+                                                placeholder="Enter New Password" />
                                         </div>
                                         <div class="form-group">
                                             <x-input wire:model.defer="formData.conf_pwd" style="color:#000000;"
-                                                type="password" label="Confirm Password" placeholder="Enter Confirm Password" />
+                                                type="password" label="Confirm Password"
+                                                placeholder="Enter Confirm Password" />
                                         </div>
                                     </fieldset>
                                     <x-action-button class="btn-soft-warning float-right" wire:click="updatePassword">
@@ -125,7 +128,7 @@
                                                     type="password"placeholder="Enter Perission Name" /> --}}
                                         <div class="form-group">
                                             <x-input wire:model.defer="formData.email" type="email" label="Email"
-                                                style="color:#000000;" readonly/>
+                                                style="color:#000000;" readonly />
                                         </div>
                                         <div class="form-group">
                                             <x-input wire:model.defer="formData.mobile" type="text"
@@ -146,10 +149,10 @@
         </div>
     </div>
     <script>
-        Livewire.on('passwordUpdated',()=>{
-            setTimeout(()=>{
-                window.location.href="{{route('login')}}";
-            },2000);
+        Livewire.on('passwordUpdated', () => {
+            setTimeout(() => {
+                window.location.href = "{{ route('login') }}";
+            }, 2000);
         });
     </script>
 
