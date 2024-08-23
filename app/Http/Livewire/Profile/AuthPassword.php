@@ -60,6 +60,9 @@ class AuthPassword extends Component
 
         User::where('id', Auth::user()->id)->update(['password' => Hash::make($this->formData['pwd'])]);
 
+        Auth::guard('web')->logout();
+
+
         $this->notification()->success(
             $title = 'User Password updated',
         );
