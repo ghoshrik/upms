@@ -128,7 +128,10 @@
                                                     type="password"placeholder="Enter Perission Name" /> --}}
                                         <div class="form-group">
                                             <x-input wire:model.defer="formData.email" type="email" label="Email"
-                                                style="color:#000000;" readonly />
+                                                <<<<<<< HEAD style="color:#000000;" readonly />
+                                            =======
+                                            style="color:#000000;" readonly/>
+                                            >>>>>>> 3bbe560 (user profile changes)
                                         </div>
                                         <div class="form-group">
                                             <x-input wire:model.defer="formData.mobile" type="text"
@@ -149,11 +152,18 @@
         </div>
     </div>
     <script>
+        << << << < HEAD
         Livewire.on('passwordUpdated', () => {
-            setTimeout(() => {
-                window.location.href = "{{ route('login') }}";
-            }, 2000);
-        });
+                    setTimeout(() => {
+                        window.location.href = "{{ route('login') }}";
+                    }, 2000); ===
+                    === =
+                    Livewire.on('passwordUpdated', () => {
+                        setTimeout(() => {
+                            window.location.href = "{{ route('login') }}";
+                        }, 2000); >>>
+                        >>> > 3 bbe560(user profile changes)
+                    });
     </script>
 
 

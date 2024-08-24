@@ -12,27 +12,26 @@ use Illuminate\Support\Facades\Hash;
 class AuthPassword extends Component
 {
     use Actions;
-    public $subTitle, $title, $formData = [];
-    protected $listeners = ['changePassword'];
+    public $subTitle, $title, $formData = [],$errorMessage;
 
 
     protected $rules = [
         'formData.cur_password' => 'required',
-        'formData.conf_pwd' => 'required',
-        'formData.pwd' => 'required|min:8',
+        'formData.pwd' => 'required|min:8|different:formData.cur_password',
+        'formData.conf_pwd' => 'required|same:formData.pwd',
     ];
     protected $messages = [
         'formData.cur_password.required' => 'This field is must be required',
         'formData.conf_pwd.required' => 'This field is must be required',
         'formData.pwd.required' => 'This field is must be required',
-        'formData.pwd.min:8' => 'New Password must be at least 8 characters',
+        'formData.pwd.min' => 'The New Password must be at least 8 characters',
+//        'formData.pwd.confirmed'=>'The new password confirmation does not match.',
+        'formData.pwd.different'=>'The new password cannot be the same as the current password.',
+        'formData.conf_pwd.same'=>'The new password and confirm password does not match.'
     ];
 
     public function mount()
     {
-        $this->notification()->success(
-            $title = 'User Password updated',
-        );
         $this->formData['pwd'] = '';
         $this->formData['cur_password'] = '';
         $this->formData['conf_pwd'] = '';
@@ -43,11 +42,16 @@ class AuthPassword extends Component
         $this->formData['email'] = $userDtls->email;
         $this->formData['mobile'] = $userDtls->mobile;
     }
-    public function updated($param)
+//    public function updatedFormDataCurPassword($value)
+//    {
+//        dd('test data');
+//        $this->validateOnly('formData.cur_password');
+//    }
+    public function updatedFormDataPwd($value)
     {
-        $this->validateOnly($param);
+        $this->validateOnly('formData.pwd');
     }
-    public function updatePassword()
+    public function updatePassword(Request $request)
     {
         $this->validate();
 
@@ -56,32 +60,36 @@ class AuthPassword extends Component
             $this->notification()->error(
                 $title = 'Current password does not match',
             );
+            return;
         }
 
         User::where('id', Auth::user()->id)->update(['password' => Hash::make($this->formData['pwd'])]);
 
         Auth::guard('web')->logout();
-
+        $request->session()->invalidate();
+        $request->session()->regenerate(true);
 
         $this->notification()->success(
             $title = 'User Password updated',
         );
         $this->reset();
+        $this->emit('passwordUpdated');
+
     }
     public function updateProfile()
     {
 
-        User::where('id', Auth::user()->id)->update(['email' => $this->formData['email'], 'mobile' => $this->formData['mobile']]);
+        User::where('id', Auth::user()->id)->update(['mobile' => $this->formData['mobile']]);
         $this->notification()->success(
-            $title = 'User Profile updated',
+            $title = 'User Profile update',
         );
-        $this->reset();
+    }
+    public function setErrorAlert($errorMessage)
+    {
+        $this->errorMessage = $errorMessage;
     }
     public function render()
     {
-        $this->notification()->success(
-            $title = 'User Password updated',
-        );
         return view('livewire.profile.auth-password');
     }
 }
