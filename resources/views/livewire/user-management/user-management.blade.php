@@ -97,8 +97,9 @@
                                         </td>
                                     </tr>
                                 @endforeach --}}
-                                                <livewire:user-management.datatable.powergrid.users-data-table
-                                                    :userData="$tab['data']" :wire:key='$updateDataTableTracker' />
+{{--                                                <livewire:user-management.datatable.powergrid.users-data-table--}}
+{{--                                                    :userData="$tab['data']" :wire:key='$updateDataTableTracker' />--}}
+                                                    <livewire:user-management.datatable.powergrid.users-data-table :userData="$tab['data']" :wire:key='$updateDataTableTracker'/>
                                             </div>
                                         @endforeach
                                     </div>

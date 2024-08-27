@@ -22,7 +22,7 @@ final class EstimateProjectTable extends PowerGridComponent
     | Setup Table's general features
     |
     */
-    public function setUp(): array
+    /*public function setUp(): array
     {
         $this->showCheckBox();
 
@@ -35,7 +35,7 @@ final class EstimateProjectTable extends PowerGridComponent
                 ->showPerPage()
                 ->showRecordCount(),
         ];
-    }
+    }*/
 
     /*
     |--------------------------------------------------------------------------
@@ -177,11 +177,21 @@ final class EstimateProjectTable extends PowerGridComponent
                ->method('delete')
                */
             Button::add('View')
-                ->bladeComponent('view', ['id' => 'estimate_id']),
-            /*Button::add('Forward')
-            ->bladeComponent('forward-button', ['id' => 'estimate_id']),*/
+                ->caption('View')
+                ->class('btn btn-soft-primary btn-sm px-3 py-2.5 m-1 rounded')
+                ->emit('openModal',['id' => 'estimate_id'])
+                ->tooltip('View Record'),
+//                ->bladeComponent('view', ['id' => 'estimate_id']),
+            Button::add('forward')
+                ->caption('forward')
+                ->class('btn btn-soft-secondary btn-sm px-3 py-2.5 m-1 rounded')
+                ->emit('openForwardModal', ['estimate_id' => 'estimate_id']),
+//            ->bladeComponent('forward-button', ['id' => 'estimate_id']),
             Button::add('Edit')
-                ->bladeComponent('edit-button', ['id' => 'estimate_id', 'action' => 'edit']),
+                ->caption('Edit')
+                ->class('btn btn-soft-warning btn-sm px-3 py-2.5 m-1 rounded')
+                    ->emit('openForm',['formType' => 'edit', 'id' => 'id']),
+//                ->bladeComponent('edit-button', ['id' => 'estimate_id', 'action' => 'edit']),
         ];
     }
 

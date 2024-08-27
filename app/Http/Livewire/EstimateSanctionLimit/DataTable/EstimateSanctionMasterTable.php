@@ -2,19 +2,20 @@
 
 namespace App\Http\Livewire\EstimateSanctionLimit\DataTable;
 
+use GuzzleHttp\Psr7\Header;
 use App\Models\SanctionLimitMaster;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Footer;
-use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridComponent;
-use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
+use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Rules\Rule;
-use PowerComponents\LivewirePowerGrid\Rules\RuleActions;use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
+use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
+use PowerComponents\LivewirePowerGrid\Rules\RuleActions;
+use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 
 final class EstimateSanctionMasterTable extends PowerGridComponent
 {
@@ -27,20 +28,20 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
     | Setup Table's general features
     |
      */
-    public function setUp(): array
+    /*public function setUp(): array
     {
         $this->showCheckBox();
 
         return [
-            Exportable::make('export')
-                ->striped()
-                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
+//            Exportable::make('export')
+//                ->striped()
+//                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             Header::make()->showSearchInput(),
             Footer::make()
                 ->showPerPage()
                 ->showRecordCount(),
         ];
-    }
+    }*/
 
     /*
     |--------------------------------------------------------------------------
@@ -162,8 +163,10 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
     public function actions(): array
     {
         return [
-            Button::add('Add Roles')
-                ->bladeComponent('action-components.estimate-sanction.add-role-permission-btn', ['id' => 'id']),
+            Button::add('add-roles')
+                ->caption('Add Roles')
+                ->class('btn btn-soft-primary btn-sm px-3 py-2.5 m-1 rounded')
+                ->emit('openAddRolesSection',['id'=>'id']),
         ];
     }
     public function add($id)

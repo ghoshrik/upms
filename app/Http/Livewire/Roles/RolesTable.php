@@ -20,7 +20,7 @@ final class RolesTable extends PowerGridComponent
     | Setup Table's general features
     |
     */
-    public function setUp(): array
+    /*public function setUp(): array
     {
         $this->showCheckBox();
 
@@ -34,7 +34,7 @@ final class RolesTable extends PowerGridComponent
                 ->showRecordCount(),
         ];
     }
-
+    */
     /*
     |--------------------------------------------------------------------------
     |  Datasource
@@ -142,8 +142,9 @@ final class RolesTable extends PowerGridComponent
     public function actions(): array
     {
         return [
-            Button::make('edit', 'Edit')
-                ->class('btn btn-soft-primary btn-sm')
+            Button::add('edit')
+                ->caption('Edit')
+                ->class('btn btn-soft-warning btn-sm px-3 py-2.5 m-1 rounded')
                 ->emit('openEntryForm', ['id' => 'id', 'formType' => 'edit']),
 
             //    Button::make('destroy', 'Delete')
