@@ -22,9 +22,10 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\HomeController;
 use App\Http\Livewire\Aafs\AafsProjects;
 //use App\Http\Livewire\ExcelImport\Imports;
+use App\Http\Livewire\ConvertSorToRDBMS;
 use App\Http\Livewire\UserType\UserType;
-use App\Http\Livewire\SorBook\DynamicSor;
 // use App\Http\Livewire\Permission\Permissions;
+use App\Http\Livewire\SorBook\DynamicSor;
 use App\Http\Livewire\DeptGroups\DeptGroup;
 use App\Http\Livewire\Milestone\Milestones;
 use App\Http\Livewire\Setting\SettingLists;
@@ -46,9 +47,9 @@ use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\MisReport\Users\UserMisReport;
-use App\Http\Livewire\UserManagement\UserManagement;
 
 // Packages
+use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\EstimateProject\EstimateProject;
 use App\Http\Livewire\AbstructCosts\AbstructCostsLists;
 use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
@@ -94,7 +95,6 @@ require __DIR__ . '/auth.php';
 // });
 // Route::get('/', [HomeController::class, 'signin'])->name('auth.signin');
 // Route::get('otp-send/{id}', [HomeController::class, 'otpView'])->name('auth.otp');
-
 Route::get('/', [AuthController::class, 'showLoginPage'])->name('auth.signin');
 Route::post('userlogin', [AuthController::class, 'Userlogin'])->name('auth.login');
 Route::get('verify/{user_id}', [AuthController::class, 'verifyOTP'])->name('auth.verify');
@@ -108,6 +108,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         // Route::get('/role-permission',[RolePermission::class, 'index'])->name('role.permission.list');
         // Route::resource('permission',PermissionController::class);
         // Route::resource('role', RoleController::class);
+        Route::get('convert-rdbms',ConvertSorToRDBMS::class)->name('convert-rdbms');
 
         // Dashboard Routes
         Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
