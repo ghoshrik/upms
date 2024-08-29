@@ -20,7 +20,7 @@ final class RolesTable extends PowerGridComponent
     | Setup Table's general features
     |
     */
-    /*public function setUp(): array
+    public function setUp(): array
     {
         $this->showCheckBox();
 
@@ -34,7 +34,7 @@ final class RolesTable extends PowerGridComponent
                 ->showRecordCount(),
         ];
     }
-    */
+
     /*
     |--------------------------------------------------------------------------
     |  Datasource
@@ -87,7 +87,7 @@ final class RolesTable extends PowerGridComponent
         return PowerGrid::eloquent()
             ->addColumn('id')
             ->addColumn('name')
-            ->addColumn('created_at_formatted', fn (Role $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
+            ->addColumn('created_at_formatted', fn(Role $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
         // ->addColumn('updated_at_formatted', fn (Role $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
     }
 

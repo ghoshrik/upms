@@ -3,11 +3,13 @@
 namespace App\Http\Livewire\Components\Modal\Estimate;
 
 use App\Models\EstimateUserAssignRecord;
+use App\Models\Office;
 use App\Models\SanctionLimitMaster;
 use App\Models\SorMaster;
 use App\Models\EstimateFlow;
 use App\Models\SanctionRole;
 use App\Models\User;
+use App\Models\UserResource;
 use App\Models\UsersHasRoles;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -20,72 +22,145 @@ class EstimateForwardModal extends Component
 {
     use Actions;
     protected $listeners = ['openForwardModal' => 'fwdModalOpen'];
-    public $forwardModal = false, $estimate_id, $assigenUsersList = [], $assignUserDetails, $userAssignRemarks, $updateDataTableTracker;
+    public $forwardModal = false, $estimate_id, $assigenUsersList = [], $assignUserDetails, $userAssignRemarks, $updateDataTableTracker,$outsideOffice;
     public $fwdRequestFrom;
+
+    public $selectUserLabel='Select User for Office';
+
+    public function mount()
+    {
+        $this->selectUserLabel = 'Select User for Office';
+    }
+    public function updateLabel()
+    {
+        if($this->outsideOffice)
+        {
+            $this->selectUserLabel = 'Selected Offices in Group';
+        }
+        else
+        {
+            $this->selectUserLabel='Select User for Office';
+        }
+    }
+    public function updatedOutsideOffice($value)
+    {
+        $this->updateLabel();
+        $this->ousideOfficeUser();
+    }
+
+    public function ousideOfficeUser()
+    {
+//        $groupId = Office::where('group_id',Auth::user()->group_id)->get();
+        $user = Auth::user();
+
+       $users =  User::join('offices','offices.group_id','=','offices.group_id')
+                ->where('users.id',Auth::user()->group_id)
+                ->where('offices.group_id',Auth::user()->group_id)
+                ->get();
+//        $user1 = Office::doesntHave ('office')->get();
+
+//        $user->resources
+
+//       dd($users,$user->resources);
+    }
+
+//    user belongs to a office , office belongs to a group , groups and user have common another resource table
+//how to get login office outside office all user show
+//    there in three tabel user,group,resources pivot table ,
+
     public function fwdModalOpen($forwdEstimateDeatils)
     {
 
+//         dd($forwdEstimateDeatils);
         $estimate_id = is_array($forwdEstimateDeatils['estimate_id']) ? $forwdEstimateDeatils['estimate_id'] : $forwdEstimateDeatils;
-      $this->reset();
-//        dd($estimate_id);
+        $this->reset();
         $this->estimate_id = $estimate_id['estimate_id'];
         $this->forwardModal = !$this->forwardModal;
 
-        $estimateFlowDtls = EstimateFlow::where('estimate_id',$forwdEstimateDeatils['estimate_id'])->get();
-        foreach($estimateFlowDtls as $estimateFlow)
-        {
-            $slmDetails = SanctionRole::where('sanction_limit_master_id',$estimateFlow->slm_id)
-                                        ->first();
-            if($slmDetails)
-            {
-                $currentSequenceNo = $slmDetails->sequence_no;
-                $nextSequenceNo = $currentSequenceNo + 1;
+        $estimateFlowDtls = EstimateFlow::where('estimate_id', $forwdEstimateDeatils['estimate_id'])
+            ->whereNull('associated_at')
+            ->orderBy('sequence_no')
+            ->first();
 
-                $nextSequenceExists = SanctionRole::where('sanction_limit_master_id', $estimateFlow->slm_id)
-                    ->where('sequence_no', $nextSequenceNo)
-                    ->exists();
-                if($nextSequenceExists)
-                {
-                    $associatedId = SanctionRole::select('role_id','permission_id')
-                                                ->where('sequence_no',$nextSequenceNo)
-                                                ->first();
-                    $role = Role::find($associatedId->role_id);
-                    $this->assigenUsersList = $role->users->map(function ($user) use ($estimateFlow,$nextSequenceNo,$associatedId) {
-                        return [
-                            'id'=>$user->id,
-                            'emp_name'=>$user->emp_name,
-                            'designation'=>$user->getDesignationName->designation_name,
-                            'slm_id' => $estimateFlow->slm_id,
-                            'sequence_no' => $nextSequenceNo,
-                            'role_id'=>$associatedId->role_id,
-                            'permission_id'=>$associatedId->permission_id,
-                            'estimate_id'=>$estimateFlow->estimate_id
-                        ];
-                    });
-//                    dd($this->assigenUsersList);
+//         dd($estimateFlowDtls);
+        $associatedId = SanctionRole::select('role_id', 'permission_id')
+            ->where('sequence_no', $estimateFlowDtls->sequence_no)
+            ->first();
+
+
+        $role = Role::findById($associatedId->role_id);
+
+//        $this->assigenUsersList = $role->users;
+        $this->assigenUsersList = $role->users->map(function ($user) use ($estimateFlowDtls, $associatedId) {
+            return [
+                'id' => $user->id,
+                'emp_name' => $user->emp_name,
+                'designation' => $user->getDesignationName->designation_name,
+                'slm_id' => $estimateFlowDtls->slm_id,
+                'sequence_no' => $estimateFlowDtls->sequence_no,
+                'role_id' => $associatedId->role_id,
+                'permission_id' => $associatedId->permission_id,
+                'estimate_id' => $estimateFlowDtls->estimate_id
+            ];
+        });
 
 
 
-                }
-                else
-                {
-                    echo "The next sequence number ($nextSequenceNo) does not exists.";
+        /*if (count($estimateFlowDtls) > 0) {
+            foreach ($estimateFlowDtls as $estimateFlow) {
+                $slmDetails = SanctionRole::where('sanction_limit_master_id', $estimateFlow->slm_id)
+                    ->where('sequence_no', $estimateFlow->sequence_no)
+                    ->first();
+                if ($slmDetails) {
+
+                    $associatedId = SanctionRole::select('role_id', 'permission_id')
+                        ->where('sequence_no', $slmDetails->sequence_no)
+                        ->first();
+                    $role = Role::findById($associatedId->role_id);
+                    $usersWithRole = $role->users;
+                    // $this->assigenUsersList = $usersWithRole;
+                    // dd($usersWithRole);
+
+                    // foreach ($usersWithRole as $user) {
+                    //     dd($user->id);
+                    //     $this->assigenUsersList[] = [
+                    //         'id' => $user->id,
+                    //         'emp_name' => $user->emp_name,
+                    //         'designation' => $user->designation_id,
+                    //         'slm_id' => $slmDetails->slm_id,
+                    //         'sequence_no' => $slmDetails->sequence_no,
+                    //         'role_id' => $slmDetails->role_id,
+                    //         'permission_id' => $slmDetails->role_id,
+                    //         'estimate_id' => $this->estimate_id,
+                    //     ];
+                    // }
+
+
+
+                    // dd($this->assigenUsersList);
                 }
             }
-            else
-            {
-                echo "No record found for the given Sanction Limit Master";
-            }
+            $this->assigenUsersList = $usersWithRole->map(function ($user) use ($estimateFlow, $slmDetails, $associatedId) {
+                return [
+                    'id' => $user->id,
+                    'emp_name' => $user->emp_name,
+                    'designation' => $user->getDesignationName->designation_name,
+                    'slm_id' => $estimateFlow->slm_id,
+                    'sequence_no' => $slmDetails->sequence_no,
+                    'role_id' => $associatedId->role_id,
+                    'permission_id' => $associatedId->permission_id,
+                    'estimate_id' => $estimateFlow->estimate_id
+                ];
+            });
+        }*/
 
-//            dd($estimateFlowDtls,$slmDetails);
-        }
 
 
-//        $this->reset();
-//            $estimate_id = is_array($forwdEstimateDeatils) ? $forwdEstimateDeatils['estimate_id'] : $forwdEstimateDeatils;
-//        $this->fwdRequestFrom = $forwdEstimateDeatils['forward_from'];
-//        $this->estimate_id = $estimate_id;
-//        $this->fwdModal = !$this->fwdModal;
+        //        $this->reset();
+        //            $estimate_id = is_array($forwdEstimateDeatils) ? $forwdEstimateDeatils['estimate_id'] : $forwdEstimateDeatils;
+        //        $this->fwdRequestFrom = $forwdEstimateDeatils['forward_from'];
+        //        $this->estimate_id = $estimate_id;
+        //        $this->fwdModal = !$this->fwdModal;
         // $userAccess_id = AccessMaster::select('access_parent_id')->join('access_types', 'access_masters.access_type_id', '=', 'access_types.id')->where('user_id', Auth::user()->id)->first();
         // $this->assigenUsersList = User::join('access_masters', 'users.id', '=', 'access_masters.user_id')
         //     ->join('access_types', 'access_masters.access_type_id', '=', 'access_types.id')
@@ -142,7 +217,7 @@ class EstimateForwardModal extends Component
     public function getRoleAndPermission($sanctionLimitMasterId)
     {
         $slmDetails = SanctionRole::where('sanction_limit_master_id', $sanctionLimitMasterId)->first();
-
+//        dd($slmDetails);
         if ($slmDetails) {
             $currentSequenceNo = $slmDetails->sequence_no;
 
@@ -166,58 +241,60 @@ class EstimateForwardModal extends Component
 
     public function forwardAssignUser()
     {
+//         dd($this->assignUserDetails);
+
         $fwdUserDetails = explode('-', $this->assignUserDetails);
-//        dd($fwdUserDetails);
-//        $assignUserId =$fwdUserDetails[0];
-//        $assignSeqNo = $fwdUserDetails[2];
-        $assignUserDtls = $this->getRoleAndPermission($fwdUserDetails[1]);
-        if($assignUserDtls)
-        {
+        // $assignUserDtls = $this->getRoleAndPermission($fwdUserDetails[1]);
+//         dd($fwdUserDetails);
+        /*if ($assignUserDtls) {
             $roleId = $assignUserDtls->role_id;
             $permissionId = $assignUserDtls->permission_id;
 
-//            dd($roleId,$permissionId);
-            SorMaster::where('estimate_id', $fwdUserDetails[3])->update(['status' => 2]);
-            $assignDetails = EstimateFlow::create(
-                [
-                    'estimate_id'=>$fwdUserDetails[3],
-                    'slm_id'=>$fwdUserDetails[1],
-                    'sequence_no'=>$fwdUserDetails[2],
-                    'role_id'=> $roleId,
-                    'permission_id'=>$permissionId,
-                    'user_id'=>$fwdUserDetails[0]
-                ]
+            // dd($roleId, $permissionId);
+            SorMaster::where('estimate_id', $fwdUserDetails[3])->update(['status' => $fwdUserDetails[1]]);
+            EstimateFlow::select('id')
+                ->where('estimate_id', $fwdUserDetails[3])
+                ->where('slm_id', $fwdUserDetails[1])
+                ->where('role_id', $assignUserDtls->role_id)
+                ->where('permission_id', $assignUserDtls->permission_id)
+                ->update(['user_id' => $fwdUserDetails[0], 'associated_at' => Carbon::now()]);
+            $this->notification()->success(
+                $title = 'Success',
+                $description = 'Successfully Assign!!'
             );
-            if($assignDetails)
-            {
-                $returnId = $assignDetails->id;
-                EstimateFlow::where('estimate_id',$fwdUserDetails[3])->where('id','!=',$returnId)->groupBy('estimate_id')->update(['associated_at'=>Carbon::now()]);
-                $this->notification()->success(
-                    $title = 'Success',
-                    $description = 'Successfully Assign!!'
-                );
-            }
-            else
-            {
-                $this->notification()->error(
-                    $title = 'Error',
-                    $description = 'Please Check & try again'
-                );
-            }
+
             $this->reset();
             $this->updateDataTableTracker = rand(1, 1000);
             $this->emit('refreshData', $this->updateDataTableTracker);
-        }
-        else
-        {
+        } else {
             $this->notification()->error(
                 $title = 'Error',
                 $description = 'Please Check & try again'
             );
-        }
+        }*/
 
+        $sanctionLists = SanctionRole::where('sequence_no', $fwdUserDetails[2])->first();
+//         dd($sanctionLists);
+        EstimateFlow::where('user_id',Auth::user()->id)->update(['dispatch_at'=>Carbon::now()]);
+        // if (count($sanctionLists) > 0) {
+//        EstimateFlow::where()
+        SorMaster::where('estimate_id', $fwdUserDetails[3])->update(['status' => 13,'associated_with'=>$fwdUserDetails[0]]);
 
+        EstimateFlow::select('id')
+            ->where('estimate_id', $fwdUserDetails[3])
+            ->where('slm_id', $fwdUserDetails[1])
+            ->where('role_id', $sanctionLists->role_id)
+            ->where('permission_id', $sanctionLists->permission_id)
+            ->update(['user_id' => $fwdUserDetails[0], 'associated_at' => Carbon::now()]);
+        $this->notification()->success(
+            $title = 'Success',
+            $description = 'Successfully Assign!!'
+        );
 
+        $this->reset();
+        $this->updateDataTableTracker = rand(1, 1000);
+        $this->emit('refreshData', $this->updateDataTableTracker);
+        // }
     }
     public function render()
     {

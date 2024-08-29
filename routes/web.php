@@ -182,10 +182,11 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('estimate-forwarder', EstimateForwarder::class)->name('estimate-forwarder');
         });
         //Estimate Preparer or Junior Engineer
-        Route::group(['middleware' => ['role:Project Estimate (EP)|Junior Engineer']], function () {
+        Route::group(['middleware' => ['role:Project Estimate (EP)|Junior Engineer|Executive Engineer|Superintending Engineer|Assistant Engineer|Chief Engineer']], function () {
             Route::get('estimate-project', EstimateProject::class)->name('estimate-project');
             Route::get('estimate-project-v2', EstimateProjectV2::class)->name('estimate-project-v2');
             //qty analysis api routes
+
             Route::post('/store-dynamic-unit-modal-data', [ApiController::class, 'unitQtyAdded'])->name('store-dynamic-unit-modal-data');
             Route::post('/unit-modal-updated-data', [ApiController::class, 'getunitQtyAdded'])->name('unit-modal-updated-data');
             Route::post('/delete-unit-modal-data', [ApiController::class, 'deleteUnitRow'])->name('delete-unit-modal-data');

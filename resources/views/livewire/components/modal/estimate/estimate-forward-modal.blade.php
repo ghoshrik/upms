@@ -1,24 +1,37 @@
 <x-modal.card title="Forward Estimate No : {{ $estimate_id }} " blur wire:model="forwardModal">
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="col-span-1 sm:col-span-2">
-            <x-select wire:key="user" label="Select User Own Office" placeholder="Select User" wire:model.defer="assignUserDetails">
-{{--                @dd($assigenUsersList)--}}
+{{--    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">--}}
+{{--        <div class="col-span-1 sm:col-span-2">--}}
+{{--            <x-select wire:key="user" label="Select User for Office" placeholder="Select User" wire:model.defer="assignUserDetails">--}}
+{{--                @isset($assigenUsersList)--}}
+{{--                    @foreach ($assigenUsersList as $user)--}}
+{{--                        <x-select.option--}}
+{{--                            label="{{ $user['emp_name'] . ' ( ' . $user['designation'] . ' )' }}"--}}
+{{--                            value="{{ $user['id'] . '-' . $user['slm_id'].'-'.$user['sequence_no'] . '-' . $user['estimate_id'] }}" />--}}
+{{--                    @endforeach--}}
+{{--                @endisset--}}
+{{--            </x-select>--}}
+{{--        </div>--}}
+{{--    </div>--}}
+    <div class="row">
+        <div class="col-lg-8 col-md-8 col-sm-12">
+            <x-select wire:key="user" :label="$selectUserLabel" placeholder="Select User" wire:model.defer="assignUserDetails">
                 @isset($assigenUsersList)
                     @foreach ($assigenUsersList as $user)
                         <x-select.option
-                            label="{{ $user['emp_name'] . ' [ ' . $user['designation'] . ' ]' }}"
+                            label="{{ $user['emp_name'] . ' ( ' . $user['designation'] . ' )' }}"
                             value="{{ $user['id'] . '-' . $user['slm_id'].'-'.$user['sequence_no'] . '-' . $user['estimate_id'] }}" />
-{{--                         <x-select.option label="{{ $user['id']. '-' . $user['access_type_id'] . '-' . $estimate_id }}" value="{{ $user['id']. '-' . $user['access_type_id'] . '-' . $estimate_id }}" />--}}
                     @endforeach
                 @endisset
             </x-select>
         </div>
-        <div class="col-span-1 sm:col-span-2">
-
-            <x-textarea wire:model="userAssignRemarks" label="Remarks" placeholder="Your Remarks" />
-
+        <div class="col-lg-4 col-md-4 col-sm-12" style="margin-top:33px;">
+            <x-toggle left-label="Outside Office" wire:model="outsideOffice" />
         </div>
     </div>
+
+
+
+
     <x-slot name="footer">
         <div class="flex justify-between">
             <div class="flex float-left">

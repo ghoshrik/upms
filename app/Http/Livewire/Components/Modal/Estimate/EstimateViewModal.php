@@ -16,7 +16,7 @@ class EstimateViewModal extends Component
 
     public function openViewModal($estimate_id)
     {
-        $estimate_id = is_array($estimate_id['id']) && !empty($estimate_id['id']) ? $estimate_id['id'] : $estimate_id['id'];
+        $estimate_id = is_array($estimate_id) && !empty($estimate_id) ? $estimate_id[0] : $estimate_id;
         $this->reset();
         $this->viewModal = !$this->viewModal;
         if ($estimate_id) {

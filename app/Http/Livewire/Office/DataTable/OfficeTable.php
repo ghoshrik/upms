@@ -38,7 +38,7 @@ final class OfficeTable extends PowerGridComponent
             ]
         );
     }
-    /*public function setUp(): array
+    public function setUp(): array
     {
         $this->showCheckBox();
         // $this->addColumn('id')
@@ -56,7 +56,7 @@ final class OfficeTable extends PowerGridComponent
                 ->showPerPage()
                 ->showRecordCount(),
         ];
-    }*/
+    }
 
     public function header(): array
     {

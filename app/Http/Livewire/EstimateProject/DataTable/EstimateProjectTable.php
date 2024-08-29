@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire\EstimateProject\DataTable;
 
+use App\Models\EstimateFlow;
+use App\Models\SorMaster;
 use Illuminate\Support\Carbon;
 use App\Models\EstimatePrepare;
 use Illuminate\Support\Facades\DB;
@@ -10,10 +12,11 @@ use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
+use WireUi\Traits\Actions;
 
 final class EstimateProjectTable extends PowerGridComponent
 {
-    use ActionButton;
+    use ActionButton,Actions;
 
     /*
     |--------------------------------------------------------------------------
@@ -22,7 +25,7 @@ final class EstimateProjectTable extends PowerGridComponent
     | Setup Table's general features
     |
     */
-    /*public function setUp(): array
+    public function setUp(): array
     {
         $this->showCheckBox();
 
@@ -35,7 +38,7 @@ final class EstimateProjectTable extends PowerGridComponent
                 ->showPerPage()
                 ->showRecordCount(),
         ];
-    }*/
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -51,17 +54,31 @@ final class EstimateProjectTable extends PowerGridComponent
             ->select(
                 'sor_masters.id',
                 'sor_masters.estimate_id',
-                // 'estimate_prepares.total_amount',
+                'estimate_prepares.total_amount',
                 'estimate_statuses.status',
+                'permissions.name',
                 DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no')
             )
-            ->join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'estimate_prepares.estimate_id')
+            // // ->join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'estimate_prepares.estimate_id')
+            // ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
+            // ->join('estimate_statuses', 'estimate_statuses.id', '=', 'sor_masters.status')
+            // // ->where('estimate_user_assign_records.estimate_user_type', '=', 5)
+            // ->whereIn('sor_masters.status', [1, 10, 12])
+            // ->where('estimate_prepares.created_by', Auth::user()->id)
+            // ->groupBy('sor_masters.estimate_id', 'sor_masters.id', 'estimate_statuses.status');
+
             ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
-            ->join('estimate_statuses', 'estimate_statuses.id', '=', 'sor_masters.status')
-            ->where('estimate_user_assign_records.estimate_user_type', '=', 5)
-            ->whereIn('sor_masters.status', [1, 10, 12])
-            ->where('estimate_prepares.created_by', Auth::user()->id)
-            ->groupBy('sor_masters.estimate_id', 'sor_masters.id', 'estimate_statuses.status');
+            ->join('estimate_flows', 'sor_masters.estimate_id', '=', 'estimate_flows.estimate_id')
+            ->join('estimate_statuses','estimate_statuses.id','=','sor_masters.status')
+            ->join('permissions','permissions.id','=','estimate_flows.permission_id')
+            ->whereNotNull('estimate_flows.associated_at')
+            ->where('estimate_flows.user_id', Auth::user()->id)
+            ->where('estimate_prepares.operation','=','Total')
+            ->where('sor_masters.associated_with',Auth::user()->id)
+            ->groupBy('sor_masters.estimate_id', 'sor_masters.id','estimate_prepares.total_amount','permissions.name','estimate_statuses.status');
+
+//            dd($data->toSql());
+
         return $data;
     }
 
@@ -100,11 +117,14 @@ final class EstimateProjectTable extends PowerGridComponent
         return PowerGrid::eloquent()
             ->addColumn('id')
             ->addColumn('sor_masters.estimate_id')
+
             ->addColumn('SOR.sorMasterDesc')
+            ->addColumn('total_amount')
             // ->addColumn('total_amount', function ($row) {
             //     return round($row->total_amount, 2);
             // })
-            ->addColumn('SOR.getEstimateStatus.status', function ($row) {
+            ->addColumn('name')
+            ->addColumn('status', function ($row) {
                 return '<span class="badge badge-pill bg-success">' . $row->status . '</span>';
             });
     }
@@ -125,6 +145,11 @@ final class EstimateProjectTable extends PowerGridComponent
      */
     public function columns(): array
     {
+        $permissions = collect([
+            'create estimate' => 'Maker',
+            'verify estimate' => 'Checker',
+            'approve estimate' => 'Approver',
+        ]);
         return [
             Column::make('Sl.No', 'serial_no'),
 
@@ -136,13 +161,14 @@ final class EstimateProjectTable extends PowerGridComponent
                 ->headerAttribute('style', 'white-space: normal; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;')
                 ->bodyAttribute('style', 'white-space: normal; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;'),
 
+            Column::make('Total','total_amount'),
             // Column::make('TOTAL AMOUNT', 'total_amount')
             //     ->makeInputRange()
             //     ->sortable(),
 
-            Column::make('Status', 'SOR.getEstimateStatus.status')
+            Column::make('Status', 'status')
                 ->sortable(),
-
+            Column::make('Stage','name'),
             // Column::make("Actions", "estimate_id"),
 
         ];
@@ -161,37 +187,48 @@ final class EstimateProjectTable extends PowerGridComponent
      *
      * @return array<int, Button>
      */
-
+    protected function getListeners()
+    {
+        return array_merge(
+            parent::getListeners(),
+            [
+                'openApproveModal',
+                'RejectEstimate'
+            ]
+        );
+    }
+    public $canPermission;
 
     public function actions(): array
     {
-        return [
 
-            //    Button::make('edit', 'Edit')
-            //        ->class('bg-indigo-500 cursor-pointer text-dark px-3 py-2.5 m-1 rounded text-sm'),
-            //    ->route('estimate-prepare.edit', ['estimate-prepare' => 'id']),
-            /*
-           Button::make('destroy', 'Delete')
-               ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
-               ->route('estimate-prepare.destroy', ['estimate-prepare' => 'id'])
-               ->method('delete')
-               */
+//        $estimateFlow = EstimateFlow::where('user_id',Auth::user()->id)
+//                    ->whereNull('dispatch_at')
+//                    ->exists();
+//
+//        dd($estimateFlow);
+        // if()
+        $this->canPermission['forward'] = Auth::user()->hasAnyPermission(['verify estimate','create estimate']);
+        $this->canPermission['approve'] = Auth::user()->hasPermissionTo('approve estimate');
+//        dd($this->canPermission['approve']);
+
+        return [
             Button::add('View')
-                ->caption('View')
-                ->class('btn btn-soft-primary btn-sm px-3 py-2.5 m-1 rounded')
-                ->emit('openModal',['id' => 'estimate_id'])
-                ->tooltip('View Record'),
-//                ->bladeComponent('view', ['id' => 'estimate_id']),
+                ->bladeComponent('view', ['id' => 'estimate_id']),
+
             Button::add('forward')
-                ->caption('forward')
-                ->class('btn btn-soft-secondary btn-sm px-3 py-2.5 m-1 rounded')
-                ->emit('openForwardModal', ['estimate_id' => 'estimate_id']),
-//            ->bladeComponent('forward-button', ['id' => 'estimate_id']),
+             ->bladeComponent('forwd-button', ['id' => 'estimate_id'])
+                ->can($this->canPermission['forward']),
+
+            Button::add('approve')
+                ->caption('approve')
+                ->class('btn btn-soft-success btn-sm px-3 py-2.5 m-1 rounded')
+                ->emit('openApproveModal',['estimate_id'=>'estimate_id'])
+                ->can($this->canPermission['approve']),
+
             Button::add('Edit')
-                ->caption('Edit')
-                ->class('btn btn-soft-warning btn-sm px-3 py-2.5 m-1 rounded')
-                    ->emit('openForm',['formType' => 'edit', 'id' => 'id']),
-//                ->bladeComponent('edit-button', ['id' => 'estimate_id', 'action' => 'edit']),
+                ->bladeComponent('edit-button', ['id' => 'estimate_id', 'action' => 'edit']),
+//                ->can($this->canPermission['forward']),
         ];
     }
 
@@ -210,18 +247,21 @@ final class EstimateProjectTable extends PowerGridComponent
      * @return array<int, RuleActions>
      */
 
-    /*
-    public function actionRules(): array
+
+    /*public function actionRules(): array
     {
        return [
 
            //Hide button edit for ID 1
-            /*Rule::button('edit')
-                ->when(fn($estimate-prepare) => $estimate-prepare->id === 1)
+//            Rule::button('edit')
+//                ->when(fn($estimate-prepare) => $estimate-prepare->id === 1)
+//                ->hide(),
+
+
+            Rule::button('forward')
+                ->when(fn($estimateflow)=>$estimateflow->dispatch_at=='')
+                ->bladeComponent('forwd-button',['id'=>'estimate_id'])
                 ->hide(),
-            Rule::button('View')
-            ->when()
-            ->bladeComponent('components.data-table-components.buttons.view',['estimate_id'=>'estimate_id']),
         ];
     }*/
     public function view($estimate_id)
@@ -230,10 +270,38 @@ final class EstimateProjectTable extends PowerGridComponent
     }
     public function forward($estimate_id)
     {
-        $this->emit('openForwardModal', ['estimate_id' => $estimate_id, 'forward_from' => 'EP']);
+        $this->emit('openForwardModal', ['estimate_id' => $estimate_id]);
     }
     public function edit($id)
     {
         $this->emit('openForm', ['formType' => 'edit', 'id' => $id]);
+    }
+
+    public function openApproveModal($estimate_id)
+    {
+//            dd($estimate_id);
+        $this->dialog()->confirm([
+            'title' => 'Are you Sure want to Approved Estimate ?',
+            'icon' => 'warning',
+            'accept' => [
+                'label' => 'Yes,Approved',
+                'method' => 'ApprovedEstimate',
+                'params' => $estimate_id,
+            ],
+            'reject' => [
+                'label' => 'No, Reject',
+                // 'method' => 'cancel',
+            ]
+        ]);
+    }
+    public function ApprovedEstimate($estimate_id)
+    {
+        SorMaster::where('estimate_id',$estimate_id)
+            ->where('associated_with',Auth::user()->id)
+            ->update(['approved_at'=>Carbon::now(),'status'=>6,'is_verified'=>1]);
+        EstimateFlow::where('estimate_id',$estimate_id)
+            ->where('user_id',Auth::user()->id)
+            ->whereNull('dispatch_at')
+            ->update(['dispatch_at'=>Carbon::now()]);
     }
 }

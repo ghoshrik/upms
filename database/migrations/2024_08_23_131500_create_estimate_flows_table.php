@@ -22,6 +22,7 @@ class CreateEstimateFlowsTable extends Migration
             $table->foreignId('permission_id')->references('id')->on('permissions');
             $table->foreignId('user_id')->references('id')->on('users')->nullable();
             $table->timestamp('associated_at')->nullable();
+            $table->timestamp('dispatch_at')->nullable();
             $table->timestamps();
             $table->unique(['estimate_id','slm_id','sequence_no','role_id','permission_id','user_id'],'estimate_flow_role_permission_user_unique');
         });

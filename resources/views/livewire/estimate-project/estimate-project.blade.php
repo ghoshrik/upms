@@ -13,25 +13,25 @@
                         <h3 class="text-dark">{{ $titel }}</h3>
                         <p class="text-primary mb-0">{{ $subTitel }}</p>
                     </div>
-{{--                    @canany(['create estimate', 'edit estimate'])--}}
-                        <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
-                            @if (!$isFromOpen)
-                                <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
-                                    x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
-                                    <span class="btn-inner">
-                                        <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
-                                    </span>
-                                </button>
-                            @else
-                                <button wire:click="fromEntryControl" class="btn btn-danger rounded-pill "
-                                    x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
-                                    <span class="btn-inner">
-                                        <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
-                                    </span>
-                                </button>
-                            @endif
-                        </div>
-{{--                    @endcanany--}}
+                    @can('create estimate')
+                    <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
+                        @if (!$isFromOpen)
+                            <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
+                                x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
+                                <span class="btn-inner">
+                                    <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
+                                </span>
+                            </button>
+                        @else
+                            <button wire:click="fromEntryControl" class="btn btn-danger rounded-pill "
+                                x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
+                                <span class="btn-inner">
+                                    <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
+                                </span>
+                            </button>
+                        @endif
+                    </div>
+                    @endcan
                 </div>
             </div>
             {{-- <div class="iq-header-img">
@@ -176,7 +176,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         {{-- <livewire:estimate-project.data-table.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" /> --}}
-                                        {{-- <livewire:estimate-project.datatable.powergrid.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" /> --}}
+                                         <livewire:estimate-project.datatable.powergrid.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 3)

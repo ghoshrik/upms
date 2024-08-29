@@ -733,7 +733,7 @@ class AddedEstimateProjectList extends Component
             try {
                 if ($this->allAddedEstimatesData) {
                     $intId = ($this->editEstimate_id == '') ? random_int(100000, 999999) : $this->editEstimate_id;
-                    if (($this->editEstimate_id != '') ? ModelsSORMaster::where('estimate_id', $intId)->update(['sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'created_by' => Auth::user()->id]) : ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'dept_id' => Auth::user()->department_id, 'part_no' => $this->part_no, 'created_by' => Auth::user()->id])) {
+                    if (($this->editEstimate_id != '') ? ModelsSORMaster::where('estimate_id', $intId)->update(['sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'created_by' => Auth::user()->id,'associated_with'=>Auth::user()->id]) : ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'dept_id' => Auth::user()->department_id, 'part_no' => $this->part_no, 'created_by' => Auth::user()->id,'associated_with'=>Auth::user()->id])) {
                         if ($this->editEstimate_id != '') {
                             EstimatePrepare::where('estimate_id', $intId)->delete();
                         }
@@ -770,6 +770,15 @@ class AddedEstimateProjectList extends Component
                         }
                         if ($flag != 'draft') {
                             if ($estimated_amount != 0) {
+                                // $user = Auth::user();
+                                // $roles = $user->roles;
+                                // $allPermissions = collect();
+                                // foreach ($roles as $role) {
+                                //     $permissions = $role->permissions;
+                                //     $allPermissions = $allPermissions->merge($permissions);
+                                // }
+                                // dd($role->permissions);
+                                // dd($user->roles->pluck('id'));
                                 $role = Role::where('id', Auth::user()->roles->first()->id)->first();
                                 $permissions = $role->permissions;
                                 $getSLM = SanctionLimitMaster::where('department_id', Auth::user()->department_id)
