@@ -57,16 +57,9 @@ final class EstimateProjectTable extends PowerGridComponent
                 'estimate_prepares.total_amount',
                 'estimate_statuses.status',
                 'permissions.name',
+                'estimate_flows.sequence_no',
                 DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no')
             )
-            // // ->join('estimate_user_assign_records', 'estimate_user_assign_records.estimate_id', '=', 'estimate_prepares.estimate_id')
-            // ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
-            // ->join('estimate_statuses', 'estimate_statuses.id', '=', 'sor_masters.status')
-            // // ->where('estimate_user_assign_records.estimate_user_type', '=', 5)
-            // ->whereIn('sor_masters.status', [1, 10, 12])
-            // ->where('estimate_prepares.created_by', Auth::user()->id)
-            // ->groupBy('sor_masters.estimate_id', 'sor_masters.id', 'estimate_statuses.status');
-
             ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
             ->join('estimate_flows', 'sor_masters.estimate_id', '=', 'estimate_flows.estimate_id')
             ->join('estimate_statuses','estimate_statuses.id','=','sor_masters.status')
@@ -75,11 +68,40 @@ final class EstimateProjectTable extends PowerGridComponent
             ->where('estimate_flows.user_id', Auth::user()->id)
             ->where('estimate_prepares.operation','=','Total')
             ->where('sor_masters.associated_with',Auth::user()->id)
-            ->groupBy('sor_masters.estimate_id', 'sor_masters.id','estimate_prepares.total_amount','permissions.name','estimate_statuses.status');
+            ->groupBy(
+                'sor_masters.estimate_id',
+                        'sor_masters.id',
+                        'estimate_prepares.total_amount',
+                        'permissions.name',
+                        'estimate_statuses.status',
+                        'estimate_flows.sequence_no');
 
 //            dd($data->toSql());
 
         return $data;
+//        return SorMaster::query()
+//                ->select(
+//                    'sor_masters.id',
+//                    'sor_masters.estimate_id',
+//                    'sor_masters.sorMasterDesc',
+//                    'sor_masters.status',
+//                    DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no')
+//                )
+//            ->join('estimate_prepares',function($join)
+//            {
+//                $join->on('sor_masters.estimate_id','=','estimate_prepares.estimate_id')
+//                    ->where('estimate_prepares.operation','=','Total');
+//            })
+//            ->Join('estimate_statuses','sor_masters.status','=','estimate_statuses.id')
+//            ->Join('estimate_flows','estimate_flows.estimate_id','=','sor_masters.estimate_id')
+//            ->where('sor_masters.created_by',Auth::user()->id)
+//            ->groupBy('sor_masters.id','sor_masters.estimate_id','sor_masters.sorMasterDesc','sor_masters.status','estimate_flows.sequence_no')
+//            ->orderBy('estimate_flows.sequence_no');
+
+//        return $this->fetchFlows();
+
+
+
     }
 
 
@@ -115,7 +137,7 @@ final class EstimateProjectTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-            ->addColumn('id')
+            ->addColumn('serial_no')
             ->addColumn('sor_masters.estimate_id')
 
             ->addColumn('SOR.sorMasterDesc')
@@ -201,34 +223,23 @@ final class EstimateProjectTable extends PowerGridComponent
 
     public function actions(): array
     {
-
-//        $estimateFlow = EstimateFlow::where('user_id',Auth::user()->id)
-//                    ->whereNull('dispatch_at')
-//                    ->exists();
-//
-//        dd($estimateFlow);
-        // if()
-        $this->canPermission['forward'] = Auth::user()->hasAnyPermission(['verify estimate','create estimate']);
-        $this->canPermission['approve'] = Auth::user()->hasPermissionTo('approve estimate');
-//        dd($this->canPermission['approve']);
-
         return [
             Button::add('View')
                 ->bladeComponent('view', ['id' => 'estimate_id']),
 
             Button::add('forward')
-             ->bladeComponent('forwd-button', ['id' => 'estimate_id'])
-                ->can($this->canPermission['forward']),
+             ->bladeComponent('forwd-button', ['id' => 'estimate_id']),
+//                ->can($this->canPermission['forward']),
 
             Button::add('approve')
-                ->caption('approve')
-                ->class('btn btn-soft-success btn-sm px-3 py-2.5 m-1 rounded')
-                ->emit('openApproveModal',['estimate_id'=>'estimate_id'])
-                ->can($this->canPermission['approve']),
+                ->bladeComponent('approve-button',['id'=>'estimate_id','action'=>'approveEstimate']),
 
             Button::add('Edit')
                 ->bladeComponent('edit-button', ['id' => 'estimate_id', 'action' => 'edit']),
+//                ->when(fn($row)=>in_array($row->sequence_no,[1,2])),
 //                ->can($this->canPermission['forward']),
+            Button::add('Revert')
+                ->bladeComponent('revert-component',['id'=>'estimate_id','action'=>'reverted'])
         ];
     }
 
@@ -248,22 +259,48 @@ final class EstimateProjectTable extends PowerGridComponent
      */
 
 
-    /*public function actionRules(): array
-    {
+        public function actionRules(): array
+        {
        return [
+           Rule::button('forward')
+                ->when(fn($estimate)=>$this->canForward($estimate->estimate_id))
+                ->bladeComponent('forwd-button', ['id' => 'estimate_id']),
+           Rule::button('approve')
+                ->when(fn($estimate)=>$this->canApprove($estimate->estimate_id))
+                ->bladeComponent('approve-button',['action'=>'approveEstimate','id'=>'estimate_id']),
 
-           //Hide button edit for ID 1
-//            Rule::button('edit')
-//                ->when(fn($estimate-prepare) => $estimate-prepare->id === 1)
-//                ->hide(),
-
-
-            Rule::button('forward')
-                ->when(fn($estimateflow)=>$estimateflow->dispatch_at=='')
-                ->bladeComponent('forwd-button',['id'=>'estimate_id'])
+           Rule::button('Edit')
+               ->when(fn($row) => $this->canEdit($row))
                 ->hide(),
+           Rule::button('Revert')
+               ->when(fn($row)=>$row->sequence_no===1)
+                ->hide()
         ];
-    }*/
+    }
+
+    private function canForward($estimateId)
+    {
+        $estimateFlows = EstimateFlow::where('estimate_id', $estimateId)
+            ->orderBy('sequence_no')
+            ->get();
+
+        $currentSequenceNo = $estimateFlows->max('sequence_no');
+
+        return $currentSequenceNo;
+    }
+    private function canApprove($estimateId)
+    {
+        $estimateFlows = EstimateFlow::where('estimate_id', $estimateId)
+            ->orderBy('sequence_no')
+            ->get();
+
+        $currentSequenceNo = $estimateFlows->max('sequence_no');
+        return $currentSequenceNo;
+    }
+    private function canEdit($estimate)
+    {
+        return !in_array($estimate->sequence_no,[1,2]);
+    }
     public function view($estimate_id)
     {
         $this->emit('openModal', $estimate_id);
@@ -304,4 +341,37 @@ final class EstimateProjectTable extends PowerGridComponent
             ->whereNull('dispatch_at')
             ->update(['dispatch_at'=>Carbon::now()]);
     }
+    public function fetchFlows()
+    {
+        $estimates = SorMaster::query()
+                                ->select(
+                                        'sor_masters.estimate_id',
+                                        'sor_masters.sorMasterDesc',
+                                        'sor_masters.status'
+                                       )
+                                ->leftjoin('estimate_prepares','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
+                                ->leftJoin('estimate_statuses','sor_masters.status','=','estimate_statuses.id')
+                                ->where('sor_masters.created_by',Auth::user()->id);
+
+        $flowsData =[];
+        foreach ($estimates as $estimate) {
+            $flows = EstimateFlow::where('estimate_id', $estimate->estimate_id)
+                ->orderBy('sequence_no')
+                ->get();
+
+            // Add additional sequence control logic
+            foreach ($flows as $index => $flow) {
+                $flow->sorMasterDesc = $estimate->sorMasterDesc;
+                $flow->total_amount = $estimate->total_amount;
+                $flow->status = $estimate->status;
+                $flow->previous_sequence = $flows[$index - 1]->sequence_no ?? null;
+                $flow->next_sequence = $flows[$index + 1]->sequence_no ?? null;
+                $flow->max_sequence_no = $flows->max('sequence_no');
+                $flowsData[] = $flow;
+            }
+        }
+
+        return collect($flowsData);
+    }
+
 }
