@@ -823,6 +823,9 @@ class CreateEstimateProject extends Component
             $this->addedEstimate['qty'] = ($this->estimateData['qty'] == '') ? 0 : $this->estimateData['qty'];
             $this->addedEstimate['rate'] = ($this->estimateData['rate'] == '') ? 0 : $this->estimateData['rate'];
             $this->addedEstimate['total_amount'] = $this->estimateData['total_amount'];
+            if (isset($this->addedEstimate['unit_id'][0]) && $this->addedEstimate['unit_id'][0] === '%') {
+                $this->addedEstimate['total_amount'] = $this->addedEstimate['total_amount'] / 100;
+            }
             $this->addedEstimate['version'] = $this->estimateData['version'];
             $this->addedEstimate['page_no'] = (isset($this->estimateData['page_no'])) ? $this->estimateData['page_no'] : 0;
             $this->addedEstimate['table_no'] = (isset($this->estimateData['table_no'])) ? $this->estimateData['table_no'] : 0;
@@ -831,9 +834,6 @@ class CreateEstimateProject extends Component
             $this->addedEstimate['item_index'] = (isset($this->estimateData['item_index'])) ? $this->estimateData['item_index'] : '';
             $this->addedEstimate['col_position'] = (isset($this->estimateData['col_position'])) ? $this->estimateData['col_position'] : 0;
             $this->addedEstimate['rate_type'] = (isset($this->estimateData['rate_type'])) ? $this->estimateData['rate_type'] : '';
-            if (isset($this->addedEstimate['unit_id'][0]) && $this->addedEstimate['unit_id'][0] === '%') {
-                $this->addedEstimate['total_amount'] = $this->addedEstimate['total_amount'] / 100;
-            }
             $this->addedEstimateUpdateTrack = rand(1, 1000);
             $this->estimateData['item_number'] = '';
             $this->estimateData['estimate_no'] = '';

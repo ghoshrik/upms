@@ -1,5 +1,4 @@
 <div>
- 
     <div class="modal" id="{{ $editRowId }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-xl" role="document">
@@ -7,22 +6,13 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">
                         Edit Row {{ $editRowId }}</h5>
-                    {{-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
-                    </button> --}}
-                    @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ session('error') }}
-                    </div>
-                @endif
+                    </button>
                 </div>
-              
                 <div class="modal-body">
-                    {{-- @dd($dataArray); --}}
                     @if (!empty($dataArray))
-
-                        {{-- @dd($dataArray); --}}
-                        @if ($dataArray['item_name'] == 'SOR' || $dataArray['item_name'] == '1' )
+                        @if ($dataArray['item_name'] == 'SOR')
                             <div class="row" wire:key='SOR' style="transition: all 2s ease-out"
                                 x-data="{ showSearch: false }">
                                 <div class="col">
@@ -133,7 +123,7 @@
                                 <div x-show="!showSearch" class="col">
                                     <div class="form-group">
                                         <x-select wire:key="dept" label="Page No" placeholder="Select Page No"
-                                            wire:model.defer="dataArray.sor_id" x-on:select="$wire.getDynamicSor()">
+                                            wire:model.defer="dataArray.id" x-on:select="$wire.getDynamicSor()">
                                             @foreach ($fatchDropdownData['page_no'] as $page)
                                                 <x-select.option
                                                     label="{{ $page['page_no'] . ($page['corrigenda_name'] != null ? ' - ' . $page['corrigenda_name'] : '') }}"
@@ -171,36 +161,6 @@
                                         @endif
                                     </div>
                                 </div>
-                                @if ($department_id == 26)
-                           
-                                <div class="col">
-                                    @if($rowSubrow_PId != '0' || $rowSubrow_PId != 0 )
-                                    <div class="form-group">
-                                    <x-input 
-                                        wire:key="sor_qty"
-                                        label="{{ trans('cruds.estimate.fields.quantity') }}"
-                                        placeholder="{{ trans('cruds.estimate.fields.quantity') }}"
-                                        wire:model.defer="dataArray.qty"
-                                        wire:input="checkQty($event.target.value, {{ $rowSubrow_ID }})"
-                                        wire:blur="calculateValue"
-                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '');" 
-                                    />
-                                    
-                                    </div>
-                                @else
-                                <div class="form-group">
-                                    <x-input 
-                                        wire:key="sor_qty"
-                                        label="{{ trans('cruds.estimate.fields.quantity') }}"
-                                        placeholder="{{ trans('cruds.estimate.fields.quantity') }}"
-                                        wire:model.defer="dataArray.qty"
-                                        wire:blur="calculateValue"
-                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '');" 
-                                    />
-                                </div>
-                                @endif
-                                </div>
-                                @else
                                 <div class="col">
                                     <div class="form-group">
                                         <x-input wire:key="sor_qty"
@@ -210,7 +170,6 @@
                                             oninput="this.value = this.value.replace(/[^0-9.]/g, '');" />
                                     </div>
                                 </div>
-                                @endif
                                 <div class="col">
                                     <div class="form-group">
                                         <x-input wire:key="sor_rate"
@@ -229,7 +188,7 @@
                                 </div>
                             </div>
                         @endif
-                        @if ($dataArray['item_name'] == 'Other' || $dataArray['item_name'] == '2')
+                        @if ($dataArray['item_name'] == 'Other')
                             <div class="row" wire:key='others'>
                                 <div class="col">
                                     <div class="form-group">
@@ -281,7 +240,7 @@
                         {{-- Others Field end --}}
 
                         {{-- Rate Field Start --}}
-                        @if ($dataArray['item_name'] == 'Rate' || $dataArray['item_name'] == '4')
+                        @if ($dataArray['item_name'] == 'Rate')
                             <div class="row" wire:key='Rate'>
                                 <div class="col">
                                     <div class="form-group" wire:key="rateDeptGroup">
@@ -375,7 +334,7 @@
                         {{-- Rate Field End --}}
 
                         {{-- Composite SOR Field Start --}}
-                        @if ($dataArray['item_name'] == 'Composite SOR' || $dataArray['item_name'] == '0')
+                        @if ($dataArray['item_name'] == 'Composite SOR')
                             <div class="row" wire:key='C-SOR' style="transition: all 2s ease-out">
                                 <div class="col">
                                     <div class="form-group">
@@ -464,7 +423,7 @@
                         {{-- Composite SOR Field End --}}
 
                         {{-- Carriages Field Start --}}
-                        @if ($dataArray['item_name'] == 'Carriages' || $dataArray['item_name'] == '0')
+                        @if ($dataArray['item_name'] == 'Carriages')
                             <div class="row" wire:key='Carriages' style="transition: all 2s ease-out">
 
                                 <div class="col-md-2 col-lg-2 col-sm-3">
@@ -558,7 +517,7 @@
                                 </div>
                             </div>
                         @endif
-                        @if ($dataArray['item_name'] == 'Copy Rate' || $dataArray['item_name'] == '0')
+                        @if ($dataArray['item_name'] == 'Copy Rate')
                             <div class="row" wire:key='copy_rate'>
                                 <div class="col">
                                     <div class="form-group" wire:key="copyrateDeptGroup">
@@ -594,7 +553,7 @@
                                 </div>
                             </div>
                         @endif
-                        @if ($dataArray['item_name'] == 'Estimate' || $dataArray['item_name'] == '3')
+                        @if ($dataArray['item_name'] == 'Estimate')
                             <div class="row" wire:key='{{ $dataArray['item_name'] }}'>
                                 <div class="col">
                                     <div class="form-group">
@@ -727,7 +686,6 @@
             $tableNo = isset($dataArray['table_no']) ? $dataArray['table_no'] : $selectSor['table_no'];
             $pageNo = isset($dataArray['page_no']) ? $dataArray['page_no'] : $selectSor['page_no'];
         @endphp
-      
         <script>
             var editRowDataItemName = @json($editRowData['item_name']);
             document.getElementById("closeBtn").addEventListener("click", function() {

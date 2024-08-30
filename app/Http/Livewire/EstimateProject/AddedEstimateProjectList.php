@@ -109,12 +109,12 @@ class AddedEstimateProjectList extends Component
                 $this->allAddedEstimatesData[$key]['estimate_no'] = $fetchUpdateRateData['estimate_no'];
                 $this->allAddedEstimatesData[$key]['rate_no'] = $fetchUpdateRateData['rate_no'];
                 $this->allAddedEstimatesData[$key]['dept_id'] = $fetchUpdateRateData['dept_id'];
-                $this->allAddedEstimatesData[$key]['category_id'] = $fetchUpdateRateData['category_id'];
-                $this->allAddedEstimatesData[$key]['sor_item_number'] = $fetchUpdateRateData['sor_item_number'];
-                $this->allAddedEstimatesData[$key]['volume_no'] = $fetchUpdateRateData['volume_no'];
+                $this->allAddedEstimatesData[$key]['category_id'] = $fetchUpdateRateData['dept_category_id'];
+                $this->allAddedEstimatesData[$key]['sor_item_number'] = $fetchUpdateRateData['item_number'];
+                $this->allAddedEstimatesData[$key]['volume_no'] = $fetchUpdateRateData['volume'];
                 $this->allAddedEstimatesData[$key]['table_no'] = $fetchUpdateRateData['table_no'];
                 $this->allAddedEstimatesData[$key]['page_no'] = !empty($fetchUpdateRateData['page_no']) ? $fetchUpdateRateData['page_no'] : 0;
-                $this->allAddedEstimatesData[$key]['sor_id'] = $fetchUpdateRateData['sor_id'];
+                $this->allAddedEstimatesData[$key]['sor_id'] = $fetchUpdateRateData['id'];
                 $this->allAddedEstimatesData[$key]['item_index'] = $fetchUpdateRateData['item_index'];
                 $this->allAddedEstimatesData[$key]['item_name'] = $fetchUpdateRateData['item_name'];
                 $this->allAddedEstimatesData[$key]['other_name'] = $fetchUpdateRateData['other_name'];
@@ -122,18 +122,16 @@ class AddedEstimateProjectList extends Component
                 $this->allAddedEstimatesData[$key]['qty'] = $fetchUpdateRateData['qty'];
                 $this->allAddedEstimatesData[$key]['rate'] = $fetchUpdateRateData['rate'];
                 $this->allAddedEstimatesData[$key]['total_amount'] = $fetchUpdateRateData['total_amount'];
+                if ($this->allAddedEstimatesData[$key]['unit_id'][0] === '%') {
+                    $this->allAddedEstimatesData[$key]['total_amount'] = $this->allAddedEstimatesData[$key]['total_amount'] / 100;
+                }
                 $this->allAddedEstimatesData[$key]['operation'] = $fetchUpdateRateData['operation'];
                 $this->allAddedEstimatesData[$key]['col_position'] = $fetchUpdateRateData['col_position'];
                 $this->allAddedEstimatesData[$key]['is_row'] = $fetchUpdateRateData['is_row'];
                 $this->allAddedEstimatesData[$key]['rate_type'] = $fetchUpdateRateData['rate_type'];
                 $this->allAddedEstimatesData[$key]['unit_id'] = $fetchUpdateRateData['unit_id'];
-                if(isset($this->allAddedEstimatesData[$key]['unit_id'][0]) && $this->allAddedEstimatesData[$key]['unit_id'][0] === '%'){
-                    $this->allAddedEstimatesData[$key]['total_amount'] = $this->allAddedEstimatesData[$key]['total_amount'] / 100;
-                }
                 $this->allAddedEstimatesData[$key]['qtyUpdate'] = $fetchUpdateRateData['qtyUpdate'];
-                if($this->allAddedEstimatesData[$key]['qtyUpdate']){
-                    $this->allAddedEstimatesData[$key]['rate_analysis_data'] = $fetchUpdateRateData['rate_analysis_data'];
-                }
+                $this->allAddedEstimatesData[$key]['rate_analysis_data'] = $fetchUpdateRateData['rate_analysis_data'];
             }
         }
         if ($this->editEstimate_id != '') {
@@ -490,9 +488,6 @@ class AddedEstimateProjectList extends Component
             }
             if (!array_key_exists("col_position", $this->addedEstimateData)) {
                 $this->addedEstimateData['col_position'] = 0;
-            }
-            if (!array_key_exists("is_row", $this->addedEstimateData)) {
-                $this->addedEstimateData['is_row'] = 0;
             }
             if (!array_key_exists("rate_type", $this->addedEstimateData)) {
                 $this->addedEstimateData['rate_type'] = '';

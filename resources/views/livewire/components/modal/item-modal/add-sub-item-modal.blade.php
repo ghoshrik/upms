@@ -10,14 +10,9 @@
                     <h5 class="modal-title" id="exampleModalLabel">
                         Sub Item Modal
                     </h5>
-                    {{-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
-                    </button> --}}
-                    @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ session('error') }}
-                    </div>
-                @endif
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div wire:loading.delay.longest>
@@ -190,17 +185,6 @@
                                     @endif
                                 </div>
                             </div>
-                            @if ($department_id == 26)
-                            <div class="col">
-                                <div class="form-group">
-                                    <x-input wire:key="sor_qty" label="{{ trans('cruds.estimate.fields.quantity') }}"
-                                        placeholder="{{ trans('cruds.estimate.fields.quantity') }}"
-                                        wire:model.defer="subItemData.qty"    wire:input="checkQty($event.target.value, {{ $rowParentId }})" wire:blur="calculateValue"
-                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '');" />
-                                </div>
-                            </div>
-                                    
-                            @else
                             <div class="col">
                                 <div class="form-group">
                                     <x-input wire:key="sor_qty" label="{{ trans('cruds.estimate.fields.quantity') }}"
@@ -208,10 +192,7 @@
                                         wire:model.defer="subItemData.qty" wire:blur="calculateValue"
                                         oninput="this.value = this.value.replace(/[^0-9.]/g, '');" />
                                 </div>
-                            </div>    
-                            @endif
-                        
-                           
+                            </div>
                             <div class="col">
                                 <div class="form-group">
                                     <x-input wire:key="sor_rate"

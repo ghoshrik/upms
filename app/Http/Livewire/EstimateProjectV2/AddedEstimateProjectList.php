@@ -915,7 +915,7 @@ class AddedEstimateProjectList extends Component
 
     public function store($flag = '')
     {
-        //dd($this->allAddedEstimatesData);
+        dd($this->allAddedEstimatesData);
         $this->getQtySessionData = ($this->editEstimate_id == '') ? Session()->get('modalDataV2') : Session()->get('editModalDataV2');
         if ($this->autoTotalValue != 0 || $flag == 'draft') {
             try {
