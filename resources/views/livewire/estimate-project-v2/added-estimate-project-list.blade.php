@@ -2,20 +2,20 @@
     <div wire:loading.delay.longest>
         <div class="spinner-border text-primary loader-position" role="status"></div>
     </div>
-   
+
     @if ($allAddedEstimatesData != null)
         <div wire:loading.delay.longest.class="loading" class="col-md-12 col-lg-12">
-            <div class="card overflow-hidden">
-                <div class="card-header d-flex justify-content-between flex-wrap">
+            <div class="overflow-hidden card">
+                <div class="flex-wrap card-header d-flex justify-content-between">
                     <div class="header-title">
-                        <h4 class="card-title mb-2">Added Estimates List</h4>
+                        <h4 class="mb-2 card-title">Added Estimates List</h4>
                     </div>
                 </div>
                 {{-- <div>
-                    <div class="row m-2">
-                        <div class="col col-md-6 col-lg-6 mb-2">
+                    <div class="m-2 row">
+                        <div class="mb-2 col col-md-6 col-lg-6">
                             <div class="row">
-                                <div class="input-group mb-3">
+                                <div class="mb-3 input-group">
                                     <input type="text" wire:model="expression" class="form-control"
                                         placeholder="{{ trans('cruds.estimate.fields.operation') }}"
                                         aria-label="{{ trans('cruds.estimate.fields.operation') }}"
@@ -29,8 +29,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col col-md-6 col-lg-6 mb-2">
-                            <div class="btn-group float-right" role="group" aria-label="Basic example">
+                        <div class="mb-2 col col-md-6 col-lg-6">
+                            <div class="float-right btn-group" role="group" aria-label="Basic example">
                                 <button type="button" class="btn btn-soft-primary" wire:click="totalOnSelected"
                                     @if ($openTotalButton) {{ '' }}@else {{ 'disabled' }} @endif>{{ trans('cruds.estimate.fields.total_on_selected') }}
                                 </button>
@@ -43,9 +43,9 @@
                         </div>
                     </div>
                 </div> --}}
-                <div class="card-body p-0">
-                    <div class="table-responsive mt-4">
-                        <table id="basic-table" class="table table-striped mb-0" role="grid">
+                <div class="p-0 card-body">
+                    <div class="mt-4 table-responsive">
+                        <table id="basic-table" class="table mb-0 table-striped" role="grid">
                             <thead>
                                 <tr>
                                     {{-- <th><x-checkbox wire:key="checkbox" id="checkbox" wire:model="selectCheckBoxs"
@@ -188,7 +188,7 @@
                                                     </span>
                                                 </button>
                                             @endif
-                                            {{-- @if ($arrayRow - 1 == $key) --}}
+                                            @if ($arrayRow != $key)
                                             {{-- <x-button
                                                     wire:click="confDeleteDialog({{ $addedEstimate['array_id'] }})"
                                                     type="button" class="btn btn-soft-danger btn-sm">
@@ -204,7 +204,7 @@
                                                     <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                 </span>
                                             </button>
-                                            {{-- @endif --}}
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -225,12 +225,12 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6"> <button type="button" wire:click='resetSession'
-                                class="btn btn-soft-danger rounded-pill float-left">Reset</button></div>
+                                class="float-left btn btn-soft-danger rounded-pill">Reset</button></div>
                         <div class="col-6">
                             <button type="submit" wire:click='store'
-                                class="btn btn-success rounded-pill float-right">Save</button>
+                                class="float-right btn btn-success rounded-pill">Save</button>
                             <button type="submit" wire:click='store("draft")'
-                                class="btn btn-soft-primary rounded-pill float-right mr-2">Draft</button>
+                                class="float-right mr-2 btn btn-soft-primary rounded-pill">Draft</button>
                         </div>
 
                     </div>
