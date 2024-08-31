@@ -69,7 +69,7 @@
                             <div class="row row-cols-1">
                                 <div class="d-slider1 overflow-hidden ">
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-3 col-lg-3 col-sm-6">
                                             <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab == 1 ? 'active' : '' }}"
                                                 wire:click="draftData()">
                                                 <div class="card-body">
@@ -100,7 +100,7 @@
                                                 </div>
                                             </li>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3 col-lg-3 col-sm-6">
                                             <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab == 2 ? 'active' : '' }}"
                                                 wire:click='forwardedData()'>
                                                 <div class="card-body">
@@ -129,7 +129,7 @@
                                                 </div>
                                             </li>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3 col-lg-3 col-sm-6">
                                             <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab == 3 ? 'active' : '' }}"
                                                 wire:click="revertedData()">
                                                 <div class="card-body">
@@ -153,6 +153,35 @@
                                                             <h4 class="counter" style="visibility: visible;"
                                                                 wire:key="$updateDataTableTracker">
                                                                 {{ $counterData['revertedDataCount'] }}</h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </div>
+                                        <div class="col-md-3 col-lg-3 col-sm-6">
+                                            <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab == 4 ? 'active' : '' }}"
+                                                wire:click="approvedData()">
+                                                <div class="card-body">
+                                                    <div class="progress-widget">
+                                                        <div id="circle-progress-04"
+                                                             class="circle-progress-01 circle-progress circle-progress-primary text-center"
+                                                             data-min-value="0"
+                                                             data-max-value="{{ $counterData['totalDataCount'] }}"
+                                                             data-value="{{ $counterData['approveDataCount'] }}"
+                                                             data-type="percent" wire:ignore>
+                                                            <svg class="card-slie-arrow " width="24" height="24"
+                                                                 viewBox="0 0 24 24" fill="none"
+                                                                 stroke="currentColor" stroke-width="2"
+                                                                 stroke-linecap="round" stroke-linejoin="round">
+                                                                <polyline points="9 14 4 9 9 4"></polyline>
+                                                                <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
+                                                            </svg>
+                                                        </div>
+                                                        <div class="progress-detail">
+                                                            <p class="mb-2">Total Approved</p>
+                                                            <h4 class="counter" style="visibility: visible;"
+                                                                wire:key="$updateDataTableTracker">
+                                                                {{ $counterData['approveDataCount'] }}</h4>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -186,6 +215,14 @@
                                         {{-- <livewire:estimate-project.datatable.powergrid.estimate-revert-table :wire:key="$updateDataTableTracker" /> --}}
                                     </div>
                                 </div>
+
+                            @elseif($this->selectedTab==4)
+                            <div class="card">
+                                <div class="card-body">
+                                    <livewire:estimate-project.data-table.powergrid.approved-estimate-project :wire:key="$updateDataTableTracker"/>
+                                </div>
+                            </div>
+
                             @else
                                 <div
                                     class="col-span-6 sm:col-span-3 xl:col-span-2 flex flex-col justify-end items-center">

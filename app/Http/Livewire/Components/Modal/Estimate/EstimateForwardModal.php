@@ -45,7 +45,7 @@ class EstimateForwardModal extends Component
     public function updatedOutsideOffice($value)
     {
         $this->updateLabel();
-        $this->ousideOfficeUser();
+//        $this->ousideOfficeUser();
     }
 
     public function ousideOfficeUser()
@@ -86,10 +86,9 @@ class EstimateForwardModal extends Component
         $associatedId = SanctionRole::select('role_id', 'permission_id')
             ->where('sequence_no', $estimateFlowDtls->sequence_no)
             ->first();
-
+//        dd($associatedId);
 
         $role = Role::findById($associatedId->role_id);
-
 //        $this->assigenUsersList = $role->users;
         $this->assigenUsersList = $role->users->map(function ($user) use ($estimateFlowDtls, $associatedId) {
             return [
@@ -274,7 +273,7 @@ class EstimateForwardModal extends Component
         }*/
 
         $sanctionLists = SanctionRole::where('sequence_no', $fwdUserDetails[2])->first();
-//         dd($sanctionLists);
+         dd($sanctionLists);
         EstimateFlow::where('user_id',Auth::user()->id)->update(['dispatch_at'=>Carbon::now()]);
         // if (count($sanctionLists) > 0) {
 //        EstimateFlow::where()

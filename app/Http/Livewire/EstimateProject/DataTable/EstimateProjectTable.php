@@ -13,6 +13,7 @@ use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
 use WireUi\Traits\Actions;
+use function PowerComponents\LivewirePowerGrid\Rules\hide;
 
 final class EstimateProjectTable extends PowerGridComponent
 {
@@ -58,7 +59,9 @@ final class EstimateProjectTable extends PowerGridComponent
                 'estimate_statuses.status',
                 'permissions.name',
                 'estimate_flows.sequence_no',
-                DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no')
+                 'estimate_flows.dispatch_at',
+                 DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no'),
+                 DB::raw('MAX(estimate_flows.sequence_no) OVER (PARTITION BY sor_masters.estimate_id) as max_sequence_no')
             )
             ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
             ->join('estimate_flows', 'sor_masters.estimate_id', '=', 'estimate_flows.estimate_id')
@@ -68,12 +71,14 @@ final class EstimateProjectTable extends PowerGridComponent
             ->where('estimate_flows.user_id', Auth::user()->id)
             ->where('estimate_prepares.operation','=','Total')
             ->where('sor_masters.associated_with',Auth::user()->id)
+            ->whereNull('sor_masters.is_verified')
             ->groupBy(
                 'sor_masters.estimate_id',
                         'sor_masters.id',
                         'estimate_prepares.total_amount',
                         'permissions.name',
                         'estimate_statuses.status',
+                        'estimate_flows.dispatch_at',
                         'estimate_flows.sequence_no');
 
 //            dd($data->toSql());
@@ -231,8 +236,14 @@ final class EstimateProjectTable extends PowerGridComponent
              ->bladeComponent('forwd-button', ['id' => 'estimate_id']),
 //                ->can($this->canPermission['forward']),
 
+//            Button::add('approve')
+//                ->bladeComponent('approve-button',['id'=>'estimate_id','action'=>'approveEstimate']),
+
             Button::add('approve')
-                ->bladeComponent('approve-button',['id'=>'estimate_id','action'=>'approveEstimate']),
+                ->caption('approve')
+                ->class('btn btn-soft-success btn-sm px-3 py-2.5 m-1 rounded')
+                ->emit('openApproveModal',['estimate_id'=>'estimate_id'])
+                ->tooltip('Approved'),
 
             Button::add('Edit')
                 ->bladeComponent('edit-button', ['id' => 'estimate_id', 'action' => 'edit']),
@@ -263,12 +274,13 @@ final class EstimateProjectTable extends PowerGridComponent
         {
        return [
            Rule::button('forward')
-                ->when(fn($estimate)=>$this->canForward($estimate->estimate_id))
-                ->bladeComponent('forwd-button', ['id' => 'estimate_id']),
+                ->when(fn($row)=>$this->canForward($row))
+//                ->bladeComponent('forwd-button', ['id' => 'estimate_id'])
+                ->hide(),
            Rule::button('approve')
-                ->when(fn($estimate)=>$this->canApprove($estimate->estimate_id))
-                ->bladeComponent('approve-button',['action'=>'approveEstimate','id'=>'estimate_id']),
-
+                ->when(fn($row)=>$this->canApprove($row))
+//                ->bladeComponent('approve-button',['action'=>'approveEstimate','id'=>'estimate_id'])
+                ->hide(),
            Rule::button('Edit')
                ->when(fn($row) => $this->canEdit($row))
                 ->hide(),
@@ -277,29 +289,75 @@ final class EstimateProjectTable extends PowerGridComponent
                 ->hide()
         ];
     }
-
-    private function canForward($estimateId)
+    private function canForward($estimate)
     {
-        $estimateFlows = EstimateFlow::where('estimate_id', $estimateId)
+
+        $highestSequence = EstimateFlow::where('estimate_id', $estimate->estimate_id)
+            ->max('sequence_no');
+        $currentSequenceNo = EstimateFlow::select('sequence_no')
+            ->where('estimate_id',$estimate->estimate_id)
             ->orderBy('sequence_no')
             ->get();
+        $forwardList = $currentSequenceNo->map(function ($estimate){
+            return $estimate->sequence_no;
+        })->toArray();
+        foreach ($forwardList as $key => $list){
+            if($list != $highestSequence){
+                unset($forwardList[$key]);
+            }
+        }
+//        $forwardList = $currentSequenceNo->filter(function ($estimate) use ($highestSequence) {
+//            return $estimate->sequence_no == $highestSequence;
+//        })->pluck('sequence_no')->toArray();
 
-        $currentSequenceNo = $estimateFlows->max('sequence_no');
-
-        return $currentSequenceNo;
+//        return dd($forwardList,$estimate->sequence_no);
+//        return dd($estimate->sequence_no,$forwardList);
+        return in_array($estimate->sequence_no,$forwardList);
     }
-    private function canApprove($estimateId)
+    private function canApprove($row)
     {
-        $estimateFlows = EstimateFlow::where('estimate_id', $estimateId)
-            ->orderBy('sequence_no')
-            ->get();
 
-        $currentSequenceNo = $estimateFlows->max('sequence_no');
-        return $currentSequenceNo;
+        $highestSequence = EstimateFlow::where('estimate_id', $row->estimate_id)
+            ->max('sequence_no');
+
+        $currentSequenceNo = EstimateFlow::select('sequence_no')
+                        ->where('estimate_id',$row->estimate_id)
+                        ->orderBy('sequence_no')
+                        ->get();
+        $approveList = $currentSequenceNo->map(function ($estimate){
+             return $estimate->sequence_no;
+        })->toArray();
+        foreach ($approveList as $key => $list){
+            if($list == $highestSequence){
+                unset($approveList[$key]);
+            }
+        }
+//        $collection = collect($approveList);
+//
+//        // Use the filter method to exclude the specific value
+//        $filteredCollection = $collection->filter(function ($item) use ($highestSequence) {
+//            return $item !== $highestSequence; // Exclude the item that matches $excludedValue
+//        });
+//
+//        // Convert to array and reset keys (if needed)
+//        $filteredArray = $filteredCollection->values()->toArray();
+//            dd($approveList);
+//        if(in_array($row->sequence_no,$approveList))
+//        {
+//            return dd("right");
+//        }
+//        else
+//        {
+//            return dd("left");
+//        }
+
+
+        return in_array($row->sequence_no,$approveList);
     }
     private function canEdit($estimate)
     {
         return !in_array($estimate->sequence_no,[1,2]);
+//        return dd($estimate);
     }
     public function view($estimate_id)
     {

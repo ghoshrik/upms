@@ -35,6 +35,12 @@ class EstimateProject extends Component
         $this->selectedTab = 3;
         $this->dataCounter();
     }
+    public function approvedData()
+    {
+        $this->selectedTab = '';
+        $this->selectedTab = 4;
+        $this->dataCounter();
+    }
     public function dataCounter()
     {
 
@@ -60,10 +66,17 @@ class EstimateProject extends Component
                                                 ->whereNull('dispatch_at')
                                                 ->count();
         $this->counterData['fwdDataCount']= EstimateFlow::join('sor_masters','sor_masters.estimate_id','=','estimate_flows.estimate_id')
-                                            ->where('user_id',Auth::user()->id)
-                                            ->whereNotNull('dispatch_at')
-                                            ->where('is_verified',1)
+                                            ->where('estimate_flows.user_id',Auth::user()->id)
+                                            ->whereNotNull('estimate_flows.dispatch_at')
+                                            ->whereNull('sor_masters.is_verified')
                                             ->count();
+
+        $this->counterData['approveDataCount'] = EstimateFlow::join('sor_masters','sor_masters.estimate_id','=','estimate_flows.estimate_id')
+                                                    ->where('estimate_flows.user_id',Auth::user()->id)
+                                                    ->whereNotNull('estimate_flows.dispatch_at')
+                                                    ->where('sor_masters.is_verified',1)
+                                                    ->whereNotNull('sor_masters.approved_at')
+                                                    ->count();
         // dd($this->counterData['totalDataCount']);
         // EstimateUserAssignRecord::where('status', 1)
         // ->where('user_id', Auth::user()->id)
