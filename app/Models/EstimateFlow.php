@@ -17,5 +17,4 @@ class EstimateFlow extends Model
     {
         return $this->belongsTo(Permission::class);
     }
-
 }
