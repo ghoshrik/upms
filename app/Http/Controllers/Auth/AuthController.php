@@ -56,7 +56,7 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $request->email_id)
-            // ->orWhere('ehrms_id', $request->email_id)
+            ->orWhere('username', $request->email_id)
             ->first();
         if ($user) {
             session([

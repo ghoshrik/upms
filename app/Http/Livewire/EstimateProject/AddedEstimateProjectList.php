@@ -110,7 +110,7 @@ class AddedEstimateProjectList extends Component
                 $this->allAddedEstimatesData[$key]['rate_no'] = $fetchUpdateRateData['rate_no'];
                 $this->allAddedEstimatesData[$key]['dept_id'] = $fetchUpdateRateData['dept_id'];
                 $this->allAddedEstimatesData[$key]['category_id'] = $fetchUpdateRateData['dept_category_id'];
-                $this->allAddedEstimatesData[$key]['sor_item_number'] = $fetchUpdateRateData['item_number'];
+                $this->allAddedEstimatesData[$key]['sor_item_number'] = $fetchUpdateRateData['sor_item_number'];
                 $this->allAddedEstimatesData[$key]['volume_no'] = $fetchUpdateRateData['volume'];
                 $this->allAddedEstimatesData[$key]['table_no'] = $fetchUpdateRateData['table_no'];
                 $this->allAddedEstimatesData[$key]['page_no'] = !empty($fetchUpdateRateData['page_no']) ? $fetchUpdateRateData['page_no'] : 0;
@@ -119,17 +119,18 @@ class AddedEstimateProjectList extends Component
                 $this->allAddedEstimatesData[$key]['item_name'] = $fetchUpdateRateData['item_name'];
                 $this->allAddedEstimatesData[$key]['other_name'] = $fetchUpdateRateData['other_name'];
                 $this->allAddedEstimatesData[$key]['description'] = $fetchUpdateRateData['description'];
+                $this->allAddedEstimatesData[$key]['unit_id'] = $fetchUpdateRateData['unit_id'];
                 $this->allAddedEstimatesData[$key]['qty'] = $fetchUpdateRateData['qty'];
                 $this->allAddedEstimatesData[$key]['rate'] = $fetchUpdateRateData['rate'];
                 $this->allAddedEstimatesData[$key]['total_amount'] = $fetchUpdateRateData['total_amount'];
                 if ($this->allAddedEstimatesData[$key]['unit_id'][0] === '%') {
                     $this->allAddedEstimatesData[$key]['total_amount'] = $this->allAddedEstimatesData[$key]['total_amount'] / 100;
                 }
+                $this->allAddedEstimatesData[$key]['total_amount'] = round($this->allAddedEstimatesData[$key]['total_amount']);
                 $this->allAddedEstimatesData[$key]['operation'] = $fetchUpdateRateData['operation'];
                 $this->allAddedEstimatesData[$key]['col_position'] = $fetchUpdateRateData['col_position'];
                 $this->allAddedEstimatesData[$key]['is_row'] = $fetchUpdateRateData['is_row'];
                 $this->allAddedEstimatesData[$key]['rate_type'] = $fetchUpdateRateData['rate_type'];
-                $this->allAddedEstimatesData[$key]['unit_id'] = $fetchUpdateRateData['unit_id'];
                 $this->allAddedEstimatesData[$key]['qtyUpdate'] = $fetchUpdateRateData['qtyUpdate'];
                 $this->allAddedEstimatesData[$key]['rate_analysis_data'] = $fetchUpdateRateData['rate_analysis_data'];
             }
@@ -148,6 +149,7 @@ class AddedEstimateProjectList extends Component
                 $title = 'Error Updating Row'
             );
         }
+        $this->updatedEstimateRecalculate();
         $this->editRowModal = !$this->editRowModal;
     }
     public function viewModal($estimate_id)
@@ -178,7 +180,6 @@ class AddedEstimateProjectList extends Component
         }
         $this->arrayCount = count($this->allAddedEstimatesData);
     }
-
 
     public function submitGrandTotal($grandTotal, $key)
     {
@@ -320,6 +321,9 @@ class AddedEstimateProjectList extends Component
         } else {
             $this->allAddedEstimatesData[$key]['rate'] = 0;
             $this->allAddedEstimatesData[$key]['total_amount'] = 0;
+        }
+        if ($this->allAddedEstimatesData[$key]['unit_id'][0] === '%') {
+            $this->allAddedEstimatesData[$key]['total_amount'] = round($this->allAddedEstimatesData[$key]['total_amount'] / 100);
         }
     }
 
@@ -499,7 +503,6 @@ class AddedEstimateProjectList extends Component
                 $this->allAddedEstimatesData[$index][$key] = $estimate;
             }
 
-
             if ($this->editEstimate_id == '') {
                 Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
                 Session()->put('projectEstimateDesc', $this->sorMasterDesc);
@@ -538,6 +541,12 @@ class AddedEstimateProjectList extends Component
             unset($sessionData[$value]);
         }
         $numericValue = preg_replace('/[^0-9]/', '', $value);
+        if (isset($this->allAddedEstimatesData[$numericValue]['operation']) && $this->allAddedEstimatesData[$numericValue]['operation'] == 'Total') {
+            // if ($this->totalOnSelectedCount >= 1) {
+                $this->reset('totalOnSelectedCount');
+                ($this->editEstimate_id == '') ? Session()->forget('projectEstimationTotal') : Session()->forget('editProjectEstimationTotal' . $this->editEstimate_id);
+            // }
+        }
         unset($this->allAddedEstimatesData[$numericValue]);
         $this->updateTotalAmounts();
         $this->allAddedEstimatesData = $this->reindexArray($this->allAddedEstimatesData, $value);
@@ -552,10 +561,6 @@ class AddedEstimateProjectList extends Component
             Session()->put('editModalData', $sessionData);
         }
         $this->level = [];
-        if ($this->totalOnSelectedCount >= 1) {
-            $this->reset('totalOnSelectedCount');
-            ($this->editEstimate_id == '') ? Session()->forget('projectEstimationTotal') : Session()->forget('editProjectEstimationTotal' . $this->editEstimate_id);
-        }
         $this->notification()->error(
             $title = 'Row Deleted Successfully'
         );

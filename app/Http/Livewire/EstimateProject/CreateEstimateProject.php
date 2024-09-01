@@ -826,6 +826,7 @@ class CreateEstimateProject extends Component
             if (isset($this->addedEstimate['unit_id'][0]) && $this->addedEstimate['unit_id'][0] === '%') {
                 $this->addedEstimate['total_amount'] = $this->addedEstimate['total_amount'] / 100;
             }
+            $this->addedEstimate['total_amount'] = round($this->addedEstimate['total_amount']);
             $this->addedEstimate['version'] = $this->estimateData['version'];
             $this->addedEstimate['page_no'] = (isset($this->estimateData['page_no'])) ? $this->estimateData['page_no'] : 0;
             $this->addedEstimate['table_no'] = (isset($this->estimateData['table_no'])) ? $this->estimateData['table_no'] : 0;

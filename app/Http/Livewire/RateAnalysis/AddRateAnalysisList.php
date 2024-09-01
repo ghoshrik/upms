@@ -69,6 +69,9 @@ class AddRateAnalysisList extends Component
                 $this->allAddedRateData[$count]['total_amount'] = $rateData['total_amount'];
                 // $this->allAddedRateData[$count]['version'] = $rateData['version'];
                 $this->allAddedRateData[$count]['operation'] = $rateData['operation'];
+                if($rateData['operation'] != ''){
+                    $this->totalOnSelectedCount++;
+                }
                 $this->allAddedRateData[$count]['col_position'] = $rateData['col_position'];
                 $this->allAddedRateData[$count]['is_row'] = '';
                 $this->allAddedRateData[$count]['unit_id'] = $rateData['unit_id'];
@@ -125,13 +128,14 @@ class AddRateAnalysisList extends Component
 
     public function updateSetFetchData($fetchUpdateRateData, $update_id)
     {
+        // dd($fetchUpdateRateData);
         // $numericValue = preg_replace('/[^0-9]/', '', $update_id);
         foreach ($this->allAddedRateData as $key => $rate) {
             if ($rate['array_id'] == $update_id) {
                 $this->allAddedRateData[$key]['rate_no'] = $fetchUpdateRateData['rate_no'];
                 $this->allAddedRateData[$key]['dept_id'] = $fetchUpdateRateData['dept_id'];
                 $this->allAddedRateData[$key]['category_id'] = $fetchUpdateRateData['dept_category_id'];
-                $this->allAddedRateData[$key]['sor_item_number'] = $fetchUpdateRateData['item_number'];
+                $this->allAddedRateData[$key]['sor_item_number'] = $fetchUpdateRateData['sor_item_number'];
                 $this->allAddedRateData[$key]['volume_no'] = $fetchUpdateRateData['volume'];
                 $this->allAddedRateData[$key]['table_no'] = $fetchUpdateRateData['table_no'];
                 $this->allAddedRateData[$key]['page_no'] = $fetchUpdateRateData['page_no'];
@@ -149,7 +153,7 @@ class AddRateAnalysisList extends Component
                 $this->allAddedRateData[$key]['rate_type'] = $fetchUpdateRateData['rate_type'];
                 $this->allAddedRateData[$key]['unit_id'] = $fetchUpdateRateData['unit_id'];
                 if(isset($this->allAddedRateData[$key]['unit_id'][0]) && $this->allAddedRateData[$key]['unit_id'][0] === '%'){
-                    $this->allAddedRateData[$key]['total_amount'] = $this->allAddedRateData[$key]['total_amount'] / 100;
+                    $this->allAddedRateData[$key]['total_amount'] = round($this->allAddedRateData[$key]['total_amount'] / 100,2);
                 }
                 $this->allAddedRateData[$key]['qtyUpdate'] = $fetchUpdateRateData['qtyUpdate'];
                 if($fetchUpdateRateData['qtyUpdate']){
@@ -157,6 +161,7 @@ class AddRateAnalysisList extends Component
                 }
             }
         }
+        $this->updatedRateRecalculate();
         if ($this->editRate_id != '') {
             Session()->put('editRateData' . $this->editRate_id, $this->allAddedRateData);
         } else {
@@ -426,7 +431,7 @@ class AddRateAnalysisList extends Component
             if (!isset($this->selectSor['item_number'])) {
                 $this->selectSor['item_number'] = 0;
             }
-            $this->insertAddRate($this->arrayIndex, Session::get('user_data.department_id'), 0, $this->selectSor['selectedSOR'], '', '', $this->rateMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, number_format(round($result), 2, '.', ''), $flag, '', '');
+            $this->insertAddRate($this->arrayIndex, Session::get('user_data.department_id'), 0, $this->selectSor['selectedSOR'], '', '', $this->rateMasterDesc, ($this->totalDistance != '') ? $this->totalDistance : 0, 0, number_format(round($result,2), 2, '.', ''), $flag, '', '');
             $this->totalOnSelectedCount++;
         } else {
             $this->notification()->error(
@@ -446,6 +451,9 @@ class AddRateAnalysisList extends Component
         } else {
             $this->allAddedRateData[$key]['rate'] = number_format(0, 2, '.', '');
             $this->allAddedRateData[$key]['total_amount'] = number_format(0, 2, '.', '');
+        }
+        if(isset($this->allAddedRateData[$key]['unit_id'][0]) && $this->allAddedRateData[$key]['unit_id'][0] === '%'){
+            $this->allAddedRateData[$key]['total_amount'] = round($this->allAddedRateData[$key]['total_amount'] / 100,2);
         }
     }
 

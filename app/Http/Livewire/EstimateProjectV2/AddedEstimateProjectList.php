@@ -424,6 +424,9 @@ class AddedEstimateProjectList extends Component
             $this->allAddedEstimatesData[$key]['rate'] = 0;
             $this->allAddedEstimatesData[$key]['total_amount'] = 0;
         }
+        // if ($this->allAddedEstimatesData[$key]['unit_id'][0] === '%') {
+        //     $this->allAddedEstimatesData[$key]['total_amount'] = round($this->allAddedEstimatesData[$key]['total_amount'] / 100);
+        // }
     }
 
     public function insertAddEstimate($arrayIndex, $dept_id, $category_id, $sor_item_number, $item_name, $other_name, $description, $qty, $rate, $total_amount, $operation, $version, $remarks)
@@ -915,7 +918,7 @@ class AddedEstimateProjectList extends Component
 
     public function store($flag = '')
     {
-        dd($this->allAddedEstimatesData);
+        // dd($this->allAddedEstimatesData);
         $this->getQtySessionData = ($this->editEstimate_id == '') ? Session()->get('modalDataV2') : Session()->get('editModalDataV2');
         if ($this->autoTotalValue != 0 || $flag == 'draft') {
             try {
@@ -942,7 +945,7 @@ class AddedEstimateProjectList extends Component
                                 'other_name' => $value['other_name'],
                                 'qty' => $value['qty'],
                                 'rate' => $value['rate'],
-                                'rate_det' => $value['rate_det'],
+                                'rate_det' => (isset($value['rate_det'])) ? $value['rate_det'] : '',
                                 'total_amount' => $value['total_amount'],
                                 'operation' => $value['operation'],
                                 'created_by' => Auth::user()->id,

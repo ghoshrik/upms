@@ -216,7 +216,7 @@
                                             {{ $addedRate['total_amount'] }}
                                         </td>
                                         <td>
-                                            @if ($addedRate['operation'] == '' || ($addedRate['operation'] != 'Total' && $addedRate['operation'] != 'Exp Calculation'))
+                                            @if ($addedRate['operation'] == '' || ($addedRate['rate_no'] != '' && $addedRate['rate_no'] != 0))
                                                 <button wire:click="editRow('{{ $addedRate['array_id'] }}')"
                                                     type="button" class="btn-soft-warning btn-sm">
                                                     <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
@@ -231,7 +231,7 @@
                                             </x-button>
 
 
-                                            @if ($arrayRow != $key)
+                                            {{-- @if ($arrayRow != $key) --}}
                                                 {{-- <x-button
                                                     wire:click="confDeleteDialog({{ $addedRate['array_id'] }})"
                                                     type="button" class="btn btn-soft-danger btn-sm">
@@ -252,7 +252,7 @@
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                     </span>
                                                 </button> --}}
-                                            @endif
+                                            {{-- @endif --}}
                                         </td>
                                     </tr>
                                 @endforeach

@@ -104,7 +104,10 @@
                                     <td style="text-align:center;">
                                         @if ($view['rate'] == 0)
                                         @else
-                                            {{ round($view['rate'], 10, 2) }}
+                                            {{ $view['rate'] }}
+                                            @if($view['rate_det'] != '')
+                                                {{ '( ' .$view['rate_det'] . ' )' }}
+                                            @endif
                                         @endif
                                     </td>
                                     <td style="text-align:center;">{{ round($view['total_amount'], 10, 2) }}</td>
