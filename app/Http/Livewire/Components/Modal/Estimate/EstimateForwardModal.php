@@ -45,10 +45,10 @@ class EstimateForwardModal extends Component
     public function updatedOutsideOffice($value)
     {
         $this->updateLabel();
-//        $this->ousideOfficeUser();
+        $this->outsideOfficeUser();
     }
 
-    public function ousideOfficeUser()
+    public function outsideOfficeUser()
     {
 //        $groupId = Office::where('group_id',Auth::user()->group_id)->get();
         $user = Auth::user();
@@ -272,19 +272,30 @@ class EstimateForwardModal extends Component
             );
         }*/
 
-        $sanctionLists = SanctionRole::where('sequence_no', $fwdUserDetails[2])->first();
-         dd($sanctionLists);
-        EstimateFlow::where('user_id',Auth::user()->id)->update(['dispatch_at'=>Carbon::now()]);
-        // if (count($sanctionLists) > 0) {
-//        EstimateFlow::where()
-        SorMaster::where('estimate_id', $fwdUserDetails[3])->update(['status' => 13,'associated_with'=>$fwdUserDetails[0]]);
+        DB::transaction(function ()use ($fwdUserDetails)
+        {
+//            dd($fwdUserDetails[0],$fwdUserDetails[1],$fwdUserDetails[2],$fwdUserDetails[3]);
 
-        EstimateFlow::select('id')
-            ->where('estimate_id', $fwdUserDetails[3])
-            ->where('slm_id', $fwdUserDetails[1])
-            ->where('role_id', $sanctionLists->role_id)
-            ->where('permission_id', $sanctionLists->permission_id)
-            ->update(['user_id' => $fwdUserDetails[0], 'associated_at' => Carbon::now()]);
+                $userId = $fwdUserDetails[0];
+                $slmId = $fwdUserDetails[1];
+                $sequenceNo = $fwdUserDetails[2];
+                $estimateId = $fwdUserDetails[3];
+            $sanctionLists = SanctionRole::select('role_id','permission_id')->where('sequence_no', $sequenceNo)->first();
+//            dd($sanctionLists);
+            EstimateFlow::where('estimate_id', $estimateId)
+                ->where('slm_id', $slmId)
+                ->where('role_id', $sanctionLists->role_id)
+                ->where('permission_id', $sanctionLists->permission_id)
+                ->update(['user_id' => $userId, 'associated_at' => Carbon::now()]);
+            DB::enableQueryLog();
+            EstimateFlow::where('user_id',Auth::user()->id)->update(['dispatch_at'=>Carbon::now()]);
+            DB::getQueryLog();
+            SorMaster::where('estimate_id',$estimateId)->update(['status' => 13,'associated_with'=>$userId]);
+
+
+
+        });
+        DB::getQueryLog();
         $this->notification()->success(
             $title = 'Success',
             $description = 'Successfully Assign!!'
@@ -293,6 +304,15 @@ class EstimateForwardModal extends Component
         $this->reset();
         $this->updateDataTableTracker = rand(1, 1000);
         $this->emit('refreshData', $this->updateDataTableTracker);
+
+
+
+
+
+//         dd($sanctionLists);
+
+
+
         // }
     }
     public function render()

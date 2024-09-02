@@ -5,7 +5,6 @@ namespace App\Http\Livewire\EstimateProject\DataTable;
 use App\Models\EstimateFlow;
 use App\Models\SorMaster;
 use Illuminate\Support\Carbon;
-use App\Models\EstimatePrepare;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,7 +12,6 @@ use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
 use WireUi\Traits\Actions;
-use function PowerComponents\LivewirePowerGrid\Rules\hide;
 
 final class EstimateProjectTable extends PowerGridComponent
 {
@@ -51,7 +49,7 @@ final class EstimateProjectTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        $data = EstimatePrepare::query()
+        /*$data = EstimatePrepare::query()
             ->select(
                 'sor_masters.id',
                 'sor_masters.estimate_id',
@@ -59,54 +57,65 @@ final class EstimateProjectTable extends PowerGridComponent
                 'estimate_statuses.status',
                 'permissions.name',
                 'estimate_flows.sequence_no',
-                 'estimate_flows.dispatch_at',
-                 DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no'),
-                 DB::raw('MAX(estimate_flows.sequence_no) OVER (PARTITION BY sor_masters.estimate_id) as max_sequence_no')
+                 DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no')
             )
-            ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
-            ->join('estimate_flows', 'sor_masters.estimate_id', '=', 'estimate_flows.estimate_id')
-            ->join('estimate_statuses','estimate_statuses.id','=','sor_masters.status')
-            ->join('permissions','permissions.id','=','estimate_flows.permission_id')
-            ->whereNotNull('estimate_flows.associated_at')
-            ->where('estimate_flows.user_id', Auth::user()->id)
+            ->leftJoin('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
+            ->leftJoin('estimate_flows', 'sor_masters.estimate_id', '=', 'estimate_flows.estimate_id')
+            ->leftJoin('estimate_statuses','estimate_statuses.id','=','sor_masters.status')
+            ->leftJoin('permissions','permissions.id','=','estimate_flows.permission_id')
+//            ->where('estimate_flows.user_id', Auth::user()->id)
             ->where('estimate_prepares.operation','=','Total')
             ->where('sor_masters.associated_with',Auth::user()->id)
-            ->whereNull('sor_masters.is_verified')
+//            ->where('sor_masters.is_verified',0)
+//             ->orderBy('sor_masters.estimate_id')
             ->groupBy(
                 'sor_masters.estimate_id',
                         'sor_masters.id',
                         'estimate_prepares.total_amount',
                         'permissions.name',
                         'estimate_statuses.status',
-                        'estimate_flows.dispatch_at',
                         'estimate_flows.sequence_no');
 
 //            dd($data->toSql());
 
+        return $data;*/
+        $data2 = SorMaster::query()
+                ->select('
+                 sor_masters.estimate_id,
+                 estimate_prepares.total_amount,
+                 estimate_statuses.status,
+                 permissions.name,
+                 estimate_flows.sequence_no',
+                    DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no')
+                )
+                ->leftJoin('estimate_prepares','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
+                ->leftJoin('estimate_flows', 'sor_masters.estimate_id', '=', 'estimate_flows.estimate_id')
+                ->leftJoin('estimate_statuses', 'estimate_statuses.id', '=', 'sor_masters.status')
+                ->leftJoin('permissions', 'permissions.id', '=', 'estimate_flows.permission_id')
+                ->where('estimate_prepares.operation','=','Total')
+                ->where('sor_masters.associated_with',Auth::user()->id);
+
+
+
+        $data= SorMaster::select(
+            'sor_masters.estimate_id',
+            'sor_masters.sorMasterDesc',
+            'sor_masters.id',
+            'estimate_flows.sequence_no',
+            'estimate_statuses.status'
+        )
+            ->distinct('sor_masters.estimate_id')
+            ->leftJoin('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
+            ->leftJoin('estimate_flows', 'sor_masters.estimate_id', '=', 'estimate_flows.estimate_id')
+            ->leftJoin('estimate_statuses', 'estimate_statuses.id', '=', 'sor_masters.status')
+            ->where('estimate_prepares.operation','=','Total')
+            ->where('sor_masters.associated_with',Auth::user()->id)
+            ->where('estimate_flows.user_id',Auth::user()->id)
+            ->where('sor_masters.is_verified',0)
+            ->groupBy('sor_masters.estimate_id','sor_masters.id','estimate_flows.estimate_id','estimate_flows.sequence_no','estimate_statuses.status')
+            ->orderBy('sor_masters.estimate_id')
+            ->orderBy('estimate_flows.sequence_no');
         return $data;
-//        return SorMaster::query()
-//                ->select(
-//                    'sor_masters.id',
-//                    'sor_masters.estimate_id',
-//                    'sor_masters.sorMasterDesc',
-//                    'sor_masters.status',
-//                    DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no')
-//                )
-//            ->join('estimate_prepares',function($join)
-//            {
-//                $join->on('sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-//                    ->where('estimate_prepares.operation','=','Total');
-//            })
-//            ->Join('estimate_statuses','sor_masters.status','=','estimate_statuses.id')
-//            ->Join('estimate_flows','estimate_flows.estimate_id','=','sor_masters.estimate_id')
-//            ->where('sor_masters.created_by',Auth::user()->id)
-//            ->groupBy('sor_masters.id','sor_masters.estimate_id','sor_masters.sorMasterDesc','sor_masters.status','estimate_flows.sequence_no')
-//            ->orderBy('estimate_flows.sequence_no');
-
-//        return $this->fetchFlows();
-
-
-
     }
 
 
@@ -145,12 +154,12 @@ final class EstimateProjectTable extends PowerGridComponent
             ->addColumn('serial_no')
             ->addColumn('sor_masters.estimate_id')
 
-            ->addColumn('SOR.sorMasterDesc')
-            ->addColumn('total_amount')
+            ->addColumn('sorMasterDesc')
+            ->addColumn('estimatePrepare.total_amount')
             // ->addColumn('total_amount', function ($row) {
             //     return round($row->total_amount, 2);
             // })
-            ->addColumn('name')
+            ->addColumn('permission.name')
             ->addColumn('status', function ($row) {
                 return '<span class="badge badge-pill bg-success">' . $row->status . '</span>';
             });
@@ -184,18 +193,18 @@ final class EstimateProjectTable extends PowerGridComponent
                 // ->makeInputRange()
                 ->searchable(),
 
-            Column::make('DESCRIPTION', 'SOR.sorMasterDesc')
+            Column::make('DESCRIPTION', 'sorMasterDesc')
                 ->headerAttribute('style', 'white-space: normal; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;')
                 ->bodyAttribute('style', 'white-space: normal; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;'),
 
-            Column::make('Total','total_amount'),
+            Column::make('Total','estimatePrepare.total_amount'),
             // Column::make('TOTAL AMOUNT', 'total_amount')
             //     ->makeInputRange()
             //     ->sortable(),
 
-            Column::make('Status', 'status')
+            Column::make('Status', 'estimateStatus.status')
                 ->sortable(),
-            Column::make('Stage','name'),
+            Column::make('Stage','permission.name'),
             // Column::make("Actions", "estimate_id"),
 
         ];
@@ -234,10 +243,6 @@ final class EstimateProjectTable extends PowerGridComponent
 
             Button::add('forward')
              ->bladeComponent('forwd-button', ['id' => 'estimate_id']),
-//                ->can($this->canPermission['forward']),
-
-//            Button::add('approve')
-//                ->bladeComponent('approve-button',['id'=>'estimate_id','action'=>'approveEstimate']),
 
             Button::add('approve')
                 ->caption('approve')
@@ -298,21 +303,22 @@ final class EstimateProjectTable extends PowerGridComponent
             ->where('estimate_id',$estimate->estimate_id)
             ->orderBy('sequence_no')
             ->get();
-        $forwardList = $currentSequenceNo->map(function ($estimate){
-            return $estimate->sequence_no;
-        })->toArray();
-        foreach ($forwardList as $key => $list){
-            if($list != $highestSequence){
-                unset($forwardList[$key]);
-            }
-        }
-//        $forwardList = $currentSequenceNo->filter(function ($estimate) use ($highestSequence) {
-//            return $estimate->sequence_no == $highestSequence;
-//        })->pluck('sequence_no')->toArray();
+//        $forwardList = $currentSequenceNo->map(function ($estimate){
+//            return $estimate->sequence_no;
+//        })->toArray();
+//        foreach ($forwardList as $key => $list){
+//            if($list != $highestSequence){
+//                unset($forwardList[$key]);
+//            }
+//        }
+        $forwardList = $currentSequenceNo->filter(function ($estimate) use ($highestSequence) {
+            return $estimate->sequence_no == $highestSequence;
+        })->pluck('sequence_no')->toArray();
 
 //        return dd($forwardList,$estimate->sequence_no);
-//        return dd($estimate->sequence_no,$forwardList);
+//        return dd($estimate->sequence_no,$forwardList,$highestSequence);
         return in_array($estimate->sequence_no,$forwardList);
+//        return dd($estimate);
     }
     private function canApprove($row)
     {
@@ -324,35 +330,23 @@ final class EstimateProjectTable extends PowerGridComponent
                         ->where('estimate_id',$row->estimate_id)
                         ->orderBy('sequence_no')
                         ->get();
-        $approveList = $currentSequenceNo->map(function ($estimate){
-             return $estimate->sequence_no;
-        })->toArray();
-        foreach ($approveList as $key => $list){
-            if($list == $highestSequence){
-                unset($approveList[$key]);
-            }
-        }
-//        $collection = collect($approveList);
-//
-//        // Use the filter method to exclude the specific value
-//        $filteredCollection = $collection->filter(function ($item) use ($highestSequence) {
-//            return $item !== $highestSequence; // Exclude the item that matches $excludedValue
-//        });
-//
-//        // Convert to array and reset keys (if needed)
-//        $filteredArray = $filteredCollection->values()->toArray();
-//            dd($approveList);
-//        if(in_array($row->sequence_no,$approveList))
-//        {
-//            return dd("right");
+//        $approveList = $currentSequenceNo->map(function ($estimate){
+//             return $estimate->sequence_no;
+//        })->toArray();
+//        foreach ($approveList as $key => $list){
+//            if($list == $highestSequence){
+//                unset($approveList[$key]);
+//            }
 //        }
-//        else
-//        {
-//            return dd("left");
-//        }
+        $approveList = $currentSequenceNo->filter(function($estimate)use ($highestSequence){
+           return $estimate->sequence_no !=  $highestSequence;
+        })->pluck('sequence_no')->toArray();
 
-
+//            note : 1,2 hide sequence_no
+//        return dd($row->sequence_no,$approveList);
         return in_array($row->sequence_no,$approveList);
+
+//        return dd($row,$highestSequence,$approveList);
     }
     private function canEdit($estimate)
     {

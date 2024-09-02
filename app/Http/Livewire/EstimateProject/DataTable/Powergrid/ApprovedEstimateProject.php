@@ -5,9 +5,11 @@ namespace App\Http\Livewire\EstimateProject\DataTable\Powergrid;
 use App\Models\SORMaster;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
+use Spatie\Permission\Models\Role;
 
 final class ApprovedEstimateProject extends PowerGridComponent
 {
@@ -50,7 +52,33 @@ final class ApprovedEstimateProject extends PowerGridComponent
     */
     public function datasource(): Builder
     {
-        return SORMaster::query();
+        return SorMaster::select(
+            'sor_masters.estimate_id',
+            'sor_masters.sorMasterDesc',
+            'sor_masters.id',
+            'estimate_flows.sequence_no',
+            'estimate_statuses.status',
+            'sor_masters.associated_with'
+        )
+            ->distinct('sor_masters.estimate_id')
+            ->leftJoin('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
+            ->leftJoin('estimate_flows', 'sor_masters.estimate_id', '=', 'estimate_flows.estimate_id')
+            ->leftJoin('estimate_statuses', 'estimate_statuses.id', '=', 'sor_masters.status')
+            ->where('estimate_prepares.operation','=','Total')
+            ->where('sor_masters.associated_with',Auth::user()->id)
+            ->where('estimate_flows.user_id',Auth::user()->id)
+            ->where('sor_masters.is_verified',1)
+            ->groupBy(
+                'sor_masters.estimate_id',
+                'sor_masters.id',
+                'estimate_flows.estimate_id',
+                'estimate_flows.sequence_no',
+                'estimate_statuses.status',
+                'sor_masters.associated_with'
+            )
+            ->orderBy('sor_masters.estimate_id')
+            ->orderBy('estimate_flows.sequence_no');
+
     }
 
     /*
@@ -85,24 +113,16 @@ final class ApprovedEstimateProject extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-            ->addColumn('id')
             ->addColumn('estimate_id')
             ->addColumn('sorMasterDesc')
-            ->addColumn('status')
-            ->addColumn('dept_id')
-            ->addColumn('part_no')
-
-           /** Example of custom column using a closure **/
-            ->addColumn('part_no_lower', function (SORMaster $model) {
-                return strtolower(e($model->part_no));
+//            ->addColumn('estimateStatus.status')
+            ->addColumn('associated_with',function($row)
+            {
+                $role= Role::findById($row->associated_with);
+                return "<span class='badge badge-pill bg-primary'>".$role->name."</span>";
             })
-
-            ->addColumn('associated_with')
             ->addColumn('approved_at_formatted', fn (SORMaster $model) => Carbon::parse($model->approved_at)->format('d/m/Y H:i:s'))
-            ->addColumn('created_by')
-            ->addColumn('is_verified')
-            ->addColumn('created_at_formatted', fn (SORMaster $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'))
-            ->addColumn('updated_at_formatted', fn (SORMaster $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
+            ->addColumn('created_by');
     }
 
     /*
@@ -122,50 +142,22 @@ final class ApprovedEstimateProject extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('ID', 'id')
+
+            Column::make('ESTIMATE', 'estimate_id')
                 ->makeInputRange(),
 
-            Column::make('ESTIMATE ID', 'estimate_id')
-                ->makeInputRange(),
-
-            Column::make('SORMASTERDESC', 'sorMasterDesc')
+            Column::make('PROJECT DESCRIPTION ', 'sorMasterDesc')
                 ->sortable()
                 ->searchable(),
+//            Column::make('STATUS', 'estimateStatus.status'),
+            Column::make('APPROVE NAME  ', 'associated_with'),
 
-            Column::make('STATUS', 'status')
-                ->makeInputRange(),
 
-            Column::make('DEPT ID', 'dept_id')
-                ->makeInputRange(),
+            Column::make('APPROVED', 'approved_at_formatted', 'approved_at')
+                ->sortable(),
 
-            Column::make('PART NO', 'part_no')
-                ->sortable()
-                ->searchable()
-                ->makeInputText(),
-
-            Column::make('ASSOCIATED WITH', 'associated_with')
-                ->makeInputRange(),
-
-            Column::make('APPROVED AT', 'approved_at_formatted', 'approved_at')
-                ->searchable()
-                ->sortable()
-                ->makeInputDatePicker(),
-
-            Column::make('CREATED BY', 'created_by')
-                ->makeInputRange(),
-
-            Column::make('IS VERIFIED', 'is_verified')
-                ->makeInputRange(),
-
-            Column::make('CREATED AT', 'created_at_formatted', 'created_at')
-                ->searchable()
-                ->sortable()
-                ->makeInputDatePicker(),
-
-            Column::make('UPDATED AT', 'updated_at_formatted', 'updated_at')
-                ->searchable()
-                ->sortable()
-                ->makeInputDatePicker(),
+            Column::make('Created','created_by')
+                ->sortable(),
 
         ]
 ;
