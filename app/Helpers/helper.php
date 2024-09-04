@@ -136,9 +136,9 @@ function getRateDescription($rate_no, $total_amount)
 {
     if ($rate_no) {
         // temp fetching by total amount
-        $rateDescription = RatesAnalysis::where([['rate_id', $rate_no], ['total_amount', $total_amount]])->select('description', 'operation', 'comments')->first();
+        $rateDescription = RatesAnalysis::where([['rate_id', $rate_no], ['total_amount', $total_amount]])->where('operation', '!=', 'Exp Calculation')->select('description', 'operation', 'comments')->first();
     }
-    // dd($rate_no, $total_amount);
+    // dd($rateDescription);
     if ($rateDescription != '') {
         return $rateDescription;
     } else {
@@ -306,13 +306,13 @@ function printTreeHTML($tree, $parent = 0)
         echo "<li class='tree'>";
         // echo "$key";
         echo "<div class='row mutipal-add-row'>
-                    <div class='col-md-3 col-lg-3 col-sm-3 ml-2 mt-1 mb-1'>";
+                    <div class='mt-1 mb-1 ml-2 col-md-3 col-lg-3 col-sm-3'>";
         echo '<input type="text" class="form-control" placeholder="milestone name" wire:model="mileStoneData.' . $nodeModelIndex . '.milestone_name" wire:key="mileStoneData.' . $nodeModelIndex . '.milestone_name"/>';
         echo "</div>";
-        echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
+        echo "<div class='mt-1 mb-1 ml-2 col-md-2 col-lg-2 col-sm-3'>";
         echo '<input type="text" class="form-control" placeholder="weightage" wire:model="mileStoneData.' . $nodeModelIndex . '.weight" wire:key="mileStoneData.' . $nodeModelIndex . '.weight"/>';
         echo "</div>";
-        echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
+        echo "<div class='mt-1 mb-1 ml-2 col-md-2 col-lg-2 col-sm-3'>";
         echo '<select class="form-control" wire:model="mileStoneData.' . $nodeModelIndex . '.unit_type" wire:key="mileStoneData.' . $nodeModelIndex . '.unit_type" wire:click="chMileType($event.target.value)"><option value="">-- Select Unit --</option>';
         if (count($unitDtls) > 0) {
             foreach ($unitDtls as $units) {
@@ -322,14 +322,14 @@ function printTreeHTML($tree, $parent = 0)
         echo '</select>';
         echo "</div>";
         // if($Type=="cm"){
-        //     echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'".$Type ? 'd-block':'d-none'.">";
+        //     echo "<div class='mt-1 mb-1 ml-2 col-md-2 col-lg-2 col-sm-3'".$Type ? 'd-block':'d-none'.">";
         //     echo $Type;
         //     echo "</div>";
         // }
-        echo "<div class='col-md-2 col-lg-2 col-sm-3 ml-2 mt-1 mb-1'>";
+        echo "<div class='mt-1 mb-1 ml-2 col-md-2 col-lg-2 col-sm-3'>";
         echo '<input type="text" class="form-control" placeholder="cost" wire:model="mileStoneData.' . $nodeModelIndex . '.cost" wire:key="mileStoneData.' . $nodeModelIndex . '.cost" />';
         echo "</div>";
-        echo "<div class='col-md-2 col-lg-1 col-sm-3 ml-2 mt-1 mb-1'>";
+        echo "<div class='mt-1 mb-1 ml-2 col-md-2 col-lg-1 col-sm-3'>";
         echo "<div class='d-flex'>";
         echo "<button type='button' wire:click='addMilestone(" . $node['index'] . ")' class='d-inline btn btn-soft-success rounded-pill'>
                             <span class='btn-inner'>

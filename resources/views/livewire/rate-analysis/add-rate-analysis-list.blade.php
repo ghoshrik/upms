@@ -232,22 +232,22 @@
 
 
                                             {{-- @if ($arrayRow != $key) --}}
-                                                {{-- <x-button
+                                            {{-- <x-button
                                                     wire:click="confDeleteDialog({{ $addedRate['array_id'] }})"
                                                     type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                     </span>
                                                 </x-button> --}}
-                                                <button
-                                                    onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
-                                                    wire:click="deleteRate('{{ $addedRate['array_id'] }}')"
-                                                    type="button" class="btn btn-soft-danger btn-sm">
-                                                    <span class="btn-inner">
-                                                        <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
-                                                    </span>
-                                                </button>
-                                                {{-- <button onclick="showDeleteConfirmation({{ $addedRate['array_id'] }})" type="button" class="btn btn-soft-danger btn-sm">
+                                            <button
+                                                onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
+                                                wire:click="deleteRate('{{ $addedRate['array_id'] }}')" type="button"
+                                                class="btn btn-soft-danger btn-sm">
+                                                <span class="btn-inner">
+                                                    <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
+                                                </span>
+                                            </button>
+                                            {{-- <button onclick="showDeleteConfirmation({{ $addedRate['array_id'] }})" type="button" class="btn btn-soft-danger btn-sm">
                                                     <span class="btn-inner">
                                                         <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                     </span>
