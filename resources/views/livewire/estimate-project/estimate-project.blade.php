@@ -34,20 +34,6 @@
                     @endcan
                 </div>
             </div>
-            {{-- <div class="iq-header-img">
-                <img src="{{ asset('images/dashboard/top-header.png') }}" alt="header"
-                    class="theme-color-default-img  w-100  animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header1.png') }}" alt="header"
-                    class="theme-color-purple-img  w-100  animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header2.png') }}" alt="header"
-                    class="theme-color-blue-img  w-100  animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header3.png') }}" alt="header"
-                    class="theme-color-green-img  w-100  animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header4.png') }}" alt="header"
-                    class="theme-color-yellow-img  w-100  animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header5.png') }}" alt="header"
-                    class="theme-color-pink-img  w-100  animated-scaleX">
-            </div> --}}
         </div>
         <div wire:loading.delay.long>
             <div class="spinner-border text-primary loader-position" role="status"></div>

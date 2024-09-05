@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\EstimateProject\DataTable\Powergrid;
 
 use App\Models\SORMaster;
+use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -56,6 +57,7 @@ final class ApprovedEstimateProject extends PowerGridComponent
             'sor_masters.estimate_id',
             'sor_masters.sorMasterDesc',
             'sor_masters.id',
+            'estimate_prepares.total_amount',
             'estimate_flows.sequence_no',
             'estimate_statuses.status',
             'sor_masters.associated_with'
@@ -74,6 +76,7 @@ final class ApprovedEstimateProject extends PowerGridComponent
                 'estimate_flows.estimate_id',
                 'estimate_flows.sequence_no',
                 'estimate_statuses.status',
+                'estimate_prepares.total_amount',
                 'sor_masters.associated_with'
             )
             ->orderBy('sor_masters.estimate_id')
@@ -115,11 +118,19 @@ final class ApprovedEstimateProject extends PowerGridComponent
         return PowerGrid::eloquent()
             ->addColumn('estimate_id')
             ->addColumn('sorMasterDesc')
-//            ->addColumn('estimateStatus.status')
+            ->addColumn('sor_masters.associated_with',function ($row){
+                $user = User::find($row->associated_with);
+
+                return "<strong>".$user->getOfficeName->office_name ."</strong>";
+            })
             ->addColumn('associated_with',function($row)
             {
                 $role= Role::findById($row->associated_with);
                 return "<span class='badge badge-pill bg-primary'>".$role->name."</span>";
+            })
+            ->addColumn('total_amount',function($row)
+            {
+                return number_format($row->total_amount,2);
             })
             ->addColumn('approved_at_formatted', fn (SORMaster $model) => Carbon::parse($model->approved_at)->format('d/m/Y H:i:s'))
             ->addColumn('created_by');
@@ -144,15 +155,16 @@ final class ApprovedEstimateProject extends PowerGridComponent
         return [
 
             Column::make('ESTIMATE', 'estimate_id')
-                ->makeInputRange(),
-
+            ->searchable(),
             Column::make('PROJECT DESCRIPTION ', 'sorMasterDesc')
                 ->sortable()
                 ->searchable(),
-//            Column::make('STATUS', 'estimateStatus.status'),
+            Column::make('Office', 'sor_masters.associated_with')
+            ->searchable(),
             Column::make('APPROVE NAME  ', 'associated_with'),
 
-
+            Column::make('Total Amount','total_amount')
+            ->searchable(),
             Column::make('APPROVED', 'approved_at_formatted', 'approved_at')
                 ->sortable(),
 

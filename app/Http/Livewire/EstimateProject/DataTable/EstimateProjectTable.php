@@ -111,7 +111,7 @@ final class EstimateProjectTable extends PowerGridComponent
             ->where('estimate_prepares.operation','=','Total')
             ->where('sor_masters.associated_with',Auth::user()->id)
             ->where('estimate_flows.user_id',Auth::user()->id)
-            ->where('sor_masters.is_verified',0)
+            ->where('sor_masters.is_verified',null)
             ->groupBy('sor_masters.estimate_id','sor_masters.id','estimate_flows.estimate_id','estimate_flows.sequence_no','estimate_statuses.status')
             ->orderBy('sor_masters.estimate_id')
             ->orderBy('estimate_flows.sequence_no');
@@ -159,7 +159,7 @@ final class EstimateProjectTable extends PowerGridComponent
             // ->addColumn('total_amount', function ($row) {
             //     return round($row->total_amount, 2);
             // })
-            ->addColumn('permission.name')
+//            ->addColumn('permission.name')
             ->addColumn('status', function ($row) {
                 return '<span class="badge badge-pill bg-success">' . $row->status . '</span>';
             });
@@ -204,7 +204,7 @@ final class EstimateProjectTable extends PowerGridComponent
 
             Column::make('Status', 'estimateStatus.status')
                 ->sortable(),
-            Column::make('Stage','permission.name'),
+//            Column::make('Stage','permission.name'),
             // Column::make("Actions", "estimate_id"),
 
         ];
@@ -294,31 +294,21 @@ final class EstimateProjectTable extends PowerGridComponent
                 ->hide()
         ];
     }
-    private function canForward($estimate)
+    private function canForward($row)
     {
 
-        $highestSequence = EstimateFlow::where('estimate_id', $estimate->estimate_id)
+        $highestSequence = EstimateFlow::where('estimate_id', $row->estimate_id)
             ->max('sequence_no');
         $currentSequenceNo = EstimateFlow::select('sequence_no')
-            ->where('estimate_id',$estimate->estimate_id)
+            ->where('estimate_id',$row->estimate_id)
             ->orderBy('sequence_no')
             ->get();
-//        $forwardList = $currentSequenceNo->map(function ($estimate){
-//            return $estimate->sequence_no;
-//        })->toArray();
-//        foreach ($forwardList as $key => $list){
-//            if($list != $highestSequence){
-//                unset($forwardList[$key]);
-//            }
-//        }
-        $forwardList = $currentSequenceNo->filter(function ($estimate) use ($highestSequence) {
-            return $estimate->sequence_no == $highestSequence;
+        $forwardList = $currentSequenceNo->filter(function ($row) use ($highestSequence) {
+            return $row->sequence_no == $highestSequence;
         })->pluck('sequence_no')->toArray();
 
 //        return dd($forwardList,$estimate->sequence_no);
-//        return dd($estimate->sequence_no,$forwardList,$highestSequence);
-        return in_array($estimate->sequence_no,$forwardList);
-//        return dd($estimate);
+        return in_array($row->sequence_no,$forwardList);
     }
     private function canApprove($row)
     {
@@ -330,14 +320,6 @@ final class EstimateProjectTable extends PowerGridComponent
                         ->where('estimate_id',$row->estimate_id)
                         ->orderBy('sequence_no')
                         ->get();
-//        $approveList = $currentSequenceNo->map(function ($estimate){
-//             return $estimate->sequence_no;
-//        })->toArray();
-//        foreach ($approveList as $key => $list){
-//            if($list == $highestSequence){
-//                unset($approveList[$key]);
-//            }
-//        }
         $approveList = $currentSequenceNo->filter(function($estimate)use ($highestSequence){
            return $estimate->sequence_no !=  $highestSequence;
         })->pluck('sequence_no')->toArray();
@@ -346,12 +328,10 @@ final class EstimateProjectTable extends PowerGridComponent
 //        return dd($row->sequence_no,$approveList);
         return in_array($row->sequence_no,$approveList);
 
-//        return dd($row,$highestSequence,$approveList);
     }
-    private function canEdit($estimate)
+    private function canEdit($row)
     {
-        return !in_array($estimate->sequence_no,[1,2]);
-//        return dd($estimate);
+        return !in_array($row->sequence_no,[1,2]);
     }
     public function view($estimate_id)
     {
@@ -392,38 +372,6 @@ final class EstimateProjectTable extends PowerGridComponent
             ->where('user_id',Auth::user()->id)
             ->whereNull('dispatch_at')
             ->update(['dispatch_at'=>Carbon::now()]);
-    }
-    public function fetchFlows()
-    {
-        $estimates = SorMaster::query()
-                                ->select(
-                                        'sor_masters.estimate_id',
-                                        'sor_masters.sorMasterDesc',
-                                        'sor_masters.status'
-                                       )
-                                ->leftjoin('estimate_prepares','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
-                                ->leftJoin('estimate_statuses','sor_masters.status','=','estimate_statuses.id')
-                                ->where('sor_masters.created_by',Auth::user()->id);
-
-        $flowsData =[];
-        foreach ($estimates as $estimate) {
-            $flows = EstimateFlow::where('estimate_id', $estimate->estimate_id)
-                ->orderBy('sequence_no')
-                ->get();
-
-            // Add additional sequence control logic
-            foreach ($flows as $index => $flow) {
-                $flow->sorMasterDesc = $estimate->sorMasterDesc;
-                $flow->total_amount = $estimate->total_amount;
-                $flow->status = $estimate->status;
-                $flow->previous_sequence = $flows[$index - 1]->sequence_no ?? null;
-                $flow->next_sequence = $flows[$index + 1]->sequence_no ?? null;
-                $flow->max_sequence_no = $flows->max('sequence_no');
-                $flowsData[] = $flow;
-            }
-        }
-
-        return collect($flowsData);
     }
 
 }

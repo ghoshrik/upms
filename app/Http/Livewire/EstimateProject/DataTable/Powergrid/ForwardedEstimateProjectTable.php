@@ -2,8 +2,10 @@
 
 namespace App\Http\Livewire\EstimateProject\Datatable\Powergrid;
 
+use App\Models\EstimateFlow;
 use App\Models\EstimatePrepare;
 use App\Models\EstimateStatus;
+use App\Models\SorMaster;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -53,12 +55,14 @@ final class ForwardedEstimateProjectTable extends PowerGridComponent
     */
     public function datasource(): Builder
     {
-        return EstimatePrepare::query()
+        $query = EstimatePrepare::query()
                 ->select(
                     'sor_masters.id',
                     'sor_masters.estimate_id',
                     'sor_masters.sorMasterDesc',
+                    'estimate_flows.sequence_no',
                     'estimate_prepares.total_amount',
+                    'sor_masters.associated_with',
                     DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no')
                 )
                 ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
@@ -85,6 +89,7 @@ final class ForwardedEstimateProjectTable extends PowerGridComponent
 //            ->where('operation', '=', 'Total')
 //            ->where('estimate_no','!=',NULL)
 //            ->where('created_by', '=', Auth::user()->id);
+        return $query;
     }
 
     /*
@@ -119,10 +124,13 @@ final class ForwardedEstimateProjectTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-        ->addColumn('serial_no')
             ->addColumn('estimate_id')
             ->addColumn('sorMasterDesc')
-            ->addColumn('total_amount', fn ($model)=>  round($model->total_amount, 10, 2));
+
+            ->addColumn('total_amount',function($row){
+                return number_format($row->total_amount,2);
+            })
+            ->addColumn('sor_masters.associated_with');
 //            ->addColumn('status',function ($model){
 //                $statusName =EstimateStatus::where('id',$model->status)->select('status')->first();
 //                $statusName = $statusName->status;
@@ -163,10 +171,10 @@ final class ForwardedEstimateProjectTable extends PowerGridComponent
             Column::add()
                 ->title('TOTAL AMOUNT')
                 ->field('total_amount'),
-//            Column::add()
-//                ->title('STATUS')
-//                ->field('status')
-//                ->searchable(),
+            Column::add()
+                ->title('Forward BY')
+                ->field('sor_masters.associated_with')
+                ->searchable(),
 //            Column::add()
 //                ->title('COMMENTS')
 //                ->field('comments'),
