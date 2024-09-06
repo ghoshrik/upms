@@ -2,11 +2,12 @@
 
 namespace App\Http\Livewire\DepartmentCategory;
 
-use Rappasoft\LaravelLivewireTables\DataTableComponent;
-use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\SorCategoryType;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\DepartmentCategory;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
+use Rappasoft\LaravelLivewireTables\Views\Column;
+use Rappasoft\LaravelLivewireTables\DataTableComponent;
 
 class DeptCategoryTable extends DataTableComponent
 {
@@ -22,7 +23,7 @@ class DeptCategoryTable extends DataTableComponent
         return [
             Column::make("Id", "id")
                 ->sortable(),
-            Column::make("Department", "department.department_name")
+            Column::make("Department", "department_id")
                 ->sortable(),
             Column::make("Dept category name", "dept_category_name")
                 ->sortable(),
@@ -44,7 +45,7 @@ class DeptCategoryTable extends DataTableComponent
     }
     public function builder(): Builder
     {
-        return SorCategoryType::query()
-            ->where('sor_category_types.department_id', '=', Auth::user()->department_id);
+        return DepartmentCategory::query()
+            ->where('department_categories.department_id', '=', Auth::user()->department_id);
     }
 }

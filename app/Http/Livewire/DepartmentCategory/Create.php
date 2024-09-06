@@ -4,8 +4,9 @@ namespace App\Http\Livewire\DepartmentCategory;
 
 use Livewire\Component;
 use WireUi\Traits\Actions;
-use App\Models\SorCategoryType;
 use App\Models\VolumeMaster;
+use App\Models\SorCategoryType;
+use App\Models\DepartmentCategory;
 use Illuminate\Support\Facades\Auth;
 
 class Create extends Component
@@ -31,7 +32,7 @@ class Create extends Component
         $this->volumeNo = VolumeMaster::select('id', 'volume_name')->get();
         if (!empty($this->selectedIdForEdit)) {
 
-            $this->editListData = SorCategoryType::where('id', $this->selectedIdForEdit)->first();
+            $this->editListData = DepartmentCategory::where('id', $this->selectedIdForEdit)->first();
             $this->dept_category_name = $this->editListData->dept_category_name;
             $this->totalSorPage = $this->editListData->target_pages;
             $this->volumeId = $this->editListData->volume_id;
@@ -43,7 +44,7 @@ class Create extends Component
         $validateData = $this->validate();
         try {
             if ($this->selectedIdForEdit) {
-                $category = SorCategoryType::findOrFail($this->selectedIdForEdit);
+                $category = DepartmentCategory::findOrFail($this->selectedIdForEdit);
                 $category->update([
                     'dept_category_name' => $this->dept_category_name,
                     'target_pages' => $this->totalSorPage,
@@ -54,10 +55,11 @@ class Create extends Component
                 );
             } else {
 
-                SorCategoryType::create([
+                DepartmentCategory::create([
                     'department_id' => Auth::user()->department_id,
+                    'volume_id' => $this->volumeId ?? 0,
                     'dept_category_name' => $this->dept_category_name,
-                    'volume_id' => $this->volumeId
+                    'target_pages' => $this->totalSorPage
                 ]);
                 $this->notification()->success(
                     $title = 'Department category created'

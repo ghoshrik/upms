@@ -39,7 +39,7 @@ class CreateGroup extends Component
                 $this->department_id = $group->department_id;
                 $this->dept_category_id = $group->dept_category_id;
                 $this->group_name = $group->group_name;
-    
+
                 // Preload department categories for the selected department
                 $this->getDeptCategory();
             }
@@ -52,18 +52,18 @@ class CreateGroup extends Component
                 return Department::select('id', 'department_name')->get();
             });
         }
-        if(Auth::user()->department_id != '' && Auth::user()->department_id != 0){
+        if (Auth::user()->department_id != '' && Auth::user()->department_id != 0) {
             $this->department_id = Auth::user()->department_id;
             $this->getDeptCategory();
         }
     }
-    
+
 
     public function getDeptCategory()
     {
         $cacheKey = 'dept_cat' . '_' . $this->department_id;
         $this->fetchDropdownData['departmentsCategory'] = Cache::remember($cacheKey, now()->addMinutes(720), function () {
-            $categories = DepartmentCategory::select('id', 'dept_category_name')
+            $this->fetchDropdownData['departmentsCategory'] = $categories = DepartmentCategory::select('id', 'dept_category_name')
                 ->where('department_id', '=', $this->department_id)
                 ->get();
             if ($categories->isEmpty()) {
@@ -110,5 +110,4 @@ class CreateGroup extends Component
     {
         return view('livewire.groups.create-group');
     }
-
 }
