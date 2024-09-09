@@ -9,7 +9,12 @@ class Nonsor extends Model
 {
     use HasFactory;
     protected $table = "nonsors";
-    protected $fillable = ["item_name",'unit','qty','price','total_amount','created_by','approved_at','approved_by'];
+    protected $fillable = ["item_name",'unit_id','price','created_by','approved_at','approved_by','associated_at','associated_with','expired_at'];
 
     public $timestamps = false;
+
+    public function units()
+    {
+        return $this->belongsTo(UnitMaster::class,'unit_id');
+    }
 }

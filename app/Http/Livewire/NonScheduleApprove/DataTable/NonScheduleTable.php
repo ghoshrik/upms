@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\NonSchedule\DataTable;
+namespace App\Http\Livewire\NonScheduleApprove\DataTable;
 
 use App\Models\NonSor;
 use Illuminate\Support\Carbon;
@@ -9,10 +9,11 @@ use Illuminate\Support\Facades\Auth;
 use PowerComponents\LivewirePowerGrid\Rules\{Rule, RuleActions};
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 use PowerComponents\LivewirePowerGrid\{Button, Column, Exportable, Footer, Header, PowerGrid, PowerGridComponent, PowerGridEloquent};
+use WireUi\Traits\Actions;
 
-final class NonScheduleList extends PowerGridComponent
+final class NonScheduleTable extends PowerGridComponent
 {
-    use ActionButton;
+    use ActionButton,Actions;
 
     /*
     |--------------------------------------------------------------------------
@@ -31,6 +32,14 @@ final class NonScheduleList extends PowerGridComponent
                 ->emit('bulkActionEvent', [])
         ];
     }
+    protected function getListeners()
+    {
+        return array_merge(
+            parent::getListeners(), [
+            'approveNonSor',
+            'bulkActionEvent'
+        ]);
+    }
     public function setUp(): array
     {
         $this->showCheckBox();
@@ -45,16 +54,6 @@ final class NonScheduleList extends PowerGridComponent
                 ->showRecordCount(),
         ];
     }
-    protected function getListeners()
-    {
-        return array_merge(
-            parent::getListeners(), [
-            'edit',
-            'forward',
-            'bulkActionEvent'
-        ]);
-    }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -72,8 +71,8 @@ final class NonScheduleList extends PowerGridComponent
     public function datasource(): Builder
     {
         return NonSor::query()
-            ->where('associated_at',Auth::user()->id);
-
+            ->where('associated_at',Auth::user()->id)
+            ->with('units');
     }
 
     /*
@@ -91,7 +90,9 @@ final class NonScheduleList extends PowerGridComponent
      */
     public function relationSearch(): array
     {
-        return [];
+        return [
+            'units'=>['unit_name']
+        ];
     }
 
     /*
@@ -132,15 +133,17 @@ final class NonScheduleList extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('Item Name', 'item_name')
-            ->searchable()
-                ->sortable(),
-            Column::make('Unit', 'units.unit_name')
-            ->searchable()
-                ->sortable(),
-            Column::make('Price', 'price')
-            ->searchable()
-                ->sortable(),
+
+            Column::make('ITEM NAME', 'item_name')
+                ->sortable()
+                ->searchable(),
+
+            Column::make('UNIT', 'units.unit_name')
+                ->searchable(),
+            Column::make('PRICE', 'price')
+                ->sortable()
+                ->searchable(),
+
         ]
 ;
     }
@@ -159,19 +162,22 @@ final class NonScheduleList extends PowerGridComponent
      * @return array<int, Button>
      */
 
+
     public function actions(): array
     {
        return [
-           Button::add('edit')
-               ->caption('Edit')
-               ->class('btn-sm btn-soft-warning px-3 py-2.5 rounded-pill')
-               ->emit('edit',['id'=>'id']),
-           Button::add('forward')
-               ->caption('Forward')
-               ->class('btn-sm btn-soft-success px-3 py-2.5 rounded-pill')
-               ->emit('openNonScheduleList',['project_id'=>'id']),
+           Button::make('approve', 'Approved')
+               ->class('btn-sm btn-soft-success px-3 py-2.5 rounded-pill ')
+                ->emit('approveNonSor',['project_id'=>'id']),
+//               ->route('non-sor.edit', ['non-sor' => 'id']),
+
+//           Button::make('destroy', 'Delete')
+//               ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
+//               ->route('non-sor.destroy', ['non-sor' => 'id'])
+//               ->method('delete')
         ];
     }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -187,29 +193,40 @@ final class NonScheduleList extends PowerGridComponent
      * @return array<int, RuleActions>
      */
 
-     public function edit($id)
-     {
-        dd($id);
-     }
-     public function bulkActionEvent():void
-     {
-        if (count($this->checkboxValues) == 0) {
-            $this->dispatchBrowserEvent('showAlert', ['message' => 'You must select at least one item!']);
 
-            return;
-        }
-        dd(count($this->checkboxValues));
-     }
-    /*
     public function actionRules(): array
     {
        return [
 
            //Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($non-sor) => $non-sor->id === 1)
+            Rule::button('approve')
+                ->when(fn($row) => $row->approved_at !='')
                 ->hide(),
         ];
     }
-    */
+
+    public function approveNonSor($id)
+    {
+        $this->dialog()->confirm([
+            'title' => 'Are you Sure want to Approved Estimate ?',
+            'icon' => 'warning',
+            'accept' => [
+                'label' => 'Yes,Approved',
+                'method' => 'ApprovedNonsor',
+                'params' => $id,
+            ],
+            'reject' => [
+                'label' => 'No, Reject',
+                // 'method' => 'cancel',
+            ]
+        ]);
+    }
+
+    public function ApprovedNonsor($id)
+    {
+        NonSor::where('id',$id)->update(['approved_by'=>Auth::user()->id,'approved_at'=>Carbon::now()]);
+        $this->notification()->success(
+            $description = 'Non Schedule Rate Item Approved'
+        );
+    }
 }

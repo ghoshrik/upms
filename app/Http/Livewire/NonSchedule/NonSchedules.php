@@ -7,7 +7,7 @@ use Livewire\Component;
 class NonSchedules extends Component
 {
     public $formOpen = false;
-    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'refreshData' => 'mount','showError' => 'setErrorAlert'];
     public $openedFormType = false, $isFromOpen, $subTitle = "List", $selectedIdForEdit, $errorMessage, $title;
 
     public function fromEntryControl($data = '')

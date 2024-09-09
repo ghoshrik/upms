@@ -50,3 +50,4 @@
         </div>
     </div>
 </div>
+<livewire:components.modal.non-schedule.non-schedule-items />

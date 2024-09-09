@@ -60,6 +60,7 @@ use App\Http\Livewire\QuantityEvaluation\QuantityEvaluation;
 use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
 use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
 use App\Http\Livewire\EstimateSanctionLimit\EstimateSanctionMaster;
+use App\Http\Livewire\NonScheduleApprove\NonScheduleApprovers;
 use App\Http\Livewire\EstimateProjectV2\EstimateProject as EstimateProjectV2;
 
 /*
@@ -202,6 +203,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::post('/calculate-rule-area-volume-cone', [ApiController::class, 'unitQtyAdded'])->name('calculate-rule-area-volume-cone');
 
             Route::get('abstracts', AbstructCostsLists::class)->name('abstracts');
+
+            Route::get('non-schedule-approve',NonScheduleApprovers::class);
+
         });
 
         Route::group(['middleware' => ['role:SOR Preparer|Super Admin|Junior Engineer']], function () {

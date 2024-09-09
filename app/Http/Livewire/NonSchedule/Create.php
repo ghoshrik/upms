@@ -4,31 +4,40 @@ namespace App\Http\Livewire\NonSchedule;
 
 use App\Models\Nonsor;
 use App\Models\UnitMaster;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class Create extends Component
 {
-    public $formData =[],$units=[];
-
+    use Actions;
+    public $units=[];
+    protected $listeners = ['storeNonSchedule' => 'storeData'];
     public function mount()
     {
-        $this->formData['item_name'] = '';
-        $this->formData['unit']='';
-        $this->formData['qty']='';
-        $this->formData['price']='';
-        $this->formData['total_amount']='';
-
         $this->units = UnitMaster::orderBy('id','asc')->get();
     }
-    public function store()
+
+    public function storeData($value)
     {
-        Nonsor::create($this->formData);
+//        dd($value);
+        Nonsor::create([
+            'item_name'=> $value['Desc'],
+            'unit_id'=>$value['unit'],
+            'price'=>$value['rate'],
+            'created_by'=>Auth::user()->id,
+            'associated_at'=>Auth::user()->id,
+            'associated_with'=>Carbon::now()
+        ]);
         $this->reset();
         $this->emit('openEntryForm');
         $this->notification()->success(
             $description = 'New Non Schedule Rate Item Created'
         );
     }
+
+
     /*public function updated($field)
     {
         if ($field === $this->formData['qty']  || $field === $this->formData['price']) {
@@ -40,10 +49,7 @@ class Create extends Component
     {
         $this->formData['total_amount'] = $this->formData['qty'] * $this->formData['price'];
     }*/
-    public function updateTotalAmount($amount)
-    {
-        dd($this->formData['total_amount']);
-    }
+
     public function render()
     {
         return view('livewire.non-schedule.create');
