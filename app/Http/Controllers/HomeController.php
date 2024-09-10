@@ -50,10 +50,10 @@ class HomeController extends Controller
             ->get();
 
         // dd($deptSorCategory);
-
+        $SorLists = DynamicSorHeader::SorReportsDeptCategory()->get();
 
         $assets = ['chart', 'animation'];
-        return view('dashboards.dashboard', compact('assets', 'deptSorCategory'));
+        return view('dashboards.dashboard', compact('assets', 'deptSorCategory','SorLists'));
     }
 
     // public function testMileStone()

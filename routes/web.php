@@ -2,62 +2,64 @@
 
 // Controllers
 
+use App\Models\User;
+use FontLib\Table\Type\name;
+use App\Models\UsersHasRoles;
+use App\Http\Livewire\Sor\Sor;
+use App\Http\Livewire\Aoc\Aocs;
+use App\Http\Livewire\Roles\Roles;
+use Spatie\Permission\Models\Role;
+use App\Http\Livewire\Groups\Group;
+use App\Http\Livewire\Office\Office;
+//use App\Http\Livewire\Carriagecost\CarriageCosts;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Livewire\Tender\Tenders;
+// use App\Http\Livewire\TestALL\TestSearch;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\CommonApiController;
+use App\Http\Livewire\Report\MisReport;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\HomeController;
 use App\Http\Livewire\Aafs\AafsProjects;
-use App\Http\Livewire\AbstructCosts\AbstructCostsLists;
-use App\Http\Livewire\AccessManager\AccessManager;
-use App\Http\Livewire\AccessType\AccessType;
-use App\Http\Livewire\Aoc\Aocs;
-//use App\Http\Livewire\Carriagecost\CarriageCosts;
-use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
-use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
-// use App\Http\Livewire\TestALL\TestSearch;
-use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
-use App\Http\Livewire\Compositsor\ComposerSors;
-use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
-use App\Http\Livewire\Department\Department;
-use App\Http\Livewire\Designation\Designation;
-use App\Http\Livewire\DocumentSor\DocumentSors;
 //use App\Http\Livewire\ExcelImport\Imports;
-use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
-use App\Http\Livewire\EstimateProjectV2\EstimateProject as EstimateProjectV2;
-// use App\Http\Livewire\Permission\Permissions;
-use App\Http\Livewire\EstimateProject\EstimateProject;
-use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
-use App\Http\Livewire\EstimateSanctionLimit\EstimateSanctionMaster;
-use App\Http\Livewire\Estimate\EstimatePrepare;
-use App\Http\Livewire\Groups\Group;
-use App\Http\Livewire\MenuManagement\MenuManagement;
-use App\Http\Livewire\Milestone\Milestones;
-use App\Http\Livewire\Office\Office;
-use App\Http\Livewire\Permission\Permission;
-use App\Http\Livewire\QuantityEvaluation\QuantityEvaluation;
-use App\Http\Livewire\RateAnalysis\RateAnalysis;
-use App\Http\Livewire\Report\MisReport;
-use App\Http\Livewire\Roles\AssignRole\AssignRole;
-use App\Http\Livewire\Roles\Roles;
-use App\Http\Livewire\Setting\SettingLists;
-use App\Http\Livewire\Sorapprove\SorApprovers;
-use App\Http\Livewire\SorBook\DynamicSor;
-use App\Http\Livewire\Sor\Sor;
-use App\Http\Livewire\Tender\Tenders;
-use App\Http\Livewire\Unitsmaster\UnitsMaster;
-use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\UserType\UserType;
+use App\Http\Livewire\SorBook\DynamicSor;
+// use App\Http\Livewire\Permission\Permissions;
+use App\Http\Livewire\DeptGroups\DeptGroup;
+use App\Http\Livewire\Milestone\Milestones;
+use App\Http\Livewire\Setting\SettingLists;
+use App\Http\Livewire\AccessType\AccessType;
+use App\Http\Livewire\Department\Department;
+use App\Http\Livewire\Permission\Permission;
+use App\Http\Livewire\VendorRegs\VendorList;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CommonApiController;
+use App\Http\Livewire\Designation\Designation;
+use App\Http\Livewire\Sorapprove\SorApprovers;
+use App\Http\Livewire\Unitsmaster\UnitsMaster;
+use App\Http\Livewire\ViewSorBook\ViewSorBook;
+use App\Http\Livewire\Compositsor\ComposerSors;
+use App\Http\Livewire\DocumentSor\DocumentSors;
+use App\Http\Livewire\Estimate\EstimatePrepare;
+use App\Http\Livewire\RateAnalysis\RateAnalysis;
+use App\Http\Livewire\AccessManager\AccessManager;
+use App\Http\Livewire\Roles\AssignRole\AssignRole;
+use App\Http\Livewire\MenuManagement\MenuManagement;
+use App\Http\Livewire\MisReport\Users\UserMisReport;
+use App\Http\Livewire\UserManagement\UserManagement;
 
 // Packages
-use App\Http\Livewire\VendorRegs\VendorList;
-use App\Http\Livewire\ViewSorBook\ViewSorBook;
-use App\Models\User;
-use App\Models\UsersHasRoles;
-use FontLib\Table\Type\name;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use Spatie\Permission\Models\Role;
+use App\Http\Livewire\EstimateProject\EstimateProject;
+use App\Http\Livewire\AbstructCosts\AbstructCostsLists;
+use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
+use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
+use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
+use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
+use App\Http\Livewire\QuantityEvaluation\QuantityEvaluation;
+use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
+use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
+use App\Http\Livewire\EstimateSanctionLimit\EstimateSanctionMaster;
+use App\Http\Livewire\EstimateProjectV2\EstimateProject as EstimateProjectV2;
 
 /*
 |--------------------------------------------------------------------------
@@ -123,7 +125,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         /*Route::group(['middleware' => ['role:Super Admin|SOR Preparer']], function () {
         Route::get('dynamic-sor', DynamicSor::class)->name('dynamic-sor');
         });*/
-
+        Route::group(['middleware' => ['role:State Admin|Department Admin|Group Admin|Office Admin']], function () {
+            Route::get('user-management', UserManagement::class)->name('user-management');
+        });
         //state Admin
         Route::group(['middleware' => ['role:State Admin']], function () {
             Route::get('department', Department::class)->name("department");
@@ -131,31 +135,33 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('unit-master', UnitsMaster::class)->name('unit-master');
             Route::get('assign-dept-admin', AssignDepartmentAdmin::class)->name('assign-dept-admin');
             Route::get('mis-report', MisReport::class)->name('mis-report');
-            Route::get('user-management', UserManagement::class)->name('user-management');
+            // Route::get('usermisreport',UserMisReport::class)->name('usermisreport');
+            // Route::get('user-management', UserManagement::class)->name('user-management');
         });
 
         //Department Admin
         Route::group(['middleware' => ['role:Department Admin']], function () {
             Route::get('groups', Group::class)->name('groups');
-            Route::get('user-management', UserManagement::class)->name('user-management');
+            Route::get('dept-groups', DeptGroup::class)->name('dept-groups');
+            // Route::get('user-management', UserManagement::class)->name('user-management');
             Route::get('estimate-limit-sanction', EstimateSanctionMaster::class)->name('estimate-limit-sanction');
             // Route::get('office', Office::class)->name('office');
             Route::get('assign-office-admin', AssignOfficeAdmin::class)->name('assign-office-admin');
             Route::get('sor-verifier', SorApprovers::class)->name('sor-verifier');
             Route::get('department-category', DepartmentCategoryList::class)->name('department-category');
             Route::post('sor-dept-verify', [ApiController::class, 'sorVerify'])->name('sor-dept-verify');
-            Route::post('sor_dept_revert', [ApiController::class, 'sorRevert'])->name('sor_dept_revert');
+            Route::post('sor-dept-revert', [ApiController::class, 'sorRevert'])->name('sor-dept-revert');
         });
 
         //group Admin
         Route::group(['middleware' => ['role:Group Admin']], function () {
-            Route::get('user-management', UserManagement::class)->name('user-management');
+            // Route::get('user-management', UserManagement::class)->name('user-management');
             Route::get('office', Office::class)->name('office');
         });
 
         //Office Admin
         Route::group(['middleware' => ['role:Office Admin']], function () {
-            Route::get('user-management', UserManagement::class)->name('user-management');
+            // Route::get('user-management', UserManagement::class)->name('user-management');
             Route::get('assign-role', AssignRole::class)->name('assign-role');
             Route::get('milestones', Milestones::class)->name('milestones');
             Route::get('vendors', VendorList::class)->name('vendors');
@@ -225,12 +231,11 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::get('quantity-evaluation', QuantityEvaluation::class)->name('quantity-evaluation');
         //Route::get('carriage-cost',CarriageCosts::class)->name('carriage-cost');
         // Route::get('aafs-project',ProjectList::class)->name('aafs-project');
-        Route::get('roles', Roles::class)->name('roles');
-        Route::get('permissions', Permission::class)->name('permissions');
+        // Route::get('roles', Roles::class)->name('roles');
+        // Route::get('permissions', Permission::class)->name('permissions');
         //Route::get('import',Imports::class)->name('import');
         Route::get('roles', Roles::class)->name('roles');
         Route::get('permissions', Permission::class)->name('permissions');
-
         // Route::get('vendors',VendorList::class)->name('vendors');
 
         // Route::get('aafs-project', AafsProjects::class)->name('aafs-project');

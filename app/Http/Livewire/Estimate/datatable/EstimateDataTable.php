@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Estimate\datatable\PowerGrid;
+namespace App\Http\Livewire\Estimate\Datatable\PowerGrid;
 
 use Illuminate\Support\Carbon;
 use App\Models\EstimatePrepare;

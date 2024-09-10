@@ -23,20 +23,22 @@ class CreateUser extends Component
     protected $rules = [
         'newUserData.email' => 'required|email|unique:users,email',
         // 'newUserData.emp_id'=>'required|numeric'
-        'newUserData.username' => 'required|unique:users,username',
+        // 'newUserData.username' => 'required|unique:users,username',
         'newUserData.emp_name' => 'required|string',
         'newUserData.designation_id' => 'required|integer',
         'newUserData.mobile' => 'required|numeric|min:10|unique:users,mobile',
-        'newUserData.role_id' => 'required|integer'
+        'newUserData.role_id' => 'required|integer',
+        'newUserData.password' => 'required|min:6',
+        'newUserData.confirm_password' => 'required|same:newUserData.password',
     ];
     protected $messages = [
         'newUserData.email.required' => 'Email Field is required',
         'newUserData.email.email' => 'Please enter a valid email address',
         'newUserData.email.unique' => 'The email address is already in use.',
 
-        'newUserData.username.required' => 'username is required',
-        'newUserData.username.string' => 'username must be string',
-        'newUserData.username.unique' => 'The login Id is already in use.',
+        // 'newUserData.username.required' => 'username is required',
+        // 'newUserData.username.string' => 'username must be string',
+        // 'newUserData.username.unique' => 'The login Id is already in use.',
 
         'newUserData.emp_name.required' => 'employee name is required',
         'newUserData.emp_name.string' => 'error',
@@ -57,6 +59,10 @@ class CreateUser extends Component
         'newUserData.designation_id.integer' => 'data mismatch',
         'newUserData.role_id.required' => 'Please Select Role.',
         'newUserData.role_id.integer' => 'Please Select Role.',
+        'newUserData.password.required' => 'Password field is required.',
+        'newUserData.password.min' => 'Password length minimum 6.',
+        'newUserData.confirm_password.required' => 'Confirm Password field is required.',
+        'newUserData.confirm_password.same' => 'Password and Confirm Password field must match.',
     ];
 
     public function booted()
@@ -127,6 +133,7 @@ class CreateUser extends Component
         // }
         // dd($this->dropDownData,Auth::user()->user_type);
     }
+
     public function getDropdownData($lookingFor)
     {
         try {
@@ -205,7 +212,7 @@ class CreateUser extends Component
                 // $this->newUserData['office_id'] = ($this->newUserData['office_id'] == '') ? Auth::user()->office_id : $this->newUserData['office_id'];
                 $this->newUserData['office_id'] = ($this->newUserData['office_id'] == '') ? 0 : $this->newUserData['office_id'];
                 $this->newUserData['group_id'] = ($this->newUserData['group_id'] == '') ? 0 : $this->newUserData['group_id'];
-                $this->newUserData['dept_category_id'] = ($this->newUserData['dept_category_id'] != 0) ? Group::where('id',Auth::user()->group_id)->first()->id : $this->newUserData['dept_category_id'];
+                $this->newUserData['dept_category_id'] = ($this->newUserData['group_id'] != 0 && $this->newUserData['group_id'] != '') ? Group::where('id',$this->newUserData['group_id'])->first()->id : 0;
                 $this->newUserData['email'] = $this->newUserData['email'];
                 $this->newUserData['mobile'] = $this->newUserData['mobile'];
                 $this->newUserData['password'] = Hash::make($this->newUserData['password']);

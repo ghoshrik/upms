@@ -301,7 +301,7 @@
 
             @if (Auth::user()->hasRole('Department Admin'))
                 <div class="row">
-                    @foreach ($deptSorCategory as $category)
+                    {{-- @foreach ($deptSorCategory as $category)
                         <div class="col-md-3 col-sm-6">
                             <div class="card" data-label="{{ $category->dept_category_name }}">
                                 <div class="card__container">
@@ -321,65 +321,30 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- <div class="counter">
-                        <div class="counter-content">
-                            <span class="counter-value"> <strong> Schedule of Rate </strong>Target Pages :
-                                {{ $category->target_pages }} ,Complete
-                                {{ $category->category_count }} </br>
-
-                                <strong> Corrigenda & Addendam </strong>Complete
-                                {{ $category->corrigenda_count }} </br>
-
-                                <strong> Total Approved </strong>
-                                {{ $category->pending_approval_count }} </br>
-
-                                <strong> Total Verified </strong>
-                                {{ $category->verified_count }} </br>
-                            </span>
                         </div>
-                    </div> --}}
+                    @endforeach --}}
+                    @foreach ($SorLists as $category)
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card ribcard" data-label="{{ $category->dept_category_name }}">
+                                <div class="card__container">
+                                    <div class="card-body">
+                                        <strong> Schedule of Rate </strong>Target Pages :
+                                        {{ $category->target_pages }} </br>Total Pages Entired :
+                                        {{ $category->category_count }} </br>
+
+                                        <strong> Corrigenda & Addendam </strong>Pages Entired :
+                                        {{ $category->corrigenda_count }} </br>
+
+                                        <strong> Total Approved :</strong>
+                                        {{ $category->pending_approval_count }} </br>
+
+                                        <strong> Total Verified :</strong>
+                                        {{ $category->verified_count }} </br>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     @endforeach
-
-
-                    {{-- @foreach ($deptSorCategory as $category)
-                <div class="col-md-3 col-sm-6">
-                    <div class="counter">
-                        <div class="counter-content">
-                            <div class="counter-icon">
-                                <i class="fa fa-globe"></i>
-                            </div>
-                            <h3>{{ $category->dept_category_name }}</h3>
-                            <h3>Schedule Of Rates :</h3>
-                            <span class="counter-value"> Target Pages {{ $category->target_pages }} ,Complete
-                                {{ $category->category_count }}
-                            </span>
-                            <h3>Corrigenda & Addenda</h3>
-                            <span class="counter-value"> {{ $category->target_pages }}
-                                {{ $category->category_count }}
-                            </span>
-                            <h3>Schedule Of Rates</h3>
-                            <h3>Schedule Of Rates</h3>
-                            <h3>Schedule Of Rates</h3>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-            <h3>Corrigenda & Addenda</h3> --}}
-                    {{-- @foreach ($deptSorCorrigendaCategory as $corrigenda)
-                <div class="col-md-3 col-sm-6">
-                    <div class="counter">
-                        <div class="counter-content">
-                            <div class="counter-icon">
-                                <i class="fa fa-globe"></i>
-                            </div>
-                            <h3>{{ $corrigenda->dept_category_name }}</h3>
-                            <h3>Corrigenda & Addenda</h3>
-                            <span class="counter-value"> {{ $corrigenda->category_count }} Pages </span>
-                        </div>
-                    </div>
-                </div>
-            @endforeach --}}
                 </div>
             @endif
         </div>

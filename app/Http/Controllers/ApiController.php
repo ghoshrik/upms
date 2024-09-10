@@ -201,6 +201,22 @@ class ApiController extends Controller
         }
     }
 
+    public function sorRevert(Request $request)
+    {
+        try {
+            $revertDetails = DynamicSorHeader::select('is_approve')->where('id', $request->input('id'))->first();
+            if ($revertDetails->is_approve == '-11') {
+                DynamicSorHeader::where('id', $request->input('id'))
+                    ->update(['is_approve' => '555']);
+                return response()->json(['message' => 'SOR Reverted', 'status' => true]);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Try Again:' . $e], 500);
+        }
+    }
+
+
+
     public function deleteUnitRow(Request $request)
     {
         //dd($request);
@@ -212,15 +228,9 @@ class ApiController extends Controller
             $featureType = $request->featureType;
             $pEV2 = $request->pEV2;
             if (isset($pEV2) && $pEV2 != null) {
-                $modalName = ($featureType == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModalV2" :
-                    (($featureType == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModalV2" :
-                        (($featureType === null && $Estimate_id === null) ? "modalDataV2" :
-                            (($featureType === null && $Estimate_id !== null) ? "editModalDataV2" : "modalDataV2")));
+                $modalName = ($featureType == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModalV2" : (($featureType == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModalV2" : (($featureType === null && $Estimate_id === null) ? "modalDataV2" : (($featureType === null && $Estimate_id !== null) ? "editModalDataV2" : "modalDataV2")));
             } else {
-                $modalName = ($featureType == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModal" :
-                    (($featureType == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModal" :
-                        (($featureType === null && $Estimate_id === null) ? "modalData" :
-                            (($featureType === null && $Estimate_id !== null) ? "editModalData" : "modalData")));
+                $modalName = ($featureType == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModal" : (($featureType == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModal" : (($featureType === null && $Estimate_id === null) ? "modalData" : (($featureType === null && $Estimate_id !== null) ? "editModalData" : "modalData")));
             }
             $sessionData = Session()->get($modalName);
             // dd($sessionData);
@@ -295,7 +305,6 @@ class ApiController extends Controller
                 $EditRate_id = isset($input_values['editRate_id']) ? $input_values['editRate_id'] : null;
                 $featuretype = isset($input_values['featureType']) ? $input_values['featureType'] : null;
                 $pEV2 = isset($input_values['pEV2']) ? $input_values['pEV2'] : null;
-
             } else {
                 $overalltotal = isset($data[0]['overallTotal']) ? $data[0]['overallTotal'] : null;
                 $parentId = isset($data[0]['parent_id']) ? $data[0]['parent_id'] : null;
@@ -309,20 +318,14 @@ class ApiController extends Controller
             }
 
             if (isset($pEV2) && $pEV2 != null) {
-                $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModalV2" :
-                    (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModalV2" :
-                        (($featuretype === null && $Estimate_id === null) ? "modalDataV2" :
-                            (($featuretype === null && $Estimate_id !== null) ? "editModalDataV2" : "modalDataV2")));
+                $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModalV2" : (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModalV2" : (($featuretype === null && $Estimate_id === null) ? "modalDataV2" : (($featuretype === null && $Estimate_id !== null) ? "editModalDataV2" : "modalDataV2")));
             } else {
-                $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModal" :
-                    (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModal" :
-                        (($featuretype === null && $Estimate_id === null) ? "modalData" :
-                            (($featuretype === null && $Estimate_id !== null) ? "editModalData" : "modalData")));
+                $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModal" : (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModal" : (($featuretype === null && $Estimate_id === null) ? "modalData" : (($featuretype === null && $Estimate_id !== null) ? "editModalData" : "modalData")));
             }
 
 
 
-             //dd($modalName);
+            //dd($modalName);
             $sessionData = Session()->get($modalName);
             if (!is_array($sessionData)) {
                 $sessionData = [];
@@ -362,7 +365,6 @@ class ApiController extends Controller
                         }
                         if (!isset($metadata['expcalculate'])) {
                             $updateTotalOverallTotal += floatval($metadata['overallTotal']);
-
                         }
                         $metadataArray[$index] = $metadata;
                     }
@@ -371,7 +373,6 @@ class ApiController extends Controller
                             $data['overallTotal'] = $updateTotalOverallTotal;
                             $data['grandTotal'] = $updateTotalOverallTotal;
                             $data['unit'] = $unit;
-
                         }
                         $data['currentId'] = $index;
                     }
@@ -413,15 +414,9 @@ class ApiController extends Controller
             $part_no = $request->part_no;
             $pEV2 = $request->pEV2;
             if (isset($pEV2) && $pEV2 != null) {
-                $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModalV2" :
-                    (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModalV2" :
-                        (($featuretype === null && $Estimate_id === null) ? "modalDataV2" :
-                            (($featuretype === null && $Estimate_id !== null) ? "editModalDataV2" : "modalDataV2")));
+                $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModalV2" : (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModalV2" : (($featuretype === null && $Estimate_id === null) ? "modalDataV2" : (($featuretype === null && $Estimate_id !== null) ? "editModalDataV2" : "modalDataV2")));
             } else {
-                $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModal" :
-                    (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModal" :
-                        (($featuretype === null && $Estimate_id === null) ? "modalData" :
-                            (($featuretype === null && $Estimate_id !== null) ? "editModalData" : "modalData")));
+                $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModal" : (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModal" : (($featuretype === null && $Estimate_id === null) ? "modalData" : (($featuretype === null && $Estimate_id !== null) ? "editModalData" : "modalData")));
             }
             $sessionData = Session()->get($modalName);
             if (!is_array($sessionData)) {
@@ -447,22 +442,15 @@ class ApiController extends Controller
                                 $nestedData['type']
                             );
                         }
-
                     }
                 }
             }
 
             // dd($sessionData);
             if (isset($pEV2) && $pEV2 != null) {
-                $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModalV2" :
-                    (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModalV2" :
-                        (($featuretype === null && $Estimate_id === null) ? "modalDataV2" :
-                            (($featuretype === null && $Estimate_id !== null) ? "editModalDataV2" : "modalDataV2")));
+                $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModalV2" : (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModalV2" : (($featuretype === null && $Estimate_id === null) ? "modalDataV2" : (($featuretype === null && $Estimate_id !== null) ? "editModalDataV2" : "modalDataV2")));
             } else {
-                $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModal" :
-                    (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModal" :
-                        (($featuretype === null && $Estimate_id === null) ? "modalData" :
-                            (($featuretype === null && $Estimate_id !== null) ? "editModalData" : "modalData")));
+                $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModal" : (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModal" : (($featuretype === null && $Estimate_id === null) ? "modalData" : (($featuretype === null && $Estimate_id !== null) ? "editModalData" : "modalData")));
             }
 
             Session()->put($modalName, $sessionData);
@@ -484,15 +472,9 @@ class ApiController extends Controller
         $featuretype = $request->featureType;
         $pEV2 = $request->pEV2;
         if (isset($pEV2) && $pEV2 != null) {
-            $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModalV2" :
-                (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModalV2" :
-                    (($featuretype === null && $Estimate_id === null) ? "modalDataV2" :
-                        (($featuretype === null && $Estimate_id !== null) ? "editModalDataV2" : "modalDataV2")));
+            $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModalV2" : (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModalV2" : (($featuretype === null && $Estimate_id === null) ? "modalDataV2" : (($featuretype === null && $Estimate_id !== null) ? "editModalDataV2" : "modalDataV2")));
         } else {
-            $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModal" :
-                (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModal" :
-                    (($featuretype === null && $Estimate_id === null) ? "modalData" :
-                        (($featuretype === null && $Estimate_id !== null) ? "editModalData" : "modalData")));
+            $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModal" : (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModal" : (($featuretype === null && $Estimate_id === null) ? "modalData" : (($featuretype === null && $Estimate_id !== null) ? "editModalData" : "modalData")));
         }
 
 
@@ -503,7 +485,6 @@ class ApiController extends Controller
             'status' => true,
             'rateAnalysisArray' => $rowdata,
         ], 200);
-
     }
 
     public function getunitQtyAdded(Request $request)
@@ -514,15 +495,9 @@ class ApiController extends Controller
         $featuretype = $request->featureType;
         $pEV2 = $request->pEV2;
         if (isset($pEV2) && $pEV2 != null) {
-            $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModalV2" :
-                (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModalV2" :
-                    (($featuretype === null && $Estimate_id === null) ? "modalDataV2" :
-                        (($featuretype === null && $Estimate_id !== null) ? "editModalDataV2" : "modalDataV2")));
+            $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModalV2" : (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModalV2" : (($featuretype === null && $Estimate_id === null) ? "modalDataV2" : (($featuretype === null && $Estimate_id !== null) ? "editModalDataV2" : "modalDataV2")));
         } else {
-            $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModal" :
-                (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModal" :
-                    (($featuretype === null && $Estimate_id === null) ? "modalData" :
-                        (($featuretype === null && $Estimate_id !== null) ? "editModalData" : "modalData")));
+            $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModal" : (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModal" : (($featuretype === null && $Estimate_id === null) ? "modalData" : (($featuretype === null && $Estimate_id !== null) ? "editModalData" : "modalData")));
         }
         $sessionData = Session()->get($modalName);
         $data = $sessionData[$request->parent_id][$request->rowId];
@@ -556,15 +531,9 @@ class ApiController extends Controller
                 $data['input_values']['overallTotal'] = $overallTotal;
             }
             if (isset($pEV2) && $pEV2 != null) {
-                $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModalV2" :
-                    (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModalV2" :
-                        (($featuretype === null && $Estimate_id === null) ? "modalDataV2" :
-                            (($featuretype === null && $Estimate_id !== null) ? "editModalDataV2" : "modalDataV2")));
+                $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModalV2" : (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModalV2" : (($featuretype === null && $Estimate_id === null) ? "modalDataV2" : (($featuretype === null && $Estimate_id !== null) ? "editModalDataV2" : "modalDataV2")));
             } else {
-                $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModal" :
-                    (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModal" :
-                        (($featuretype === null && $Estimate_id === null) ? "modalData" :
-                            (($featuretype === null && $Estimate_id !== null) ? "editModalData" : "modalData")));
+                $modalName = ($featuretype == "RateAnalysis" && $EditRate_id === null) ? "RateAnalysisModal" : (($featuretype == "RateAnalysis" && $EditRate_id !== null) ? "RateAnalysisEditModal" : (($featuretype === null && $Estimate_id === null) ? "modalData" : (($featuretype === null && $Estimate_id !== null) ? "editModalData" : "modalData")));
             }
             $sessionData = Session()->get($modalName);
 
@@ -598,7 +567,6 @@ class ApiController extends Controller
                 'remarks' => $remarks,
                 'rateAnalysisArray' => $this->rateAnalysisArray,
             ], 200);
-
         } catch (\Exception $exception) {
             return response()->json([
                 'status' => false,

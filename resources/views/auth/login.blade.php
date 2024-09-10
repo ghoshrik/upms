@@ -1,12 +1,12 @@
 <x-guest-layout>
     <section class="login-content">
-        <div class="row m-0 align-items-center bg-white vh-100">
+        <div class="m-0 bg-white row align-items-center vh-100">
             <div class="col-md-6">
                 <div class="row justify-content-center">
                     <div class="col-md-10">
-                        <div class="card card-transparent shadow-none d-flex justify-content-center mb-0 auth-card">
+                        <div class="mb-0 shadow-none card card-transparent d-flex justify-content-center auth-card">
                             <div class="card-body">
-                                <a href="{{ route('dashboard') }}" class="navbar-brand d-flex align-items-center mb-3">
+                                <a href="{{ route('dashboard') }}" class="mb-3 navbar-brand d-flex align-items-center">
                                     {{-- <svg width="30" class="text-primary" viewBox="0 0 30 30" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <rect x="-0.757324" y="19.2427" width="28" height="4" rx="2"
@@ -40,12 +40,12 @@
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="form-group">
-                                                <label for="email" class="form-label" style="color:#000000;">Login ID/HRMS ID</label>
-                                                <input type="text" name="loginId"
-                                                    class="form-control @error('loginId') is-invalid @enderror"
-                                                    autocomplete="off" placeholder="{{ __('enter Login ID/HRMS ID') }}"
+                                                <label for="email" class="form-label" style="color:#000000;">Email ID</label>
+                                                <input type="text" name="email_id"
+                                                    class="form-control @error('email_id') is-invalid @enderror"
+                                                    autocomplete="off" placeholder="{{ __('enter Email ID') }}"
                                                     autofocus>
-                                                @error('loginId')
+                                                @error('email_id')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -69,7 +69,7 @@
                                         {{-- @endisset --}}
                                         {{--
                                         <div class="col-lg-6">
-                                            <div class="form-check mb-3">
+                                            <div class="mb-3 form-check">
                                                 <input type="checkbox" class="form-check-input" id="customCheck1">
                                                 <label class="form-check-label" for="customCheck1">Remember Me</label>
                                             </div>
@@ -82,19 +82,19 @@
                                     <div class="d-flex justify-content-center">
                                         <button type="submit" class="btn btn-primary">{{ __('Sign In') }} </button>
                                     </div>
-                                    {{-- <p class="text-center my-3">or sign in with other accounts?</p>
+                                    {{-- <p class="my-3 text-center">or sign in with other accounts?</p>
                            <div class="d-flex justify-content-center">
                               <ul class="list-group list-group-horizontal list-group-flush">
-                                 <li class="list-group-item border-0 pb-0">
+                                 <li class="pb-0 border-0 list-group-item">
                                     <a href="#"><img src="{{asset('images/brands/fb.svg')}}" alt="fb"></a>
                                  </li>
-                                 <li class="list-group-item border-0 pb-0">
+                                 <li class="pb-0 border-0 list-group-item">
                                     <a href="#"><img src="{{asset('images/brands/gm.svg')}}" alt="gm"></a>
                                  </li>
-                                 <li class="list-group-item border-0 pb-0">
+                                 <li class="pb-0 border-0 list-group-item">
                                     <a href="#"><img src="{{asset('images/brands/im.svg')}}" alt="im"></a>
                                  </li>
-                                 <li class="list-group-item border-0 pb-0">
+                                 <li class="pb-0 border-0 list-group-item">
                                     <a href="#"><img src="{{asset('images/brands/li.svg')}}" alt="li"></a>
                                  </li>
                               </ul>
@@ -103,7 +103,7 @@
                               Don’t have an account? <a href="{{route('auth.signup')}}" class="text-underline">Click here to sign up.</a>
                            </p> --}}
                                 </form>
-			{{--	<div class="alert alert-danger mt-2" role="alert">
+			{{--	<div class="mt-2 alert alert-danger" role="alert">
                                     <p>Service Un-available on 19/01/2024 from 8:00 AM to 12:00 PM Please Do Not Sign in into the Portal.</p>
                                 </div> --}}
                             </div>
@@ -126,7 +126,7 @@
                     </svg>
                 </div>
             </div>
-            <div class="col-md-6 d-md-block d-none bg-primary p-0 mt-n1 vh-100 overflow-hidden">
+            <div class="p-0 overflow-hidden col-md-6 d-md-block d-none bg-primary mt-n1 vh-100">
                 <img src="{{ asset('images/auth/01.png') }}" class="img-fluid gradient-main animated-scaleX"
                     alt="images">
             </div>
