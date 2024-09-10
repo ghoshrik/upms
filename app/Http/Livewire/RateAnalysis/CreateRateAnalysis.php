@@ -150,7 +150,7 @@ class CreateRateAnalysis extends Component
             ['rate_id', $this->rateData['rate_no']],
             ['dept_id', $this->rateData['dept_id']],
             ['operation', '!=', ''],
-            ['operation', '!=', 'Exp Calculoation'],
+            ['operation', '!=', 'Exp Calculation'],
             ['rate_no', 0]
         ])
             ->select('rate_id', 'operation', 'description')
@@ -171,7 +171,7 @@ class CreateRateAnalysis extends Component
         $this->rateData['qty'] = '';
         $this->rateData['rate'] = '';
         $this->rateData['rate_type'] = '';
-        $this->fatchDropdownData['rateDetailsTypes'] = RatesAnalysis::where([['rate_id', $this->rateData['rate_no']], ['dept_id', $this->rateData['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculoation'], ['rate_no', 0]])->select('rate_id', 'operation')->get();
+        $this->fatchDropdownData['rateDetailsTypes'] = RatesAnalysis::where([['rate_id', $this->rateData['rate_no']], ['dept_id', $this->rateData['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculation'], ['rate_no', 0]])->select('rate_id', 'operation')->get();
         // dd($this->fatchDropdownData['rateDetailsTypes']);
     }
 
@@ -1577,7 +1577,7 @@ class CreateRateAnalysis extends Component
         //     ->where('sor_masters.is_verified', '=', 1)
         //     ->get();
         // $this->fatchDropdownData['ratesList'] = SorMaster::select('estimate_id','dept_id','rateMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',1],['is_verified',1]])->get();
-        $this->fatchDropdownData['ratesList'] = RatesAnalysis::where([['dept_id', $this->rateData['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculoation'], ['rate_no', 0]])
+        $this->fatchDropdownData['ratesList'] = RatesAnalysis::where([['dept_id', $this->rateData['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculation'], ['rate_no', 0]])
             ->select('description', 'rate_id')
             ->groupBy('description', 'rate_id')
             ->get();

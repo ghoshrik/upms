@@ -59,7 +59,7 @@
                                             @if ($view['operation'] == 'Total')
                                                 {{ 'Total of ( ' . str_replace('+', ' + ', $view['row_index']) . ' )' }}
                                             @else
-                                                {{ str_replace('+', ' + ', $view['row_index']) }}{{ ($view['operation'] != 'Exp Calculoation') ? ' ( ' . $view['operation'] . ' )' : '' }}
+                                                {{ str_replace('+', ' + ', $view['row_index']) }}{{ ($view['operation'] != 'Exp Calculation') ? ' ( ' . $view['operation'] . ' )' : '' }}
                                                 @if ($view['comments'] != '')
                                                     {{ '( ' . $view['comments'] . ' )' }}
                                                 @endif
@@ -118,9 +118,9 @@
                                                     </thead>
                                                     <tbody class="metatable">
                                                         <?php
-                                                        $row_id = $view['row_id']; 
+                                                        $row_id = $view['row_id'];
                                                         if (preg_match('/[A-Za-z]/', $row_id, $matches)) {
-                                                            $alphabet = $matches[0]; 
+                                                            $alphabet = $matches[0];
                                                         } else {
                                                             $alphabet = '';
                                                         }
@@ -146,7 +146,7 @@
                                                                     </button>
                                                                 @endif
                                                             </td>
-                                                            
+
                                                         </tr>
                                                         <tr class="collapse"
                                                             id="collapseExample1_{{ $metadata['currentId'] }}_{{ $view['row_id'] }}">

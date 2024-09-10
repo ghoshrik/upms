@@ -541,7 +541,7 @@ class EditRowWise extends Component
         $this->dataArray['rate_no'] = '';
         $this->dataArray['description'] = '';
         $this->dataArray['total_amount'] = '';
-        $this->fatchDropdownData['ratesList'] = RatesAnalysis::where([['dept_id', $this->dataArray['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculoation'], ['rate_no', 0]])
+        $this->fatchDropdownData['ratesList'] = RatesAnalysis::where([['dept_id', $this->dataArray['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculation'], ['rate_no', 0]])
             ->select('description', 'rate_id')
             ->groupBy('description', 'rate_id')
             ->get();
@@ -555,7 +555,7 @@ class EditRowWise extends Component
         $this->dataArray['unit_id'] = '';
         $this->dataArray['rate'] = '';
         $this->dataArray['rate_type'] = '';
-        $this->fatchDropdownData['rateDetailsTypes'] = RatesAnalysis::where([['rate_id', $this->dataArray['rate_no']], ['dept_id', $this->dataArray['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculoation'], ['rate_no', 0]])->select('rate_id', 'operation')->get();
+        $this->fatchDropdownData['rateDetailsTypes'] = RatesAnalysis::where([['rate_id', $this->dataArray['rate_no']], ['dept_id', $this->dataArray['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculation'], ['rate_no', 0]])->select('rate_id', 'operation')->get();
     }
     public function getRateDetails()
     {
@@ -586,7 +586,7 @@ class EditRowWise extends Component
             ['rate_id', $this->dataArray['rate_no']],
             ['dept_id', $this->dataArray['dept_id']],
             ['operation', '!=', ''],
-            ['operation', '!=', 'Exp Calculoation'],
+            ['operation', '!=', 'Exp Calculation'],
             ['rate_no', 0]
         ])
             ->select('rate_id', 'operation', 'description')

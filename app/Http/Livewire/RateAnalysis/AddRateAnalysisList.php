@@ -379,7 +379,7 @@ class AddRateAnalysisList extends Component
                 }
             }
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddRate($tempIndex, Session::get('user_data.department_id'), 0, 0, '', '', '', 0, 0, number_format(round($result, 2), 2, '.', ''), 'Exp Calculoation', '', $this->remarks);
+            $this->insertAddRate($tempIndex, Session::get('user_data.department_id'), 0, 0, '', '', '', 0, 0, number_format(round($result, 2), 2, '.', ''), 'Exp Calculation', '', $this->remarks);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(

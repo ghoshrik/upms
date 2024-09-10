@@ -77,7 +77,7 @@ class EditEstimateList extends Component
                 }
             }
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddEstimate($row_index, '', '', '', '', '', '', '', '', $result, 'Exp Calculoation', '', $this->remarks);
+            $this->insertAddEstimate($row_index, '', '', '', '', '', '', '', '', $result, 'Exp Calculation', '', $this->remarks);
         } catch (\Exception$exception) {
             $this->expression = $row_index;
             $this->dispatchBrowserEvent('alert', [

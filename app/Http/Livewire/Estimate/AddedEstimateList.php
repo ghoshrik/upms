@@ -82,7 +82,7 @@ class AddedEstimateList extends Component
             }
             $result = $stringCalc->calculate($this->expression);
             // dd($result);
-            $this->insertAddEstimate($tempIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Exp Calculoation', '', $this->remarks, 0, 0, 0);
+            $this->insertAddEstimate($tempIndex, 0, 0, 0, '', '', '', 0, 0, $result, 'Exp Calculation', '', $this->remarks, 0, 0, 0);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(

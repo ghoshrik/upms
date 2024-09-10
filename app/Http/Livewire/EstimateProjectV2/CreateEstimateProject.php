@@ -580,9 +580,9 @@ class CreateEstimateProject extends Component
         //     ->where('estimate_recomender.dept_id', $this->estimateData['dept_id'])
         //     ->where('sor_masters.is_verified', '=', 1)
         //     ->get();
-        // $this->fatchDropdownData['ratesList'] = DB::select(DB::raw("SELECT rate_id, description FROM rates_analyses WHERE dept_id = :dept_id AND operation != '' AND operation != 'Exp Calculoation' GROUP BY rate_id, description"), ['dept_id' => $this->estimateData['dept_id']]);
+        // $this->fatchDropdownData['ratesList'] = DB::select(DB::raw("SELECT rate_id, description FROM rates_analyses WHERE dept_id = :dept_id AND operation != '' AND operation != 'Exp Calculation' GROUP BY rate_id, description"), ['dept_id' => $this->estimateData['dept_id']]);
         // $this->fatchDropdownData['ratesList'] = json_decode(json_encode($this->fatchDropdownData['ratesList']), true);
-        $this->fatchDropdownData['ratesList'] = RatesAnalysis::where([['dept_id', $this->estimateData['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculoation'], ['rate_no', 0]])->select('description', 'rate_id')->groupBy('description', 'rate_id')->get();
+        $this->fatchDropdownData['ratesList'] = RatesAnalysis::where([['dept_id', $this->estimateData['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculation'], ['rate_no', 0]])->select('description', 'rate_id')->groupBy('description', 'rate_id')->get();
         // $this->fatchDropdownData['estimatesList'] = SorMaster::select('estimate_id','dept_id','sorMasterDesc','status','is_verified')->where([['dept_id',Auth::user()->department_id],['status',8],['is_verified',1]])->get();
     }
 
@@ -652,7 +652,7 @@ class CreateEstimateProject extends Component
         $this->estimateData['description'] = '';
         $this->estimateData['qty'] = '';
         $this->estimateData['rate'] = '';
-        $this->fatchDropdownData['rateDetailsTypes'] = RatesAnalysis::where([['rate_id', $this->estimateData['rate_no']], ['dept_id', $this->estimateData['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculoation'], ['rate_no', 0]])->select('rate_id', 'operation')->get();
+        $this->fatchDropdownData['rateDetailsTypes'] = RatesAnalysis::where([['rate_id', $this->estimateData['rate_no']], ['dept_id', $this->estimateData['dept_id']], ['operation', '!=', ''], ['operation', '!=', 'Exp Calculation'], ['rate_no', 0]])->select('rate_id', 'operation')->get();
         // dd($this->fatchDropdownData['rateDetailsTypes']);
     }
 

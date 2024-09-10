@@ -81,7 +81,7 @@ class AddQuantityEvaluation extends Component
                 }
             }
             $result = $stringCalc->calculate($this->expression);
-            $this->insertAddEstimate($tempIndex, (int)$this->selectedDept, (int)$this->selectedRate, '', '', $result, 'Exp Calculoation', '', $this->remarks);
+            $this->insertAddEstimate($tempIndex, (int)$this->selectedDept, (int)$this->selectedRate, '', '', $result, 'Exp Calculation', '', $this->remarks);
         } catch (\Exception $exception) {
             $this->expression = $tempIndex;
             $this->notification()->error(
