@@ -46,7 +46,8 @@ class Create extends Component
                 $category = SorCategoryType::findOrFail($this->selectedIdForEdit);
                 $category->update([
                     'dept_category_name' => $this->dept_category_name,
-                    'target_pages' => $this->totalSorPage
+                    'target_pages' => $this->totalSorPage,
+                    'volume_id' => $this->volumeId
                 ]);
                 $this->notification()->success(
                     $title = 'Department category updated'
@@ -55,7 +56,8 @@ class Create extends Component
 
                 SorCategoryType::create([
                     'department_id' => Auth::user()->department_id,
-                    'dept_category_name' => $this->dept_category_name
+                    'dept_category_name' => $this->dept_category_name,
+                    'volume_id' => $this->volumeId
                 ]);
                 $this->notification()->success(
                     $title = 'Department category created'
