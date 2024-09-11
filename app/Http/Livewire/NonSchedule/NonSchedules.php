@@ -35,7 +35,7 @@ class NonSchedules extends Component
     }
     public function render()
     {
-        $this->title = "Non Schedules";
+        $this->title = "Non Schedules Items";
         $assets = ['chart', 'animation'];
         return view('livewire.non-schedule.non-schedules');
     }

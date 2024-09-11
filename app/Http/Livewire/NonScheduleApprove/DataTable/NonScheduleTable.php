@@ -197,8 +197,6 @@ final class NonScheduleTable extends PowerGridComponent
     public function actionRules(): array
     {
        return [
-
-           //Hide button edit for ID 1
             Rule::button('approve')
                 ->when(fn($row) => $row->approved_at !='')
                 ->hide(),
