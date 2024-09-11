@@ -164,7 +164,8 @@ class CreateUser extends Component
                 } elseif(Auth::user()->hasRole('Group Admin')) {
                     $this->dropDownData['roles'] = Role::whereIn('name',['Office Admin'])->get();
                 } elseif(Auth::user()->hasRole('Office Admin')) {
-                    $this->dropDownData['roles'] = Role::whereIn('name',['Chief Engineer','Superintending Engineer','Executive Engineer','Assistant Engineer','Junior Engineer'])->get();
+//                    $this->dropDownData['roles'] = Role::whereIn('name',['Chief Engineer','Superintending Engineer','Executive Engineer','Assistant Engineer','Junior Engineer'])->get();
+                    $this->dropDownData['roles'] = Role::where('for_sanction',true)->get();
                 }
             }elseif($lookingFor === 'OFC'){
                 $group = Group::where('id',Auth::user()->group_id)->first();

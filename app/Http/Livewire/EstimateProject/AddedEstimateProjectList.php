@@ -784,12 +784,30 @@ class AddedEstimateProjectList extends Component
                                 // dd($role->permissions);
                                 // dd($user->roles->pluck('id'));
                                 $role = Role::where('id', Auth::user()->roles->first()->id)->first();
+//                                dd($role);
                                 $permissions = $role->permissions;
+//                                dd($permissions);
+
+//                                $getSLM = SanctionLimitMaster::where('department_id', Auth::user()->department_id)
+//                                    ->where('min_amount', '<=', $estimated_amount)->first();
+//                                if($getSLM['max_amount'] != ''){
+//
+//                                }
+//                                    ->where('max_amount', '>=', $estimated_amount)
+//                                    ->first();
+//                                dd($getSLM);
                                 $getSLM = SanctionLimitMaster::where('department_id', Auth::user()->department_id)
                                     ->where('min_amount', '<=', $estimated_amount)
-                                    ->where('max_amount', '>=', $estimated_amount)
+                                    ->where(function($query) use ($estimated_amount) {
+                                        $query->where('max_amount', '>=', $estimated_amount)
+                                            ->orWhereNull('max_amount'); // handle case when max_amount is null
+                                    })
                                     ->first();
+
+//                                dd($getSLM);
+
                                 $getSLMDetails = $getSLM->roles()->with(['role', 'permission'])->get();
+//                                dd($getSLMDetails);
                                 if (count($getSLMDetails) > 0) {
                                     foreach ($getSLMDetails as $slmDetail) {
                                         $estimate_flow_data = [
@@ -804,6 +822,7 @@ class AddedEstimateProjectList extends Component
                                         EstimateFlow::create($estimate_flow_data);
                                     }
                                 }
+
                             }
                         }
                         $data = [

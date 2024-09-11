@@ -40,7 +40,8 @@ class EstimateSanctionMaster extends Component
     public function mount()
     {
         $this->updateDataTableTracker = rand(1, 1000);
-        $this->roles = Role::whereIn('id', [3, 4, 12, 7, 9])->orderBy('has_level_no')->get();
+//        $this->roles = Role::whereIn('name',['Chief Engineer (Planning)','Zonal Chief Engineer','Superintending Engineer','Executive Engineer','Assistant Engineer','Junior Engineer'])->get();
+        $this->roles = Role::where('for_sanction',true)->get();
         $this->sanction_roles = collect();
         $this->permissions = collect([
             'create estimate' => 'Maker',

@@ -14,7 +14,7 @@ class UserManagement extends Component
 {
     public $formOpen = false, $updateDataTableTracker;
 
-    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'refreshCSRFToken' => '$refresh', 'openRoleModal','closeAddRoleDrawer'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'refreshCSRFToken' => '$refresh', 'openRoleModal', 'closeAddRoleDrawer'];
     public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel;
     public $activeTab, $tabs = [];
     public $openRoleModalForm = false, $editUserRole, $fetchDropdownData = [], $userRoles = [], $role_id = '';
@@ -56,11 +56,11 @@ class UserManagement extends Component
             $this->tabs[] =
                 [
 
-                'title' => 'State Users',
-                'id' => 'state',
-                'data' => 1,
+                    'title' => 'State Users',
+                    'id' => 'state',
+                    'data' => 1,
 
-            ];
+                ];
         }
         if (Auth::user()->hasRole('State Admin')) {
             $this->tabs = [
@@ -87,20 +87,17 @@ class UserManagement extends Component
                 ];
             }
         } elseif (Auth::user()->hasRole('Group Admin')) {
-            $roles = Role::whereIn('name', ['Group Admin', 'Office Admin'])->orderBy('name')->select('id', 'name')->get();
+            $this->tabs[] = [
+                'title' => 'Office Admin\'s',
+                'id' => 'office-admin',
+                'data' => Role::where('name', 'Office Admin')->first()->id,
+            ];
+        } elseif (Auth::user()->hasRole('Office Admin')) {
+            //            $roles = Role::whereIn('name', ['Chief Engineer', 'Superintending Engineer', 'Executive Engineer', 'Assistant Engineer', 'Junior Engineer'])->select('id', 'name')->get();
+            $roles = Role::where('for_sanction', true)->select('id', 'name')->get();
             foreach ($roles as $key => $role) {
                 $this->tabs[] = [
                     'title' => $role['name'],
-                    'id' => 'office-user' . $key,
-                    // 'data' => array_values($roles),
-                    'data' => $role['id'],
-                ];
-            }
-        } elseif (Auth::user()->hasRole('Office Admin')) {
-            // $roles = Role::whereIn('name', ['Chief Engineer', 'Superintending Engineer', 'Executive Engineer', 'Assistant Engineer', 'Junior Engineer'])->select('id', 'name')->get();
-            $roles = Role::where('for_sanction', true)->orWhere('name','Office Admin')->select('id', 'name')->get();
-            foreach ($roles as $key => $role) {
-                $this->tabs[] = [
                     'title' => $role['name'],
                     'id' => 'office-user' . $key,
                     // 'data' => array_values($roles),
@@ -169,7 +166,8 @@ class UserManagement extends Component
         //                                     ->orderBy('name')
         //                                     ->select('id', 'name')->get();
     }
-    public function closeAddRoleDrawer(){
+    public function closeAddRoleDrawer()
+    {
         $this->openRoleModalForm = !$this->openRoleModalForm;
         $this->reset('editUserRole');
     }
@@ -229,7 +227,7 @@ class UserManagement extends Component
     }
     public function render()
     {
-        $this->updateDataTableTracker = rand(1,9999);
+        $this->updateDataTableTracker = rand(1, 9999);
         $this->titel = trans('cruds.user-management.title');
         $assets = ['chart', 'animation'];
         return view('livewire.user-management.user-management', compact('assets'));

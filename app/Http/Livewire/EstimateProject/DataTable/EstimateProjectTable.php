@@ -151,11 +151,11 @@ final class EstimateProjectTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-            ->addColumn('serial_no')
+//            ->addColumn('serial_no')
             ->addColumn('sor_masters.estimate_id')
 
             ->addColumn('sorMasterDesc')
-            ->addColumn('estimatePrepare.total_amount')
+//            ->addColumn('estimatePrepare.total_amount')
             // ->addColumn('total_amount', function ($row) {
             //     return round($row->total_amount, 2);
             // })
@@ -187,7 +187,7 @@ final class EstimateProjectTable extends PowerGridComponent
             'approve estimate' => 'Approver',
         ]);
         return [
-            Column::make('Sl.No', 'serial_no'),
+//            Column::make('Sl.No', 'serial_no'),
 
             Column::make('ESTIMATE NO', 'estimate_id')
                 // ->makeInputRange()
@@ -197,11 +197,10 @@ final class EstimateProjectTable extends PowerGridComponent
                 ->headerAttribute('style', 'white-space: normal; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;')
                 ->bodyAttribute('style', 'white-space: normal; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;'),
 
-            Column::make('Total','estimatePrepare.total_amount'),
+//            Column::make('Total','estimatePrepare.total_amount'),
             // Column::make('TOTAL AMOUNT', 'total_amount')
             //     ->makeInputRange()
             //     ->sortable(),
-
             Column::make('Status', 'estimateStatus.status')
                 ->sortable(),
 //            Column::make('Stage','permission.name'),

@@ -111,15 +111,18 @@ class EstimateForwardModal extends Component
 //         dd($this->assignUserDetails);
 
         $fwdUserDetails = explode('-', $this->assignUserDetails);
+//        dd($fwdUserDetails);
 
-        DB::transaction(function ()use ($fwdUserDetails)
+
+//        (int)$fwdUserDetails[0];
+        /*DB::transaction(function ()use ($fwdUserDetails)
         {
 //            dd($fwdUserDetails[0],$fwdUserDetails[1],$fwdUserDetails[2],$fwdUserDetails[3]);
 
-                $userId = $fwdUserDetails[0];
-                $slmId = $fwdUserDetails[1];
-                $sequenceNo = $fwdUserDetails[2];
-                $estimateId = $fwdUserDetails[3];
+                $userId = (int)$fwdUserDetails[0];
+                $slmId = (int)$fwdUserDetails[1];
+                $sequenceNo = (int)$fwdUserDetails[2];
+                $estimateId = (int)$fwdUserDetails[3];
             DB::enableQueryLog();
             $sanctionLists = SanctionRole::select('role_id','permission_id')->where('sequence_no', $sequenceNo)->first();
 //            dd($sanctionLists);
@@ -135,7 +138,32 @@ class EstimateForwardModal extends Component
 
 
 
-        });
+        });*/
+        $userId = (int)$fwdUserDetails[0];
+        $slmId = (int)$fwdUserDetails[1];
+        $sequenceNo = (int)$fwdUserDetails[2];
+        $estimateId = (int)$fwdUserDetails[3];
+
+//        dd($userId,$slmId,$sequenceNo,$estimateId);
+        $sanctionLists = SanctionRole::select('role_id','permission_id')->where('sequence_no', $sequenceNo)->first();
+//        dd($sanctionLists->permission_id);
+//        $estId = EstimateFlow::where('estimate_id',$estimateId)->first();
+//        $estId->id =
+
+//        dd($estId);
+
+
+
+        $estId = EstimateFlow::where('estimate_id', $estimateId)
+            ->where('slm_id', $slmId)
+            ->where('role_id', $sanctionLists->role_id)
+//            ->where('permission_id', $sanctionLists->permission_id)
+//            ->get();
+            ->update(['user_id' => $userId, 'associated_at' => Carbon::now()]);
+//        dd($estId);/
+        EstimateFlow::where('user_id',Auth::user()->id)->update(['dispatch_at'=>Carbon::now()]);
+        SorMaster::where('estimate_id',$estimateId)->update(['status' => 13,'associated_with'=>$userId]);
+
         $this->notification()->success(
             $title = 'Success',
             $description = 'Successfully Assign!!'

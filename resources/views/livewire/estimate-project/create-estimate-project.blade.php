@@ -283,8 +283,8 @@
                                         <div class="form-group">
                                             <x-input wire:key="other_name" wire:model.defer="estimateData.other_name"
                                                 label="Item Name" placeholder="Item Name" />
-                                            {{-- <button class="btn btn-primary mt-2" wire:click="openModal">Edit
-                                                Description</button> --}}
+                                            {{--                                            <button class="btn btn-primary mt-2" wire:click="openModal">Edit --}}
+                                            {{--                                                Description</button> --}}
                                         </div>
                                     </div>
                                     <div class="col">
@@ -786,7 +786,7 @@
         </script>
     @endif
 
-{{--    @if ($showOtherModal)
+    {{--    @if ($showOtherModal)
         <div class="modal fade show" style="display: block;" tabindex="-1" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-xl">
@@ -836,7 +836,7 @@
     @endif --}}
 </div>
 <script>
-  /*  document.addEventListener('DOMContentLoaded', function() {
+    /*  document.addEventListener('DOMContentLoaded', function() {
         Livewire.on('loadQuillContent', content => {
             quill.root.innerHTML = content;
         });
