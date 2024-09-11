@@ -91,7 +91,9 @@ final class NonScheduleList extends PowerGridComponent
      */
     public function relationSearch(): array
     {
-        return [];
+        return [
+            'units'=>['unit_name']
+        ];
     }
 
     /*
