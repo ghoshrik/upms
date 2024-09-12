@@ -489,7 +489,7 @@ final class UsersDataTable extends PowerGridComponent
             return $query->where('model_has_roles.role_id', $this->userData)
                          ->where('users.department_id',Auth::user()->department_id)
                          ->where('users.group_id',Auth::user()->group_id)
-                         ;
+                         ->where('users.office_id',Auth::user()->resources->first()->resource_id);
         } else {
             return $query;
         }
@@ -776,7 +776,15 @@ final class UsersDataTable extends PowerGridComponent
 
         Button::add('Delete')
             ->bladeComponent('delete-button', ['position' => 'top', 'message' => 'Delete', 'id' => 'id'])
-    ];
+        // Button::make('destroy', 'Delete')
+        // ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
+        // ->route('user.destroy', ['user' => 'id'])
+        // ->method('delete')
+        ];
+    }
+
+    public function assignRole($id){
+        $this->emit('openRoleModal',$id);
     }
 
 

@@ -2,18 +2,19 @@
 
 namespace App\Http\Livewire\UserManagement;
 
-use App\Models\Department;
-use App\Models\Designation;
-use App\Models\Group;
-use App\Models\Office;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Group;
+use App\Models\Office;
 use Livewire\Component;
+use App\Models\Department;
 use WireUi\Traits\Actions;
+use App\Models\Designation;
+use Illuminate\Support\Arr;
+use App\Models\UsersHasRoles;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class CreateUser extends Component
 {
@@ -164,7 +165,6 @@ class CreateUser extends Component
                 } elseif(Auth::user()->hasRole('Group Admin')) {
                     $this->dropDownData['roles'] = Role::whereIn('name',['Office Admin'])->get();
                 } elseif(Auth::user()->hasRole('Office Admin')) {
-//                    $this->dropDownData['roles'] = Role::whereIn('name',['Chief Engineer','Superintending Engineer','Executive Engineer','Assistant Engineer','Junior Engineer'])->get();
                     $this->dropDownData['roles'] = Role::where('for_sanction',true)->get();
                 }
             }elseif($lookingFor === 'OFC'){
