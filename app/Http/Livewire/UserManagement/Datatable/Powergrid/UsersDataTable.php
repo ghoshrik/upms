@@ -768,6 +768,8 @@ final class UsersDataTable extends PowerGridComponent
     public function actions(): array
     {
     return [
+        Button::add('View')
+            ->bladeComponent('data-table-components.buttons.assign-role', ['id' => 'id']),
         // Button::add('View')
         //     ->bladeComponent('view', ['id' => 'id']),
 

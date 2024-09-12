@@ -87,14 +87,18 @@ class UserManagement extends Component
                 ];
             }
         } elseif (Auth::user()->hasRole('Group Admin')) {
-            $this->tabs[] = [
-                'title' => 'Office Admin\'s',
-                'id' => 'office-admin',
-                'data' => Role::where('name', 'Office Admin')->first()->id,
-            ];
+            $roles = Role::whereIn('name', ['Group Admin', 'Office Admin'])->orderBy('name')->select('id', 'name')->get();
+            foreach ($roles as $key => $role) {
+                $this->tabs[] = [
+                    'title' => $role['name'],
+                    'id' => 'office-user' . $key,
+                    // 'data' => array_values($roles),
+                    'data' => $role['id'],
+                ];
+            }
         } elseif (Auth::user()->hasRole('Office Admin')) {
             //            $roles = Role::whereIn('name', ['Chief Engineer', 'Superintending Engineer', 'Executive Engineer', 'Assistant Engineer', 'Junior Engineer'])->select('id', 'name')->get();
-            $roles = Role::where('for_sanction', true)->select('id', 'name')->get();
+            $roles = Role::where('for_sanction', true)->orWhere('name','Office Admin')->select('id', 'name')->get();
             foreach ($roles as $key => $role) {
                 $this->tabs[] = [
                     'title' => $role['name'],
