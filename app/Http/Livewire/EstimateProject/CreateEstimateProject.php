@@ -144,7 +144,7 @@ class CreateEstimateProject extends Component
 
     public function changeCategory($value)
     {
-        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'part_no', 'editEstimate_id']);
+        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'part_no', 'editEstimate_id','totalOnSelectedCount']);
         // dd($this->addedEstimate,$this->editEstimate_id);
         $this->part_no = strtoupper($this->part_no);
         $value = $value['_x_bindings']['value'];

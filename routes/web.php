@@ -47,6 +47,7 @@ use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\MisReport\Users\UserMisReport;
 use App\Http\Livewire\UserManagement\UserManagement;
+use App\Http\Livewire\NonSchedule\NonSchedules;
 
 // Packages
 use App\Http\Livewire\EstimateProject\EstimateProject;
@@ -182,10 +183,11 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('estimate-forwarder', EstimateForwarder::class)->name('estimate-forwarder');
         });
         //Estimate Preparer or Junior Engineer
-        Route::group(['middleware' => ['role:Project Estimate (EP)|Junior Engineer']], function () {
+        Route::group(['middleware' => ['role:Project Estimate (EP)|Junior Engineer|Executive Engineer|Superintending Engineer|Assistant Engineer|Chief Engineer']], function () {
             Route::get('estimate-project', EstimateProject::class)->name('estimate-project');
             Route::get('estimate-project-v2', EstimateProjectV2::class)->name('estimate-project-v2');
             //qty analysis api routes
+
             Route::post('/store-dynamic-unit-modal-data', [ApiController::class, 'unitQtyAdded'])->name('store-dynamic-unit-modal-data');
             Route::post('/unit-modal-updated-data', [ApiController::class, 'getunitQtyAdded'])->name('unit-modal-updated-data');
             Route::post('/delete-unit-modal-data', [ApiController::class, 'deleteUnitRow'])->name('delete-unit-modal-data');
@@ -202,7 +204,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('abstracts', AbstructCostsLists::class)->name('abstracts');
         });
 
-        Route::group(['middleware' => ['role:SOR Preparer|Super Admin']], function () {
+        Route::group(['middleware' => ['role:SOR Preparer|Super Admin|Junior Engineer']], function () {
             Route::get('prepare-sor', Sor::class)->name('prepare-sor');
             Route::get('composit-sor', ComposerSors::class)->name('composit-sor');
             Route::get('dynamic-sor', DynamicSor::class)->name('dynamic-sor');
@@ -212,6 +214,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::post('sor-fileUpload', [ApiController::class, 'storeSorUpload'])->name('sor-fileUpload');
             Route::get('sor-delete', [ApiController::class, 'sorDelete'])->name('admin.sor-delete');
             Route::get('sor-approver', [ApiController::class, 'SORApprover'])->name('sor-approver');
+            Route::get('other-sor',NonSchedules::class);
         });
 
         /*Route::group(['middleware' => ['role:SOR Preparer|Super Admin|View SOR']], function () {

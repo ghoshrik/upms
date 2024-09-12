@@ -2,8 +2,10 @@
 
 namespace App\Http\Livewire\EstimateProject\Datatable\Powergrid;
 
+use App\Models\EstimateFlow;
 use App\Models\EstimatePrepare;
 use App\Models\EstimateStatus;
+use App\Models\SorMaster;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -53,20 +55,41 @@ final class ForwardedEstimateProjectTable extends PowerGridComponent
     */
     public function datasource(): Builder
     {
-        return EstimatePrepare::query()
-        ->select('estimate_prepares.id', 'estimate_prepares.estimate_id', 'estimate_prepares.operation', 'estimate_prepares.total_amount', 'estimate_prepares.created_by',
-                'estimate_user_assign_records.estimate_id as user_assign_records_estimate_id', 'estimate_user_assign_records.estimate_user_type',
-                'estimate_user_assign_records.user_id', 'estimate_user_assign_records.estimate_user_type', 'estimate_user_assign_records.comments',
-                'sor_masters.estimate_id as sor_masters_estimate_id', 'sor_masters.sorMasterDesc', 'sor_masters.status' ,DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no'))
-            ->join('estimate_user_assign_records', function ($join) {
-                $join->on('estimate_user_assign_records.estimate_id', '=', 'estimate_prepares.estimate_id')
-                    ->where('estimate_user_assign_records.status', '=', 2)
-                    ->where('estimate_user_assign_records.created_at', '=', DB::raw("(SELECT max(created_at) FROM estimate_user_assign_records WHERE estimate_prepares.estimate_id = estimate_user_assign_records.estimate_id AND estimate_user_assign_records.status = 2)"));
-            })
-            ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
-            ->where('operation', '=', 'Total')
-            ->where('estimate_no','!=',NULL)
-            ->where('created_by', '=', Auth::user()->id);
+        $query = EstimatePrepare::query()
+                ->select(
+                    'sor_masters.id',
+                    'sor_masters.estimate_id',
+                    'sor_masters.sorMasterDesc',
+                    'estimate_flows.sequence_no',
+                    'estimate_prepares.total_amount',
+                    'sor_masters.associated_with',
+                    DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no')
+                )
+                ->join('sor_masters','sor_masters.estimate_id','=','estimate_prepares.estimate_id')
+                ->join('estimate_flows','estimate_flows.estimate_id','=','sor_masters.estimate_id')
+                ->where('estimate_prepares.operation','=','Total')
+                ->whereNotNull('estimate_flows.dispatch_at')
+                ->where('estimate_flows.user_id',Auth::user()->id);
+
+
+
+
+
+
+//        ->select('estimate_prepares.id', 'estimate_prepares.estimate_id', 'estimate_prepares.operation', 'estimate_prepares.total_amount', 'estimate_prepares.created_by',
+//                'estimate_user_assign_records.estimate_id as user_assign_records_estimate_id', 'estimate_user_assign_records.estimate_user_type',
+//                'estimate_user_assign_records.user_id', 'estimate_user_assign_records.estimate_user_type', 'estimate_user_assign_records.comments',
+//                'sor_masters.estimate_id as sor_masters_estimate_id', 'sor_masters.sorMasterDesc', 'sor_masters.status' ,DB::raw('ROW_NUMBER() OVER (ORDER BY sor_masters.id) as serial_no'))
+//            ->join('estimate_user_assign_records', function ($join) {
+//                $join->on('estimate_user_assign_records.estimate_id', '=', 'estimate_prepares.estimate_id')
+//                    ->where('estimate_user_assign_records.status', '=', 2)
+//                    ->where('estimate_user_assign_records.created_at', '=', DB::raw("(SELECT max(created_at) FROM estimate_user_assign_records WHERE estimate_prepares.estimate_id = estimate_user_assign_records.estimate_id AND estimate_user_assign_records.status = 2)"));
+//            })
+//            ->join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_prepares.estimate_id')
+//            ->where('operation', '=', 'Total')
+//            ->where('estimate_no','!=',NULL)
+//            ->where('created_by', '=', Auth::user()->id);
+        return $query;
     }
 
     /*
@@ -101,16 +124,19 @@ final class ForwardedEstimateProjectTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-        ->addColumn('serial_no')
             ->addColumn('estimate_id')
             ->addColumn('sorMasterDesc')
-            ->addColumn('total_amount', fn ($model)=>  round($model->total_amount, 10, 2))
-            ->addColumn('status',function ($model){
-                $statusName =EstimateStatus::where('id',$model->status)->select('status')->first();
-                $statusName = $statusName->status;
-                return '<span class="badge bg-soft-info fs-6"><x-lucide-eye class="w-4 h-4 text-gray-500" />'.$statusName.'</span>';
+
+            ->addColumn('total_amount',function($row){
+                return number_format($row->total_amount,2);
             })
-            ->addColumn('comments');
+            ->addColumn('sor_masters.associated_with');
+//            ->addColumn('status',function ($model){
+//                $statusName =EstimateStatus::where('id',$model->status)->select('status')->first();
+//                $statusName = $statusName->status;
+//                return '<span class="badge bg-soft-info fs-6"><x-lucide-eye class="w-4 h-4 text-gray-500" />'.$statusName.'</span>';
+//            })
+//            ->addColumn('comments');
     }
 
     /*
@@ -144,15 +170,14 @@ final class ForwardedEstimateProjectTable extends PowerGridComponent
                 ->searchable(),
             Column::add()
                 ->title('TOTAL AMOUNT')
-                ->field('total_amount')
-                ->makeInputRange(),
+                ->field('total_amount'),
             Column::add()
-                ->title('STATUS')
-                ->field('status')
+                ->title('Forward BY')
+                ->field('sor_masters.associated_with')
                 ->searchable(),
-            Column::add()
-                ->title('COMMENTS')
-                ->field('comments'),
+//            Column::add()
+//                ->title('COMMENTS')
+//                ->field('comments'),
         ];
     }
 

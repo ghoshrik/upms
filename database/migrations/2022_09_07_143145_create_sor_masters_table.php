@@ -17,7 +17,6 @@ class CreateSorMastersTable extends Migration
             $table->id();
             $table->integer('estimate_id');
             $table->longText('sorMasterDesc');
-            $table->string('status');
             $table->timestamps();
         });
     }

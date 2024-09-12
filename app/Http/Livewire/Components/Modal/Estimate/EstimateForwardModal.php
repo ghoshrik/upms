@@ -3,86 +3,164 @@
 namespace App\Http\Livewire\Components\Modal\Estimate;
 
 use App\Models\EstimateUserAssignRecord;
+use App\Models\Office;
+use App\Models\SanctionLimitMaster;
 use App\Models\SorMaster;
+use App\Models\EstimateFlow;
+use App\Models\SanctionRole;
 use App\Models\User;
+use App\Models\UserResource;
 use App\Models\UsersHasRoles;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Spatie\Permission\Models\Role;
 use WireUi\Traits\Actions;
 
 class EstimateForwardModal extends Component
 {
     use Actions;
-    protected $listeners = ['openForwdModal' => 'fwdModalOpen'];
-    public $fwdModal = false, $estimate_id, $assigenUsersList = [], $assignUserDetails, $userAssignRemarks, $updateDataTableTracker;
+    protected $listeners = ['openForwardModal' => 'fwdModalOpen'];
+    public $forwardModal = false, $estimate_id, $assigenUsersList = [], $assignUserDetails, $userAssignRemarks, $updateDataTableTracker,$outsideOffice;
     public $fwdRequestFrom;
+
+    public $selectUserLabel='Select User for Office';
+
+    public function mount()
+    {
+        $this->selectUserLabel = 'Select User for Office';
+    }
+    public function updateLabel()
+    {
+        if($this->outsideOffice)
+        {
+            $this->selectUserLabel = 'Selected Offices in Group';
+        }
+        else
+        {
+            $this->selectUserLabel='Select User for Office';
+        }
+    }
+    public function updatedOutsideOffice($value)
+    {
+        $this->updateLabel();
+        $this->outsideOfficeUser();
+    }
+
+    public function outsideOfficeUser()
+    {
+//        $groupId = Office::where('group_id',Auth::user()->group_id)->get();
+        $user = Auth::user();
+
+       $users =  User::join('offices','offices.group_id','=','offices.group_id')
+                ->where('users.id',Auth::user()->group_id)
+                ->where('offices.group_id',Auth::user()->group_id)
+                ->get();
+//        $user1 = Office::doesntHave ('office')->get();
+
+//        $user->resources
+
+//       dd($users,$user->resources);
+    }
+
+//    user belongs to a office , office belongs to a group , groups and user have common another resource table
+//how to get login office outside office all user show
+//    there in three tabel user,group,resources pivot table ,
+
     public function fwdModalOpen($forwdEstimateDeatils)
     {
 
-        dd($forwdEstimateDeatils);
+//         dd($forwdEstimateDeatils);
+        $estimate_id = is_array($forwdEstimateDeatils['estimate_id']) ? $forwdEstimateDeatils['estimate_id'] : $forwdEstimateDeatils;
         $this->reset();
-        $estimate_id = is_array($forwdEstimateDeatils) ? $forwdEstimateDeatils['estimate_id'] : $forwdEstimateDeatils;
-        $this->fwdRequestFrom = $forwdEstimateDeatils['forward_from'];
-        $this->estimate_id = $estimate_id;
-        $this->fwdModal = !$this->fwdModal;
-        // $userAccess_id = AccessMaster::select('access_parent_id')->join('access_types', 'access_masters.access_type_id', '=', 'access_types.id')->where('user_id', Auth::user()->id)->first();
-        // $this->assigenUsersList = User::join('access_masters', 'users.id', '=', 'access_masters.user_id')
-        //     ->join('access_types', 'access_masters.access_type_id', '=', 'access_types.id')
-        //     ->where('access_types.id', $userAccess_id->access_parent_id)
-        //     ->get();
+        $this->estimate_id = $estimate_id['estimate_id'];
+        $this->forwardModal = !$this->forwardModal;
+
+        $estimateFlowDtls = EstimateFlow::where('estimate_id', $forwdEstimateDeatils['estimate_id'])
+            ->whereNull('associated_at')
+            ->orderBy('sequence_no')
+            ->first();
+
+//         dd($estimateFlowDtls);
+        $associatedId = SanctionRole::select('role_id', 'permission_id')
+            ->where('sequence_no', $estimateFlowDtls->sequence_no)
+            ->first();
+//        dd($associatedId);
+
+        $role = Role::findById($associatedId->role_id);
+        $this->assigenUsersList = $role->users->map(function ($user) use ($estimateFlowDtls, $associatedId) {
+            return [
+                'id' => $user->id,
+                'office_name'=>$user->getOfficeName->office_name,
+                'emp_name' => $user->emp_name,
+                'designation' => $user->getDesignationName->designation_name,
+                'slm_id' => $estimateFlowDtls->slm_id,
+                'sequence_no' => $estimateFlowDtls->sequence_no,
+                'role_id' => $associatedId->role_id,
+                'permission_id' => $associatedId->permission_id,
+                'estimate_id' => $estimateFlowDtls->estimate_id
+            ];
+        });
+//        dd($this->assigenUsersList);
     }
 
-    public function fwdAssignUser()
+
+    public function forwardAssignUser()
     {
+//         dd($this->assignUserDetails);
+
         $fwdUserDetails = explode('-', $this->assignUserDetails);
-        $data = [
-            'estimate_id' => (int) $fwdUserDetails[2],
-            'estimate_user_type' => (int) $fwdUserDetails[1],
-            'user_id' => Auth::user()->id,
-            'assign_user_id' => (int) $fwdUserDetails[0],
-            'comments' => $this->userAssignRemarks,
-        ];
-        if ($this->fwdRequestFrom == 'EP' || $this->fwdRequestFrom == 'PE') {
-            SorMaster::where('estimate_id', $fwdUserDetails[2])->update(['status' => 2]);
-            $data['status'] = 2;
-            $assignDetails = EstimateUserAssignRecord::create($data);
-            if ($assignDetails) {
-                $returnId = $assignDetails->id;
-                EstimateUserAssignRecord::where([['estimate_id',$fwdUserDetails[2]],['id','!=',$returnId],['is_done',0]])->groupBy('estimate_id')->update(['is_done'=>1]);
-                $this->notification()->success(
-                    $title = 'Success',
-                    $description = 'Successfully Assign!!'
-                );
-            }
-        } elseif ($this->fwdRequestFrom == 'ER') {
-            $data['status'] = 9;
-            SorMaster::where('estimate_id', $fwdUserDetails[2])->update(['status' => 9]);
-            $assignDetails = EstimateUserAssignRecord::create($data);
-            if ($assignDetails) {
-                $returnId = $assignDetails->id;
-                EstimateUserAssignRecord::where([['estimate_id',$fwdUserDetails[2]],['id','!=',$returnId],['is_done',0]])->groupBy('estimate_id')->update(['is_done'=>1]);
-                $this->notification()->success(
-                    $title = 'Success',
-                    $description = 'Successfully Assign!!'
-                );
-            }
-        } else {
-            $this->notification()->error(
-                $title = 'Error',
-                $description = 'Please Check & try again'
-            );
-        }
+
+        DB::transaction(function ()use ($fwdUserDetails)
+        {
+//            dd($fwdUserDetails[0],$fwdUserDetails[1],$fwdUserDetails[2],$fwdUserDetails[3]);
+
+                $userId = $fwdUserDetails[0];
+                $slmId = $fwdUserDetails[1];
+                $sequenceNo = $fwdUserDetails[2];
+                $estimateId = $fwdUserDetails[3];
+            DB::enableQueryLog();
+            $sanctionLists = SanctionRole::select('role_id','permission_id')->where('sequence_no', $sequenceNo)->first();
+//            dd($sanctionLists);
+            EstimateFlow::where('estimate_id', $estimateId)
+                ->where('slm_id', $slmId)
+                ->where('role_id', $sanctionLists->role_id)
+                ->where('permission_id', $sanctionLists->permission_id)
+                ->update(['user_id' => $userId, 'associated_at' => Carbon::now()]);
+
+            EstimateFlow::where('user_id',Auth::user()->id)->update(['dispatch_at'=>Carbon::now()]);
+            DB::getQueryLog();
+            SorMaster::where('estimate_id',$estimateId)->update(['status' => 13,'associated_with'=>$userId]);
+
+
+
+        });
+        $this->notification()->success(
+            $title = 'Success',
+            $description = 'Successfully Assign!!'
+        );
+
         $this->reset();
         $this->updateDataTableTracker = rand(1, 1000);
         $this->emit('refreshData', $this->updateDataTableTracker);
-        // $this->updateDataTableTracker = rand(1,1000);
+
+
+
+
+
+//         dd($sanctionLists);
+
+
+
+        // }
     }
     public function render()
     {
         $this->updateDataTableTracker = rand(1, 1000);
         // TODO:: 1) REMOVE THIS SQL FROM RENDER 2) AFTER GEETING THE USER DATA, IF WE TYPE THE REMARKS THE USER DATA CHANGING TO ADMIN [NEED TO BE FIXED]
         // $userAccess_id = AccessMaster::select('access_parent_id')->join('access_types', 'access_masters.access_type_id', '=', 'access_types.id')->where('user_id', Auth::user()->id)->first();
-        $roles = UsersHasRoles::join('roles', 'roles.id', '=', 'users_has_roles.role_id')
+        /*$roles = UsersHasRoles::join('roles', 'roles.id', '=', 'users_has_roles.role_id')
             ->where('users_has_roles.user_id', Auth::user()->id)
             ->select('users_has_roles.role_id as id', 'roles.name as role_name')
             ->get();
@@ -109,7 +187,7 @@ class EstimateForwardModal extends Component
             ->where('users.department_id', Auth::user()->department_id)
             ->where('users.is_active', 1)
             ->select("users.emp_name", "users.designation_id", "users.id", "roles.name", "users_has_roles.role_id")
-            ->get();
+            ->get();*/
         // Log::info(json_encode($this->assigenUsersList));
         return view('livewire.components.modal.estimate.estimate-forward-modal');
     }

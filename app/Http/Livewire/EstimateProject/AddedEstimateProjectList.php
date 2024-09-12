@@ -2,13 +2,16 @@
 
 namespace App\Http\Livewire\EstimateProject;
 
-use App\Models\EstimatePrepare;
-use App\Models\EstimateUserAssignRecord;
-use App\Models\SORMaster as ModelsSORMaster;
-use ChrisKonnertz\StringCalc\StringCalc;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use WireUi\Traits\Actions;
+use App\Models\EstimateFlow;
+use App\Models\EstimatePrepare;
+use Spatie\Permission\Models\Role;
+use App\Models\SanctionLimitMaster;
+use Illuminate\Support\Facades\Auth;
+use App\Models\EstimateUserAssignRecord;
+use ChrisKonnertz\StringCalc\StringCalc;
+use App\Models\SorMaster as ModelsSORMaster;
 
 class AddedEstimateProjectList extends Component
 {
@@ -17,7 +20,7 @@ class AddedEstimateProjectList extends Component
     public $addedEstimateData = [];
     public $allAddedEstimatesData = [];
     public $part_no;
-    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount = 0;
+    public $expression, $remarks, $level = [], $openTotalButton = false, $arrayStore = [], $totalEstimate = 0, $arrayIndex, $arrayRow, $sorMasterDesc, $updateDataTableTracker, $totalOnSelectedCount;
     public $openQtyModal = false, $sendArrayKey = '', $sendArrayDesc = '', $getQtySessionData = [], $editEstimate_id;
     public $arrayCount = 0, $selectCheckBoxs = false;
     public $editRowId, $editRowData, $editRowModal = false;
@@ -132,7 +135,9 @@ class AddedEstimateProjectList extends Component
                 $this->allAddedEstimatesData[$key]['is_row'] = $fetchUpdateRateData['is_row'];
                 $this->allAddedEstimatesData[$key]['rate_type'] = $fetchUpdateRateData['rate_type'];
                 $this->allAddedEstimatesData[$key]['qtyUpdate'] = $fetchUpdateRateData['qtyUpdate'];
-                $this->allAddedEstimatesData[$key]['rate_analysis_data'] = $fetchUpdateRateData['rate_analysis_data'];
+                if ($this->allAddedEstimatesData[$key]['qtyUpdate']) {
+                    $this->allAddedEstimatesData[$key]['rate_analysis_data'] = $fetchUpdateRateData['rate_analysis_data'];
+                }
             }
         }
         if ($this->editEstimate_id != '') {
@@ -727,14 +732,16 @@ class AddedEstimateProjectList extends Component
     {
         $this->getQtySessionData = ($this->editEstimate_id == '') ? Session()->get('modalData') : Session()->get('editModalData');
         // dd($this->getQtySessionData);
+        $intId = ($this->editEstimate_id == '') ? random_int(100000, 999999) : $this->editEstimate_id;
         if ($this->totalOnSelectedCount == 1 || $flag == 'draft') {
             try {
                 if ($this->allAddedEstimatesData) {
                     $intId = ($this->editEstimate_id == '') ? random_int(100000, 999999) : $this->editEstimate_id;
-                    if (($this->editEstimate_id != '') ? ModelsSORMaster::where('estimate_id', $intId)->update(['sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'created_by' => Auth::user()->id]) : ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'dept_id' => Auth::user()->department_id, 'part_no' => $this->part_no, 'created_by' => Auth::user()->id])) {
+                    if (($this->editEstimate_id != '') ? ModelsSORMaster::where('estimate_id', $intId)->update(['sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'created_by' => Auth::user()->id,'associated_with'=>Auth::user()->id]) : ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'dept_id' => Auth::user()->department_id, 'part_no' => $this->part_no, 'created_by' => Auth::user()->id,'associated_with'=>Auth::user()->id])) {
                         if ($this->editEstimate_id != '') {
                             EstimatePrepare::where('estimate_id', $intId)->delete();
                         }
+                        $estimated_amount = 0;
                         foreach ($this->allAddedEstimatesData as $key => $value) {
                             $insert = [
                                 'estimate_id' => $intId,
@@ -763,8 +770,42 @@ class AddedEstimateProjectList extends Component
                                 'qty_analysis_data' => (isset($this->getQtySessionData[$value['array_id']])) ? json_encode($this->getQtySessionData[$value['array_id']]) : null,
                             ];
                             EstimatePrepare::create($insert);
+                            $estimated_amount = ($value['operation'] == 'Total') ? $value['total_amount'] : 0;
                         }
-
+                        if ($flag != 'draft') {
+                            if ($estimated_amount != 0) {
+                                // $user = Auth::user();
+                                // $roles = $user->roles;
+                                // $allPermissions = collect();
+                                // foreach ($roles as $role) {
+                                //     $permissions = $role->permissions;
+                                //     $allPermissions = $allPermissions->merge($permissions);
+                                // }
+                                // dd($role->permissions);
+                                // dd($user->roles->pluck('id'));
+                                $role = Role::where('id', Auth::user()->roles->first()->id)->first();
+                                $permissions = $role->permissions;
+                                $getSLM = SanctionLimitMaster::where('department_id', Auth::user()->department_id)
+                                    ->where('min_amount', '<=', $estimated_amount)
+                                    ->where('max_amount', '>=', $estimated_amount)
+                                    ->first();
+                                $getSLMDetails = $getSLM->roles()->with(['role', 'permission'])->get();
+                                if (count($getSLMDetails) > 0) {
+                                    foreach ($getSLMDetails as $slmDetail) {
+                                        $estimate_flow_data = [
+                                            'estimate_id' => $intId,
+                                            'slm_id' => $slmDetail['sanction_limit_master_id'],
+                                            'sequence_no' => $slmDetail['sequence_no'],
+                                            'role_id' => $slmDetail['role_id'],
+                                            'permission_id' => $slmDetail['permission_id'],
+                                            'user_id' => (Auth::user()->roles->first()->id == $slmDetail['role_id']) ? Auth::user()->id : null,
+                                            'associated_at' => ($permissions->contains($slmDetail['permission_id'])) ? now()->format('Y-m-d H:i:s') : null,
+                                        ];
+                                        EstimateFlow::create($estimate_flow_data);
+                                    }
+                                }
+                            }
+                        }
                         $data = [
                             'estimate_id' => $intId,
                             'estimate_user_type' => 5,
@@ -802,6 +843,7 @@ class AddedEstimateProjectList extends Component
 
     public function render()
     {
+        // dd($this->totalOnSelectedCount);
         $this->arrayRow = count($this->allAddedEstimatesData);
         return view('livewire.estimate-project.added-estimate-project-list');
     }

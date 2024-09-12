@@ -666,7 +666,7 @@ final class UsersDataTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('SL. No.', 'serial_no'),
+
             // ->makeInputRange(),
 
             // Column::make('NAME', 'name')

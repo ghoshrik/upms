@@ -29,7 +29,7 @@ final class AssignRoleDatatable extends PowerGridComponent
     | Setup Table's general features
     |
      */
-    public function setUp(): array
+    /*public function setUp(): array
     {
         $this->showCheckBox();
 
@@ -43,7 +43,7 @@ final class AssignRoleDatatable extends PowerGridComponent
                 ->showRecordCount(),
         ];
     }
-
+    */
     /*
     |--------------------------------------------------------------------------
     |  Datasource

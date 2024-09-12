@@ -13,41 +13,27 @@
                         <h3 class="text-dark">{{ $titel }}</h3>
                         <p class="text-primary mb-0">{{ $subTitel }}</p>
                     </div>
-                    @canany(['create estimate', 'edit estimate'])
-                        <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
-                            @if (!$isFromOpen)
-                                <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
-                                    x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
-                                    <span class="btn-inner">
-                                        <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
-                                    </span>
-                                </button>
-                            @else
-                                <button wire:click="fromEntryControl" class="btn btn-danger rounded-pill "
-                                    x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
-                                    <span class="btn-inner">
-                                        <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
-                                    </span>
-                                </button>
-                            @endif
-                        </div>
-                    @endcanany
+                    @can('create estimate')
+                    <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
+                        @if (!$isFromOpen)
+                            <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
+                                x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
+                                <span class="btn-inner">
+                                    <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
+                                </span>
+                            </button>
+                        @else
+                            <button wire:click="fromEntryControl" class="btn btn-danger rounded-pill "
+                                x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
+                                <span class="btn-inner">
+                                    <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
+                                </span>
+                            </button>
+                        @endif
+                    </div>
+                    @endcan
                 </div>
             </div>
-            {{-- <div class="iq-header-img">
-                <img src="{{ asset('images/dashboard/top-header.png') }}" alt="header"
-                    class="theme-color-default-img  w-100  animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header1.png') }}" alt="header"
-                    class="theme-color-purple-img  w-100  animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header2.png') }}" alt="header"
-                    class="theme-color-blue-img  w-100  animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header3.png') }}" alt="header"
-                    class="theme-color-green-img  w-100  animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header4.png') }}" alt="header"
-                    class="theme-color-yellow-img  w-100  animated-scaleX">
-                <img src="{{ asset('images/dashboard/top-header5.png') }}" alt="header"
-                    class="theme-color-pink-img  w-100  animated-scaleX">
-            </div> --}}
         </div>
         <div wire:loading.delay.long>
             <div class="spinner-border text-primary loader-position" role="status"></div>
@@ -69,7 +55,7 @@
                             <div class="row row-cols-1">
                                 <div class="d-slider1 overflow-hidden ">
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-3 col-lg-3 col-sm-6">
                                             <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab == 1 ? 'active' : '' }}"
                                                 wire:click="draftData()">
                                                 <div class="card-body">
@@ -100,7 +86,7 @@
                                                 </div>
                                             </li>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3 col-lg-3 col-sm-6">
                                             <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab == 2 ? 'active' : '' }}"
                                                 wire:click='forwardedData()'>
                                                 <div class="card-body">
@@ -129,7 +115,7 @@
                                                 </div>
                                             </li>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3 col-lg-3 col-sm-6">
                                             <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab == 3 ? 'active' : '' }}"
                                                 wire:click="revertedData()">
                                                 <div class="card-body">
@@ -158,6 +144,35 @@
                                                 </div>
                                             </li>
                                         </div>
+                                        <div class="col-md-3 col-lg-3 col-sm-6">
+                                            <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab == 4 ? 'active' : '' }}"
+                                                wire:click="approvedData()">
+                                                <div class="card-body">
+                                                    <div class="progress-widget">
+                                                        <div id="circle-progress-04"
+                                                             class="circle-progress-01 circle-progress circle-progress-primary text-center"
+                                                             data-min-value="0"
+                                                             data-max-value="{{ $counterData['totalDataCount'] }}"
+                                                             data-value="{{ $counterData['approveDataCount'] }}"
+                                                             data-type="percent" wire:ignore>
+                                                            <svg class="card-slie-arrow " width="24" height="24"
+                                                                 viewBox="0 0 24 24" fill="none"
+                                                                 stroke="currentColor" stroke-width="2"
+                                                                 stroke-linecap="round" stroke-linejoin="round">
+                                                                <polyline points="9 14 4 9 9 4"></polyline>
+                                                                <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
+                                                            </svg>
+                                                        </div>
+                                                        <div class="progress-detail">
+                                                            <p class="mb-2">Total Approved</p>
+                                                            <h4 class="counter" style="visibility: visible;"
+                                                                wire:key="$updateDataTableTracker">
+                                                                {{ $counterData['approveDataCount'] }}</h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -176,7 +191,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         {{-- <livewire:estimate-project.data-table.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" /> --}}
-                                        {{-- <livewire:estimate-project.datatable.powergrid.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" /> --}}
+                                         <livewire:estimate-project.datatable.powergrid.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 3)
@@ -186,6 +201,14 @@
                                         {{-- <livewire:estimate-project.datatable.powergrid.estimate-revert-table :wire:key="$updateDataTableTracker" /> --}}
                                     </div>
                                 </div>
+
+                            @elseif($this->selectedTab==4)
+                            <div class="card">
+                                <div class="card-body">
+                                    <livewire:estimate-project.data-table.powergrid.approved-estimate-project :wire:key="$updateDataTableTracker"/>
+                                </div>
+                            </div>
+
                             @else
                                 <div
                                     class="col-span-6 sm:col-span-3 xl:col-span-2 flex flex-col justify-end items-center">

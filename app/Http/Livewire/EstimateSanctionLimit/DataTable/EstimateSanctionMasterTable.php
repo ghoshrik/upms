@@ -3,18 +3,19 @@
 namespace App\Http\Livewire\EstimateSanctionLimit\DataTable;
 
 use App\Models\SanctionLimitMaster;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridComponent;
-use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
+use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Rules\Rule;
-use PowerComponents\LivewirePowerGrid\Rules\RuleActions;use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
+use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
+use PowerComponents\LivewirePowerGrid\Rules\RuleActions;
+use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 
 final class EstimateSanctionMasterTable extends PowerGridComponent
 {
@@ -58,14 +59,14 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
     public function datasource(): Builder
     {
         return SanctionLimitMaster::query()
-        // ->select(
-        //     'estimate_acceptance_limit_masters.id',
-        //     'estimate_acceptance_limit_masters.department_id',
-        //     'estimate_acceptance_limit_masters.level_id',
-        //     'estimate_acceptance_limit_masters.min_amount',
-        //     'estimate_acceptance_limit_masters.max_amount'
-        // )
-        // ->join('level_master', 'estimate_acceptance_limit_masters.level_id', '=', 'level_master.id')
+            // ->select(
+            //     'estimate_acceptance_limit_masters.id',
+            //     'estimate_acceptance_limit_masters.department_id',
+            //     'estimate_acceptance_limit_masters.level_id',
+            //     'estimate_acceptance_limit_masters.min_amount',
+            //     'estimate_acceptance_limit_masters.max_amount'
+            // )
+            // ->join('level_master', 'estimate_acceptance_limit_masters.level_id', '=', 'level_master.id')
             ->where('department_id', Auth::user()->department_id);
     }
 
@@ -102,8 +103,8 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
     {
         return PowerGrid::eloquent()
             ->addColumn('id')
-        // ->addColumn('getDepartmentName.department_name')
-        // ->addColumn('getRolesName.name')
+            // ->addColumn('getDepartmentName.department_name')
+            // ->addColumn('getRolesName.name')
             ->addColumn('min_amount')
             ->addColumn('max_amount');
     }
@@ -126,7 +127,7 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
     {
         return [
             Column::make('ID', 'id'),
-                // ->makeInputRange(),
+            // ->makeInputRange(),
 
             // Column::make('DEPARTMENT ID', 'getDepartmentName.department_name')
             //     ->makeInputRange(),
@@ -162,8 +163,11 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
     public function actions(): array
     {
         return [
-            Button::add('Add Roles')
-                ->bladeComponent('action-components.estimate-sanction.add-role-permission-btn', ['id' => 'id']),
+            Button::add('add-roles')
+//                ->caption('Add Roles')
+//                ->class('btn btn-soft-primary btn-sm px-3 py-2.5 m-1 rounded')
+//                ->emit('openAddRolesSection', ['id' => 'id']),
+                ->bladeComponent('action-components.estimate-sanction.add-role-permission-btn',['id'=>'id'])
         ];
     }
     public function add($id)

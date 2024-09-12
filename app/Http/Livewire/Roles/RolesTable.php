@@ -87,7 +87,7 @@ final class RolesTable extends PowerGridComponent
         return PowerGrid::eloquent()
             ->addColumn('id')
             ->addColumn('name')
-            ->addColumn('created_at_formatted', fn (Role $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
+            ->addColumn('created_at_formatted', fn(Role $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
         // ->addColumn('updated_at_formatted', fn (Role $model) => Carbon::parse($model->updated_at)->format('d/m/Y H:i:s'));
     }
 
@@ -142,8 +142,9 @@ final class RolesTable extends PowerGridComponent
     public function actions(): array
     {
         return [
-            Button::make('edit', 'Edit')
-                ->class('btn btn-soft-primary btn-sm')
+            Button::add('edit')
+                ->caption('Edit')
+                ->class('btn btn-soft-warning btn-sm px-3 py-2.5 m-1 rounded')
                 ->emit('openEntryForm', ['id' => 'id', 'formType' => 'edit']),
 
             //    Button::make('destroy', 'Delete')
