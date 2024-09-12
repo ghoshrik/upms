@@ -187,7 +187,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('estimate-forwarder', EstimateForwarder::class)->name('estimate-forwarder');
         });
         //Estimate Preparer or Junior Engineer
-        Route::group(['middleware' => ['role:Project Estimate (EP)|Junior Engineer|Executive Engineer|Superintending Engineer|Assistant Engineer|Chief Engineer','can:approve non-sor']], function () {
+        Route::group(['middleware' => ['role:Project Estimate (EP)|Junior Engineer|Executive Engineer|Superintending Engineer|Assistant Engineer|Zonal Chief Engineer']], function () {
             Route::get('estimate-project', EstimateProject::class)->name('estimate-project');
             Route::get('estimate-project-v2', EstimateProjectV2::class)->name('estimate-project-v2');
             //qty analysis api routes
