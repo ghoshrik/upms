@@ -682,8 +682,7 @@ final class UsersDataTable extends PowerGridComponent
 
             Column::make('EMAIL', 'email')
                 ->sortable()
-                ->searchable()
-                ->makeInputText(),
+                ->searchable(),
 
             Column::make('MOBILE', 'mobile')
                 ->sortable()
@@ -697,13 +696,11 @@ final class UsersDataTable extends PowerGridComponent
 
             Column::make('EMP NAME', 'emp_name')
                 ->sortable()
-                ->searchable()
-                ->makeInputText(),
+                ->searchable(),
 
             Column::make('DESIGNATION NAME', 'designation_name')
                 ->sortable()
-                ->searchable()
-                ->makeInputText(),
+                ->searchable(),
 
             Column::make('DEPARTMENT NAME', 'getDepartmentName.department_name')
 
@@ -717,8 +714,7 @@ final class UsersDataTable extends PowerGridComponent
             Column::make('ROLE NAME', 'name')
                 ->searchable(),
             Column::make('GROUP NAME', 'group.group_name')
-                ->searchable()
-                ->makeInputText(),
+                ->searchable(),
             Column::make('STATUS', 'is_active')
                 ->sortable()
             // ->closure(function ($value) {
@@ -726,7 +722,7 @@ final class UsersDataTable extends PowerGridComponent
             // }),
                 ->makeBooleanFilter(dataField: 'is_active', trueLabel: 'active', falseLabel: 'Inactive'),
 
-        ]
+        ];
     }
 
     /*
@@ -769,7 +765,6 @@ final class UsersDataTable extends PowerGridComponent
             $title = 'Selected Use Deleted successfully'
         );
     }
-    /
     public function actions(): array
     {
     return [
