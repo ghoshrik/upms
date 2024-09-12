@@ -41,6 +41,7 @@ final class UsersDataTable extends PowerGridComponent
             [
                 'rowActionEvent',
                 'bulkActionEvent',
+                'deleteConfirmation'
             ]
         );
     }
@@ -725,7 +726,7 @@ final class UsersDataTable extends PowerGridComponent
             // }),
                 ->makeBooleanFilter(dataField: 'is_active', trueLabel: 'active', falseLabel: 'Inactive'),
 
-        ];
+        ]
     }
 
     /*
@@ -741,27 +742,48 @@ final class UsersDataTable extends PowerGridComponent
      *
      * @return array<int, Button>
      */
+    public function deleteConfirmation($userId)
+    {
+        $this->dialog()->confirm([
+            'title' => 'Are you Sure want to Deleted user ?',
+            'icon' => 'warning',
+            'accept' => [
+                'label' => 'Yes,Inactive',
+                'method' => 'deleteUser',
+                'params' => $userId,
+            ],
+            'reject' => [
+                'label' => 'No, cancel',
+                // 'method' => 'cancel',
+            ],
+        ]);
+    }
 
-    
+    public function deleteUser($userId)
+    {
+        // $user = User::find($userId);
+        $user = User::where('id', $userId)->firstOrFail();
+        $user->delete();
+        // $user->delete();
+        $this->notification()->success(
+            $title = 'Selected Use Deleted successfully'
+        );
+    }
+    /
     public function actions(): array
     {
     return [
-        Button::add('View')
-            ->bladeComponent('data-table-components.buttons.assign-role', ['id' => 'id']),
-        // Button::make('edit', 'Edit')
-        // ->class('bg-indigo-500 cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm')
-        // ->route('user.edit', ['user' => 'id']),
+        // Button::add('View')
+        //     ->bladeComponent('view', ['id' => 'id']),
 
-        // Button::make('destroy', 'Delete')
-        // ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
-        // ->route('user.destroy', ['user' => 'id'])
-        // ->method('delete')
-        ];
+        // Button::add('Edit')
+        //     ->bladeComponent('edit-button', ['id' => 'id', 'action' => 'edit']),
+
+        Button::add('Delete')
+            ->bladeComponent('delete-button', ['position' => 'top', 'message' => 'Delete', 'id' => 'id'])
+    ];
     }
-    
-    public function assignRole($id){
-        $this->emit('openRoleModal',$id);
-    }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -776,6 +798,20 @@ final class UsersDataTable extends PowerGridComponent
      *
      * @return array<int, RuleActions>
      */
+
+    public function view($id)
+    {
+        $this->emit('openUserModal', $id);
+    }
+    public function edit($id)
+    {
+        $this->emit('openForm', ['formType' => 'edit', 'id' => $id]);
+    }
+    public function deleteAction($userId)
+    {
+        $this->emit('deleteConfirmation', ['user_id' => $userId]);
+    }
+
 
     /*
 public function actionRules(): array

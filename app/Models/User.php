@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Department;
 use App\Models\Designation;
 use App\Models\UsersHasRoles;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use App\Traits\HasPermissionsTrait;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +21,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -104,20 +105,20 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(AccessMaster::class);
     }
-    public function department() : BelongsTo
+    public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
     }
-    public function resources() : HasMany
+    public function resources(): HasMany
     {
         return $this->hasMany(UserResource::class);
     }
-    public function group() : BelongsTo
+    public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class);
     }
-    public function getUserRole() : HasMany
+    public function getUserRole(): HasMany
     {
-        return $this->hasMany(UsersHasRoles::class,'user_id');
+        return $this->hasMany(UsersHasRoles::class, 'user_id');
     }
 }
