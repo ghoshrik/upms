@@ -121,4 +121,54 @@
             @endif
         </div>
     </div>
+    @if ($openRoleModalForm)
+        <livewire:components.modal.user.assign-role :editUserRole='$editUserRole' />
+        {{-- <x-modal wire:model.defer="openRoleModalForm">
+            <x-card title="Add Remove Role">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="col-span-1 sm:col-span-2">
+                        <x-select wire:key="role" label="Roles" placeholder="Select Role" wire:model.defer="userRoles"
+                            multiselect>
+                            @isset($fetchDropdownData['roles'])
+                                @foreach ($fetchDropdownData['roles'] as $role)
+                                    <x-select.option label="{{ $role['name'] }}" value="{{ $role['id'] }}" />
+                                @endforeach
+                            @endisset
+                        </x-select>
+                    </div>
+                    <div class="col-12 mt-2" wire:key="Role_No_">
+                        <x-select label="Roles" placeholder="Select Roles" wire:model.defer="role_id"
+                            x-on:select="$wire.getRoleWiseData()">
+                            @foreach ($fetchDropdownData['roles'] as $role)
+                                <x-select.option label="{{ $role['name'] }}" value="{{ $role['id'] }}" />
+                            @endforeach
+                        </x-select>
+                    </div>
+                    @isset($fetchDropdownData['groups'])
+                        <div class="col-12 mt-2" wire:key="Group_No_">
+                            <x-select label="Groups" placeholder="Select Group" wire:model.defer="group_id" x-on:select="">
+                                @foreach ($fetchDropdownData['groups'] as $key => $group)
+                                    <x-select.option label="{{ $group['group_name'] }}" value="{{ $group['id'] }}" />
+                                @endforeach
+                            </x-select>
+                        </div>
+                    @endisset
+                </div>
+
+                <x-slot name="footer">
+                    <div class="flex justify-between">
+                        <div class="flex float-left">
+                            <x-button class="btn btn-soft-danger px-3 py-2.5 rounded" flat label="Cancel"
+                                x-on:click="close" />
+                        </div>
+                        <div class="flex float-right">
+                            <button wire:click="updateUserRole" class="btn btn-soft-success">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </x-slot>
+            </x-card>
+        </x-modal> --}}
+    @endif
 </div>

@@ -425,18 +425,18 @@ function getAllAssigenRoles()
 {
     $userData = Session::get('user_data');
     $sessionKey = 'user_roles' . '_' . $userData->id;
-    $getSessionRoles = Session::get($sessionKey);
-    if ($getSessionRoles != '') {
-        $roles = $getSessionRoles;
-    } else {
+    // $getSessionRoles = Session::get($sessionKey);
+    // if ($getSessionRoles != '') {
+    //     $roles = $getSessionRoles;
+    // } else {
         $roles = UsersHasRoles::join('roles', 'roles.id', '=', 'users_has_roles.role_id')
             ->where('users_has_roles.user_id', $userData->id)
             ->select('users_has_roles.role_id as id', 'roles.name as role_name')
             ->get();
-    }
+    // }
     $generatedHtml = '';
     foreach ($roles as $key => $role) {
-        if ($userData->getRoleNames()[0] != $role->role_name) {
+        if (Auth::user()->getRoleNames()[0] != $role->role_name) {
             $generatedHtml .= '<li><a class="dropdown-item badge rounded-pill bg-secondary" href="' . route('change-role', $role->id) . '">' . ucfirst($role->role_name) . '</a></li>';
         }
     }

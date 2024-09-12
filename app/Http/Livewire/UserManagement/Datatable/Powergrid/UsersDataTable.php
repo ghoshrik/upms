@@ -478,8 +478,8 @@ final class UsersDataTable extends PowerGridComponent
             return $query->where('model_has_roles.role_id', $this->userData);
         } elseif (Auth::user()->hasRole('Department Admin')) {
             return $query->where('model_has_roles.role_id', $this->userData)
-                         ->where('users.department_id', Auth::user()->department_id)
-                         ->where([['users.group_id','!=',null],['users.group_id','!=',0]]);
+                         ->where('users.department_id', Auth::user()->department_id);
+                        //  ->where([['users.group_id','!=',null],['users.group_id','!=',0]]);
         } elseif(Auth::user()->hasRole('Group Admin')){
             return $query->where('model_has_roles.role_id', $this->userData)
                          ->where('users.department_id',Auth::user()->department_id)
@@ -742,21 +742,26 @@ final class UsersDataTable extends PowerGridComponent
      * @return array<int, Button>
      */
 
-    /*
+    
     public function actions(): array
     {
     return [
-    Button::make('edit', 'Edit')
-    ->class('bg-indigo-500 cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm')
-    ->route('user.edit', ['user' => 'id']),
+        Button::add('View')
+            ->bladeComponent('data-table-components.buttons.assign-role', ['id' => 'id']),
+        // Button::make('edit', 'Edit')
+        // ->class('bg-indigo-500 cursor-pointer text-white px-3 py-2.5 m-1 rounded text-sm')
+        // ->route('user.edit', ['user' => 'id']),
 
-    Button::make('destroy', 'Delete')
-    ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
-    ->route('user.destroy', ['user' => 'id'])
-    ->method('delete')
-    ];
+        // Button::make('destroy', 'Delete')
+        // ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
+        // ->route('user.destroy', ['user' => 'id'])
+        // ->method('delete')
+        ];
     }
-     */
+    
+    public function assignRole($id){
+        $this->emit('openRoleModal',$id);
+    }
 
     /*
     |--------------------------------------------------------------------------

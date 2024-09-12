@@ -230,18 +230,19 @@
                             @php
                                 $curr_role = session('curr_role');
                             @endphp
-                            @isset($curr_role)
+                            {{-- @isset($curr_role) --}}
                                 <p class="mb-0 caption-sub-title text-capitalize"><span
                                         class="badge rounded-pill bg-primary">
-                                        {{ $curr_role }}
+                                        {{-- {{ $curr_role }} --}}
+                                        {{ auth()->user()->getRoleNames()[0] }}
                                     </span>
                                 </p>
-                            @endisset
+                            {{-- @endisset --}}
 
                         </div>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        {{-- {!! getAllAssigenRoles() !!} --}}
+                        {!! getAllAssigenRoles() !!}
                         <li>
                             <hr class="dropdown-divider">
                         </li>

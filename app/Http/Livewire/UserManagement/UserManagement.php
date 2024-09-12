@@ -4,17 +4,20 @@ namespace App\Http\Livewire\UserManagement;
 
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use App\Models\UsersHasRoles;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class UserManagement extends Component
 {
     public $formOpen = false, $updateDataTableTracker;
 
-    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'refreshCSRFToken' => '$refresh'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'refreshCSRFToken' => '$refresh', 'openRoleModal'];
     public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel;
     public $activeTab, $tabs = [];
-
+    public $openRoleModalForm = false, $editUserRole, $fetchDropdownData = [], $userRoles = [], $role_id = '';
     public function mount()
     {
         // $InputData = [];
@@ -53,11 +56,11 @@ class UserManagement extends Component
             $this->tabs[] =
                 [
 
-                    'title' => 'State Users',
-                    'id' => 'state',
-                    'data' => 1,
+                'title' => 'State Users',
+                'id' => 'state',
+                'data' => 1,
 
-                ];
+            ];
         }
         if (Auth::user()->hasRole('State Admin')) {
             $this->tabs = [
@@ -74,7 +77,7 @@ class UserManagement extends Component
                 // ],
             ];
         } elseif (Auth::user()->hasRole('Department Admin')) {
-            $roles = Role::whereIn('name', ['Group Admin', 'SOR Preparer'])->orderBy('name')->select('id', 'name')->get();
+            $roles = Role::whereIn('name', ['Department Admin', 'Group Admin', 'SOR Preparer'])->orderBy('name')->select('id', 'name')->get();
             foreach ($roles as $key => $role) {
                 $this->tabs[] = [
                     'title' => $role['name'],
@@ -148,6 +151,60 @@ class UserManagement extends Component
         }
         if (isset($data['id'])) {
             $this->selectedIdForEdit = $data['id'];
+        }
+    }
+    public function openRoleModal($user)
+    {
+        $this->openRoleModalForm = !$this->openRoleModalForm;
+        $this->editUserRole = $user;
+        // $this->userRoles = $user->getUserRole->pluck('role_id');
+        // $this->userRoles = $user->getUserRole;
+        // $assignedRoles = $user->getUserRole->pluck('role_id');
+        // $this->fetchDropdownData['roles'] = Role::whereIn('name', ['Department Admin', 'Group Admin', 'SOR Preparer'])
+        //                                     // ->whereNotIn('id', $assignedRoles)
+        //                                     ->orderBy('name')
+        //                                     ->select('id', 'name')->get();
+    }
+    public function getRoleWiseData()
+    {
+        // dd($this->userRoles);
+        // $getRole = Role::where('id',$this->role_id)->first();
+        // if($getRole->name == 'Group Admin'){
+        //     $this->fetchDropdownData['groups'] = Group::where('department_id',Auth::user()->department_id)->get();
+        // }else{
+        //     unset($this->fetchDropdownData['groups']);
+        // }
+    }
+    protected $rules = [
+        'userRoles' => 'required',
+    ];
+    protected $messages = [
+        'userRoles.required' => 'This Field is Required'
+    ];
+    public function updateUserRole()
+    {
+        $this->validate();
+        DB::beginTransaction();
+        try {
+            if (count($this->userRoles) > 0) {
+                // Delete existing roles for the user
+                UsersHasRoles::where('user_id', $this->editUserRole->id)->delete();
+                // Create new roles for the user
+                foreach ($this->userRoles as $role) {
+                    UsersHasRoles::create([
+                        'user_id' => $this->editUserRole->id,
+                        'role_id' => $role,
+                    ]);
+                }
+            } else {
+                $this->openRoleModalForm = true;
+            }
+            // Commit the transaction
+            DB::commit();
+            $this->openRoleModalForm = !$this->openRoleModalForm;
+        } catch (\Exception $e) {
+            // Rollback the transaction if there was an error
+            DB::rollBack();
         }
     }
     public function updated()

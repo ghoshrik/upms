@@ -237,10 +237,10 @@ class CreateUser extends Component
                             $description = $role_name->name . ' Role Assigned'
                         );
                     }
-                    // UsersHasRoles::create([
-                    //     'user_id' => $assignRoleDetails->id,
-                    //     'role_id' => $assignRoleDetails->roles[0]->id
-                    // ]);
+                    UsersHasRoles::create([
+                        'user_id' => $assignRoleDetails->id,
+                        'role_id' => $assignRoleDetails->roles[0]->id
+                    ]);
                     // dd($newUserDetails,Auth::user()->user_type,$userType->type);
                     // }
                     DB::commit();

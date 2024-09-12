@@ -9,7 +9,7 @@ class Role extends Model
 {
     use HasFactory;
     protected $table = "roles";
-    protected $fillable = ["user_id","user_type","office_id","dist_id","In_rural","user_type","office_id","dept_id","rural_block_code","gp_code","urban_code","ward_code"];
+    // protected $fillable = ["user_id","user_type","office_id","dist_id","In_rural","user_type","office_id","dept_id","rural_block_code","gp_code","urban_code","ward_code"];
 
     public function getDepartmentName()
     {

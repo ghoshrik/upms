@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Department;
 use App\Models\Designation;
+use App\Models\UsersHasRoles;
 use Spatie\MediaLibrary\HasMedia;
 use App\Traits\HasPermissionsTrait;
 use Illuminate\Support\Facades\Auth;
@@ -114,5 +115,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function group() : BelongsTo
     {
         return $this->belongsTo(Group::class);
+    }
+    public function getUserRole() : HasMany
+    {
+        return $this->hasMany(UsersHasRoles::class,'user_id');
     }
 }
