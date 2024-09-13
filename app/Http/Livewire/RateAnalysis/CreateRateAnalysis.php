@@ -1500,7 +1500,7 @@ class CreateRateAnalysis extends Component
             if ($this->rateData['item_name'] == 'SOR') {
                 if (floatval($this->rateData['qty']) >= 0 && floatval($this->rateData['rate']) >= 0) {
 
-                    /*$this->rateData['qty'] = round($this->rateData['qty'], 3);
+                    /*$this->rateData['qty'] = round($this->rateData['qty'], 4);
                     $this->rateData['rate'] = round($this->rateData['rate'], 2);
                     $this->rateData['total_amount'] = floatval($this->rateData['qty']) * floatval($this->rateData['rate']);
                     $this->rateData['total_amount'] = round($this->rateData['total_amount'], 2);*/
@@ -1512,7 +1512,7 @@ class CreateRateAnalysis extends Component
                             $this->rateData['total_amount'] = round($this->rateData['total_amount'], 2);
                             break;
                         default:
-                            $this->rateData['qty'] = round($this->rateData['qty'], 3);
+                            $this->rateData['qty'] = round($this->rateData['qty'], 4);
                             $this->rateData['rate'] = round($this->rateData['rate'], 2);
                             $this->rateData['total_amount'] = floatval($this->rateData['qty']) * floatval($this->rateData['rate']);
                             $this->rateData['total_amount'] = round($this->rateData['total_amount'], 2);
@@ -1520,7 +1520,7 @@ class CreateRateAnalysis extends Component
                 }
             } else {
                 if (floatval($this->rateData['qty']) >= 0 && floatval($this->rateData['rate']) >= 0) {
-                    // $this->rateData['qty'] = round($this->rateData['qty'], 3);
+                    // $this->rateData['qty'] = round($this->rateData['qty'], 4);
                     // $this->rateData['rate'] = round($this->rateData['rate'], 2);
                     // $this->rateData['total_amount'] = floatval($this->rateData['qty']) * floatval($this->rateData['rate']);
                     // $this->rateData['total_amount'] = round($this->rateData['total_amount'], 2);
@@ -1531,7 +1531,7 @@ class CreateRateAnalysis extends Component
                             $this->rateData['total_amount'] = round($this->rateData['total_amount'], 2);
                             break;
                         default:
-                            $this->rateData['qty'] = round($this->rateData['qty'], 3);
+                            $this->rateData['qty'] = round($this->rateData['qty'], 4);
                             $this->rateData['rate'] = round($this->rateData['rate'], 2);
                             $this->rateData['total_amount'] = floatval($this->rateData['qty']) * floatval($this->rateData['rate']);
                             $this->rateData['total_amount'] = round($this->rateData['total_amount'], 2);
@@ -1668,7 +1668,7 @@ class CreateRateAnalysis extends Component
                 $this->addedRate[$key]['item_name'] = $this->rateData['item_name'];
                 $this->addedRate[$key]['other_name'] = $this->rateData['other_name'];
                 $this->addedRate[$key]['description'] = $this->rateData['description'];
-                $this->addedRate[$key]['qty'] = ($this->rateData['qty'] == '') ? 0 : round($this->rateData['qty'], 3);
+                $this->addedRate[$key]['qty'] = ($this->rateData['qty'] == '') ? 0 : round($this->rateData['qty'], 4);
                 $this->addedRate[$key]['rate'] = ($this->rateData['rate'] == '') ? 0 : round($this->rateData['rate'], 2);
                 $this->addedRate[$key]['total_amount'] = round($this->rateData['total_amount'], 2);
                 $this->addedRate[$key]['version'] = $this->rateData['version'];
