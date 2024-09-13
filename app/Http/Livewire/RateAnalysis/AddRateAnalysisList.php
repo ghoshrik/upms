@@ -834,7 +834,7 @@ class AddRateAnalysisList extends Component
     {
         if (count($this->isItemModalData) > 0) {
             $this->allAddedRateData[$this->selectedArrKey]['rate'] = number_format(round($this->isItemModalData[0]['rowValue'], 2), 2, '.', '');
-            $this->allAddedRateData[$this->selectedArrKey]['qty'] = number_format(round($this->allAddedRateData[$this->selectedArrKey]['qty'], 3), 3, '.', '');
+            $this->allAddedRateData[$this->selectedArrKey]['qty'] = number_format(round($this->allAddedRateData[$this->selectedArrKey]['qty'], 4), 3, '.', '');
             $this->allAddedRateData[$this->selectedArrKey]['total_amount'] = $this->allAddedRateData[$this->selectedArrKey]['qty'] * $this->allAddedRateData[$this->selectedArrKey]['rate'];
             $this->allAddedRateData[$this->selectedArrKey]['total_amount'] = number_format(round($this->allAddedRateData[$this->selectedArrKey]['total_amount'], 2), 2, '.', '');
             $this->updateDataTableTracker = rand(1, 1000);
