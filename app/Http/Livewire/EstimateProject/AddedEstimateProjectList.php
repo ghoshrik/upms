@@ -2,16 +2,16 @@
 
 namespace App\Http\Livewire\EstimateProject;
 
-use Livewire\Component;
-use WireUi\Traits\Actions;
 use App\Models\EstimateFlow;
 use App\Models\EstimatePrepare;
-use Spatie\Permission\Models\Role;
-use App\Models\SanctionLimitMaster;
-use Illuminate\Support\Facades\Auth;
 use App\Models\EstimateUserAssignRecord;
-use ChrisKonnertz\StringCalc\StringCalc;
+use App\Models\SanctionLimitMaster;
 use App\Models\SorMaster as ModelsSORMaster;
+use ChrisKonnertz\StringCalc\StringCalc;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
+use Spatie\Permission\Models\Role;
+use WireUi\Traits\Actions;
 
 class AddedEstimateProjectList extends Component
 {
@@ -316,7 +316,7 @@ class AddedEstimateProjectList extends Component
     public function calculateValue($key)
     {
         if ($this->allAddedEstimatesData[$key]['rate'] > 0) {
-            $this->allAddedEstimatesData[$key]['qty'] = number_format(round($this->allAddedEstimatesData[$key]['qty'], 3), 3);
+            $this->allAddedEstimatesData[$key]['qty'] = number_format(round($this->allAddedEstimatesData[$key]['qty'], 4), 3);
             $this->allAddedEstimatesData[$key]['qty'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['qty']);
             $this->allAddedEstimatesData[$key]['rate'] = number_format(round($this->allAddedEstimatesData[$key]['rate'], 2), 2);
             $this->allAddedEstimatesData[$key]['rate'] = str_replace(',', '', $this->allAddedEstimatesData[$key]['rate']);
@@ -548,8 +548,8 @@ class AddedEstimateProjectList extends Component
         $numericValue = preg_replace('/[^0-9]/', '', $value);
         if (isset($this->allAddedEstimatesData[$numericValue]['operation']) && $this->allAddedEstimatesData[$numericValue]['operation'] == 'Total') {
             // if ($this->totalOnSelectedCount >= 1) {
-                $this->reset('totalOnSelectedCount');
-                ($this->editEstimate_id == '') ? Session()->forget('projectEstimationTotal') : Session()->forget('editProjectEstimationTotal' . $this->editEstimate_id);
+            $this->reset('totalOnSelectedCount');
+            ($this->editEstimate_id == '') ? Session()->forget('projectEstimationTotal') : Session()->forget('editProjectEstimationTotal' . $this->editEstimate_id);
             // }
         }
         unset($this->allAddedEstimatesData[$numericValue]);
@@ -737,7 +737,7 @@ class AddedEstimateProjectList extends Component
             try {
                 if ($this->allAddedEstimatesData) {
                     $intId = ($this->editEstimate_id == '') ? random_int(100000, 999999) : $this->editEstimate_id;
-                    if (($this->editEstimate_id != '') ? ModelsSORMaster::where('estimate_id', $intId)->update(['sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'created_by' => Auth::user()->id,'associated_with'=>Auth::user()->id]) : ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'dept_id' => Auth::user()->department_id, 'part_no' => $this->part_no, 'created_by' => Auth::user()->id,'associated_with'=>Auth::user()->id])) {
+                    if (($this->editEstimate_id != '') ? ModelsSORMaster::where('estimate_id', $intId)->update(['sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'created_by' => Auth::user()->id, 'associated_with' => Auth::user()->id]) : ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'dept_id' => Auth::user()->department_id, 'part_no' => $this->part_no, 'created_by' => Auth::user()->id, 'associated_with' => Auth::user()->id])) {
                         if ($this->editEstimate_id != '') {
                             EstimatePrepare::where('estimate_id', $intId)->delete();
                         }
@@ -798,7 +798,7 @@ class AddedEstimateProjectList extends Component
 //                                dd($getSLM);
                                 $getSLM = SanctionLimitMaster::where('department_id', Auth::user()->department_id)
                                     ->where('min_amount', '<=', $estimated_amount)
-                                    ->where(function($query) use ($estimated_amount) {
+                                    ->where(function ($query) use ($estimated_amount) {
                                         $query->where('max_amount', '>=', $estimated_amount)
                                             ->orWhereNull('max_amount'); // handle case when max_amount is null
                                     })
@@ -807,20 +807,38 @@ class AddedEstimateProjectList extends Component
 //                                dd($getSLM);
 
                                 $getSLMDetails = $getSLM->roles()->with(['role', 'permission'])->get();
-//                                dd($getSLMDetails);
+
+                                $ifExistsFlow = EstimateFlow::where('estimate_id', $intId)->where('user_id', Auth::user()->id)->first();
                                 if (count($getSLMDetails) > 0) {
-                                    foreach ($getSLMDetails as $slmDetail) {
-                                        $estimate_flow_data = [
-                                            'estimate_id' => $intId,
-                                            'slm_id' => $slmDetail['sanction_limit_master_id'],
-                                            'sequence_no' => $slmDetail['sequence_no'],
-                                            'role_id' => $slmDetail['role_id'],
-                                            'permission_id' => $slmDetail['permission_id'],
-                                            'user_id' => (Auth::user()->roles->first()->id == $slmDetail['role_id']) ? Auth::user()->id : null,
-                                            'associated_at' => ($permissions->contains($slmDetail['permission_id'])) ? now()->format('Y-m-d H:i:s') : null,
-                                        ];
-                                        EstimateFlow::create($estimate_flow_data);
+                                    if ($ifExistsFlow != '') {
+                                        EstimateFlow::where('slm_id', $ifExistsFlow['slm_id'])->delete();
+                                        foreach ($getSLMDetails as $slmDetail) {
+                                            $estimate_flow_data = [
+                                                'estimate_id' => $intId,
+                                                'slm_id' => $slmDetail['sanction_limit_master_id'],
+                                                'sequence_no' => $slmDetail['sequence_no'],
+                                                'role_id' => $slmDetail['role_id'],
+                                                'permission_id' => $slmDetail['permission_id'],
+                                                'user_id' => (Auth::user()->roles->first()->id == $slmDetail['role_id']) ? Auth::user()->id : null,
+                                                'associated_at' => ($permissions->contains($slmDetail['permission_id'])) ? now()->format('Y-m-d H:i:s') : null,
+                                            ];
+                                            EstimateFlow::create($estimate_flow_data);
+                                        }
+                                    } else {
+                                        foreach ($getSLMDetails as $slmDetail) {
+                                            $estimate_flow_data = [
+                                                'estimate_id' => $intId,
+                                                'slm_id' => $slmDetail['sanction_limit_master_id'],
+                                                'sequence_no' => $slmDetail['sequence_no'],
+                                                'role_id' => $slmDetail['role_id'],
+                                                'permission_id' => $slmDetail['permission_id'],
+                                                'user_id' => (Auth::user()->roles->first()->id == $slmDetail['role_id']) ? Auth::user()->id : null,
+                                                'associated_at' => ($permissions->contains($slmDetail['permission_id'])) ? now()->format('Y-m-d H:i:s') : null,
+                                            ];
+                                            EstimateFlow::create($estimate_flow_data);
+                                        }
                                     }
+
                                 }
 
                             }

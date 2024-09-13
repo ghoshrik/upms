@@ -154,11 +154,12 @@
                                             {{ $addedEstimate['total_amount'] }}
                                         </td>
                                         <td>
+                                            @if ($addedEstimate['operation'] == '')
                                             <button wire:click="editRow('{{ $addedEstimate['array_id'] }}')"
                                                 type="button" class="btn-soft-warning btn-sm">
                                                 <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
                                             </button>
-
+                                            @endif
 
                                             <!-- Confirm Modal -->
                                             {{-- <div class="modal fade" id="confirmModal" tabindex="-1"

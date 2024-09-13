@@ -108,10 +108,10 @@ final class EstimateProjectTable extends PowerGridComponent
             ->leftJoin('estimate_prepares', 'estimate_prepares.estimate_id', '=', 'sor_masters.estimate_id')
             ->leftJoin('estimate_flows', 'sor_masters.estimate_id', '=', 'estimate_flows.estimate_id')
             ->leftJoin('estimate_statuses', 'estimate_statuses.id', '=', 'sor_masters.status')
-            ->where('estimate_prepares.operation','=','Total')
+            // ->where('estimate_prepares.operation','=','Total')
             ->where('sor_masters.associated_with',Auth::user()->id)
             ->where('estimate_flows.user_id',Auth::user()->id)
-            ->where('sor_masters.is_verified',null)
+            ->where('sor_masters.is_verified',0)
             ->groupBy('sor_masters.estimate_id','sor_masters.id','estimate_flows.estimate_id','estimate_flows.sequence_no','estimate_statuses.status')
             ->orderBy('sor_masters.estimate_id')
             ->orderBy('estimate_flows.sequence_no');

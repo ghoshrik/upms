@@ -135,7 +135,9 @@ class CreateEstimateProject extends Component
             // if (Session()->has('editProjectEstimateData' . $estimate_id)) {
             //     $fatchEstimateData = Session()->get('editProjectEstimateData' . $estimate_id);
             // } else {
-            $fatchEstimateData = EstimatePrepare::where('estimate_id', $estimate_id)->where('created_by', Auth::user()->id)->orderBy('id', 'asc')->get();
+            $fatchEstimateData = EstimatePrepare::where('estimate_id', $estimate_id)
+            // ->where('created_by', Auth::user()->id)
+            ->orderBy('id', 'asc')->get();
             // }
             // dd($fatchEstimateData);
             $this->emit('setFatchEstimateData', $fatchEstimateData);
@@ -526,7 +528,7 @@ class CreateEstimateProject extends Component
         if ($this->estimateData['qty'] != '' && $this->estimateData['rate'] != '') {
             if ($this->estimateData['item_name'] == 'SOR') {
                 if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
-                    $this->estimateData['qty'] = number_format(round($this->estimateData['qty'], 3), 3);
+                    $this->estimateData['qty'] = number_format(round($this->estimateData['qty'], 4), 4);
                     $this->estimateData['qty'] = str_replace(',', '', $this->estimateData['qty']);
                     $this->estimateData['rate'] = number_format(round($this->estimateData['rate'], 2), 2);
                     $this->estimateData['rate'] = str_replace(',', '', $this->estimateData['rate']);
@@ -536,7 +538,7 @@ class CreateEstimateProject extends Component
                 }
             } else {
                 if (floatval($this->estimateData['qty']) >= 0 && floatval($this->estimateData['rate']) >= 0) {
-                    $this->estimateData['qty'] = number_format(round($this->estimateData['qty'], 3), 3);
+                    $this->estimateData['qty'] = number_format(round($this->estimateData['qty'], 4), 4);
                     $this->estimateData['qty'] = str_replace(',', '', $this->estimateData['qty']);
                     $this->estimateData['rate'] = number_format(round($this->estimateData['rate'], 2), 2);
                     $this->estimateData['rate'] = str_replace(',', '', $this->estimateData['rate']);

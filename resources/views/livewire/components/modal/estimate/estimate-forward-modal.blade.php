@@ -8,7 +8,7 @@
 {{--                            label="{{ '<strong>'.$user['office_name'].'</strong>'.$user['emp_name'] . ' ( ' . $user['designation'] . ')' }}"--}}
 {{--                            value="{{ $user['id'] . '-' . $user['slm_id'].'-'.$user['sequence_no'] . '-' . $user['estimate_id'] }}" />--}}
                         <x-select.option
-                            label="{!! '(<strong>' . $user['office_name'] . '</strong> ) ' . $user['emp_name'] . ' (' . $user['designation'] . ')' !!}"
+                            label="{!! '(' . $user['office_name'] . ' ) ' . $user['emp_name'] . ' (' . $user['designation'] . ')' !!}"
                             value="{{ $user['id'] . '-' . $user['slm_id'] . '-' . $user['sequence_no'] . '-' . $user['estimate_id'] }}" />
                     @endforeach
                 @endisset

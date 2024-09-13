@@ -174,7 +174,7 @@ class EditRowWise extends Component
                             $this->dataArray['total_amount'] = round($this->dataArray['total_amount'], 2);
                             break;
                         default:
-                            $this->dataArray['qty'] = round($this->dataArray['qty'], 3);
+                            $this->dataArray['qty'] = round($this->dataArray['qty'], 4);
                             $this->dataArray['rate'] = round($this->dataArray['rate'], 2);
                             $this->dataArray['total_amount'] = floatval($this->dataArray['qty']) * floatval($this->dataArray['rate']);
                             $this->dataArray['total_amount'] = round($this->dataArray['total_amount'], 2);
@@ -189,7 +189,7 @@ class EditRowWise extends Component
                             $this->dataArray['total_amount'] = round($this->dataArray['total_amount'], 2);
                             break;
                         default:
-                            $this->dataArray['qty'] = round($this->dataArray['qty'], 3);
+                            $this->dataArray['qty'] = round($this->dataArray['qty'], 4);
                             $this->dataArray['rate'] = round($this->dataArray['rate'], 2);
                             $this->dataArray['total_amount'] = floatval($this->dataArray['qty']) * floatval($this->dataArray['rate']);
                             $this->dataArray['total_amount'] = round($this->dataArray['total_amount'], 2);
