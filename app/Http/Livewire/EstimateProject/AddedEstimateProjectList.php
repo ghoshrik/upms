@@ -786,16 +786,6 @@ class AddedEstimateProjectList extends Component
                                 $role = Role::where('id', Auth::user()->roles->first()->id)->first();
 //                                dd($role);
                                 $permissions = $role->permissions;
-//                                dd($permissions);
-
-//                                $getSLM = SanctionLimitMaster::where('department_id', Auth::user()->department_id)
-//                                    ->where('min_amount', '<=', $estimated_amount)->first();
-//                                if($getSLM['max_amount'] != ''){
-//
-//                                }
-//                                    ->where('max_amount', '>=', $estimated_amount)
-//                                    ->first();
-//                                dd($getSLM);
                                 $getSLM = SanctionLimitMaster::where('department_id', Auth::user()->department_id)
                                     ->where('min_amount', '<=', $estimated_amount)
                                     ->where(function ($query) use ($estimated_amount) {
@@ -803,11 +793,7 @@ class AddedEstimateProjectList extends Component
                                             ->orWhereNull('max_amount'); // handle case when max_amount is null
                                     })
                                     ->first();
-
-//                                dd($getSLM);
-
                                 $getSLMDetails = $getSLM->roles()->with(['role', 'permission'])->get();
-
                                 $ifExistsFlow = EstimateFlow::where('estimate_id', $intId)->where('user_id', Auth::user()->id)->first();
                                 if (count($getSLMDetails) > 0) {
                                     if ($ifExistsFlow != '') {
@@ -840,7 +826,6 @@ class AddedEstimateProjectList extends Component
                                     }
 
                                 }
-
                             }
                         }
                         $data = [
