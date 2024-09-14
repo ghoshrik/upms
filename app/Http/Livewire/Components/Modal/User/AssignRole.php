@@ -32,7 +32,12 @@ class AssignRole extends Component
             ->where('users_has_roles.user_id', $this->editUserRole->id)
             ->get();
         $assignedRoles = $this->editUserRole->getUserRole->pluck('role_id');
-        if(Auth::user()->hasRole('Department Admin')){
+        if(Auth::user()->hasRole('State Admin')){
+            $this->fetchDropdownData['roles'] = Role::whereIn('name', ['Department Admin', 'Group Admin'])
+            // ->whereNotIn('id', $assignedRoles)
+            ->orderBy('name')
+            ->select('id', 'name')->get();
+        }elseif(Auth::user()->hasRole('Department Admin')){
             $this->fetchDropdownData['roles'] = Role::whereIn('name', ['Department Admin', 'Group Admin', 'SOR Preparer'])
             // ->whereNotIn('id', $assignedRoles)
             ->orderBy('name')
@@ -48,14 +53,14 @@ class AssignRole extends Component
             ->orderBy('name')
             ->select('id', 'name')->get();
         }else{
-
+            
         }
     }
     public function getRoleWiseData()
     {
         $this->reset('group_id','office_id');
         $getRole = Role::where('id', $this->role_id)->first();
-        if (isset($getRole->name) && $getRole->name == 'Group Admin') {
+        if (isset($getRole->name) && ($getRole->name == 'Group Admin' || $getRole->name == 'SOR Preparer')) {
             $this->fetchDropdownData['groups'] = Group::where('department_id', $this->editUserRole->department_id)->get();
             if($this->editUserRole->group_id != '' && $this->editUserRole->group_id != 0){
                 $this->group_id = $this->editUserRole->group_id;
@@ -133,8 +138,7 @@ class AssignRole extends Component
                     if($this->group_id != ''){
                         User::where('id',$this->editUserRole->id)->update(['group_id' => $this->group_id,'dept_category_id' => Group::where('id',$this->group_id)->first()->dept_category_id]);
                         unset($this->fetchDropdownData['groups']);
-                    }
-                    else if($this->office_id != ''){
+                    }else if($this->office_id != ''){
                         if($this->office_id != '' && $this->office_id != 0){
                             $this->editUserRole->resources()->create([
                                 'resource_id' => $this->office_id,

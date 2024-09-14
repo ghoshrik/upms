@@ -22,9 +22,11 @@
                 <div class="mt-2 col-12">
                     <x-select label="Roles" placeholder="Select Roles" wire:model.defer="role_id"
                         x-on:select="$wire.getRoleWiseData()">
-                        @foreach ($fetchDropdownData['roles'] as $role)
-                            <x-select.option label="{{ $role['name'] }}" value="{{ $role['id'] }}" />
-                        @endforeach
+                        @isset($fetchDropdownData['roles'])
+                            @foreach ($fetchDropdownData['roles'] as $role)
+                                <x-select.option label="{{ $role['name'] }}" value="{{ $role['id'] }}" />
+                            @endforeach
+                        @endisset
                     </x-select>
                 </div>
                 @isset($fetchDropdownData['groups'])
