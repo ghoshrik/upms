@@ -9,7 +9,7 @@ use App\Models\EstimateStatus;
 use App\Models\Office;
 use App\Models\RatesAnalysis;
 use App\Models\SOR;
-use App\Models\SorCategoryType;
+use App\Models\DepartmentCategory;
 use App\Models\SORMaster;
 use App\Models\UnitMaster;
 use App\Models\UnitType;
@@ -446,12 +446,12 @@ function getAllAssigenRoles()
 function getStatusName($id)
 {
     $getStatus = EstimateStatus::where('id', $id)->select('status')->first();
-    return $getStatus['status'];
+    return $getStatus['status'] ?? '';
 }
 function getVersion($value)
 {
     $getVersion = SOR::where('id', $value)->select('version')->first();
-    return $getVersion['version'];
+    return $getVersion['version'] ?? '';
 }
 
 //function getDesignationName($value)
@@ -462,22 +462,22 @@ function getVersion($value)
 function getOfficeName($value)
 {
     $officeName = Office::where('id', $value)->select('office_name')->first();
-    return $officeName['office_name'];
+    return $officeName['office_name'] ?? '';
 }
 function getDepartmentName($value)
 {
    $departmentName = Department::where('id', $value)->select('department_name')->first();
-   return $departmentName['department_name'];
+   return $departmentName['department_name'] ?? '';
 }
 function getDepartmentCategoryName($value)
 {
-    $categoryName = SorCategoryType::where('id', $value)->select('dept_category_name')->first();
-    return $categoryName['dept_category_name'];
+    $categoryName = DepartmentCategory::where('id', $value)->select('dept_category_name')->first();
+        return $categoryName['dept_category_name'] ?? '';
 }
 function getEstimateDesc($estimate_no)
 {
     $getDescription = SORMaster::select('estimate_id', 'sorMasterDesc')->where('estimate_id', $estimate_no)->first();
-    return $getDescription['sorMasterDesc'];
+    return $getDescription['sorMasterDesc'] ?? '';
 }
 function generatePDF($list, $data, $title)
 {
@@ -501,13 +501,13 @@ function generatePDF($list, $data, $title)
 function getunitName($unit_id)
 {
     $unit_name = UnitMaster::select('unit_name')->where('id', $unit_id)->first();
-    return $unit_name['unit_name'];
+    return $unit_name['unit_name'] ?? '';
 }
 
 function getRateDesc($rate_id)
 {
     $getRateDesc = RatesAnalysis::where('rate_id', $rate_id)->where('operation', 'Total')->first();
-    return $getRateDesc['description'];
+    return $getRateDesc['description'] ?? '';
 }
 
 function getVolumeName($volume_no)
@@ -658,15 +658,15 @@ function extractDescOfItems($data, &$descriptions, $counter, $loopCount)
 function getSorTableName($sor_id)
 {
     $fetchRow = DynamicSorHeader::where('id', $sor_id)->select('table_no')->first();
-    return $fetchRow['table_no'];
+    return $fetchRow['table_no'] ?? '';
 }
 function getSorPageNo($sor_id)
 {
     $fetchRow = DynamicSorHeader::where('id', $sor_id)->select('page_no')->first();
-    return $fetchRow['page_no'];
+    return $fetchRow['page_no'] ?? '';
 }
 function getSorCorrigenda($sor_id)
 {
     $fetchRow = DynamicSorHeader::where('id', $sor_id)->select('corrigenda_name')->first();
-    return $fetchRow['corrigenda_name'];
+    return $fetchRow['corrigenda_name'] ?? '';
 }
