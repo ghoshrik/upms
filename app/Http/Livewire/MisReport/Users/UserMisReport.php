@@ -2,10 +2,10 @@
 
 namespace App\Http\Livewire\MisReport\Users;
 
-use App\Models\User;
-use App\Models\Office;
-use Livewire\Component;
 use App\Models\Department;
+use App\Models\Office;
+use App\Models\User;
+use Livewire\Component;
 
 class UserMisReport extends Component
 {

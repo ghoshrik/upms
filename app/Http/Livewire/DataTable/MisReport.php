@@ -204,4 +204,20 @@ final class MisReport extends PowerGridComponent
             Column::make('Total Amount.', 'total_amount'),
         ];
     }
+    public function actions(): array
+    {
+        return [
+            Button::add('View')
+                ->bladeComponent('view', ['id' => 'estimate_id']),
+            // Button::add('view')
+            //     ->caption('View')
+            //     ->class('btn btn-soft-primary btn-sm')
+            //     ->emit('openModal', ['estimate_id']),
+        ];
+    }
+
+    public function view($estimate_id)
+    {
+        $this->emit('openModal', $estimate_id);
+    }
 }

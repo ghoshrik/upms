@@ -204,6 +204,7 @@
                         </x-slot>
                     </x-cards>
                 </div>
+                <livewire:components.modal.estimate.estimate-view-modal />
                 <div class="tab-pane fade {{ $activeTab === 'sanction-tab' ? 'show active' : '' }}"
                     id="sanction-tab-pane" role="tabpanel" aria-labelledby="sanction-tab" tabindex="0">
                     <x-cards title="">
