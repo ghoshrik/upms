@@ -45,9 +45,9 @@ class CreateOffice extends Component
         'officeData.office_name'=>'required|string',
         'officeData.office_code'=>'required|string|unique:offices,office_code',
         'selectedOption.dist_code'=>'required|integer',
-        'selectedOption.In_area'=>'required|integer',
+        // 'selectedOption.In_area'=>'required|integer',
         // 'selectedOption.level'=>'required|integer',
-        'selectedOption.group_id'=>'required|integer',
+        // 'selectedOption.group_id'=>'required|integer',
     ];
     protected $messages = [
         'officeData.office_address.required'=>'This field is required',
@@ -77,20 +77,20 @@ class CreateOffice extends Component
     }
     public function booted()
     {
-        if ($this->selectedOption['In_area'] == 1)
-        {
-            $this->rules =  Arr::collapse([$this->rules, [
-                'selectedOption.rural_block_code' =>'required|integer',
-                'selectedOption.gp_code' =>'required|integer'
-            ]]);
-        }
-        if ($this->selectedOption['In_area'] == 2)
-        {
-            $this->rules =  Arr::collapse([$this->rules, [
-                'selectedOption.urban_code'=>'required|integer',
-                'selectedOption.ward_code'=>'required|integer',
-            ]]);
-        }
+        // if ($this->selectedOption['In_area'] == 1)
+        // {
+        //     $this->rules =  Arr::collapse([$this->rules, [
+        //         'selectedOption.rural_block_code' =>'required|integer',
+        //         'selectedOption.gp_code' =>'required|integer'
+        //     ]]);
+        // }
+        // if ($this->selectedOption['In_area'] == 2)
+        // {
+        //     $this->rules =  Arr::collapse([$this->rules, [
+        //         'selectedOption.urban_code'=>'required|integer',
+        //         'selectedOption.ward_code'=>'required|integer',
+        //     ]]);
+        // }
 
     }
     public function areaChangeEvent()
