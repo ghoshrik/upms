@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\UserManagement\Datatable\Powergrid;
 
 use App\Models\Designation;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\UserType;
 use Illuminate\Database\Eloquent\Builder;
@@ -41,7 +42,7 @@ final class UsersDataTable extends PowerGridComponent
             [
                 'rowActionEvent',
                 'bulkActionEvent',
-                'deleteConfirmation'
+                'deleteConfirmation',
             ]
         );
     }
@@ -90,102 +91,105 @@ final class UsersDataTable extends PowerGridComponent
             trans('cruds.user-management.fields.status') => '5%',
         ];
         $getChild_id = UserType::where('parent_id', Auth::user()->user_type)->select('id')->first();
+        $dataView = [];
         // dd(Auth::user()->user_type);
         if (count($this->checkboxValues) == 0) {
-            if (Auth::user()->user_type == 2) {
-
-                $users = User::where('user_type', $getChild_id->id)
-                // ->where('department_id', Auth::user()->department_id)
-                    ->where('is_active', 1)->get();
-                $i = 1;
-                foreach ($users as $key => $user) {
-                    $desg = Designation::select('designation_name')->where('id', $user->designation_id)->get();
-                    foreach ($desg as $designation) {
-                        $designationName = $designation->designation_name;
-                    }
-                    $dataView[] = [
-                        '1' => $i,
-                        '2' => $user->emp_name,
-                        '3' => $user->email,
-                        '4' => $user->username,
-                        '5' => $user->ehrms_id,
-                        '6' => $user->mobile,
-                        '7' => $designationName,
-                        '8' => $user->getDepartmentName->department_name,
-                        '9' => 'N/A',
-                        'active' => $user->is_active,
-                    ];
-                    $i++;
+            $users = User::select(
+                'users.id',
+                'users.name',
+                'users.email',
+                // 'users.username',
+                'users.ehrms_id',
+                'users.emp_name',
+                'users.mobile',
+                'users.designation_id',
+                'users.department_id',
+                'users.user_type',
+                'users.office_id',
+                'users.group_id',
+                // 'user_types.id as userType_id',
+                // 'user_types.parent_id',
+                'users.is_active',
+                // 'model_has_roles.role_id',
+                // 'model_has_roles.model_id',
+                'users_has_roles.role_id',
+                'users_has_roles.user_id',
+                'roles.id as roleId',
+                'roles.name',
+                'designations.id as designationId',
+                'designations.designation_name',
+                DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
+            )
+            // ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                ->join('users_has_roles', 'users.id', '=', 'users_has_roles.user_id')
+            // ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                ->join('roles', 'users_has_roles.role_id', '=', 'roles.id')
+                ->join('designations', 'users.designation_id', '=', 'designations.id')
+                ->where('users_has_roles.role_id', $this->userData)
+                ->get();
+            $i = 1;
+            // if (count($users) > 0) {
+            foreach ($users as $key => $user) {
+                $desg = Designation::select('designation_name')->where('id', $user->designation_id)->get();
+                foreach ($desg as $designation) {
+                    $designationName = $designation->designation_name;
                 }
-                // dd($dataView);
-                return generatePDF($ModelList, $dataView, "Department Users");
-            } elseif (Auth::user()->user_type == 3) {
-                $users = User::where('user_type', $getChild_id->id)
-                    ->where('department_id', Auth::user()->department_id)
-                    ->where('is_active', 1)
-                    ->get();
-                $i = 1;
-                foreach ($users as $key => $user) {
-                    $desg = Designation::select('designation_name')->where('id', $user->designation_id)->get();
-                    foreach ($desg as $designation) {
-                        $designationName = $designation->designation_name;
-                    }
-                    $dataView[] = [
-                        '1' => $i,
-                        '2' => $user->emp_name,
-                        '3' => $user->email,
-                        '4' => $user->username,
-                        '5' => $user->ehrms_id,
-                        '6' => $user->mobile,
-                        '7' => $designationName,
-                        '8' => $user->getDepartmentName->department_name,
-                        '9' => $user->getOfficeName->office_name,
-                        'active' => $user->is_active,
-                    ];
-                    $i++;
-                }
-                return generatePDF($ModelList, $dataView, "Office Admin Users");
-            } else {
-                $users = User::where('user_type', $getChild_id->id)
-                    ->where('department_id', Auth::user()->department_id)
-                    ->where('office_id', Auth::user()->office_id)
-                    ->where('is_active', 1)
-                    ->get();
-                $i = 1;
-
-                // if (count($users) > 0) {
-                foreach ($users as $key => $user) {
-                    $desg = Designation::select('designation_name')->where('id', $user->designation_id)->get();
-                    foreach ($desg as $designation) {
-                        $designationName = $designation->designation_name;
-                    }
-                    $dataView[] = [
-                        '1' => $i,
-                        '2' => $user->emp_name,
-                        '3' => $user->email,
-                        '4' => $user->username,
-                        '5' => $user->ehrms_id,
-                        '6' => $user->mobile,
-                        '7' => $designationName,
-                        '8' => $user->getDepartmentName->department_name,
-                        '9' => $user->office_id ? $user->getOfficeName->office_name : 'N/A',
-                        'active' => $user->is_active,
-                    ];
-                    $i++;
-                }
-                // } else {
-                //     $this->notification()->error(
-                //         $title = 'User Not Activated',
-                //     );
-                // }
-                return generatePDF($ModelList, $dataView, "Office Users ");
+                $dataView[] = [
+                    '1' => $i,
+                    '2' => $user->emp_name,
+                    '3' => $user->email,
+                    '4' => $user->username,
+                    '5' => $user->ehrms_id,
+                    '6' => $user->mobile,
+                    '7' => $designationName,
+                    '8' => $user->getDepartmentName->department_name,
+                    '9' => $user->office_id ? $user->getOfficeName->office_name : 'N/A',
+                    'active' => $user->is_active,
+                ];
+                $i++;
             }
+            // } else {
+            //     $this->notification()->error(
+            //         $title = 'User Not Activated',
+            //     );
+            // }
+            return generatePDF($ModelList, $dataView, "users");
         } else {
             $ids = implode(',', $this->checkboxValues);
-            $users = User::whereIn('id', explode(",", $ids))
-                ->where('user_type', $getChild_id->id)
-            // ->where('department_id', Auth::user()->department_id)
-                ->where('is_active', 1)->get();
+                $users = User::select(
+                    'users.id',
+                    'users.name',
+                    'users.email',
+                    // 'users.username',
+                    'users.ehrms_id',
+                    'users.emp_name',
+                    'users.mobile',
+                    'users.designation_id',
+                    'users.department_id',
+                    'users.user_type',
+                    'users.office_id',
+                    'users.group_id',
+                    // 'user_types.id as userType_id',
+                    // 'user_types.parent_id',
+                    'users.is_active',
+                    // 'model_has_roles.role_id',
+                    // 'model_has_roles.model_id',
+                    'users_has_roles.role_id',
+                    'users_has_roles.user_id',
+                    'roles.id as roleId',
+                    'roles.name',
+                    'designations.id as designationId',
+                    'designations.designation_name',
+                    DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
+                )
+                // ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                    ->join('users_has_roles', 'users.id', '=', 'users_has_roles.user_id')
+                // ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                    ->join('roles', 'users_has_roles.role_id', '=', 'roles.id')
+                    ->join('designations', 'users.designation_id', '=', 'designations.id')
+                    // ->where('users_has_roles.role_id', $this->userData)
+                    ->whereIn('users.id', explode(",", $ids))
+                    ->get();
             $i = 1;
             // dd($users);
             if (count($users) > 0) {
@@ -233,220 +237,6 @@ final class UsersDataTable extends PowerGridComponent
      */
     public function datasource(): ?Builder
     {
-        /*
-        if (Auth::user()->department_id) {
-        if (Auth::user()->office_id) {
-
-        return User::query()
-        ->join('user_types', function ($user_types) {
-        $user_types->on('users.user_type', '=', 'user_types.id');
-        })->join('designations', 'users.designation_id', '=', 'designations.id')
-        ->select(
-        'users.id',
-        'users.name',
-        'users.email',
-        'users.username',
-        'users.ehrms_id',
-        'users.emp_name',
-        'users.mobile',
-        'users.designation_id',
-        'users.department_id',
-        'users.user_type',
-        'users.office_id',
-        'user_types.id as userType_id',
-        'user_types.parent_id',
-        'users.is_active',
-        'designations.id as designationId',
-        'designations.designation_name',
-        DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
-        )
-        // ->join('user_types', 'users.user_type', '=', 'user_types.id')
-        ->where('user_types.parent_id', '=', Auth::user()->user_type)
-        ->where('users.department_id', Auth::user()->department_id)
-        ->where('users.office_id', Auth::user()->office_id);
-        } else {
-        // dd(User::query()->with('designation')->first());
-        return User::query()
-        ->join('user_types', function ($user_types) {
-        $user_types->on('users.user_type', '=', 'user_types.id');
-        })->join('designations', 'users.designation_id', '=', 'designations.id')
-        ->select(
-        'users.id',
-        'users.name',
-        'users.email',
-        'users.username',
-        'users.ehrms_id',
-        'users.emp_name',
-        'users.mobile',
-        'users.designation_id',
-        'users.department_id',
-        'users.user_type',
-        'users.office_id',
-        'user_types.id as userType_id',
-        'user_types.parent_id',
-        'users.is_active',
-        'designations.id as designationId',
-        'designations.designation_name',
-        DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
-        )
-
-        ->where('user_types.parent_id', '=', Auth::user()->user_type)
-        ->where('users.department_id', Auth::user()->department_id);
-        }
-        } else {
-
-        return User::query()
-        ->select(
-        'users.id',
-        'users.name',
-        'users.email',
-        'users.username',
-        'users.ehrms_id',
-        'users.emp_name',
-        'users.mobile',
-        'users.designation_id',
-        'users.department_id',
-        'users.user_type',
-        'users.office_id',
-        'user_types.id as userType_id',
-        'user_types.parent_id',
-        'users.is_active',
-        'designations.id as designationId',
-        'designations.designation_name',
-        DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
-        )
-        ->where('users.user_type', 3)
-        ->join('user_types', 'users.user_type', '=', 'user_types.id')
-        ->join('designations', 'users.designation_id', '=', 'designations.id');
-        // ->where('users.user_type', '=', Auth::user()->user_type);
-        }
-         */
-
-        // if (Auth::user()->department_id && (Auth::user()->user_type != 'State Admin' || Auth::user()->user_type != 'Super Admin')) {
-        //     /*if (Auth::user()->office_id) {
-        //      */
-        //     return User::query()
-        //     /*->join('user_types', function ($user_types) {
-        //     $user_types->on('users.user_type', '=', 'user_types.id');
-        //     })->join('designations', 'users.designation_id', '=', 'designations.id')*/
-        //         ->select(
-        //             'users.id',
-        //             'users.name',
-        //             'users.email',
-        //             'users.username',
-        //             'users.ehrms_id',
-        //             'users.emp_name',
-        //             'users.mobile',
-        //             'users.designation_id',
-        //             'users.department_id',
-        //             'users.user_type',
-        //             'users.office_id',
-        //             // 'user_types.id as userType_id',
-        //             // 'user_types.parent_id',
-        //             'model_has_roles.role_id',
-        //             'model_has_roles.model_id',
-        //             'roles.id as roleId',
-        //             'roles.name',
-        //             'users.is_active',
-        //             'designations.id as designationId',
-        //             'designations.designation_name',
-        //             DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
-        //         )
-        //     // ->join('user_types', 'users.user_type', '=', 'user_types.id')
-        //         ->join('designations', 'users.designation_id', '=', 'designations.id')
-        //         ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-        //         ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
-        //     // ->where('user_types.parent_id', '=', $this->userData)
-        //         ->where('model_has_roles.role_id', $this->userData)
-        //         ->where('users.department_id', Auth::user()->department_id);
-        //     /*    ->where('users.office_id', Auth::user()->office_id);
-        // /*} else {
-        // // dd(User::query()->with('designation')->first());
-        // return User::query()
-        // ->join('user_types', function ($user_types) {
-        // $user_types->on('users.user_type', '=', 'user_types.id');
-        // })->join('designations', 'users.designation_id', '=', 'designations.id')
-        // ->select(
-        // 'users.id',
-        // 'users.name',
-        // 'users.email',
-        // 'users.username',
-        // 'users.ehrms_id',
-        // 'users.emp_name',
-        // 'users.mobile',
-        // 'users.designation_id',
-        // 'users.department_id',
-        // 'users.user_type',
-        // 'users.office_id',
-        // 'user_types.id as userType_id',
-        // 'user_types.parent_id',
-        // 'users.is_active',
-        // 'designations.id as designationId',
-        // 'designations.designation_name',
-        // DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
-        // )
-
-        // ->where('user_types.parent_id', '=', $this->userData)
-        // ->where('users.department_id', Auth::user()->department_id);
-        // }*/
-        // } elseif (Auth::user()->department_id && (Auth::user()->hasRole('State Admin') || Auth::user()->hasRole('Super Admin'))) {
-        //     return User::query()
-        //         ->select(
-        //             'users.id',
-        //             'users.name',
-        //             'users.email',
-        //             'users.username',
-        //             'users.ehrms_id',
-        //             'users.emp_name',
-        //             'users.mobile',
-        //             'users.designation_id',
-        //             'users.department_id',
-        //             'users.user_type',
-        //             'users.office_id',
-        //             'user_types.id as userType_id',
-        //             'user_types.parent_id',
-        //             'users.is_active',
-        //             'designations.id as designationId',
-        //             'designations.designation_name',
-        //             DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
-        //         )
-        //         ->join('user_types', 'users.user_type', '=', 'user_types.id')
-        //         ->join('designations', 'users.designation_id', '=', 'designations.id')
-        //         ->where('user_types.parent_id', '=', $this->userData);
-        // } else {
-        //     return User::query()
-        //         ->select(
-        //             'users.id',
-        //             'users.name',
-        //             'users.email',
-        //             'users.username',
-        //             'users.ehrms_id',
-        //             'users.emp_name',
-        //             'users.mobile',
-        //             'users.designation_id',
-        //             'users.department_id',
-        //             'users.user_type',
-        //             'users.office_id',
-        //             // 'user_types.id as userType_id',
-        //             // 'user_types.parent_id',
-        //             'users.is_active',
-        //             'model_has_roles.role_id',
-        //             'model_has_roles.model_id',
-        //             'roles.id as roleId',
-        //             'roles.name',
-        //             'designations.id as designationId',
-        //             'designations.designation_name',
-        //             DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
-        //         )
-        //     // ->where('user_types.parent_id', $this->userData)
-        //         ->where('model_has_roles.role_id', $this->userData)
-        //     // ->join('user_types', 'users.user_type', '=', 'user_types.id')
-        //         ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-        //         ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
-        //         ->join('designations', 'users.designation_id', '=', 'designations.id')
-        //     ;
-        // }
-
         $query = User::query()
             ->select(
                 'users.id',
@@ -464,32 +254,58 @@ final class UsersDataTable extends PowerGridComponent
                 // 'user_types.id as userType_id',
                 // 'user_types.parent_id',
                 'users.is_active',
-                'model_has_roles.role_id',
-                'model_has_roles.model_id',
+                // 'model_has_roles.role_id',
+                // 'model_has_roles.model_id',
+                'users_has_roles.role_id',
+                'users_has_roles.user_id',
                 'roles.id as roleId',
                 'roles.name',
                 'designations.id as designationId',
                 'designations.designation_name',
                 DB::raw('ROW_NUMBER() OVER (ORDER BY users.id) as serial_no')
             )
-            ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+        // ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+            ->join('users_has_roles', 'users.id', '=', 'users_has_roles.user_id')
+        // ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+            ->join('roles', 'users_has_roles.role_id', '=', 'roles.id')
             ->join('designations', 'users.designation_id', '=', 'designations.id');
         if (Auth::user()->hasRole('State Admin')) {
-            return $query->where('model_has_roles.role_id', $this->userData);
+            if ($this->userData == 0) {
+                return $query->whereIn('users_has_roles.role_id', Role::where('for_sanction', true)->pluck('id'));
+            } else {
+                return $query->where('users_has_roles.role_id', $this->userData);
+            }
         } elseif (Auth::user()->hasRole('Department Admin')) {
-            return $query->where('model_has_roles.role_id', $this->userData)
-                         ->where('users.department_id', Auth::user()->department_id);
-                        //  ->where([['users.group_id','!=',null],['users.group_id','!=',0]]);
-        } elseif(Auth::user()->hasRole('Group Admin')){
-            return $query->where('model_has_roles.role_id', $this->userData)
-                         ->where('users.department_id',Auth::user()->department_id)
-                         ->where('users.group_id',Auth::user()->group_id);
-        } elseif(Auth::user()->hasRole('Office Admin')){
-            return $query->where('model_has_roles.role_id', $this->userData)
-                         ->where('users.department_id',Auth::user()->department_id)
-                         ->where('users.group_id',Auth::user()->group_id)
-                         ->where('users.office_id',Auth::user()->resources->first()->resource_id);
+            if ($this->userData == 0) {
+                return $query->whereIn('users_has_roles.role_id', Role::where('for_sanction', true)->pluck('id'))
+                    ->where('users.department_id', Auth::user()->department_id);
+            } else {
+                return $query->where('users_has_roles.role_id', $this->userData)
+                    ->where('users.department_id', Auth::user()->department_id);
+                //  ->where([['users.group_id','!=',null],['users.group_id','!=',0]]);
+            }
+        } elseif (Auth::user()->hasRole('Group Admin')) {
+            if ($this->userData == 0) {
+                return $query->whereIn('users_has_roles.role_id', Role::where('for_sanction', true)->pluck('id'))
+                    ->where('users.department_id', Auth::user()->department_id)
+                    ->where('users.group_id', Auth::user()->group_id);
+            } else {
+                return $query->where('users_has_roles.role_id', $this->userData)
+                    ->where('users.department_id', Auth::user()->department_id)
+                    ->where('users.group_id', Auth::user()->group_id);
+            }
+        } elseif (Auth::user()->hasRole('Office Admin')) {
+            if ($this->userData == 0) {
+                return $query->whereIn('users_has_roles.role_id', Role::where('for_sanction', true)->pluck('id'))
+                    ->where('users.department_id', Auth::user()->department_id)
+                    ->where('users.group_id', Auth::user()->group_id)
+                    ->where('users.office_id', Auth::user()->resources->first()->resource_id);
+            } else {
+                return $query->where('users_has_roles.role_id', $this->userData)
+                    ->where('users.department_id', Auth::user()->department_id)
+                    ->where('users.group_id', Auth::user()->group_id)
+                    ->where('users.office_id', Auth::user()->resources->first()->resource_id);
+            }
         } else {
             return $query;
         }
@@ -566,7 +382,7 @@ final class UsersDataTable extends PowerGridComponent
                 return strtolower(e($model->name));
             })
 
-            // ->addColumn('username')
+        // ->addColumn('username')
             ->addColumn('email')
             ->addColumn('mobile')
             ->addColumn('ehrms_id')
@@ -681,7 +497,7 @@ final class UsersDataTable extends PowerGridComponent
             //     ->makeInputText(),
 
             Column::make('EMAIL', 'email')
-                ->sortable()
+            // ->sortable()
                 ->searchable(),
 
             Column::make('MOBILE', 'mobile')
@@ -703,7 +519,6 @@ final class UsersDataTable extends PowerGridComponent
                 ->searchable(),
 
             Column::make('DEPARTMENT NAME', 'getDepartmentName.department_name')
-
                 ->searchable(),
 
             Column::make('OFFICE NAME', 'getOfficeName.office_name')
@@ -717,10 +532,11 @@ final class UsersDataTable extends PowerGridComponent
                 ->searchable(),
             Column::make('STATUS', 'is_active')
                 ->sortable()
+                ->searchable(),
             // ->closure(function ($value) {
             //     return $value ? 'active' : 'Inactive';
             // }),
-                ->makeBooleanFilter(dataField: 'is_active', trueLabel: 'active', falseLabel: 'Inactive'),
+            // ->makeBooleanFilter(dataField: 'is_active', trueLabel: 'active', falseLabel: 'Inactive'),
 
         ];
     }
@@ -767,28 +583,28 @@ final class UsersDataTable extends PowerGridComponent
     }
     public function actions(): array
     {
-    return [
-        Button::add('View')
-            ->bladeComponent('data-table-components.buttons.assign-role', ['id' => 'id']),
-        // Button::add('View')
-        //     ->bladeComponent('view', ['id' => 'id']),
+        return [
+            Button::add('View')
+                ->bladeComponent('data-table-components.buttons.assign-role', ['id' => 'id']),
+            // Button::add('View')
+            //     ->bladeComponent('view', ['id' => 'id']),
 
-        // Button::add('Edit')
-        //     ->bladeComponent('edit-button', ['id' => 'id', 'action' => 'edit']),
+            // Button::add('Edit')
+            //     ->bladeComponent('edit-button', ['id' => 'id', 'action' => 'edit']),
 
-        Button::add('Delete')
-            ->bladeComponent('delete-button', ['position' => 'top', 'message' => 'Delete', 'id' => 'id'])
-        // Button::make('destroy', 'Delete')
-        // ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
-        // ->route('user.destroy', ['user' => 'id'])
-        // ->method('delete')
+            Button::add('Delete')
+                ->bladeComponent('delete-button', ['position' => 'top', 'message' => 'Delete', 'id' => 'id']),
+            // Button::make('destroy', 'Delete')
+            // ->class('bg-red-500 cursor-pointer text-white px-3 py-2 m-1 rounded text-sm')
+            // ->route('user.destroy', ['user' => 'id'])
+            // ->method('delete')
         ];
     }
 
-    public function assignRole($id){
-        $this->emit('openRoleModal',$id);
+    public function assignRole($id)
+    {
+        $this->emit('openRoleModal', $id);
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -816,7 +632,6 @@ final class UsersDataTable extends PowerGridComponent
     {
         $this->emit('deleteConfirmation', ['user_id' => $userId]);
     }
-
 
     /*
 public function actionRules(): array
