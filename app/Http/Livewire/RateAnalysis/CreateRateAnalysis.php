@@ -1276,6 +1276,8 @@ class CreateRateAnalysis extends Component
                 $this->rateData['dept_category_id'] = $compositeData['dept_category_id'];
                 $this->rateData['item_number'] = $compositeData['sor_itemno_child'];
                 $this->rateData['sor_itemno_child_id'] = $compositeData['sor_itemno_child_id'];
+                $this->rateData['sor_id'] = $compositeData['sor_itemno_child_id'];
+                $this->rateData['item_index'] = $compositeData['sor_itemno_child'];
                 $this->rateData['description'] = $compositeData['description'];
                 $this->rateData['version'] = '';
                 $this->rateData['other_name'] = '';
