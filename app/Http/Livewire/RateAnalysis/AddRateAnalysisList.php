@@ -837,6 +837,12 @@ class AddRateAnalysisList extends Component
             $this->allAddedRateData[$this->selectedArrKey]['qty'] = number_format(round($this->allAddedRateData[$this->selectedArrKey]['qty'], 4), 3, '.', '');
             $this->allAddedRateData[$this->selectedArrKey]['total_amount'] = $this->allAddedRateData[$this->selectedArrKey]['qty'] * $this->allAddedRateData[$this->selectedArrKey]['rate'];
             $this->allAddedRateData[$this->selectedArrKey]['total_amount'] = number_format(round($this->allAddedRateData[$this->selectedArrKey]['total_amount'], 2), 2, '.', '');
+            $this->updatedRateRecalculate();
+            if ($this->editRate_id != '') {
+                Session()->put('editRateData' . $this->editRate_id, $this->allAddedRateData);
+            } else {
+                Session()->put('addedRateAnalysisData', $this->allAddedRateData);
+            }
             $this->updateDataTableTracker = rand(1, 1000);
             $this->reset('selectedArrKey', 'openSorModal', 'isItemModalData', 'isItemModalName', 'isItemModal');
         }

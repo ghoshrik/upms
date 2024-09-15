@@ -39,8 +39,7 @@
                                 {{-- @endif --}}
                                 {{-- @if ($hideTotalbutton == true) --}}
                                 <button type="button" class="btn btn-soft-primary"
-                                    wire:click="totalOnSelected('Total')"
-                                    @if (($openTotalButton && $totalOnSelectedCount != 1) || true) {{ '' }}@else {{ 'disabled' }} @endif>{{ trans('cruds.estimate.fields.total_on_selected') }}
+                                    wire:click="totalOnSelected('Total')">{{ trans('cruds.estimate.fields.total_on_selected') }}
                                 </button>
                                 {{-- @endif --}}
                                 <button type="button" class="btn btn-soft-info" wire:click="exportWord">
@@ -99,10 +98,10 @@
                                                     // $getDynamicSorDetails = DynamicSorHeader::where('id',$addedRate['sor_itemno_child_id'])->select('table_no','page_no','corrigenda_name')->first();
                                                     $getDynamicSorDetails = DB::select(
                                                         'SELECT table_no, page_no, corrigenda_name FROM dynamic_table_header WHERE id = :id',
-                                                        ['id' => $addedRate['sor_itemno_child_id']],
+                                                        ['id' => $addedRate['sor_id']],
                                                     );
                                                 @endphp
-                                                @if ($getDynamicSorDetails[0]->corrigenda_name != '')
+                                                @if (isset($getDynamicSorDetails[0]->corrigenda_name) && $getDynamicSorDetails[0]->corrigenda_name != '')
                                                     {{ $getDynamicSorDetails[0]->table_no . ' (' . $getDynamicSorDetails[0]->page_no . ') ' . $getDynamicSorDetails[0]->corrigenda_name }}
                                                 @else
                                                     {{ $getDynamicSorDetails[0]->table_no . ' ' . $getDynamicSorDetails[0]->page_no }}

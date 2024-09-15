@@ -454,11 +454,11 @@ function getVersion($value)
     return $getVersion['version'] ?? '';
 }
 
-//function getDesignationName($value)
-//{
-//    $designationName = Designation::where('id', $value)->select('designation_name')->first();
-//    return $designationName['designation_name'];
-//}
+function getDesignationName($value)
+{
+   $designationName = Designation::where('id', $value)->select('designation_name')->first();
+   return $designationName['designation_name'] ?? '';
+}
 function getOfficeName($value)
 {
     $officeName = Office::where('id', $value)->select('office_name')->first();
