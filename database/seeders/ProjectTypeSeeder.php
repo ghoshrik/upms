@@ -15,39 +15,39 @@ class ProjectTypeSeeder extends Seeder
     protected $data = [
         [
             'department_id' => 47,
-            'name' => 'Public Works',
+            'title' => 'Public Works', // Change 'name' to 'title'
         ],
         [
             'department_id' => 47,
-            'name' => 'Road & Bridge Projects',
+            'title' => 'Road & Bridge Projects',
         ],
         [
             'department_id' => 47,
-            'name' => 'IT Projects',
+            'title' => 'IT Projects',
         ],
         [
             'department_id' => 47,
-            'name' => 'Electrical Projects',
+            'title' => 'Electrical Projects',
         ],
         [
             'department_id' => 47,
-            'name' => 'Building And S & P Projects',
+            'title' => 'Building And S & P Projects',
         ],
         [
             'department_id' => 26,
-            'name' => 'Irrigation & Waterways Development Projects',
+            'title' => 'Irrigation & Waterways Development Projects',
         ],
         [
             'department_id' => 38,
-            'name' => 'Panchayats & Rural Development Projects',
+            'title' => 'Panchayats & Rural Development Projects',
         ],
         [
             'department_id' => 46,
-            'name' => 'Public Health Engineering',
+            'title' => 'Public Health Engineering',
         ],
         [
             'department_id' => 57,
-            'name' => 'Water Resources Investigation & Development Projects',
+            'title' => 'Water Resources Investigation & Development Projects',
         ],
     ];
 
