@@ -14,7 +14,7 @@ class EstimateSanctionMaster extends Component
 {
     use Actions;
     public $formOpen = false;
-    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'openAddRolesSection'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'openAddRolesSection', 'deleteSLM'];
     public $openedFormType = false, $isFromOpen, $subTitle = "List", $selectedIdForEdit, $errorMessage, $title;
     public $openAddRolesForm = false;
     public $updateDataTableTracker;
@@ -41,7 +41,7 @@ class EstimateSanctionMaster extends Component
     {
         $this->updateDataTableTracker = rand(1, 1000);
 //        $this->roles = Role::whereIn('name',['Chief Engineer (Planning)','Zonal Chief Engineer','Superintending Engineer','Executive Engineer','Assistant Engineer','Junior Engineer'])->get();
-        $this->roles = Role::where('for_sanction',true)->get();
+        $this->roles = Role::where('for_sanction', true)->get();
         $this->sanction_roles = collect();
         $this->permissions = collect([
             'create estimate' => 'Maker',
@@ -66,7 +66,8 @@ class EstimateSanctionMaster extends Component
                 break;
         }
         if (isset($data['id'])) {
-            $this->selectedIdForEdit = $data['id'];
+            // $this->selectedIdForEdit = $data['id'];
+            $this->emit('editSLM', $data['id']);
         }
     }
     public function openAddRolesSection($id)
@@ -116,7 +117,7 @@ class EstimateSanctionMaster extends Component
                 $title = "Failed to create records",
                 $description = 'Sanction limit role.'
             );
-            $this->emit('showError','Failed to create sanction limit role.');
+            $this->emit('showError', 'Failed to create sanction limit role.');
         }
         // DB::table('sanction_roles')->insert([
         //     'sanction_limit_master_id' => $this->sanctionLimit->id,
@@ -170,6 +171,31 @@ class EstimateSanctionMaster extends Component
     {
         $this->reset(['openAddRolesForm', 'sanction_roles']);
     }
+    public function deleteSLM($id)
+    {
+        DB::beginTransaction();
+        try {
+            $getSanctionLimit = SanctionLimitMaster::findOrFail($id);
+            $getSanctionRolePermissions = $getSanctionLimit->roles()->with(['role', 'permission'])->get();
+            foreach ($getSanctionRolePermissions as $sanctionRolePermission) {
+                $sanctionRolePermission->delete();
+            }
+            $getSanctionLimit->delete();
+            DB::commit();
+            $this->notification()->success(
+                $title = "Deleted successfully"
+            );
+            $this->reset();
+            $this->emit('openEntryForm');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->notification()->error(
+                $title = "Failed to delete record",
+                $description = $e->getMessage()
+            );
+            $this->emit('showError', $e->getMessage());
+        }
+    }
     public function setErrorAlert($errorMessage)
     {
         $this->errorMessage = $errorMessage;
@@ -179,8 +205,8 @@ class EstimateSanctionMaster extends Component
         $this->updateDataTableTracker = rand(1, 1000);
         $this->title = 'Estimate Sanction Limit Master';
         $assets = ['chart', 'animation'];
-        return view('livewire.estimate-sanction-limit.estimate-sanction-master',[
-            'sanction_roles' => $this->sanction_roles
+        return view('livewire.estimate-sanction-limit.estimate-sanction-master', [
+            'sanction_roles' => $this->sanction_roles,
         ]);
     }
 }

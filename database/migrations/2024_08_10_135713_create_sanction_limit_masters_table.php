@@ -16,10 +16,11 @@ class CreateSanctionLimitMastersTable extends Migration
         Schema::create('sanction_limit_masters', function (Blueprint $table) {
             $table->bigIncrements('id')->autoIncrement();
             $table->integer('department_id')->index()->references('id')->on('departments');
+            $table->integer('project_type_id')->index()->references('id')->on('project_types');
             $table->decimal('min_amount',15,0);
             $table->decimal('max_amount',15,0)->nullable();
             $table->timestamps();
-            $table->unique(['department_id','min_amount','max_amount'],'sanction_limit_master_unique');
+            $table->unique(['department_id','project_type_id','min_amount','max_amount'],'sanction_limit_master_unique');
         });
     }
 

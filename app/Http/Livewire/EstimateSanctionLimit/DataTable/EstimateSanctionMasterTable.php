@@ -3,18 +3,18 @@
 namespace App\Http\Livewire\EstimateSanctionLimit\DataTable;
 
 use App\Models\SanctionLimitMaster;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
+use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\Exportable;
-use PowerComponents\LivewirePowerGrid\Rules\Rule;
-use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
-use PowerComponents\LivewirePowerGrid\Rules\RuleActions;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
+use PowerComponents\LivewirePowerGrid\Rules\Rule;
+use PowerComponents\LivewirePowerGrid\Rules\RuleActions;
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 
 final class EstimateSanctionMasterTable extends PowerGridComponent
@@ -59,14 +59,14 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
     public function datasource(): Builder
     {
         return SanctionLimitMaster::query()
-            // ->select(
-            //     'estimate_acceptance_limit_masters.id',
-            //     'estimate_acceptance_limit_masters.department_id',
-            //     'estimate_acceptance_limit_masters.level_id',
-            //     'estimate_acceptance_limit_masters.min_amount',
-            //     'estimate_acceptance_limit_masters.max_amount'
-            // )
-            // ->join('level_master', 'estimate_acceptance_limit_masters.level_id', '=', 'level_master.id')
+        // ->select(
+        //     'estimate_acceptance_limit_masters.id',
+        //     'estimate_acceptance_limit_masters.department_id',
+        //     'estimate_acceptance_limit_masters.level_id',
+        //     'estimate_acceptance_limit_masters.min_amount',
+        //     'estimate_acceptance_limit_masters.max_amount'
+        // )
+        // ->join('level_master', 'estimate_acceptance_limit_masters.level_id', '=', 'level_master.id')
             ->where('department_id', Auth::user()->department_id);
     }
 
@@ -102,9 +102,9 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
     public function addColumns(): PowerGridEloquent
     {
         return PowerGrid::eloquent()
-            ->addColumn('id')
-            // ->addColumn('getDepartmentName.department_name')
-            // ->addColumn('getRolesName.name')
+        // ->addColumn('id')
+        // ->addColumn('getDepartmentName.department_name')
+            ->addColumn('projectType.title')
             ->addColumn('min_amount')
             ->addColumn('max_amount');
     }
@@ -126,14 +126,13 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('ID', 'id'),
+            // Column::make('ID', 'id'),
             // ->makeInputRange(),
 
             // Column::make('DEPARTMENT ID', 'getDepartmentName.department_name')
             //     ->makeInputRange(),
 
-            // Column::make('ROLE NAME', 'getRolesName.name')
-            //     ->makeInputRange(),
+            Column::make('Title', 'projectType.title'),
 
             Column::make('MIN AMOUNT', 'min_amount')
                 ->sortable()
@@ -167,12 +166,24 @@ final class EstimateSanctionMasterTable extends PowerGridComponent
 //                ->caption('Add Roles')
 //                ->class('btn btn-soft-primary btn-sm px-3 py-2.5 m-1 rounded')
 //                ->emit('openAddRolesSection', ['id' => 'id']),
-                ->bladeComponent('action-components.estimate-sanction.add-role-permission-btn',['id'=>'id'])
+                ->bladeComponent('action-components.estimate-sanction.add-role-permission-btn', ['id' => 'id']),
+            Button::add('edit')
+                ->bladeComponent('action-components.estimate-sanction.edit-slm', ['id' => 'id']),
+            Button::add('delete')
+                ->bladeComponent('action-components.estimate-sanction.delete-slm', ['id' => 'id']),
         ];
     }
     public function add($id)
     {
         $this->emit('openAddRolesSection', $id);
+    }
+    public function edit($id)
+    {
+        $this->emit('openEntryForm', ['formType' => 'edit', 'id' => $id]);
+    }
+    public function delete($id)
+    {
+        $this->emit('deleteSLM', $id);
     }
     /*
     |--------------------------------------------------------------------------

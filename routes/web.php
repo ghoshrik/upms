@@ -27,30 +27,32 @@ use App\Http\Livewire\SorBook\DynamicSor;
 // use App\Http\Livewire\Permission\Permissions;
 use App\Http\Livewire\DeptGroups\DeptGroup;
 use App\Http\Livewire\Milestone\Milestones;
+use App\Http\Livewire\Profile\AuthPassword;
 use App\Http\Livewire\Setting\SettingLists;
 use App\Http\Livewire\AccessType\AccessType;
 use App\Http\Livewire\Department\Department;
 use App\Http\Livewire\Permission\Permission;
 use App\Http\Livewire\VendorRegs\VendorList;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\AuthProfileController;
 use App\Http\Controllers\CommonApiController;
 use App\Http\Livewire\Designation\Designation;
+use App\Http\Livewire\ProjectType\ProjectType;
 use App\Http\Livewire\Sorapprove\SorApprovers;
 use App\Http\Livewire\Unitsmaster\UnitsMaster;
 use App\Http\Livewire\ViewSorBook\ViewSorBook;
+use App\Http\Controllers\AuthProfileController;
 use App\Http\Livewire\Compositsor\ComposerSors;
 use App\Http\Livewire\DocumentSor\DocumentSors;
 use App\Http\Livewire\Estimate\EstimatePrepare;
+use App\Http\Livewire\NonSchedule\NonSchedules;
 use App\Http\Livewire\RateAnalysis\RateAnalysis;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\MenuManagement\MenuManagement;
-use App\Http\Livewire\MisReport\Users\UserMisReport;
-use App\Http\Livewire\UserManagement\UserManagement;
-use App\Http\Livewire\NonSchedule\NonSchedules;
 
 // Packages
+use App\Http\Livewire\MisReport\Users\UserMisReport;
+use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\EstimateProject\EstimateProject;
 use App\Http\Livewire\AbstructCosts\AbstructCostsLists;
 use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
@@ -58,12 +60,11 @@ use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
 use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
 use App\Http\Livewire\EstimateRecomender\EstimateRecomender;
 use App\Http\Livewire\QuantityEvaluation\QuantityEvaluation;
+use App\Http\Livewire\NonScheduleApprove\NonScheduleApprovers;
 use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
 use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
 use App\Http\Livewire\EstimateSanctionLimit\EstimateSanctionMaster;
-use App\Http\Livewire\NonScheduleApprove\NonScheduleApprovers;
 use App\Http\Livewire\EstimateProjectV2\EstimateProject as EstimateProjectV2;
-use App\Http\Livewire\Profile\AuthPassword;
 
 /*
 |--------------------------------------------------------------------------
@@ -146,6 +147,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
         //Department Admin
         Route::group(['middleware' => ['role:Department Admin']], function () {
+            Route::get('project-types', ProjectType::class)->name('project-types');
             Route::get('groups', Group::class)->name('groups');
             Route::get('dept-groups', DeptGroup::class)->name('dept-groups');
             // Route::get('user-management', UserManagement::class)->name('user-management');
