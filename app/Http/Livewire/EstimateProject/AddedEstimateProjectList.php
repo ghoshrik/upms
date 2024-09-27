@@ -24,6 +24,7 @@ class AddedEstimateProjectList extends Component
     public $openQtyModal = false, $sendArrayKey = '', $sendArrayDesc = '', $getQtySessionData = [], $editEstimate_id;
     public $arrayCount = 0, $selectCheckBoxs = false;
     public $editRowId, $editRowData, $editRowModal = false;
+    public $project_type_id;
     public function mount()
     {
         $this->setEstimateDataToSession();
@@ -101,6 +102,7 @@ class AddedEstimateProjectList extends Component
             Session()->put('editProjectEstimateData' . $this->editEstimate_id, $this->allAddedEstimatesData);
             Session()->put('editProjectEstimateDesc' . $this->editEstimate_id, $this->sorMasterDesc);
             Session()->put('editProjectEstimatePartNo' . $this->editEstimate_id, $this->part_no);
+            Session()->put('editEstimateProjectType' . $this->editEstimate_id, $this->project_type_id);
             Session()->put('editModalData', $this->getQtySessionData);
         }
     }
@@ -348,7 +350,7 @@ class AddedEstimateProjectList extends Component
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
         $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'part_no', 'getQtySessionData', 'editEstimate_id');
+        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'part_no', 'getQtySessionData', 'editEstimate_id','project_type_id');
     }
 
     public function expCalc()
@@ -512,11 +514,13 @@ class AddedEstimateProjectList extends Component
                 Session()->put('addedProjectEstimateData', $this->allAddedEstimatesData);
                 Session()->put('projectEstimateDesc', $this->sorMasterDesc);
                 Session()->put('projectEstimatePartNo', $this->part_no);
+                Session()->put('estimateProjectType', $this->project_type_id);
                 $this->reset('addedEstimateData');
             } else {
                 Session()->put('editProjectEstimateData' . $this->editEstimate_id, $this->allAddedEstimatesData);
                 Session()->put('editProjectEstimateDesc' . $this->editEstimate_id, $this->sorMasterDesc);
                 Session()->put('editProjectEstimatePartNo' . $this->editEstimate_id, $this->part_no);
+                Session()->put('editEstimateProjectType' . $this->editEstimate_id, $this->project_type_id);
                 $this->reset('addedEstimateData');
             }
         }
@@ -730,6 +734,7 @@ class AddedEstimateProjectList extends Component
 
     public function store($flag = '')
     {
+        // dd($this->project_type_id);
         $this->getQtySessionData = ($this->editEstimate_id == '') ? Session()->get('modalData') : Session()->get('editModalData');
         // dd($this->getQtySessionData);
         $intId = ($this->editEstimate_id == '') ? random_int(100000, 999999) : $this->editEstimate_id;
@@ -737,7 +742,7 @@ class AddedEstimateProjectList extends Component
             try {
                 if ($this->allAddedEstimatesData) {
                     $intId = ($this->editEstimate_id == '') ? random_int(100000, 999999) : $this->editEstimate_id;
-                    if (($this->editEstimate_id != '') ? ModelsSORMaster::where('estimate_id', $intId)->update(['sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'created_by' => Auth::user()->id, 'associated_with' => Auth::user()->id]) : ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'dept_id' => Auth::user()->department_id, 'part_no' => $this->part_no, 'created_by' => Auth::user()->id, 'associated_with' => Auth::user()->id])) {
+                    if (($this->editEstimate_id != '') ? ModelsSORMaster::where('estimate_id', $intId)->update(['sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'created_by' => Auth::user()->id, 'associated_with' => Auth::user()->id]) : ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'dept_id' => Auth::user()->department_id, 'part_no' => $this->part_no, 'created_by' => Auth::user()->id, 'associated_with' => Auth::user()->id, 'project_type_id' => $this->project_type_id])) {
                         if ($this->editEstimate_id != '') {
                             EstimatePrepare::where('estimate_id', $intId)->delete();
                         }
@@ -787,6 +792,7 @@ class AddedEstimateProjectList extends Component
 //                                dd($role);
                                 $permissions = $role->permissions;
                                 $getSLM = SanctionLimitMaster::where('department_id', Auth::user()->department_id)
+                                    ->where('project_type_id',$this->project_type_id)
                                     ->where('min_amount', '<=', $estimated_amount)
                                     ->where(function ($query) use ($estimated_amount) {
                                         $query->where('max_amount', '>=', $estimated_amount)

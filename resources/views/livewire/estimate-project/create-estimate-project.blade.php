@@ -9,7 +9,7 @@
                     {{-- <div class="card-body"> --}}
                     <div class="row">
                         <div class="row">
-                            <div class="col col-md-6 col-lg-8 col-sm-12 col-xs-12 mb-2">
+                            <div class="mb-2 col col-md-6 col-lg-6 col-sm-12 col-xs-12">
                                 <x-textarea wire:model.defer="sorMasterDesc" rows="2"
                                     label="{{ trans('cruds.estimate.fields.description') }}"
                                     placeholder="Your project {{ trans('cruds.estimate.fields.description') }}" />
@@ -18,7 +18,7 @@
                                 </div> --}}
 
                             </div>
-                            <div class="col col-md-3 col-lg-1 col-sm-12 col-xs-12 mb-2">
+                            <div class="mb-2 col ">
                                 @if ($part_no != '')
                                     <x-input label="Part No" placeholder="Part No" wire:model.defer="part_no"
                                         wire:key='part_no' readonly />
@@ -28,7 +28,19 @@
                                         oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '').substring(0, 1);" />
                                 @endif
                             </div>
-                            <div class="col col-md-3 col-lg-3 col-sm-12 col-xs-12 mb-2">
+                            <div class="col">
+                                <div class="form-group">
+                                    <x-select wire:key="dept" label="Project Type" placeholder="Select Project Type"
+                                        wire:model.defer="project_type_id" x-on:select="" :readonly="$project_type_id !== ''">
+                                        @forelse ($fatchDropdownData['projectTypes'] as $projectType)
+                                            <x-select.option label="{{ $projectType['title'] }}"
+                                                value="{{ $projectType['id'] }}" />
+                                        @empty
+                                        @endforelse
+                                    </x-select>
+                                </div>
+                            </div>
+                            <div class="mb-2 col ">
                                 <div class="form-group">
                                     <x-select wire:key="categoryType"
                                         label="{{ trans('cruds.estimate.fields.category') }}"
@@ -120,7 +132,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-2" x-show="showSearch" style="margin-top: 26px">
-                                        <div class="form-group float-right">
+                                        <div class="float-right form-group">
                                             <button type="button"
                                                 @click="showSearch = !showSearch; $wire.clearSearch()"
                                                 class="btn btn-soft-danger rounded-pill"><x-lucide-x
@@ -283,7 +295,7 @@
                                         <div class="form-group">
                                             <x-input wire:key="other_name" wire:model.defer="estimateData.other_name"
                                                 label="Item Name" placeholder="Item Name" />
-                                            {{--                                            <button class="btn btn-primary mt-2" wire:click="openModal">Edit --}}
+                                            {{--                                            <button class="mt-2 btn btn-primary" wire:click="openModal">Edit --}}
                                             {{--                                                Description</button> --}}
                                         </div>
                                     </div>
@@ -553,7 +565,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <div class="form-group float-right">
+                            <div class="float-right form-group">
                                 <button type="button" wire:click='addEstimate'
                                     class="{{ trans('global.add_btn_color') }}">
                                     <x-lucide-list-plus class="w-4 h-4 text-gray-500" />
@@ -570,7 +582,7 @@
     @if ($addedEstimate != null || Session::has('addedProjectEstimateData') || $editEstimate_id != '')
         <div x-transition.duration.500ms>
             <livewire:estimate-project.added-estimate-project-list :addedEstimateData="$addedEstimate" :sorMasterDesc="$sorMasterDesc"
-                :wire:key="$addedEstimateUpdateTrack" :part_no="$part_no" :editEstimate_id="$editEstimate_id" />
+                :wire:key="$addedEstimateUpdateTrack" :part_no="$part_no" :editEstimate_id="$editEstimate_id" :project_type_id="$project_type_id" />
         </div>
     @endif
     @if ($viewModal)

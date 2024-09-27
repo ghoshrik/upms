@@ -2,20 +2,21 @@
 
 namespace App\Http\Livewire\EstimateProject;
 
-use App\Models\Department;
-use App\Models\DynamicSorHeader;
-use App\Models\EstimatePrepare;
-use App\Models\QultiyEvaluation;
-use App\Models\RatesAnalysis;
 use App\Models\SOR;
-use App\Models\SorCategoryType;
+use Livewire\Component;
 use App\Models\SorMaster;
+use App\Models\Department;
 use App\Models\UnitMaster;
+use WireUi\Traits\Actions;
+use App\Models\ProjectType;
+use App\Models\RatesAnalysis;
+use App\Models\EstimatePrepare;
+use App\Models\SorCategoryType;
+use App\Models\DynamicSorHeader;
+use App\Models\QultiyEvaluation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
-use Livewire\Component;
-use WireUi\Traits\Actions;
 
 class CreateEstimateProject extends Component
 {
@@ -26,6 +27,7 @@ class CreateEstimateProject extends Component
     public $addedEstimate = [];
     public $searchDtaCount, $searchStyle = 'none', $searchResData, $quntity_type = 'manual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '', $getSor = [], $editEstimate_id = '';
     public $searchKeyWord = '';
+    public $project_type_id = '';
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -114,6 +116,9 @@ class CreateEstimateProject extends Component
             if (Session()->has('projectEstimationTotal')) {
                 $this->totalOnSelectedCount = Session()->get('projectEstimationTotal');
             }
+            if(Session()->has('estimateProjectType')){
+                $this->project_type_id = Session()->get('estimateProjectType');
+            }
             $this->addedEstimateUpdateTrack = rand(1, 1000);
         }
     }
@@ -121,16 +126,18 @@ class CreateEstimateProject extends Component
     public function editEstimate($estimate_id)
     {
         // dd($estimate_id);
-        $fatchEstimateMaster = SORMaster::where([['estimate_id', $estimate_id]])->first();
-        // $fatchEstimateMaster = SORMaster::where([['estimate_id', $estimate_id], ['created_by', Auth::user()->id]])->first();
+        $fatchEstimateMaster = SorMaster::where([['estimate_id', $estimate_id]])->first();
+        // $fatchEstimateMaster = SorMaster::where([['estimate_id', $estimate_id], ['created_by', Auth::user()->id]])->first();
         if ($fatchEstimateMaster != '') {
             $this->sorMasterDesc = $fatchEstimateMaster['sorMasterDesc'];
             $this->part_no = $fatchEstimateMaster['part_no'];
+            $this->project_type_id = $fatchEstimateMaster['project_type_id'];
             $this->editEstimate_id = $estimate_id;
             // dd($this->editEstimate_id);
             Session()->forget('editProjectEstimateData' . $this->editEstimate_id);
             Session()->forget('editProjectEstimateDesc' . $this->editEstimate_id);
             Session()->forget('editProjectEstimatePartNo' . $this->editEstimate_id);
+            Session()->forget('editEstimateProjectType' . $this->editEstimate_id);
             Session()->forget('editModalData');
             // if (Session()->has('editProjectEstimateData' . $estimate_id)) {
             //     $fatchEstimateData = Session()->get('editProjectEstimateData' . $estimate_id);
@@ -146,7 +153,7 @@ class CreateEstimateProject extends Component
 
     public function changeCategory($value)
     {
-        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'part_no', 'editEstimate_id','totalOnSelectedCount']);
+        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'part_no', 'editEstimate_id','totalOnSelectedCount','project_type_id']);
         // dd($this->addedEstimate,$this->editEstimate_id);
         $this->part_no = strtoupper($this->part_no);
         $value = $value['_x_bindings']['value'];
@@ -512,7 +519,7 @@ class CreateEstimateProject extends Component
         $this->estimateData['id'] = $this->getSor['id'];
         $this->estimateData['page_no'] = $this->getSor['page_no'];
         if ($this->searchKeyWord != '') {
-            $this->estimateData['volume'] = $this->getSor['volume'];
+            $this->estimateData['volume'] = $this->getSor['volume_no'];
             $this->estimateData['table_no'] = $this->getSor['table_no'];
         }
         // }
@@ -855,7 +862,7 @@ class CreateEstimateProject extends Component
                 $this->fatchDropdownData['rateDetailsTypes'] = [];
             }
             // dd($this->addedEstimate);
-            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'estimateData', 'fatchDropdownData', 'selectedCategoryId', 'part_no', 'editEstimate_id']);
+            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'estimateData', 'fatchDropdownData', 'selectedCategoryId', 'part_no', 'editEstimate_id','project_type_id']);
         }
     }
 
@@ -872,6 +879,7 @@ class CreateEstimateProject extends Component
 
     public function render()
     {
+        $this->fatchDropdownData['projectTypes'] = ProjectType::where('department_id',Auth::user()->department_id)->get();
         return view('livewire.estimate-project.create-estimate-project');
     }
 }
