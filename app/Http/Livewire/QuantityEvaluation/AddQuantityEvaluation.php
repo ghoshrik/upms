@@ -6,7 +6,7 @@ use Livewire\Component;
 use App\Models\EstimatePrepare;
 use Illuminate\Support\Facades\Log;
 use ChrisKonnertz\StringCalc\StringCalc;
-use App\Models\SORMaster as ModelsSORMaster;
+use App\Models\SorMaster as ModelsSORMaster;
 use Illuminate\Support\Facades\Auth;
 use App\Models\EstimateUserAssignRecord;
 use App\Models\QultiyEvaluation;

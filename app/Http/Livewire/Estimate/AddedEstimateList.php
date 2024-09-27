@@ -4,7 +4,7 @@ namespace App\Http\Livewire\Estimate;
 
 use App\Models\EstimatePrepare;
 use App\Models\EstimateUserAssignRecord;
-use App\Models\SORMaster as ModelsSORMaster;
+use App\Models\SorMaster as ModelsSORMaster;
 use ChrisKonnertz\StringCalc\StringCalc;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;

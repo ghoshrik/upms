@@ -619,7 +619,7 @@ class CreateRateAnalysis extends Component
             $this->rateData['sor_id'] = $this->getSor['id'];
             $this->rateData['page_no'] = $this->getSor['page_no'];
             if ($this->searchKeyWord != '') {
-                $this->rateData['volume'] = $this->getSor['volume'];
+                $this->rateData['volume'] = $this->getSor['volume_no'];
                 $this->rateData['table_no'] = $this->getSor['table_no'];
             }
         }

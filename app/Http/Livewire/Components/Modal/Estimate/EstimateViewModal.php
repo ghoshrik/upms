@@ -3,7 +3,7 @@
 namespace App\Http\Livewire\Components\Modal\Estimate;
 
 use Livewire\Component;
-use App\Models\SORMaster;
+use App\Models\SorMaster;
 use App\Models\UnitMaster;
 use App\Models\EstimatePrepare;
 use Illuminate\Support\Facades\Cache;
@@ -22,7 +22,7 @@ class EstimateViewModal extends Component
         if ($estimate_id) {
             $this->estimate_id = $estimate_id;
             $this->viewEstimates = EstimatePrepare::where('estimate_id', $this->estimate_id)->orderBy('id')->get();
-            $this->estimateDescription = SORMaster::where('estimate_id', $this->estimate_id)->first();
+            $this->estimateDescription = SorMaster::where('estimate_id', $this->estimate_id)->first();
             $this->estimateDescription = $this->estimateDescription['sorMasterDesc'];
             // $cacheKey = 'projectEstimate_' . $this->estimate_id;
             // if(Cache::has($cacheKey)){

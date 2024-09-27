@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\EstimateProject\DataTable\Powergrid;
 
-use App\Models\SORMaster;
+use App\Models\SorMaster;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -49,7 +49,7 @@ final class ApprovedEstimateProject extends PowerGridComponent
     /**
     * PowerGrid datasource.
     *
-    * @return Builder<\App\Models\SORMaster>
+    * @return Builder<\App\Models\SorMaster>
     */
     public function datasource(): Builder
     {
@@ -132,7 +132,7 @@ final class ApprovedEstimateProject extends PowerGridComponent
             {
                 return number_format($row->total_amount,2);
             })
-            ->addColumn('approved_at_formatted', fn (SORMaster $model) => Carbon::parse($model->approved_at)->format('d/m/Y H:i:s'))
+            ->addColumn('approved_at_formatted', fn (SorMaster $model) => Carbon::parse($model->approved_at)->format('d/m/Y H:i:s'))
             ->addColumn('created_by');
     }
 
@@ -184,7 +184,7 @@ final class ApprovedEstimateProject extends PowerGridComponent
     */
 
      /**
-     * PowerGrid SORMaster Action Buttons.
+     * PowerGrid SorMaster Action Buttons.
      *
      * @return array<int, Button>
      */
@@ -214,7 +214,7 @@ final class ApprovedEstimateProject extends PowerGridComponent
     */
 
      /**
-     * PowerGrid SORMaster Action Rules.
+     * PowerGrid SorMaster Action Rules.
      *
      * @return array<int, RuleActions>
      */

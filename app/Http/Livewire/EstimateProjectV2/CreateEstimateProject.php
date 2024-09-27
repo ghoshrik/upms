@@ -125,7 +125,7 @@ class CreateEstimateProject extends Component
 
         $fatchEstimateMaster = EstimateMasterV2::where([['estimate_id', $estimate_id]])->first();
         //dd($fatchEstimateMaster);
-        // $fatchEstimateMaster = SORMaster::where([['estimate_id', $estimate_id], ['created_by', Auth::user()->id]])->first();
+        // $fatchEstimateMaster = SorMaster::where([['estimate_id', $estimate_id], ['created_by', Auth::user()->id]])->first();
         if ($fatchEstimateMaster != '') {
             $this->sorMasterDesc = $fatchEstimateMaster['estimate_master_desc'];
             $this->part_no = $fatchEstimateMaster['part_no'];
@@ -519,7 +519,7 @@ class CreateEstimateProject extends Component
         $this->estimateData['id'] = $this->getSor['id'];
         $this->estimateData['page_no'] = $this->getSor['page_no'];
         if ($this->searchKeyWord != '') {
-            $this->estimateData['volume'] = $this->getSor['volume'];
+            $this->estimateData['volume'] = $this->getSor['volume_no'];
             $this->estimateData['table_no'] = $this->getSor['table_no'];
         }
         // }
