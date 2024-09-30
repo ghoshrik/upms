@@ -11,7 +11,7 @@ class DesignType extends Model
     use HasFactory;
 
     protected $guarded = [];
-
+    protected $fillable = ['name', 'created_by'];
     public function designs() : HasMany
     {
         return $this->Hasmany(Design::class);
