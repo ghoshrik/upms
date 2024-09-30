@@ -48,9 +48,10 @@ use App\Http\Livewire\NonSchedule\NonSchedules;
 use App\Http\Livewire\RateAnalysis\RateAnalysis;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
-use App\Http\Livewire\MenuManagement\MenuManagement;
+use App\Http\Livewire\ProjectDesignType\DesignType;
 
 // Packages
+use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\MisReport\Users\UserMisReport;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\EstimateProject\EstimateProject;
@@ -282,7 +283,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         })->name('change-role');
     });
 });
-
+Route::get('project-design-type', DesignType::class)->name('project-design-type');
 //App Details Page => 'Dashboard'], function() {
 Route::group(['prefix' => 'menu-style'], function () {
     //MenuStyle Page Routs
