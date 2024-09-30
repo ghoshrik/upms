@@ -11,7 +11,6 @@ class DesignType extends Model
     use HasFactory;
 
     protected $guarded = [];
-
     public function designs() : HasMany
     {
         return $this->Hasmany(Design::class);
