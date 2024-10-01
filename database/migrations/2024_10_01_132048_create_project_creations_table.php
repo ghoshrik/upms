@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDesignTypesTable extends Migration
+class CreateProjectCreationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,15 @@ class CreateDesignTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('design_types', function (Blueprint $table) {
+        Schema::create('project_creations', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
-            $table->foreignId('created_by')->references('id')->on('users');
+            $table->text('name');
+            $table->foreignId('department_id')
+                ->references('id')
+                ->on('departments');
+            $table->foreignId('created_by')
+                ->references('id')
+                ->on('users');
             $table->timestamps();
         });
     }
@@ -28,6 +33,6 @@ class CreateDesignTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('design_types');
+        Schema::dropIfExists('project_creations');
     }
 }
