@@ -2,12 +2,12 @@
 
 namespace App\Http\Livewire\ProjectType;
 
-use Livewire\Component;
 use App\Models\Department;
-use WireUi\Traits\Actions;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use App\Models\ProjectType as EstimateProjectType;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class ProjectType extends Component
 {
@@ -41,14 +41,14 @@ class ProjectType extends Component
         DB::beginTransaction();
         try {
             $getProjectType = EstimateProjectType::where('id', $id)->first();
-            $getSanctionLimits = $getProjectType->sanctionLimitMasters;
-            foreach ($getSanctionLimits as $sanctionLimit) {
-                $getSanctionRolePermissions = $sanctionLimit->roles()->get();
-                foreach ($getSanctionRolePermissions as $key => $sanctionRolePermission) {
-                    $sanctionRolePermission->delete();
-                }
-                $sanctionLimit->delete();
-            }
+            // $getSanctionLimits = $getProjectType->sanctionLimitMasters;
+            // foreach ($getSanctionLimits as $sanctionLimit) {
+            //     $getSanctionRolePermissions = $sanctionLimit->roles()->get();
+            //     foreach ($getSanctionRolePermissions as $key => $sanctionRolePermission) {
+            //         $sanctionRolePermission->delete();
+            //     }
+            //     $sanctionLimit->delete();
+            // }
             $getProjectType->delete();
             DB::commit();
             $this->notification()->success(
@@ -56,6 +56,12 @@ class ProjectType extends Component
             );
             $this->reset();
             $this->emit('openEntryForm');
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+                $this->notification()->error(
+                    $title = "Failed to delete record",
+                    $description = "Please delete all dependencies before deleting this record."
+                );
         } catch (\Exception $e) {
             DB::rollBack();
             $this->notification()->error(
