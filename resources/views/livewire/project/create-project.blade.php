@@ -18,19 +18,6 @@
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
-                {{-- <div class="mb-3">
-                    <label for="department_id">Department</label>
-                    <select id="department_id" class="form-control" wire:model.defer="department_id">
-                        <option value="">Select Department</option>
-                        @foreach ($departments as $department)
-                            <option value="{{ $department->id }}">{{ $department->department_name }}</option>
-                        @endforeach
-                    </select>
-                    @error('department_id')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div> --}}
-
                 <button type="submit" class="btn btn-success">Save Project</button>
             </div>
         </div>

@@ -21,7 +21,7 @@ class CreateProject extends Component
         'department_id' => 'required|exists:departments,id',
     ];
 
-    // Use the mount function to initialize the department_id
+    
     public function mount()
     {
         $this->department_id = Auth::user()->department_id;
@@ -40,8 +40,7 @@ class CreateProject extends Component
         $this->name = $project->name;
         $this->site = $project->site;
         $this->department_id = $project->department_id;
-        // $this->project_id = $project->project_id;
-        // $this->created_by = $project->created_by;
+        
     }
     public function saveProject()
     {
@@ -49,7 +48,7 @@ class CreateProject extends Component
 
         if (!empty($this->project_id)) {
 
-            // dd($this->project_id);      
+              
             $project = ProjectCreation::findOrFail($this->project_id);
             $project->update(
                 [
@@ -59,23 +58,20 @@ class CreateProject extends Component
             );
             $this->notification()->success(
                 $title = "Project created successfully!",
-                // $description = $e->getMessage()
+               
             );
             $this->reset();
             $this->emit('openEntryForm');
         } else {
             ProjectCreation::create([
-                // 'project_id' => $projectId,
                 'name' => $this->name,
                 'site' => $this->site,
                 'department_id' => $this->department_id,
                 'created_by' => Auth::user()->id,
             ]);
 
-            // session()->flash('message', 'Project created successfully!');
             $this->notification()->success(
                 $title = "Project created successfully!",
-                // $description = $e->getMessage()
             );
             $this->reset();
             $this->emit('openEntryForm');
@@ -84,7 +80,6 @@ class CreateProject extends Component
 
     public function render()
     {
-        // Get all departments to display in the dropdown
         $departments = Department::all();
 
         return view('livewire.project.create-project', [

@@ -40,40 +40,7 @@
                     <livewire:project.create-project />
                 </div>
             @elseif($isFromOpen && $openedFormType == 'edit')
-        <div><livewire:project.create-project :selectedIdForEdit="$selectedIdForEdit"/></div>
-                {{-- <div>
-                    <form wire:submit.prevent="saveProject">
-                        <div class="mb-3">
-                            <label for="projectName">Project Name</label>
-                            <input type="text" class="form-control" wire:model="name" id="projectName">
-                            @error('name')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label for="projectName">Project Site</label>
-                            <input type="text" class="form-control" wire:model="site" id="projectSite">
-                            @error('site')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="department">Department</label>
-                            <select class="form-control" wire:model="department_id" id="department">
-                                <!-- Assuming $departments are passed to the view -->
-                                @foreach ($departments as $department)
-                                    <option value="{{ $department->id }}">{{ $department->department_name }}</option>
-                                @endforeach
-                            </select>
-                            @error('department_id')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <button type="submit" class="btn btn-success">Save Changes</button>
-                    </form>
-                </div> --}}
+                <div><livewire:project.create-project :selectedIdForEdit="$selectedIdForEdit" /></div>
             @else
                 <div>
                     <div class="row">
@@ -95,11 +62,10 @@
                                             @forelse ($projectTypes as $key => $projectType)
                                                 <tr>
                                                     <td>{{ $key + 1 }}</td>
-                                                    <td>{{ $projectType->name }}</td>
-                                                    <td>{{ $projectType->site }}</td>
+                                                    <td class="text-wrap">{{ $projectType->name }}</td>
+                                                    <td class="text-wrap">{{ $projectType->site }}</td>
                                                     <td>{{ $projectType->plan }}</td>
                                                     <td>{{ $projectType->estimate }}</td>
-                                                    {{-- <td>{{ $projectType->department->department_name }}</td> --}}
 
                                                     <td class="text-center">
                                                         <button
