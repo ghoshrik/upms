@@ -289,7 +289,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
                 return redirect('/dashboard');
             }
         })->name('change-role');
-        
     });
 });
 // Route::get('plan-document', PlanDocument::class)->name('plan-document');
