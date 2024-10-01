@@ -15,8 +15,20 @@ class CreateDesignsTable extends Migration
     {
         Schema::create('designs', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('project_id')->references('project_id')->on('project_creations');
-            $table->foreignId('document_type_id')->references('id')->on('document_types');
+            $table->string('title');
+            $table->foreignId('project_creation_id')
+                ->references('id')
+                ->on('project_creations');
+            $table->foreignId('department_id')
+                ->references('id')
+                ->on('departments');
+            $table->foreignId('created_by')
+                ->references('id')
+                ->on('users');
+            $table->foreignId('approved_by')
+                ->references('id')
+                ->on('users')->nullable();
+            $table->date('approved_at');
             $table->timestamps();
         });
     }
