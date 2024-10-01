@@ -36,6 +36,7 @@ use App\Http\Livewire\VendorRegs\VendorList;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CommonApiController;
 use App\Http\Livewire\Designation\Designation;
+use App\Http\Livewire\Project\ProjectCreation;
 use App\Http\Livewire\ProjectType\ProjectType;
 use App\Http\Livewire\Sorapprove\SorApprovers;
 use App\Http\Livewire\Unitsmaster\UnitsMaster;
@@ -48,9 +49,10 @@ use App\Http\Livewire\NonSchedule\NonSchedules;
 use App\Http\Livewire\RateAnalysis\RateAnalysis;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
-use App\Http\Livewire\MenuManagement\MenuManagement;
+use App\Http\Livewire\Project\project_creations;
 
 // Packages
+use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\MisReport\Users\UserMisReport;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\EstimateProject\EstimateProject;
@@ -209,11 +211,10 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
             Route::get('abstracts', AbstructCostsLists::class)->name('abstracts');
 
-            Route::get('non-schedule-approve',NonScheduleApprovers::class)->name('non-schedule-approve');
-
+            Route::get('non-schedule-approve', NonScheduleApprovers::class)->name('non-schedule-approve');
         });
 
-        Route::group(['middleware' => ['role:SOR Preparer|Super Admin|Junior Engineer','can:create non-sor']], function () {
+        Route::group(['middleware' => ['role:SOR Preparer|Super Admin|Junior Engineer', 'can:create non-sor']], function () {
             Route::get('prepare-sor', Sor::class)->name('prepare-sor');
             Route::get('composit-sor', ComposerSors::class)->name('composit-sor');
             Route::get('dynamic-sor', DynamicSor::class)->name('dynamic-sor');
@@ -223,7 +224,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::post('sor-fileUpload', [ApiController::class, 'storeSorUpload'])->name('sor-fileUpload');
             Route::get('sor-delete', [ApiController::class, 'sorDelete'])->name('admin.sor-delete');
             Route::get('sor-approver', [ApiController::class, 'SORApprover'])->name('sor-approver');
-            Route::get('other-sor',NonSchedules::class)->name('other-sor');
+            Route::get('other-sor', NonSchedules::class)->name('other-sor');
         });
 
         /*Route::group(['middleware' => ['role:SOR Preparer|Super Admin|View SOR']], function () {
@@ -280,6 +281,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
                 return redirect('/dashboard');
             }
         })->name('change-role');
+        
     });
 });
 
@@ -357,7 +359,7 @@ Route::group(['prefix' => 'errors'], function () {
 //Extra Page Routs
 // Route::get('privacy-policy', [HomeController::class, 'privacypolicy'])->name('pages.privacy-policy');
 // Route::get('terms-of-use', [HomeController::class, 'termsofuse'])->name('pages.term-of-use');
-
+Route::get('project-creation', ProjectCreation::class)->name('project-creation');
 //clear cache url
 Route::get('cache-clear', function () {
     Artisan::call('route:cache');
