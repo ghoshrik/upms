@@ -285,7 +285,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
                 return redirect('/dashboard');
             }
         })->name('change-role');
-
     });
 });
 // Route::get('project-document-type', DocumentType::class)->name('project-document-type');

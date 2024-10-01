@@ -40,7 +40,6 @@ class CreateProject extends Component
         $this->name = $project->name;
         $this->site = $project->site;
         $this->department_id = $project->department_id;
-
     }
     public function saveProject()
     {
