@@ -40,12 +40,20 @@
                     <livewire:project.create-project />
                 </div>
             @elseif($isFromOpen && $openedFormType == 'edit')
-                <div>
+        <div><livewire:project.create-project :selectedIdForEdit="$selectedIdForEdit"/></div>
+                {{-- <div>
                     <form wire:submit.prevent="saveProject">
                         <div class="mb-3">
                             <label for="projectName">Project Name</label>
                             <input type="text" class="form-control" wire:model="name" id="projectName">
                             @error('name')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="projectName">Project Site</label>
+                            <input type="text" class="form-control" wire:model="site" id="projectSite">
+                            @error('site')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
@@ -65,7 +73,7 @@
 
                         <button type="submit" class="btn btn-success">Save Changes</button>
                     </form>
-                </div>
+                </div> --}}
             @else
                 <div>
                     <div class="row">
@@ -76,9 +84,10 @@
                                         <thead class="thead-dark">
                                             <tr>
                                                 <th scope="col">Sl. No</th>
-                                                <th scope="col">Project Id</th>
-                                                <th scope="col">Department Name</th>
                                                 <th scope="col">Project Name</th>
+                                                <th scope="col">Location</th>
+                                                <th scope="col">Plans</th>
+                                                <th scope="col">Estimate</th>
                                                 <th scope="col" class="text-center">Actions</th>
                                             </tr>
                                         </thead>
@@ -86,16 +95,23 @@
                                             @forelse ($projectTypes as $key => $projectType)
                                                 <tr>
                                                     <td>{{ $key + 1 }}</td>
-                                                    <td>{{ $projectType->project_id }}</td>
-                                                    <td>{{ $projectType->department->department_name }}</td>
                                                     <td>{{ $projectType->name }}</td>
+                                                    <td>{{ $projectType->site }}</td>
+                                                    <td>{{ $projectType->plan }}</td>
+                                                    <td>{{ $projectType->estimate }}</td>
+                                                    {{-- <td>{{ $projectType->department->department_name }}</td> --}}
+
                                                     <td class="text-center">
                                                         <button
                                                             wire:click="fromEntryControl({ 'formType': 'edit', 'id': {{ $projectType->id }} })"
-                                                            class="btn btn-warning btn-sm">Edit</button>
+                                                            type="button" class="btn-soft-warning btn-sm">
+                                                            <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
+                                                        </button>
                                                         <button wire:click="deleteProject({{ $projectType->id }})"
                                                             onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
-                                                            class="btn btn-danger btn-sm">Delete</button>
+                                                            class="btn btn-soft-danger btn-sm">
+                                                            <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             @empty

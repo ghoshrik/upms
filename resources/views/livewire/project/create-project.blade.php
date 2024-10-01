@@ -10,8 +10,15 @@
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
-
                 <div class="mb-3">
+                    <label for="site">Project Site</label>
+                    <textarea id="site" class="form-control" wire:model.defer="site" 
+                        placeholder="Enter Project Site"></textarea>
+                    @error('site')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                {{-- <div class="mb-3">
                     <label for="department_id">Department</label>
                     <select id="department_id" class="form-control" wire:model.defer="department_id">
                         <option value="">Select Department</option>
@@ -22,7 +29,7 @@
                     @error('department_id')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
-                </div>
+                </div> --}}
 
                 <button type="submit" class="btn btn-success">Save Project</button>
             </div>
