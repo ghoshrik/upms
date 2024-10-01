@@ -16,6 +16,7 @@ class CreateProjectCreationsTable extends Migration
         Schema::create('project_creations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('name');
+            $table->longText('site');
             $table->foreignId('department_id')
                 ->references('id')
                 ->on('departments');

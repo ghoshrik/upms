@@ -30,7 +30,7 @@ class Department extends Model
         return $this->hasMany(ProjectType::class);
     }
 
-    public function createProjects() : HasMany
+    public function projects() : HasMany
     {
         return $this->hasMany(ProjectCreation::class);
     }

@@ -6,15 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class DesignDocument extends Model
+class PlanDocument extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
 
-    public function design() : BelongsTo
+    public function plan() : BelongsTo
     {
-        return $this->belongsTo(Design::class);
+        return $this->belongsTo(Plan::class);
     }
 
     public function documentType() : BelongsTo
