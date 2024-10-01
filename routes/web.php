@@ -36,6 +36,7 @@ use App\Http\Livewire\VendorRegs\VendorList;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CommonApiController;
 use App\Http\Livewire\Designation\Designation;
+use App\Http\Livewire\Project\ProjectCreation;
 use App\Http\Livewire\ProjectType\ProjectType;
 use App\Http\Livewire\Sorapprove\SorApprovers;
 use App\Http\Livewire\Unitsmaster\UnitsMaster;
@@ -48,7 +49,7 @@ use App\Http\Livewire\NonSchedule\NonSchedules;
 use App\Http\Livewire\RateAnalysis\RateAnalysis;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
-use App\Http\Livewire\ProjectDesignType\DesignType;
+use App\Http\Livewire\Project\project_creations;
 
 // Packages
 use App\Http\Livewire\MenuManagement\MenuManagement;
@@ -283,9 +284,10 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
                 return redirect('/dashboard');
             }
         })->name('change-role');
+
     });
 });
-Route::get('project-design-type', DesignType::class)->name('project-design-type');
+// Route::get('project-design-type', DesignType::class)->name('project-design-type');
 //App Details Page => 'Dashboard'], function() {
 Route::group(['prefix' => 'menu-style'], function () {
     //MenuStyle Page Routs
@@ -360,7 +362,7 @@ Route::group(['prefix' => 'errors'], function () {
 //Extra Page Routs
 // Route::get('privacy-policy', [HomeController::class, 'privacypolicy'])->name('pages.privacy-policy');
 // Route::get('terms-of-use', [HomeController::class, 'termsofuse'])->name('pages.term-of-use');
-
+Route::get('project-creation', ProjectCreation::class)->name('project-creation');
 //clear cache url
 Route::get('cache-clear', function () {
     Artisan::call('route:cache');
