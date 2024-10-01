@@ -921,7 +921,11 @@ class CreateEstimateProject extends Component
 
     public function render()
     {
-        $this->fatchDropdownData['projectTypes'] = ProjectType::where('department_id',Auth::user()->department_id)->get();
+        $this->fatchDropdownData['projectTypes'] = ProjectType::select('project_types.*')
+                                                    ->join('sanction_limit_masters','sanction_limit_masters.project_type_id','=','project_types.id')
+                                                    ->where('project_types.department_id',Auth::user()->department_id)
+                                                    ->groupBy('project_types.id')
+                                                    ->get();
         return view('livewire.estimate-project.create-estimate-project');
     }
 }
