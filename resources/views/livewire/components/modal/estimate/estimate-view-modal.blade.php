@@ -42,6 +42,8 @@
                                         @elseif ($view['estimate_no'] != 0)
                                             {{-- {{ getEstimateDesc($view['estimate_no']) }} --}}
                                             {{ $view['estimate_no'] }}
+                                        @elseif($view['abstract_id'] != 0)
+                                            {{ $view['abstract_id'] }}
                                         @else
                                             --
                                         @endif
@@ -77,6 +79,8 @@
                                                     {{ '( ' . $view['comments'] . ' )' }}
                                                 @endif
                                             @endif
+                                        @elseif($view['abstract_id'] != 0)
+                                            {{ getAbstractName($view['abstract_id']) }}
                                         @else
                                             {{ $view['other_name'] }}
                                         @endif
@@ -86,7 +90,7 @@
                                         @else
                                             {{ $view['qty'] }}
                                             @if ($view['qty_analysis_data'] != '')
-                                                <button class="collapse-button btn btn-soft-primary btn-sm rounded"
+                                                <button class="rounded collapse-button btn btn-soft-primary btn-sm"
                                                     type="button" aria-expanded="false"
                                                     aria-controls="collapseExample_{{ $view['row_id'] }}"
                                                     onclick="toggleCollapse('{{ $view['row_id'] }}')">
@@ -142,7 +146,7 @@
                                                                 <td style="text-align:center;">
                                                                     @if (!isset($metadata['key']))
                                                                         <button
-                                                                            class="collapse-button btn btn-soft-primary btn-sm rounded"
+                                                                            class="rounded collapse-button btn btn-soft-primary btn-sm"
                                                                             type="button" aria-expanded="false"
                                                                             aria-controls="collapseExample1_{{ $metadata['currentId'] }}_{{ $view['row_id'] }}"
                                                                             onclick="toggleCollapse1('{{ $metadata['currentId'] }}_{{ $view['row_id'] }}')">

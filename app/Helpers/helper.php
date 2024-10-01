@@ -1,22 +1,23 @@
 <?php
 
-use App\Models\Department;
-use App\Models\Designation;
-use App\Models\DynamicSorHeader;
-use App\Models\Esrecommender;
-use App\Models\EstimatePrepare;
-use App\Models\EstimateStatus;
-use App\Models\Office;
-use App\Models\RatesAnalysis;
 use App\Models\SOR;
-use App\Models\DepartmentCategory;
-use App\Models\SorMaster;
-use App\Models\UnitMaster;
+use App\Models\Office;
 use App\Models\UnitType;
+use App\Models\Abstracts;
+use App\Models\SorMaster;
+use App\Models\Department;
+use App\Models\UnitMaster;
+use App\Models\Designation;
+use App\Models\Esrecommender;
+use App\Models\RatesAnalysis;
 use App\Models\UsersHasRoles;
+use App\Models\EstimateStatus;
+use App\Models\EstimatePrepare;
+use App\Models\DynamicSorHeader;
+use App\Models\DepartmentCategory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 function removeSession($session)
@@ -669,4 +670,9 @@ function getSorCorrigenda($sor_id)
 {
     $fetchRow = DynamicSorHeader::where('id', $sor_id)->select('corrigenda_name')->first();
     return $fetchRow['corrigenda_name'] ?? '';
+}
+function getAbstractName($abstract_id)
+{
+    $fetchAbstract = Abstracts::where('id',$abstract_id)->first();
+    return strip_tags($fetchAbstract['project_desc']) ?? '';
 }

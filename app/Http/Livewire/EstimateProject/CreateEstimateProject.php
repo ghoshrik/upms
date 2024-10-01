@@ -4,6 +4,7 @@ namespace App\Http\Livewire\EstimateProject;
 
 use App\Models\SOR;
 use Livewire\Component;
+use App\Models\Abstracts;
 use App\Models\SorMaster;
 use App\Models\Department;
 use App\Models\UnitMaster;
@@ -256,6 +257,32 @@ class CreateEstimateProject extends Component
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
+        } elseif ($this->estimateData['item_name']  == 'Abstract'){
+            $allDept = Cache::get('allDept');
+            if ($allDept != '') {
+                $this->fatchDropdownData['departments'] = $allDept;
+            } else {
+                $this->fatchDropdownData['departments'] = Cache::remember('allDept', now()->addMinutes(720), function () {
+                    return Department::select('id', 'department_name')->get();
+                });
+            }
+            $this->estimateData['estimate_no'] = '';
+            // $this->estimateData['estimate_desc'] = '';
+            $this->estimateData['rate_no'] = '';
+            $this->estimateData['dept_id'] = Auth::user()->department_id;
+            $this->estimateData['abstract_id'] = '';
+            $this->getDeptAbstracts();
+            $this->estimateData['dept_category_id'] = '';
+            $this->estimateData['version'] = '';
+            $this->estimateData['item_number'] = '';
+            $this->estimateData['description'] = '';
+            $this->estimateData['other_name'] = '';
+            $this->estimateData['unit_id'] = '';
+            $this->estimateData['qty'] = '';
+            $this->estimateData['rate'] = '';
+            $this->estimateData['total_amount'] = '';
+        }else{
+
         }
     }
 
@@ -807,6 +834,20 @@ class CreateEstimateProject extends Component
         }
     }
 
+    public function getDeptAbstracts(){
+        $this->fatchDropdownData['abstracts'] = Abstracts::where('department_id', $this->estimateData['dept_id'])->get()->map(function ($abstract) {
+            $abstract->project_desc = strip_tags($abstract->project_desc);
+            return $abstract;
+        });
+    }
+
+    public function getAbstractCost(){
+        $getAbstract = Abstracts::where('id', $this->estimateData['abstract_id'])->first();
+        $this->estimateData['qty'] = 1;
+        $this->estimateData['rate'] = $getAbstract->total_amount;
+        $this->estimateData['total_amount'] = round($getAbstract->total_amount);
+    }
+
     public function addEstimate()
     {
         // dd($this->estimateData);
@@ -844,6 +885,7 @@ class CreateEstimateProject extends Component
             $this->addedEstimate['item_index'] = (isset($this->estimateData['item_index'])) ? $this->estimateData['item_index'] : '';
             $this->addedEstimate['col_position'] = (isset($this->estimateData['col_position'])) ? $this->estimateData['col_position'] : 0;
             $this->addedEstimate['rate_type'] = (isset($this->estimateData['rate_type'])) ? $this->estimateData['rate_type'] : '';
+            $this->addedEstimate['abstract_id'] = (isset($this->estimateData['abstract_id'])) ? $this->estimateData['abstract_id'] : 0;
             $this->addedEstimateUpdateTrack = rand(1, 1000);
             $this->estimateData['item_number'] = '';
             $this->estimateData['estimate_no'] = '';

@@ -51,6 +51,7 @@
                                             ['name' => 'Other', 'id' => 2],
                                             ['name' => 'Estimate', 'id' => 3],
                                             ['name' => 'Rate', 'id' => 4],
+                                            ['name' => 'Abstract', 'id' => 5],
                                         ]"
                                         option-label="name" option-value="id" />
                                 </div>
@@ -560,6 +561,82 @@
                                             label="Rate Total" disabled placeholder="Rate Total" />
                                     </div>
                                 </div>
+                            @endif
+                            @if ($estimateData['item_name'] == 'Abstract')
+                            <div class="row" wire:key='{{ $estimateData['item_name'] }}{{ rand(1, 1000) }}'>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <x-select wire:key="abstract_dept"
+                                            label="{{ trans('cruds.estimate.fields.dept') }}"
+                                            placeholder="Select {{ trans('cruds.estimate.fields.dept') }}"
+                                            wire:model.defer="estimateData.dept_id"
+                                            x-on:select="$wire.getDeptAbstracts()">
+                                            @isset($fatchDropdownData['departments'])
+                                                @foreach ($fatchDropdownData['departments'] as $department)
+                                                    <x-select.option label="{{ $department['department_name'] }}"
+                                                        value="{{ $department['id'] }}" />
+                                                @endforeach
+                                            @endisset
+                                        </x-select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <x-select wire:key="abstract"
+                                            label="Abstracts"
+                                            placeholder="Select Abstract"
+                                            wire:model.defer="estimateData.abstract_id"
+                                            x-on:select="$wire.getAbstractCost()">
+                                            @isset($fatchDropdownData['abstracts'])
+                                                @foreach ($fatchDropdownData['abstracts'] as $abstract)
+                                                    <x-select.option label="{{ $abstract['project_desc'] }}"
+                                                        value="{{ $abstract['id'] }}" />
+                                                @endforeach
+                                            @endisset
+                                        </x-select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <x-select wire:key="unit_" label="Unit" placeholder="Select Unit"
+                                            wire:model.defer="estimateData.unit_id">
+                                            @isset($fatchDropdownData['units'])
+                                                @foreach ($fatchDropdownData['units'] as $value)
+                                                    <x-select.option label="{{ $value['unit_name'] }}"
+                                                        value="{{ $value['unit_name'] }}" />
+                                                @endforeach
+                                            @endisset
+                                        </x-select>
+                                        {{-- <x-input wire:key='unit_' label="Unit Name" placeholder="Unit Name"
+                                                wire:model.defer="estimateData.unit_id" /> --}}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <x-input wire:key="other_qty" wire:model.defer="estimateData.qty"
+                                            wire:blur="calculateValue"
+                                            label="{{ trans('cruds.estimate.fields.quantity') }}"
+                                            placeholder="{{ trans('cruds.estimate.fields.quantity') }}"
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '');" />
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <x-input wire:key="abstract_rate"
+                                            label="{{ trans('cruds.estimate.fields.per_unit_cost') }}"
+                                            placeholder="{{ trans('cruds.estimate.fields.per_unit_cost') }}"
+                                            readonly wire:model.defer="estimateData.rate" />
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <x-input wire:key="total_amount"
+                                            wire:model.defer="estimateData.total_amount"
+                                            label="{{ trans('cruds.estimate.fields.estimate_total') }}" disabled
+                                            placeholder="{{ trans('cruds.estimate.fields.estimate_total') }}" />
+                                    </div>
+                                </div>
+                            </div>
                             @endif
                         @endif
                     </div>

@@ -84,6 +84,8 @@
                                                 {{ $addedEstimate['estimate_no'] }}{{ ' ( ' . $addedEstimate['item_name'] . ' )' }}
                                             @elseif($addedEstimate['rate_no'] != 0)
                                                 {{ $addedEstimate['rate_no'] }}{{ ' ( ' . $addedEstimate['item_name'] . ' )' }}
+                                            @elseif($addedEstimate['abstract_id'] != 0)
+                                                {{ $addedEstimate['abstract_id'] }}{{ ' ( ' . $addedEstimate['item_name'] . ' )' }}
                                             @else
                                                 --
                                             @endif
@@ -115,6 +117,8 @@
                                                 @else
                                                     {{ $addedEstimate['arrayIndex'] }}
                                                 @endif
+                                            @elseif($addedEstimate['abstract_id'] != 0)
+                                                    {{ getAbstractName($addedEstimate['abstract_id']) }}
                                             @else
                                                 {{ $addedEstimate['other_name'] }}
                                             @endif

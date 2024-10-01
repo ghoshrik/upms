@@ -506,6 +506,9 @@ class AddedEstimateProjectList extends Component
             if (!array_key_exists("unit_id", $this->addedEstimateData)) {
                 $this->addedEstimateData['unit_id'] = '';
             }
+            if (!array_key_exists("abstract_id", $this->addedEstimateData)) {
+                $this->addedEstimateData['abstract_id'] = 0;
+            }
             foreach ($this->addedEstimateData as $key => $estimate) {
                 $this->allAddedEstimatesData[$index][$key] = $estimate;
             }
@@ -773,6 +776,7 @@ class AddedEstimateProjectList extends Component
                                 'col_position' => $value['col_position'],
                                 'unit_id' => ($value['unit_id'] != '') ? $value['unit_id'] : 0,
                                 'qty_analysis_data' => (isset($this->getQtySessionData[$value['array_id']])) ? json_encode($this->getQtySessionData[$value['array_id']]) : null,
+                                'abstract_id' => $value['abstract_id'],
                             ];
                             EstimatePrepare::create($insert);
                             $estimated_amount = ($value['operation'] == 'Total') ? $value['total_amount'] : 0;
