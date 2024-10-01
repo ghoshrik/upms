@@ -14,7 +14,7 @@ class ProjectCreation extends Component
     public $formOpen = false;
     public $openedFormType = false, $isFromOpen, $subTitle = "List", $selectedIdForEdit, $errorMessage, $title;
     public $projectTypes = [];
-    public $name, $department_id, $created_by, $project_id;
+    public $name, $department_id, $created_by, $site;
 
     protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert','refreshProjectList' => 'loadProjects'];
 
@@ -46,13 +46,14 @@ class ProjectCreation extends Component
                 break;
             case 'edit':
                 $this->subTitle = 'Edit';
-                if (isset($data['id'])) {
-                    $this->loadProjectForEdit($data['id']);
-                }
                 break;
             default:
                 $this->subTitle = 'List';
                 break;
+        }
+        if (isset($data['id'])) {
+            $this->emit('editProjectCreation',$data['id']);
+            // $this->loadProjectForEdit($data['id']);
         }
     }
 
@@ -61,8 +62,9 @@ class ProjectCreation extends Component
         $project = ProjectCreationModel::findOrFail($id);
         $this->selectedIdForEdit = $project->id;
         $this->name = $project->name;
+        $this->site = $project->site;
         $this->department_id = $project->department_id;
-        $this->project_id = $project->project_id;
+        // $this->project_id = $project->project_id;
         $this->created_by = $project->created_by;
     }
 
@@ -74,14 +76,16 @@ class ProjectCreation extends Component
             $project = ProjectCreationModel::findOrFail($this->selectedIdForEdit);
             $project->update([
                 'name' => $this->name,
+                'site' => $this->site,
                 'department_id' => $this->department_id,
                 // Sl. No and project_id are not updated
             ]);
             $this->notification()->success('Project Updated', 'Project details were updated successfully!');
         } else {
             ProjectCreationModel::create([
-                'project_id' => random_int(100000, 999999), // Create new project ID
+                // 'project_id' => random_int(100000, 999999),
                 'name' => $this->name,
+                'site' => $this->site,
                 'department_id' => $this->department_id,
                 'created_by' => auth()->id(),
             ]);
@@ -105,7 +109,7 @@ class ProjectCreation extends Component
         $this->name = '';
         $this->department_id = '';
         $this->created_by = '';
-        $this->project_id = '';
+        $this->site = '';
         $this->selectedIdForEdit = null;
     }
 
