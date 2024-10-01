@@ -50,6 +50,7 @@ use App\Http\Livewire\RateAnalysis\RateAnalysis;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\Project\project_creations;
+use App\Http\Livewire\ProjectDesignType\DesignType;
 
 // Packages
 use App\Http\Livewire\MenuManagement\MenuManagement;
@@ -67,6 +68,7 @@ use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
 use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
 use App\Http\Livewire\EstimateSanctionLimit\EstimateSanctionMaster;
 use App\Http\Livewire\EstimateProjectV2\EstimateProject as EstimateProjectV2;
+use App\Http\Livewire\ProjectDocumentType\DocumentType;
 
 /*
 |--------------------------------------------------------------------------
@@ -284,7 +286,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         
     });
 });
-
+Route::get('project-document-type', DocumentType::class)->name('project-document-type');
 //App Details Page => 'Dashboard'], function() {
 Route::group(['prefix' => 'menu-style'], function () {
     //MenuStyle Page Routs
