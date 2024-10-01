@@ -4,7 +4,7 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label for="name">Project Name</label>
-                    <textarea id="name" class="form-control" wire:model.defer="name" 
+                    <textarea id="name" class="form-control" wire:model.defer="name"
                         placeholder="Enter Project Name"></textarea>
                     @error('name')
                         <span class="text-danger">{{ $message }}</span>
@@ -12,7 +12,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="site">Project Site</label>
-                    <textarea id="site" class="form-control" wire:model.defer="site" 
+                    <textarea id="site" class="form-control" wire:model.defer="site"
                         placeholder="Enter Project Site"></textarea>
                     @error('site')
                         <span class="text-danger">{{ $message }}</span>
@@ -24,7 +24,7 @@
     </form>
 
     @if (session()->has('message'))
-        <div class="alert alert-success mt-3">
+        <div class="mt-3 alert alert-success">
             {{ session('message') }}
         </div>
     @endif

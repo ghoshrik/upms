@@ -21,7 +21,7 @@ class CreateProject extends Component
         'department_id' => 'required|exists:departments,id',
     ];
 
-    
+
     public function mount()
     {
         $this->department_id = Auth::user()->department_id;
@@ -40,7 +40,7 @@ class CreateProject extends Component
         $this->name = $project->name;
         $this->site = $project->site;
         $this->department_id = $project->department_id;
-        
+
     }
     public function saveProject()
     {
@@ -48,7 +48,7 @@ class CreateProject extends Component
 
         if (!empty($this->project_id)) {
 
-              
+
             $project = ProjectCreation::findOrFail($this->project_id);
             $project->update(
                 [
@@ -58,7 +58,7 @@ class CreateProject extends Component
             );
             $this->notification()->success(
                 $title = "Project created successfully!",
-               
+
             );
             $this->reset();
             $this->emit('openEntryForm');
