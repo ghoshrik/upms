@@ -26,7 +26,7 @@ class ProjectCreation extends Component
     public function mount()
     {
         $this->loadProjects();
-        // $this->listeners = ['refreshProjectList' => 'loadProjects'];
+    
     }
 
     public function loadProjects()
@@ -53,7 +53,6 @@ class ProjectCreation extends Component
         }
         if (isset($data['id'])) {
             $this->emit('editProjectCreation',$data['id']);
-            // $this->loadProjectForEdit($data['id']);
         }
     }
 
@@ -64,7 +63,6 @@ class ProjectCreation extends Component
         $this->name = $project->name;
         $this->site = $project->site;
         $this->department_id = $project->department_id;
-        // $this->project_id = $project->project_id;
         $this->created_by = $project->created_by;
     }
 
@@ -78,12 +76,10 @@ class ProjectCreation extends Component
                 'name' => $this->name,
                 'site' => $this->site,
                 'department_id' => $this->department_id,
-                // Sl. No and project_id are not updated
             ]);
             $this->notification()->success('Project Updated', 'Project details were updated successfully!');
         } else {
             ProjectCreationModel::create([
-                // 'project_id' => random_int(100000, 999999),
                 'name' => $this->name,
                 'site' => $this->site,
                 'department_id' => $this->department_id,
@@ -116,7 +112,7 @@ class ProjectCreation extends Component
     public function render()
     {
         $this->title = 'Projects';
-        $departments = Department::all(); // Assuming you have a Department model
+        $departments = Department::all(); 
         $this->projectTypes = ProjectCreationModel::with('department')->get();
         return view('livewire.project.project-creation', [
             'projectTypes' => $this->projectTypes,
