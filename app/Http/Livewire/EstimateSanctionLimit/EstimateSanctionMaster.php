@@ -176,10 +176,10 @@ class EstimateSanctionMaster extends Component
         DB::beginTransaction();
         try {
             $getSanctionLimit = SanctionLimitMaster::findOrFail($id);
-            $getSanctionRolePermissions = $getSanctionLimit->roles()->with(['role', 'permission'])->get();
-            foreach ($getSanctionRolePermissions as $sanctionRolePermission) {
-                $sanctionRolePermission->delete();
-            }
+            // $getSanctionRolePermissions = $getSanctionLimit->roles()->with(['role', 'permission'])->get();
+            // foreach ($getSanctionRolePermissions as $sanctionRolePermission) {
+            //     $sanctionRolePermission->delete();
+            // }
             $getSanctionLimit->delete();
             DB::commit();
             $this->notification()->success(
@@ -187,6 +187,12 @@ class EstimateSanctionMaster extends Component
             );
             $this->reset();
             $this->emit('openEntryForm');
+        }catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+                $this->notification()->error(
+                    $title = "Failed to delete record",
+                    $description = "Please delete all dependencies before deleting this record."
+                );
         } catch (\Exception $e) {
             DB::rollBack();
             $this->notification()->error(
