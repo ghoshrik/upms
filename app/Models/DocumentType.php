@@ -12,8 +12,8 @@ class DocumentType extends Model
 
     protected $guarded = [];
     
-    public function designs() : HasMany
+    public function planDocuments() : HasMany
     {
-        return $this->Hasmany(Design::class);
+        return $this->Hasmany(PlanDocument::class);
     }
 }
