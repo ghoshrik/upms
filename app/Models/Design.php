@@ -13,9 +13,9 @@ class Design extends Model
 
     protected $guarded = [];
 
-    public function designType() : BelongsTo
+    public function documentType() : BelongsTo
     {
-        return $this->BelongsTo(DesignType::class);
+        return $this->BelongsTo(DocumentType::class);
     }
 
     public function project() : BelongsTo
