@@ -163,6 +163,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::post('sor-dept-revert', [ApiController::class, 'sorRevert'])->name('sor-dept-revert');
 
             Route::get('standred-documents', StandredDocumentLists::class)->name('standred-documents');
+            Route::get('project-creation', ProjectCreation::class)->name('project-creation');
         });
 
         //group Admin
@@ -286,9 +287,9 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         })->name('change-role');
     });
 });
-Route::get('project-document-type', DocumentType::class)->name('project-document-type');
-Route::get('plan-document', PlanDocument::class)->name('plan-document');
-Route::get('project-creation', ProjectCreation::class)->name('project-creation');
+// Route::get('project-document-type', DocumentType::class)->name('project-document-type');
+// Route::get('plan-document', PlanDocument::class)->name('plan-document');
+
 //App Details Page => 'Dashboard'], function() {
 Route::group(['prefix' => 'menu-style'], function () {
     //MenuStyle Page Routs
