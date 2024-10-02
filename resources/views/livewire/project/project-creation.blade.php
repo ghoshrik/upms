@@ -41,6 +41,14 @@
                 </div>
             @elseif($isFromOpen && $openedFormType == 'edit')
                 <div><livewire:project.create-project :selectedIdForEdit="$selectedIdForEdit" /></div>
+            @elseif($isFromOpen && $openedFormType == 'plan')
+            <div>
+                <livewire:project.plan.project-plan :selectedProjectId="$selectedProjectId" />
+            </div>
+            @elseif($isFromOpen && $openedFormType == 'plan_document')
+            <div>
+                <livewire:plan-documents.plan-document :selectedProjectId="$selectedProjectId" :selectedProjectPlanId="$selectedProjectPlanId" />
+            </div>
             @else
                 <div>
                     <div class="row">
@@ -64,9 +72,25 @@
                                                     <td>{{ $key + 1 }}</td>
                                                     <td class="text-wrap">{{ $projectType->name }}</td>
                                                     <td class="text-wrap">{{ $projectType->site }}</td>
-                                                    <td>{{ $projectType->plan }}</td>
+                                                    <td>
+                                                        @php
+                                                            $project_plans = $projectType->plans;
+                                                        @endphp
+                                                        <button wire:click="fromEntryControl({ 'formType': 'plan', 'id': {{ $projectType->id }} })" type="button"
+                                                            class="btn btn-soft-primary btn-sm px-3 py-2.5 m-1 rounded">
+                                                            @if (count($project_plans) > 0)
+                                                                <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
+                                                                <span
+                                                                    class="top-0 position-absolute start-100 translate-middle badge rounded-pill bg-primary">
+                                                                    {{ count($project_plans) }}
+                                                                    <span class="visually-hidden">unread messages</span>
+                                                                </span>
+                                                            @else
+                                                                <x-lucide-plus class="w-4 h-4 text-gray-500" /> Add
+                                                            @endif
+                                                        </button>
+                                                    </td>
                                                     <td>{{ $projectType->estimate }}</td>
-
                                                     <td class="text-center">
                                                         <button
                                                             wire:click="fromEntryControl({ 'formType': 'edit', 'id': {{ $projectType->id }} })"

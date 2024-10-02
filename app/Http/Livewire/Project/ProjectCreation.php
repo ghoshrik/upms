@@ -2,8 +2,9 @@
 
 namespace App\Http\Livewire\Project;
 
-use App\Models\ProjectCreation as ProjectCreationModel;
 use App\Models\Department;
+use App\Models\ProjectCreation as ProjectCreationModel;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -12,11 +13,11 @@ class ProjectCreation extends Component
     use Actions;
 
     public $formOpen = false;
-    public $openedFormType = false, $isFromOpen, $subTitle = "List", $selectedIdForEdit, $errorMessage, $title;
+    public $openedFormType = false, $isFromOpen, $subTitle = "List", $selectedIdForEdit, $errorMessage, $title,$update_title;
     public $projectTypes = [];
-    public $name, $department_id, $created_by, $site;
+    public $name, $department_id, $created_by, $site, $selectedProjectId,$selectedProjectPlanId;
 
-    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert','refreshProjectList' => 'loadProjects'];
+    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'refreshProjectList' => 'loadProjects'];
 
     protected $rules = [
         'name' => 'required|string',
@@ -25,8 +26,8 @@ class ProjectCreation extends Component
 
     public function mount()
     {
-        $this->loadProjects();
-    
+        // $this->loadProjects();
+
     }
 
     public function loadProjects()
@@ -47,12 +48,24 @@ class ProjectCreation extends Component
             case 'edit':
                 $this->subTitle = 'Edit';
                 break;
+            case 'plan':
+                $this->subTitle = 'Plan';
+                $this->selectedProjectId = $data['id'];
+                break;
+            case 'plan_document':
+                $this->subTitle = 'Plan Document';
+                $this->selectedProjectId = $data['project_id'];
+                $this->selectedProjectPlanId = $data['id'];
+                $this->isFromOpen = true;
+                break;
             default:
                 $this->subTitle = 'List';
                 break;
         }
         if (isset($data['id'])) {
-            $this->emit('editProjectCreation',$data['id']);
+            if ($this->openedFormType == 'edit'){
+                $this->emit('editProjectCreation', $data['id']);
+            }
         }
     }
 
@@ -112,8 +125,8 @@ class ProjectCreation extends Component
     public function render()
     {
         $this->title = 'Projects';
-        $departments = Department::all(); 
-        $this->projectTypes = ProjectCreationModel::with('department')->get();
+        $departments = Department::all();
+        $this->projectTypes = ProjectCreationModel::where('department_id', Auth::user()->department_id)->with('department')->get();
         return view('livewire.project.project-creation', [
             'projectTypes' => $this->projectTypes,
             'departments' => $departments,
