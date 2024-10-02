@@ -23,11 +23,11 @@ class PlanDocument extends Component
     {
         $getPlanDocument = PlanDocumentModel::where('id', $id)->first();
         $decoded = base64_decode($getPlanDocument->plan_document);
-        $fileName = "document.pdf";
-        file_put_contents($getPlanDocument->title, $decoded);
+        $fileName = $getPlanDocument->title . ".pdf";
+        file_put_contents($fileName, $decoded);
         header('Content-Description: SOR Document ');
         header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="' . basename($getPlanDocument->title) . '"');
+        header('Content-Disposition: attachment; filename="' . basename($fileName) . '"');
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
         return response()->download($fileName)->deleteFileAfterSend(true);
