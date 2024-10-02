@@ -16,7 +16,7 @@ class CreatePlanDocumentsTable extends Migration
         Schema::create('plan_documents', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
-            $table->foreignId('design_id')
+            $table->foreignId('plan_id')
                 ->references('id')
                 ->on('plans');
             $table->foreignId('document_type_id')
