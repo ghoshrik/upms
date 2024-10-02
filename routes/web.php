@@ -47,11 +47,9 @@ use App\Http\Livewire\DocumentSor\DocumentSors;
 use App\Http\Livewire\Estimate\EstimatePrepare;
 use App\Http\Livewire\NonSchedule\NonSchedules;
 use App\Http\Livewire\RateAnalysis\RateAnalysis;
+use App\Http\Livewire\PlanDocuments\PlanDocument;
 use App\Http\Livewire\AccessManager\AccessManager;
 use App\Http\Livewire\Roles\AssignRole\AssignRole;
-use App\Http\Livewire\Project\project_creations;
-use App\Http\Livewire\ProjectDesignType\DesignType;
-
 // Packages
 use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\MisReport\Users\UserMisReport;
@@ -289,6 +287,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
     });
 });
 Route::get('project-document-type', DocumentType::class)->name('project-document-type');
+Route::get('plan-document', PlanDocument::class)->name('plan-document');
+Route::get('project-creation', ProjectCreation::class)->name('project-creation');
 //App Details Page => 'Dashboard'], function() {
 Route::group(['prefix' => 'menu-style'], function () {
     //MenuStyle Page Routs
@@ -363,7 +363,6 @@ Route::group(['prefix' => 'errors'], function () {
 //Extra Page Routs
 // Route::get('privacy-policy', [HomeController::class, 'privacypolicy'])->name('pages.privacy-policy');
 // Route::get('terms-of-use', [HomeController::class, 'termsofuse'])->name('pages.term-of-use');
-Route::get('project-creation', ProjectCreation::class)->name('project-creation');
 //clear cache url
 Route::get('cache-clear', function () {
     Artisan::call('route:cache');
