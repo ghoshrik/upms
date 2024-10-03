@@ -18,11 +18,14 @@ class CreateStandredDocuments extends Component
     use WithFileUploads, Actions;
     protected $rules = [
         'field.title' => 'required',
-        'field.file_upload' => 'required'
+        'field.file_upload' => 'required|file|mimes:pdf|max:20480'
     ];
     protected $messages = [
         'field.title' => 'This is required file',
-        'field.file_upload' => 'This is required file'
+        'field.file_upload.required' => 'This is required file',
+        // 'field.file_upload.file' => 'This is required file',
+        // 'field.file_upload.mimes' => 'The file must be a PDF.',
+        'field.file_upload.max' => 'The file size must not exceed 20 MB.'
 
     ];
     public function mount()
@@ -32,10 +35,7 @@ class CreateStandredDocuments extends Component
     }
     public function store()
     {
-        // $this->validate([
-        //     'field.title' => 'required',
-        //     'field.file_upload' => 'required',
-        // ]);
+        // $this->validate();
         // dd($this->field);
         $temporaryFilePath = $this->field['file_upload']->getRealPath();
         $filePath = file_get_contents($temporaryFilePath);
@@ -43,6 +43,7 @@ class CreateStandredDocuments extends Component
             'title' => $this->field['title'],
             'department_id' => Auth::user()->department_id,
             'upload_file' => base64_encode($filePath),
+            'upload_file_size' => $this->field['file_upload']->getSize(),
             'created_by' => Auth::user()->id
         ]);
         // Delete the temporary file

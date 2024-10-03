@@ -4,10 +4,12 @@ namespace App\Http\Livewire\Documents;
 
 use Livewire\Component;
 use App\Models\StandredDocuments;
+use WireUi\Traits\Actions;
 
 class StandredDocumentLists extends Component
 {
 
+    use Actions;
     protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert'];
 
     public $openedFormType = false, $isFromOpen, $subTitle = "List", $selectedIdForEdit, $errorMessage, $title, $groupLists = [];
@@ -43,10 +45,19 @@ class StandredDocumentLists extends Component
     {
         $this->documents = StandredDocuments::orderBy('id', 'asc')->get();
     }
+    public function deleteDocument($index)
+    {
+        $document = StandredDocuments::find($index);
+        $document->delete();
+        // $this->reset();
+        $this->notification()->success(
+            $title = 'Document delete Successfully'
+        );
+    }
     public function render()
     {
         $this->updateDataTableTracker = rand(1, 1000);
-        $this->title = 'Standared Documents';
+        $this->title = 'Standard Documents';
         $assets = ['chart', 'animation'];
         return view('livewire.documents.standred-document-lists');
     }

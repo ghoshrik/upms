@@ -14,7 +14,7 @@
                         <label for="dept category" style="color:#000;">Upload files<span style="color:red;">
                                 *</span></label>
                         <input type="file" placeholder="file upload" wire:model.defer="field.file_upload"
-                            wire:loading.attr="disabled" required id="file_upload" />
+                            wire:loading.attr="disabled" required id="file_upload" accept="application/pdf,.pdf" />
 
                         <div wire:loading wire:target="field.file_upload">
                             <progress max="100" value="{{ $progress }}"></progress>

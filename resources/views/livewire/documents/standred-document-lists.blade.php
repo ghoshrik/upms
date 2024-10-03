@@ -51,7 +51,7 @@
                     {{-- <livewire:designation.edit-designation /> --}}
                 @else
                     <div>
-                        <x-cards title="">
+                        <x-cards title="" :wire:key="$updateDataTableTracker">
                             <x-slot name="table">
                                 <div>
                                     <div class="table-responsive mt-4">
@@ -59,6 +59,8 @@
                                             <thead>
                                                 <tr>
                                                     <th>Title</th>
+                                                    <th>Upload</th>
+                                                    <th>File Size</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -66,17 +68,23 @@
                                                 @foreach ($documents as $standredDocument)
                                                     <tr>
                                                         <td>{{ $standredDocument->title }}</td>
+                                                        <td>{{ \Carbon\Carbon::parse($standredDocument->created_at)->format('d/m/Y H:i A') }}
+                                                        </td>
+                                                        <td>{{ $standredDocument->formatFileSize() }}
+                                                        </td>
                                                         <td>
-                                                            {{-- <x-action-button class="btn-soft-primary"
-                                                                onClick="viewPdf({{ $standredDocument->upload_file }})"
-                                                                icon="pencil">
-                                                                View
-                                                            </x-action-button> --}}
-                                                            <button
+                                                            <x-action-button class="btn-soft-danger"
+                                                                onClick="deleteDocument({{ $standredDocument->id }})"
+                                                                icon="trash">
+                                                                Delete
+                                                            </x-action-button>
+                                                            <button type="button"
                                                                 onclick="openPdf('{{ $standredDocument->upload_file }}')"
-                                                                class="btn btn-link">
+                                                                class="btn btn-soft-primary btn-sm px-3 py-2.5">
+                                                                <x-lucide-eye class="w-4 h-4 text-gray-500" />
                                                                 View
                                                             </button>
+
                                                         </td>
                                                     </tr>
                                                 @endforeach
