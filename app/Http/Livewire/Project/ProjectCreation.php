@@ -11,10 +11,9 @@ use WireUi\Traits\Actions;
 class ProjectCreation extends Component
 {
     use Actions;
-
     public $formOpen = false;
     public $openedFormType = false, $isFromOpen, $subTitle = "List", $selectedIdForEdit, $errorMessage, $title,$update_title;
-    public $projectTypes = [];
+    protected $projectTypes = [];
     public $name, $department_id, $created_by, $site, $selectedProjectId,$selectedProjectPlanId;
 
     protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'refreshProjectList' => 'loadProjects'];
@@ -123,13 +122,20 @@ class ProjectCreation extends Component
     }
 
     public function render()
-    {
-        $this->title = 'Projects';
-        $departments = Department::all();
-        $this->projectTypes = ProjectCreationModel::where('department_id', Auth::user()->department_id)->with('department')->get();
-        return view('livewire.project.project-creation', [
-            'projectTypes' => $this->projectTypes,
-            'departments' => $departments,
-        ]);
-    }
+{
+    $this->title = 'Projects';
+    $departments = Department::all();
+
+    // Use paginate() instead of get() to enable pagination
+    $this->projectTypes = ProjectCreationModel::where('department_id', Auth::user()->department_id)
+        ->where('created_by', Auth::user()->id)
+        ->with('department')
+        ->paginate(1); // Adjust the number to the desired items per page
+
+    return view('livewire.project.project-creation', [
+        'projectTypes' => $this->projectTypes,
+        'departments' => $departments,
+    ]);
+}
+
 }
