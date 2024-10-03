@@ -30,7 +30,8 @@
                                             <td class="text-center">
                                                 <button wire:click="view({{ $planDocument->id }})" type="button"
                                                     class="btn-soft-primary btn-sm">
-                                                    <x-lucide-eye class="w-4 h-4 text-gray-500" /> View
+                                                    Download
+                                                    {{-- <x-lucide-eye class="w-4 h-4 text-gray-500" /> --}}
                                                     {{-- <a href="data:application/pdf;base64,{{ base64_encode($planDocument->) }}" target="_blank" id="openPdf">
                                                                 View
                                                             </a> --}}
@@ -42,7 +43,7 @@
                                                 </button>
                                                 <button
                                                     onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
-                                                    wire:click="deleteProjectType({{ $planDocument->id }})"
+                                                    wire:click="deletePlanDoc({{ $planDocument->id }})"
                                                     type="button" class="btn btn-soft-danger btn-sm">
                                                     <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
                                                 </button>
@@ -55,6 +56,9 @@
                                     @endforelse
                                 </tbody>
                             </table>
+                            <div>
+                                {{ $planDocuments->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
