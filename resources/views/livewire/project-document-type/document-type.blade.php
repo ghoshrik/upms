@@ -10,7 +10,7 @@
                 @endif
                 <div class="flex-wrap gap-3 mb-4 d-flex justify-content-between align-items-center">
                     <div class="d-flex flex-column">
-                        <h3 class="text-dark">{{ $titel }}</h3>
+                        <h3 class="text-dark">{{ $title }}</h3>
                         <p class="mb-0 text-primary">{{ $subTitel }}</p>
                     </div>
                     {{-- @canany(['create office', 'edit office']) --}}
@@ -77,7 +77,11 @@
                                 </tr>
                                 @endforeach
                             </tbody>
+
                         </table>
+                        <div>
+                            {{ $DocumentTypes->links() }}
+                        </div>
                         @if($DocumentTypes->isEmpty())
                         <p class="text-center">No Design Types Found.</p>
                         @endif

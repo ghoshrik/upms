@@ -4,14 +4,17 @@ namespace App\Http\Livewire\ProjectDocumentType;
 
 use Livewire\Component;
 use App\Models\DocumentType as DocumentTypeModel;
+use Livewire\WithPagination;
 use WireUi\Traits\Actions;
 class DocumentType extends Component
 {
     use Actions;
-    public $DocumentTypes,$editId,$name;
+    use WithPagination;
+    public $editId,$name;
+    protected $DocumentTypes = [];
     public $formOpen = false;
     protected $listeners = ['openEntryForm' => 'fromEntryControl','showError'=>'setErrorAlert'];
-    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$titel;
+    public $openedFormType= false,$isFromOpen,$subTitel = "List",$selectedIdForEdit,$errorMessage,$title;
 
     public function deleteDocumentType($id)
     {
@@ -50,8 +53,10 @@ class DocumentType extends Component
 
     public function render()
     {
-        $this->DocumentTypes=DocumentTypeModel::all();
-        $this->titel = 'Design Types';
-        return view('livewire.project-document-type.document-type');
+        $this->DocumentTypes = DocumentTypeModel::paginate(1);
+        $this->title = 'Document Types';
+        return view('livewire.project-document-type.document-type', [
+            'DocumentTypes' => $this->DocumentTypes,
+        ]);
     }
 }
