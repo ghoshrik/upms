@@ -67,7 +67,16 @@
                                                     <tr>
                                                         <td>{{ $standredDocument->title }}</td>
                                                         <td>
-                                                            {{-- <x-view :id="{{ $standredDocument->id }}" /> --}}
+                                                            {{-- <x-action-button class="btn-soft-primary"
+                                                                onClick="viewPdf({{ $standredDocument->upload_file }})"
+                                                                icon="pencil">
+                                                                View
+                                                            </x-action-button> --}}
+                                                            <button
+                                                                onclick="openPdf('{{ $standredDocument->upload_file }}')"
+                                                                class="btn btn-link">
+                                                                View
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -77,6 +86,17 @@
                             </x-slot>
                         </x-cards>
                     </div>
+                    <script>
+                        function openPdf(base64Data) {
+                            const trimmedData = base64Data.trim();
+                            const base64String = `data:application/pdf;base64,${trimmedData}`;
+                            const newTab = window.open();
+                            newTab.document.body.innerHTML =
+                                `<iframe src="${base64String}" frameborder="0" style="width:100%; height:100%;"></iframe>`;
+                            // window.open(base64String, '_blank');
+                            // window.location.reload();
+                        }
+                    </script>
                 @endif
             </div>
         </div>
