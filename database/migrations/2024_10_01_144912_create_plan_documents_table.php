@@ -28,6 +28,7 @@ class CreatePlanDocumentsTable extends Migration
             $table->foreignId('department_id')
                 ->references('id')
                 ->on('departments');
+            $table->longText('plan_document');
             $table->timestamps();
         });
     }
