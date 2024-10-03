@@ -18,6 +18,7 @@ class CreateProject extends Component
     public $project_id;
     protected $rules = [
         'name' => 'required|string',
+        'site'=> 'required|string',
         'department_id' => 'required|exists:departments,id',
     ];
 
@@ -25,10 +26,6 @@ class CreateProject extends Component
     public function mount()
     {
         $this->department_id = Auth::user()->department_id;
-
-        if (!empty($this->selectedIdForEdit)) {
-            dd(ProjectCreation::find($this->selectedIdForEdit));
-        }
     }
     public function editProjectCreation($id)
     {
