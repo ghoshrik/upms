@@ -15,7 +15,7 @@
                             <div class="mb-2 row" wire:key="{{ $key }}">
                                 <div class="col" wire:key="title_{{ $key }}">
                                     <x-input label="Design Title" placeholder="Enter Design Title"
-                                        wire:model.defer="inputs.{{ $key }}.title"
+                                        wire:model.defer="inputs.{{ $key }}.title" id="title"
                                         wire:key='title_{{ $key }}' />
                                 </div>
                                 <div class="col" wire:key="design_type_id_{{ $key }}">
