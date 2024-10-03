@@ -3,6 +3,9 @@
         <div class="spinner-border text-primary loader-position" role="status"></div>
     </div> --}}
     <div wire:loading.delay.long.class="loading">
+        @if ($isFromOpen && $openedFormType == 'create')
+        <livewire:project.plan.create-project-plan />
+        @else
         <div>
             <div class="row">
                 <div class="col-md-12 col-lg-12 col-sm-3">
@@ -48,7 +51,21 @@
                                                     @endif
                                                 </button>
                                             </td>
-                                            <td class="wrap-text"></td>
+                                            <td class="wrap-text">
+
+                                                    <button
+                                                        wire:click="fromEntryControl({ 'formType': 'edit', 'id': {{ $projectPlan->id }} })"
+                                                        type="button" class="btn-soft-warning btn-sm">
+                                                        <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
+                                                    </button>
+                                                    <button onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
+                                                        wire:click="deleteplan({{ $projectPlan->id }})" type="button"
+                                                        class="btn btn-soft-danger btn-sm">
+                                                        <x-lucide-trash-2 class="w-4 h-4 text-gray-500" /> Delete
+                                                    </button>
+
+
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
@@ -57,11 +74,15 @@
                                     @endforelse
                                 </tbody>
                             </table>
+                            <div>
+                                {{ $projectPlans->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        @endif
     </div>
     <livewire:project.plan.create-project-plan :project="$project" />
 </div>
