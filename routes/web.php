@@ -64,6 +64,7 @@ use App\Http\Livewire\QuantityEvaluation\QuantityEvaluation;
 use App\Http\Livewire\NonScheduleApprove\NonScheduleApprovers;
 use App\Http\Livewire\DepartmentCategory\DepartmentCategoryList;
 use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
+use App\Http\Livewire\Documents\StandredDocumentLists;
 use App\Http\Livewire\EstimateSanctionLimit\EstimateSanctionMaster;
 use App\Http\Livewire\EstimateProjectV2\EstimateProject as EstimateProjectV2;
 
@@ -159,6 +160,8 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('department-category', DepartmentCategoryList::class)->name('department-category');
             Route::post('sor-dept-verify', [ApiController::class, 'sorVerify'])->name('sor-dept-verify');
             Route::post('sor-dept-revert', [ApiController::class, 'sorRevert'])->name('sor-dept-revert');
+
+            Route::get('standred-documents', StandredDocumentLists::class)->name('standred-documents');
         });
 
         //group Admin
@@ -210,11 +213,10 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
             Route::get('abstracts', AbstructCostsLists::class)->name('abstracts');
 
-            Route::get('non-schedule-approve',NonScheduleApprovers::class)->name('non-schedule-approve');
-
+            Route::get('non-schedule-approve', NonScheduleApprovers::class)->name('non-schedule-approve');
         });
 
-        Route::group(['middleware' => ['role:SOR Preparer|Super Admin|Junior Engineer','can:create non-sor']], function () {
+        Route::group(['middleware' => ['role:SOR Preparer|Super Admin|Junior Engineer', 'can:create non-sor']], function () {
             Route::get('prepare-sor', Sor::class)->name('prepare-sor');
             Route::get('composit-sor', ComposerSors::class)->name('composit-sor');
             Route::get('dynamic-sor', DynamicSor::class)->name('dynamic-sor');
@@ -224,7 +226,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::post('sor-fileUpload', [ApiController::class, 'storeSorUpload'])->name('sor-fileUpload');
             Route::get('sor-delete', [ApiController::class, 'sorDelete'])->name('admin.sor-delete');
             Route::get('sor-approver', [ApiController::class, 'SORApprover'])->name('sor-approver');
-            Route::get('other-sor',NonSchedules::class)->name('other-sor');
+            Route::get('other-sor', NonSchedules::class)->name('other-sor');
         });
 
         /*Route::group(['middleware' => ['role:SOR Preparer|Super Admin|View SOR']], function () {
