@@ -2,19 +2,26 @@
 
 namespace App\Http\Livewire\EstimateProject;
 
-use App\Models\EstimateFlow;
-use App\Models\EstimateUserAssignRecord;
-use App\Models\SorMaster;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use App\Models\SorMaster;
+use App\Models\EstimateFlow;
+use Illuminate\Http\Request;
+use App\Models\ProjectCreation;
+use Illuminate\Support\Facades\Auth;
+use App\Models\EstimateUserAssignRecord;
 
 class EstimateProject extends Component
 {
+    public $project_id;
     public $formOpen = false, $editFormOpen = false, $updateDataTableTracker, $selectedTab = 1, $counterData = [];
     protected $listeners = ['openForm' => 'fromEntryControl', 'refreshData' => 'mount', 'showError' => 'setErrorAlert'];
-    public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel;
-    public function mount()
+    public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel, $project = '';
+    public function mount(ProjectCreation $id)
     {
+        $this->project_id = $id->id ?? '';
+        if ($this->project_id != '') {
+            $this->project = $id;
+        }
         $this->draftData();
     }
     public function draftData()
@@ -47,57 +54,57 @@ class EstimateProject extends Component
         $user = Auth::user();
         $roles = $user->roles;
 
-//        $permissions = $roles->permissions;
-//        dd($permissions);
-//        $permission = $user->hasPermissionTo;
-//        dd($permission);
+        //        $permissions = $roles->permissions;
+        //        dd($permissions);
+        //        $permission = $user->hasPermissionTo;
+        //        dd($permission);
 
-//        dd(Auth::user()->id);
+        //        dd(Auth::user()->id);
 
-//        $this->counterData['totalDataCount'] = SorMaster::join('estimate_flows','estimate_flows.estimate_id','=','sor_masters.estimate_id')
-//        ->whereNull('sor_masters.approved_at')
-//        ->where('associated_with', Auth::user()->id)
-//        ->count();
-        $this->counterData['totalDataCount'] = SorMaster::join('estimate_flows','estimate_flows.estimate_id','=','sor_masters.estimate_id')
-                                                ->whereNull('sor_masters.approved_at')
-                                                ->where('associated_with', Auth::user()->id)
-                                                ->count();
-        $this->counterData['draftDataCount']= EstimateFlow::where('user_id',Auth::user()->id)
-                                                ->whereNull('dispatch_at')
-                                                ->count();
-        $this->counterData['fwdDataCount']= EstimateFlow::join('sor_masters','sor_masters.estimate_id','=','estimate_flows.estimate_id')
-                                            ->where('estimate_flows.user_id',Auth::user()->id)
-                                            ->whereNotNull('estimate_flows.dispatch_at')
-                                            ->whereNull('sor_masters.is_verified')
-                                            ->count();
+        //        $this->counterData['totalDataCount'] = SorMaster::join('estimate_flows','estimate_flows.estimate_id','=','sor_masters.estimate_id')
+        //        ->whereNull('sor_masters.approved_at')
+        //        ->where('associated_with', Auth::user()->id)
+        //        ->count();
+        $this->counterData['totalDataCount'] = SorMaster::join('estimate_flows', 'estimate_flows.estimate_id', '=', 'sor_masters.estimate_id')
+            ->whereNull('sor_masters.approved_at')
+            ->where('associated_with', Auth::user()->id)
+            ->count();
+        $this->counterData['draftDataCount'] = EstimateFlow::where('user_id', Auth::user()->id)
+            ->whereNull('dispatch_at')
+            ->count();
+        $this->counterData['fwdDataCount'] = EstimateFlow::join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_flows.estimate_id')
+            ->where('estimate_flows.user_id', Auth::user()->id)
+            ->whereNotNull('estimate_flows.dispatch_at')
+            ->whereNull('sor_masters.is_verified')
+            ->count();
 
-        $this->counterData['approveDataCount'] = EstimateFlow::join('sor_masters','sor_masters.estimate_id','=','estimate_flows.estimate_id')
-                                                    ->where('estimate_flows.user_id',Auth::user()->id)
-                                                    ->whereNotNull('estimate_flows.dispatch_at')
-                                                    ->where('sor_masters.is_verified',1)
-                                                    ->whereNotNull('sor_masters.approved_at')
-                                                    ->count();
+        $this->counterData['approveDataCount'] = EstimateFlow::join('sor_masters', 'sor_masters.estimate_id', '=', 'estimate_flows.estimate_id')
+            ->where('estimate_flows.user_id', Auth::user()->id)
+            ->whereNotNull('estimate_flows.dispatch_at')
+            ->where('sor_masters.is_verified', 1)
+            ->whereNotNull('sor_masters.approved_at')
+            ->count();
         // dd($this->counterData['totalDataCount']);
         // EstimateUserAssignRecord::where('status', 1)
         // ->where('user_id', Auth::user()->id)
         // ->count();
 
-//        $this->counterData['draftDataCount'] = SorMaster::join('estimate_flows','estimate_flows.estimate_id','=','sor_masters.estimate_id')
-//            ->where(function ($query) {
-//            $query->where('sor_masters.status', 1);
-//        })
-//            ->where('user_id', Auth::user()->id)
-//            ->count();
-//        dd($this->counterData['totalDataCount'],$this->counterData['draftDataCount'] );
-//
-//        $this->counterData['fwdDataCount'] = SorMaster::join('estimate_flows','estimate_flows.estimate_id','=','sor_masters.estimate_id')
-//                                                        ->whereNotNull('estimate_flows.associated_at')
-//                                                        ->where('user_id',Auth::user()->id)
-//                                                        ->count();
+        //        $this->counterData['draftDataCount'] = SorMaster::join('estimate_flows','estimate_flows.estimate_id','=','sor_masters.estimate_id')
+        //            ->where(function ($query) {
+        //            $query->where('sor_masters.status', 1);
+        //        })
+        //            ->where('user_id', Auth::user()->id)
+        //            ->count();
+        //        dd($this->counterData['totalDataCount'],$this->counterData['draftDataCount'] );
+        //
+        //        $this->counterData['fwdDataCount'] = SorMaster::join('estimate_flows','estimate_flows.estimate_id','=','sor_masters.estimate_id')
+        //                                                        ->whereNotNull('estimate_flows.associated_at')
+        //                                                        ->where('user_id',Auth::user()->id)
+        //                                                        ->count();
 
 
 
-       /* $this->counterData['fwdDataCount'] =
+        /* $this->counterData['fwdDataCount'] =
             EstimateUserAssignRecord::query()
             ->selectRaw('count(status)')
             ->where('status', 2)
@@ -150,6 +157,12 @@ class EstimateProject extends Component
         $this->editFormOpen = false;
         $this->formOpen = !$this->formOpen;
         $this->emit('changeSubTitel', ($this->formOpen) ? 'Create new' : 'List');
+    }
+    public function openProjectPlans($id = '')
+    {
+        if ($id != '') {
+            $this->emit('openProjectWisePlan', ['id' => $id]);
+        }
     }
     public function setErrorAlert($errorMessage)
     {

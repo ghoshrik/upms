@@ -28,12 +28,14 @@
                                             <td>{{ $planDocument->title }}</td>
                                             <td>{{ $planDocument->documentType->name }}</td>
                                             <td class="text-center">
-                                                <button wire:click="view({{ $planDocument->id }})" type="button"
+                                                <button
+                                                {{-- wire:click="view({{ $planDocument->id }})"  --}}
+                                                onclick="openPdf('{{ $planDocument->plan_document }}')"
+                                                type="button"
                                                     class="btn-soft-primary btn-sm">
-                                                    Download
-                                                    {{-- <x-lucide-eye class="w-4 h-4 text-gray-500" /> --}}
+                                                    <x-lucide-eye class="w-4 h-4 text-gray-500" />View
                                                     {{-- <a href="data:application/pdf;base64,{{ base64_encode($planDocument->) }}" target="_blank" id="openPdf">
-                                                                View
+
                                                             </a> --}}
                                                 </button>
                                                 <button

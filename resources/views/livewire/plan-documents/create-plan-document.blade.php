@@ -27,18 +27,39 @@
                                         @endforeach
                                     </x-select>
                                 </div>
-                                <div class="mt-2 col" wire:key="plan_document_{{ $key }}">
-                                    <label for="dept category" style="color:#000;">Upload files<span style="color:red;">
-                                            *</span></label>
-                                    <input class="form-control" type="file" placeholder="file upload"
-                                        wire:model.defer="inputs.{{ $key }}.plan_document"
-                                        wire:loading.attr="disabled" required id="plan_document"
-                                        wire:key="plan_document_{{ $key }}" />
+                                <div x-data="{ fileName: '', fileError: '' }" class="mt-2 col" wire:key="plan_document_{{ $key }}">
+                                    <label for="dept category" style="color:#000;">Upload files<span style="color:red;">*</span></label>
 
+                                    <!-- File input with Alpine.js handling -->
+                                    <input
+                                        class="form-control"
+                                        type="file"
+                                        placeholder="file upload"
+                                        wire:model.defer="inputs.{{ $key }}.plan_document"
+                                        wire:loading.attr="disabled"
+                                        @change="fileError = ''; let file = $event.target.files[0]; if (file && file.type !== 'application/pdf') { fileError = 'Only PDF files are allowed!'; fileName = ''; } else { fileName = file.name; }"
+                                        required
+                                        id="plan_document_{{ $key }}"
+                                    />
+
+                                    <!-- Show the file name or the default title if no file is uploaded -->
+                                    <span class="mt-2 text-muted" x-text="fileName ? fileName : '{{ $inputs[$key]['title'] }}.pdf'"></span>
+
+                                    <!-- Show Alpine.js validation error for non-PDF files -->
+                                    <span x-show="fileError" class="text-danger" x-text="fileError"></span>
+
+                                    <!-- Display Livewire validation message for the file -->
+                                    @error('inputs.' . $key . '.plan_document')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+
+                                    <!-- Loading indicator -->
                                     <div wire:loading wire:target="inputs.{{ $key }}.plan_document">
                                         <progress max="100" value="{{ $progress }}"></progress>
                                     </div>
                                 </div>
+
+
                                 @if (count($inputs) > 1)
                                 <div class="col-lg-1 col-md-1 col-sm-6" wire:key="delbutton_{{ $key }}">
                                     <button type="button" class="mt-4 btn btn-soft-danger rounded-pill"

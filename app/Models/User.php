@@ -5,18 +5,19 @@ namespace App\Models;
 use App\Models\Department;
 use App\Models\Designation;
 use App\Models\UsersHasRoles;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use App\Traits\HasPermissionsTrait;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -120,5 +121,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getUserRole(): HasMany
     {
         return $this->hasMany(UsersHasRoles::class, 'user_id');
+    }
+
+    public function projects() : BelongsToMany
+    {
+        return $this->belongsToMany(ProjectCreation::class, 'projects_users')->withPivot('user_id');
     }
 }

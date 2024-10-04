@@ -21,7 +21,8 @@ class SorMaster extends Model
         'created_by',
         'associated_with',
         'approved_at',
-        'project_type_id'
+        'project_type_id',
+        'project_creation_id'
     ];
     public function estimate()
     {
@@ -59,5 +60,10 @@ class SorMaster extends Model
     public function permission()
     {
         return $this->hasOneThrough(Permission::class, EstimateFlow::class, 'estimate_id', 'id', 'estimate_id', 'permission_id');
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(ProjectCreation::class);
     }
 }

@@ -2,22 +2,22 @@
 
 namespace App\Http\Livewire\EstimateProject;
 
-use App\Models\SOR;
-use Livewire\Component;
 use App\Models\Abstracts;
-use App\Models\SorMaster;
 use App\Models\Department;
-use App\Models\UnitMaster;
-use WireUi\Traits\Actions;
-use App\Models\ProjectType;
-use App\Models\RatesAnalysis;
-use App\Models\EstimatePrepare;
-use App\Models\SorCategoryType;
 use App\Models\DynamicSorHeader;
+use App\Models\EstimatePrepare;
+use App\Models\ProjectType;
 use App\Models\QultiyEvaluation;
+use App\Models\RatesAnalysis;
+use App\Models\SOR;
+use App\Models\SorCategoryType;
+use App\Models\SorMaster;
+use App\Models\UnitMaster;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
+use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class CreateEstimateProject extends Component
 {
@@ -29,6 +29,7 @@ class CreateEstimateProject extends Component
     public $searchDtaCount, $searchStyle = 'none', $searchResData, $quntity_type = 'manual', $quntity_type_id = 2, $qc_value, $viewModal = false, $counterForItemNo = 0, $modalName = '', $getSor = [], $editEstimate_id = '';
     public $searchKeyWord = '';
     public $project_type_id = '';
+    public $project;
     // TODO:: remove $showTableOne if not use
     // TODO::pop up modal view estimate and project estimate
     // TODO::forward revert draft modify
@@ -117,7 +118,7 @@ class CreateEstimateProject extends Component
             if (Session()->has('projectEstimationTotal')) {
                 $this->totalOnSelectedCount = Session()->get('projectEstimationTotal');
             }
-            if(Session()->has('estimateProjectType')){
+            if (Session()->has('estimateProjectType')) {
                 $this->project_type_id = Session()->get('estimateProjectType');
             }
             $this->addedEstimateUpdateTrack = rand(1, 1000);
@@ -145,7 +146,7 @@ class CreateEstimateProject extends Component
             // } else {
             $fatchEstimateData = EstimatePrepare::where('estimate_id', $estimate_id)
             // ->where('created_by', Auth::user()->id)
-            ->orderBy('id', 'asc')->get();
+                ->orderBy('id', 'asc')->get();
             // }
             // dd($fatchEstimateData);
             $this->emit('setFatchEstimateData', $fatchEstimateData);
@@ -154,7 +155,7 @@ class CreateEstimateProject extends Component
 
     public function changeCategory($value)
     {
-        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'part_no', 'editEstimate_id','totalOnSelectedCount','project_type_id']);
+        $this->resetExcept(['addedEstimate', 'selectedCategoryId', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'part_no', 'editEstimate_id', 'totalOnSelectedCount', 'project_type_id','project']);
         // dd($this->addedEstimate,$this->editEstimate_id);
         $this->part_no = strtoupper($this->part_no);
         $value = $value['_x_bindings']['value'];
@@ -257,7 +258,7 @@ class CreateEstimateProject extends Component
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
-        } elseif ($this->estimateData['item_name']  == 'Abstract'){
+        } elseif ($this->estimateData['item_name'] == 'Abstract') {
             $allDept = Cache::get('allDept');
             if ($allDept != '') {
                 $this->fatchDropdownData['departments'] = $allDept;
@@ -281,7 +282,7 @@ class CreateEstimateProject extends Component
             $this->estimateData['qty'] = '';
             $this->estimateData['rate'] = '';
             $this->estimateData['total_amount'] = '';
-        }else{
+        } else {
 
         }
     }
@@ -834,14 +835,16 @@ class CreateEstimateProject extends Component
         }
     }
 
-    public function getDeptAbstracts(){
+    public function getDeptAbstracts()
+    {
         $this->fatchDropdownData['abstracts'] = Abstracts::where('department_id', $this->estimateData['dept_id'])->get()->map(function ($abstract) {
             $abstract->project_desc = strip_tags($abstract->project_desc);
             return $abstract;
         });
     }
 
-    public function getAbstractCost(){
+    public function getAbstractCost()
+    {
         $getAbstract = Abstracts::where('id', $this->estimateData['abstract_id'])->first();
         $this->estimateData['qty'] = 1;
         $this->estimateData['rate'] = $getAbstract->total_amount;
@@ -904,7 +907,7 @@ class CreateEstimateProject extends Component
                 $this->fatchDropdownData['rateDetailsTypes'] = [];
             }
             // dd($this->addedEstimate);
-            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'estimateData', 'fatchDropdownData', 'selectedCategoryId', 'part_no', 'editEstimate_id','project_type_id']);
+            $this->resetExcept(['addedEstimate', 'showTableOne', 'addedEstimateUpdateTrack', 'sorMasterDesc', 'estimateData', 'fatchDropdownData', 'selectedCategoryId', 'part_no', 'editEstimate_id', 'project_type_id','project']);
         }
     }
 
@@ -922,10 +925,10 @@ class CreateEstimateProject extends Component
     public function render()
     {
         $this->fatchDropdownData['projectTypes'] = ProjectType::select('project_types.*')
-                                                    ->join('sanction_limit_masters','sanction_limit_masters.project_type_id','=','project_types.id')
-                                                    ->where('project_types.department_id',Auth::user()->department_id)
-                                                    ->groupBy('project_types.id')
-                                                    ->get();
+            ->join('sanction_limit_masters', 'sanction_limit_masters.project_type_id', '=', 'project_types.id')
+            ->where('project_types.department_id', Auth::user()->department_id)
+            ->groupBy('project_types.id')
+            ->get();
         return view('livewire.estimate-project.create-estimate-project');
     }
 }

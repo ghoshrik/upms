@@ -21,7 +21,11 @@ class DocumentTypeSeeder extends Seeder
             'Basic survey report',
             'Design philosophy',
             'Design document',
-            'Meeting with citizen report'
+            'Meeting with citizen report',
+            'GAD',
+            'Pile data',
+            'Land clearance',
+            'Details of cross drainage structure',
         ];
 
         foreach ($doctypes as $doctype) {

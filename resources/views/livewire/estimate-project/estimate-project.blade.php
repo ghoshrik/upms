@@ -1,5 +1,5 @@
 <div>
-    <div class="conatiner-fluid content-inner py-0">
+    <div class="py-0 conatiner-fluid content-inner">
         <div class="iq-navbar-header" style="height: 124px;">
             @if ($errorMessage != null)
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -8,29 +8,36 @@
                 </div>
             @endif
             <div class="container-fluid iq-container">
-                <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
+                <div class="flex-wrap gap-3 mb-4 d-flex justify-content-between align-items-center">
                     <div class="d-flex flex-column">
                         <h3 class="text-dark">{{ $titel }}</h3>
-                        <p class="text-primary mb-0">{{ $subTitel }}</p>
+                        <h5 class="text-dark">{{ $project->name ?? '' }}</h5>
+                        <p class="mb-0 text-primary">{{ $subTitel }}</p>
                     </div>
                     @can('create estimate')
-                    <div class="d-flex justify-content-between align-items-center rounded flex-wrap gap-3">
-                        @if (!$isFromOpen)
-                            <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
+                        <div class="flex-wrap gap-3 rounded d-flex justify-content-between align-items-center">
+                            @if (!$isFromOpen)
+                                <button wire:click="fromEntryControl('create')" class="btn btn-primary rounded-pill "
+                                    x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
+                                    <span class="btn-inner">
+                                        <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
+                                    </span>
+                                </button>
+                            @else
+                                <button wire:click="fromEntryControl" class="btn btn-danger rounded-pill "
+                                    x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
+                                    <span class="btn-inner">
+                                        <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
+                                    </span>
+                                </button>
+                            @endif
+                            <button wire:click="openProjectPlans({{ $project_id }})" class="btn btn-success rounded-pill "
                                 x-transition:enter.duration.600ms x-transition:leave.duration.10ms>
                                 <span class="btn-inner">
-                                    <x-lucide-plus class="w-4 h-4 text-gray-500" /> Create
+                                    <x-lucide-list class="w-4 h-4 text-gray-500" /> Plans
                                 </span>
                             </button>
-                        @else
-                            <button wire:click="fromEntryControl" class="btn btn-danger rounded-pill "
-                                x-transition:enter.duration.100ms x-transition:leave.duration.100ms>
-                                <span class="btn-inner">
-                                    <x-lucide-x class="w-4 h-4 text-gray-500" /> Close
-                                </span>
-                            </button>
-                        @endif
-                    </div>
+                        </div>
                     @endcan
                 </div>
             </div>
@@ -41,7 +48,7 @@
         <div wire:loading.delay.long.class="loading">
             @if ($isFromOpen && $openedFormType == 'create')
                 <div x-transition.duration.900ms>
-                    <livewire:estimate-project.create-estimate-project />
+                    <livewire:estimate-project.create-estimate-project :project="$project" />
                 </div>
             @elseif($isFromOpen && $openedFormType == 'edit')
                 <div x-transition.duration.900ms>
@@ -53,7 +60,7 @@
                     <div class="row">
                         <div class="col-md-12 col-lg-12">
                             <div class="row row-cols-1">
-                                <div class="d-slider1 overflow-hidden ">
+                                <div class="overflow-hidden d-slider1 ">
                                     <div class="row">
                                         <div class="col-md-3 col-lg-3 col-sm-6">
                                             <li class="swiper-slide card card-tab card-slide {{ $this->selectedTab == 1 ? 'active' : '' }}"
@@ -61,7 +68,7 @@
                                                 <div class="card-body">
                                                     <div class="progress-widget">
                                                         <div id="circle-progress-01"
-                                                            class="circle-progress-01 circle-progress circle-progress-primary text-center"
+                                                            class="text-center circle-progress-01 circle-progress circle-progress-primary"
                                                             data-min-value="0"
                                                             data-max-value="{{ $counterData['totalDataCount'] }}"
                                                             data-value="{{ $counterData['draftDataCount'] }}"
@@ -92,7 +99,7 @@
                                                 <div class="card-body">
                                                     <div class="progress-widget">
                                                         <div id="circle-progress-02"
-                                                            class="circle-progress-01 circle-progress circle-progress-info text-center"
+                                                            class="text-center circle-progress-01 circle-progress circle-progress-info"
                                                             data-min-value="0"
                                                             data-max-value="{{ $counterData['totalDataCount'] }}"
                                                             data-value="{{ $counterData['fwdDataCount'] }}"
@@ -121,13 +128,13 @@
                                                 <div class="card-body">
                                                     <div class="progress-widget">
                                                         <div id="circle-progress-03"
-                                                            class="circle-progress-01 circle-progress circle-progress-primary text-center"
+                                                            class="text-center circle-progress-01 circle-progress circle-progress-primary"
                                                             data-min-value="0"
                                                             data-max-value="{{ $counterData['totalDataCount'] }}"
                                                             data-value="{{ $counterData['revertedDataCount'] }}"
                                                             data-type="percent" wire:ignore>
-                                                            <svg class="card-slie-arrow " width="24" height="24"
-                                                                viewBox="0 0 24 24" fill="none"
+                                                            <svg class="card-slie-arrow " width="24"
+                                                                height="24" viewBox="0 0 24 24" fill="none"
                                                                 stroke="currentColor" stroke-width="2"
                                                                 stroke-linecap="round" stroke-linejoin="round">
                                                                 <polyline points="9 14 4 9 9 4"></polyline>
@@ -150,15 +157,15 @@
                                                 <div class="card-body">
                                                     <div class="progress-widget">
                                                         <div id="circle-progress-04"
-                                                             class="circle-progress-01 circle-progress circle-progress-primary text-center"
-                                                             data-min-value="0"
-                                                             data-max-value="{{ $counterData['totalDataCount'] }}"
-                                                             data-value="{{ $counterData['approveDataCount'] }}"
-                                                             data-type="percent" wire:ignore>
-                                                            <svg class="card-slie-arrow " width="24" height="24"
-                                                                 viewBox="0 0 24 24" fill="none"
-                                                                 stroke="currentColor" stroke-width="2"
-                                                                 stroke-linecap="round" stroke-linejoin="round">
+                                                            class="text-center circle-progress-01 circle-progress circle-progress-primary"
+                                                            data-min-value="0"
+                                                            data-max-value="{{ $counterData['totalDataCount'] }}"
+                                                            data-value="{{ $counterData['approveDataCount'] }}"
+                                                            data-type="percent" wire:ignore>
+                                                            <svg class="card-slie-arrow " width="24"
+                                                                height="24" viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor" stroke-width="2"
+                                                                stroke-linecap="round" stroke-linejoin="round">
                                                                 <polyline points="9 14 4 9 9 4"></polyline>
                                                                 <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
                                                             </svg>
@@ -184,14 +191,15 @@
                                         {{-- <livewire:estimate-project.data-table.estimate-project-table
                                             :wire:key="$updateDataTableTracker" /> --}}
                                         <livewire:estimate-project.data-table.estimate-project-table
-                                            :wire:key="$updateDataTableTracker" />
+                                            :wire:key="$updateDataTableTracker" :project="$project" />
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 2)
                                 <div class="card">
                                     <div class="card-body">
                                         {{-- <livewire:estimate-project.data-table.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" /> --}}
-                                         <livewire:estimate-project.datatable.powergrid.forwarded-estimate-project-table :wire:key="$updateDataTableTracker" />
+                                        <livewire:estimate-project.datatable.powergrid.forwarded-estimate-project-table
+                                            :wire:key="$updateDataTableTracker" />
                                     </div>
                                 </div>
                             @elseif ($this->selectedTab == 3)
@@ -201,17 +209,16 @@
                                         {{-- <livewire:estimate-project.datatable.powergrid.estimate-revert-table :wire:key="$updateDataTableTracker" /> --}}
                                     </div>
                                 </div>
-
-                            @elseif($this->selectedTab==4)
-                            <div class="card">
-                                <div class="card-body">
-                                    <livewire:estimate-project.data-table.powergrid.approved-estimate-project :wire:key="$updateDataTableTracker"/>
+                            @elseif($this->selectedTab == 4)
+                                <div class="card">
+                                    <div class="card-body">
+                                        <livewire:estimate-project.data-table.powergrid.approved-estimate-project
+                                            :wire:key="$updateDataTableTracker" />
+                                    </div>
                                 </div>
-                            </div>
-
                             @else
                                 <div
-                                    class="col-span-6 sm:col-span-3 xl:col-span-2 flex flex-col justify-end items-center">
+                                    class="flex flex-col items-center justify-end col-span-6 sm:col-span-3 xl:col-span-2">
                                     <svg width="10%" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"
                                         stroke="rgb(30, 41, 59)" class="w-36 h-36">
                                         <g fill="none" fill-rule="evenodd" stroke-width="4">
@@ -237,7 +244,7 @@
                                             </circle>
                                         </g>
                                     </svg>
-                                    <div class="text-center text-xs mt-2">Loading...</div>
+                                    <div class="mt-2 text-xs text-center">Loading...</div>
                                 </div>
                             @endif
                         </div>
@@ -252,3 +259,4 @@
 <livewire:components.modal.rate-analysis.rate-analysis-view-modal />
 <livewire:components.modal.estimate.estimate-forward-modal />
 <livewire:components.modal.estimate.edit-estimate-modal />
+<livewire:project.plan.project-wise-plans />

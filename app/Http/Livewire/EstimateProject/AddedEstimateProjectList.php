@@ -25,6 +25,7 @@ class AddedEstimateProjectList extends Component
     public $arrayCount = 0, $selectCheckBoxs = false;
     public $editRowId, $editRowData, $editRowModal = false;
     public $project_type_id;
+    public $project;
     public function mount()
     {
         $this->setEstimateDataToSession();
@@ -350,7 +351,7 @@ class AddedEstimateProjectList extends Component
         $this->addedEstimateData['version'] = $version;
         $this->addedEstimateData['remarks'] = $remarks;
         $this->setEstimateDataToSession();
-        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'part_no', 'getQtySessionData', 'editEstimate_id','project_type_id');
+        $this->resetExcept('allAddedEstimatesData', 'sorMasterDesc', 'totalOnSelectedCount', 'part_no', 'getQtySessionData', 'editEstimate_id','project_type_id','project');
     }
 
     public function expCalc()
@@ -745,7 +746,7 @@ class AddedEstimateProjectList extends Component
             try {
                 if ($this->allAddedEstimatesData) {
                     $intId = ($this->editEstimate_id == '') ? random_int(100000, 999999) : $this->editEstimate_id;
-                    if (($this->editEstimate_id != '') ? ModelsSORMaster::where('estimate_id', $intId)->update(['sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'created_by' => Auth::user()->id, 'associated_with' => Auth::user()->id]) : ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'dept_id' => Auth::user()->department_id, 'part_no' => $this->part_no, 'created_by' => Auth::user()->id, 'associated_with' => Auth::user()->id, 'project_type_id' => $this->project_type_id])) {
+                    if (($this->editEstimate_id != '') ? ModelsSORMaster::where('estimate_id', $intId)->update(['sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'created_by' => Auth::user()->id, 'associated_with' => Auth::user()->id]) : ModelsSORMaster::create(['estimate_id' => $intId, 'sorMasterDesc' => $this->sorMasterDesc, 'status' => ($flag == 'draft') ? 12 : 1, 'dept_id' => Auth::user()->department_id, 'part_no' => $this->part_no, 'created_by' => Auth::user()->id, 'associated_with' => Auth::user()->id, 'project_type_id' => $this->project_type_id, 'project_creation_id' => $this->project->id])) {
                         if ($this->editEstimate_id != '') {
                             EstimatePrepare::where('estimate_id', $intId)->delete();
                         }

@@ -28,6 +28,7 @@ use App\Http\Livewire\SorBook\DynamicSor;
 use App\Http\Livewire\DeptGroups\DeptGroup;
 use App\Http\Livewire\Milestone\Milestones;
 use App\Http\Livewire\Profile\AuthPassword;
+use App\Http\Livewire\Project\UserProjects;
 use App\Http\Livewire\Setting\SettingLists;
 use App\Http\Livewire\AccessType\AccessType;
 use App\Http\Livewire\Department\Department;
@@ -49,13 +50,14 @@ use App\Http\Livewire\NonSchedule\NonSchedules;
 use App\Http\Livewire\RateAnalysis\RateAnalysis;
 use App\Http\Livewire\PlanDocuments\PlanDocument;
 use App\Http\Livewire\AccessManager\AccessManager;
-use App\Http\Livewire\Roles\AssignRole\AssignRole;
 // Packages
+use App\Http\Livewire\Roles\AssignRole\AssignRole;
 use App\Http\Livewire\MenuManagement\MenuManagement;
 use App\Http\Livewire\MisReport\Users\UserMisReport;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\EstimateProject\EstimateProject;
 use App\Http\Livewire\AbstructCosts\AbstructCostsLists;
+use App\Http\Livewire\ProjectDocumentType\DocumentType;
 use App\Http\Livewire\AssignOfficeAdmin\AssignOfficeAdmin;
 use App\Http\Livewire\EstimateForwarder\EstimateForwarder;
 use App\Http\Livewire\AssignDeptAdmin\AssignDepartmentAdmin;
@@ -67,7 +69,6 @@ use App\Http\Livewire\AssignToAnotherOffice\AssignToAnotherOffice;
 use App\Http\Livewire\Documents\StandredDocumentLists;
 use App\Http\Livewire\EstimateSanctionLimit\EstimateSanctionMaster;
 use App\Http\Livewire\EstimateProjectV2\EstimateProject as EstimateProjectV2;
-use App\Http\Livewire\ProjectDocumentType\DocumentType;
 
 /*
 |--------------------------------------------------------------------------
@@ -146,6 +147,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('mis-report', MisReport::class)->name('mis-report');
             // Route::get('usermisreport',UserMisReport::class)->name('usermisreport');
             // Route::get('user-management', UserManagement::class)->name('user-management');
+            Route::get('project-document-type', DocumentType::class)->name('project-document-type');
         });
 
         //Department Admin
@@ -196,10 +198,10 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         });
         //Estimate Preparer or Junior Engineer
         Route::group(['middleware' => ['role:Project Estimate (EP)|Junior Engineer|Executive Engineer|Superintending Engineer|Assistant Engineer|Zonal Chief Engineer']], function () {
+            Route::get('estimate-project-show/{id}', EstimateProject::class)->name('estimate-project-show');
             Route::get('estimate-project', EstimateProject::class)->name('estimate-project');
             Route::get('estimate-project-v2', EstimateProjectV2::class)->name('estimate-project-v2');
             //qty analysis api routes
-
             Route::post('/store-dynamic-unit-modal-data', [ApiController::class, 'unitQtyAdded'])->name('store-dynamic-unit-modal-data');
             Route::post('/unit-modal-updated-data', [ApiController::class, 'getunitQtyAdded'])->name('unit-modal-updated-data');
             Route::post('/delete-unit-modal-data', [ApiController::class, 'deleteUnitRow'])->name('delete-unit-modal-data');
@@ -216,6 +218,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
             Route::get('abstracts', AbstructCostsLists::class)->name('abstracts');
 
             Route::get('non-schedule-approve', NonScheduleApprovers::class)->name('non-schedule-approve');
+            Route::get('user-projects', UserProjects::class)->name('user-projects');
         });
 
         Route::group(['middleware' => ['role:SOR Preparer|Super Admin|Junior Engineer', 'can:create non-sor']], function () {
@@ -287,7 +290,6 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         })->name('change-role');
     });
 });
-// Route::get('project-document-type', DocumentType::class)->name('project-document-type');
 // Route::get('plan-document', PlanDocument::class)->name('plan-document');
 
 //App Details Page => 'Dashboard'], function() {

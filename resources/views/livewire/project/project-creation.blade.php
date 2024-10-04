@@ -123,3 +123,14 @@
         </div>
     </div>
 </div>
+<script>
+    function openPdf(base64Data) {
+        const trimmedData = base64Data.trim();
+        const base64String = `data:application/pdf;base64,${trimmedData}`;
+        const newTab = window.open();
+        newTab.document.body.innerHTML =
+            `<iframe src="${base64String}" frameborder="0" style="width:100%; height:100%;"></iframe>`;
+        // window.open(base64String, '_blank');
+        // window.location.reload();
+    }
+</script>
