@@ -59,19 +59,17 @@ class Users extends Component
 
     public function getDeptUsers()
     {
-        $this->userLists= User::join('user_resources','user_resources.user_id','=','users.id')
-                        // ->join('users_has_roles','users_has_roles.office_id','=','user_resources.resource_id')
-                        ->where('user_resources.resource_id', $this->office)
-                        // ->where('users_has_roles.role_id',12)
-                                ->get();
-        
-        // foreach($users as $user)
-        // {
-
-        //    $this->userLists= UsersHasRoles::where('user_id',$user->id)->where('role_id',12)->get();
-        //    dd()
-        // }
-        // Role::where('id');
+        $this->userLists = User::leftjoin('user_resources','user_resources.user_id','=','users.id')
+        ->leftjoin('users_has_roles','users_has_roles.user_id','=','users.id')
+        ->where('users_has_roles.role_id',12)
+        ->where('user_resources.resource_id',$this->office)
+        ->select('users.id as id','users.emp_name as emp_name')
+        ->get();
+        // $this->userLists= User::join('user_resources','user_resources.user_id','=','users.id')
+        //                 // ->join('users_has_roles','users_has_roles.office_id','=','user_resources.resource_id')
+        //                 ->where('user_resources.resource_id', $this->office)
+        //                 // ->where('users_has_roles.role_id',12)
+        //                         ->get();
     }
 
     public function assignUser()
