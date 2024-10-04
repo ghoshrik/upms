@@ -14,7 +14,7 @@ class EstimateProject extends Component
 {
     public $project_id;
     public $formOpen = false, $editFormOpen = false, $updateDataTableTracker, $selectedTab = 1, $counterData = [];
-    protected $listeners = ['openForm' => 'fromEntryControl', 'refreshData' => 'mount', 'showError' => 'setErrorAlert'];
+    protected $listeners = ['openForm' => 'fromEntryControl', 'refreshData' => 'draftData', 'showError' => 'setErrorAlert'];
     public $openedFormType = false, $isFromOpen, $subTitel = "List", $selectedIdForEdit, $errorMessage, $titel, $project = '';
     public function mount(ProjectCreation $id)
     {
