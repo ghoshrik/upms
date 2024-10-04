@@ -98,6 +98,7 @@ class AddedEstimateProjectList extends Component
                         $this->allAddedEstimatesData[$count]['qtyUpdate'] = true;
                     }
                 }
+                $this->allAddedEstimatesData[$count]['abstract_id'] = $estimateData['abstract_id'];
             }
 
             Session()->put('editProjectEstimateData' . $this->editEstimate_id, $this->allAddedEstimatesData);
@@ -141,6 +142,7 @@ class AddedEstimateProjectList extends Component
                 if ($this->allAddedEstimatesData[$key]['qtyUpdate']) {
                     $this->allAddedEstimatesData[$key]['rate_analysis_data'] = $fetchUpdateRateData['rate_analysis_data'];
                 }
+                $this->allAddedEstimatesData[$key]['abstract_id'] = $fetchUpdateRateData['abstract_id'];
             }
         }
         if ($this->editEstimate_id != '') {
