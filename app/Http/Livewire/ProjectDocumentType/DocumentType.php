@@ -53,7 +53,7 @@ class DocumentType extends Component
 
     public function render()
     {
-        $this->DocumentTypes = DocumentTypeModel::paginate(1);
+        $this->DocumentTypes = DocumentTypeModel::paginate(10);
         $this->title = 'Document Types';
         return view('livewire.project-document-type.document-type', [
             'DocumentTypes' => $this->DocumentTypes,

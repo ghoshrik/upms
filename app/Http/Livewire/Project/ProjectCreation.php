@@ -130,7 +130,7 @@ class ProjectCreation extends Component
     $this->projectTypes = ProjectCreationModel::where('department_id', Auth::user()->department_id)
         ->where('created_by', Auth::user()->id)
         ->with('department')
-        ->paginate(1); // Adjust the number to the desired items per page
+        ->paginate(25); // Adjust the number to the desired items per page
 
     return view('livewire.project.project-creation', [
         'projectTypes' => $this->projectTypes,
