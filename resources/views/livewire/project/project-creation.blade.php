@@ -1,5 +1,40 @@
 <div>
-    <div class="py-0 container-fluid content-inner">
+    <div class="py-0 container-fluid content-inner" x-data='{
+        formData:{grouplists:"",officelists:""},
+        selectLists:{groups:"",offices:""},
+        showModal:false,
+        closeModal:function()
+        {
+            this.showModal = false;
+        },
+        assignUser(id)
+        {
+            if (!this.showModal) {
+                this.showModal = true;
+                Livewire.emit("assignUserDetails",id),
+                Livewire.on("GroupsLists",(data)=>{
+                    this.selectLists.groups=data;
+                    console.log(this.formData.grouplists);
+                });
+            }
+        },
+        fetchOffice()
+        {
+            if(this.formData.grouplists)
+            {
+                {{-- console.log(this.formData.grouplists); --}}
+                Livewire.emit("officeId",this.formData.grouplists); 
+                Livewire.on("officeLists",(data)=>{
+                    this.selectLists.office = data;
+                    console.log(this.selectLists.office);
+                });   
+            }
+        },
+        fetchUser()
+        {
+            console.log(this.formData.officelists);
+        }
+    }'>
         <div class="iq-navbar-header" style="height: 124px;">
             @if ($errorMessage != null)
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -69,7 +104,7 @@
                                         <tbody>
                                             @forelse ($projectTypes as $key => $projectType)
                                                 <tr>
-                                                    <td>{{ $key + 1 }}</td>
+                                                    <td>{{ $loop->iteration }}</td>
                                                     <td class="text-wrap">{{ $projectType->name }}</td>
                                                     <td class="text-wrap">{{ $projectType->site }}</td>
                                                     <td>
@@ -97,6 +132,31 @@
                                                             type="button" class="btn-soft-warning btn-sm">
                                                             <x-lucide-edit class="w-4 h-4 text-gray-500" /> Edit
                                                         </button>
+
+
+                                                        {{-- @dd($projectType->users->isNotEmpty); --}}
+                                                        @if($projectType->users->isNotEmpty())
+                                                            {{-- <x-action-button class="btn-soft-primary" onClick="$emit('userDetails',{{$projectType->id}})">
+                                                                View
+                                                            </x-action-button> --}}
+                                                            <button class="btn btn-soft-primary btn-sm" type="button" wire:click="$emit('userDetails',{{$projectType->id}})">
+                                                                <x-lucide-eye class="w-4 h-4 text-gray-500" />View
+                                                            </button>
+                                                            {{-- @foreach($projectType->users as $user)
+                                                                <li>{{ $user->name }}</li>
+                                                                <button class="btn btn-soft-primary btn-sm" type="button" wire:click="$emit('userDetails',{{$projectType->id}})">
+                                                                    <x-lucide-eye class="w-4 h-4 text-gray-500" />View
+                                                                </button>
+                                                            @endforeach --}}
+                                                        @else
+                                                        <button
+                                                            {{-- @click="assignUser({{$projectType->id}})" --}}
+                                                            wire:click="$emit('assignProjectuser',{{$projectType->id}})"
+                                                            type="button" class="btn btn-soft-secondary btn-sm">
+                                                            <x-lucide-user class="w-4 h-4 text-gray-500" /> Assign
+                                                        </button>
+                                                        {{-- @dd($projectuser->users) --}}
+                                                        @endif
                                                         <button wire:click="deleteProject({{ $projectType->id }})"
                                                             onclick="confirm('Are you sure?') || event.stopImmediatePropagation()"
                                                             class="btn btn-soft-danger btn-sm">
@@ -119,6 +179,9 @@
                         </div>
                     </div>
                 </div>
+                <!---->
+                <livewire:components.modal.project.assign.users/>
+                <livewire:components.modal.project.assign.view-assign-user/>
             @endif
         </div>
     </div>

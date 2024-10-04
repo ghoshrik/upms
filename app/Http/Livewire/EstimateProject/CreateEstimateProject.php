@@ -328,6 +328,7 @@ class CreateEstimateProject extends Component
             ->get();
     }
 
+    
     public function autoSearch()
     {
         // $keyword = $keyword['_x_bindings']['value'];

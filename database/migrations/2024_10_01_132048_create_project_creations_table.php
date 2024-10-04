@@ -25,6 +25,19 @@ class CreateProjectCreationsTable extends Migration
                 ->on('users');
             $table->timestamps();
         });
+
+        Schema::create('projects_users', function (Blueprint $table) {
+            $table->foreignId('user_id')
+                ->references('id')
+                ->on('users');
+            $table->foreignId('project_creation_id')
+                ->references('id')
+                ->on('project_creations');
+
+            $table->primary(['user_id', 'project_creation_id']);
+            
+            $table->dateTime('assigned_at')->nullable();
+        });
     }
 
     /**

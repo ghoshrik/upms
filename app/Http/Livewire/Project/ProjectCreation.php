@@ -3,6 +3,8 @@
 namespace App\Http\Livewire\Project;
 
 use App\Models\Department;
+use App\Models\Group;
+use App\Models\Office;
 use App\Models\ProjectCreation as ProjectCreationModel;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -16,7 +18,15 @@ class ProjectCreation extends Component
     protected $projectTypes = [];
     public $name, $department_id, $created_by, $site, $selectedProjectId,$selectedProjectPlanId;
 
-    protected $listeners = ['openEntryForm' => 'fromEntryControl', 'showError' => 'setErrorAlert', 'refreshProjectList' => 'loadProjects'];
+    public $groups;
+
+    protected $listeners = [
+            'openEntryForm' => 'fromEntryControl', 
+            'showError' => 'setErrorAlert', 
+            'refreshProjectList' => 'loadProjects',
+            'assignUserDetails'=>'UserDetails',
+            'officeId'=>'officeDetails'
+        ];
 
     protected $rules = [
         'name' => 'required|string',
@@ -119,6 +129,18 @@ class ProjectCreation extends Component
         $this->created_by = '';
         $this->site = '';
         $this->selectedIdForEdit = null;
+    }
+    public $offices;
+    public function UserDetails($id)
+    {
+        $this->groups= Group::where('department_id',Auth::user()->department_id)->get();
+        $this->emit('GroupsLists',$this->groups);
+    }
+
+    public function officeDetails($id)
+    {
+        $this->offices = Office::where('group_id',$id)->get();
+        $this->emit('officeLists',$this->offices);
     }
 
     public function render()
