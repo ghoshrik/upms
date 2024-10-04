@@ -90,7 +90,7 @@
                                                             @endif
                                                         </button>
                                                     </td>
-                                                    <td>{{ $projectType->estimate }}</td>
+                                                    <td>{{ count($projectType->estimates) }}</td>
                                                     <td class="text-center">
                                                         <button
                                                             wire:click="fromEntryControl({ 'formType': 'edit', 'id': {{ $projectType->id }} })"
