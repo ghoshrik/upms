@@ -18,6 +18,7 @@
                                         <th scope="col">Sl. No</th>
                                         <th scope="col">Document Title</th>
                                         <th scope="col">Document Type</th>
+                                        <th scope="col">Publish Date</th>
                                         <th scope="col" class="text-center">Actions</th>
                                     </tr>
                                 </thead>
@@ -27,6 +28,7 @@
                                             <td>{{ $key + 1 }}</td>
                                             <td>{{ $planDocument->title }}</td>
                                             <td>{{ $planDocument->documentType->name }}</td>
+                                            <td>{{ $planDocument->publish_at }}</td>
                                             <td class="text-center">
                                                 <button
                                                 {{-- wire:click="view({{ $planDocument->id }})"  --}}

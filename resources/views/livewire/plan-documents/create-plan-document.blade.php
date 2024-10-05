@@ -27,6 +27,15 @@
                                         @endforeach
                                     </x-select>
                                 </div>
+                                <div class="col" wire:key="publish_at_{{ $key }}">
+                                    <x-datetime-picker
+                                        wire:model.defer="inputs.{{ $key }}.publish_at"
+                                        label="Prepared Date"
+                                        placeholder="Prepared Date"
+                                        without-time
+                                        format="Y-m-d"
+                                    />
+                                </div>
                                 <div x-data="{ fileName: '', fileError: '' }" class="mt-2 col" wire:key="plan_document_{{ $key }}">
                                     <label for="dept category" style="color:#000;">Upload files<span style="color:red;">*</span></label>
 

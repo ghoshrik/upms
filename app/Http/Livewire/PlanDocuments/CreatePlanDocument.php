@@ -55,6 +55,7 @@ class CreatePlanDocument extends Component
             $this->inputs[] = [
                 'title' => '',
                 'document_type_id' => '',
+                'publish_at' => '',
                 'department_id' => '',
                 'plan_document' => '',
             ];
@@ -66,6 +67,7 @@ class CreatePlanDocument extends Component
         $this->inputs[] = [
             'title' => '',
             'document_type_id' => '',
+            'publish_at' => '',
             'department_id' => '',
             'plan_document' => '',
         ];
@@ -228,6 +230,7 @@ public function store()
                     'document_type_id' => $input['document_type_id'],
                     'plan_id' => $this->projectPlan->id,
                     'project_creation_id' => $this->project->id,
+                    'publish_at' => $input['publish_at'],
                     'department_id' => $this->project->department_id,
                     'plan_document' => isset($input['base64_file']) ? $input['base64_file'] : $plandocument->plan_document,
                 ]);
@@ -245,6 +248,7 @@ public function store()
                 'document_type_id' => $input['document_type_id'],
                 'plan_id' => $this->projectPlan->id,
                 'project_creation_id' => $this->project->id,
+                'publish_at' => $input['publish_at'],
                 'department_id' => $this->project->department_id,
                 'plan_document' => $input['base64_file'] ?? null,
             ]);
