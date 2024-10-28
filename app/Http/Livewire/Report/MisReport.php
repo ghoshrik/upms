@@ -13,6 +13,7 @@ use App\Models\SanctionRole;
 use App\Models\DynamicSorHeader;
 use Illuminate\Support\Facades\DB;
 use App\Models\SanctionLimitMaster;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 
 class MisReport extends Component
@@ -23,7 +24,7 @@ class MisReport extends Component
     public $projectDtls = [], $sorMasters = [], $departments = [], $sanction_roles = [], $sanctionLimitDetails = [], $sanctionLimitRowDetails = [];
     public $sanctionLimit;
     public $showSidebarr = false;
-    public $activeTab = 'home-tab';
+    public $activeTab;
     public $roles = [];
     public $role_id;
     public $permission_name;
@@ -34,8 +35,54 @@ class MisReport extends Component
     {
         $this->errorMessage = $errorMessage;
     }
+
+
     public function mount()
     {
+
+        if (Auth::user()->hasRole('State Admin')) {
+            $this->activeTab = 'home-tab';
+            $departmentSummary = Department::leftJoin('groups', 'departments.id', '=', 'groups.department_id')
+                ->leftJoin('offices', 'groups.id', '=', 'offices.group_id')
+                ->select(
+                    'departments.id as department_id',
+                    'departments.department_name',
+                    'groups.id as group_id',
+                    'groups.group_name'
+                )
+                ->selectRaw('COUNT(DISTINCT groups.id) as group_count')
+                ->selectRaw('COUNT(DISTINCT offices.id) as office_count')
+                ->groupBy(
+                    'departments.id',
+                    'departments.department_name',
+                    'groups.id',
+                    'groups.group_name'
+                )
+                ->havingRaw('COUNT(groups.id) > 0')
+                ->get();
+        } else {
+            $this->activeTab = 'user-mis-tab';
+            $departmentSummary = Department::leftJoin('groups', 'departments.id', '=', 'groups.department_id')
+                ->leftJoin('offices', 'groups.id', '=', 'offices.group_id')
+                ->select(
+                    'departments.id as department_id',
+                    'departments.department_name',
+                    'groups.id as group_id',
+                    'groups.group_name'
+                )
+                ->selectRaw('COUNT(DISTINCT groups.id) as group_count')
+                ->selectRaw('COUNT(DISTINCT offices.id) as office_count')
+                ->where('departments.id', Auth::user()->department_id)
+                ->groupBy(
+                    'departments.id',
+                    'departments.department_name',
+                    'groups.id',
+                    'groups.group_name'
+                )
+                ->havingRaw('COUNT(groups.id) > 0')
+                ->get();
+        }
+
         $this->roles = Role::whereIn('id', [3, 4, 12, 7, 9])->orderBy('has_level_no')->get();
         $this->sanction_roles = collect();
         $this->permissions = collect([
@@ -43,25 +90,11 @@ class MisReport extends Component
             'verify estimate' => 'Checker',
             'approve estimate' => 'Approver',
         ]);
-        $departmentSummary = Department::leftJoin('groups', 'departments.id', '=', 'groups.department_id')
-            ->leftJoin('offices', 'groups.id', '=', 'offices.group_id')
-            ->select(
-                'departments.id as department_id',
-                'departments.department_name',
-                'groups.id as group_id',
-                'groups.group_name'
-            )
-            ->selectRaw('COUNT(DISTINCT groups.id) as group_count')
-            ->selectRaw('COUNT(DISTINCT offices.id) as office_count')
-            ->groupBy(
-                'departments.id',
-                'departments.department_name',
-                'groups.id',
-                'groups.group_name'
-            )
-            ->havingRaw('COUNT(groups.id) > 0')
-            ->get();
+
+
+        // dd($departmentSummary);
         $this->departmentSummaryArray = [];
+
         $this->groupDetailArray = [];
         foreach ($departmentSummary as $summary) {
             $departmentId = $summary->department_id;
@@ -114,6 +147,8 @@ class MisReport extends Component
         $this->showSidebarr = true;
         $this->activeTab = 'sanction-tab';
     }
+
+
     public function confDeleteDialogRolePermission($value): void
     {
         $this->dialog()->confirm([

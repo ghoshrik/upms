@@ -1,6 +1,3 @@
-
-
-
 <div>
     {{-- If you look to others for fulfillment, you will never truly be fulfilled. --}}
     @section('webtitle')
@@ -57,8 +54,7 @@
                     background: none !important;
                 }
 
-                .table>
-                .table>td {
+                .table>.table>td {
                     border: 1px solid #000;
                     padding: 8px;
                 }
@@ -70,10 +66,9 @@
                 /* .table>thead>tr>th:nth-last-child(-n+4) {
                     border-bottom: 4px solid black;
                     /* or any other border style you prefer */
-                } */
+                }
 
-
-                .table>thead>tr:first-child {
+                */ .table>thead>tr:first-child {
                     background-color: #f9f9f9;
                     border: 1px solid #000;
                 }
@@ -88,81 +83,88 @@
             </style>
 
             <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link {{ $activeTab === 'home-tab' ? 'active' : '' }}" id="home-tab"
-                        data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab"
-                        aria-controls="home-tab-pane" aria-selected="true">Schedule of Rates</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link {{ $activeTab === 'profile-tab' ? 'active' : '' }}" id="profile-tab"
-                        data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab"
-                        aria-controls="profile-tab-pane" aria-selected="false">Estimates</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link {{ $activeTab === 'sanction-tab' ? 'active' : '' }}" id="sanction-tab"
-                        data-bs-toggle="tab" data-bs-target="#sanction-tab-pane" type="button" role="tab"
-                        aria-controls="sanction-tab-pane" aria-selected="false">Sanction Limit</button>
-                </li>
+                @if (!Auth::user()->department_id)
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {{ $activeTab === 'home-tab' ? 'active' : '' }}" id="home-tab"
+                            data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab"
+                            aria-controls="home-tab-pane" aria-selected="true">Schedule of Rates</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {{ $activeTab === 'profile-tab' ? 'active' : '' }}" id="profile-tab"
+                            data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab"
+                            aria-controls="profile-tab-pane" aria-selected="false">Estimates</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {{ $activeTab === 'sanction-tab' ? 'active' : '' }}" id="sanction-tab"
+                            data-bs-toggle="tab" data-bs-target="#sanction-tab-pane" type="button" role="tab"
+                            aria-controls="sanction-tab-pane" aria-selected="false">Sanction Limit</button>
+                    </li>
+                @endif
+                {{-- @if (Auth::user()->department_id) --}}
                 <li class="nav-item" role="presentation">
                     <button class="nav-link {{ $activeTab === 'user-mis-tab' ? 'active' : '' }}" id="user-mis-tab"
                         data-bs-toggle="tab" data-bs-target="#user-mis-tab-pane" type="button" role="tab"
                         aria-controls="user-mis-tab-pane" aria-selected="false">Users</button>
                 </li>
+                {{-- @endif --}}
             </ul>
 
             <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade {{ $activeTab === 'home-tab' ? 'show active' : '' }}" id="home-tab-pane"
-                    role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="mt-4 table-left-bordered table-responsive">
-                                <table class="table mb-0" role="grid">
-                                    <thead class="thead">
-                                        <tr class="bg-white">
-                                            <th scope="col">Departments</th>
-                                            <th scope="col">Department Category</th>
-                                            <th scope="col">Volume No</th>
-                                            <th scope="col">Target Pages</th>
-                                            <th colspan="4" scope="col" style="text-align: center">Pages</th>
-                                        </tr>
-                                        <tr class="bg-white">
-                                            <th scope="col"></th>
-                                            <th scope="col"></th>
-                                            <th scope="col"></th>
-                                            <th scope="col"></th>
-                                            <th scope="col">Enter Page</th>
-                                            <th scope="col">Corrigenda & Addenda</th>
-                                            <th scope="col">Approved</th>
-                                            <th scope="col">Verified</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($sorMasters as $master)
-                                            <tr>
-                                                <td>{{ $master->department_name }}</td>
-                                                <td>{{ $master->dept_category_name }}</td>
-                                                <td>
-                                                    {{ $master->volume_name }}
-                                                </td>
-                                                <td>{{ $master->target_pages }}</td>
-                                                <td style="text-align: center">{{ $master->total_pages }}</td>
-                                                <td style="text-align: center">{{ $master->total_corrigandam_pages }}
-                                                </td>
-                                                <td style="text-align: center">{{ $master->total_approved }}</td>
-                                                <td style="text-align: center">{{ $master->total_verified }}</td>
+                @if (!Auth::user()->department_id)
+                    <div class="tab-pane fade {{ $activeTab === 'home-tab' ? 'show active' : '' }}" id="home-tab-pane"
+                        role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="mt-4 table-left-bordered table-responsive">
+                                    <table class="table mb-0" role="grid">
+                                        <thead class="thead">
+                                            <tr class="bg-white">
+                                                <th scope="col">Departments</th>
+                                                <th scope="col">Department Category</th>
+                                                <th scope="col">Volume No</th>
+                                                <th scope="col">Target Pages</th>
+                                                <th colspan="4" scope="col" style="text-align: center">Pages</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                            <tr class="bg-white">
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                                <th scope="col">Enter Page</th>
+                                                <th scope="col">Corrigenda & Addenda</th>
+                                                <th scope="col">Approved</th>
+                                                <th scope="col">Verified</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($sorMasters as $master)
+                                                <tr>
+                                                    <td>{{ $master->department_name }}</td>
+                                                    <td>{{ $master->dept_category_name }}</td>
+                                                    <td>
+                                                        {{ $master->volume_name }}
+                                                    </td>
+                                                    <td>{{ $master->target_pages }}</td>
+                                                    <td style="text-align: center">{{ $master->total_pages }}</td>
+                                                    <td style="text-align: center">
+                                                        {{ $master->total_corrigandam_pages }}
+                                                    </td>
+                                                    <td style="text-align: center">{{ $master->total_approved }}</td>
+                                                    <td style="text-align: center">{{ $master->total_verified }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="tab-pane fade {{ $activeTab === 'profile-tab' ? 'show active' : '' }}"
-                    id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-                    <x-cards title="">
-                        <x-slot name="table">
-                            {{-- <div class="mt-4 table-responsive">
+
+                    <div class="tab-pane fade {{ $activeTab === 'profile-tab' ? 'show active' : '' }}"
+                        id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                        <x-cards title="">
+                            <x-slot name="table">
+                                {{-- <div class="mt-4 table-responsive">
                                 <table id="basic-table" class="table mb-0 table-striped" role="grid">
                                     <thead>
                                         <tr>
@@ -200,91 +202,94 @@
                                     </tbody>
                                 </table>
                             </div> --}}
-                            <livewire:data-table.mis-report />
-                        </x-slot>
-                    </x-cards>
-                </div>
-                <livewire:components.modal.estimate.estimate-view-modal />
-                <div class="tab-pane fade {{ $activeTab === 'sanction-tab' ? 'show active' : '' }}"
-                    id="sanction-tab-pane" role="tabpanel" aria-labelledby="sanction-tab" tabindex="0">
-                    <x-cards title="">
-                        <x-slot name="table">
-                            <div class="mt-4 table-responsive">
-                                <table id="basic-table" class="table mb-0 table-striped" role="grid">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">SlNo</th>
-                                            <th scope="col">Department Name</th>
-                                            <th scope="col">Sanction Limits</th>
-                                            <th scope="col">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($departments as $department)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $department->department_name }}</td>
-                                                <td>{{ $department->sanction_limit_count }}</td>
-                                                <!-- Sanction limit count here -->
-                                                <td>
-                                                    <!-- Button to toggle accordion -->
-                                                    <button class="btn btn-primary" type="button"
-                                                        data-bs-toggle="collapse"
-                                                        data-bs-target="#collapse{{ $loop->iteration }}"
-                                                        aria-expanded="false"
-                                                        aria-controls="collapse{{ $loop->iteration }}">
-                                                        View
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <!-- Accordion collapse -->
-                                            <tr>
-                                                <td colspan="4">
-                                                    <div class="collapse" id="collapse{{ $loop->iteration }}">
-                                                        <div class="card card-body">
-                                                            <div class="mt-4 table-responsive">
-                                                                <table class="table mb-0 table-striped"
-                                                                    role="grid">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th scope="col">SlNo</th>
-                                                                            <th scope="col">Min Amount</th>
-                                                                            <th scope="col">Max Amount</th>
-                                                                            <th scope="col">Action</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
+                                <livewire:data-table.mis-report />
+                            </x-slot>
+                        </x-cards>
+                    </div>
 
-                                                                        {{-- @dd($sanctionLimitDetails); --}}
-                                                                        @foreach ($sanctionLimitDetails as $sanctionLimitDetail)
+
+                    <livewire:components.modal.estimate.estimate-view-modal />
+                    <div class="tab-pane fade {{ $activeTab === 'sanction-tab' ? 'show active' : '' }}"
+                        id="sanction-tab-pane" role="tabpanel" aria-labelledby="sanction-tab" tabindex="0">
+                        <x-cards title="">
+                            <x-slot name="table">
+                                <div class="mt-4 table-responsive">
+                                    <table id="basic-table" class="table mb-0 table-striped" role="grid">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">SlNo</th>
+                                                <th scope="col">Department Name</th>
+                                                <th scope="col">Sanction Limits</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($departments as $department)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $department->department_name }}</td>
+                                                    <td>{{ $department->sanction_limit_count }}</td>
+                                                    <!-- Sanction limit count here -->
+                                                    <td>
+                                                        <!-- Button to toggle accordion -->
+                                                        <button class="btn btn-primary" type="button"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="#collapse{{ $loop->iteration }}"
+                                                            aria-expanded="false"
+                                                            aria-controls="collapse{{ $loop->iteration }}">
+                                                            View
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <!-- Accordion collapse -->
+                                                <tr>
+                                                    <td colspan="4">
+                                                        <div class="collapse" id="collapse{{ $loop->iteration }}">
+                                                            <div class="card card-body">
+                                                                <div class="mt-4 table-responsive">
+                                                                    <table class="table mb-0 table-striped"
+                                                                        role="grid">
+                                                                        <thead>
                                                                             <tr>
-                                                                                <td>{{ $loop->iteration }}</td>
-                                                                                <td>{{ $sanctionLimitDetail->min_amount }}
-                                                                                </td>
-                                                                                <td>{{ $sanctionLimitDetail->max_amount }}
-                                                                                </td>
-                                                                                <td>
-                                                                                    <button class="btn btn-primary"
-                                                                                        wire:click="handleClick({{ $sanctionLimitDetail->id }})">
-                                                                                        View details
-                                                                                    </button>
-                                                                                </td>
+                                                                                <th scope="col">SlNo</th>
+                                                                                <th scope="col">Min Amount</th>
+                                                                                <th scope="col">Max Amount</th>
+                                                                                <th scope="col">Action</th>
                                                                             </tr>
-                                                                        @endforeach
-                                                                    </tbody>
-                                                                </table>
+                                                                        </thead>
+                                                                        <tbody>
+
+                                                                            {{-- @dd($sanctionLimitDetails); --}}
+                                                                            @foreach ($sanctionLimitDetails as $sanctionLimitDetail)
+                                                                                <tr>
+                                                                                    <td>{{ $loop->iteration }}</td>
+                                                                                    <td>{{ $sanctionLimitDetail->min_amount }}
+                                                                                    </td>
+                                                                                    <td>{{ $sanctionLimitDetail->max_amount }}
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <button class="btn btn-primary"
+                                                                                            wire:click="handleClick({{ $sanctionLimitDetail->id }})">
+                                                                                            View details
+                                                                                        </button>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            @endforeach
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </x-slot>
-                    </x-cards>
-                </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </x-slot>
+                        </x-cards>
+                    </div>
+                @endif
                 <div class="tab-pane fade {{ $activeTab === 'user-mis-tab' ? 'show active' : '' }}"
                     id="user-mis-tab-pane" role="tabpanel" aria-labelledby="user-mis-tab" tabindex="0">
                     {{-- <livewire:mis-report.users.user-mis-report /> --}}
@@ -350,8 +355,37 @@
                                                                                             <td>{{ $groupDetail['group_name'] }}
                                                                                             </td>
                                                                                             <td>{{ $groupDetail['total_office_count'] }}
+                                                                                                {{-- <button
+                                                                                                    class="btn btn-primary btn-sm"
+                                                                                                    type="button"
+                                                                                                    id="toggleOfficeButton{{ $groupIndex }}"
+                                                                                                    data-bs-toggle="collapse"
+                                                                                                    data-bs-target="#collapse{{ $groupIndex }}"
+                                                                                                    aria-expanded="false"
+                                                                                                    aria-controls="collapse{{ $groupIndex }}">
+                                                                                                    <x-lucide-eye
+                                                                                                        class="w-4 h-4 text-gray-500" />
+                                                                                                    <span
+                                                                                                        class="btn-text">View</span>
+                                                                                                </button> --}}
+                                                                                                <button
+                                                                                                    class="btn btn-sm btn-primary"
+                                                                                                    wire:click="showOffice({{ $groupIndex }})">View</button>
                                                                                             </td>
                                                                                             <td>{{ $groupDetail['total_user_count'] }}
+                                                                                                {{-- <button
+                                                                                                    class="btn btn-primary btn-sm"
+                                                                                                    type="button"
+                                                                                                    id="toggleUserButton{{ $groupIndex }}"
+                                                                                                    data-bs-toggle="collapse"
+                                                                                                    data-bs-target="#collapse{{ $groupIndex }}"
+                                                                                                    aria-expanded="false"
+                                                                                                    aria-controls="collapse{{ $groupIndex }}">
+                                                                                                    <x-lucide-eye
+                                                                                                        class="w-4 h-4 text-gray-500" />
+                                                                                                    <span
+                                                                                                        class="btn-text">View</span>
+                                                                                                </button> --}}
                                                                                             </td>
                                                                                         </tr>
                                                                                     @endif

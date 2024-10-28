@@ -137,8 +137,10 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
         Route::group(['middleware' => ['role:State Admin|Department Admin|Group Admin|Office Admin']], function () {
             Route::get('user-management', UserManagement::class)->name('user-management');
         });
+
+
         //state Admin
-        Route::group(['middleware' => ['role:State Admin']], function () {
+        Route::group(['middleware' => ['role:State Admin|Department Admin']], function () {
             Route::get('department', Department::class)->name("department");
             Route::get('designation', Designation::class)->name('designation');
             Route::get('unit-master', UnitsMaster::class)->name('unit-master');
