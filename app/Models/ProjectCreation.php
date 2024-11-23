@@ -22,7 +22,6 @@ class ProjectCreation extends Model
     {
         return $this->belongsTo(Department::class);
     }
-
     public function users() : BelongsToMany
     {
         return $this->belongsToMany(User::class, 'projects_users')->withPivot('project_creation_id');
@@ -31,5 +30,10 @@ class ProjectCreation extends Model
     public function estimates()
     {
         return $this->hasMany(SorMaster::class);
+    }
+
+    public function documentTypes()
+    {
+        return $this->belongsToMany(DocumentType::class, 'project_document_type_checklist', 'project_creation_id', 'document_type_id');
     }
 }
