@@ -2,31 +2,34 @@
 
 namespace App\Http\Livewire\Project;
 
-use App\Models\Department;
 use App\Models\Group;
 use App\Models\Office;
-use App\Models\ProjectCreation as ProjectCreationModel;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use App\Models\Department;
 use WireUi\Traits\Actions;
+use App\Models\DocumentType;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Models\ProjectCreation as ProjectCreationModel;
 
 class ProjectCreation extends Component
 {
     use Actions;
     public $formOpen = false;
-    public $openedFormType = false, $isFromOpen, $subTitle = "List", $selectedIdForEdit, $errorMessage, $title,$update_title;
+    public $openedFormType = false, $isFromOpen, $subTitle = "List", $selectedIdForEdit, $errorMessage, $title, $update_title, $mandetory_docs_list;
+    public $open_man_docs_Form = false;
     protected $projectTypes = [];
-    public $name, $department_id, $created_by, $site, $selectedProjectId,$selectedProjectPlanId;
+    public $name, $department_id, $created_by, $site, $selectedProjectId, $selectedProjectPlanId, $selectedDocs, $selectedDocsIds = [];
 
     public $groups;
 
     protected $listeners = [
-            'openEntryForm' => 'fromEntryControl', 
-            'showError' => 'setErrorAlert', 
-            'refreshProjectList' => 'loadProjects',
-            'assignUserDetails'=>'UserDetails',
-            'officeId'=>'officeDetails'
-        ];
+        'openEntryForm' => 'fromEntryControl',
+        'showError' => 'setErrorAlert',
+        'refreshProjectList' => 'loadProjects',
+        'assignUserDetails' => 'UserDetails',
+        'officeId' => 'officeDetails'
+    ];
 
     protected $rules = [
         'name' => 'required|string',
@@ -72,10 +75,30 @@ class ProjectCreation extends Component
                 break;
         }
         if (isset($data['id'])) {
-            if ($this->openedFormType == 'edit'){
+            if ($this->openedFormType == 'edit') {
                 $this->emit('editProjectCreation', $data['id']);
             }
         }
+        if ($data['formType'] === 'mandocs') {
+            $this->selectedProjectId = $data['id'];
+
+            $this->mandetory_docs_list = DocumentType::all();
+
+            $this->selectedDocs = ProjectCreationModel::where('id', $this->selectedProjectId)
+                ->leftJoin('project_document_type_checklist', 'project_creations.id', '=', 'project_document_type_checklist.project_creation_id')
+                ->select(
+                    DB::raw('STRING_AGG(project_document_type_checklist.document_type_id::TEXT, \',\') as document_ids')
+                )
+                ->groupBy('project_creations.id')
+                ->pluck('document_ids')
+                ->first(); // Get the first (and only) record since we are filtering by project ID
+
+            // Convert the selected document IDs (comma-separated string) into an array
+            $this->selectedDocsIds = $this->selectedDocs ? explode(',', $this->selectedDocs) : [];
+            // dd( $this->selectedDocsIds, $this->mandetory_docs_list);
+            $this->open_man_docs_Form = true;
+        }
+
     }
 
     public function loadProjectForEdit($id)
@@ -133,31 +156,45 @@ class ProjectCreation extends Component
     public $offices;
     public function UserDetails($id)
     {
-        $this->groups= Group::where('department_id',Auth::user()->department_id)->get();
-        $this->emit('GroupsLists',$this->groups);
+        $this->groups = Group::where('department_id', Auth::user()->department_id)->get();
+        $this->emit('GroupsLists', $this->groups);
     }
 
     public function officeDetails($id)
     {
-        $this->offices = Office::where('group_id',$id)->get();
-        $this->emit('officeLists',$this->offices);
+        $this->offices = Office::where('group_id', $id)->get();
+        $this->emit('officeLists', $this->offices);
     }
 
     public function render()
-{
-    $this->title = 'Projects';
-    $departments = Department::all();
+    {
+        $this->title = 'Projects';
+        $departments = Department::all();
 
-    // Use paginate() instead of get() to enable pagination
-    $this->projectTypes = ProjectCreationModel::where('department_id', Auth::user()->department_id)
-        ->where('created_by', Auth::user()->id)
-        ->with('department')
-        ->paginate(25); // Adjust the number to the desired items per page
+        // Fetch projects with document count
+        $this->projectTypes = ProjectCreationModel::where('department_id', Auth::user()->department_id)
+            ->where('created_by', Auth::user()->id)
+            ->leftJoin('project_document_type_checklist', 'project_creations.id', '=', 'project_document_type_checklist.project_creation_id')
+            ->select(
+                'project_creations.*',
+                DB::raw('COUNT(project_document_type_checklist.document_type_id) as document_count')
+            )
+            ->groupBy('project_creations.id')
+            ->with('department')
+            ->paginate(25);
 
-    return view('livewire.project.project-creation', [
-        'projectTypes' => $this->projectTypes,
-        'departments' => $departments,
-    ]);
-}
+        //  dd($this->projectTypes);
 
+        return view('livewire.project.project-creation', [
+            'projectTypes' => $this->projectTypes,
+            'departments' => $departments,
+        ]);
+    }
+
+
+
+    public function closeMandocsDrawer()
+    {
+        $this->open_man_docs_Form = false;
+    }
 }
