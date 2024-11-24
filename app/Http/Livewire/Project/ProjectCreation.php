@@ -83,8 +83,11 @@ class ProjectCreation extends Component
         if ($this->openedFormType == 'mandocs') {
             if (isset($data['id'])) {
                 $this->selectedProjectId = $data['id'];
-                $this->mandetory_docs_list = DocumentType::all();
 
+                // Fetch all mandatory documents
+                $allDocs = DocumentType::all();
+
+                // Fetch selected document IDs
                 $this->selectedDocs = ProjectCreationModel::where('id', $this->selectedProjectId)
                     ->leftJoin('project_document_type_checklist', 'project_creations.id', '=', 'project_document_type_checklist.project_creation_id')
                     ->select(
@@ -93,21 +96,28 @@ class ProjectCreation extends Component
                     ->groupBy('project_creations.id')
                     ->pluck('document_ids')
                     ->first();
+
                 $this->selectedDocsIds = $this->selectedDocs ? explode(',', $this->selectedDocs) : [];
 
+                // Fetch count of uploaded documents for selected docs
                 $uploadedDocsCount = PlanDocument::where('project_creation_id', $this->selectedProjectId)
                     ->select('document_type_id', DB::raw('COUNT(*) as count'))
                     ->groupBy('document_type_id')
                     ->pluck('count', 'document_type_id')
                     ->toArray();
 
-                foreach ($this->mandetory_docs_list as $doc) {
-                    $doc->uploaded_count = $uploadedDocsCount[$doc->id] ?? 0; 
-                }
+                // Filter only selected docs and add uploaded count
+                $this->mandetory_docs_list = $allDocs->filter(function ($doc) {
+                    return in_array($doc->id, $this->selectedDocsIds);
+                })->map(function ($doc) use ($uploadedDocsCount) {
+                    $doc->uploaded_count = $uploadedDocsCount[$doc->id] ?? 0;
+                    return $doc;
+                });
             }
 
             $this->open_man_docs_Form = true;
         }
+
 
 
     }

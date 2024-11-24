@@ -226,9 +226,7 @@
                                     <span class="text-danger">(No uploads)</span>
                                 @endif
                             </span>
-                            @if(in_array($doc->id, $selectedDocsIds))
-                                <input type="checkbox" checked disabled class="text-green-500 form-checkbox">
-                            @endif
+                            <input type="checkbox" checked disabled class="text-green-500 form-checkbox">
                         </label>
                     </li>
                 @endforeach
@@ -237,6 +235,7 @@
             <p>No mandatory documents available.</p>
         @endif
     </div>
+
 
 
 </div>
