@@ -17,7 +17,7 @@ class ProjectCreation extends Component
 {
     use Actions;
     public $formOpen = false;
-    public $openedFormType = false, $isFromOpen, $subTitle = "List", $selectedIdForEdit, $errorMessage, $title, $update_title, $mandetory_docs_list;
+    public $openedFormType = false, $isFromOpen, $subTitle = "List", $selectedIdForEdit, $errorMessage, $title, $update_title, $mandetory_docs_list,$mandatoryDocs,$nonMandatoryDocs;
     public $open_man_docs_Form = false;
     protected $projectTypes = [];
     public $name, $department_id, $created_by, $site, $selectedProjectId, $selectedProjectPlanId, $selectedDocs, $selectedDocsIds = [];
@@ -83,11 +83,7 @@ class ProjectCreation extends Component
         if ($this->openedFormType == 'mandocs') {
             if (isset($data['id'])) {
                 $this->selectedProjectId = $data['id'];
-
-                // Fetch all mandatory documents
                 $allDocs = DocumentType::all();
-
-                // Fetch selected document IDs
                 $this->selectedDocs = ProjectCreationModel::where('id', $this->selectedProjectId)
                     ->leftJoin('project_document_type_checklist', 'project_creations.id', '=', 'project_document_type_checklist.project_creation_id')
                     ->select(
@@ -98,28 +94,25 @@ class ProjectCreation extends Component
                     ->first();
 
                 $this->selectedDocsIds = $this->selectedDocs ? explode(',', $this->selectedDocs) : [];
-
-                // Fetch count of uploaded documents for selected docs
                 $uploadedDocsCount = PlanDocument::where('project_creation_id', $this->selectedProjectId)
                     ->select('document_type_id', DB::raw('COUNT(*) as count'))
                     ->groupBy('document_type_id')
                     ->pluck('count', 'document_type_id')
                     ->toArray();
-
-                // Filter only selected docs and add uploaded count
-                $this->mandetory_docs_list = $allDocs->filter(function ($doc) {
-                    return in_array($doc->id, $this->selectedDocsIds);
-                })->map(function ($doc) use ($uploadedDocsCount) {
+                $this->mandetory_docs_list = $allDocs->map(function ($doc) use ($uploadedDocsCount) {
                     $doc->uploaded_count = $uploadedDocsCount[$doc->id] ?? 0;
                     return $doc;
+                });
+                $this->mandatoryDocs = $this->mandetory_docs_list->filter(function ($doc) {
+                    return in_array($doc->id, $this->selectedDocsIds);
+                });
+                $this->nonMandatoryDocs = $this->mandetory_docs_list->filter(function ($doc) {
+                    return !in_array($doc->id, $this->selectedDocsIds) && $doc->uploaded_count > 0;
                 });
             }
 
             $this->open_man_docs_Form = true;
         }
-
-
-
     }
 
     public function loadProjectForEdit($id)

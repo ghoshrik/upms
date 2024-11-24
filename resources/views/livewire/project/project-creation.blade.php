@@ -213,9 +213,10 @@
             wire:click="closeMandocsDrawer"></button>
     </div>
     <div class="offcanvas-body">
-        @if ($mandetory_docs_list && $mandetory_docs_list->isNotEmpty())
-            <ul class="list-group">
-                @foreach ($mandetory_docs_list as $doc)
+        @if ($mandatoryDocs && $mandatoryDocs->isNotEmpty())
+         
+            <ul class="mb-4 list-group">
+                @foreach ($mandatoryDocs as $doc)
                     <li class="p-2 border border-gray-300 rounded-md">
                         <label class="flex items-center justify-between space-x-2">
                             <span>
@@ -234,7 +235,24 @@
         @else
             <p>No mandatory documents available.</p>
         @endif
+
+        @if ($nonMandatoryDocs && $nonMandatoryDocs->isNotEmpty())
+            <h5>Uploaded Documents (Not Mandatory)</h5>
+            <ul class="list-group">
+                @foreach ($nonMandatoryDocs as $doc)
+                    <li class="p-2 border border-gray-300 rounded-md">
+                        <label class="flex items-center justify-between space-x-2">
+                            <span>
+                                {{ $doc->name }}
+                                <span class="text-success">({{ $doc->uploaded_count }} uploaded)</span>
+                            </span>
+                        </label>
+                    </li>
+                @endforeach
+            </ul>
+        @endif
     </div>
+
 
 
 
