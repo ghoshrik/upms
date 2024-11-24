@@ -204,31 +204,8 @@
         </div>
     </div>
     @if($open_man_docs_Form)
-    {{-- <div class="offcanvas offcanvas-end {{ $open_man_docs_Form ? 'show' : 'Mandocs' }}" tabindex="-1"
-        id="offcanvasRight" aria-labelledby="offcanvasRightLabel" style="width: 470px;">
-        <div class="offcanvas-header" style="background: #7f8fdc;">
-            <h5 id="offcanvasRightLabel" class="text-white">Selected Mandatory Documents</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"
-                wire:click="closeMandocsDrawer"></button>
-        </div>
-        <div class="p-4" style="max-height: 400px;">
 
-            <ul class="space-y-2 overflow-y-auto">
-
-                @foreach($mandetory_docs_list as $doc)
-                <li class="p-2 border border-gray-300 rounded-md">
-                    <label class="flex items-center justify-between space-x-2">
-                        <span>{{ $doc->name }}</span>
-                        <input type="checkbox" @if(in_array($doc->id, $selectedDocsIds)) checked @endif
-                        disabled
-                        class="text-green-500 form-checkbox">
-                    </label>
-                </li>
-                @endforeach
-            </ul>
-        </div>
-    </div> --}}
-    <div class="offcanvas offcanvas-end {{ $open_man_docs_Form ? 'show' : 'Mandocs' }}" tabindex="-1" id="offcanvasRight"
+    <div class="offcanvas offcanvas-end {{ $open_man_docs_Form ? 'show' : 'mandocs' }}" tabindex="-1" id="offcanvasRight"
     aria-labelledby="offcanvasRightLabel" style="width: 470px;">
     <div class="offcanvas-header" style="background: #7f8fdc;">
         <h5 id="offcanvasRightLabel" class="text-white">Selected Mandatory Documents</h5>
@@ -241,8 +218,15 @@
                 @foreach ($mandetory_docs_list as $doc)
                     <li class="p-2 border border-gray-300 rounded-md">
                         <label class="flex items-center justify-between space-x-2">
-                            <span>{{ $doc->name }}</span>
-                            @if(in_array($doc->id, $selectedDocsIds)) <!-- Only show checkbox if selected -->
+                            <span>
+                                {{ $doc->name }}
+                                @if ($doc->uploaded_count > 0)
+                                    <span class="text-success">({{ $doc->uploaded_count }} uploaded)</span>
+                                @else
+                                    <span class="text-danger">(No uploads)</span>
+                                @endif
+                            </span>
+                            @if(in_array($doc->id, $selectedDocsIds))
                                 <input type="checkbox" checked disabled class="text-green-500 form-checkbox">
                             @endif
                         </label>
@@ -253,6 +237,8 @@
             <p>No mandatory documents available.</p>
         @endif
     </div>
+
+
 </div>
 </div>
 

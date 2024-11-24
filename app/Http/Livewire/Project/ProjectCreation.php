@@ -8,6 +8,7 @@ use Livewire\Component;
 use App\Models\Department;
 use WireUi\Traits\Actions;
 use App\Models\DocumentType;
+use App\Models\PlanDocument;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ProjectCreation as ProjectCreationModel;
@@ -79,25 +80,35 @@ class ProjectCreation extends Component
                 $this->emit('editProjectCreation', $data['id']);
             }
         }
-        if ($data['formType'] === 'mandocs') {
-            $this->selectedProjectId = $data['id'];
+        if ($this->openedFormType == 'mandocs') {
+            if (isset($data['id'])) {
+                $this->selectedProjectId = $data['id'];
+                $this->mandetory_docs_list = DocumentType::all();
 
-            $this->mandetory_docs_list = DocumentType::all();
+                $this->selectedDocs = ProjectCreationModel::where('id', $this->selectedProjectId)
+                    ->leftJoin('project_document_type_checklist', 'project_creations.id', '=', 'project_document_type_checklist.project_creation_id')
+                    ->select(
+                        DB::raw('STRING_AGG(project_document_type_checklist.document_type_id::TEXT, \',\') as document_ids')
+                    )
+                    ->groupBy('project_creations.id')
+                    ->pluck('document_ids')
+                    ->first();
+                $this->selectedDocsIds = $this->selectedDocs ? explode(',', $this->selectedDocs) : [];
 
-            $this->selectedDocs = ProjectCreationModel::where('id', $this->selectedProjectId)
-                ->leftJoin('project_document_type_checklist', 'project_creations.id', '=', 'project_document_type_checklist.project_creation_id')
-                ->select(
-                    DB::raw('STRING_AGG(project_document_type_checklist.document_type_id::TEXT, \',\') as document_ids')
-                )
-                ->groupBy('project_creations.id')
-                ->pluck('document_ids')
-                ->first(); // Get the first (and only) record since we are filtering by project ID
+                $uploadedDocsCount = PlanDocument::where('project_creation_id', $this->selectedProjectId)
+                    ->select('document_type_id', DB::raw('COUNT(*) as count'))
+                    ->groupBy('document_type_id')
+                    ->pluck('count', 'document_type_id')
+                    ->toArray();
 
-            // Convert the selected document IDs (comma-separated string) into an array
-            $this->selectedDocsIds = $this->selectedDocs ? explode(',', $this->selectedDocs) : [];
-            // dd( $this->selectedDocsIds, $this->mandetory_docs_list);
+                foreach ($this->mandetory_docs_list as $doc) {
+                    $doc->uploaded_count = $uploadedDocsCount[$doc->id] ?? 0; 
+                }
+            }
+
             $this->open_man_docs_Form = true;
         }
+
 
     }
 
@@ -165,6 +176,11 @@ class ProjectCreation extends Component
         $this->offices = Office::where('group_id', $id)->get();
         $this->emit('officeLists', $this->offices);
     }
+    public function closeMandocsDrawer()
+    {
+        $this->open_man_docs_Form = false;
+        $this->selectedProjectId = null;
+    }
 
     public function render()
     {
@@ -191,10 +207,4 @@ class ProjectCreation extends Component
         ]);
     }
 
-
-
-    public function closeMandocsDrawer()
-    {
-        $this->open_man_docs_Form = false;
-    }
 }
