@@ -22,6 +22,7 @@ class CreatePlanDocumentsTable extends Migration
             $table->foreignId('document_type_id')
                 ->references('id')
                 ->on('document_types');
+            $table->dateTime('publish_at')->nullable();
             $table->foreignId('project_creation_id')
                 ->references('id')
                 ->on('project_creations');

@@ -119,12 +119,12 @@ final class EstimateProjectTable extends PowerGridComponent
         if(isset($this->project->id)){
             $data = $data->where('sor_masters.project_creation_id',$this->project->id);
         }
-            $data = $data->where('sor_masters.associated_with', Auth::user()->id)
-            ->where('estimate_flows.user_id', Auth::user()->id)
-            ->where('sor_masters.is_verified', 0)
-            ->groupBy('sor_masters.estimate_id', 'sor_masters.id', 'estimate_flows.estimate_id', 'estimate_flows.sequence_no', 'estimate_statuses.status','sor_masters.project_creation_id')
-            ->orderBy('sor_masters.estimate_id')
-            ->orderBy('estimate_flows.sequence_no');
+        $data = $data->where('sor_masters.associated_with', Auth::user()->id)
+        // ->where('estimate_flows.user_id', Auth::user()->id)
+        ->where('sor_masters.is_verified', 0)
+        ->groupBy('sor_masters.estimate_id', 'sor_masters.id', 'estimate_flows.estimate_id', 'estimate_flows.sequence_no', 'estimate_statuses.status','sor_masters.project_creation_id')
+        ->orderBy('sor_masters.estimate_id')
+        ->orderBy('estimate_flows.sequence_no');
         return $data;
     }
 
@@ -292,9 +292,9 @@ final class EstimateProjectTable extends PowerGridComponent
                 ->when(fn($row) => $this->canApprove($row))
 //                ->bladeComponent('approve-button',['action'=>'approveEstimate','id'=>'estimate_id'])
                 ->hide(),
-            Rule::button('Edit')
-                ->when(fn($row) => $this->canEdit($row))
-                ->hide(),
+            // Rule::button('Edit')
+            //     ->when(fn($row) => $this->canEdit($row))
+            //     ->hide(),
             Rule::button('Revert')
                 ->when(fn($row) => $row->sequence_no === 1)
                 ->hide(),

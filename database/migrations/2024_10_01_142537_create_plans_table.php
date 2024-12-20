@@ -25,9 +25,9 @@ class CreatePlansTable extends Migration
             $table->foreignId('created_by')
                 ->references('id')
                 ->on('users');
-            $table->foreignId('approved_by')
+            $table->foreignId('approved_by')->nullable()
                 ->references('id')
-                ->on('users')->nullable();
+                ->on('users');
             $table->dateTime('approved_at')->nullable();
             $table->timestamps();
         });
